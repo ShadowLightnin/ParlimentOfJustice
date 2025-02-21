@@ -14,7 +14,7 @@ const members = [
   { name: 'Spencer McNeil', codename: 'The Annihilator', screen: 'Spencer', clickable: false, position: [0, 0] },
   { name: 'Azure Briggs', codename: 'Mediateir', screen: 'Azure', clickable: false, position: [0, 2] },
   { name: 'Jared McNeil', codename: 'Spector', screen: 'Jared', clickable: false, position: [1, 0] },
-  { name: 'Will Cummings', codename: 'Night Hawk', screen: 'Will', clickable: true, position: [1, 1] },
+  { name: 'Will Cummings', codename: 'Night Hawk', screen: 'Will', clickable: false, position: [1, 1] },
   { name: 'Ben Briggs', codename: 'Mendeir', screen: 'Ben', clickable: false, position: [1, 2] },
   { name: 'Jennifer McNeil', codename: 'Kintsugi', screen: 'Jennifer', clickable: false, position: [2, 0] },
   { name: 'Emma Cummings', codename: 'Kintsunera', screen: 'Emma', clickable: false, position: [2, 2] },
