@@ -18,6 +18,7 @@ export default function App() {
         <Stack.Screen name="Eclipse" component={EclipseStack} />
         <Stack.Screen name="Olympians" component={FactionScreen} initialParams={{ title: "Olympians" }} />
         <Stack.Screen name="Cobros" component={FactionScreen} initialParams={{ title: "Cobros" }} />
+        <Stack.Screen name="ASTC" component={FactionScreen} initialParams={{ title: "ASTC" }} />
         <Stack.Screen name="BludBruhs" component={FactionScreen} initialParams={{ title: "BludBruhs" }} />
         <Stack.Screen name="Legionaires" component={FactionScreen} initialParams={{ title: "Legionaires" }} />
         <Stack.Screen name="Constollation" component={FactionScreen} initialParams={{ title: "Constollation" }} />
