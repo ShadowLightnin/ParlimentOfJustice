@@ -31,7 +31,7 @@ export const EclipseScreen = () => {
   const navigation = useNavigation();
 
   return (
-    <ImageBackground source={require('../assets/Enforcers.jpg')} style={styles.background}>
+    <ImageBackground source={require('../../assets/Enforcers.jpg')} style={styles.background}>
       <SafeAreaView style={styles.container}>
         {/* Header & Back Button */}
         <View style={styles.headerWrapper}>
