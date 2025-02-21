@@ -3,8 +3,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StartScreen } from './screens/StartScreen';
 import { HomeScreen } from './screens/HomeScreen';
-import { TitansScreen } from './screens/TitansScreen';
-import { EclipseScreen } from './screens/EclipseScreen';
+import { TitansStack } from './navigation/TitansStack';
+import { EclipseStack } from './navigation/EclipseStack';
 
 const Stack = createNativeStackNavigator();
 
@@ -14,8 +14,8 @@ export default function App() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Start" component={StartScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Titans" component={TitansScreen} />
-        <Stack.Screen name="Eclipse" component={EclipseScreen} />
+        <Stack.Screen name="Titans" component={TitansStack} />
+        <Stack.Screen name="Eclipse" component={EclipseStack} />
         <Stack.Screen name="Olympians" component={FactionScreen} initialParams={{ title: "Olympians" }} />
         <Stack.Screen name="Cobros" component={FactionScreen} initialParams={{ title: "Cobros" }} />
         <Stack.Screen name="BludBruhs" component={FactionScreen} initialParams={{ title: "BludBruhs" }} />
