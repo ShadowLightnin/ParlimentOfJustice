@@ -12,7 +12,7 @@ const factions = [
   { name: 'BludBruhs', screen: 'BludBruhs', clickable: false, image: require('../assets/bludbruh.jpg') },
   { name: 'Legionaires', screen: 'Legionaires', clickable: false, image: require('../assets/League.jpg') },
   { name: 'Constollation', screen: 'Constollation', clickable: false, image: require('../assets/helldivers.webp') },
-  { name: 'Designs', screen: 'Designs', clickable: true, image: require('../assets/donut_hologram.png') },
+  { name: 'Designs', screen: 'Designs', clickable: false, image: require('../assets/donut_hologram.png') },
 ];
 
 export const HomeScreen = () => {
