@@ -5,13 +5,13 @@ import { StartScreen } from './screens/StartScreen';
 import { HomeScreen } from './screens/HomeScreen';
 import { TitansStack } from './navigation/TitansStack';
 import { EclipseStack } from './navigation/EclipseStack';
-// import { OlympiansStack } from './navigation/OlympiansStack';
-// import { CobrosStack } from './navigation/CobrosStack';
-// import { SpartansStack } from './navigation/SpartansStack';
-// import { BludBruhsStack } from './navigation/BludBruhsStack';
-// import { LegionairesStack } from './navigation/LegionairesStack';
-// import { ConstollationStack } from './navigation/ConstollationStack';
-// import { DesignsStack } from './navigation/DesignsStack';
+import { OlympiansStack } from './navigation/OlympiansStack';
+import { CobrosStack } from './navigation/CobrosStack';
+import { SpartansStack } from './navigation/SpartansStack';
+import { BludBruhsStack } from './navigation/BludBruhsStack';
+import { LegionairesStack } from './navigation/LegionairesStack';
+import { ConstollationStack } from './navigation/ConstollationStack';
+import { DesignsStack } from './navigation/DesignsStack';
 
 
 
@@ -25,13 +25,13 @@ export default function App() {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Titans" component={TitansStack} />
         <Stack.Screen name="Eclipse" component={EclipseStack} />
-        <Stack.Screen name="Olympians" component={FactionScreen} initialParams={{ title: "Olympians" }} />
-        <Stack.Screen name="Cobros" component={FactionScreen} initialParams={{ title: "Cobros" }} />
-        <Stack.Screen name="ASTC" component={FactionScreen} initialParams={{ title: "ASTC" }} />
-        <Stack.Screen name="BludBruhs" component={FactionScreen} initialParams={{ title: "BludBruhs" }} />
-        <Stack.Screen name="Legionaires" component={FactionScreen} initialParams={{ title: "Legionaires" }} />
-        <Stack.Screen name="Constollation" component={FactionScreen} initialParams={{ title: "Constollation" }} />
-        <Stack.Screen name="Designs" component={FactionScreen} initialParams={{ title: "Designs" }} />
+        <Stack.Screen name="Olympians" component={OlympiansStack} />
+        <Stack.Screen name="Cobros" component={CobrosStack} />
+        <Stack.Screen name="ASTC" component={SpartansStack} />
+        <Stack.Screen name="BludBruhs" component={BludBruhsStack} />
+        <Stack.Screen name="Legionaires" component={LegionairesStack} />
+        <Stack.Screen name="Constollation" component={ConstollationStack} />
+        <Stack.Screen name="Designs" component={DesignsStack} /> 
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -46,6 +46,8 @@ const FactionScreen = ({ route }) => {
     </View>
   );
 };
+// initialParams={{ title: "Designs" }} for the FactionScreen ie:
+// <Stack.Screen name="Designs" component={DesignsStack} initialParams={{ title: "Designs" }} />
 
 const styles = {
   container: {

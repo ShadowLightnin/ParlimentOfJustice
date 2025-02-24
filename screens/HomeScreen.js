@@ -6,13 +6,13 @@ import { useScreenOrientation } from 'expo-screen-orientation';
 const factions = [
   { name: 'The Titans', screen: 'Titans', clickable: true, image: require('../assets/Titans.jpg') },
   { name: 'The Eclipse', screen: 'Eclipse', clickable: true, image: require('../assets/Enforcers.jpg') },
-  { name: 'Olympians', screen: 'Olympians', clickable: false, image: require('../assets/Kin.jpg') },
-  { name: 'Cobros', screen: '', clickable: false, image: require('../assets/Cobros.jpg') },
-  { name: 'ASTC (Spartans)', screen: 'ASTC', clickable: false, image: require('../assets/26.jpg') },
-  { name: 'BludBruhs', screen: 'BludBruhs', clickable: false, image: require('../assets/bludbruh.jpg') },
-  { name: 'Legionaires', screen: 'Legionaires', clickable: false, image: require('../assets/League.jpg') },
-  { name: 'Constollation', screen: 'Constollation', clickable: false, image: require('../assets/helldivers.webp') },
-  { name: 'Designs', screen: 'Designs', clickable: false, image: require('../assets/donut_hologram.png') },
+  { name: 'Olympians', screen: 'Olympians', clickable: true, image: require('../assets/Kin.jpg') },
+  { name: 'Cobros', screen: '', clickable: true, image: require('../assets/Cobros.jpg') },
+  { name: 'ASTC (Spartans)', screen: 'ASTC', clickable: true, image: require('../assets/26.jpg') },
+  { name: 'BludBruhs', screen: 'BludBruhs', clickable: true, image: require('../assets/bludbruh.jpg') },
+  { name: 'Legionaires', screen: 'Legionaires', clickable: true, image: require('../assets/League.jpg') },
+  { name: 'Constollation', screen: 'Constollation', clickable: true, image: require('../assets/helldivers.webp') },
+  { name: 'Designs', screen: 'Designs', clickable: true, image: require('../assets/donut_hologram.png') },
 ];
 
 export const HomeScreen = () => {
