@@ -3,7 +3,7 @@ import { collection, getDocs, addDoc, deleteDoc, doc } from "firebase/firestore"
 
 // Get all teams
 export const getTeams = async () => {
-  const teamsSnapshot = await getDocs(collection(db, "teams"));
+  const teamsSnapshot = await getDocs(collection(db, "team"));
   return teamsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 };
 
