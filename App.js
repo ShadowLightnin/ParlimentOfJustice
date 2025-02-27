@@ -13,23 +13,6 @@ import { LegionairesStack } from './navigation/LegionairesStack';
 import { ConstollationStack } from './navigation/ConstollationStack';
 import { DesignsStack } from './navigation/DesignsStack';
 
-import { db } from "./api/firebaseConfig";
-import { collection, getDocs } from "firebase/firestore";
-
-async function testFirestore() {
-  try {
-    const querySnapshot = await getDocs(collection(db, "team"));
-    querySnapshot.forEach((doc) => {
-      console.log(doc.id, " => ", doc.data());
-    });
-  } catch (error) {
-    console.error("Error fetching teams:", error);
-  }
-}
-
-testFirestore();
-
-
 const Stack = createNativeStackNavigator();
 
 export default function App() {
