@@ -1,0 +1,15 @@
+Titans: 7
+
+Eclipse: 7
+
+Olympians: 76
+
+Cobros: 18
+
+Spartans: 3
+
+BludBruhs: 5
+
+Legionaires: 86
+
+Constollations: 55
