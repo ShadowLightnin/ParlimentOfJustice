@@ -1,32 +1,25 @@
 import { db } from "./firebaseConfig";
-import { collection, getDocs, addDoc, deleteDoc, doc } from "firebase/firestore";
+import { collection, getDocs, doc, setDoc, addDoc, deleteDoc } from "firebase/firestore";
 
-// Get all teams
-export const getTeams = async () => {
-  const teamsSnapshot = await getDocs(collection(db, "team"));
-  return teamsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-};
+// Fetch all teams
+export async function fetchTeams() {
+  const querySnapshot = await getDocs(collection(db, "teams"));
+  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+}
 
-// Get all designs
-export const getDesigns = async () => {
-  const designsSnapshot = await getDocs(collection(db, "designs"));
-  return designsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-};
+// Fetch characters in a team
+export async function fetchCharacters(teamId) {
+  const querySnapshot = await getDocs(collection(db, "characters"));
+  return querySnapshot.docs.filter(doc => doc.data().teamId === teamId).map(doc => ({ id: doc.id, ...doc.data() }));
+}
 
-// Add a new design
-export const addDesign = async (designData) => {
-  try {
-    await addDoc(collection(db, "designs"), designData);
-  } catch (error) {
-    console.error("Error adding design:", error);
-  }
-};
+// Add a new character
+export async function addCharacter(characterData) {
+  const docRef = await addDoc(collection(db, "characters"), characterData);
+  return docRef.id;
+}
 
-// Delete a design
-export const deleteDesign = async (designId) => {
-  try {
-    await deleteDoc(doc(db, "designs", designId));
-  } catch (error) {
-    console.error("Error deleting design:", error);
-  }
-};
+// Delete a character
+export async function deleteCharacter(characterId) {
+  await deleteDoc(doc(db, "characters", characterId));
+}

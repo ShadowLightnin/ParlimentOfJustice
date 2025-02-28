@@ -1,33 +1,30 @@
-import { auth } from "./firebaseConfig";
+import { auth, db } from "./firebaseConfig";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
-// Register user
-export const registerUser = async (email, password) => {
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    return userCredential.user;
-  } catch (error) {
-    console.error("Registration failed:", error);
-    return null;
-  }
-};
+// Sign up user
+export async function signUpUser(email, password, realName) {
+  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+  const userId = userCredential.user.uid;
 
-// User login
-export const loginUser = async (email, password) => {
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    return userCredential.user;
-  } catch (error) {
-    console.error("Login failed:", error);
-    return null;
-  }
-};
+  // Store user in Firestore
+  await setDoc(doc(db, "users", userId), {
+    realName,
+    email,
+    role: "viewer",
+    createdAt: new Date(),
+  });
+
+  return userCredential.user;
+}
+
+// Login user
+export async function loginUser(email, password) {
+  const userCredential = await signInWithEmailAndPassword(auth, email, password);
+  return userCredential.user;
+}
 
 // Logout user
-export const logoutUser = async () => {
-  try {
-    await signOut(auth);
-  } catch (error) {
-    console.error("Logout failed:", error);
-  }
-};
+export async function logoutUser() {
+  await signOut(auth);
+}
