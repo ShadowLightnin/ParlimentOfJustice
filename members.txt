@@ -1,15 +1,231 @@
 Titans: 7
+Spencer McNeil, Azure Briggs, Jared McNeil, Will Cummings, Ben Briggs, Jennifer McNeil, Emma Cummings, Ben
 
 Eclipse: 7
+Myran Webb, Kelsie McNeil, James Canol, Aileen Eduria, TBA, TBA, TBA
 
 Olympians: 76
+C1(Parents):
+1. Todd:
+2. Angela:
+
+Jensen’s:
+3. Savanna:
+4. Lee:
+5. Emily:
+6. Samantha:
+7. Ella:
+
+McNeil’s:
+8. Mary:
+9. Chance:
+10. Ava:
+11. Charlie:
+
+Briggs's:
+12. Heather:
+13. Bobby:
+14. Ammon:
+15. Piper:
+
+Bolander’s:
+16. Annie:
+17. Paul:
+18. McKinley:
+19. Whitney:
+20. Vinson:
+
+S2:
+21. Wesley Stillman:
+22. Melisa Stillman:
+23. Jackson Stillman:
+24. Mason Stillman:
+25. Rylie Stillman:
+26. Sammy Stillman:
+
+S3:
+27. David Stillman:
+28. Isiade Stillman:
+29. Darron Stillman:
+30. Isabel Stillman:
+
+S1:
+31. Gary Stillman:
+32. Sara Stillman:
+• Josh Stillman(one of the oldest cousins): Defender
+• Garden Stillman(one of the oldest cousins): Pharoll
+33. Sophia Stillman:
+34. Paisley Stillman:
+35. Ellie Stillman:
+
+Cummings:
+C3:
+36. Sean:
+37. Heather:
+38. Brett:
+39. Jake:
+40. Ailey:
+41. Aubrey:
+42. James:
+
+C4:
+43. Ryan:
+44. Marin:
+45. Sasha:
+46. Ian:
+47. Riker:
+48. Dakota:
+
+C5:
+49. Laura:
+50. Waine:
+51. Elizabeth:
+52. Christopher:
+53. Tom (Elizabeth’s Husband):
+
+C2:
+54. Brett:
+55. Angie:
+56. Bryce:
+57. Lillie:
+58. Addie:
+
+C6:
+59. Matt:
+60. Jessica:
+61. Kyle:
+62. Mikie:
+63. Daisy:
+64. Rose:
+65. Prairie:
+66. Ryan:
+
+C7:
+67. Chad:
+68. Rachel:
+69. Annabeth:
+70. Levi:
+
+C8:
+71. Troy:
+
+Grandparents:
+Stillman:
+72. Gary:
+73. Jennine:
+
+Cummings:
+74. Sheryl:
+75. Dorthy:
+76. Great Grandma Parker:
 
 Cobros: 18
+Tanner, Wesley, Josh, Jonah, Joseph, Jaden, Jonas, Andrew, Jimmy, Johnathon, Nick, Vanner, Tommy, Alex, Rick, Trent, Robbie, Micheal
 
 Spartans: 3
+Cam, Ben P, Alex C
 
 BludBruhs: 5
+Sam, Joseph, Cole, Tanner, James
+SubTeams in BludBruhs: 2
+Ranger Squad 17, MonkeAlliance
 
 Legionaires: 86
+1. Mason Erickson 
+Davis Clark
+2. Cody Cline
+3. Kinnley Cline
+4. Cassidy Cline 
+5. Jack Smith
+6. Dylan (Male)
+7. Jessica Fisher 
+8. Dustin Edmonds: 
+9. Justin 
+10. Zack
+11. Eli Chase 
+12. Tom Cochran 
+13. Damon (Male) 
+14. Elijah Potter
+15. Ethan Tuffs 
+1. Josh Noble 
+2. Will Knight 
+3. Christian 
+4. John 
+5. Jose 
+6. Matt L 
+7. Anthony
+8. Miles
+9. Cieanna
+10. Natalie
+11. Kanyon
+12. Emily
+13. Jarom 
+14. Avery 
+16. Emily 
+17. Kennedy Carman
+18. Sydney 
+19. Hunter
+20. Cami Webb
+21. Spencer Hill:  
+22. Clayton:
+23. Spencer L:
+24. Malia Holley:
+25. Mika:
+26. Jason:
+27. Allysa:
+28. Josh:
+29. John (1):
+30. John (1):
+31. Abby:
+32. Tagun:
+33. Adam Ledger:
+34. Sam:
+35. Kaden Hanson (1):
+36. Sam Philops:
+37. Carter Olsen:
+38. Issac Philops:
+39. Hayden:
+40. Hayden:
+41. Parker Gold:
+42. Gabe Parker:
+43. Sanford Duncan:   
+44. Lizzy:
+45. Kyle:
+46. Ivan:
+47. Grace:
+48. Kaden Hansen (2):
+49. Kaia:
+50. Erica:
+51. Veronica:
+52. Elizabeth:
+53. Shanna:
+54. Lupa:
+55. Kody:
+56. Nate Greene:
+57. Nick:
+58. Thomas:
+59. Kason:
+60. Bridger:
+61. Abby:
+62. Addie:
+63. Brigdon:
+64. Noah: 
+65. Elsie:
+• Mason:  
+• Emery Clark: 
+• Xzavier:  
+• Quinton:  
+• Quinton C: 
+• Quincy: 
 
 Constollations: 55
+
+
+Chat rooms:
+https://github.com/fireship-io/react-firebase-chat.git
+
+Comment section:
+https://github.com/xplodivity/infinite-nested-comments.git
+
+Smooth transitions:
+https://github.com/braide7/braidenP.git
