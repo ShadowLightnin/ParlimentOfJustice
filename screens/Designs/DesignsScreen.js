@@ -11,9 +11,9 @@ import { useNavigation } from '@react-navigation/native';
 
 // Member Data
 const members = [
-  { name: 'Models', screen: '', clickable: false, position: [1, 0] },
-  { name: 'Video', screen: '', clickable: false, position: [1, 1] },
-  { name: 'Others', screen: '', clickable: false, position: [1, 2] },
+  { name: 'Models', screen: 'ModelsScreen', clickable: true, position: [1, 0] },
+  { name: 'Video', screen: 'VideosScreen', clickable: true, position: [1, 1] },
+  { name: 'Others', screen: 'OthersScreen', clickable: true, position: [1, 2] },
 ];
 
 // Function to check if a position should be empty
