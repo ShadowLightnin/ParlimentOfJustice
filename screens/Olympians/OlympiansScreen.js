@@ -31,7 +31,7 @@ export const OlympiansScreen = () => {
   const navigation = useNavigation();
 
   return (
-    <ImageBackground source={require('../../assets/Kin.jpg')} style={styles.background}>
+    <ImageBackground source={require('../../assets/BackGround/Kin.jpg')} style={styles.background}>
       <SafeAreaView style={styles.container}>
         {/* Header & Back Button */}
         <View style={styles.headerWrapper}>

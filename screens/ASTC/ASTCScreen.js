@@ -25,7 +25,7 @@ export const ASTCScreen = () => {
   const navigation = useNavigation();
 
   return (
-    <ImageBackground source={require('../../assets/26.jpg')} style={styles.background}>
+    <ImageBackground source={require('../../assets/BackGround/26.jpg')} style={styles.background}>
       <SafeAreaView style={styles.container}>
         {/* Header & Back Button */}
         <View style={styles.headerWrapper}>

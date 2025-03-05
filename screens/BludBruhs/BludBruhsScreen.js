@@ -31,7 +31,7 @@ export const BludBruhsScreen = () => {
   const navigation = useNavigation();
 
   return (
-    <ImageBackground source={require('../../assets/bludbruh.jpg')} style={styles.background}>
+    <ImageBackground source={require('../../assets/BackGround/bludbruh.jpg')} style={styles.background}>
       <SafeAreaView style={styles.container}>
         {/* Header & Back Button */}
         <View style={styles.headerWrapper}>

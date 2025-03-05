@@ -31,7 +31,7 @@ export const TitansScreen = () => {
   const navigation = useNavigation();
 
   return (
-    <ImageBackground source={require('../../assets/Titans.jpg')} style={styles.background}>
+    <ImageBackground source={require('../../assets/BackGround/Titans.jpg')} style={styles.background}>
       <SafeAreaView style={styles.container}>
         {/* Header & Back Button */}
         <View style={styles.headerWrapper}>

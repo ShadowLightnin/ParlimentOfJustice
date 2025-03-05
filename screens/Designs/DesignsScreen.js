@@ -27,7 +27,7 @@ export const DesignsScreen = () => {
   const navigation = useNavigation();
 
   return (
-    <ImageBackground source={require('../../assets/donut_hologram.png')} style={styles.background}>
+    <ImageBackground source={require('../../assets/BackGround/donut_hologram.png')} style={styles.background}>
       <SafeAreaView style={styles.container}>
         {/* Header & Back Button */}
         <View style={styles.headerWrapper}>

@@ -3,7 +3,7 @@ import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Alert } fr
 import { useNavigation } from "@react-navigation/native";
 import { auth, db } from "../../api/firebaseConfig";
 import { collection, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
-import { preloadedImages } from "../../assets/preloadedImages"; // Import preloaded images
+import { preloadedImages } from "../../HardCoded/preloadedImages"; // Import preloaded images
 
 const ModelsScreen = () => {
   const navigation = useNavigation();
