@@ -1,6 +1,9 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { auth } from "./api/firebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
+
 import { StartScreen } from './screens/StartScreen';
 import { HomeScreen } from './screens/HomeScreen';
 import { TitansStack } from './navigation/TitansStack';
@@ -12,15 +15,35 @@ import { BludBruhsStack } from './navigation/BludBruhsStack';
 import { LegionairesStack } from './navigation/LegionairesStack';
 import { ConstollationStack } from './navigation/ConstollationStack';
 import { DesignsStack } from './navigation/DesignsStack';
+import { AdminStack } from "./navigation/AdminStack";
+import SignupScreen from "./screens/SignupScreen";
+import LoginScreen from "./screens/LoginScreen";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [user, setUser] = React.useState(null);
+
+  React.useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
+
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {user ? (
+          <>
         <Stack.Screen name="Start" component={StartScreen} />
+        </>
+        ) : (
+          <>
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Signup" component={SignupScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Admin" component={AdminStack} />
         <Stack.Screen name="Titans" component={TitansStack} />
         <Stack.Screen name="Eclipse" component={EclipseStack} />
         <Stack.Screen name="Olympians" component={OlympiansStack} />
@@ -30,6 +53,8 @@ export default function App() {
         <Stack.Screen name="Legionaires" component={LegionairesStack} />
         <Stack.Screen name="Constollation" component={ConstollationStack} />
         <Stack.Screen name="Designs" component={DesignsStack} /> 
+        </>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );
