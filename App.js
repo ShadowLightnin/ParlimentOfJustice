@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { auth } from "./api/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
+import { StatusBar } from 'expo-status-bar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import AuthContextProvider, { AuthContext } from './context/auth-context';
 
 import { StartScreen } from './screens/StartScreen';
 import { HomeScreen } from './screens/HomeScreen';
@@ -18,31 +21,27 @@ import { DesignsStack } from './navigation/DesignsStack';
 import { AdminStack } from "./navigation/AdminStack";
 import SignupScreen from "./screens/SignupScreen";
 import LoginScreen from "./screens/LoginScreen";
+import PublicChatScreen from "./screens/Chat/PublicChatScreen";
 
 const Stack = createNativeStackNavigator();
 
-export default function App() {
-  const [user, setUser] = React.useState(null);
-
-  React.useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-    });
-    return () => unsubscribe();
-  }, []);
-
+function AuthStack() {
   return (
-    <NavigationContainer>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Start" component={StartScreen} />
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Signup" component={SignupScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function AuthenticatedStack() {
+  const authCtx = useContext(AuthContext);
+  return (
+    // <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {user ? (
-          <>
-        <Stack.Screen name="Start" component={StartScreen} />
-        </>
-        ) : (
-          <>
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Signup" component={SignupScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="PublicChat" component={PublicChatScreen} />
         <Stack.Screen name="Admin" component={AdminStack} />
         <Stack.Screen name="Titans" component={TitansStack} />
         <Stack.Screen name="Eclipse" component={EclipseStack} />
@@ -53,10 +52,8 @@ export default function App() {
         <Stack.Screen name="Legionaires" component={LegionairesStack} />
         <Stack.Screen name="Constollation" component={ConstollationStack} />
         <Stack.Screen name="Designs" component={DesignsStack} /> 
-        </>
-        )}
       </Stack.Navigator>
-    </NavigationContainer>
+    // </NavigationContainer>
   );
 }
 
@@ -71,6 +68,51 @@ const FactionScreen = ({ route }) => {
 };
 // initialParams={{ title: "Designs" }} for the FactionScreen ie:
 // <Stack.Screen name="Designs" component={DesignsStack} initialParams={{ title: "Designs" }} />
+
+function Navigation() {
+  const authCtx = useContext(AuthContext);
+
+  return (
+    <NavigationContainer>
+      {!authCtx.isAuthenticated && <AuthStack />}
+      {authCtx.isAuthenticated && <AuthenticatedStack />}
+    </NavigationContainer>
+  );
+}
+
+function Root() {
+  const [isTryingLogin, setIsTryingLogin] = useState(true);
+
+  const authCtx = useContext(AuthContext);
+
+  useEffect(() => {
+    async function fetchToken() {
+      const storedToken = await AsyncStorage.getItem('token');
+
+      if (storedToken) {
+        authCtx.authenticate(storedToken);
+      }
+
+      setIsTryingLogin(false);
+    }
+
+    fetchToken();
+  }, []);
+
+  return <Navigation />;
+}
+
+export default function App() {
+  
+  return (
+    <>
+      <StatusBar style="light" />
+      <AuthContextProvider>
+        <Root />
+      </AuthContextProvider>
+    </>
+  );
+}
 
 const styles = {
   container: {

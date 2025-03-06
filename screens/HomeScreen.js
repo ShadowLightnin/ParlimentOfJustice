@@ -1,13 +1,17 @@
-import React from 'react';
-import { View, Text, ImageBackground, TouchableOpacity, StyleSheet, FlatList, useWindowDimensions, Animated } from 'react-native';
+import React, { useRef, useEffect } from 'react';
+import { 
+  View, Text, ImageBackground, TouchableOpacity, StyleSheet, FlatList, 
+  useWindowDimensions, Animated, Alert 
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useScreenOrientation } from 'expo-screen-orientation';
+import { signOut } from 'firebase/auth';
+import { auth } from '../api/firebaseConfig'; // Import Firebase Auth
 
 const factions = [
   { name: 'The Titans', screen: 'Titans', clickable: true, image: require('../assets/BackGround/Titans.jpg') },
   { name: 'The Eclipse', screen: 'Eclipse', clickable: true, image: require('../assets/BackGround/Enforcers.jpg') },
   { name: 'Olympians', screen: 'Olympians', clickable: true, image: require('../assets/BackGround/Kin.jpg') },
-  { name: 'Cobros', screen: '', clickable: true, image: require('../assets/BackGround/Cobros.jpg') },
+  { name: 'Cobros', screen: 'Cobros', clickable: true, image: require('../assets/BackGround/Cobros.jpg') },
   { name: 'ASTC (Spartans)', screen: 'ASTC', clickable: true, image: require('../assets/BackGround/26.jpg') },
   { name: 'BludBruhs', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/bludbruh.jpg') },
   { name: 'Legionaires', screen: 'Legionaires', clickable: true, image: require('../assets/BackGround/League.jpg') },
@@ -18,12 +22,10 @@ const factions = [
 export const HomeScreen = () => {
   const navigation = useNavigation();
   const { width } = useWindowDimensions();
-  const numColumns = width > 600 ? 3 : 2; // Use 3 columns if screen width > 600px, otherwise 2 columns
+  const numColumns = width > 600 ? 3 : 2; // Use 3 columns if screen width > 600px, otherwise 2
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
-  // Smooth layout transition animation
-  const fadeAnim = React.useRef(new Animated.Value(0)).current;
-
-  React.useEffect(() => {
+  useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 400, // Smooth transition
@@ -31,10 +33,25 @@ export const HomeScreen = () => {
     }).start();
   }, [numColumns]);
 
+  // Logout function
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigation.replace('Login'); // Redirect to Start screen after logout
+    } catch (error) {
+      Alert.alert('Logout Failed', error.message);
+    }
+  };
+
+  // Navigate to Chat Screen
+  const goToChat = () => {
+    navigation.navigate('PublicChat'); // Ensure 'Chat' screen is registered in App.js
+  };
+
   const renderFaction = ({ item }) => (
     <Animated.View style={{ opacity: fadeAnim }}>
       <TouchableOpacity
-        style={[styles.card, { width: width / numColumns - 30 }, !item.clickable && styles.disabledCard]} // Adjust width dynamically
+        style={[styles.card, { width: width / numColumns - 30 }, !item.clickable && styles.disabledCard]}
         onPress={() => item.clickable && navigation.navigate(item.screen)}
         disabled={!item.clickable}
       >
@@ -49,12 +66,23 @@ export const HomeScreen = () => {
   return (
     <ImageBackground source={require('../assets/BackGround/superhero.jpg')} style={styles.background}>
       <View style={styles.container}>
-        <Text style={styles.header}>The Parliament of Justice</Text>
+        {/* Header and Buttons */}
+        <View style={styles.topBar}>
+          <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
+            <Text style={styles.chatText}>🗨️</Text>
+          </TouchableOpacity>
+          <Text style={styles.header}>The Parliament of Justice</Text>
+          <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+            <Text style={styles.logoutText}>🚪</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Factions List */}
         <FlatList
           data={factions}
           keyExtractor={(item) => item.name}
           renderItem={renderFaction}
-          numColumns={numColumns} // Dynamically change column count
+          numColumns={numColumns}
           contentContainerStyle={styles.listContainer}
         />
       </View>
@@ -72,16 +100,22 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     padding: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)', // Dark overlay
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+  },
+  topBar: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+    paddingHorizontal: 10,
   },
   header: {
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#fff',
     textShadowColor: '#00b3ff',
-    textShadowRadius: 15,
-    marginBottom: 20,
-    textAlign: 'center',
+    textShadowRadius: 10,
   },
   listContainer: {
     alignItems: 'center',
@@ -89,7 +123,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   card: {
-    aspectRatio: 1.3, // Keeps all cards proportionate
+    aspectRatio: 1.3,
     margin: 10,
     borderRadius: 10,
     overflow: 'hidden',
@@ -103,7 +137,7 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   imageOverlay: {
-    opacity: 0.9, // Darkened background image effect
+    opacity: 0.9,
   },
   factionName: {
     fontSize: 18,
@@ -120,5 +154,21 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#ff4444',
     marginTop: 5,
+  },
+  chatButton: {
+    padding: 10,
+    borderRadius: 8,
+  },
+  chatText: {
+    fontSize: 22,
+    color: "white",
+  },
+  logoutButton: {
+    padding: 10,
+    borderRadius: 8,
+  },
+  logoutText: {
+    fontSize: 22,
+    color: "white",
   },
 });

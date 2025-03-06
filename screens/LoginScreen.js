@@ -1,35 +1,35 @@
-import { useState } from "react";
-import { View, TextInput, Button, Text } from "react-native";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../api/firebaseConfig";
+import { useContext, useState } from 'react';
+import { Alert } from 'react-native';
 
-export default function LoginScreen({ navigation }) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+import AuthContent from '../components/Auth/AuthContent';
+import LoadingOverlay from '../components/ui/LoadingOverlay';
+import { AuthContext } from '../context/auth-context';
+import { login } from '../util/auth';
 
-  const handleLogin = async () => {
+function LoginScreen() {
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+
+  const authCtx = useContext(AuthContext);
+
+  async function loginHandler({ email, password }) {
+    setIsAuthenticating(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigation.navigate("Home");
-    } catch (err) {
-      setError(err.message);
+      const token = await login(email, password);
+      authCtx.authenticate(token);
+    } catch (error) {
+      Alert.alert(
+        'Authentication failed!',
+        'Could not log you in. Please check your credentials or try again later!'
+      );
+      setIsAuthenticating(false);
     }
-  };
+  }
 
-  return (
-    <View>
-      <Text>Login</Text>
-      {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
-      <TextInput placeholder="Email" value={email} onChangeText={setEmail} />
-      <TextInput
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <Button title="Login" onPress={handleLogin} />
-      <Button title="Sign Up" onPress={() => navigation.navigate("Signup")} />
-    </View>
-  );
+  if (isAuthenticating) {
+    return <LoadingOverlay message="Logging you in..." />;
+  }
+
+  return <AuthContent isLogin onAuthenticate={loginHandler} />;
 }
+
+export default LoginScreen;

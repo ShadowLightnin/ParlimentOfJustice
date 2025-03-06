@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://parlimentofjustice-7c2b9-default-rtdb.firebaseio.com/users.json';
+const BASE_URL = 'https://parlimentofjustice-7c2b9-default-rtdb.firebaseio.com/users';
 
 export const addUser = async (userData) => {
   try {

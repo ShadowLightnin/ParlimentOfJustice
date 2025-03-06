@@ -37,7 +37,7 @@ export const StartScreen = () => {
 
   // Tap anywhere to go to Home
   const handlePress = () => {
-    navigation.replace('Home');
+    navigation.replace('Login');
   };
 
   return (
