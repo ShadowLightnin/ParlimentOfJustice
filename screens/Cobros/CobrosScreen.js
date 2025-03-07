@@ -18,7 +18,27 @@ const members = [
   { name: '', codename: '', screen: '', clickable: false, position: [1, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
   { name: 'TBA', codename: '???', screen: '', clickable: false, position: [1, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
   { name: '', codename: '', screen: '', clickable: false, position: [2, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: '', codename: '', screen: '', clickable: false, position: [2, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
   { name: 'TBA', codename: '???', screen: '', clickable: false, position: [2, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: '', codename: '', screen: '', clickable: false, position: [3, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: '', codename: '', screen: '', clickable: false, position: [3, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'TBA', codename: '???', screen: '', clickable: false, position: [3, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: '', codename: '', screen: '', clickable: false, position: [4, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: '', codename: '', screen: '', clickable: false, position: [4, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'TBA', codename: '???', screen: '', clickable: false, position: [4, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: '', codename: '', screen: '', clickable: false, position: [5, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: '', codename: '', screen: '', clickable: false, position: [5, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'TBA', codename: '???', screen: '', clickable: false, position: [5, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: '', codename: '', screen: '', clickable: false, position: [6, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: '', codename: '', screen: '', clickable: false, position: [6, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'TBA', codename: '???', screen: '', clickable: false, position: [6, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: '', codename: '', screen: '', clickable: false, position: [7, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: '', codename: '', screen: '', clickable: false, position: [7, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'TBA', codename: '???', screen: '', clickable: false, position: [7, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: '', codename: '', screen: '', clickable: false, position: [8, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: '', codename: '', screen: '', clickable: false, position: [8, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'TBA', codename: '???', screen: '', clickable: false, position: [8, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+
 ];
 
 // Function to check if a position should be empty
@@ -44,7 +64,7 @@ export const CobrosScreen = () => {
 
         {/* Grid Layout */}
         <View style={styles.grid}>
-          {[0, 1, 2].map((row) => (
+          {[0, 1, 2, 3, 4, 5, 6, 7].map((row) => (
             <View key={row} style={styles.row}>
               {[0, 1, 2].map((col) => {
                 if (isEmpty(row, col)) {
