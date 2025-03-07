@@ -3,21 +3,22 @@ import {
   View,
   Text,
   ImageBackground,
+  Image,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView
+  SafeAreaView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 // Member Data
 const members = [
-  { name: 'TBA', codename: '???', screen: '', clickable: false, position: [0, 0] },
-  { name: 'James', codename: 'Gentle Guardian', screen: 'James', clickable: false, position: [0, 2] },
-  { name: 'Kelsie', codename: 'Shutter Dancer', screen: 'Kelsie', clickable: false, position: [1, 0] },
-  { name: 'Aileen', codename: 'Ariata', screen: 'Aileen', clickable: false, position: [1, 1] },
-  { name: 'TBA', codename: '???', screen: '', clickable: false, position: [1, 2] },
-  { name: 'Myran', codename: 'Techno Sentinel', screen: 'Myran', clickable: false, position: [2, 0] },
-  { name: 'TBA', codename: '???', screen: '', clickable: false, position: [2, 2] },
+  { name: 'TBA', codename: '???', screen: '', clickable: false, position: [0, 0], image: require('../../assets/img/DefaultPlaceholder.jpg') },
+  { name: 'James', codename: 'Gentle Guardian', screen: 'James', clickable: false, position: [0, 2], image: require('../../assets/img/DefaultPlaceholder.jpg') },
+  { name: 'Kelsie', codename: 'Shutter Dancer', screen: 'Kelsie', clickable: false, position: [1, 0], image: require('../../assets/img/DefaultPlaceholder.jpg') },
+  { name: 'Aileen', codename: 'Ariata', screen: 'Aileen', clickable: false, position: [1, 1], image: require('../../assets/img/AriataPlaceHolder.jpg') },
+  { name: 'TBA', codename: '???', screen: '', clickable: false, position: [1, 2], image: require('../../assets/img/DefaultPlaceholder.jpg') },
+  { name: 'Myran', codename: 'Techno Sentinel', screen: 'Myran', clickable: false, position: [2, 0], image: require('../../assets/img/DefaultPlaceholder.jpg') },
+  { name: 'TBA', codename: '???', screen: '', clickable: false, position: [2, 2], image: require('../../assets/img/DefaultPlaceholder.jpg') },
 ];
 
 // Function to check if a position should be empty
@@ -41,6 +42,7 @@ export const EclipseScreen = () => {
           <Text style={styles.header}>The Eclipse</Text>
         </View>
 
+
         {/* Grid Layout */}
         <View style={styles.grid}>
           {[0, 1, 2].map((row) => (
@@ -58,11 +60,15 @@ export const EclipseScreen = () => {
                     onPress={() => member?.clickable && navigation.navigate(member.screen)}
                     disabled={!member?.clickable}
                   >
+                    {/* Character Image */}
+                    {member?.image && <Image source={member.image} style={styles.characterImage} />}
+
+                    {/* Name & Codename */}
                     <Text style={styles.name}>{member?.name || ''}</Text>
                     <Text style={styles.codename}>{member?.codename || ''}</Text>
-                    {!member?.clickable && (
-                      <Text style={styles.disabledText}>Not Clickable at the moment</Text>
-                    )}
+
+                    {/* Disabled Text */}
+                    {!member?.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
                   </TouchableOpacity>
                 );
               })}
@@ -89,9 +95,9 @@ const styles = StyleSheet.create({
   headerWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between', // Ensures back button and title are aligned
     width: '100%',
-    marginTop: 50, // Prevents notch overlap
+    marginTop: 50, // Moves header and back button down (avoids notch/camera)
     paddingHorizontal: 20,
     marginBottom: 20,
   },
@@ -130,7 +136,7 @@ const styles = StyleSheet.create({
   },
   card: {
     width: 100,
-    height: 140,
+    height: 160,
     margin: 10,
     backgroundColor: '#1c1c1c',
     justifyContent: 'center',
@@ -142,11 +148,19 @@ const styles = StyleSheet.create({
     elevation: 5,
     padding: 5,
   },
+  characterImage: {
+    width: '100%',
+    height: 100,
+    resizeMode: 'cover',
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+  },
   name: {
     fontSize: 12,
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
+    marginTop: 5,
   },
   codename: {
     fontSize: 10,

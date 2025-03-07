@@ -3,21 +3,22 @@ import {
   View,
   Text,
   ImageBackground,
+  Image,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView
+  SafeAreaView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-// Member Data
+// Member Data (Supports Images)
 const members = [
-  { name: 'Spencer McNeil', codename: 'The Annihilator', screen: 'Spencer', clickable: false, position: [0, 0] },
-  { name: 'Azure Briggs', codename: 'Mediateir', screen: 'Azure', clickable: false, position: [0, 2] },
-  { name: 'Jared McNeil', codename: 'Spector', screen: 'Jared', clickable: false, position: [1, 0] },
-  { name: 'Will Cummings', codename: 'Night Hawk', screen: 'Will', clickable: false, position: [1, 1] },
-  { name: 'Ben Briggs', codename: 'Mendeir', screen: 'Ben', clickable: false, position: [1, 2] },
-  { name: 'Jennifer McNeil', codename: 'Kintsugi', screen: 'Jennifer', clickable: false, position: [2, 0] },
-  { name: 'Emma Cummings', codename: 'Kintsunera', screen: 'Emma', clickable: false, position: [2, 2] },
+  { name: 'Spencer McNeil', codename: 'The Annihilator', screen: 'Spencer', clickable: false, position: [0, 0], image: require('../../assets/img/DefaultPlaceholder.jpg') },
+  { name: 'Azure Briggs', codename: 'Mediateir', screen: 'Azure', clickable: false, position: [0, 2], image: require('../../assets/img/DefaultPlaceholder.jpg') },
+  { name: 'Jared McNeil', codename: 'Spector', screen: 'Jared', clickable: false, position: [1, 0], image: require('../../assets/img/DefaultPlaceholder.jpg') },
+  { name: 'Will Cummings', codename: 'Night Hawk', screen: 'Will', clickable: false, position: [1, 1], image: require('../../assets/img/NightHawkPlaceHolder.jpg') },
+  { name: 'Ben Briggs', codename: 'Mendeir', screen: 'Ben', clickable: false, position: [1, 2], image: require('../../assets/img/DefaultPlaceholder.jpg') },
+  { name: 'Jennifer McNeil', codename: 'Kintsugi', screen: 'Jennifer', clickable: false, position: [2, 0], image: require('../../assets/img/DefaultPlaceholder.jpg') },
+  { name: 'Emma Cummings', codename: 'Kintsunera', screen: 'Emma', clickable: false, position: [2, 2], image: require('../../assets/img/DefaultPlaceholder.jpg') },
 ];
 
 // Function to check if a position should be empty
@@ -58,11 +59,15 @@ export const TitansScreen = () => {
                     onPress={() => member?.clickable && navigation.navigate(member.screen)}
                     disabled={!member?.clickable}
                   >
+                    {/* Character Image */}
+                    {member?.image && <Image source={member.image} style={styles.characterImage} />}
+
+                    {/* Name & Codename */}
                     <Text style={styles.name}>{member?.name || ''}</Text>
                     <Text style={styles.codename}>{member?.codename || ''}</Text>
-                    {!member?.clickable && (
-                      <Text style={styles.disabledText}>Not Clickable at the moment</Text>
-                    )}
+
+                    {/* Disabled Text */}
+                    {!member?.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
                   </TouchableOpacity>
                 );
               })}
@@ -130,7 +135,7 @@ const styles = StyleSheet.create({
   },
   card: {
     width: 100,
-    height: 140,
+    height: 160,
     margin: 10,
     backgroundColor: '#1c1c1c',
     justifyContent: 'center',
@@ -142,11 +147,19 @@ const styles = StyleSheet.create({
     elevation: 5,
     padding: 5,
   },
+  characterImage: {
+    width: '100%',
+    height: 100,
+    resizeMode: 'cover',
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+  },
   name: {
     fontSize: 12,
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
+    marginTop: 5,
   },
   codename: {
     fontSize: 10,
@@ -165,3 +178,5 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
 });
+
+export default TitansScreen;
