@@ -75,7 +75,11 @@ const olympiansMembers = [
     { name: '', codename: '', screen: '', clickable: false, position: [25, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
     { name: '', codename: '', screen: '', clickable: false, position: [25, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
     { name: 'TBA', codename: '???', screen: '', clickable: false, position: [25, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [26, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+    { name: '78', codename: '', screen: '', clickable: false, position: [26, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+    { name: '79', codename: '', screen: '', clickable: false, position: [26, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [26, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+    { name: '80', codename: '', screen: '', clickable: false, position: [27, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+    { name: '81', codename: '', screen: '', clickable: false, position: [27, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
   ];
   
   export default olympiansMembers;
