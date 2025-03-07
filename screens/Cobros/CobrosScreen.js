@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
+  ScrollView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
@@ -63,7 +64,7 @@ export const CobrosScreen = () => {
         </View>
 
         {/* Grid Layout */}
-        <View style={styles.grid}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
           {[0, 1, 2, 3, 4, 5, 6, 7].map((row) => (
             <View key={row} style={styles.row}>
               {[0, 1, 2].map((col) => {
@@ -93,7 +94,7 @@ export const CobrosScreen = () => {
               })}
             </View>
           ))}
-        </View>
+        </ScrollView>
       </SafeAreaView>
     </ImageBackground>
   );
