@@ -12,11 +12,11 @@ import { useNavigation } from '@react-navigation/native';
 
 // Member Data
 const members = [
-  { name: 'Sam', codename: 'Void Walker', screen: '', clickable: false, position: [0, 0] },
-  { name: 'James', codename: '', screen: '', clickable: false, position: [0, 2] },
-  { name: 'Cole', codename: '', screen: '', clickable: false, position: [1, 0] },
-  { name: 'Joseph', codename: '', screen: '', clickable: false, position: [1, 1] },
-  { name: 'Tanner', codename: '', screen: '', clickable: false, position: [1, 2] },
+  { name: 'Sam', codename: 'Void Walker', screen: '', clickable: false, position: [0, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'James', codename: '', screen: '', clickable: false, position: [0, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'Cole', codename: '', screen: '', clickable: false, position: [1, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'Joseph', codename: '', screen: '', clickable: false, position: [1, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'Tanner', codename: '', screen: '', clickable: false, position: [1, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
   { name: 'Ranger Squad', codename: '', screen: '', clickable: false, position: [2, 0] },
   { name: 'MonkeAlliance', codename: '', screen: '', clickable: false, position: [2, 2] },
 ];

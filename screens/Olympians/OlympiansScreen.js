@@ -37,9 +37,9 @@ export const OlympiansScreen = () => {
 
         {/* ✅ Added ScrollView for scrolling */}
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <View style={styles.grid}>
-            {[0, 1, 2, 3, 4, 5, 6, 7, 8].map((row) => (
-              <View key={row} style={styles.row}>
+        <View style={styles.grid}>
+          {Array.from({ length: 26 }, (_, row) => row).map((row) => (
+            <View key={row} style={styles.row}>
                 {[0, 1, 2].map((col) => {
                   if (isEmpty(row, col)) {
                     return <View key={col} style={styles.emptyCell} />;

@@ -12,13 +12,13 @@ import { useNavigation } from '@react-navigation/native';
 
 // Member Data
 const members = [
-  { name: 'TBA', codename: '???', screen: '', clickable: false, position: [0, 0] },
-  { name: '', codename: '', screen: '', clickable: false, position: [0, 2] },
-  { name: '', codename: '', screen: '', clickable: false, position: [1, 0] },
-  { name: '', codename: '', screen: '', clickable: false, position: [1, 1] },
-  { name: 'TBA', codename: '???', screen: '', clickable: false, position: [1, 2] },
-  { name: '', codename: '', screen: '', clickable: false, position: [2, 0] },
-  { name: 'TBA', codename: '???', screen: '', clickable: false, position: [2, 2] },
+  { name: 'TBA', codename: '???', screen: '', clickable: false, position: [0, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: '', codename: '', screen: '', clickable: false, position: [0, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: '', codename: '', screen: '', clickable: false, position: [1, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: '', codename: '', screen: '', clickable: false, position: [1, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'TBA', codename: '???', screen: '', clickable: false, position: [1, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: '', codename: '', screen: '', clickable: false, position: [2, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'TBA', codename: '???', screen: '', clickable: false, position: [2, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
 ];
 
 // Function to check if a position should be empty
