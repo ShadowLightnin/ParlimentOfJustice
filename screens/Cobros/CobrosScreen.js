@@ -3,9 +3,10 @@ import {
   View,
   Text,
   ImageBackground,
+  Image,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView
+  SafeAreaView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
@@ -43,7 +44,7 @@ export const CobrosScreen = () => {
 
         {/* Grid Layout */}
         <View style={styles.grid}>
-          {[0, 1, 2, 3, 4, 5, 6].map((row) => (
+          {[0, 1, 2].map((row) => (
             <View key={row} style={styles.row}>
               {[0, 1, 2].map((col) => {
                 if (isEmpty(row, col)) {
@@ -58,11 +59,15 @@ export const CobrosScreen = () => {
                     onPress={() => member?.clickable && navigation.navigate(member.screen)}
                     disabled={!member?.clickable}
                   >
+                    {/* Character Image */}
+                    {member?.image && <Image source={member.image} style={styles.characterImage} />}
+
+                    {/* Name & Codename */}
                     <Text style={styles.name}>{member?.name || ''}</Text>
                     <Text style={styles.codename}>{member?.codename || ''}</Text>
-                    {!member?.clickable && (
-                      <Text style={styles.disabledText}>Not Clickable at the moment</Text>
-                    )}
+
+                    {/* Disabled Text */}
+                    {!member?.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
                   </TouchableOpacity>
                 );
               })}
@@ -89,9 +94,9 @@ const styles = StyleSheet.create({
   headerWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between', // Ensures back button and title are aligned
     width: '100%',
-    marginTop: 50, // Prevents notch overlap
+    marginTop: 50, // Moves header and back button down (avoids notch/camera)
     paddingHorizontal: 20,
     marginBottom: 20,
   },
@@ -130,7 +135,7 @@ const styles = StyleSheet.create({
   },
   card: {
     width: 100,
-    height: 140,
+    height: 160,
     margin: 10,
     backgroundColor: '#1c1c1c',
     justifyContent: 'center',
@@ -142,11 +147,19 @@ const styles = StyleSheet.create({
     elevation: 5,
     padding: 5,
   },
+  characterImage: {
+    width: '100%',
+    height: 100,
+    resizeMode: 'cover',
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+  },
   name: {
     fontSize: 12,
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
+    marginTop: 5,
   },
   codename: {
     fontSize: 10,
