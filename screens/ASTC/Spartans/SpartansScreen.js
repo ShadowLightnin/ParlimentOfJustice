@@ -12,9 +12,9 @@ import { useNavigation } from '@react-navigation/native';
 
 // Member Data
 const members = [
-  { name: 'Came', codename: '', screen: '', clickable: false, position: [1, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-  { name: 'Ben', codename: '', screen: '', clickable: false, position: [1, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-  { name: 'Alex', codename: '', screen: '', clickable: false, position: [1, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'Came', codename: '', screen: '', clickable: false, position: [1, 0], image: require('../../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'Ben', codename: '', screen: '', clickable: false, position: [1, 1], image: require('../../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'Alex', codename: '', screen: '', clickable: false, position: [1, 2], image: require('../../../assets/Armor/DefaultPlaceholder.jpg') },
 ];
 
 // Function to check if a position should be empty
@@ -28,7 +28,7 @@ export const SpartansScreen = () => {
   const navigation = useNavigation();
 
   return (
-    <ImageBackground source={require('../../assets/26.jpg')} style={styles.background}>
+    <ImageBackground source={require('../../../assets/BackGround/26.jpg')} style={styles.background}>
       <SafeAreaView style={styles.container}>
         {/* Header & Back Button */}
         <View style={styles.headerWrapper}>
