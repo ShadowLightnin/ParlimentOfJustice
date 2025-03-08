@@ -75,7 +75,7 @@ const LegionairesMembers = [
     { name: '', codename: '', screen: '', clickable: false, position: [25, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
     { name: '', codename: '', screen: '', clickable: false, position: [25, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
     { name: 'TBA', codename: '???', screen: '', clickable: false, position: [25, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [26, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+    { name: '77', codename: '', screen: '', clickable: false, position: [26, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
 
   ];
   

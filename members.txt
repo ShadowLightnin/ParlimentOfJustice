@@ -148,31 +148,31 @@ SubTeams in BludBruhs: 2
 Ranger Squad 17, MonkeAlliance
 
 Legionaires: 86
-1. Mason Erickson 
-Davis Clark
-2. Cody Cline
-3. Kinnley Cline
-4. Cassidy Cline 
-5. Jack Smith
-6. Dylan (Male)
-7. Jessica Fisher 
-8. Dustin Edmonds: 
-9. Justin 
+1.. Mason Erickson 
+1.. Davis Clark
+2.. Cody Cline
+3.. Kinnley Cline
+4.. Cassidy Cline 
+5.. Jack Smith
+6.. Dylan (Male)
+7.. Jessica Fisher 
+8.. Dustin Edmonds: 
+9.. Justin 
 10. Zack
 11. Eli Chase 
 12. Tom Cochran 
 13. Damon (Male) 
 14. Elijah Potter
 15. Ethan Tuffs 
-1. Josh Noble 
-2. Will Knight 
-3. Christian 
-4. John 
-5. Jose 
-6. Matt L 
-7. Anthony
-8. Miles
-9. Cieanna
+10. Josh Noble 
+20. Will Knight 
+30. Christian 
+40. John 
+50. Jose 
+60. Matt L 
+70. Anthony
+80. Miles
+90. Cieanna
 10. Natalie
 11. Kanyon
 12. Emily
@@ -228,12 +228,12 @@ Davis Clark
 63. Brigdon:
 64. Noah: 
 65. Elsie:
-• Mason:  
-• Emery Clark: 
-• Xzavier:  
-• Quinton:  
-• Quinton C: 
-• Quincy: 
+66. Mason:  
+66. Emery Clark: 
+66. Xzavier:  
+66. Quinton:  
+66. Quinton C: 
+66. Quincy: 
 
 Constollations: 55
 (Teachers, Leaders, peers, influencers)
