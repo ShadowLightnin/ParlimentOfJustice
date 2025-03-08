@@ -67,7 +67,7 @@ const FactionScreen = ({ route }) => {
   );
 };
 // initialParams={{ title: "Designs" }} for the FactionScreen ie:
-// <Stack.Screen name="Designs" component={DesignsStack} initialParams={{ title: "Designs" }} />
+// <Stack.Screen name="Designs" component={FactionScreen} initialParams={{ title: "Designs" }} />
 
 function Navigation() {
   const authCtx = useContext(AuthContext);
