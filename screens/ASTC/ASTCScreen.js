@@ -91,7 +91,7 @@ export const ASTCScreen = () => {
       Animated.timing(topPosition, { toValue: 400, duration: 1500, useNativeDriver: false }),
 
       // Transition to SpartanScreen
-    ]).start(() => navigation.navigate('SpartanScreen'));
+    ]).start(() => navigation.navigate('SpartansScreen'));
   };
 
   return (
