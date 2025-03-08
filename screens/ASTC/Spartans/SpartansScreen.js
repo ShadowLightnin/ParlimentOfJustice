@@ -12,9 +12,9 @@ import { useNavigation } from '@react-navigation/native';
 
 // Member Data
 const members = [
-  { name: 'Came', codename: '', screen: '', clickable: false, position: [1, 0], image: require('../../../assets/Armor/DefaultPlaceholder.jpg') },
-  { name: 'Ben', codename: '', screen: '', clickable: false, position: [1, 1], image: require('../../../assets/Armor/DefaultPlaceholder.jpg') },
-  { name: 'Alex', codename: '', screen: '', clickable: false, position: [1, 2], image: require('../../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'Cam', codename: '', screen: '', clickable: false, position: [1, 0], image: require('../../../assets/Armor/CamPlaceHolder.jpg') },
+  { name: 'Ben', codename: '', screen: '', clickable: false, position: [1, 1], image: require('../../../assets/Armor/BenpPlaceHolder.jpg') },
+  { name: 'Alex', codename: '', screen: '', clickable: false, position: [1, 2], image: require('../../../assets/Armor/AlexPlaceHolder.jpg') },
 ];
 
 // Function to check if a position should be empty
