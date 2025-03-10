@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import ChatRoom from "../../components/ChatRoom";
 
-const PublicChatScreen = () => {
+const TeamChatScreen = () => {
   const navigation = useNavigation();
 
   return (
@@ -13,7 +13,7 @@ const PublicChatScreen = () => {
         <Text style={styles.header}>Team Chat</Text>
       </TouchableOpacity>
 
-      <ChatRoom chatId="PublicChat" />
+      <ChatRoom chatId="TeamChat" />
     </View>
   );
 };

@@ -31,6 +31,11 @@ const getMemberAtPosition = (row, col) =>
 export const TitansScreen = () => {
   const navigation = useNavigation();
 
+    // Navigate to Chat Screen
+    const goToChat = () => {
+      navigation.navigate('TeamChat'); // Ensure 'Chat' screen is registered in App.js
+    };
+
   return (
     <ImageBackground source={require('../../assets/BackGround/Titans.jpg')} style={styles.background}>
       <SafeAreaView style={styles.container}>
@@ -40,6 +45,9 @@ export const TitansScreen = () => {
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
           <Text style={styles.header}>The Titans</Text>
+          <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
+            <Text style={styles.chatText}>🛡️</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Grid Layout */}
