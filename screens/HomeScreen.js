@@ -37,7 +37,7 @@ export const HomeScreen = () => {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      navigation.replace('Login'); // Redirect to Start screen after logout
+      navigation.replace('Start'); // Redirect to Start screen after logout
     } catch (error) {
       Alert.alert('Logout Failed', error.message);
     }

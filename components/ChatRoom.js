@@ -1,31 +1,49 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"; // ✅ Ensure React hooks are imported
 import { View, Text, TextInput, Button, ScrollView, StyleSheet } from "react-native";
-import { database, auth } from "../api/firebaseConfig";
-import { ref, push, onValue } from "firebase/database";
+import { db, auth } from "../api/firebaseConfig";
+import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
-const ChatRoom = ({ chatId }) => {
+const ChatRoom = ({ chatId }) => {  // ✅ Hooks must be inside a function component!
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const [user, setUser] = useState(null);  // ✅ Ensure `user` is a state variable
 
   useEffect(() => {
-    const messagesRef = ref(database, `chats/${chatId}/messages`);
-    onValue(messagesRef, (snapshot) => {
-      if (snapshot.exists()) {
-        setMessages(Object.values(snapshot.val()));
-      } else {
-        setMessages([]);
-      }
+    // ✅ Correctly use useEffect inside the functional component
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+      setUser(user);
     });
-  }, [chatId]);
+
+    return () => unsubscribeAuth();
+  }, []);
+
+  useEffect(() => {
+    if (!user) return;  // ✅ Ensure Firestore only listens if user is authenticated
+
+    const messagesRef = collection(db, `chats/${chatId}/messages`);
+    const q = query(messagesRef, orderBy("timestamp"));
+
+    const unsubscribeMessages = onSnapshot(q, (snapshot) => {
+      setMessages(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+    });
+
+    return () => unsubscribeMessages();
+  }, [chatId, user]);  // ✅ Run this effect when user changes
 
   const sendMessage = async () => {
+    if (!user) {
+      alert("You must be logged in to send messages!");
+      return;
+    }
+
     if (newMessage.trim() === "") return;
 
-    const messageRef = push(ref(database, `chats/${chatId}/messages`));
-    await messageRef.set({
-      sender: auth.currentUser?.displayName || "Anonymous",
+    await addDoc(collection(db, `chats/${chatId}/messages`), {
+      sender: user.displayName || "Anonymous",
       text: newMessage,
-      timestamp: Date.now(),
+      timestamp: serverTimestamp(),
+      uid: user.uid,
     });
 
     setNewMessage("");
@@ -34,14 +52,13 @@ const ChatRoom = ({ chatId }) => {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.messages}>
-        {messages.map((msg, index) => (
-          <View key={index} style={styles.message}>
+        {messages.map((msg) => (
+          <View key={msg.id} style={styles.message}>
             <Text style={styles.sender}>{msg.sender}:</Text>
             <Text style={styles.text}>{msg.text}</Text>
           </View>
         ))}
       </ScrollView>
-
       <TextInput
         style={styles.input}
         value={newMessage}
