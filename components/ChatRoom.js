@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, TextInput, Button, ScrollView, StyleSheet } from "react-native";
 import { database, auth } from "../api/firebaseConfig";
-import { ref, push, onValue, set } from "firebase/database";
+import { ref, push, onValue } from "firebase/database";
 
 const ChatRoom = ({ chatId }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const [typing, setTyping] = useState(false);
 
   useEffect(() => {
     const messagesRef = ref(database, `chats/${chatId}/messages`);
@@ -17,32 +16,19 @@ const ChatRoom = ({ chatId }) => {
         setMessages([]);
       }
     });
-
-    // Typing Indicator Listener
-    const typingRef = ref(database, `chats/${chatId}/typing`);
-    onValue(typingRef, (snapshot) => {
-      if (snapshot.exists() && snapshot.val() !== auth.currentUser.uid) {
-        setTyping(true);
-        setTimeout(() => setTyping(false), 2000);
-      }
-    });
   }, [chatId]);
 
   const sendMessage = async () => {
     if (newMessage.trim() === "") return;
 
     const messageRef = push(ref(database, `chats/${chatId}/messages`));
-    await set(messageRef, {
-      sender: auth.currentUser.displayName || "Anonymous",
+    await messageRef.set({
+      sender: auth.currentUser?.displayName || "Anonymous",
       text: newMessage,
       timestamp: Date.now(),
     });
 
     setNewMessage("");
-
-    // Typing Indicator
-    const typingRef = ref(database, `chats/${chatId}/typing`);
-    await set(typingRef, auth.currentUser.uid);
   };
 
   return (
@@ -55,7 +41,7 @@ const ChatRoom = ({ chatId }) => {
           </View>
         ))}
       </ScrollView>
-      {typing && <Text style={styles.typingIndicator}>Someone is typing...</Text>}
+
       <TextInput
         style={styles.input}
         value={newMessage}
@@ -73,7 +59,6 @@ const styles = StyleSheet.create({
   message: { marginBottom: 10, padding: 10, backgroundColor: "#333", borderRadius: 5 },
   sender: { fontWeight: "bold", color: "#00b3ff" },
   text: { color: "#fff" },
-  typingIndicator: { color: "#00b3ff", marginBottom: 5 },
   input: { backgroundColor: "#fff", padding: 10, borderRadius: 5, marginBottom: 10 },
 });
 

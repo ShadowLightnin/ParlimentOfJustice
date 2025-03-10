@@ -7,8 +7,8 @@ const PublicChatScreen = () => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
-      {/* Back Button */}
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+      {/* ✅ Fixed Back Button */}
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate("Home")}>
         <Text style={styles.backText}>← Back</Text>
       </TouchableOpacity>
 

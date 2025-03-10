@@ -10,7 +10,7 @@ const TeamChatScreen = () => {
 
   return (
     <View style={styles.container}>
-      {/* Back Button */}
+      {/* ✅ Fix Back Button */}
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Text style={styles.backText}>← Back</Text>
       </TouchableOpacity>
