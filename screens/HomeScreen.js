@@ -6,6 +6,8 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { signOut } from 'firebase/auth';
 import { auth } from '../api/firebaseConfig'; // Import Firebase Auth
+import { useContext } from 'react';
+import { AuthContext } from '../context/auth-context';
 
 const factions = [
   { name: 'The Titans', screen: 'Titans', clickable: true, image: require('../assets/BackGround/Titans.jpg') },
@@ -34,10 +36,12 @@ export const HomeScreen = () => {
   }, [numColumns]);
 
   // Logout function
+  const authCtx = useContext(AuthContext); // Get authentication context
+
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      navigation.replace('Start'); // Redirect to Start screen after logout
+      authCtx.logout(); // ✅ This updates context and re-renders navigation
     } catch (error) {
       Alert.alert('Logout Failed', error.message);
     }
