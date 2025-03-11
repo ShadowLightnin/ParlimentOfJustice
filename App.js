@@ -22,7 +22,6 @@ import { AdminStack } from "./navigation/AdminStack";
 import SignupScreen from "./screens/SignupScreen";
 import LoginScreen from "./screens/LoginScreen";
 import PublicChatScreen from "./screens/PublicChatScreen";
-// import TeamChatScreen from './screens/Chat/TeamChatScreen';
 
 const Stack = createNativeStackNavigator();
 
