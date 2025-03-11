@@ -256,3 +256,8 @@ import { Client } from 'appwrite';
 
 const client = new Client();
 client.setProject('67d048bd001de56edd7a');
+
+appwrite tutorial:
+https://www.youtube.com/watch?v=HGlBpna17LQ
+https://www.youtube.com/watch?v=_JDeJgsU-bI
+https://www.youtube.com/watch?v=YSUmzHH_OMg
