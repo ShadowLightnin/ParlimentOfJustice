@@ -23,6 +23,11 @@ const getMemberAtPosition = (row, col) =>
 export const OlympiansScreen = () => {
   const navigation = useNavigation();
 
+  // Navigate to Chat Screen
+  const goToChat = () => {
+    navigation.navigate('TeamChat'); // Ensure 'Chat' screen is registered in App.js
+  };
+
   return (
     <ImageBackground source={require('../../assets/BackGround/Kin.jpg')} style={styles.background}>
       <SafeAreaView style={styles.container}>
@@ -33,6 +38,9 @@ export const OlympiansScreen = () => {
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
           <Text style={styles.header}>Olympians</Text>
+          <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
+            <Text style={styles.chatText}>🛡️</Text>
+          </TouchableOpacity>
         </View>
 
         {/* ✅ Added ScrollView for scrolling */}

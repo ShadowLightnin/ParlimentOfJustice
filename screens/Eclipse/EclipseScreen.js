@@ -31,6 +31,11 @@ const getMemberAtPosition = (row, col) =>
 export const EclipseScreen = () => {
   const navigation = useNavigation();
 
+  // Navigate to Chat Screen
+  const goToChat = () => {
+    navigation.navigate('TeamChat'); // Ensure 'Chat' screen is registered in App.js
+  };
+
   return (
     <ImageBackground source={require('../../assets/BackGround/Enforcers.jpg')} style={styles.background}>
       <SafeAreaView style={styles.container}>
@@ -40,6 +45,9 @@ export const EclipseScreen = () => {
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
           <Text style={styles.header}>The Eclipse</Text>
+          <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
+            <Text style={styles.chatText}>🛡️</Text>
+          </TouchableOpacity>
         </View>
 
 

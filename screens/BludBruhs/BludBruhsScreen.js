@@ -31,6 +31,11 @@ const getMemberAtPosition = (row, col) =>
 export const BludBruhsScreen = () => {
   const navigation = useNavigation();
 
+  // Navigate to Chat Screen
+  const goToChat = () => {
+    navigation.navigate('TeamChat'); // Ensure 'Chat' screen is registered in App.js
+  };
+
   return (
     <ImageBackground source={require('../../assets/BackGround/bludbruh.jpg')} style={styles.background}>
       <SafeAreaView style={styles.container}>
@@ -40,6 +45,9 @@ export const BludBruhsScreen = () => {
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
           <Text style={styles.header}>BludBruhs</Text>
+          <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
+            <Text style={styles.chatText}>🛡️</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Grid Layout */}

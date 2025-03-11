@@ -22,6 +22,11 @@ const getMemberAtPosition = (row, col) =>
 export const ConstollationScreen = () => {
   const navigation = useNavigation();
 
+  // Navigate to Chat Screen
+  const goToChat = () => {
+    navigation.navigate('TeamChat'); // Ensure 'Chat' screen is registered in App.js
+  };
+
   return (
     <ImageBackground source={require('../../assets/BackGround/helldivers.webp')} style={styles.background}>
       <SafeAreaView style={styles.container}>
@@ -31,6 +36,9 @@ export const ConstollationScreen = () => {
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
           <Text style={styles.header}>Constollation</Text>
+          <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
+            <Text style={styles.chatText}>🛡️</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Grid Layout */}

@@ -21,8 +21,8 @@ import { DesignsStack } from './navigation/DesignsStack';
 import { AdminStack } from "./navigation/AdminStack";
 import SignupScreen from "./screens/SignupScreen";
 import LoginScreen from "./screens/LoginScreen";
-import PublicChatScreen from "./screens/Chat/PublicChatScreen";
-import TeamChatScreen from './screens/Chat/TeamChatScreen';
+import PublicChatScreen from "./screens/PublicChatScreen";
+// import TeamChatScreen from './screens/Chat/TeamChatScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -52,7 +52,7 @@ function AuthenticatedStack() {
         <Stack.Screen name="BludBruhs" component={BludBruhsStack} />
         <Stack.Screen name="Legionaires" component={LegionairesStack} />
         <Stack.Screen name="Constollation" component={ConstollationStack} />
-        <Stack.Screen name="TeamChat" component={TeamChatScreen} />
+        {/* <Stack.Screen name="TeamChat" component={TeamChatScreen} /> */}
         <Stack.Screen name="Designs" component={DesignsStack} /> 
       </Stack.Navigator>
     // </NavigationContainer>
