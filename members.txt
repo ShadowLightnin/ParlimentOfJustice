@@ -250,14 +250,3 @@ https://github.com/xplodivity/infinite-nested-comments.git
 
 Smooth transitions:
 https://github.com/braide7/braidenP.git
-
-appwrite:
-import { Client } from 'appwrite';
-
-const client = new Client();
-client.setProject('67d048bd001de56edd7a');
-
-appwrite tutorial:
-https://www.youtube.com/watch?v=HGlBpna17LQ
-https://www.youtube.com/watch?v=_JDeJgsU-bI
-https://www.youtube.com/watch?v=YSUmzHH_OMg

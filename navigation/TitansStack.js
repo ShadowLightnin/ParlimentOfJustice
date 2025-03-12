@@ -5,7 +5,7 @@ import UploadCharacter from '../components/UploadCharacter';
 import UploadDesign from '../components/UploadDesign';
 import TeamChatScreen from "../screens/Titans/TeamChatScreen";
 
-// import { Will } from '../screens/Titans/Will';
+import Will from '../screens/Titans/Will';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,7 +16,7 @@ export function TitansStack() {
       <Stack.Screen name="TeamChat" component={TeamChatScreen} />
       <Stack.Screen name="UploadCharacter" component={UploadCharacter} />
       <Stack.Screen name="UploadDesign" component={UploadDesign} />
-      <Stack.Screen name="Will" component={FactionScreen} initialParams={{ title: "Will" }} />
+      <Stack.Screen name="Will" component={Will} />
     </Stack.Navigator>
   );
 }
