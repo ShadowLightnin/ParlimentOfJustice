@@ -5,7 +5,14 @@ import UploadCharacter from '../components/UploadCharacter';
 import UploadDesign from '../components/UploadDesign';
 import TeamChatScreen from "../screens/Titans/TeamChatScreen";
 
+import Spencer from '../screens/Titans/Spencer';
+import Azure from '../screens/Titans/Azure';
+import Jared from '../screens/Titans/Jared';
 import Will from '../screens/Titans/Will';
+import Ben from '../screens/Titans/Ben';
+import Jennifer from '../screens/Titans/Jennifer';
+import Emma from '../screens/Titans/Emma';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -16,7 +23,13 @@ export function TitansStack() {
       <Stack.Screen name="TeamChat" component={TeamChatScreen} />
       <Stack.Screen name="UploadCharacter" component={UploadCharacter} />
       <Stack.Screen name="UploadDesign" component={UploadDesign} />
+      <Stack.Screen name="Spencer" component={Spencer} />
+      <Stack.Screen name="Azure" component={Azure} />
+      <Stack.Screen name="Jared" component={Jared} />
       <Stack.Screen name="Will" component={Will} />
+      <Stack.Screen name="Ben" component={Ben} />
+      <Stack.Screen name="Jennifer" component={Jennifer} />
+      <Stack.Screen name="Emma" component={Emma} />
     </Stack.Navigator>
   );
 }

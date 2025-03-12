@@ -12,13 +12,13 @@ import { useNavigation } from '@react-navigation/native';
 
 // Member Data (Supports Images)
 const members = [
-  { name: 'Spencer McNeil', codename: 'The Annihilator', screen: 'Spencer', clickable: false, position: [0, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-  { name: 'Azure Briggs', codename: 'Mediateir', screen: 'Azure', clickable: false, position: [0, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-  { name: 'Jared McNeil', codename: 'Spector', screen: 'Jared', clickable: false, position: [1, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'Spencer McNeil', codename: 'The Annihilator', screen: 'Spencer', clickable: true, position: [0, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'Azure Briggs', codename: 'Mediateir', screen: 'Azure', clickable: true, position: [0, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'Jared McNeil', codename: 'Spector', screen: 'Jared', clickable: true, position: [1, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
   { name: 'Will Cummings', codename: 'Night Hawk', screen: 'Will', clickable: true, position: [1, 1], image: require('../../assets/Armor/NightHawkPlaceHolder.jpg') },
-  { name: 'Ben Briggs', codename: 'Mendeir', screen: 'Ben', clickable: false, position: [1, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-  { name: 'Jennifer McNeil', codename: 'Kintsugi', screen: 'Jennifer', clickable: false, position: [2, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-  { name: 'Emma Cummings', codename: 'Kintsunera', screen: 'Emma', clickable: false, position: [2, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'Ben Briggs', codename: 'Nuscus', screen: 'Ben', clickable: true, position: [1, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'Jennifer McNeil', codename: 'Kintsugi', screen: 'Jennifer', clickable: true, position: [2, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'Emma Cummings', codename: 'Kintsunera', screen: 'Emma', clickable: true, position: [2, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
 ];
 
 // Function to check if a position should be empty
