@@ -11,24 +11,25 @@ const Will = () => {
 
   return (
     <View style={styles.container}>
-      {/* Header Stays Fixed at the Top */}
-      <View style={styles.headerContainer}>
-        {/* Back Button */}
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.backButtonText}>←</Text>
-        </TouchableOpacity>
-
-        {/* Title */}
-        <Text style={styles.title}>Night Hawk</Text>
-
-        {/* Comment Button (Top Right) */}
-        <TouchableOpacity style={styles.commentButton} onPress={() => navigation.navigate("Comments")}>
-          <Text style={styles.commentButtonText}>💬</Text>
-        </TouchableOpacity>
-      </View>
-
       {/* Scrollable Content */}
       <ScrollView contentContainerStyle={styles.scrollContainer}>
+        
+        {/* Header (Now Scrolls with Everything) */}
+        <View style={styles.headerContainer}>
+          {/* Back Button */}
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+            <Text style={styles.backButtonText}>←</Text>
+          </TouchableOpacity>
+
+          {/* Title */}
+          <Text style={styles.title}>Night Hawk</Text>
+
+          {/* Comment Button (Top Right) */}
+          <TouchableOpacity style={styles.commentButton} onPress={() => navigation.navigate("Comments")}>
+            <Text style={styles.commentButtonText}>💬</Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Armor Image */}
         <View style={styles.imageContainer}>
           <Image 
@@ -56,15 +57,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#0a0a0a", // ✅ Solid cohesive background
   },
+  scrollContainer: {
+    paddingBottom: 20,
+  },
   headerContainer: {
-    position: "absolute",
-    top: 40,
-    left: 20,
-    right: 20,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    zIndex: 10, // ✅ Stays on top
+    paddingHorizontal: 20,
+    paddingVertical: 20, // ✅ Added spacing for smooth scrolling
+    backgroundColor: "#0a0a0a", // ✅ Keeps the header cohesive
+    borderBottomWidth: 1,
+    borderBottomColor: "#333",
   },
   backButton: {
     padding: 10,
@@ -90,10 +94,6 @@ const styles = StyleSheet.create({
   commentButtonText: {
     fontSize: 22,
     color: "#fff",
-  },
-  scrollContainer: {
-    paddingTop: SCREEN_HEIGHT * 0.12, // ✅ Prevents title overlap
-    paddingBottom: 20,
   },
   imageContainer: {
     alignItems: "center",
