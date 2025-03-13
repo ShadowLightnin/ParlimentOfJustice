@@ -33,7 +33,7 @@ const Will = () => {
         {/* Armor Image */}
         <View style={styles.imageContainer}>
           <Image 
-            source={require("../../assets/Armor/NightHawkPlaceHolder.jpg")} 
+            source={require("../../assets/Armor/WillPlaceHolder.jpg")} 
             style={styles.armorImage} 
           />
         </View>

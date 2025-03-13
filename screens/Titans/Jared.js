@@ -33,7 +33,7 @@ const Jared = () => {
         {/* Armor Image */}
         <View style={styles.imageContainer}>
           <Image 
-            source={require("../../assets/Armor/DefaultPlaceholder.jpg")} 
+            source={require("../../assets/Armor/JaredPlaceholder.jpg")} 
             style={styles.armorImage} 
           />
         </View>
