@@ -1,6 +1,6 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { EclipseScreen } from '../screens/Eclipse/EclipseScreen';
+import EclipseScreen from '../screens/Eclipse/EclipseScreen';
 import TeamChatScreen from "../screens/Eclipse/TeamChatScreen";
 
 import Aileen from '../screens/Eclipse/Aileen';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { BludBruhsScreen } from '../screens/BludBruhs/BludBruhsScreen';
+import BludBruhsScreen from '../screens/BludBruhs/BludBruhsScreen';
 import TeamChatScreen from "../screens/BludBruhs/TeamChatScreen";
 
 // import {  } from '../screens/BludBruhs/';

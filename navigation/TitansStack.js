@@ -1,6 +1,6 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { TitansScreen } from '../screens/Titans/TitansScreen';
+import TitansScreen from '../screens/Titans/TitansScreen';
 import UploadCharacter from '../components/UploadCharacter';
 import UploadDesign from '../components/UploadDesign';
 import TeamChatScreen from "../screens/Titans/TeamChatScreen";

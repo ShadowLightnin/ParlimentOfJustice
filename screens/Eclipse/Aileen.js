@@ -33,7 +33,7 @@ const Aileen = () => {
         {/* Armor Image */}
         <View style={styles.imageContainer}>
           <Image 
-            source={require("../../assets/Armor/AileenPlaceHolder.jpg")} 
+            source={require("../../assets/Armor/AileenPlaceHolder2.jpg")} 
             style={styles.armorImage} 
           />
         </View>
@@ -82,9 +82,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#00b3ff",
+    color: "#000000",
     textAlign: "center",
     flex: 1, // ✅ Keeps title centered
+    textShadowColor: '#a89f18',
+    textShadowRadius: 25,
   },
   commentButton: {
     padding: 10,

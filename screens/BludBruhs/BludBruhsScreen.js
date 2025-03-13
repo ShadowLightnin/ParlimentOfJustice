@@ -7,8 +7,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
+  Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+
+// Screen dimensions
+const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // Member Data
 const members = [
@@ -21,24 +25,27 @@ const members = [
   { name: 'MonkeAlliance', codename: '', screen: '', clickable: false, position: [2, 2] },
 ];
 
-// Function to check if a position should be empty
+// Empty cell checker
 const isEmpty = (row, col) => (row === 0 && col === 1) || (row === 2 && col === 1);
-
-// Function to get a member at a specific position
 const getMemberAtPosition = (row, col) =>
   members.find((member) => member.position[0] === row && member.position[1] === col);
 
-export const BludBruhsScreen = () => {
+const TitansScreen = () => {
   const navigation = useNavigation();
 
-  // Navigate to Chat Screen
   const goToChat = () => {
-    navigation.navigate('TeamChat'); // Ensure 'Chat' screen is registered in App.js
+    navigation.navigate('TeamChat');
   };
 
+  const isDesktop = SCREEN_WIDTH > 600; // Check for desktop view
+  const cardSize = isDesktop ? 160 : 100; // Double size on desktop
+  const cardSpacing = isDesktop ? 30 : 10; // Increase spacing on desktop
+
   return (
-    <ImageBackground source={require('../../assets/BackGround/bludbruh.jpg')} style={styles.background}>
+    <ImageBackground source={require('../../assets/BackGround/bludbruh.jpg')} 
+    style={styles.background}>
       <SafeAreaView style={styles.container}>
+        
         {/* Header & Back Button */}
         <View style={styles.headerWrapper}>
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
@@ -51,31 +58,34 @@ export const BludBruhsScreen = () => {
         </View>
 
         {/* Grid Layout */}
-        <View style={styles.grid}>
+        <View style={[styles.grid, { gap: cardSpacing }]}>
           {[0, 1, 2].map((row) => (
-            <View key={row} style={styles.row}>
+            <View key={row} style={[styles.row, { gap: cardSpacing }]}>
               {[0, 1, 2].map((col) => {
                 if (isEmpty(row, col)) {
-                  return <View key={col} style={styles.emptyCell} />;
+                  return <View key={col} style={{ width: cardSize, height: cardSize * 1.4 }} />;
                 }
 
                 const member = getMemberAtPosition(row, col);
                 return (
                   <TouchableOpacity
                     key={col}
-                    style={[styles.card, !member?.clickable && styles.disabledCard]}
+                    style={[
+                      styles.card,
+                      { width: cardSize, height: cardSize * 1.6 },
+                      !member?.clickable && styles.disabledCard,
+                    ]}
                     onPress={() => member?.clickable && navigation.navigate(member.screen)}
                     disabled={!member?.clickable}
                   >
-                    {/* Character Image */}
-                    {member?.image && <Image source={member.image} style={styles.characterImage} />}
-
-                    {/* Name & Codename */}
+                    {member?.image && (
+                      <Image source={member.image} style={styles.characterImage} />
+                    )}
                     <Text style={styles.name}>{member?.name || ''}</Text>
                     <Text style={styles.codename}>{member?.codename || ''}</Text>
-
-                    {/* Disabled Text */}
-                    {!member?.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+                    {!member?.clickable && (
+                      <Text style={styles.disabledText}>Not Clickable</Text>
+                    )}
                   </TouchableOpacity>
                 );
               })}
@@ -89,22 +99,22 @@ export const BludBruhsScreen = () => {
 
 const styles = StyleSheet.create({
   background: {
-    flex: 1,
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT,
     resizeMode: 'cover',
-    justifyContent: 'center',
   },
   container: {
     flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)', 
     paddingHorizontal: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     alignItems: 'center',
   },
   headerWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between', // Ensures back button and title are aligned
+    justifyContent: 'space-between',
     width: '100%',
-    marginTop: 50, // Moves header and back button down (avoids notch/camera)
+    marginTop: 50,
     paddingHorizontal: 20,
     marginBottom: 20,
   },
@@ -122,29 +132,29 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     color: '#fff',
+    textAlign: 'center',
     textShadowColor: '#00b3ff',
     textShadowRadius: 15,
-    textAlign: 'center',
     flex: 1,
+  },
+  chatButton: {
+    padding: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 5,
+  },
+  chatText: {
+    fontSize: 20,
+    color: '#00b3ff',
   },
   grid: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: -40, // Moves grid **up** to balance layout
   },
   row: {
     flexDirection: 'row',
   },
-  emptyCell: {
-    width: 100,
-    height: 140,
-    margin: 10,
-  },
   card: {
-    width: 100,
-    height: 160,
-    margin: 10,
     backgroundColor: '#1c1c1c',
     justifyContent: 'center',
     alignItems: 'center',
@@ -157,7 +167,7 @@ const styles = StyleSheet.create({
   },
   characterImage: {
     width: '100%',
-    height: 100,
+    height: '70%',
     resizeMode: 'cover',
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
@@ -186,3 +196,5 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
 });
+
+export default TitansScreen;

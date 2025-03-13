@@ -1,7 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { ASTCScreen } from '../screens/ASTC/ASTCScreen';
-import { SpartansScreen } from '../screens/ASTC/Spartans/SpartansScreen';
+import ASTCScreen from '../screens/ASTC/ASTCScreen';
+import SpartansScreen from '../screens/ASTC/Spartans/SpartansScreen';
 import TeamChatScreen from "../screens/ASTC/Spartans/TeamChatScreen";
 
 // import {  } from '../screens//';
