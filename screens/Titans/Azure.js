@@ -33,7 +33,7 @@ const Azure = () => {
         {/* Armor Image */}
         <View style={styles.imageContainer}>
           <Image 
-            source={require("../../assets/Armor/AzurePlaceholder.jpg")} 
+            source={require("../../assets/Armor/AzurePlaceHolder.jpg")} 
             style={styles.armorImage} 
           />
         </View>
