@@ -16,9 +16,9 @@ const members = [
   { name: 'James', codename: 'Gentle Guardian', screen: 'James', clickable: false, position: [0, 2], image: require('../../assets/Armor/JamesPlaceHolder.jpg') },
   { name: 'Kelsie', codename: 'Shutter Dancer', screen: 'Kelsie', clickable: false, position: [1, 0], image: require('../../assets/Armor/KelsiePlaceHolder.jpg') },
   { name: 'Aileen', codename: 'Ariata', screen: 'Aileen', clickable: true, position: [1, 1], image: require('../../assets/Armor/AileenPlaceHolder.jpg') },
-  { name: 'TBA', codename: '???', screen: '', clickable: false, position: [1, 2], image: require('../../assets/Armor/DefaultPlaceHolder.jpg') },
+  { name: 'TBA', codename: '???', screen: '', clickable: false, position: [1, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
   { name: 'Myran', codename: 'Techno Sentinel', screen: 'Myran', clickable: false, position: [2, 0], image: require('../../assets/Armor/MyranPlaceHolder.jpg') },
-  { name: 'TBA', codename: '???', screen: '', clickable: false, position: [2, 2], image: require('../../assets/Armor/DefaultPlaceHolder.jpg') },
+  { name: 'TBA', codename: '???', screen: '', clickable: false, position: [2, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
 ];
 
 // Function to check if a position should be empty
