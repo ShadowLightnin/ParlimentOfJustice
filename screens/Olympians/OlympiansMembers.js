@@ -1,86 +1,148 @@
-const olympiansMembers = [
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [0, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [0, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [1, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [1, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [1, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [2, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [2, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [3, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [3, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [3, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [4, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [4, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [4, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [5, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [5, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [5, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [6, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [6, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [6, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [7, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [7, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [7, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [8, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [8, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [8, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [9, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [9, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [9, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [10, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [10, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [10, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [11, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [11, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [11, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [12, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [12, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [12, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [13, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [13, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [13, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [14, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [14, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [14, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [15, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [15, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [15, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [16, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [16, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [16, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [17, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [17, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [17, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [18, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [18, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [18, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [19, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [19, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [19, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [20, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [20, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [20, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [21, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [21, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [21, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [22, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [22, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [22, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [23, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [23, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [23, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [24, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [24, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [24, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [25, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '', codename: '', screen: '', clickable: false, position: [25, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [25, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '78', codename: '', screen: '', clickable: false, position: [26, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '79', codename: '', screen: '', clickable: false, position: [26, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: 'TBA', codename: '???', screen: '', clickable: false, position: [26, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '80', codename: '', screen: '', clickable: false, position: [27, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-    { name: '81', codename: '', screen: '', clickable: false, position: [27, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-  ];
-  
-  export default olympiansMembers;
-  
+const baseMembers = [
+  // { name: 'TBA', codename: '???', screen: '', clickable: false, position: [0, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  // { name: '', codename: '', screen: '', clickable: false, position: [0, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  // { name: '', codename: '', screen: '', clickable: false, position: [1, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  // { name: '', codename: '', screen: '', clickable: false, position: [1, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  // { name: 'TBA', codename: '???', screen: '', clickable: false, position: [1, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+];
+
+// 🎯 Families grouped with corresponding codename and positions
+const familyData = [
+  {
+    family: 'Parents',
+    members: [
+      'Angela', 'Todd',
+    ],
+  },
+  {
+    family: 'Jensen',
+    members: [
+      'Savanna', 'Lee', 'Emily', 'Samantha',
+      'Ella',
+    ],
+  },
+  {
+    family: 'McNeil',
+    members: [
+      'Mary', 'Chance', 'Ava', 'SaCharlieantha',
+    ],
+  },
+  {
+    family: 'Briggs',
+    members: [
+      'Heather', 'Bobby', 'Ammon', 'Piper',
+    ],
+  },
+  {
+    family: 'Bolander',
+    members: [
+      'Annie', 'Paul', 'McKinley', 'Whitney',
+      'Vinson',
+    ],
+  },
+  {
+    family: 'Stillman',
+    members: [
+      'Wesley', 'Melisa', 'Jackson', 'Mason',
+      'Rylie', 'Sammy',
+    ],
+  },
+  {
+    family: 'Stillman',
+    members: [
+      'David', 'Isiade', 'Darron', 'Isabel',
+    ],
+  },
+  {
+    family: 'Stillman',
+    members: [
+      'Gary', 'Sara', 'Josh', 'Garden',
+      'Sophia', 'Paisley', 'Ellie',
+    ],
+  },
+  {
+    family: 'Cummings',
+    members: [
+      'Sean', 'Heather', 'Brett', 'Jake',
+      'Ailey', 'Aubrey', 'James',
+    ],
+  },
+  {
+    family: 'Cummings',
+    members: [
+      'Ryan', 'Marin', 'Sasha', 'Ian',
+      'Riker', 'Dakota',
+    ],
+  },
+  {
+    family: 'Cummings',
+    members: [
+      'Laura', 'Waine', 'Elizabeth', 'Christopher',
+      'Tom',
+    ],
+  },
+  {
+    family: 'Cummings',
+    members: [
+      'Brett', 'Angie', 'Bryce', 'Lillie',
+      'Addie',
+    ],
+  },
+  {
+    family: 'Cummings',
+    members: [
+      'Matt', 'Jessica', 'Kyle', 'Samantha',
+      'Daisy', 'Rose', 'Mikie', 'Prairie', 'Ryan',
+    ],
+  },
+  {
+    family: 'Cummings',
+    members: [
+      'Chad', 'Rachel', 'Annabeth', 'Levi',
+      '', '',
+    ],
+  },
+  {
+    family: 'Cummings',
+    members: [
+      'Troy',
+    ],
+  },
+  {
+    family: 'Stillman Grandparents',
+    members: [
+      'Gary', 'Jennine',
+    ],
+  },
+{
+  family: 'Cummings Grandparents',
+  members: [
+    'Sheryl', 'Dorthy', 'Great Grandma Parker', 'Samantha',
+    'Daniel', 'Rachel', 'Ryan', 'Sophia',
+  ],
+},
+{
+  family: 'Eduria',
+  members: [
+    'Marlyn', 'Robert', 'Arlene', 'Kris',
+    'Carlo', 'Rachel', 'Cham Cham',
+  ],
+},
+];
+
+// 🎯 Generate additional members with family names and auto-assign positions
+const additionalMembers = familyData.flatMap((family, familyIndex) =>
+  family.members.map((member, i) => ({
+    name: member,
+    codename: `${family.family}`,
+    screen: `${family.family}Screen`,
+    clickable: false,
+    position: [Math.floor((i + (familyIndex * 10)) / 3), (i + (familyIndex * 10)) % 3],
+    image: require('../../assets/Armor/DefaultPlaceholder.jpg'),
+  }))
+);
+
+// 🎯 Merge base members with auto-generated family members
+const fullOlympiansList = [...baseMembers, ...additionalMembers];
+
+export default fullOlympiansList;

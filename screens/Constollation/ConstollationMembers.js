@@ -1,4 +1,4 @@
-const legionairesMembers = [
+const ConstollationMembers = [
     { name: 'Leader Name', codename: 'Legion Alpha', screen: 'Leader', clickable: false, position: [0, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
     { name: 'Member 1', codename: 'Legion Beta', screen: 'Member1', clickable: false, position: [0, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
     { name: 'Member 2', codename: 'Legion Gamma', screen: 'Member2', clickable: false, position: [1, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
@@ -24,7 +24,7 @@ const legionairesMembers = [
   }));
   
   // Merge initial members with generated ones
-  const fullLegionairesList = [...legionairesMembers, ...moreMembers];
+  const fullConstollationList = [...ConstollationMembers, ...moreMembers];
   
-  export default fullLegionairesList;
+  export default fullConstollationList;
   
