@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     color: "#000000",
     textAlign: "center",
     flex: 1, // ✅ Keeps title centered
-    textShadowColor: '#a89f18',
+    textShadowColor: 'gold',
     textShadowRadius: 25,
   },
   commentButton: {
