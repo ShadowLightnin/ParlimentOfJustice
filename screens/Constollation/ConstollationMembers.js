@@ -7,7 +7,7 @@ const ConstollationMembers = [
   ];
   
   // Automatically generate additional members up to 78
-  const moreMembers = Array.from({ length: 73 }, (_, i) => ({
+  const moreMembers = Array.from({ length: 100 }, (_, i) => ({
     name: `Member ${i + 5}`,
     codename: `Legion ${[
       'Zeta', 'Eta', 'Theta', 'Iota', 'Kappa', 'Lambda', 'Mu', 'Nu', 'Xi', 'Omicron', 'Pi', 'Rho', 'Sigma', 'Tau', 'Upsilon', 'Phi', 'Chi', 'Psi', 'Omega',

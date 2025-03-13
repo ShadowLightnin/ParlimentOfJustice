@@ -24,7 +24,7 @@ const familyData = [
   {
     family: 'McNeil',
     members: [
-      'Mary', 'Chance', 'Ava', 'SaCharlieantha',
+      'Mary', 'Chance', 'Ava', 'Charlie',
     ],
   },
   {
@@ -117,15 +117,14 @@ const familyData = [
 {
   family: 'Cummings Grandparents',
   members: [
-    'Sheryl', 'Dorthy', 'Great Grandma Parker', 'Samantha',
-    'Daniel', 'Rachel', 'Ryan', 'Sophia',
+    'Sheryl', 'Dorthy', 'Great Grandma Parker',
   ],
 },
 {
   family: 'Eduria',
   members: [
-    'Marlyn', 'Robert', 'Arlene', 'Kris',
-    'Carlo', 'Rachel', 'Cham Cham',
+    'Marlyn', 'Robert', 'Arlene ', 'Kris Hendricks',
+    'Nate Hendricks', 'Carlo', 'Cham Cham Kaleigha',
   ],
 },
 ];

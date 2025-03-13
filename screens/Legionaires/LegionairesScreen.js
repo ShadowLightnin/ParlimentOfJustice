@@ -19,7 +19,7 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 // Grid layout settings
 const isDesktop = SCREEN_WIDTH > 600; 
 const columns = isDesktop ? 7 : 3; 
-const rows = isDesktop ? 20 : Math.ceil(legionairesMembers.length / 3);
+const rows = isDesktop ? 30 : Math.ceil(legionairesMembers.length / 3);
 const cardSize = isDesktop ? 160 : 100;
 const cardHeightMultiplier = 1.6;
 const horizontalSpacing = isDesktop ? 40 : 10;
