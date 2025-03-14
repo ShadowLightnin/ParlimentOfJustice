@@ -83,12 +83,12 @@ export const HomeScreen = () => {
       <View style={styles.container}>
         {/* Header and Buttons */}
         <View style={styles.topBar}>
-          <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
-            <Text style={styles.chatText}>🗨️</Text>
+        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+            <Text style={styles.logoutText}>🚪</Text>
           </TouchableOpacity>
           <Text style={styles.header}>The Parliament of Justice</Text>
-          <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-            <Text style={styles.logoutText}>🚪</Text>
+          <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
+            <Text style={styles.chatText}>🗨️</Text>
           </TouchableOpacity>
         </View>
 
