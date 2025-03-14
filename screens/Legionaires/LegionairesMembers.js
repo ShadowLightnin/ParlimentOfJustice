@@ -11,8 +11,7 @@ const moreMembers = Array.from({ length: 100 }, (_, i) => ({
   name: `Member ${i + 1}`,
   codename: ` ${[
 'Mason Erickson','Davis Clark','Cody Cline','Kinnley Cline','Cassidy Cline','Jack Smith','Dylan',
-'Jessica Fisher','Dustin Edmonds','Justin','Zack','Eli Chase','Tom Cochran','Damon','Elijah Potter',
-'Ethan Tuffs','Josh Noble','Will Knight','Christian','John','Jose','Matt L','Anthony','Miles','Cieanna',
+'Jessica Fisher','Dustin Edmonds','Justin','Zack','Josh Noble','Will Knight','Christian','John','Jose','Matt L','Anthony','Miles','Cieanna',
 'Natalie','Kanyon','Emily','Jarom','Avery','Emily','Kennedy Carman','Sydney','Hunter','Cami Webb','Spencer Hill',
 'Clayton','Spencer L','Malia Holley','Mika','Jason','Allysa','Josh','John 1','John 2','Abby','Tagun','Adam Ledger',
 'Sam','Kaden Hanson 1','Sam Philops','Carter Olsen','Issac Philops','Hayden','Hayden','Parker Gold','Gabe Parker',
