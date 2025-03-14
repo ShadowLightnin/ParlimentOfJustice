@@ -42,9 +42,12 @@ const Aileen = () => {
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
-            Aileen is a warrior clad in the legendary Ariata armor, designed for both agility and
-            resilience. His armor is a fusion of advanced technology and ancient craftsmanship,
-            making him a formidable force on the battlefield.
+            Aileen is an amazing, wonderful and caring person. Always looking out for those and helping whenever she can.
+            She is very patient and understanding. She has a deep love for her family and loved ones, and for me.
+            She is always there for me and everyone else, and tries her best to help and make things easier for others.
+            She is a loving and patient woman, and I am proud of her. She is always there for me and I feel safe 
+            and loved in return. She is my best friend and someone who I love so much and so deeply and want to always be with 
+            and spend the rest of my life with her.
           </Text>
         </View>
       </ScrollView>
@@ -119,8 +122,10 @@ const styles = StyleSheet.create({
   aboutHeader: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#00b3ff",
+    color: "#000000",
     textAlign: "center",
+    textShadowColor: 'gold',
+    textShadowRadius: 25,
   },
   aboutText: {
     fontSize: 16,
