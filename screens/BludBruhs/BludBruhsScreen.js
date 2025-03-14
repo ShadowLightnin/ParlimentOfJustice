@@ -16,13 +16,13 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // Member Data
 const members = [
-  { name: 'Sam', codename: 'Void Walker', screen: '', clickable: false, position: [0, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'Sam', codename: 'Void Walker', screen: '', clickable: false, position: [0, 0], image: require('../../assets/Armor/SamPlaceHolder.jpg') },
   { name: 'Cole', codename: '', screen: '', clickable: false, position: [0, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
   { name: 'Joseph', codename: '', screen: '', clickable: false, position: [1, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
   { name: 'James', codename: '', screen: '', clickable: false, position: [1, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
   { name: 'Tanner', codename: '', screen: '', clickable: false, position: [1, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-  { name: 'Ranger Squad', codename: '', screen: '', clickable: false, position: [2, 0] },
-  { name: 'MonkeAlliance', codename: '', screen: '', clickable: false, position: [2, 2] },
+  { name: 'Ranger Squad', codename: '', screen: '', clickable: false, position: [2, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'MonkeAlliance', codename: '', screen: 'MonkeAllianceScreen', clickable: true, position: [2, 2], image: require('../../assets/BackGround/Monke.jpg') },
 ];
 
 // Empty cell checker
@@ -39,7 +39,7 @@ const TitansScreen = () => {
 
   const isDesktop = SCREEN_WIDTH > 600; // Check for desktop view
   const cardSize = isDesktop ? 160 : 100; // Double size on desktop
-  const cardSpacing = isDesktop ? 30 : 10; // Increase spacing on desktop
+  const cardSpacing = isDesktop ? 25 : 10; // Increase spacing on desktop
 
   return (
     <ImageBackground source={require('../../assets/BackGround/bludbruh.jpg')} 

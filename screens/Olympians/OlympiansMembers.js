@@ -123,8 +123,8 @@ const familyData = [
 {
   family: 'Eduria',
   members: [
-    'Marlyn', 'Robert', 'Arlene ', 'Kris Hendricks',
-    'Nate Hendricks', 'Carlo', 'Cham Cham Kaleigha',
+    'Marlyn', 'Robert', 'Arlene Hendricks', 'Nate Hendricks',
+    'Kris', 'Carlo', 'Cham Cham Kaleigha',
   ],
 },
 ];

@@ -39,7 +39,7 @@ const EclipseScreen = () => {
 
   const isDesktop = SCREEN_WIDTH > 600; // Adjust for desktop view
   const cardSize = isDesktop ? 160 : 100; // Double size on desktop
-  const cardSpacing = isDesktop ? 30 : 10; // Increase spacing on desktop
+  const cardSpacing = isDesktop ? 25 : 10; // Increase spacing on desktop
 
   return (
     <ImageBackground 
