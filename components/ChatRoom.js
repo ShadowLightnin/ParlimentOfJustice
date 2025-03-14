@@ -71,12 +71,33 @@ const ChatRoom = ({ chatId }) => {  // ✅ Hooks must be inside a function compo
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, },
-  messages: { flexGrow: 1, justifyContent: "flex-end" },
-  message: { marginBottom: 10, padding: 10, backgroundColor: "#333", borderRadius: 5 },
-  sender: { fontWeight: "bold", color: "#00b3ff" },
-  text: { color: "#fff" },
-  input: { backgroundColor: "#fff", padding: 10, borderRadius: 5, marginBottom: 10 },
+  container: { 
+    flex: 1, 
+    padding: 20, 
+  },
+  messages: { 
+    flexGrow: 1, 
+    justifyContent: "flex-end" 
+  },
+  message: { 
+    marginBottom: 10, 
+    padding: 10, 
+    backgroundColor: "#333", 
+    borderRadius: 5 
+  },
+  sender: { 
+    fontWeight: "bold", 
+    color: "#00b3ff" 
+  },
+  text: { 
+    color: "#fff" 
+  },
+  input: { 
+    backgroundColor: "#fff", 
+    padding: 10, 
+    borderRadius: 5, 
+    marginBottom: 10 
+  },
 });
 
 export default ChatRoom;
