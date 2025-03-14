@@ -1,13 +1,23 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useContext } from 'react';
 import { 
   View, Text, ImageBackground, TouchableOpacity, StyleSheet, FlatList, 
-  useWindowDimensions, Animated, Alert 
+  Animated, Alert, Dimensions 
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { signOut } from 'firebase/auth';
-import { auth } from '../api/firebaseConfig'; // Import Firebase Auth
-import { useContext } from 'react';
+import { auth } from '../api/firebaseConfig';
 import { AuthContext } from '../context/auth-context';
+
+// Screen dimensions
+const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
+
+// Desktop or Mobile
+const isDesktop = SCREEN_WIDTH > 600;
+
+// Adjustable Card Dimensions
+const cardWidth = isDesktop ? 300 : 200; 
+const cardHeight = isDesktop ? 240 : 150; 
+const cardSpacing = isDesktop ? 30 : 10;
 
 const factions = [
   { name: 'The Titans', screen: 'Titans', clickable: true, image: require('../assets/BackGround/Titans.jpg') },
@@ -23,39 +33,40 @@ const factions = [
 
 export const HomeScreen = () => {
   const navigation = useNavigation();
-  const { width } = useWindowDimensions();
-  const numColumns = width > 600 ? 3 : 2; // Use 3 columns if screen width > 600px, otherwise 2
+  const authCtx = useContext(AuthContext);
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const numColumns = isDesktop ? 3 : 2;
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 400, // Smooth transition
+      duration: 400,
       useNativeDriver: true,
     }).start();
-  }, [numColumns]);
-
-  // Logout function
-  const authCtx = useContext(AuthContext); // Get authentication context
+  }, []);
 
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      authCtx.logout(); // ✅ This updates context and re-renders navigation
+      authCtx.logout(); 
     } catch (error) {
       Alert.alert('Logout Failed', error.message);
     }
   };
 
-  // Navigate to Chat Screen
   const goToChat = () => {
-    navigation.navigate('PublicChat'); // Ensure 'Chat' screen is registered in App.js
+    navigation.navigate('PublicChat');
   };
 
   const renderFaction = ({ item }) => (
     <Animated.View style={{ opacity: fadeAnim }}>
       <TouchableOpacity
-        style={[styles.card, { width: width / numColumns - 30 }, !item.clickable && styles.disabledCard]}
+        style={[
+          styles.card, 
+          { width: cardWidth, height: cardHeight, margin: cardSpacing / 2 }, 
+          !item.clickable && styles.disabledCard
+        ]}
         onPress={() => item.clickable && navigation.navigate(item.screen)}
         disabled={!item.clickable}
       >
@@ -68,7 +79,7 @@ export const HomeScreen = () => {
   );
 
   return (
-    <ImageBackground source={require('../assets/BackGround/superhero.jpg')} style={styles.background}>
+    <ImageBackground source={require('../assets/BackGround/Parliment.png')} style={styles.background}>
       <View style={styles.container}>
         {/* Header and Buttons */}
         <View style={styles.topBar}>
@@ -96,13 +107,15 @@ export const HomeScreen = () => {
 
 const styles = StyleSheet.create({
   background: {
-    flex: 1,
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT,
     resizeMode: 'cover',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   container: {
     flex: 1,
-    alignItems: 'center',
+    width: SCREEN_WIDTH,
     padding: 20,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
   },
@@ -122,13 +135,11 @@ const styles = StyleSheet.create({
     textShadowRadius: 10,
   },
   listContainer: {
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
     paddingBottom: 20,
   },
   card: {
-    aspectRatio: 1.3,
-    margin: 10,
     borderRadius: 10,
     overflow: 'hidden',
     elevation: 5,

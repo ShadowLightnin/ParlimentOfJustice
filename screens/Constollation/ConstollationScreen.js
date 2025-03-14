@@ -138,6 +138,7 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     paddingBottom: 20,
+    width: SCREEN_WIDTH,
     alignItems: 'center',
   },
   row: {

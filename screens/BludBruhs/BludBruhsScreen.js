@@ -17,9 +17,9 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 // Member Data
 const members = [
   { name: 'Sam', codename: 'Void Walker', screen: '', clickable: false, position: [0, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-  { name: 'James', codename: '', screen: '', clickable: false, position: [0, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-  { name: 'Cole', codename: '', screen: '', clickable: false, position: [1, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
-  { name: 'Joseph', codename: '', screen: '', clickable: false, position: [1, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'Cole', codename: '', screen: '', clickable: false, position: [0, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'Joseph', codename: '', screen: '', clickable: false, position: [1, 0], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'James', codename: '', screen: '', clickable: false, position: [1, 1], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
   { name: 'Tanner', codename: '', screen: '', clickable: false, position: [1, 2], image: require('../../assets/Armor/DefaultPlaceholder.jpg') },
   { name: 'Ranger Squad', codename: '', screen: '', clickable: false, position: [2, 0] },
   { name: 'MonkeAlliance', codename: '', screen: '', clickable: false, position: [2, 2] },

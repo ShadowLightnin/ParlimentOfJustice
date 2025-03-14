@@ -17,7 +17,8 @@ const members = [
 ];
 
 // Function to check if a position should be empty
-const isEmpty = (row, col) => (row === 0 && col === 0) || (row === 0 && col === 1) || (row === 0 && col === 2) || (row === 2 && col === 0) || (row === 2 && col === 1) || (row === 2 && col === 2);
+const isEmpty = (row, col) => (row === 0 && col === 0) || (row === 0 && col === 1) || (row === 0 && col === 2) || 
+                              (row === 2 && col === 0) || (row === 2 && col === 1) || (row === 2 && col === 2);
 
 // Function to get a member at a specific position
 const getMemberAtPosition = (row, col) =>

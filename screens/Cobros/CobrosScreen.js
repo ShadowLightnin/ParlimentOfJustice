@@ -114,6 +114,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    width: SCREEN_WIDTH,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     alignItems: 'center',
   },
@@ -143,6 +144,8 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     paddingBottom: 20,
+    flexGrow: 1,
+    width: SCREEN_WIDTH,
     alignItems: 'center',
   },
   row: {
