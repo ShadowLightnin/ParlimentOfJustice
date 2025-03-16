@@ -15,16 +15,16 @@ import { useNavigation } from '@react-navigation/native';
 // Screen dimensions
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
-// Member Data
+// Member Data with Unique Image Paths
 const members = [
-  { name: 'Zeke', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/ZekePlaceHolder.jpg')  },
-  { name: 'Elijah Potter', codename: '', screen: '', clickable: false },
-  { name: 'Tom C', codename: '', screen: '', clickable: false },
-  { name: 'Ammon T', codename: '', screen: '', clickable: false },
-  { name: 'Eli C', codename: '', screen: '', clickable: false },
-  { name: 'Ethan T', codename: '', screen: '', clickable: false },
-  { name: 'Alex M', codename: '', screen: '', clickable: false },
-  { name: 'Damon', codename: '', screen: '', clickable: false },
+  { name: 'Zeke', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/ZekePlaceHolder.jpg') },
+  { name: 'Elijah Potter', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'Tom C', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'Ammon T', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'Eli C', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'Ethan T', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'Alex M', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/DefaultPlaceholder.jpg') },
+  { name: 'Damon', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/DefaultPlaceholder.jpg') },
   { name: 'MIA', codename: '', screen: '', clickable: false },
   { name: 'MIA', codename: '', screen: '', clickable: false },
   { name: 'MIA', codename: '', screen: '', clickable: false },
@@ -35,7 +35,7 @@ const members = [
 // Grid layout settings
 const isDesktop = SCREEN_WIDTH > 600;
 const columns = isDesktop ? 5 : 3; 
-const rows = isDesktop ? 4 : Math.ceil(members.length / 3);
+const rows = Math.ceil(members.length / columns);
 const cardSize = isDesktop ? 160 : 100;
 const cardHeightMultiplier = 1.6;
 const horizontalSpacing = isDesktop ? 40 : 10;
@@ -67,10 +67,7 @@ export const MonkeAllianceScreen = () => {
           {Array.from({ length: rows }).map((_, rowIndex) => (
             <View 
               key={rowIndex} 
-              style={[
-                styles.row, 
-                { gap: horizontalSpacing, marginBottom: verticalSpacing }
-              ]}
+              style={[styles.row, { gap: horizontalSpacing, marginBottom: verticalSpacing }]}
             >
               {Array.from({ length: columns }).map((_, colIndex) => {
                 const memberIndex = rowIndex * columns + colIndex;
@@ -84,7 +81,10 @@ export const MonkeAllianceScreen = () => {
                     style={[styles.card, { width: cardSize, height: cardSize * cardHeightMultiplier }]} 
                     disabled={!member.clickable}
                   >
-                    <Image source={require('../../../assets/Armor/DefaultPlaceholder.jpg')} style={styles.characterImage} />
+                    <Image 
+                      source={member.image || require('../../../assets/Armor/DefaultPlaceholder.jpg')} 
+                      style={styles.characterImage} 
+                    />
                     <Text style={styles.name}>{member.name}</Text>
                     <Text style={styles.codename}>{member.codename}</Text>
                   </TouchableOpacity>
