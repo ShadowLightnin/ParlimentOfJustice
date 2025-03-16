@@ -15,17 +15,17 @@ const moreMembers = [
     'Xzavier','Quinton','Quinton C','Quincy',
   ];
 
-// 🎯 Generate member list with images and positions
-const generatedMembers = moreMembers.map((name, i) => ({
-  name,
-  codename: 'Legion Member',
-  screen: `Member${i + 1}`,
-  clickable: false,
-  position: [Math.floor(i / 3), i % 3],
-  image: legionImages[name] || require('../../assets/Armor/PlaceHolder.jpg'),
-}));
+// 🎯 Generate member list with image and clickable status from legionImages
+const generatedMembers = moreMembers.map((name, i) => {
+  const memberData = legionImages[name] || { image: require('../../assets/Armor/PlaceHolder.jpg'), clickable: false };
 
-// 🎯 Final list combining base members with generated members
-const fullLegionairesList = [...baseLegionaires, ...generatedMembers];
+  return {
+    name,
+    codename: 'Legion Member',
+    screen: `Member${i + 1}`,
+    position: [Math.floor(i / 3), i % 3],
+    ...memberData,
+  };
+});
 
-export default fullLegionairesList;
+export default generatedMembers;

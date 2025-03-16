@@ -21,14 +21,13 @@ const moreMembers = Array.from({ length: 100 }, (_, i) => ({
       'Upsilon Ultra', 'Phi Ultra', 'Chi Ultra', 'Psi Ultra', 'Omega Ultra'
   ][i] || 'Unknown'}`,
   screen: `Member${i + 5}`,
-  clickable: false,
   position: [Math.floor((i + 5) / 3), (i + 5) % 3],
 }));
 
-// 🎯 Combine both base and additional members
+// 🎯 Combine both base and additional members and map images and clickable status
 const fullConstollationList = [...baseConstollation, ...moreMembers].map(member => ({
   ...member,
-  image: constollationImages[member.name] || require('../../assets/Armor/PlaceHolder.jpg'),
+  ...constollationImages[member.name] || { image: require('../../assets/Armor/PlaceHolder.jpg'), clickable: false },
 }));
 
 export default fullConstollationList;

@@ -16,7 +16,7 @@ import ConstollationMembers from './ConstollationMembers';
 // Screen dimensions
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
-// Grid settings
+// Grid layout settings
 const isDesktop = SCREEN_WIDTH > 600;
 const columns = isDesktop ? 6 : 3;
 const cardSize = isDesktop ? 160 : 100;
@@ -24,11 +24,8 @@ const cardHeightMultiplier = 1.6;
 const horizontalSpacing = isDesktop ? 40 : 10;
 const verticalSpacing = isDesktop ? 50 : 20;
 
-// Calculate total rows based on the number of members
+// Calculate rows based on number of members
 const rows = Math.ceil(ConstollationMembers.length / columns);
-
-// Check for empty cells
-const isEmpty = (row, col) => !ConstollationMembers[row * columns + col];
 
 export const ConstollationScreen = () => {
   const navigation = useNavigation();
@@ -54,32 +51,27 @@ export const ConstollationScreen = () => {
         {/* Grid Layout */}
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {Array.from({ length: rows }).map((_, rowIndex) => (
-            <View
-              key={rowIndex}
-              style={[
-                styles.row,
-                { marginBottom: verticalSpacing, gap: horizontalSpacing },
-              ]}
-            >
+            <View key={rowIndex} style={[styles.row, { marginBottom: verticalSpacing, gap: horizontalSpacing }]}>
               {Array.from({ length: columns }).map((_, colIndex) => {
                 const memberIndex = rowIndex * columns + colIndex;
                 const member = ConstollationMembers[memberIndex];
 
-                if (isEmpty(rowIndex, colIndex)) {
-                  return <View key={colIndex} style={{ width: cardSize, height: cardSize * cardHeightMultiplier }} />;
-                }
+                if (!member) return <View key={colIndex} style={{ width: cardSize, height: cardSize * cardHeightMultiplier }} />;
 
                 return (
                   <TouchableOpacity
                     key={colIndex}
-                    style={[styles.card, { width: cardSize, height: cardSize * cardHeightMultiplier }]}
-                    disabled={!member?.clickable}
-                    onPress={() => member?.clickable && navigation.navigate(member.screen)}
+                    style={[
+                      styles.card,
+                      { width: cardSize, height: cardSize * cardHeightMultiplier },
+                      !member.clickable && styles.disabledCard,
+                    ]}
+                    disabled={!member.clickable}
                   >
-                    {member?.image && <Image source={member.image} style={styles.characterImage} />}
-                    <Text style={styles.name}>{member?.name || ''}</Text>
-                    <Text style={styles.codename}>{member?.codename || ''}</Text>
-                    {!member?.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+                    <Image source={member.image} style={styles.characterImage} />
+                    <Text style={styles.name}>{member.name}</Text>
+                    <Text style={styles.codename}>{member.codename}</Text>
+                    {!member.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
                   </TouchableOpacity>
                 );
               })}
@@ -155,6 +147,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 1.5,
     shadowRadius: 10,
     elevation: 5,
+  },
+  disabledCard: {
+    backgroundColor: '#444',
+    shadowColor: 'transparent',
   },
   characterImage: {
     width: '100%',

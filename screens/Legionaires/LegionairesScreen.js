@@ -19,7 +19,7 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 // Grid layout settings
 const isDesktop = SCREEN_WIDTH > 600; 
 const columns = isDesktop ? 7 : 3; 
-const rows = isDesktop ? 30 : Math.ceil(legionairesMembers.length / 3);
+const rows = Math.ceil(legionairesMembers.length / columns);
 const cardSize = isDesktop ? 160 : 100;
 const cardHeightMultiplier = 1.6;
 const horizontalSpacing = isDesktop ? 40 : 10;
@@ -61,13 +61,19 @@ export const LegionairesScreen = () => {
                     key={colIndex}
                     style={[
                       styles.card,
-                      { width: cardSize, height: cardSize * cardHeightMultiplier, marginHorizontal: horizontalSpacing / 2 }
+                      { 
+                        width: cardSize, 
+                        height: cardSize * cardHeightMultiplier, 
+                        marginHorizontal: horizontalSpacing / 2,
+                        ...(member.clickable ? {} : styles.disabledCard),
+                      },
                     ]}
                     disabled={!member.clickable}
                   >
                     <Image source={member.image} style={styles.characterImage} />
                     <Text style={styles.name}>{member.name}</Text>
                     <Text style={styles.codename}>{member.codename}</Text>
+                    {!member.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
                   </TouchableOpacity>
                 );
               })}
@@ -144,6 +150,10 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 5,
   },
+  disabledCard: {
+    backgroundColor: '#444',
+    shadowColor: 'transparent',
+  },
   characterImage: {
     width: '100%',
     height: '70%',
@@ -163,6 +173,12 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     color: '#aaa',
     textAlign: 'center',
+  },
+  disabledText: {
+    fontSize: 10,
+    color: '#ff4444',
+    textAlign: 'center',
+    marginTop: 5,
   },
 });
 

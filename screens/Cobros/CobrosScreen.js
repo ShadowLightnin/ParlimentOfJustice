@@ -46,7 +46,7 @@ const rows = Math.ceil(members.length / columns);
 const cardSize = isDesktop ? 160 : 100;
 const cardHeightMultiplier = 1.6;
 const horizontalSpacing = isDesktop ? 40 : 10;
-const verticalSpacing = isDesktop ? 50 : 20; // Adjust vertical spacing here
+const verticalSpacing = isDesktop ? 50 : 20; 
 
 export const CobrosScreen = () => {
   const navigation = useNavigation();
@@ -85,7 +85,11 @@ export const CobrosScreen = () => {
                 return (
                   <TouchableOpacity 
                     key={colIndex} 
-                    style={[styles.card, { width: cardSize, height: cardSize * cardHeightMultiplier }]} 
+                    style={[
+                      styles.card, 
+                      { width: cardSize, height: cardSize * cardHeightMultiplier },
+                      !member.clickable && styles.disabledCard
+                    ]}
                     disabled={!member.clickable}
                   >
                     <Image 
@@ -94,6 +98,7 @@ export const CobrosScreen = () => {
                     />
                     <Text style={styles.name}>{member.name}</Text>
                     <Text style={styles.codename}>{member.codename}</Text>
+                    {!member.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
                   </TouchableOpacity>
                 );
               })}
@@ -114,7 +119,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    width: SCREEN_WIDTH,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     alignItems: 'center',
   },
@@ -145,7 +149,6 @@ const styles = StyleSheet.create({
   scrollContainer: {
     paddingBottom: 20,
     flexGrow: 1,
-    width: SCREEN_WIDTH,
     alignItems: 'center',
   },
   row: {
@@ -163,12 +166,16 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 5,
   },
+  disabledCard: {
+    shadowColor: 'transparent',
+    // opacity: 0.5,
+    backgroundColor: '#444',
+
+  },
   characterImage: {
     width: '100%',
     height: '70%',
     resizeMode: 'cover',
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
   },
   name: {
     fontSize: 12,
@@ -182,6 +189,11 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     color: '#aaa',
     textAlign: 'center',
+  },
+  disabledText: {
+    fontSize: 10,
+    color: '#ff4444',
+    marginTop: 5,
   },
 });
 

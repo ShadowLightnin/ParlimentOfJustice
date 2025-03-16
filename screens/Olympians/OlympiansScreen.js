@@ -27,9 +27,6 @@ const verticalSpacing = isDesktop ? 50 : 20;
 // Rows based on number of members
 const rows = Math.ceil(OlympiansMembers.length / columns);
 
-// Check if a cell should be empty
-const isEmpty = (row, col) => !OlympiansMembers[row * columns + col];
-
 export const OlympiansScreen = () => {
   const navigation = useNavigation();
 
@@ -56,23 +53,22 @@ export const OlympiansScreen = () => {
           {Array.from({ length: rows }).map((_, rowIndex) => (
             <View
               key={rowIndex}
-              style={[
-                styles.row,
-                { marginBottom: verticalSpacing, gap: horizontalSpacing },
-              ]}
+              style={[styles.row, { marginBottom: verticalSpacing, gap: horizontalSpacing }]}
             >
               {Array.from({ length: columns }).map((_, colIndex) => {
                 const memberIndex = rowIndex * columns + colIndex;
                 const member = OlympiansMembers[memberIndex];
 
-                if (isEmpty(rowIndex, colIndex)) {
-                  return <View key={colIndex} style={{ width: cardSize, height: cardSize * cardHeightMultiplier }} />;
-                }
+                if (!member) return <View key={colIndex} style={{ width: cardSize, height: cardSize * cardHeightMultiplier }} />;
 
                 return (
                   <TouchableOpacity
                     key={colIndex}
-                    style={[styles.card, { width: cardSize, height: cardSize * cardHeightMultiplier }]}
+                    style={[
+                      styles.card,
+                      { width: cardSize, height: cardSize * cardHeightMultiplier },
+                      !member.clickable && styles.disabledCard,
+                    ]}
                     disabled={!member?.clickable}
                     onPress={() => member?.clickable && navigation.navigate(member.screen)}
                   >
@@ -155,6 +151,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 1.5,
     shadowRadius: 10,
     elevation: 5,
+  },
+  disabledCard: {
+    shadowColor: 'transparent',
+    backgroundColor: '#444',
   },
   characterImage: {
     width: '100%',

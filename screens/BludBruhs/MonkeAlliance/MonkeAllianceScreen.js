@@ -78,7 +78,11 @@ export const MonkeAllianceScreen = () => {
                 return (
                   <TouchableOpacity 
                     key={colIndex} 
-                    style={[styles.card, { width: cardSize, height: cardSize * cardHeightMultiplier }]} 
+                    style={[
+                      styles.card, 
+                      { width: cardSize, height: cardSize * cardHeightMultiplier },
+                      !member.clickable && styles.disabledCard
+                    ]}
                     disabled={!member.clickable}
                   >
                     <Image 
@@ -87,6 +91,7 @@ export const MonkeAllianceScreen = () => {
                     />
                     <Text style={styles.name}>{member.name}</Text>
                     <Text style={styles.codename}>{member.codename}</Text>
+                    {!member.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
                   </TouchableOpacity>
                 );
               })}
@@ -156,6 +161,10 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 5,
   },
+  disabledCard: {
+    shadowColor: 'transparent',
+    backgroundColor: '#444',
+  },
   characterImage: {
     width: '100%',
     height: '70%',
@@ -175,6 +184,11 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     color: '#aaa',
     textAlign: 'center',
+  },
+  disabledText: {
+    fontSize: 10,
+    color: '#ff4444',
+    marginTop: 5,
   },
 });
 

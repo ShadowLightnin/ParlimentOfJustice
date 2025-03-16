@@ -189,6 +189,7 @@ const styles = StyleSheet.create({
   disabledCard: {
     backgroundColor: '#444',
     shadowColor: 'transparent',
+    // opacity: 0.5, // Slightly dim the card
   },
   disabledText: {
     fontSize: 10,
