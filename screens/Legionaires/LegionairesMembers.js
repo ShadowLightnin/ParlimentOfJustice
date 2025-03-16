@@ -22,7 +22,7 @@ const generatedMembers = moreMembers.map((name, i) => ({
   screen: `Member${i + 1}`,
   clickable: false,
   position: [Math.floor(i / 3), i % 3],
-  image: legionImages[name] || require('../../assets/Armor/DefaultPlaceHolder.jpg'),
+  image: legionImages[name] || require('../../assets/Armor/PlaceHolder.jpg'),
 }));
 
 // 🎯 Final list combining base members with generated members

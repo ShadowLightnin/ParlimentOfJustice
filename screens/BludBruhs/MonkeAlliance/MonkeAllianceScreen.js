@@ -82,7 +82,7 @@ export const MonkeAllianceScreen = () => {
                     disabled={!member.clickable}
                   >
                     <Image 
-                      source={member.image || require('../../../assets/Armor/DefaultPlaceHolder.jpg')} 
+                      source={member.image || require('../../../assets/Armor/PlaceHolder.jpg')} 
                       style={styles.characterImage} 
                     />
                     <Text style={styles.name}>{member.name}</Text>

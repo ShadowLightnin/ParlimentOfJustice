@@ -20,7 +20,7 @@ const members = [
   { name: 'Tanner Despain', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/TannerDPlaceHolder.jpg') },
   { name: 'Wesley Holbrook', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/WesleyHPlaceHolder.jpg') },
   { name: 'Josh Larson', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/JoshLPlaceHolder.jpg') },
-  { name: 'Ethan Workman', codename: '', screen: '', clickable: false },
+  { name: 'Ethan Workman', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/PlaceHolder.jpg') },
   { name: 'Jonah Gray', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/JonahPlaceHolder.jpg') },
   { name: 'Joseph Slack', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/JosephSPlaceHolder.jpg') },
   { name: 'Jaden Boyer', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/JadenPlaceHolder.jpg') },
@@ -31,12 +31,12 @@ const members = [
   { name: 'Nick Larsen', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/NickPlaceHolder.jpg') },
   { name: 'Vanner Johnson', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/Vanner3PlaceHolder.jpg') },
   { name: 'Tommy Holbrook', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/TommyHPlaceHolder.jpg') },
-  { name: 'Alex Wood', codename: '', screen: '', clickable: false },
+  { name: 'Alex Wood', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/PlaceHolder.jpg') },
   { name: 'Rick Holly', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/RickPlaceHolder.jpg') },
   { name: 'Trent Cook', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/TrentPlaceHolder.jpg') },
   { name: 'Robbie Petersen', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/RobbiePlaceHolder.jpg') },
   { name: 'Micheal', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/MichealPlaceHolder.jpg') },
-  { name: 'Kyle', codename: '', screen: '', clickable: false },
+  { name: 'Kyle', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/PlaceHolder.jpg') },
 ];
 
 // Grid layout settings
@@ -89,7 +89,7 @@ export const CobrosScreen = () => {
                     disabled={!member.clickable}
                   >
                     <Image 
-                      source={member.image || require('../../assets/Armor/DefaultPlaceHolder.jpg')} 
+                      source={member.image || require('../../assets/Armor/PlaceHolder.jpg')} 
                       style={styles.characterImage} 
                     />
                     <Text style={styles.name}>{member.name}</Text>

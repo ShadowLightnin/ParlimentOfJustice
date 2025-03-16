@@ -28,7 +28,7 @@ const moreMembers = Array.from({ length: 100 }, (_, i) => ({
 // 🎯 Combine both base and additional members
 const fullConstollationList = [...baseConstollation, ...moreMembers].map(member => ({
   ...member,
-  image: constollationImages[member.name] || require('../../assets/Armor/DefaultPlaceHolder.jpg'),
+  image: constollationImages[member.name] || require('../../assets/Armor/PlaceHolder.jpg'),
 }));
 
 export default fullConstollationList;
