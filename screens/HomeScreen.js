@@ -20,9 +20,9 @@ const cardHeight = isDesktop ? 240 : 150;
 const cardSpacing = isDesktop ? 30 : 10;
 
 const factions = [
-  { name: 'The Titans', screen: 'Titans', clickable: true, image: require('../assets/BackGround/Titans.jpg') },
-  { name: 'The Eclipse', screen: 'Eclipse', clickable: true, image: require('../assets/BackGround/Enforcers.jpg') },
-  { name: 'Olympians', screen: 'Olympians', clickable: true, image: require('../assets/BackGround/Kin.jpg') },
+  { name: 'Titans', screen: 'Titans', clickable: true, image: require('../assets/BackGround/TitansPlaceHolder.jpg') },
+  { name: 'Eclipse', screen: 'Eclipse', clickable: true, image: require('../assets/BackGround/EclipsePlaceHolder.jpg') },
+  { name: 'Olympians', screen: 'Olympians', clickable: true, image: require('../assets/BackGround/Olympian.jpg') },
   { name: 'Cobros', screen: 'Cobros', clickable: true, image: require('../assets/BackGround/Cobros.jpg') },
   { name: 'ASTC (Spartans)', screen: 'ASTC', clickable: true, image: require('../assets/BackGround/26.jpg') },
   { name: 'BludBruhs', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/Bludbruh2.jpg') },
@@ -146,11 +146,13 @@ const styles = StyleSheet.create({
   },
   imageBackground: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-start', // Align items to the top
+    alignItems: 'center', 
     width: '100%',
     height: '100%',
+    paddingTop: 0, // Add padding to create space from the top
   },
+  
   imageOverlay: {
     opacity: 0.9,
   },

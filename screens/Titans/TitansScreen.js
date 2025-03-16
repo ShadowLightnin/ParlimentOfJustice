@@ -43,7 +43,7 @@ const TitansScreen = () => {
 
   return (
     <ImageBackground 
-      source={require('../../assets/BackGround/Titans.jpg')} 
+      source={require('../../assets/BackGround/TitansPlaceHolder.jpg')} 
       style={styles.background}
     >
       <SafeAreaView style={styles.container}>

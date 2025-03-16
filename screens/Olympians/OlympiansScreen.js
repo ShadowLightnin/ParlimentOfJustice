@@ -38,7 +38,7 @@ export const OlympiansScreen = () => {
   };
 
   return (
-    <ImageBackground source={require('../../assets/BackGround/Kin.jpg')} style={styles.background}>
+    <ImageBackground source={require('../../assets/BackGround/Olympian.jpg')} style={styles.background}>
       <SafeAreaView style={styles.container}>
         {/* Header Section */}
         <View style={styles.headerWrapper}>

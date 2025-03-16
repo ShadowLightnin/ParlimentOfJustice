@@ -43,7 +43,7 @@ const EclipseScreen = () => {
 
   return (
     <ImageBackground 
-      source={require('../../assets/BackGround/Enforcers.jpg')} 
+      source={require('../../assets/BackGround/EclipsePlaceHolder.jpg')} 
       style={styles.background}
     >
       <SafeAreaView style={styles.container}>

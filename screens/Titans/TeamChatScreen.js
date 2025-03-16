@@ -11,7 +11,7 @@ const TeamChatScreen = () => {
 
   return (
     <ImageBackground
-      source={require("../../assets/BackGround/Titans.jpg")} // Add your image file here
+      source={require("../../assets/BackGround/TitansPlaceHolder.jpg")} // Add your image file here
       style={styles.background}
     >
       <View style={styles.container}>
