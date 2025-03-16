@@ -89,7 +89,7 @@ export const CobrosScreen = () => {
                     disabled={!member.clickable}
                   >
                     <Image 
-                      source={member.image || require('../../assets/Armor/DefaultPlaceholder.jpg')} 
+                      source={member.image || require('../../assets/Armor/DefaultPlaceHolder.jpg')} 
                       style={styles.characterImage} 
                     />
                     <Text style={styles.name}>{member.name}</Text>
