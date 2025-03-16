@@ -17,7 +17,7 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // Member Data
 const members = [
-  { name: 'Zeke', codename: '', screen: '', clickable: false },
+  { name: 'Zeke', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/ZekePlaceHolder.jpg')  },
   { name: 'Elijah Potter', codename: '', screen: '', clickable: false },
   { name: 'Tom C', codename: '', screen: '', clickable: false },
   { name: 'Ammon T', codename: '', screen: '', clickable: false },
