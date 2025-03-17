@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, FlatList, Dimensions, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
+import { Audio } from 'expo-av';
 
 // Screen dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -14,11 +15,27 @@ const isDesktop = SCREEN_WIDTH > 600;
 const cardSize = isDesktop ? 450 : 300; 
 const imageSize = isDesktop ? 400 : 250; 
 
-const DemonsSection = () => {
+const DemonsSection = ({ navigation }) => { // Assuming navigation is passed as a prop
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDemon, setSelectedDemon] = useState(null);
 
-  const handlePress = (name) => {
+  const playNateSound = async () => {
+    const { sound } = await Audio.Sound.createAsync(
+      require('../../assets/audio/NateSound.mp4')
+    );
+    await sound.playAsync();
+
+    // Navigate to Nate's screen after a delay
+    // setTimeout(() => {
+    //   navigation.navigate('NateScreen'); // Assuming you have a screen for Nate
+    // }, 3000); // 3-second delay before navigation
+  };
+
+  const handlePress = async (name) => {
+    if (name === 'Demon Lord Nate') {
+      await playNateSound();
+    }
+
     setSelectedDemon(name);
     setModalVisible(true);
   };

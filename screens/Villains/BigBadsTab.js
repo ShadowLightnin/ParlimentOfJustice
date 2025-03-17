@@ -9,9 +9,9 @@ const bigBads = [
   { name: 'Obsidian', image: require('../../assets/Villains/Obsidian.jpg'), clickable: true },
   { name: 'Umbra Nex', image: require('../../assets/Villains/UmbraNex.jpg'), clickable: true },
   { name: 'Kaidan Vyros', image: require('../../assets/Villains/KaidanVyros.jpg'), clickable: true },
-  { name: 'Stormshade', image: require('../../assets/Villains/Stormshade.jpg'), clickable: false },
+  { name: 'Stormshade', image: require('../../assets/Villains/Stormshade.jpg'), clickable: true },
   { name: 'Void Conqueror', image: require('../../assets/Villains/Kharon.jpg'), clickable: true },
-  { name: 'Erevos', image: require('../../assets/Villains/Erevos.jpg'), clickable: false },
+  { name: 'Erevos', image: require('../../assets/Villains/Erevos.jpg'), clickable: true },
 ];
 
 // Grid layout settings

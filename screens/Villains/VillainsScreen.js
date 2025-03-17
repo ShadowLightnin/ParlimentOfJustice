@@ -26,7 +26,7 @@ const VillainsScreen = () => {
           <Tab.Screen name="Villains" component={VillainsTab} />
           <Tab.Screen name="Big Bads" component={BigBadsTab} />
         </Tab.Navigator>
-
+        <Text style={styles.header}>The Enlightened</Text>
         {/* Demons Section below the tabs */}
         <DemonsSection />
       </View>
@@ -50,6 +50,14 @@ const styles = StyleSheet.create({
   tabLabel: {
     fontSize: 16,
     color: '#FFF',
+  },
+  header: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#750000',
+    textAlign: 'center',
+    textShadowColor: '#cacaca',
+    textShadowRadius: 20,
   },
 });
 
