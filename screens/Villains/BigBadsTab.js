@@ -1,70 +1,97 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, FlatList } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ScrollView, StyleSheet, Dimensions } from 'react-native';
+
+// Screen dimensions
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 // Big Bads data with images
 const bigBads = [
-  { name: 'Obsidian', image: require('../../assets/Villains/Obsidian.jpg') },
-  { name: 'Umbra Nex', image: require('../../assets/Villains/UmbraNex.jpg') },
-  { name: 'Kaidan Vyros', image: require('../../assets/Villains/KaidanVyros.jpg') },
-  { name: 'Stormshade', image: require('../../assets/Villains/Stormshade.jpg') },
-  { name: 'Void Conqueror', image: require('../../assets/Villains/Kharon.jpg') },
-  { name: 'Erevos', image: require('../../assets/Villains/Erevos.jpg') },
+  { name: 'Obsidian', image: require('../../assets/Villains/Obsidian.jpg'), clickable: true },
+  { name: 'Umbra Nex', image: require('../../assets/Villains/UmbraNex.jpg'), clickable: true },
+  { name: 'Kaidan Vyros', image: require('../../assets/Villains/KaidanVyros.jpg'), clickable: true },
+  { name: 'Stormshade', image: require('../../assets/Villains/Stormshade.jpg'), clickable: false },
+  { name: 'Void Conqueror', image: require('../../assets/Villains/Kharon.jpg'), clickable: true },
+  { name: 'Erevos', image: require('../../assets/Villains/Erevos.jpg'), clickable: false },
 ];
 
+// Grid layout settings
+const isDesktop = SCREEN_WIDTH > 600;
+const cardSize = isDesktop ? 250 : 200;
+const cardHeightMultiplier = 1.6;
+const horizontalSpacing = isDesktop ? 40 : 15;
+const verticalSpacing = isDesktop ? 50 : 20;
+
+const renderBigBadCard = (bigBad) => (
+  <TouchableOpacity
+    key={bigBad.name}
+    style={[
+      styles.card,
+      { width: cardSize, height: cardSize * cardHeightMultiplier },
+      bigBad.clickable ? styles.clickable : styles.notClickable,
+    ]}
+    disabled={!bigBad.clickable}
+  >
+    <Image source={bigBad.image} style={styles.image} />
+    <Text style={styles.name}>{bigBad.name}</Text>
+    {!bigBad.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+  </TouchableOpacity>
+);
+
 const BigBadsTab = () => {
-  const renderBigBad = ({ item }) => (
-    <View style={styles.bigBadCard}>
-      <Image source={item.image} style={styles.bigBadImage} />
-      <Text style={styles.bigBadName}>{item.name}</Text>
-    </View>
-  );
+  const totalCardWidth = bigBads.length * (cardSize + horizontalSpacing);
+  const paddingHorizontal = Math.max((SCREEN_WIDTH - totalCardWidth) / 1.5, 0);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>List of Big Bads</Text>
-      <FlatList
-        data={bigBads}
-        keyExtractor={(item) => item.name}
-        renderItem={renderBigBad}
-        contentContainerStyle={styles.listContainer}
-      />
-    </View>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={[
+        styles.scrollContainer,
+        { paddingHorizontal, gap: horizontalSpacing },
+      ]}
+    >
+      {bigBads.map(renderBigBadCard)}
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  scrollContainer: {
+    paddingVertical: verticalSpacing,
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#222',
-    paddingTop: 20,
-    alignItems: 'center',
   },
-  header: {
-    fontSize: 32,
-    color: 'white',
-    marginBottom: 20,
-  },
-  listContainer: {
-    paddingBottom: 20,
-  },
-  bigBadCard: {
-    alignItems: 'center',
-    marginBottom: 20,
-    backgroundColor: '#444',
-    padding: 15,
+  card: {
     borderRadius: 10,
-    width: 250,
-    justifyContent: 'center',
+    overflow: 'hidden',
+    elevation: 5,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
-  bigBadImage: {
-    width: 200,
-    height: 200,
-    borderRadius: 10,
+  clickable: {
+    borderColor: 'purple',
+    borderWidth: 2,
   },
-  bigBadName: {
-    marginTop: 10,
+  notClickable: {
+    opacity: 0.5,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  name: {
+    position: 'absolute',
+    bottom: 10,
+    left: 10,
+    fontSize: 16,
     color: 'white',
-    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  disabledText: {
+    fontSize: 12,
+    color: '#ff4444',
+    marginTop: 5,
   },
 });
 
