@@ -9,6 +9,7 @@ import AuthContextProvider, { AuthContext } from './context/auth-context';
 
 import { StartScreen } from './screens/StartScreen';
 import { HomeScreen } from './screens/HomeScreen';
+import VillainsScreen from './screens/Villains/VillainsScreen';
 import { TitansStack } from './navigation/TitansStack';
 import { EclipseStack } from './navigation/EclipseStack';
 import { OlympiansStack } from './navigation/OlympiansStack';
@@ -41,6 +42,7 @@ function AuthenticatedStack() {
     // <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="VillainsScreen" component={VillainsScreen} />
         <Stack.Screen name="PublicChat" component={PublicChatScreen} />
         <Stack.Screen name="Admin" component={AdminStack} />
         <Stack.Screen name="Titans" component={TitansStack} />
@@ -51,7 +53,6 @@ function AuthenticatedStack() {
         <Stack.Screen name="BludBruhs" component={BludBruhsStack} />
         <Stack.Screen name="Legionaires" component={LegionairesStack} />
         <Stack.Screen name="Constollation" component={ConstollationStack} />
-        {/* <Stack.Screen name="TeamChat" component={TeamChatScreen} /> */}
         <Stack.Screen name="Designs" component={DesignsStack} /> 
       </Stack.Navigator>
     // </NavigationContainer>
