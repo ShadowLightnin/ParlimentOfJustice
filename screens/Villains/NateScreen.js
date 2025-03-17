@@ -1,7 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, Button } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
 
-const NateScreen = ({ navigation }) => {
+const NateScreen = () => { 
+  const navigation = useNavigation(); // ✅ Use this ONLY if the prop is missing
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>🔥 Demon Lord Nate 🔥</Text>

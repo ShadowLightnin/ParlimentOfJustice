@@ -7,7 +7,7 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 // Demon Lords data with images
 const demonLords = [
-  { name: 'Demon Lord Nate', image: require('../../assets/Villains/Nate.jpg'), clickable: true },
+  { name: 'Demon Lord Nate', screen: 'NateScreen', image: require('../../assets/Villains/Nate.jpg'), clickable: true },
 ];
 
 // Grid layout settings
