@@ -19,7 +19,7 @@ const members = [
   { name: 'TBA', codename: '???', screen: '', clickable: false, position: [0, 0], image: require('../../assets/Armor/PlaceHolder.jpg') },
   { name: 'James', codename: 'Gentle Guardian', screen: 'James', clickable: false, position: [0, 2], image: require('../../assets/Armor/JamesPlaceHolder.jpg') },
   { name: 'Kelsie', codename: 'Shutter Dancer', screen: 'Kelsie', clickable: false, position: [1, 0], image: require('../../assets/Armor/KelsiePlaceHolder2.jpg') },
-  { name: 'Aileen', codename: 'Ariata', screen: 'Aileen', clickable: false, position: [1, 1], image: require('../../assets/Armor/AileenPlaceHolder2.jpg') },
+  { name: 'Aileen', codename: 'Ariata', screen: 'Aileen', clickable: true, position: [1, 1], image: require('../../assets/Armor/AileenPlaceHolder2.jpg') },
   { name: 'TBA', codename: '???', screen: '', clickable: false, position: [1, 2], image: require('../../assets/Armor/PlaceHolder.jpg') },
   { name: 'Myran', codename: 'Techno Sentinel', screen: 'Myran', clickable: false, position: [2, 0], image: require('../../assets/Armor/MyranPlaceHolder.jpg') },
   { name: 'TBA', codename: '???', screen: '', clickable: false, position: [2, 2], image: require('../../assets/Armor/PlaceHolder.jpg') },
