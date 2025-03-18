@@ -21,7 +21,7 @@ const members = [
   { name: 'Joseph', codename: '', screen: '', clickable: false, position: [1, 0], image: require('../../assets/Armor/JosephDPlaceHolder.jpg') },
   { name: 'James', codename: '', screen: '', clickable: false, position: [1, 1], image: require('../../assets/Armor/JamesBbPlaceHolder.jpg') },
   { name: 'Tanner', codename: '', screen: '', clickable: false, position: [1, 2], image: require('../../assets/Armor/TannerBbPlaceHolder.jpg') },
-  { name: 'Ranger Squad', codename: '', screen: '', clickable: false, position: [2, 0], image: require('../../assets/Armor/PlaceHolder.jpg') },
+  { name: 'Ranger Squad', codename: '', screen: 'RangerSquad', clickable: true, position: [2, 0], image: require('../../assets/BackGround/RangerSquad.jpg') },
   { name: 'MonkeAlliance', codename: '', screen: 'MonkeAllianceScreen', clickable: true, position: [2, 2], image: require('../../assets/BackGround/Monke.jpg') },
 ];
 

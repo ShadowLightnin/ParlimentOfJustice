@@ -12,7 +12,7 @@ import UploadDesign from '../components/UploadDesign';
 // import Joseph from '../screens/BludBruhs/Joseph';
 // import James from '../screens/BludBruhs/James';
 // import Tanner from '../screens/BludBruhs/Tanner';
-// import RangerSquad from '../screens/BludBruhs/RangerSquad';
+import RangerSquad from '../screens/BludBruhs/Ranger_Squad17/RangerSquad';
 import MonkeAllianceScreen from '../screens/BludBruhs/MonkeAlliance/MonkeAllianceScreen';
 
 const Stack = createNativeStackNavigator();
@@ -29,7 +29,7 @@ export function BludBruhsStack() {
       {/* <Stack.Screen name="Joseph" component={Joseph} /> */}
       {/* <Stack.Screen name="James" component={James} /> */}
       {/* <Stack.Screen name="Tanner" component={Tanner} /> */}
-      {/* <Stack.Screen name="RangerSquad" component={RangerSquad} /> */}
+      <Stack.Screen name="RangerSquad" component={RangerSquad} />
       <Stack.Screen name="MonkeAllianceScreen" component={MonkeAllianceScreen} />    
     </Stack.Navigator>
   );
