@@ -18,11 +18,11 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 // Member Data with Unique Image Paths
 const members = [
   { name: '', codename: 'Captain Zardo', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger12.jpg') },
-  { name: '', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger1.jpg') },
-  { name: '', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger2.jpg') },
-  { name: '', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger7.jpg') },
-  { name: '', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger8.jpg') },
-  { name: '', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger9.jpg') },
+  { name: 'CT-8949', codename: 'Blitz', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger1.jpg') },
+  { name: 'CT-7600', codename: 'Lt. Ridge', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger2.jpg') },
+  { name: 'CT-1276', codename: 'ARC Tarin', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger7.jpg') },
+  { name: 'CT-8681', codename: 'Venom', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger8.jpg') },
+  { name: 'CT-8949', codename: 'Rancor', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger9.jpg') },
   { name: '', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger10.jpg') },
   { name: '', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger11.jpg') },
   { name: '', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger3.jpg') },
