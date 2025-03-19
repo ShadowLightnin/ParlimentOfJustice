@@ -25,6 +25,9 @@ const bigBads = [
   { name: 'Stormshade', screen: 'StormshadeScreen', image: require('../../assets/Villains/Stormshade.jpg'), clickable: true },
   { name: 'Void Conqueror', screen: 'VoidConquerorScreen', image: require('../../assets/Villains/Kharon.jpg'), clickable: true },
   { name: 'Erevos', screen: 'ErevosScreen', image: require('../../assets/Villains/Erevos.jpg'), clickable: true },
+
+    // { name: '', screen: '', image: require('../../assets/Villains/.jpg'), clickable: false },
+
 ];
 
 // Card dimensions for desktop and mobile

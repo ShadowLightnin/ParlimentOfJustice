@@ -62,7 +62,7 @@ const DemonsSection = () => {
     >
       <Image source={demon.image} style={[styles.demonImage, { width: imageSize, height: imageSize }]} />
       <Text style={styles.demonName}>{demon.name}</Text>
-      {!demon.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+      {/* {!demon.clickable && <Text style={styles.disabledText}>Not Clickable</Text>} */}
     </TouchableOpacity>
   );
 

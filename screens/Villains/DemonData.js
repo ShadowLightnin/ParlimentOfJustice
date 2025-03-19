@@ -14,6 +14,20 @@ export const demonLords = [
       audio: require('../../assets/audio/Francis.mp4'),
       clickable: true 
     },
+    { 
+      name: 'Obelisk', 
+      screen: '', 
+      image: require('../../assets/Villains/Obelisk.jpg'), 
+    //   audio: require('../../assets/audio/.mp4'),
+      clickable: false 
+    },
+    { 
+        name: 'Thorax', 
+        screen: '', 
+        image: require('../../assets/Villains/Thorax.jpg'), 
+        // audio: require('../../assets/audio/.mp4'),
+        clickable: false 
+      },
     // { 
     //   name: 'Lucifer', 
     //   screen: 'LuciferScreen', 
@@ -29,4 +43,10 @@ export const demonLords = [
     //   clickable: true 
     // }
   ];
-  
+//   { 
+//     name: '', 
+//     screen: '', 
+//     image: require('../../assets/Villains/.jpg'), 
+//     audio: require('../../assets/audio/.mp4'),
+//     clickable: false 
+//   },
