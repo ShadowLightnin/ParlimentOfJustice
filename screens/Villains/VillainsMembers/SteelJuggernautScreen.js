@@ -36,7 +36,7 @@ const SteelJuggernautScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-            • Nemesis: Sam Woodwell “Striker”
+            • Nemesis: Cole Robinson “Cruiser”
 
             </Text>
             <Text style={styles.aboutText}>
