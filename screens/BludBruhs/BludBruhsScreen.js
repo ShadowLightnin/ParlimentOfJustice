@@ -43,7 +43,7 @@ const BludBruhsScreen = () => {
 
   return (
     <ImageBackground 
-      source={require('../../assets/BackGround/bludbruh.jpg')} 
+      source={require('../../assets/BackGround/Bludbruh3.jpg')} 
       style={styles.background}
     >
       <SafeAreaView style={styles.container}>

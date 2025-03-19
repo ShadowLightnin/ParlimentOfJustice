@@ -22,7 +22,7 @@ const cardSpacing = isDesktop ? 30 : 5;
 const factions = [
   { name: 'Titans', screen: 'Titans', clickable: true, image: require('../assets/BackGround/TitansPlaceHolder.jpg') },
   { name: 'Eclipse', screen: 'Eclipse', clickable: true, image: require('../assets/BackGround/EclipsePlaceHolder.jpg') },
-  { name: 'Olympians', screen: 'Olympians', clickable: true, image: require('../assets/BackGround/Olympian.jpg') },
+  { name: 'Olympians', screen: 'Olympians', clickable: true, image: require('../assets/BackGround/Olympians.jpg') },
   { name: 'Cobros', screen: 'Cobros', clickable: true, image: require('../assets/BackGround/Cobros.jpg') },
   { name: 'ASTC (Spartans)', screen: 'ASTC', clickable: true, image: require('../assets/BackGround/26.jpg') },
   { name: 'BludBruhs', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/Bludbruh2.jpg') },
