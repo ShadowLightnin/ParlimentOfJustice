@@ -7,11 +7,11 @@ import UploadDesign from '../components/UploadDesign';
 
 
 // import {  } from '../screens/BludBruhs/';
-// import Sam from '../screens/BludBruhs/Sam';
-// import Cole from '../screens/BludBruhs/Cole';
-// import Joseph from '../screens/BludBruhs/Joseph';
-// import James from '../screens/BludBruhs/James';
-// import Tanner from '../screens/BludBruhs/Tanner';
+import Sam from '../screens/BludBruhs/Sam';
+import Cole from '../screens/BludBruhs/Cole';
+import JosephD from '../screens/BludBruhs/JosephD';
+import JamesBb from '../screens/BludBruhs/JamesBb';
+import TannerBb from '../screens/BludBruhs/TannerBb';
 import RangerSquad from '../screens/BludBruhs/Ranger_Squad17/RangerSquad';
 import MonkeAllianceScreen from '../screens/BludBruhs/MonkeAlliance/MonkeAllianceScreen';
 
@@ -24,11 +24,11 @@ export function BludBruhsStack() {
       <Stack.Screen name="TeamChat" component={TeamChatScreen} />
       <Stack.Screen name="UploadCharacter" component={UploadCharacter} />
       <Stack.Screen name="UploadDesign" component={UploadDesign} />
-      {/* <Stack.Screen name="Sam" component={Sam} /> */}
-      {/* <Stack.Screen name="Cole" component={Cole} /> */}
-      {/* <Stack.Screen name="Joseph" component={Joseph} /> */}
-      {/* <Stack.Screen name="James" component={James} /> */}
-      {/* <Stack.Screen name="Tanner" component={Tanner} /> */}
+      <Stack.Screen name="Sam" component={Sam} />
+      <Stack.Screen name="Cole" component={Cole} />
+      <Stack.Screen name="JosephD" component={JosephD} />
+      <Stack.Screen name="JamesBb" component={JamesBb} />
+      <Stack.Screen name="TannerBb" component={TannerBb} />
       <Stack.Screen name="RangerSquad" component={RangerSquad} />
       <Stack.Screen name="MonkeAllianceScreen" component={MonkeAllianceScreen} />    
     </Stack.Navigator>

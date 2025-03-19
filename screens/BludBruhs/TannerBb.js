@@ -6,7 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
-const Sam = () => {
+const TannerBb = () => {
   const navigation = useNavigation();
 
   return (
@@ -22,7 +22,7 @@ const Sam = () => {
           </TouchableOpacity>
 
           {/* Title */}
-          <Text style={styles.title}>Void Walker</Text>
+          <Text style={styles.title}>Wolff</Text>
 
           {/* Comment Button (Top Right) */}
           <TouchableOpacity style={styles.commentButton} onPress={() => navigation.navigate("Comments")}>
@@ -33,7 +33,7 @@ const Sam = () => {
         {/* Armor Image */}
         <View style={styles.imageContainer}>
           <Image 
-            source={require("../../assets/Armor/SamPlaceHolder.jpg")} 
+            source={require("../../assets/Armor/TannerBbPlaceHolder.jpg")} 
             style={styles.armorImage} 
           />
         </View>
@@ -42,27 +42,9 @@ const Sam = () => {
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
-          Early life: Once a young naive teenager that eventually 
-          embarked on an adventure to another world in a dark mansion 
-          realized his true potential and destiny.
-          </Text>
-          <Text style={styles.aboutText}>
-          Recent Past: The mansion corrupted his mind and gave him 
-          strange powers over darkness and electricity. Later after 
-          seeing his masters ideals as evil he joined the Parliament of Justice 
-          and created the BludBruhs faction. While forgoing his dark past he still 
-          held on to the powers he was taught. And a love for Chroma who he met when
-          he was still a follower of Erevos. Chroma was still corrupted in the shroud 
-          of the evil ones.          
-          </Text>
-          <Text style={styles.aboutText}>
-          Present: Still extremely conflicted, he caused a rift within the 
-          BludBruhs causing many to leave him to join a new faction, The Monke 
-          Alliance. A large bounty was on Sam once he left the evil Enlightened.            
-          </Text>
-          <Text style={styles.aboutText}>
-          Motives: Wants to use dark powers he learned from the Enlightened 
-          but the Monke Alliance is against it.          
+            Will is a warrior clad in the legendary NightHawk armor, designed for both agility and
+            resilience. His armor is a fusion of advanced technology and ancient craftsmanship,
+            making him a formidable force on the battlefield.
           </Text>
         </View>
       </ScrollView>
@@ -146,4 +128,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Sam;
+export default TannerBb;
