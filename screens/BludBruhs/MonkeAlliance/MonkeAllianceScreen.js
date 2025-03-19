@@ -25,11 +25,15 @@ const members = [
   { name: 'Ethan T', codename: 'Bolt Watcher', screen: '', clickable: false, image: require('../../../assets/Armor/EthanPlaceHolder.jpg') },
   { name: 'Alex M', codename: 'Swiftmind', screen: '', clickable: false, image: require('../../../assets/Armor/AlexMPlaceHolder.jpg') },
   { name: 'Damon', codename: 'Pixel Maverick', screen: '', clickable: false, image: require('../../../assets/Armor/DamonPlaceHolder.jpg') },
+  { name: 'Taylor', codename: '', screen: '', clickable: false },
+  { name: 'Rachel', codename: '', screen: '', clickable: false },
+  { name: 'Lauren', codename: '', screen: '', clickable: false },
+  { name: 'Lizzie', codename: '', screen: '', clickable: false },
+  { name: 'Keith', codename: '', screen: '', clickable: false },
+  { name: 'Sandra', codename: '', screen: '', clickable: false },
+  { name: '', codename: 'Lumiel', screen: 'LumielScreen', clickable: true, image: require('../../../assets/Armor/LumielPhantom.jpg')  },
   { name: 'MIA', codename: '', screen: '', clickable: false },
-  { name: 'MIA', codename: '', screen: '', clickable: false },
-  { name: 'MIA', codename: '', screen: '', clickable: false },
-  { name: 'MIA', codename: '', screen: '', clickable: false },
-  { name: 'MIA', codename: '', screen: '', clickable: false },
+
 ];
 
 // Grid layout settings
@@ -76,15 +80,13 @@ export const MonkeAllianceScreen = () => {
                 if (!member) return <View key={colIndex} style={{ width: cardSize, height: cardSize * cardHeightMultiplier }} />;
 
                 return (
-                  <TouchableOpacity 
-                    key={colIndex} 
-                    style={[
-                      styles.card, 
-                      { width: cardSize, height: cardSize * cardHeightMultiplier },
-                      !member.clickable && styles.disabledCard
-                    ]}
-                    disabled={!member.clickable}
-                  >
+                    <TouchableOpacity 
+                      key={colIndex} 
+                      style={[styles.card, { width: cardSize, height: cardSize * cardHeightMultiplier }, !member.clickable && styles.disabledCard]}
+                      onPress={() => member?.clickable && navigation.navigate(member.screen)}
+                      disabled={!member.clickable}
+                    >
+
                     <Image 
                       source={member.image || require('../../../assets/Armor/PlaceHolder.jpg')} 
                       style={styles.characterImage} 

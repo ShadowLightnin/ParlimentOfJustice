@@ -14,6 +14,7 @@ import JamesBb from '../screens/BludBruhs/JamesBb';
 import TannerBb from '../screens/BludBruhs/TannerBb';
 import RangerSquad from '../screens/BludBruhs/Ranger_Squad17/RangerSquad';
 import MonkeAllianceScreen from '../screens/BludBruhs/MonkeAlliance/MonkeAllianceScreen';
+import LumielScreen from '../screens/BludBruhs/MonkeAlliance/LumielScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,7 +31,8 @@ export function BludBruhsStack() {
       <Stack.Screen name="JamesBb" component={JamesBb} />
       <Stack.Screen name="TannerBb" component={TannerBb} />
       <Stack.Screen name="RangerSquad" component={RangerSquad} />
-      <Stack.Screen name="MonkeAllianceScreen" component={MonkeAllianceScreen} />    
-    </Stack.Navigator>
+      <Stack.Screen name="MonkeAllianceScreen" component={MonkeAllianceScreen} />
+      <Stack.Screen name="LumielScreen" component={LumielScreen} />
+      </Stack.Navigator>
   );
 }
