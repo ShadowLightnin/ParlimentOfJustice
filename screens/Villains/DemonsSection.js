@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   },
   demonCard: {
     alignItems: 'center',
-    backgroundColor: '#444',
+    backgroundColor: '#660000dc',
     padding: 20,
     borderRadius: 15,
     marginRight: 20,
