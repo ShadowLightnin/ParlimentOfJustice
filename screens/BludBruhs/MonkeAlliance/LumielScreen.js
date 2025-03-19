@@ -36,13 +36,13 @@ const LumielScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-
+            “No, I am a physical memory of what I once was, I am the life blood of the Mansion you see before you.”
             </Text>
             <Text style={styles.aboutText}>
-
+            “It is my duty to protect all mortals in Melcornia. I created the Mansion as a sssanctuary for a lost family that was stranded here long ago. The Mansion would protect them from the creatures on this planet. Until the demons came and stole the Mansion from me and defiled it. I was once an angel of light, but the grief and sadness of my failure to protect the Montrose family withered away my magnificence"
             </Text>
             <Text style={styles.aboutText}>
-
+            “My name was in a tongue mortals would not understand. In your tongue it would sound something like… Lumiel.”
             </Text>
             <Text style={styles.aboutText}>
 
@@ -107,6 +107,7 @@ const styles = StyleSheet.create({
     },
     armorImage: {
       resizeMode: "contain",
+      opacity: 0.5,
     },
     aboutSection: {
       marginTop: 40,
