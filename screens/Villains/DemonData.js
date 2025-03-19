@@ -16,10 +16,10 @@ export const demonLords = [
     },
     { 
       name: 'Obelisk', 
-      screen: '', 
+      screen: 'ObeliskScreen', 
       image: require('../../assets/Villains/Obelisk.jpg'), 
     //   audio: require('../../assets/audio/.mp4'),
-      clickable: false 
+      clickable: true 
     },
     { 
         name: 'Thorax', 

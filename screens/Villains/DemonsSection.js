@@ -42,12 +42,15 @@ const DemonsSection = () => {
 
   const handlePress = async (demon) => {
     if (demon.audio) {
-      await playDemonSound(demon.audio, demon.screen);
+      await playDemonSound(demon.audio, demon.screen); // 🔊 For demons with audio
+    } else if (demon.screen) {
+      navigation.navigate(demon.screen); // 🚀 For demons with only a screen
+    } else {
+      setSelectedDemon(demon.name); // 🔥 For demons with no screen or audio (like Thorax)
+      setModalVisible(true);
     }
-
-    setSelectedDemon(demon.name);
-    setModalVisible(true);
   };
+  
 
   const renderDemonLord = (demon) => (
     <TouchableOpacity
