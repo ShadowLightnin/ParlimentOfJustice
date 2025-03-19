@@ -21,7 +21,7 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 // Grid layout settings
 const isDesktop = SCREEN_WIDTH > 600;
 const cardSize = isDesktop ? 450 : 300;
-const imageSize = isDesktop ? 400 : 250;
+const imageSize = isDesktop ? 400 : 280;
 
 const DemonsSection = () => {
   const navigation = useNavigation();
@@ -163,8 +163,8 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   clickable: {
-    borderColor: 'red',
-    borderWidth: 2,
+    borderColor: '#e25822',
+    borderWidth: 4,
   },
   notClickable: {
     opacity: 0.5,
