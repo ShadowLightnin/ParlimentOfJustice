@@ -17,18 +17,18 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // Member Data with Unique Image Paths
 const members = [
+  { name: '', codename: 'Captain Zardo', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger12.jpg') },
   { name: '', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger1.jpg') },
   { name: '', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger2.jpg') },
-  { name: '', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger3.jpg') },
-  { name: '', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger4.jpg') },
-  { name: '', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger5.jpg') },
-  { name: '', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger6.jpg') },
   { name: '', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger7.jpg') },
   { name: '', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger8.jpg') },
   { name: '', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger9.jpg') },
   { name: '', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger10.jpg') },
   { name: '', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger11.jpg') },
-  { name: '', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger12.jpg') },
+  { name: '', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger3.jpg') },
+  { name: '', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger4.jpg') },
+  { name: '', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger5.jpg') },
+  { name: '', codename: '', screen: '', clickable: false, image: require('../../../assets/Armor/Ranger6.jpg') },
 
 ];
 
@@ -36,10 +36,10 @@ const members = [
 const isDesktop = SCREEN_WIDTH > 600;
 const columns = isDesktop ? 5 : 3; 
 const rows = Math.ceil(members.length / columns);
-const cardSize = isDesktop ? 160 : 100;
-const cardHeightMultiplier = 1.6;
-const horizontalSpacing = isDesktop ? 40 : 10;
-const verticalSpacing = isDesktop ? 50 : 20; // Adjust vertical spacing here
+const cardSize = isDesktop ? 160 : 110;
+const cardHeightMultiplier = 2;
+const horizontalSpacing = isDesktop ? 40 : 20;
+const verticalSpacing = isDesktop ? 50 : 30; // Adjust vertical spacing here
 
 export const RangerSquad = () => {
   const navigation = useNavigation();
@@ -89,8 +89,8 @@ export const RangerSquad = () => {
                       source={member.image || require('../../../assets/Armor/PlaceHolder.jpg')} 
                       style={styles.characterImage} 
                     />
-                    {/* <Text style={styles.name}>{member.name}</Text>
-                    <Text style={styles.codename}>{member.codename}</Text> */}
+                    <Text style={styles.codename}>{member.codename}</Text>
+                    <Text style={styles.name}>{member.name}</Text>
                     {/* {!member.clickable && <Text style={styles.disabledText}>Not Clickable</Text>} */}
                   </TouchableOpacity>
                 );
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   },
   characterImage: {
     width: '100%',
-    height: '100%',
+    height: '86%',
     resizeMode: 'cover',
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
@@ -175,17 +175,17 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 8,
   },
   name: {
+    fontSize: 10,
+    fontStyle: 'italic',
+    color: '#aaa',
+    textAlign: 'center',
+  },
+  codename: {
     fontSize: 12,
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
     marginTop: 5,
-  },
-  codename: {
-    fontSize: 10,
-    fontStyle: 'italic',
-    color: '#aaa',
-    textAlign: 'center',
   },
   disabledText: {
     fontSize: 10,

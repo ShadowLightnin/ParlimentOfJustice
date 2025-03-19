@@ -25,6 +25,7 @@ const imageSize = isDesktop ? 400 : 250;
 // Demon Lords data with images
 const demonLords = [
   { name: 'Demon Lord Nate', screen: 'NateScreen', image: require('../../assets/Villains/Nate.jpg'), clickable: true },
+  { name: 'Francis', screen: '', image: require('../../assets/Villains/Francis.jpg'), clickable: true },
 ];
 
 const DemonsSection = () => {
