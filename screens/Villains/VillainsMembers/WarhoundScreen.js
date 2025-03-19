@@ -36,8 +36,21 @@ const WarhoundScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Warhound is a brutal enforcer known for relentless assaults and unyielding aggression.
+            • Nemesis: Cole Robinson “Cruiser”
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Motivation: Resents Cole’s prowess in combat, seeing himself as the ultimate fighter and wanting to best Cole in every way.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Powers: Heightened strength and reflexes, with the ability to track and target with near-perfect accuracy.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Weapon: Modified gauntlets with retractable claws that shred through most armor.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

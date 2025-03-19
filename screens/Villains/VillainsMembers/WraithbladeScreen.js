@@ -36,8 +36,21 @@ const WraithbladeScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Wraithblade thrives in the shadows, wielding a spectral blade that severs the bonds of reality itself.
+            • Nemesis: Jared McNeil "Spector"
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Backstory: A fallen crusader who turned his skills against his own cause, Wraithblade was once a legendary warrior but was exiled for his brutal, unchecked tactics. Revived in the present, he acquired powers that allow him to phase through objects and strike with eerie precision. Viewing Jared as a naive continuation of his own past, Wraithblade mocks Spector’s crusader ideals, seeking to prove that Jared’s sense of justice is a weakness. With his shadow blades, Wraithblade aims to show Jared that only those who embrace darkness can survive in the shadows.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Powers: Super speed equal to Spector's, with added abilities to phase through solid objects.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Weapon: Dual shadow blades that can solidify or turn ethereal, allowing him to cut through both physical and energy defenses.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

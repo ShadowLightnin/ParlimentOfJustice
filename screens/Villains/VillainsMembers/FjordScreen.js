@@ -48,7 +48,16 @@ const FjordScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Fjord is an icy conqueror who freezes enemies in his path with chilling precision.
+            Nemesis: "Annihilus”
+            </Text>
+            <Text style={styles.aboutText}>
+            • Backstory: Fjord was once a mountain tribesman who revered the harsh forces of nature. He saw strength in ice and resilience in enduring brutal winters. When a powerful glacier spirit chose him as a vessel, Fjord gained control over ice and frost but at the cost of his humanity. Obsessed with survival of the fittest, he resents Spencer’s ideals of heroism and strength tempered by restraint. Fjord’s jagged, wolf-skull helmet symbolizes his belief that only through pure, unrestrained force can true power be achieved, and he challenges Spencer to prove his strength against nature’s rawest element: the cold.
+            </Text>
+            <Text style={styles.aboutText}>
+            • Powers: Super strength equal to Annihilus but with the ability to control ice, creating blizzards and freezing objects instantly.
+            </Text>
+            <Text style={styles.aboutText}>
+            • Weapon: A heavy frost axe that emits freezing energy, able to shatter anything in its path.
             </Text>
           </View>
         </ScrollView>

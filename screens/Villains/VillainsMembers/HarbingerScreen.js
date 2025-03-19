@@ -36,8 +36,21 @@ const HarbingerScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Harbinger foretells doom, commanding ethereal forces to manipulate fate and bring ruin.
+            • Nemesis: Will Cummings "Night Hawk"
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Backstory: Harbinger was once a covert operative, known for his stealth and deadliness. When he was betrayed by his government, he became an underground assassin, upgrading his stealth tech to the point of near invisibility. He views Will’s Night Hawk persona as an echo of his past and despises the morality Will upholds. With a suit that jams radar and emits false signals, Harbinger is determined to lead Will into a mental and physical hunt, proving that true predators discard loyalty and conscience to survive.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Powers: Extreme stealth abilities with radar and sonar jamming. Can turn completely invisible and leave false signatures to confuse radar.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Weapon: Retractable wrist blades with venomous energy, paralyzing any enemy they cut.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

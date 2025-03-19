@@ -36,8 +36,19 @@ const ElderPyrrhusScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Elder Pyrrhus is a master of elemental flames, engulfing his enemies in scorching infernos.
+            • Nemesis: Spencer McNeil "Annihilus”
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Backstory: A former tribal leader cast out for his brutal interpretation of strength, Elder Pyrrhus believes only the ruthless survive. He scorned modern society, retreating into the wilderness where he honed his powers through a brutal connection with ancient mountain spirits. These spirits grant him immense strength and the power to manipulate fire, making him nearly invulnerable in battle. When he hears of Spencer’s Annihilus persona, Elder Pyrrhus sees a potential challenger for his title as the ultimate warrior. His fiery skull helmet represents his intent to incinerate Spencer’s ideals of heroism, proving that true power lies in destruction without restraint.
+
+            </Text>
+            <Text style={styles.aboutText}>
+
+            </Text>
+            <Text style={styles.aboutText}>
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

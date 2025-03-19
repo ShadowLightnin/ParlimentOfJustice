@@ -36,8 +36,24 @@ const ShadeWeaverScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Shade Weaver controls darkness itself, ensnaring victims in webs of shadows.
+            • Nemesis: Kelsie Tidwell "Shutter Dancer"
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Backstory: Formerly a famous street dancer and acrobat named Lydia Noir, Shade Weaver grew up in the spotlight, adored for her artistry with light and shadow. However, a terrible accident left her disfigured, and she discovered her shadow manipulation abilities in the recovery period. Consumed by bitterness, she learned to control darkness, seeing it as her true ally after the world “rejected” her. Shade Weaver despises Kelsie, whose light-based powers embody everything Lydia once loved but believes betrayed her. She sees herself as a reminder of Kelsie’s fears, aiming to prove that light is fleeting and only darkness is constant.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Abilities:
+• Umbrakinesis: Controls and manipulates darkness to obscure light.
+• Shadow Cloak: Becomes intangible and can blend perfectly into shadows, making her nearly invisible.
+• Dark Pulse: Emits waves of darkness that dispel light, negating Kelsie's illusions and blinding bursts.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Weapon: Dual shadowed daggers that dissipate into mist, allowing her to strike from unexpected angles.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

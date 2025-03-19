@@ -36,8 +36,21 @@ const OvermindScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Overmind is a master manipulator, weaving mind control and deception into his dark plots.
+            • Nemesis: Joseph Dresher “Techoman”
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Motivation: Despises Joseph’s ingenuity, viewing him as an inferior intellect who must be crushed to make way for a new technological era.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Powers: Advanced technopathy, allowing him to control machines with his mind and disrupt Techoman’s creations.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Weapon: A staff that can emit EMP pulses, disabling nearby tech instantly.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

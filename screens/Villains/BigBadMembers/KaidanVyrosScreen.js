@@ -47,6 +47,26 @@ const KaidanVyrosScreen = () => {
             against the Spartans who embody everything he once believed in but 
             now despises.            
             </Text>
+            <Text style={styles.aboutText}>
+            • Abilities and Gear:
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Monstrous Armor: A blend of Halo armor and Monster Hunter beast plating that can withstand extreme damage and emit a fear-inducing energy.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Beast Summoning: Can call upon otherworldly creatures, like a dark, mutated Hydra that attacks in sync with him.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Crushing Strength: Enhanced strength rivaling even the strongest Spartans, allowing him to overpower foes.
+
+            </Text>  
+            <Text style={styles.aboutText}>
+            • Energy Pulse Cannon: Wielding a shoulder-mounted cannon that fires concentrated energy pulses, capable of shattering defenses.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

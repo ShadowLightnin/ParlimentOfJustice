@@ -36,8 +36,19 @@ const SpectralWraithScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              The Spectral Wraith moves unseen, draining the life force of anyone caught in its grasp.
+            • Nemesis: Jared McNeil "Spector"
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Backstory: A former knight with a vendetta against a legendary crusader family, Lucius Oathkeeper was revived in the modern world through a dark ritual. His spectral form, combined with cybernetic enhancements, gives him near-invisibility, speed, and the power to shift between realms. The ancient crusader symbol on his helmet is a perverted version of Jared’s, symbolizing a centuries-old grudge against Jared’s lineage. He views Jared’s Spector persona as an echo of the past he loathes and intends to use his skills in a twisted honor duel, believing only one of them can uphold the “true” warrior’s legacy.
+
+            </Text>
+            <Text style={styles.aboutText}>
+
+            </Text>
+            <Text style={styles.aboutText}>
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

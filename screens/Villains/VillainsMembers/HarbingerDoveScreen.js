@@ -36,8 +36,21 @@ const HarbingerDoveScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Harbinger Dove descends silently, striking enemies with calculated precision before vanishing into the shadows.
+            • Nemesis: Emma Cummings "Kinsunera"
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Backstory: Once a pacifist, Dove was betrayed by her ideals and became a weapon of vengeance. Her sleek silver armor and crimson wings represent a fallen angel, one who abandoned hope for revenge. Viewing Emma’s angelic persona as naive, Dove channels her dark energy into feathered blades and a spear of red energy. Her goal is to strip Emma of her protector instincts, forcing her to confront the pain of betrayal and the belief that only by embracing darkness can she truly protect those she loves.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Powers: Mechanical wings like Kinsunera's but with feather-like blades capable of launching from her wings and regenerating.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Weapon: A spear of red energy that can slice through most metals, representing a fallen angel of sorts, opposing Emma's crusader and protector aura.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

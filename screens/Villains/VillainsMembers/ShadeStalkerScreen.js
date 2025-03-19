@@ -36,8 +36,21 @@ const ShadeStalkerScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Shade Stalker is a shadowy figure who hunts from the darkness, striking fear into those who dare cross his path.
+            • Nemesis: Alex Croft “Huntsman”
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Motivation: A predator who hunts to kill, viewing Huntsman’s tracking skills as a challenge to outmatch and dominate.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Powers: Expert in stealth, with the ability to become invisible in low light, allowing him to ambush his foes.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Weapon: A crossbow that fires energy-draining bolts, neutralizing Huntsman’s energy-based arrows.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

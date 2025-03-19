@@ -36,8 +36,21 @@ const HadesRavageScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Hades Ravage is a demonic force of fire and fury, seeking to engulf the world in flame.
+            • Nemesis: Cam Paul “Court Chief”
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Motivation: Sees leadership as weakness and believes only the strongest deserve power, aiming to prove that Cam’s leadership is misguided.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Powers: Controls intense heat and flame, creating infernos around him to incinerate anything he touches.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Weapon: Twin battle axes that ignite on contact, designed to break through Cam’s defenses.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

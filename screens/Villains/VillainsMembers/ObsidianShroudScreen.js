@@ -36,8 +36,21 @@ const ObsidianShroudScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Cloaked in eternal darkness, Obsidian Shroud vanishes into the shadows before delivering his lethal strikes.
+            • Nemesis: James “Shadowmind”
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Motivation: Sees James’s connection to the shadows as a threat to his own supremacy and aims to consume James’s power for himself.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Powers: Expert in shadow manipulation, matching James’s abilities while countering them with enhanced illusions and mind tricks.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Weapon: A pair of shadow-infused swords, allowing him to phase in and out of shadows during attacks.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

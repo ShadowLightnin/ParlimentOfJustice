@@ -36,8 +36,21 @@ const VenomFangScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Venom Fang strikes with toxic precision, paralyzing foes with her venomous fangs.
+            • Nemesis: Ben Briggs "Nuscis”
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Backstory: A brilliant scientist turned mercenary, Venom Fang studied spiders to create his own venom-based weaponry. Obsessed with the primal instincts of survival, he considers Ben’s adherence to rules and morals a weakness. Embracing the toxicity of his newfound powers, Venom Fang crafted his armor to match Nuscis’s but with venomous energy and poison-infused attacks. His aim is to push Ben into using his instincts, forcing him to confront the deadly and predatory side he has tried to avoid.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Powers: Enhanced agility and reflexes, similar to Nuscis, but with poison-infused attacks.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Weapon: A set of retractable fangs on the mask, which emit a toxic gas, alongside clawed gauntlets that inflict poison on contact.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

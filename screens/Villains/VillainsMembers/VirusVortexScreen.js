@@ -36,8 +36,21 @@ const VirusVortexScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Virus Vortex corrupts both code and biology, spreading chaos in his path.
+            • Nemesis: Ben Preston “Chemoshock”
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Motivation: A rogue scientist who despises Ben’s orderly engineering, seeking to create chaos through poison and decay.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Powers: Wields toxic chemical manipulation, generating clouds that erode armor and flesh alike.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Weapon: Poison injector gauntlets that deliver lethal doses through armor.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

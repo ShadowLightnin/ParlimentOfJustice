@@ -48,6 +48,26 @@ const ObsidianScreen = () => {
             His ultimate goal is to make the Titans question their own beliefs, 
             forcing them to confront the darkness within themselves.
             </Text>
+            <Text style={styles.aboutText}>
+            • Powers and Abilities:
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Shadow Manipulation: Can summon and control darkness to envelop his enemies or distort reality.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Fear Induction: Forces his foes to face their deepest fears, using illusions that seem frighteningly real.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Mind Control: Turns others into his loyal thralls, erasing their memories and sense of self.
+
+            </Text>  
+            <Text style={styles.aboutText}>
+            • Ancient Weaponry: Wields a cursed scythe imbued with dark energy that siphons strength from those it cuts, feeding his powers.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

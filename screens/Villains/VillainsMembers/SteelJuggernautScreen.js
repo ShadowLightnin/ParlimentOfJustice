@@ -36,8 +36,21 @@ const SteelJuggernautScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              A walking fortress, Steel Juggernaut is an indestructible force of brute strength and resilience.
+            • Nemesis: Sam Woodwell “Striker”
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Motivation: Desires a rematch against Cruiser, believing himself to be the ultimate soldier and seeing Cole as his greatest rival.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Powers: Enhanced durability and brute strength that match or even surpass Cruiser’s combat skills.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Weapon: Gauntlets designed to crush armor with hydraulic strength.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

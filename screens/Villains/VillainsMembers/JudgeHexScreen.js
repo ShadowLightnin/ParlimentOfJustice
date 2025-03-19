@@ -41,8 +41,17 @@ const JudgeHexScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Judge Hex is a ruthless enforcer of twisted justice, casting judgments that bend fate itself.
+            • Nemesis: "Midigator"
             </Text>
+            <Text style={styles.aboutText}>
+            • Backstory: Once a renowned psychologist who used her influence for manipulation, Judge Hex fell into darkness, using hypnosis and mind control for personal gain. She developed a toxic armor that emits a disorienting fog, allowing her to exploit others’ vulnerabilities. Seeing Azure as a weak link obsessed with balance and empathy, Judge Hex believes people are most easily controlled when they are unsure of themselves. Her whip is her tool for control, both physically and psychologically, and she’s determined to unravel Azure’s confidence and faith in her principles.
+            </Text>
+            <Text style={styles.aboutText}>
+            • Powers: Expert in manipulation and hypnosis, with armor that emits a toxic fog to disorient her foes.
+            </Text>
+            <Text style={styles.aboutText}>
+            • Weapon: A whip with electrified barbs, used to strike from a distance or ensnare hertarget.
+            </Text>  
           </View>
         </ScrollView>
       </View>

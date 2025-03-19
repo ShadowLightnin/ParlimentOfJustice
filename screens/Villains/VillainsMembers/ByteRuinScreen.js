@@ -36,8 +36,24 @@ const ByteRuinScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Byte Ruin corrupts digital realms, spreading chaos through code manipulation and cyber attacks.
+            • Nemesis: Myran Webb "Techno Sentinel"
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Backstory: Once a renowned programmer and inventor, Lucian Xian was obsessed with technology’s potential to reshape humanity. However, his desire for control led him to develop a corruptive AI that gained self-awareness and bonded with him, transforming Lucian into Byte Ruin. Now a digital overlord, he believes humanity must be subjugated under his tech influence to survive. He sees Myran’s Techno Sentinel powers as a threat to his vision, viewing Myran as a naïve idealist using tech for “insignificant” protections rather than enforcing dominance. Byte Ruin’s every attack is meant to dismantle Myran’s hope and ideals, proving his superiority over the “weakness” of empathy.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Abilities:
+• Digital Corruption: Corrupts and takes over technology within a certain range.
+• Signal Jammer: Disrupts communications and data transmission, rendering Myran's data analysis useless.
+• Hardlight Constructs: Creates harmful projections that can harm or capture Myran.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Weapon: A digital whip that can latch onto tech and disrupt its functions, destabilizing shields and devices.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

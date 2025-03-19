@@ -36,8 +36,21 @@ const FangstrikeScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Fangstrike is a ruthless predator, wielding venomous blades that leave no survivors.
+            • Nemesis: Tanner “Wolff”
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Motivation: Driven by a primal desire to dominate all others, Fangstrike views Wolff as a rival alpha and intends to prove his superiority.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Powers: Enhanced senses and strength, capable of going berserk to unleash deadly fury.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Weapon: A set of energy claws that slice through armor with ease.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

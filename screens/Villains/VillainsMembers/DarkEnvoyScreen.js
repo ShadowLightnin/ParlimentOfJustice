@@ -36,8 +36,19 @@ const DarkEnvoyScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              The Dark Envoy whispers promises of power, luring champions into his web of manipulation.
+            • Nemesis: Azure Briggs "Midigator"
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Backstory: Once a diplomat of a shadowy organization, Delphine Marlow became disillusioned with humanity’s ability to resolve conflict peacefully. Using her influence, she began covertly fueling wars to maintain control. Her “Order” armor channels dark energy, and she wields it to disrupt and control others’ emotions. Now known as the Dark Envoy, she opposes Azure’s balanced justice, believing that only control through manipulation brings peace. She challenges Azure’s belief in transparent negotiation, seeking to turn her own strategies against her by twisting situations to their breaking point.
+
+            </Text>
+            <Text style={styles.aboutText}>
+
+            </Text>
+            <Text style={styles.aboutText}>
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

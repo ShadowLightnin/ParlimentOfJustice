@@ -36,8 +36,19 @@ const HarrierScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Harrier is a relentless hunter, striking down enemies with precision and power. No one escapes his mark.
+            • Nemesis: Will Cummings "Night Hawk"
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Backstory: Once a government experiment to create the perfect stealth operative, Marcus Hailstone went rogue after being betrayed by his handlers. Equipped with prototype stealth armor and an experimental cloaking device, he became The Harrier, striking from the shadows. His suit mimics the Night Hawk’s stealth features, but with added aggression—Hailstone sees himself as a hunter and stalks his targets with meticulous intent. Resenting Will’s principles, he aims to “liberate” Night Hawk from his morality, believing that true power comes from embracing one’s predatory instincts without restraint.
+
+            </Text>
+            <Text style={styles.aboutText}>
+
+            </Text>
+            <Text style={styles.aboutText}>
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

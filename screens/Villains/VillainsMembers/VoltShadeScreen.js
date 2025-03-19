@@ -36,8 +36,21 @@ const VoltShadeScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Volt Shade harnesses the power of lightning to obliterate his enemies in electrifying displays of destruction.
+            • Nemesis: Sam Woodwell “Striker”
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Motivation: Sees Sam’s power as a threat to his control over darkness, determined to prove his mastery over electric manipulation.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Powers: Manipulates shadowy electricity, combining Sam’s own powers with dark energy to counter him.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Weapon: Dual daggers with an electric charge, able to paralyze on impact.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

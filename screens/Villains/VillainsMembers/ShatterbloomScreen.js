@@ -36,8 +36,21 @@ const ShatterbloomScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Shatterbloom manipulates crystal shards to pierce her enemies and shatter defenses.
+            • Nemesis: Jennifer McNeil "Kintsugi”
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Backstory: A glass sculptor whose work shattered along with her mind during a failed experiment, Shatterbloom can now break apart and reform her body at will. She sees Jennifer’s Kintsugi theme as shallow, dismissing her acceptance of “brokenness” as weak. Shatterbloom’s fractured form is a weapon, and she seeks to break Jennifer’s calm, attacking her with shards that represent her own shattered psyche. Her goal is to prove that true beauty comes only through destruction, and she believes Jennifer’s acceptance of her brokenness is nothing but a disguise for fragility.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Powers: The ability to break apart and reform, similar to Jennifer's "Kintsugi," but uses her fragmented form offensively, launching shards at her enemies.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Weapon: Twin glass daggers that shatter and reform, sending deadly shards in all directions.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

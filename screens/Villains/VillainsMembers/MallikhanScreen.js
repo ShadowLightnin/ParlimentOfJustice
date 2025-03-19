@@ -36,8 +36,24 @@ const MallikhanScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Mal'likhan is a twisted sorcerer who thrives in the void, consuming the souls of those who dare oppose him.
+            • Nemesis: Aileen Eduria "Ariata"
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Backstory: Mal’likhan, originally named Alonzo Cruz, grew up in a family steeped in Filipino folklore and mysticism. Alonzo was drawn to these tales, fascinated by the darker myths of spirits and warriors who wielded power over life and death. After discovering ancient artifacts, he was possessed by a vengeful spirit, transforming him into Mal’likhan, a conduit of darkness and malevolent magic. He believes he is the true inheritor of Filipino strength, bound to the forces of night and shadow. Alonzo feels that Aileen, with her heritage and powers, dishonors this legacy by aligning herself with “Western ideals” of heroism. Driven by pride and resentment, Mal’likhan fights to reclaim what he sees as a rightful heritage of strength and power.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Abilities:
+• Soul Drain: Drains strength and energy from his enemies to weaken them.
+• Spectral Warriors: Summons shadowy figures inspired by Filipino folklore to attack Aileen in combat.
+• Shadow Manipulation: Uses shadows to hide, strike from unexpected angles, and confuse his enemies.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Weapon: A jagged Kris Blade imbued with dark energy, countering Aileen's Kampilan with lethal precision.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

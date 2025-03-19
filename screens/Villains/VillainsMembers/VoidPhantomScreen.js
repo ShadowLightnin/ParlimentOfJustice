@@ -36,8 +36,21 @@ const VoidPhantomScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Void Phantom thrives in the abyss, manipulating shadows to conceal his movements and strike unseen.
+            • Nemesis: Zeke Workman “Enderstrike”
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Motivation: Sees Zeke as an obstacle in mastering the ender dimension, determined to destroy him to consolidate control.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Powers: Able to phase into a spectral form, using dark energy to disrupt Zeke’s ender abilities.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Weapon: A scythe that can tear through dimensional energy, targeting Zeke’s powers directly.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

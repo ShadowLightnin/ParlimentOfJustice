@@ -36,8 +36,19 @@ const GildedShardScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Gilded Shard's body is encrusted in shimmering crystal armor, rendering him nearly invincible.
+            • Nemesis: Jennifer McNeil "Kintsugi”
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Backstory: Once a master craftsman, Elias Mendez descended into madness after a failed experiment scarred his body, leaving his flesh cracked and held together by cursed gold. His new identity, the Gilded Shard, amplifies his control over metal and minerals. Fascinated by Jennifer’s “Kintsugi” armor, he considers her a kindred spirit yet despises her inner peace and acceptance of her flaws. He believes that beauty comes only through pain and destruction, and he wants to break Jennifer’s calm, imposing his belief that her fractured self should be a symbol of torment, not strength.
+
+            </Text>
+            <Text style={styles.aboutText}>
+
+            </Text>
+            <Text style={styles.aboutText}>
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

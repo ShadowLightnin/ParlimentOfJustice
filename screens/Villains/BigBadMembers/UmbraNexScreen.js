@@ -45,6 +45,26 @@ const UmbraNexScreen = () => {
             elevate himself to godhood. Each member of Eclipse 
             represents, in his eyes, a unique type of strength to harvest and consume.            
             </Text>
+            <Text style={styles.aboutText}>
+            • Powers and Abilities:
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Life Force Absorption: Steals energy and powers from his victims, adding them to his own and sometimes even gaining a distorted version of their abilities.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Reality Warping: Twists the physical and metaphysical properties of his surroundings, creating mind-bending environments.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Resurrection: Can resurrect the fallen as shadow versions of themselves, loyal to him alone.
+
+            </Text>  
+            <Text style={styles.aboutText}>
+            • Temporal Distortion: Alters the flow of time, trapping his enemies in time loops or accelerating his own movements.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

@@ -45,6 +45,26 @@ const StormshadeScreen = () => {
             control and wants to dominate them, seeing them as 
             potential soldiers in his growing dark empire.            
             </Text>
+            <Text style={styles.aboutText}>
+            • Abilities and Gear:
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Shadow and Storm Manipulation: Can create electrical storms within shadows, summoning bolts of dark lightning that paralyze and drain energy.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Mind Control: Possesses powerful telepathic skills, able to dominate weaker minds or distract powerful ones like Sam.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Invisibility and Cloaking: Disappears into shadows and can instantly phase out of sight.
+
+            </Text>  
+            <Text style={styles.aboutText}>
+            • Shadow Blade: A weapon forged from darkness itself, able to cut through most known armor types.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

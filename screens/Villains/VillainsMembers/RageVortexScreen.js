@@ -36,8 +36,24 @@ const RageVortexScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Rage Vortex manipulates destructive whirlwinds, demolishing everything in his path.
+            • Nemesis: James Connell "Gentle Guardian"
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Backstory: The man who would become Rage Vortex, Declan Brann, grew up in a violent household, developing powers that fed off negative emotions from a young age. As a child, Declan’s abilities only intensified the aggression in others, further isolating him and making him bitter. He was eventually recruited by underground fight rings where he honed his powers, finding satisfaction in conflict and chaos. Declan sees James’s peace and healing as weaknesses, mocking his “Gentle Guardian” persona as cowardice. For Rage Vortex, strength is found in embracing one’s darker emotions, and he sees breaking James’s calm demeanor as his ultimate victory.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Abilities:
+• Rage Inducer: Amplifies anger and negative emotions around him, causing havoc and breaking down James's calming aura.
+• Adrenal Surge: Gains strength and speed as his anger intensifies.
+• Barrier Breaker: Can tear through most energy shields with brute force, countering James's protective shield.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Weapon: A spiked mace that radiates aggressive energy, dealing heavy damage to anything in its path.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

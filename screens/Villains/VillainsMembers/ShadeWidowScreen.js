@@ -36,8 +36,19 @@ const ShadeWidowScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Shade Widow weaves webs of shadow and deception, manipulating her victims with deadly precision.
+            • Nemesis: Ben Briggs "Nuscis”
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Backstory: Known only as Syra, The Shade Widow was a mysterious vigilante who preyed on criminals with brutal efficiency. She encountered Ben during a mission and, fixated on his spider-like agility and crusader symbol, grew obsessed with proving herself superior. She built her own black widow-inspired armor with venomous claws and webs, rivaling Nuscis’s agility and strength. To her, Ben’s moral restraint is a hindrance, and she taunts him with the lure of giving in to his primal instincts. Her goal is to shatter his belief in heroism, replacing it with her lethal, survivalist worldview.
+
+            </Text>
+            <Text style={styles.aboutText}>
+
+            </Text>
+            <Text style={styles.aboutText}>
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

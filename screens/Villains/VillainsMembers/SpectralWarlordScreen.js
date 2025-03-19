@@ -36,8 +36,21 @@ const SpectralWarlordScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              The Spectral Warlord manipulates spirits to overwhelm his enemies with unstoppable force.
+            • Nemesis: Cam “Court Chief”
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Motivation: A former ruler with aspirations of reclaiming power, seeking to show Cam that leadership requires ruling by fear.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Powers: Commands spectral warriors and can turn into a ghostly form, challenging Court Chief’s authority.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Weapon: A warhammer that summons spectral warriors on impact.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

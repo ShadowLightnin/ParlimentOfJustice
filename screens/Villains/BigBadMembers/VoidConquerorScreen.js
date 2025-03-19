@@ -45,6 +45,26 @@ const VoidConquerorScreen = () => {
             He intends to subjugate them or eliminate them if they refuse 
             to serve his purpose of ruling across worlds.            
             </Text>
+            <Text style={styles.aboutText}>
+            • Abilities and Gear:
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Life Force Absorption: Draws strength from defeated enemies, regenerating himself and becoming stronger.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Necromancy: Can summon shadowed warriors of those he’s defeated, who fight relentlessly until dispelled.
+
+            </Text>
+            <Text style={styles.aboutText}>
+            • Time Dilation: Can manipulate time around him to slow or freeze his enemies, making it easier for him to strike.
+
+            </Text>  
+            <Text style={styles.aboutText}>
+            • Master Combatant: Has unparalleled knowledge of ancient and modern combat styles, often surprising opponents with new techniques.
+
+            </Text>  
           </View>
         </ScrollView>
       </View>

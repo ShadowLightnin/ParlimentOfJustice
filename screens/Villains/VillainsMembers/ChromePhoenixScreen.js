@@ -36,8 +36,19 @@ const ChromePhoenixScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Chrome Phoenix rises from the ashes of destruction, reborn stronger after every defeat.
+            • Nemesis: Emma Cummings "Kinsunera"
+
             </Text>
+            <Text style={styles.aboutText}>
+            • Backstory: Formerly a corporate heiress obsessed with perfection, Vanessa Li’s body was cybernetically enhanced after a near-fatal accident. Now the Chrome Phoenix, she uses her mechanical wings and avian agility to dominate opponents, styling herself as the pinnacle of evolution. She despises Emma’s more organic style and angelic symbolism, considering it weak and outdated. For her, “beauty” is about control, and she wants to strip Emma of her gentle heart, making her confront the raw power of ambition and precision at any cost.
+
+            </Text>
+            <Text style={styles.aboutText}>
+
+            </Text>
+            <Text style={styles.aboutText}>
+
+            </Text>  
           </View>
         </ScrollView>
       </View>
