@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { Audio } from 'expo-av';
 import { useNavigation } from '@react-navigation/native';
+import { demonLords } from './DemonData'; // Import data dynamically
 
 // Screen dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -22,44 +23,29 @@ const isDesktop = SCREEN_WIDTH > 600;
 const cardSize = isDesktop ? 450 : 300;
 const imageSize = isDesktop ? 400 : 250;
 
-// Demon Lords data with images
-const demonLords = [
-  { name: 'Demon Lord Nate', screen: 'NateScreen', image: require('../../assets/Villains/Nate.jpg'), clickable: true },
-  { name: 'Francis', screen: '', image: require('../../assets/Villains/Francis.jpg'), clickable: true },
-];
-
 const DemonsSection = () => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDemon, setSelectedDemon] = useState(null);
 
-  // Sound for Nate
-  const playNateSound = async () => {
-    const { sound } = await Audio.Sound.createAsync(
-      require('../../assets/audio/NateSound.mp4')
-    );
+  // Dynamic Sound Handler
+  const playDemonSound = async (audio, screen) => {
+    const { sound } = await Audio.Sound.createAsync(audio);
     await sound.playAsync();
-    setTimeout(() => {
-      navigation.navigate('NateScreen');
-    }, 3000);
+
+    if (screen) {
+      setTimeout(() => {
+        navigation.navigate(screen);
+      }, 3000);
+    }
   };
 
-  // Sound for Francis
-  const playFrancisSound = async () => {
-    const { sound } = await Audio.Sound.createAsync(
-      require('../../assets/audio/Francis.mp4')  // <== New Francis audio added here
-    );
-    await sound.playAsync();
-  };
-
-  const handlePress = async (name) => {
-    if (name === 'Demon Lord Nate') {
-      await playNateSound();
-    } else if (name === 'Francis') {
-      await playFrancisSound();
+  const handlePress = async (demon) => {
+    if (demon.audio) {
+      await playDemonSound(demon.audio, demon.screen);
     }
 
-    setSelectedDemon(name);
+    setSelectedDemon(demon.name);
     setModalVisible(true);
   };
 
@@ -71,7 +57,7 @@ const DemonsSection = () => {
         { width: cardSize, height: cardSize * 1.2 },
         demon.clickable ? styles.clickable : styles.notClickable
       ]}
-      onPress={() => demon.clickable && handlePress(demon.name)}
+      onPress={() => demon.clickable && handlePress(demon)}
       disabled={!demon.clickable}
     >
       <Image source={demon.image} style={[styles.demonImage, { width: imageSize, height: imageSize }]} />
@@ -86,18 +72,12 @@ const DemonsSection = () => {
       style={styles.background}
     >
       <View style={styles.container}>
-        {/* Back Button */}
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Text style={styles.backButtonText}>⬅️</Text>
         </TouchableOpacity>
 
-        {/* Title */}
         <Text style={styles.header}>⚡️ Demon Lords ⚡️</Text>
 
-        {/* Horizontal Scrollable Demon Cards */}
         <View style={styles.scrollWrapper}>
           <ScrollView
             horizontal
