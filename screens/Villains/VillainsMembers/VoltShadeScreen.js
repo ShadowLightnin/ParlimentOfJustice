@@ -36,7 +36,7 @@ const VoltShadeScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-            • Nemesis: Sam Woodwell “Striker”
+            • Nemesis: Sam Woodwell “Void Walker”
 
             </Text>
             <Text style={styles.aboutText}>
