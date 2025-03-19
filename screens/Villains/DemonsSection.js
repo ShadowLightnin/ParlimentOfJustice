@@ -33,21 +33,30 @@ const DemonsSection = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDemon, setSelectedDemon] = useState(null);
 
+  // Sound for Nate
   const playNateSound = async () => {
     const { sound } = await Audio.Sound.createAsync(
       require('../../assets/audio/NateSound.mp4')
     );
     await sound.playAsync();
-
-    // Navigate to Nate's screen after a delay
     setTimeout(() => {
       navigation.navigate('NateScreen');
-    }, 3000); // 3-second delay before navigation
+    }, 3000);
+  };
+
+  // Sound for Francis
+  const playFrancisSound = async () => {
+    const { sound } = await Audio.Sound.createAsync(
+      require('../../assets/audio/Francis.mp4')  // <== New Francis audio added here
+    );
+    await sound.playAsync();
   };
 
   const handlePress = async (name) => {
     if (name === 'Demon Lord Nate') {
       await playNateSound();
+    } else if (name === 'Francis') {
+      await playFrancisSound();
     }
 
     setSelectedDemon(name);
@@ -156,12 +165,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   scrollWrapper: {
-    width: SCREEN_WIDTH, // Ensures scroll space
+    width: SCREEN_WIDTH,
     flex: 1,
   },
   scrollContainer: {
     flexDirection: 'row',
-    flexGrow: 1, // Ensures content flows horizontally
+    flexGrow: 1,
     width: 'auto',
     paddingVertical: 20,
     alignItems: 'center',
