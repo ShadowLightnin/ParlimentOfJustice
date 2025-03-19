@@ -58,7 +58,7 @@ const villains = [
   { name: 'Obsidian Shroud', screen: 'ObsidianShroudScreen', image: require('../../assets/Villains/ObsidianShroud.jpg'), clickable: true },
   { name: 'Fangstrike', screen: 'FangstrikeScreen', image: require('../../assets/Villains/Fangstrike.jpg'), clickable: true },
   { name: 'Void Phantom', screen: 'VoidPhantomScreen', image: require('../../assets/Villains/VoidPhantom.jpg'), clickable: true },
-  { name: 'Chrona', screen: '', image: require('../../assets/Villains/Chrona.jpg'), clickable: false },
+  { name: 'Chrona', screen: 'ChronaScreen', image: require('../../assets/Villains/Chrona.jpg'), clickable: true },
   { name: 'Noctura', screen: '', image: require('../../assets/Villains/Noctura.jpg'), clickable: false },
   { name: 'Red Mercury', screen: '', image: require('../../assets/Villains/RedMercury.jpg'), clickable: false },
   { name: 'Titanus', screen: '', image: require('../../assets/Villains/Titanus.jpg'), clickable: false },

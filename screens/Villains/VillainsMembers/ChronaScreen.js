@@ -6,7 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
-const SableScreen = () => {
+const ChronaScreen = () => {
   const navigation = useNavigation();
   const isDesktop = SCREEN_WIDTH > 600;
   const imageSize = isDesktop ? SCREEN_WIDTH * 0.6 : SCREEN_WIDTH * 0.9;
@@ -23,12 +23,12 @@ const SableScreen = () => {
             <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
               <Text style={styles.backButtonText}>←</Text>
             </TouchableOpacity>
-            <Text style={styles.title}> Sable the Assassin</Text>
+            <Text style={styles.title}> Chrona the Time-Bender</Text>
           </View>
 
           <View style={styles.imageContainer}>
             <Image
-              source={require("../../../assets/Villains/Sable.jpg")}
+              source={require("../../../assets/Villains/Chrona.jpg")}
               style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
             />
           </View>
@@ -40,11 +40,14 @@ const SableScreen = () => {
 
             </Text>
             <Text style={styles.aboutText}>
-            Sable is a merciless warrior with an arsenal of deadly, shadow-infused weaponry. Her ability to slip through dimensions allows her to be anywhere and nowhere, striking down threats to Erevos’s plans without leaving a trace.
+            Chrona, the Time-Bender: With control over small pockets of time, 
+            Chrona can slow, rewind, or even freeze time within a limited area. 
+            She uses her abilities to foresee potential obstacles to Erevos’s rule, 
+            manipulating events in his favor.
 
             </Text>
             <Text style={styles.aboutText}>
-
+            She resents Sam for leaving her and the Enlightened, and wants to turn him back.
             </Text>
             <Text style={styles.aboutText}>
 
@@ -124,4 +127,4 @@ const styles = StyleSheet.create({
     },
   });
   
-export default SableScreen;
+export default ChronaScreen;

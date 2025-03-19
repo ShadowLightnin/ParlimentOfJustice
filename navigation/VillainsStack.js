@@ -45,6 +45,7 @@ import OvermindScreen from '../screens/Villains/VillainsMembers/OvermindScreen';
 import ObsidianShroudScreen from '../screens/Villains/VillainsMembers/ObsidianShroudScreen';
 import FangstrikeScreen from '../screens/Villains/VillainsMembers/FangstrikeScreen';
 import VoidPhantomScreen from '../screens/Villains/VillainsMembers/VoidPhantomScreen';
+import ChronaScreen from '../screens/Villains/VillainsMembers/ChronaScreen';
 
 // import Screen from '../screens/Villains/VillainsMembers/Screen';
 
@@ -101,6 +102,7 @@ const VillainsStack = () => {
       <Stack.Screen name="ObsidianShroudScreen" component={ObsidianShroudScreen} />
       <Stack.Screen name="FangstrikeScreen" component={FangstrikeScreen} />
       <Stack.Screen name="VoidPhantomScreen" component={VoidPhantomScreen} />
+      <Stack.Screen name="ChronaScreen" component={ChronaScreen} />
 
       {/* Big Bads Screens */}
       <Stack.Screen name="ObsidianScreen" component={ObsidianScreen} />
