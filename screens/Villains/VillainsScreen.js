@@ -48,14 +48,14 @@ const VillainsScreen = () => {
               image={require('../../assets/BackGround/Villains.jpg')}
               onPress={() => navigation.navigate('VillainsTab')}
               mobileWidth={140} mobileHeight={160}
-              desktopWidth={180} desktopHeight={200}
+              desktopWidth={290} desktopHeight={300}
             />
 
             <Card
               image={require('../../assets/BackGround/BigBad.jpg')}
               onPress={() => navigation.navigate('BigBadsTab')}
               mobileWidth={140} mobileHeight={160}
-              desktopWidth={180} desktopHeight={200}
+              desktopWidth={290} desktopHeight={300}
             />
           </View>
 
@@ -64,7 +64,7 @@ const VillainsScreen = () => {
               image={require('../../assets/BackGround/NateEmblem.jpg')}
               onPress={() => navigation.navigate('DemonsSection')}
               mobileWidth={180} mobileHeight={160}
-              desktopWidth={220} desktopHeight={200}
+              desktopWidth={340} desktopHeight={400}
             />
           </View>
         </View>
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
   },
   bottomRow: {
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 5,
   },
   card: {
     borderRadius: 10,

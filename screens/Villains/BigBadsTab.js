@@ -72,7 +72,7 @@ const BigBadsTab = () => {
         </TouchableOpacity>
 
         {/* Title */}
-        <Text style={styles.header}>The Big Bads</Text>
+        <Text style={styles.header}>Big Bads</Text>
 
         {/* Horizontal Scrollable Cards */}
         <View style={styles.scrollWrapper}>
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 20,
+    top: 40,
     left: 20,
     backgroundColor: '#750000',
     paddingVertical: 8,

@@ -98,7 +98,7 @@ const VillainsTab = () => {
         </TouchableOpacity>
 
         {/* Title */}
-        <Text style={styles.header}>The Villains</Text>
+        <Text style={styles.header}>Villains</Text>
 
         {/* Horizontal Scrollable Villains Grid */}
         <View style={styles.scrollWrapper}>
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 20,
+    top: 40,
     left: 20,
     backgroundColor: '#750000',
     paddingVertical: 8,
