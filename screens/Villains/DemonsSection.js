@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -31,30 +31,17 @@ const DemonsSection = () => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDemon, setSelectedDemon] = useState(null);
-  const soundRef = useRef(null); // Reference to track the sound instance
 
-  // Play the Nate sound and store the sound instance
   const playNateSound = async () => {
     const { sound } = await Audio.Sound.createAsync(
       require('../../assets/audio/NateSound.mp4')
     );
-    soundRef.current = sound; // Store the sound instance
-    await soundRef.current.playAsync();
+    await sound.playAsync();
 
     // Navigate to Nate's screen after a delay
     setTimeout(() => {
-      soundRef.current = null; // Clear reference to ensure no accidental stop
       navigation.navigate('NateScreen');
     }, 3000); // 3-second delay before navigation
-  };
-
-  // Stops the sound when navigating back
-  const stopSound = async () => {
-    if (soundRef.current) {
-      await soundRef.current.stopAsync();
-      await soundRef.current.unloadAsync();
-      soundRef.current = null;
-    }
   };
 
   const handlePress = async (name) => {
@@ -64,11 +51,6 @@ const DemonsSection = () => {
 
     setSelectedDemon(name);
     setModalVisible(true);
-
-    // Auto-close the modal after 2 seconds
-    setTimeout(() => {
-      setModalVisible(false);
-    }, 2000);
   };
 
   const renderDemonLord = (demon) => (
@@ -96,10 +78,7 @@ const DemonsSection = () => {
       <View style={styles.container}>
         {/* Back Button */}
         <TouchableOpacity
-          onPress={() => {
-            stopSound(); // Stop audio when pressing back
-            navigation.goBack();
-          }}
+          onPress={() => navigation.goBack()}
           style={styles.backButton}
         >
           <Text style={styles.backButtonText}>⬅️</Text>

@@ -129,11 +129,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   header: {
-    fontSize: 20,
+    fontSize: isDesktop ? 28 : 18,  // Larger for desktop, smaller for mobile
     fontWeight: 'bold',
     color: '#fff',
     textShadowColor: '#00b3ff',
     textShadowRadius: 10,
+    textAlign: 'center',  // Ensures it’s centered across screen sizes
+    flexShrink: 1,         // Prevents text overflow
   },
   listContainer: {
     justifyContent: 'center',
@@ -147,13 +149,11 @@ const styles = StyleSheet.create({
   },
   imageBackground: {
     flex: 1,
-    justifyContent: 'flex-start', // Align items to the top
-    alignItems: 'center', 
+    justifyContent: 'center',  // Center the image inside the card
+    alignItems: 'center',
     width: '100%',
     height: '100%',
-    paddingTop: 0, // Add padding to create space from the top
   },
-  
   imageOverlay: {
     opacity: 0.9,
   },
