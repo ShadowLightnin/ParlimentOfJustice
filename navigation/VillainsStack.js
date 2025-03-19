@@ -10,7 +10,7 @@ import BigBadsTab from '../screens/Villains/BigBadsTab';
 
 // Demons Section
 import DemonsSection from '../screens/Villains/DemonsSection';
-import NateScreen from '../screens/Villains/NateScreen';
+import NateScreen from '../screens/Villains/DemonMembers/NateScreen';
 
 // Villain Imports
 import FjordScreen from '../screens/Villains/VillainsMembers/FjordScreen';

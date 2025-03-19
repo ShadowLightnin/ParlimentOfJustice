@@ -9,7 +9,7 @@ const NateScreen = () => {
     <View style={styles.container}>
       <Text style={styles.title}>🔥 Demon Lord Nate 🔥</Text>
       <Image 
-        source={require('../../assets/Villains/Nate.jpg')} 
+        source={require('../../../assets/Villains/Nate.jpg')} 
         style={styles.image} 
       />
       <Text style={styles.description}>
