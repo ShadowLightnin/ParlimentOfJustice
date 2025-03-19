@@ -50,38 +50,58 @@ export const OlympiansScreen = () => {
 
         {/* Grid Layout */}
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          {Array.from({ length: rows }).map((_, rowIndex) => (
-            <View
-              key={rowIndex}
-              style={[styles.row, { marginBottom: verticalSpacing, gap: horizontalSpacing }]}
-            >
-              {Array.from({ length: columns }).map((_, colIndex) => {
-                const memberIndex = rowIndex * columns + colIndex;
-                const member = OlympiansMembers[memberIndex];
-
-                if (!member) return <View key={colIndex} style={{ width: cardSize, height: cardSize * cardHeightMultiplier }} />;
-
+        {Array.from({ length: rows }).map((_, rowIndex) => (
+          <View
+            key={rowIndex}
+            style={[styles.row, { marginBottom: verticalSpacing, gap: horizontalSpacing }]}
+          >
+            {Array.from({ length: columns }).map((_, colIndex) => {
+              const memberIndex = rowIndex * columns + colIndex;
+              const member = OlympiansMembers[memberIndex];
+            
+              if (!member) {
                 return (
-                  <TouchableOpacity
-                    key={colIndex}
-                    style={[
-                      styles.card,
-                      { width: cardSize, height: cardSize * cardHeightMultiplier },
-                      !member.clickable && styles.disabledCard,
-                    ]}
-                    disabled={!member?.clickable}
-                    onPress={() => member?.clickable && navigation.navigate(member.screen)}
-                  >
-                    {member?.image && <Image source={member.image} style={styles.characterImage} />}
-                    <Text style={styles.name}>{member?.name || ''}</Text>
-                    <Text style={styles.codename}>{member?.codename || ''}</Text>
-                    {!member?.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
-                  </TouchableOpacity>
+                  <View 
+                    key={colIndex} 
+                    style={{ width: cardSize, height: cardSize * cardHeightMultiplier }}
+                  />
                 );
-              })}
-            </View>
-          ))}
-        </ScrollView>
+              }
+            
+              return (
+                <TouchableOpacity
+                  key={colIndex}
+                  style={[
+                    styles.card,
+                    { width: cardSize, height: cardSize * cardHeightMultiplier },
+                    !member.clickable && styles.disabledCard,
+                  ]}
+                  disabled={!member?.clickable}
+                  onPress={() => member?.clickable && navigation.navigate(member.screen)}
+                >
+                  {member?.image && (
+                    <Image source={member.image} style={styles.characterImage} />
+                  )}
+
+                  {/* Render codename ONLY if it exists */}
+                  {member?.codename ? (
+                    <Text style={styles.codename}>{member.codename}</Text>
+                  ) : null}
+
+                  {/* Render name ONLY if it exists */}
+                  {member?.name ? (
+                    <Text style={styles.name}>{member.name}</Text>
+                  ) : null}
+
+                  {!member?.clickable && (
+                    <Text style={styles.disabledText}>Not Clickable</Text>
+                  )}
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        ))}
+      </ScrollView>
       </SafeAreaView>
     </ImageBackground>
   );
@@ -164,19 +184,20 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 8,
   },
   name: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#fff',
+    fontSize: 10,            // Smaller size for names
+    fontStyle: 'italic',     // Italic for names
+    color: '#aaa',           // Lighter color for names
+    textAlign: 'center',
+  },
+  
+  codename: {
+    fontSize: 12,            // Larger size for codenames
+    fontWeight: 'bold',      // Bold for codenames
+    color: '#fff',           // Brighter color for codenames
     textAlign: 'center',
     marginTop: 5,
   },
-  codename: {
-    fontSize: 10,
-    fontStyle: 'italic',
-    color: '#aaa',
-    textAlign: 'center',
-  },
-  disabledText: {
+    disabledText: {
     fontSize: 10,
     color: '#ff4444',
     textAlign: 'center',

@@ -71,8 +71,17 @@ export const LegionairesScreen = () => {
                     disabled={!member.clickable}
                   >
                     <Image source={member.image} style={styles.characterImage} />
-                    <Text style={styles.name}>{member.name}</Text>
-                    <Text style={styles.codename}>{member.codename}</Text>
+
+                    {/* Codename now appears first with larger, bold text */}
+                    {member?.codename ? (
+                      <Text style={styles.codename}>{member.codename}</Text>
+                    ) : null}
+
+                    {/* Name now appears second with italicized, smaller text */}
+                    {member?.name ? (
+                      <Text style={styles.name}>{member.name}</Text>
+                    ) : null}
+
                     {!member.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
                   </TouchableOpacity>
                 );
@@ -161,15 +170,15 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
   },
-  name: {
-    fontSize: 12,
+  codename: {
+    fontSize: 12,            // Now bold, larger, and prominent
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
     marginTop: 5,
   },
-  codename: {
-    fontSize: 10,
+  name: {
+    fontSize: 10,            // Now italic, smaller, and lighter
     fontStyle: 'italic',
     color: '#aaa',
     textAlign: 'center',

@@ -35,7 +35,10 @@ export const ConstollationScreen = () => {
   };
 
   return (
-    <ImageBackground source={require('../../assets/BackGround/helldivers.webp')} style={styles.background}>
+    <ImageBackground 
+      source={require('../../assets/BackGround/helldivers.webp')} 
+      style={styles.background}
+    >
       <SafeAreaView style={styles.container}>
         {/* Header Section */}
         <View style={styles.headerWrapper}>
@@ -51,12 +54,20 @@ export const ConstollationScreen = () => {
         {/* Grid Layout */}
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {Array.from({ length: rows }).map((_, rowIndex) => (
-            <View key={rowIndex} style={[styles.row, { marginBottom: verticalSpacing, gap: horizontalSpacing }]}>
+            <View 
+              key={rowIndex} 
+              style={[styles.row, { marginBottom: verticalSpacing, gap: horizontalSpacing }]}
+            >
               {Array.from({ length: columns }).map((_, colIndex) => {
                 const memberIndex = rowIndex * columns + colIndex;
                 const member = ConstollationMembers[memberIndex];
 
-                if (!member) return <View key={colIndex} style={{ width: cardSize, height: cardSize * cardHeightMultiplier }} />;
+                if (!member) return (
+                  <View 
+                    key={colIndex} 
+                    style={{ width: cardSize, height: cardSize * cardHeightMultiplier }}
+                  />
+                );
 
                 return (
                   <TouchableOpacity
@@ -69,9 +80,20 @@ export const ConstollationScreen = () => {
                     disabled={!member.clickable}
                   >
                     <Image source={member.image} style={styles.characterImage} />
-                    <Text style={styles.name}>{member.name}</Text>
-                    <Text style={styles.codename}>{member.codename}</Text>
-                    {!member.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+                    
+                    {/* Codename Now Appears First (Bold & Larger) */}
+                    {member?.codename && (
+                      <Text style={styles.codename}>{member.codename}</Text>
+                    )}
+
+                    {/* Name Now Appears Second (Italic & Smaller) */}
+                    {member?.name && (
+                      <Text style={styles.name}>{member.name}</Text>
+                    )}
+
+                    {!member.clickable && (
+                      <Text style={styles.disabledText}>Not Clickable</Text>
+                    )}
                   </TouchableOpacity>
                 );
               })}
@@ -159,15 +181,15 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
   },
-  name: {
-    fontSize: 12,
+  codename: {
+    fontSize: 12,      // Codename now bold and larger
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
     marginTop: 5,
   },
-  codename: {
-    fontSize: 10,
+  name: {
+    fontSize: 10,      // Name now italic and smaller
     fontStyle: 'italic',
     color: '#aaa',
     textAlign: 'center',

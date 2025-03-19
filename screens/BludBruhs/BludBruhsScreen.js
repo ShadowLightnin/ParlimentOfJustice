@@ -21,8 +21,8 @@ const members = [
   { name: 'Joseph', codename: '', screen: '', clickable: false, position: [1, 0], image: require('../../assets/Armor/JosephDPlaceHolder.jpg') },
   { name: 'James', codename: '', screen: '', clickable: false, position: [1, 1], image: require('../../assets/Armor/JamesBbPlaceHolder.jpg') },
   { name: 'Tanner', codename: '', screen: '', clickable: false, position: [1, 2], image: require('../../assets/Armor/TannerBbPlaceHolder.jpg') },
-  { name: 'Ranger Squad', codename: '', screen: 'RangerSquad', clickable: true, position: [2, 0], image: require('../../assets/BackGround/RangerSquad.jpg') },
-  { name: 'MonkeAlliance', codename: '', screen: 'MonkeAllianceScreen', clickable: true, position: [2, 2], image: require('../../assets/BackGround/Monke.jpg') },
+  { name: '', codename: 'Ranger Squad', screen: 'RangerSquad', clickable: true, position: [2, 0], image: require('../../assets/BackGround/RangerSquad.jpg') },
+  { name: '', codename: 'MonkeAlliance', screen: 'MonkeAllianceScreen', clickable: true, position: [2, 2], image: require('../../assets/BackGround/Monke.jpg') },
 ];
 
 // Empty cell checker
@@ -30,20 +30,22 @@ const isEmpty = (row, col) => (row === 0 && col === 1) || (row === 2 && col === 
 const getMemberAtPosition = (row, col) =>
   members.find((member) => member.position[0] === row && member.position[1] === col);
 
-const TitansScreen = () => {
+const BludBruhsScreen = () => {
   const navigation = useNavigation();
 
   const goToChat = () => {
     navigation.navigate('TeamChat');
   };
 
-  const isDesktop = SCREEN_WIDTH > 600; // Check for desktop view
-  const cardSize = isDesktop ? 160 : 100; // Double size on desktop
-  const cardSpacing = isDesktop ? 25 : 10; // Increase spacing on desktop
+  const isDesktop = SCREEN_WIDTH > 600;
+  const cardSize = isDesktop ? 160 : 100;
+  const cardSpacing = isDesktop ? 25 : 10;
 
   return (
-    <ImageBackground source={require('../../assets/BackGround/bludbruh.jpg')} 
-    style={styles.background}>
+    <ImageBackground 
+      source={require('../../assets/BackGround/bludbruh.jpg')} 
+      style={styles.background}
+    >
       <SafeAreaView style={styles.container}>
         
         {/* Header & Back Button */}
@@ -81,8 +83,8 @@ const TitansScreen = () => {
                     {member?.image && (
                       <Image source={member.image} style={styles.characterImage} />
                     )}
-                    <Text style={styles.name}>{member?.name || ''}</Text>
                     <Text style={styles.codename}>{member?.codename || ''}</Text>
+                    <Text style={styles.name}>{member?.name || ''}</Text>
                     {!member?.clickable && (
                       <Text style={styles.disabledText}>Not Clickable</Text>
                     )}
@@ -173,17 +175,17 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 8,
   },
   name: {
+    fontSize: 10,
+    fontStyle: 'italic',
+    color: '#aaa',
+    textAlign: 'center',
+  },
+  codename: {
     fontSize: 12,
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
     marginTop: 5,
-  },
-  codename: {
-    fontSize: 10,
-    fontStyle: 'italic',
-    color: '#aaa',
-    textAlign: 'center',
   },
   disabledCard: {
     backgroundColor: '#444',
@@ -197,4 +199,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TitansScreen;
+export default BludBruhsScreen;

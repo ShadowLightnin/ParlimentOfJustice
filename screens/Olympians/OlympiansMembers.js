@@ -60,7 +60,7 @@ const familyData = [
   {
     family: 'Cummings',
     members: [
-      'Sean', 'Heather', 'Brett small', 'Jake',
+      'Sean', 'Heather C', 'Brett small', 'Jake',
       'Ailey', 'Aubrey', 'James',
     ],
   },
@@ -166,6 +166,7 @@ const characterImages = {
   Paisley: require('../../assets/Armor/PaisleyPlaceHolder.jpg'),
   Ellie: require('../../assets/Armor/ElliePlaceHolder.jpg'),
   Sean: require('../../assets/Armor/SeanPlaceHolder.jpg'),
+  'Heather C': require('../../assets/Armor/HeatherCPlaceHolder.jpg'),
   'Brett small': require('../../assets/Armor/BrettSmallPlaceHolder.jpg'),
   Jake: require('../../assets/Armor/JakePlaceHolder.jpg'),
   Ailey: require('../../assets/Armor/AileyPlaceHolder.jpg'),

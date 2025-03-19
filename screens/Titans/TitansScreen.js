@@ -37,13 +37,13 @@ const TitansScreen = () => {
     navigation.navigate('TeamChat');
   };
 
-  const isDesktop = SCREEN_WIDTH > 600; // Check for desktop view
-  const cardSize = isDesktop ? 160 : 100; // Double size on desktop
-  const cardSpacing = isDesktop ? 25 : 10; // Increase spacing on desktop
+  const isDesktop = SCREEN_WIDTH > 600;
+  const cardSize = isDesktop ? 160 : 100;
+  const cardSpacing = isDesktop ? 25 : 10;
 
   return (
-    <ImageBackground 
-      source={require('../../assets/BackGround/TitansPlaceHolder.jpg')} 
+    <ImageBackground
+      source={require('../../assets/BackGround/TitansPlaceHolder.jpg')}
       style={styles.background}
     >
       <SafeAreaView style={styles.container}>
@@ -82,8 +82,8 @@ const TitansScreen = () => {
                     {member?.image && (
                       <Image source={member.image} style={styles.characterImage} />
                     )}
-                    <Text style={styles.name}>{member?.name || ''}</Text>
                     <Text style={styles.codename}>{member?.codename || ''}</Text>
+                    <Text style={styles.name}>{member?.name || ''}</Text>
                     {!member?.clickable && (
                       <Text style={styles.disabledText}>Not Clickable</Text>
                     )}
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)', 
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     paddingHorizontal: 20,
     alignItems: 'center',
   },
@@ -173,14 +173,14 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
   },
-  name: {
+  codename: {
     fontSize: 12,
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
     marginTop: 5,
   },
-  codename: {
+  name: {
     fontSize: 10,
     fontStyle: 'italic',
     color: '#aaa',

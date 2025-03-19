@@ -39,7 +39,7 @@ const rows = Math.ceil(members.length / columns);
 const cardSize = isDesktop ? 160 : 100;
 const cardHeightMultiplier = 1.6;
 const horizontalSpacing = isDesktop ? 40 : 10;
-const verticalSpacing = isDesktop ? 50 : 20; // Adjust vertical spacing here
+const verticalSpacing = isDesktop ? 50 : 20;
 
 export const MonkeAllianceScreen = () => {
   const navigation = useNavigation();
@@ -89,8 +89,8 @@ export const MonkeAllianceScreen = () => {
                       source={member.image || require('../../../assets/Armor/PlaceHolder.jpg')} 
                       style={styles.characterImage} 
                     />
-                    <Text style={styles.name}>{member.name}</Text>
                     <Text style={styles.codename}>{member.codename}</Text>
+                    <Text style={styles.name}>{member.name}</Text>
                     {!member.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
                   </TouchableOpacity>
                 );
@@ -172,14 +172,14 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
   },
-  name: {
+  codename: {
     fontSize: 12,
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
     marginTop: 5,
   },
-  codename: {
+  name: {
     fontSize: 10,
     fontStyle: 'italic',
     color: '#aaa',

@@ -46,7 +46,7 @@ const rows = Math.ceil(members.length / columns);
 const cardSize = isDesktop ? 160 : 100;
 const cardHeightMultiplier = 1.6;
 const horizontalSpacing = isDesktop ? 40 : 10;
-const verticalSpacing = isDesktop ? 50 : 20; 
+const verticalSpacing = isDesktop ? 50 : 20;
 
 export const CobrosScreen = () => {
   const navigation = useNavigation();
@@ -96,8 +96,8 @@ export const CobrosScreen = () => {
                       source={member.image || require('../../assets/Armor/PlaceHolder.jpg')} 
                       style={styles.characterImage} 
                     />
-                    <Text style={styles.name}>{member.name}</Text>
                     <Text style={styles.codename}>{member.codename}</Text>
+                    <Text style={styles.name}>{member.name}</Text>
                     {!member.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
                   </TouchableOpacity>
                 );
@@ -168,23 +168,21 @@ const styles = StyleSheet.create({
   },
   disabledCard: {
     shadowColor: 'transparent',
-    // opacity: 0.5,
     backgroundColor: '#444',
-
   },
   characterImage: {
     width: '100%',
     height: '70%',
     resizeMode: 'cover',
   },
-  name: {
+  codename: {
     fontSize: 12,
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
     marginTop: 5,
   },
-  codename: {
+  name: {
     fontSize: 10,
     fontStyle: 'italic',
     color: '#aaa',

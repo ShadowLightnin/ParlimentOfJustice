@@ -15,9 +15,9 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 const isDesktop = SCREEN_WIDTH > 600;
 
 // Adjustable Card Dimensions
-const cardWidth = isDesktop ? 300 : 200; 
-const cardHeight = isDesktop ? 240 : 150; 
-const cardSpacing = isDesktop ? 30 : 10;
+const cardWidth = isDesktop ? 300 : 180; 
+const cardHeight = isDesktop ? 240 : 140; 
+const cardSpacing = isDesktop ? 30 : 5;
 
 const factions = [
   { name: 'Titans', screen: 'Titans', clickable: true, image: require('../assets/BackGround/TitansPlaceHolder.jpg') },

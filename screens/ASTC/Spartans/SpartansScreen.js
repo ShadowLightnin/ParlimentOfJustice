@@ -85,8 +85,8 @@ const SpartansScreen = () => {
                     {member?.image && (
                       <Image source={member.image} style={styles.characterImage} />
                     )}
-                    <Text style={styles.name}>{member?.name || ''}</Text>
                     <Text style={styles.codename}>{member?.codename || ''}</Text>
+                    <Text style={styles.name}>{member?.name || ''}</Text>
                     {!member?.clickable && (
                       <Text style={styles.disabledText}>Not Clickable</Text>
                     )}
@@ -176,14 +176,14 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
   },
-  name: {
+  codename: {
     fontSize: 12,
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
     marginTop: 5,
   },
-  codename: {
+  name: {
     fontSize: 10,
     fontStyle: 'italic',
     color: '#aaa',
