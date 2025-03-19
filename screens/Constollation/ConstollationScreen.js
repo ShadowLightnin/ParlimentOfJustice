@@ -36,7 +36,7 @@ export const ConstollationScreen = () => {
 
   return (
     <ImageBackground 
-      source={require('../../assets/BackGround/helldivers.webp')} 
+      source={require('../../assets/BackGround/Constollation.jpg')} 
       style={styles.background}
     >
       <SafeAreaView style={styles.container}>
