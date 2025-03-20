@@ -93,9 +93,9 @@ export const OlympiansScreen = () => {
                     <Text style={styles.name}>{member.name}</Text>
                   ) : null}
 
-                  {!member?.clickable && (
+                  {/* {!member?.clickable && (
                     <Text style={styles.disabledText}>Not Clickable</Text>
-                  )}
+                  )} */}
                 </TouchableOpacity>
               );
             })}

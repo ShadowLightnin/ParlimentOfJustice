@@ -98,7 +98,7 @@ export const CobrosScreen = () => {
                     />
                     <Text style={styles.codename}>{member.codename}</Text>
                     <Text style={styles.name}>{member.name}</Text>
-                    {!member.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+                    {/* {!member.clickable && <Text style={styles.disabledText}>Not Clickable</Text>} */}
                   </TouchableOpacity>
                 );
               })}
