@@ -14,7 +14,7 @@ const ObeliskScreen = () => {
 
   return (
     <ImageBackground
-      source={require("../../../assets/BackGround/Villains.jpg")}
+      source={require("../../../assets/BackGround/Enlightened.jpg")}
       style={styles.background}
     >
       <View style={styles.overlay}>
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     title: {
       fontSize: 28,
       fontWeight: "bold",
-      color: "#ff3131",
+      color: "#D4AF37",
       textAlign: "center",
       flex: 1,
     },
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
       alignItems: "center",
       justifyContent: "center",
       paddingHorizontal: 20,
-      backgroundColor: "#111",
+    //   backgroundColor: "#111",
       paddingVertical: 30,
       borderRadius: 20,
     },
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     aboutHeader: {
       fontSize: 22,
       fontWeight: "bold",
-      color: "#ff3131",
+      color: "#D4AF37",
       textAlign: "center",
     },
     aboutText: {

@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     title: {
       fontSize: 28,
       fontWeight: "bold",
-      color: "#ff3131",
+      color: "purple",
       textAlign: "center",
       flex: 1,
     },
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     aboutHeader: {
       fontSize: 22,
       fontWeight: "bold",
-      color: "#ff3131",
+      color: "purple",
       textAlign: "center",
     },
     aboutText: {

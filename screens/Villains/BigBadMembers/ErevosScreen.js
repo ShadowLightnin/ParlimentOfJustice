@@ -176,66 +176,66 @@ Erevos is deeply convinced that humanity is doomed to chaos and self-destruction
             </Text> 
             <Text style={styles.aboutText}>
             This winner-takes-all deal intensifies the narrative and conflict in the story. It raises the stakes for Erevos and creates an atmosphere of mistrust, ambition, and inevitable betrayal, setting the stage for dramatic confrontations with the heroes of the Parliament, the Titans, and anyone else who stands in their way. The looming threat of The Devourer’s appetite for domination adds a layer of urgency to the heroes’ mission to thwart Erevos and his dark ambitions.
-              
+
             </Text> 
             <Text style={styles.aboutText}>
             Erevos the Eternal and The Devourer’s fateful meeting was a convergence of ambition and dark destiny that took place during a critical moment in Erevos’s long life. Here’s a detailed account of their first encounter:
-              
+
             </Text> 
             <Text style={styles.aboutText}>
             The Meeting of Erevos and The Devourer
-              
+
             </Text> 
             <Text style={styles.aboutText}>
             • Time Period: The meeting occurred during a time of great turmoil on Earth, a period marked by escalating conflicts among nations, the rise of meta-humans, and the emergence of powerful supernatural forces. This chaos created the perfect breeding ground for Erevos’s ambition and The Devourer’s hunger for domination.
-              
+
             </Text> 
             <Text style={styles.aboutText}>
             • Location: The encounter took place in a hidden temple deep within an ancient mountain range, a site steeped in dark magic and forgotten knowledge. This temple was built by a long-lost civilization that had once worshipped The Devourer as a god, leaving behind inscriptions and artifacts that spoke of his insatiable hunger.
-              
+
             </Text> 
             <Text style={styles.aboutText}>
             The Encounter
-              
+
             </Text> 
             <Text style={styles.aboutText}>
             • Erevos’s Quest for Power: Seeking a way to enhance his own abilities and solidify his control over meta-humans, Erevos delved into ancient texts and rituals. He uncovered the existence of The Devourer—a cosmic entity capable of granting unimaginable power in exchange for service. Intrigued by the prospect of power, Erevos set out to summon this dark force.
-              
+
             </Text> 
             <Text style={styles.aboutText}>
             • The Summoning Ritual: Under the light of a rare celestial alignment, Erevos performed a complex ritual in the heart of the temple. Using artifacts imbued with ancient magic and the life force of captured meta-humans, he created a portal that would bridge the mortal realm with the essence of The Devourer.
-              
+
             </Text> 
             <Text style={styles.aboutText}>
             • The Appearance of The Devourer: The portal erupted in a storm of energy, and from it emerged The Devourer, a terrifying manifestation of chaos and hunger. The being’s form was constantly shifting, with tendrils of darkness swirling around him, and a voice that resonated like a thousand echoes filled the temple.
-              
+
             </Text> 
             <Text style={styles.aboutText}>
             The Pact
-              
+
             </Text> 
             <Text style={styles.aboutText}>
             • Mutual Recognition: Erevos and The Devourer recognized each other’s ambitions immediately. Erevos saw an opportunity to amplify his power and dominion, while The Devourer sensed the potential for a significant harvest of life forces.
-              
+
             </Text> 
             <Text style={styles.aboutText}>
             • Negotiation: In a tense and foreboding exchange, Erevos proposed an alliance. He offered to gather powerful meta-humans for The Devourer’s consumption in exchange for enhanced powers to assist in his conquest of Earth. The Devourer, intrigued by Erevos’s ambition and cunning, agreed to the terms but insisted on the winner-takes-all stipulation.
-              
+
             </Text> 
             <Text style={styles.aboutText}>
             • Sealing the Pact: They sealed their deal with an ancient ritual involving blood and dark magic, binding their fates together. Erevos was bestowed with new abilities—greater strength, enhanced immortality, and the ability to siphon power from those he conquered. In return, The Devourer gained access to Earth and its meta-humans as a source of sustenance.
-              
+
             </Text> 
             <Text style={styles.aboutText}>
             Aftermath
             </Text> 
             <Text style={styles.aboutText}>
             • Unleashing Chaos: Following their pact, Erevos began enacting his plans, manipulating events on Earth to weaken meta-humans and governments alike. Meanwhile, The Devourer loomed in the background, waiting for the right moment to strike and consume the very world Erevos sought to control.
-              
+
             </Text> 
             <Text style={styles.aboutText}>
             • An Ongoing Rivalry: Though they share a common goal, Erevos and The Devourer remain cautious of one another, always aware that betrayal could come at any moment. Their meeting marked the beginning of a dark alliance, setting the stage for conflicts that would resonate through the ages as they both pursued their grand designs.
-              
+
             </Text> 
           </View>
         </ScrollView>
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
     title: {
       fontSize: 28,
       fontWeight: "bold",
-      color: "#ff3131",
+      color: "purple",
       textAlign: "center",
       flex: 1,
     },
@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     aboutHeader: {
       fontSize: 22,
       fontWeight: "bold",
-      color: "#ff3131",
+      color: "purple",
       textAlign: "center",
     },
     aboutText: {

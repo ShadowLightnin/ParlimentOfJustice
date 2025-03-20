@@ -14,7 +14,7 @@ const RedMercuryScreen = () => {
 
   return (
     <ImageBackground
-      source={require("../../../assets/BackGround/Villains.jpg")}
+      source={require("../../../assets/BackGround/Enlightened.jpg")}
       style={styles.background}
     >
       <View style={styles.overlay}>
@@ -23,7 +23,7 @@ const RedMercuryScreen = () => {
             <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
               <Text style={styles.backButtonText}>←</Text>
             </TouchableOpacity>
-            <Text style={styles.title}>Red Mercury</Text>
+            <Text style={styles.title}>Lane Mercury</Text>
           </View>
 
           <View style={styles.imageContainer}>
@@ -36,7 +36,7 @@ const RedMercuryScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-            Red Mercury: An industrialist who serves as the public 
+            Lane Murcury aka Red Mercury: An industrialist who serves as the public 
             face and financial powerhouse behind many of Erevos’s schemes. 
             Red Mercury provides The Enlightened with money, resources, and 
             political connections, shielding their plans from public scrutiny.
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     title: {
       fontSize: 28,
       fontWeight: "bold",
-      color: "#ff3131",
+      color: "#D4AF37",
       textAlign: "center",
       flex: 1,
     },
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
       alignItems: "center",
       justifyContent: "center",
       paddingHorizontal: 20,
-      backgroundColor: "#111",
+    //   backgroundColor: "#111",
       paddingVertical: 30,
       borderRadius: 20,
     },
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     aboutHeader: {
       fontSize: 22,
       fontWeight: "bold",
-      color: "#ff3131",
+      color: "#D4AF37",
       textAlign: "center",
     },
     aboutText: {
