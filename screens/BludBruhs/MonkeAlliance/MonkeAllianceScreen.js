@@ -17,14 +17,14 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // Member Data with Unique Image Paths
 const members = [
-  { name: 'Zeke', codename: 'Enderstrike', screen: '', clickable: false, image: require('../../../assets/Armor/ZekePlaceHolder.jpg') },
-  { name: 'Elijah Potter', codename: 'Chaos Wither', screen: '', clickable: false, image: require('../../../assets/Armor/ElijahPlaceHolder.jpg') },
-  { name: 'Tom C', codename: 'Thunder Whisperer', screen: '', clickable: false, image: require('../../../assets/Armor/TomCPlaceHolder.jpg') },
-  { name: 'Ammon T', codename: 'Quick Wit', screen: '', clickable: false, image: require('../../../assets/Armor/AmmonTPlaceHolder.jpg') },
-  { name: 'Eli C', codename: 'Shawdow Hunter', screen: '', clickable: false, image: require('../../../assets/Armor/EliPlaceHolder.jpg') },
-  { name: 'Ethan T', codename: 'Bolt Watcher', screen: '', clickable: false, image: require('../../../assets/Armor/EthanPlaceHolder.jpg') },
-  { name: 'Alex M', codename: 'Swiftmind', screen: '', clickable: false, image: require('../../../assets/Armor/AlexMPlaceHolder.jpg') },
-  { name: 'Damon', codename: 'Pixel Maverick', screen: '', clickable: false, image: require('../../../assets/Armor/DamonPlaceHolder.jpg') },
+  { name: 'Zeke', codename: 'Enderstrike', screen: 'Zeke', clickable: true, image: require('../../../assets/Armor/ZekePlaceHolder.jpg') },
+  { name: 'Elijah Potter', codename: 'Chaos Wither', screen: 'Elijah', clickable: true, image: require('../../../assets/Armor/ElijahPlaceHolder.jpg') },
+  { name: 'Tom C', codename: 'Thunder Whisperer', screen: 'TomBb', clickable: true, image: require('../../../assets/Armor/TomCPlaceHolder.jpg') },
+  { name: 'Ammon T', codename: 'Quick Wit', screen: 'AmmonT', clickable: true, image: require('../../../assets/Armor/AmmonTPlaceHolder.jpg') },
+  { name: 'Eli C', codename: 'Shawdow Hunter', screen: 'Eli', clickable: true, image: require('../../../assets/Armor/EliPlaceHolder.jpg') },
+  { name: 'Ethan T', codename: 'Bolt Watcher', screen: 'EthanT', clickable: true, image: require('../../../assets/Armor/EthanPlaceHolder.jpg') },
+  { name: 'Alex M', codename: 'Swiftmind', screen: 'AlexM', clickable: true, image: require('../../../assets/Armor/AlexMPlaceHolder.jpg') },
+  { name: 'Damon', codename: 'Pixel Maverick', screen: 'Damon', clickable: true, image: require('../../../assets/Armor/DamonPlaceHolder.jpg') },
   { name: 'Taylor', codename: '', screen: '', clickable: false },
   { name: 'Rachel', codename: '', screen: '', clickable: false },
   { name: 'Lauren', codename: '', screen: '', clickable: false },

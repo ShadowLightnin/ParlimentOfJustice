@@ -15,6 +15,16 @@ import TannerBb from '../screens/BludBruhs/TannerBb';
 import RangerSquad from '../screens/BludBruhs/Ranger_Squad17/RangerSquad';
 import MonkeAllianceScreen from '../screens/BludBruhs/MonkeAlliance/MonkeAllianceScreen';
 import LumielScreen from '../screens/BludBruhs/MonkeAlliance/LumielScreen';
+import Zeke from '../screens/BludBruhs/MonkeAlliance/Zeke';
+import Elijah from '../screens/BludBruhs/MonkeAlliance/Elijah';
+import AmmonT from '../screens/BludBruhs/MonkeAlliance/AmmonT';
+import TomBb from '../screens/BludBruhs/MonkeAlliance/TomBb';
+import Eli from '../screens/BludBruhs/MonkeAlliance/Eli';
+import EthanT from '../screens/BludBruhs/MonkeAlliance/EthanT';
+import AlexM from '../screens/BludBruhs/MonkeAlliance/AlexM';
+import Damon from '../screens/BludBruhs/MonkeAlliance/Damon';
+
+
 
 const Stack = createNativeStackNavigator();
 
@@ -32,6 +42,14 @@ export function BludBruhsStack() {
       <Stack.Screen name="TannerBb" component={TannerBb} />
       <Stack.Screen name="RangerSquad" component={RangerSquad} />
       <Stack.Screen name="MonkeAllianceScreen" component={MonkeAllianceScreen} />
+      <Stack.Screen name="Zeke" component={Zeke} />
+      <Stack.Screen name="Elijah" component={Elijah} />
+      <Stack.Screen name="AmmonT" component={AmmonT} />
+      <Stack.Screen name="TomBb" component={TomBb} />
+      <Stack.Screen name="Eli" component={Eli} />
+      <Stack.Screen name="EthanT" component={EthanT} />
+      <Stack.Screen name="AlexM" component={AlexM} />
+      <Stack.Screen name="Damon" component={Damon} />
       <Stack.Screen name="LumielScreen" component={LumielScreen} />
       </Stack.Navigator>
   );

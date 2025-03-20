@@ -6,7 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
-const JoesphD = () => {
+const AlexM = () => {
   const navigation = useNavigation();
 
   return (
@@ -14,7 +14,7 @@ const JoesphD = () => {
       {/* Scrollable Content */}
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         
-        {/* Header (Now Scrolls with joEverything) */}
+        {/* Header (Now Scrolls with Everything) */}
         <View style={styles.headerContainer}>
           {/* Back Button */}
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
@@ -22,7 +22,7 @@ const JoesphD = () => {
           </TouchableOpacity>
 
           {/* Title */}
-          <Text style={styles.title}>Technoman</Text>
+          <Text style={styles.title}>Chaos Wither</Text>
 
           {/* Comment Button (Top Right) */}
           <TouchableOpacity style={styles.commentButton} onPress={() => navigation.navigate("Comments")}>
@@ -33,7 +33,7 @@ const JoesphD = () => {
         {/* Armor Image */}
         <View style={styles.imageContainer}>
           <Image 
-            source={require("../../assets/Armor/JosephDPlaceHolder.jpg")} 
+            source={require("../../../assets/Armor/AlexMPlaceHolder.jpg")} 
             style={styles.armorImage} 
           />
         </View>
@@ -42,7 +42,7 @@ const JoesphD = () => {
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
-            Joseph is a warrior clad in the legendary armor, designed for both agility and
+          Alex is a warrior clad in the legendary armor, designed for both agility and
             resilience. His armor is a fusion of advanced technology and ancient craftsmanship,
             making him a formidable force on the battlefield.
           </Text>
@@ -128,4 +128,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default JoesphD;
+export default AlexM;

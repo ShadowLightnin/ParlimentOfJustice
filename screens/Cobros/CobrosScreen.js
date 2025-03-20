@@ -20,7 +20,7 @@ const members = [
   { name: 'Tanner Despain', codename: 'Titanium', screen: '', clickable: false, image: require('../../assets/Armor/TannerDPlaceHolder.jpg') },
   { name: 'Wesley Holbrook', codename: 'Warlock', screen: '', clickable: false, image: require('../../assets/Armor/WesleyHPlaceHolder.jpg') },
   { name: 'Josh Larson', codename: 'Juggernaut', screen: '', clickable: false, image: require('../../assets/Armor/JoshLPlaceHolder.jpg') },
-  { name: 'Ethan Workman', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/PlaceHolder.jpg') },
+  // { name: 'Ethan Workman', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/PlaceHolder.jpg') },
   { name: 'Jonah Gray', codename: 'Echo Song', screen: '', clickable: false, image: require('../../assets/Armor/JonahPlaceHolder.jpg') },
   { name: 'Joseph Slack', codename: 'Caster', screen: '', clickable: false, image: require('../../assets/Armor/JosephSPlaceHolder_cleanup.jpg') },
   { name: 'Jaden Boyer', codename: 'Socialation', screen: '', clickable: false, image: require('../../assets/Armor/JadenPlaceHolder.jpg') },
@@ -31,12 +31,12 @@ const members = [
   { name: 'Nick Larsen', codename: 'Iron Quard', screen: '', clickable: false, image: require('../../assets/Armor/NickPlaceHolder.jpg') },
   { name: 'Vanner Johnson', codename: 'Viral', screen: '', clickable: false, image: require('../../assets/Armor/Vanner3PlaceHolder.jpg') },
   { name: 'Tommy Holbrook', codename: 'Swift Shadow', screen: '', clickable: false, image: require('../../assets/Armor/TommyHPlaceHolder.jpg') },
-  { name: 'Alex Wood', codename: 'Vortex Flash', screen: '', clickable: false, image: require('../../assets/Armor/PlaceHolder.jpg') },
+  // { name: 'Alex Wood', codename: 'Vortex Flash', screen: '', clickable: false, image: require('../../assets/Armor/PlaceHolder.jpg') },
   { name: 'Rick Holly', codename: 'Valor Knight', screen: '', clickable: false, image: require('../../assets/Armor/RickPlaceHolder.jpg') },
   { name: 'Trent Cook', codename: 'Captain', screen: '', clickable: false, image: require('../../assets/Armor/TrentPlaceHolder.jpg') },
   { name: 'Robbie Petersen', codename: 'Quickstike', screen: '', clickable: false, image: require('../../assets/Armor/RobbiePlaceHolder.jpg') },
   { name: 'Micheal', codename: 'Guardian Sentinel', screen: '', clickable: false, image: require('../../assets/Armor/MichealPlaceHolder.jpg') },
-  { name: 'Kyle', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/PlaceHolder.jpg') },
+  // { name: 'Kyle', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/PlaceHolder.jpg') },
 ];
 
 // Grid layout settings

@@ -42,7 +42,7 @@ const Cole = () => {
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
-            Will is a warrior clad in the legendary NightHawk armor, designed for both agility and
+          Cole is a warrior clad in the legendary armor, designed for both agility and
             resilience. His armor is a fusion of advanced technology and ancient craftsmanship,
             making him a formidable force on the battlefield.
           </Text>
