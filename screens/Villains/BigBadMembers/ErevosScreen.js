@@ -109,10 +109,86 @@ Erevos is deeply convinced that humanity is doomed to chaos and self-destruction
 
             </Text> 
             <Text style={styles.aboutText}>
-            Cosmic Pact with the Dark Overlord: The Devourer
+            Powers and Abilities
+
             </Text> 
             <Text style={styles.aboutText}>
+            • Immortality: Erevos cannot die from aging, illness, or most injuries. His cells regenerate rapidly, allowing him to heal from wounds that would be fatal to others.
 
+            </Text> 
+            <Text style={styles.aboutText}>
+            • Cosmic Energy Manipulation: Residual power from his encounter with the celestial event grants him abilities akin to dark matter manipulation, including energy projection, force fields, and limited telekinesis.
+
+            </Text> 
+            <Text style={styles.aboutText}>
+            • Enhanced Intelligence and Strategic Mastery: With thousands of years of experience, Erevos has accumulated knowledge of warfare, politics, science, and psychology, making him a nearly unbeatable tactician.
+
+            </Text> 
+            <Text style={styles.aboutText}>
+            • Physical Augmentation: His strength, agility, and stamina far surpass normal human limits. Over time, his body has developed beyond its initial enhancements, allowing him to survive extreme environments, including the vacuum of space for brief periods.
+
+            </Text> 
+            <Text style={styles.aboutText}>
+            Personality
+            </Text> 
+            <Text style={styles.aboutText}>
+            Erevos is patient, knowing that time is always on his side. He is deeply arrogant yet possesses a charm that has seduced countless leaders and warriors throughout history to join his cause. His contempt for the Parliament of Justice is profound, as he views their resistance as an immature defiance against humanity’s destined ruler. Erevos despises what he sees as their misplaced ideals of “freedom” and “justice,” believing that the only way to create a true utopia is under his rule.
+
+            </Text> 
+            <Text style={styles.aboutText}>
+            Current Agenda
+
+            </Text> 
+            <Text style={styles.aboutText}>
+            Erevos has been covertly working on a plan known as The Convergence—an operation intended to siphon the powers of every hero on Earth, the Parliament included. Using an ancient artifact, the Celestial Eye, he seeks to harness these energies to amplify his own abilities, aiming to achieve a level of power that would allow him to reshape reality itself. Once accomplished, Erevos envisions a new era: a world of his design where he reigns supreme and unquestioned, an eternal god of an immortal empire.
+
+            </Text> 
+            <Text style={styles.aboutText}>
+            In facing Erevos, the Parliament of Justice encounters not only a formidable enemy but a living embodiment of humanity’s potential for both greatness and corruption.
+
+            </Text> 
+            <Text style={styles.aboutText}>
+            Yes, Erevos the Eternal does indeed have his own dark cabal, mirroring The Light from Young Justice, with a powerful alliance of villains who share his twisted ideals or stand to benefit from his ultimate vision. Additionally, his influence runs so deep that he’s made a pact with a cosmic-level villain akin to Darkseid—a dark overlord of the universe who values domination above all else. As if that weren’t enough, Erevos’s immortal bloodline holds a dark secret: he is the direct progenitor of all meta-powers on Earth, which adds layers to his grip on power and his claim over humanity’s future.
+
+            </Text> 
+            <Text style={styles.aboutText}>
+            Erevos’s Cabal: The Light
+
+            </Text> 
+            <Text style={styles.aboutText}>
+            The Light is Erevos’s secret council of powerful, morally ambiguous individuals and villains who all operate under his influence and serve his grand vision of world domination. Each member of The Light serves a specialized role, leveraging unique abilities or resources to carry out Erevos’s schemes across various sectors of society. Members are selected for their skills, loyalty to Erevos, and alignment with his worldview.
+
+            </Text> 
+            <Text style={styles.aboutText}>
+            Members of The Light:
+
+            </Text> 
+            <Text style={styles.aboutText}>
+            1. Noctura, the Illusionist: A master manipulator capable of bending reality and perception, Noctura has the power to influence entire populations through hallucinogenic energy. She manages psychological warfare and media manipulation, keeping the masses in a fog of confusion.
+
+            </Text> 
+            <Text style={styles.aboutText}>
+            2. Sable, the Assassin: Sable is a merciless warrior with an arsenal of deadly, shadow-infused weaponry. Her ability to slip through dimensions allows her to be anywhere and nowhere, striking down threats to Erevos’s plans without leaving a trace.
+
+            </Text> 
+            <Text style={styles.aboutText}>
+            3. Chrona, the Time-Bender: With control over small pockets of time, Chrona can slow, rewind, or even freeze time within a limited area. She uses her abilities to foresee potential obstacles to Erevos’s rule, manipulating events in his favor.
+
+            </Text> 
+            <Text style={styles.aboutText}>
+            4. Obelisk, the Warlock: A master of ancient dark arts and mysticism, Obelisk performs rituals that enhance Erevos’s strength and manipulate supernatural forces to bend to The Eclipse’s will. He also maintains a portal to the cosmic realm.
+
+            </Text> 
+            <Text style={styles.aboutText}>
+            5. Titanus, the Titan of Steel: Enhanced by experimental cybernetics and mutated DNA, Titanus is the muscle of The Light, with strength that rivals even the strongest Titans of the Parliament. His primary role is to crush resistance with brute force.
+
+            </Text> 
+            <Text style={styles.aboutText}>
+            6. Red Mercury: An industrialist who serves as the public face and financial powerhouse behind many of Erevos’s schemes. Red Mercury provides The Light with money, resources, and political connections, shielding their plans from public scrutiny.
+
+            </Text> 
+            <Text style={styles.aboutText}>
+            Cosmic Pact with the Dark Overlord: The Devourer
             </Text> 
             <Text style={styles.aboutText}>
             Erevos’s ambitions don’t stop at world domination; his visions extend to the cosmos itself. Through his occult studies and interdimensional journeys, Erevos crossed paths with The Devourer, a being of unimaginable darkness, known for his eternal hunger to consume worlds and impose order through conquest. The Devourer is a warlord who rules entire galaxies, maintaining power by siphoning life forces from planets he destroys.
