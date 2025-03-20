@@ -62,20 +62,22 @@ export const HomeScreen = () => {
 
   const renderFaction = ({ item }) => (
     <Animated.View style={{ opacity: fadeAnim }}>
-      <Text style={styles.factionTitle}>{item.name}</Text> {/* Added Faction Name */}
-      <TouchableOpacity
-        style={[
-          styles.card, 
-          { width: cardWidth, height: cardHeight, margin: cardSpacing / 2 }, 
-          !item.clickable && styles.disabledCard
-        ]}
-        onPress={() => item.clickable && navigation.navigate(item.screen)}
-        disabled={!item.clickable}
-      >
-        <ImageBackground source={item.image} style={styles.imageBackground} imageStyle={styles.imageOverlay}>
-          {!item.clickable && <Text style={styles.disabledText}>Not Clickable at the moment</Text>}
-        </ImageBackground>
-      </TouchableOpacity>
+          <Text style={styles.factionTitle}>
+            {item.name ? item.name : ''}
+          </Text>
+       <TouchableOpacity
+          style={[
+            styles.card,
+            { width: cardWidth, height: cardHeight, margin: cardSpacing / 2 },
+            !item.clickable && styles.disabledCard
+          ]}
+          onPress={() => item.clickable && navigation.navigate(item.screen)}
+          disabled={!item.clickable}
+        >
+          <ImageBackground source={item.image} style={styles.imageBackground} imageStyle={styles.imageOverlay}>
+            {!item.clickable && <Text style={styles.disabledText}>Not Clickable at the moment</Text>}
+          </ImageBackground>
+        </TouchableOpacity>
     </Animated.View>
   );
   

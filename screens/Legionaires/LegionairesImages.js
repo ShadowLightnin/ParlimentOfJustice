@@ -10,7 +10,7 @@ const legionImages = {
   'Jessica Fisher': { image: require('../../assets/Armor/JessicaFPlaceHolder.jpg'), clickable: false },
   'Dustin Edmonds': { image: require('../../assets/Armor/DustinEPlaceHolder.jpg'), clickable: false },
   Justin: { image: require('../../assets/Armor/JustinPlaceHolder2.jpg'), clickable: false },
-  Zack: { image: require('../../assets/Armor/ZackPlaceHolder2.jpg'), clickable: false },
+  Zack: { image: require('../../assets/Armor/ZackPlaceHolder2_cleanup.jpg'), clickable: false },
   'Josh Noble': { image: require('../../assets/Armor/JoshNoblePlaceHolder.jpg'), clickable: false },
   'Will Knight': { image: require('../../assets/Armor/WillKPlaceHolder.jpg'), clickable: false },
   Christian: { image: require('../../assets/Armor/PlaceHolder.jpg'), clickable: false },
