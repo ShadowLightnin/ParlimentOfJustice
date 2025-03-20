@@ -176,7 +176,7 @@ Erevos is deeply convinced that humanity is doomed to chaos and self-destruction
 
             </Text> 
             <Text style={styles.aboutText}>
-            4. Obelisk, the Warlock: A master of ancient dark arts and mysticism, Obelisk performs rituals that enhance Erevos’s strength and manipulate supernatural forces to bend to The Eclipse’s will. He also maintains a portal to the cosmic realm.
+            4. Obelisk, the Warlock: A master of ancient dark arts and mysticism, Obelisk performs rituals that enhance Erevos’s strength and manipulate supernatural forces to bend to The Light's will. He also maintains a portal to the cosmic realm.
 
             </Text> 
             <Text style={styles.aboutText}>
@@ -377,7 +377,7 @@ const styles = StyleSheet.create({
     aboutHeader: {
       fontSize: 22,
       fontWeight: "bold",
-      color: "purple",
+      color: "#D4AF37",
       textAlign: "center",
     },
     aboutText: {
