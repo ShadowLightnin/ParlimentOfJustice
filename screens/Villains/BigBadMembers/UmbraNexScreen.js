@@ -33,6 +33,9 @@ const UmbraNexScreen = () => {
 
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
+             <Text style={styles.aboutText}>
+             The Eclipse’s Big Bad
+             </Text> 
             <Text style={styles.aboutText}>
             Umbra Nex was a cosmic entity from a parallel 
             universe who once ruled a race of dark beings but 

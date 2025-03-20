@@ -36,6 +36,9 @@ const VoidConquerorScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
+             The Monke Alliance’s Big Bad
+             </Text> 
+            <Text style={styles.aboutText}>
             Kharon is an ancient entity who discovered the 
             secrets of life and death through a forbidden ritual. 
             With centuries of knowledge, he has traveled through 

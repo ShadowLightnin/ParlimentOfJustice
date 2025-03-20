@@ -35,6 +35,9 @@ const StormshadeScreen = () => {
 
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
+             <Text style={styles.aboutText}>
+              The Bludbruhs’ Big Bad
+              </Text> 
             <Text style={styles.aboutText}>
             A former ally turned enemy, Varak was a powerful 
             psychic who could manipulate shadows and storms. 

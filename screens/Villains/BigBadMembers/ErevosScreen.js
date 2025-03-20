@@ -36,6 +36,9 @@ const ErevosScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
+             The Parliament of Justice’s Big Bad
+             </Text> 
+            <Text style={styles.aboutText}>
             Once a prehistoric warrior named Erevos, he gained immortality after 
             a cosmic artifact crash-landed on Earth during his early reign. With 
             an unending life and countless centuries of combat, strategy, and conquest, 

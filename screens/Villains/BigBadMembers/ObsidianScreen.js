@@ -36,6 +36,9 @@ const ObsidianScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
+            The Titan’s Big Bad
+            </Text> 
+            <Text style={styles.aboutText}>
             Known once as the ancient conqueror King Ordax, 
             Obsidian Thrall was resurrected by cosmic forces 
             after his kingdom was lost to time. Now, he wields 

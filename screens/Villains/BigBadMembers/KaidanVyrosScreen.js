@@ -35,6 +35,9 @@ const KaidanVyrosScreen = () => {
 
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
+             <Text style={styles.aboutText}>
+            The Spartan's Big Bad
+            </Text> 
             <Text style={styles.aboutText}>
             Once an elite soldier in a rival faction, 
             Kaidan Vyros was betrayed by his own leaders and 
