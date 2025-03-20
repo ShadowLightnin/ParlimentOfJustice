@@ -62,6 +62,7 @@ export const HomeScreen = () => {
 
   const renderFaction = ({ item }) => (
     <Animated.View style={{ opacity: fadeAnim }}>
+      <Text style={styles.factionTitle}>{item.name}</Text> {/* Added Faction Name */}
       <TouchableOpacity
         style={[
           styles.card, 
@@ -72,12 +73,12 @@ export const HomeScreen = () => {
         disabled={!item.clickable}
       >
         <ImageBackground source={item.image} style={styles.imageBackground} imageStyle={styles.imageOverlay}>
-          <Text style={styles.factionName}>{item.name}</Text>
           {!item.clickable && <Text style={styles.disabledText}>Not Clickable at the moment</Text>}
         </ImageBackground>
       </TouchableOpacity>
     </Animated.View>
   );
+  
 
   return (
     <ImageBackground source={require('../assets/BackGround/Parliment.png')} style={styles.background}>
@@ -157,14 +158,15 @@ const styles = StyleSheet.create({
   imageOverlay: {
     opacity: 0.9,
   },
-  factionName: {
-    fontSize: 18,
+  factionTitle: {
+    fontSize: isDesktop ? 20 : 14, // Adjust for screen size
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
-    textShadowColor: 'black',
-    textShadowRadius: 5,
-  },
+    marginBottom: 5, // Adds spacing above the card
+    textShadowColor: '#00b3ff',
+    textShadowRadius: 10,
+  },  
   disabledCard: {
     backgroundColor: '#555',
   },
