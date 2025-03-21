@@ -1,6 +1,14 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { 
+  NavigationContainer 
+} from '@react-navigation/native';
+import { 
+  createNativeStackNavigator 
+} from '@react-navigation/native-stack';
+import { 
+  AppState, Alert, BackHandler, Platform 
+} from 'react-native';
+import * as ScreenCapture from 'expo-screen-capture'; // ✅ Screenshot Prevention
 import { auth } from "./api/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { StatusBar } from 'expo-status-bar';
@@ -39,37 +47,23 @@ function AuthStack() {
 function AuthenticatedStack() {
   const authCtx = useContext(AuthContext);
   return (
-    // <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="VillainsScreen" component={VillainsStack} />
-        <Stack.Screen name="PublicChat" component={PublicChatScreen} />
-        <Stack.Screen name="Admin" component={AdminStack} />
-        <Stack.Screen name="Titans" component={TitansStack} />
-        <Stack.Screen name="Eclipse" component={EclipseStack} />
-        <Stack.Screen name="Olympians" component={OlympiansStack} />
-        <Stack.Screen name="Cobros" component={CobrosStack} />
-        <Stack.Screen name="ASTC" component={SpartansStack} />
-        <Stack.Screen name="BludBruhs" component={BludBruhsStack} />
-        <Stack.Screen name="Legionaires" component={LegionairesStack} />
-        <Stack.Screen name="Constollation" component={ConstollationStack} />
-        <Stack.Screen name="Designs" component={DesignsStack} /> 
-      </Stack.Navigator>
-    // </NavigationContainer>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="VillainsScreen" component={VillainsStack} />
+      <Stack.Screen name="PublicChat" component={PublicChatScreen} />
+      <Stack.Screen name="Admin" component={AdminStack} />
+      <Stack.Screen name="Titans" component={TitansStack} />
+      <Stack.Screen name="Eclipse" component={EclipseStack} />
+      <Stack.Screen name="Olympians" component={OlympiansStack} />
+      <Stack.Screen name="Cobros" component={CobrosStack} />
+      <Stack.Screen name="ASTC" component={SpartansStack} />
+      <Stack.Screen name="BludBruhs" component={BludBruhsStack} />
+      <Stack.Screen name="Legionaires" component={LegionairesStack} />
+      <Stack.Screen name="Constollation" component={ConstollationStack} />
+      <Stack.Screen name="Designs" component={DesignsStack} /> 
+    </Stack.Navigator>
   );
 }
-
-// Generic Faction Screen (for other factions)
-const FactionScreen = ({ route }) => {
-  const { title } = route.params;
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
-    </View>
-  );
-};
-// initialParams={{ title: "Designs" }} for the FactionScreen ie:
-// <Stack.Screen name="Designs" component={FactionScreen} initialParams={{ title: "Designs" }} />
 
 function Navigation() {
   const authCtx = useContext(AuthContext);
@@ -105,7 +99,42 @@ function Root() {
 }
 
 export default function App() {
-  
+
+  // 🔒 Disable Screenshots (Android Only)
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      const preventScreenshot = async () => {
+        await ScreenCapture.preventScreenCaptureAsync();
+      };
+      preventScreenshot();
+
+      return () => {
+        ScreenCapture.allowScreenCaptureAsync();
+      };
+    }
+  }, []);
+
+  // 🔒 Disable Long Press for Saving Images
+  useEffect(() => {
+    const preventLongPress = () => {
+      Alert.alert('⚠️ Content Protection', 'Image saving is disabled.');
+      return true;
+    };
+
+    BackHandler.addEventListener('hardwareBackPress', preventLongPress);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', preventLongPress);
+    };
+  }, []);
+
+  // 🔒 Disable Right-Click (Web/Desktop)
+  useEffect(() => {
+    if (Platform.OS === 'web') {
+      document.addEventListener('contextmenu', (e) => e.preventDefault());
+    }
+  }, []);
+
   return (
     <>
       <StatusBar style="light" />
