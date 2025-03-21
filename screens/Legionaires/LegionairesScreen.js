@@ -82,7 +82,7 @@ export const LegionairesScreen = () => {
                       <Text style={styles.name}>{member.name}</Text>
                     ) : null}
 
-                    {!member.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+                    {/* {!member.clickable && <Text style={styles.disabledText}>Not Clickable</Text>} */}
                   </TouchableOpacity>
                 );
               })}

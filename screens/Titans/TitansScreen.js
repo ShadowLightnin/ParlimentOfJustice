@@ -84,9 +84,9 @@ const TitansScreen = () => {
                     )}
                     <Text style={styles.codename}>{member?.codename || ''}</Text>
                     <Text style={styles.name}>{member?.name || ''}</Text>
-                    {!member?.clickable && (
+                    {/* {!member?.clickable && (
                       <Text style={styles.disabledText}>Not Clickable</Text>
-                    )}
+                    )} */}
                   </TouchableOpacity>
                 );
               })}
