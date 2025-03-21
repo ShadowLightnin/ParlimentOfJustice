@@ -6,9 +6,10 @@ import {
   createNativeStackNavigator 
 } from '@react-navigation/native-stack';
 import { 
-  AppState, Alert, BackHandler, Platform 
+  AppState, Alert, BackHandler, Platform, View, Text, StyleSheet
 } from 'react-native';
-import * as ScreenCapture from 'expo-screen-capture'; // ✅ Screenshot Prevention
+import * as ScreenCapture from 'expo-screen-capture'; 
+import { BlurView } from 'expo-blur';  // ✅ For Blurring
 import { auth } from "./api/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import { StatusBar } from 'expo-status-bar';
@@ -99,6 +100,7 @@ function Root() {
 }
 
 export default function App() {
+  const [isAppInactive, setIsAppInactive] = useState(false);
 
   // 🔒 Disable Screenshots (Android Only)
   useEffect(() => {
@@ -114,7 +116,7 @@ export default function App() {
     }
   }, []);
 
-  // 🔒 Disable Long Press for Saving Images
+  // 🔒 Prevent Image Saving via Long Press
   useEffect(() => {
     const preventLongPress = () => {
       Alert.alert('⚠️ Content Protection', 'Image saving is disabled.');
@@ -135,11 +137,35 @@ export default function App() {
     }
   }, []);
 
+  // 🔒 Blur Screen on Background (Extra Protection)
+  useEffect(() => {
+    const appStateListener = AppState.addEventListener("change", (nextAppState) => {
+      setIsAppInactive(nextAppState !== "active"); // Blur when not active
+    });
+
+    return () => appStateListener.remove();
+  }, []);
+
   return (
     <>
       <StatusBar style="light" />
       <AuthContextProvider>
-        <Root />
+        <View style={{ flex: 1, position: 'relative' }}>
+          <Root />
+          {isAppInactive && (
+            <BlurView
+              intensity={100} // Full blur
+              tint="dark"
+              style={{
+                ...StyleSheet.absoluteFillObject,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Text style={{ color: 'white', fontSize: 24 }}>🔒 Screen Secured</Text>
+            </BlurView>
+          )}
+        </View>
       </AuthContextProvider>
     </>
   );
