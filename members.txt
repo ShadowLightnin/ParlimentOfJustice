@@ -245,7 +245,7 @@ https://github.com/fireship-io/react-firebase-chat.git
 https://www.youtube.com/watch?v=k4mjF4sPITE
 https://github.com/safak/youtube2022/tree/react-chat
 https://www.youtube.com/watch?v=domt_Sx-wTY&t=0s
-at 1:10:28
+at 1:28:10
 https://github.com/Guocork/react-firebase-chat/tree/starter/src/lib
 
 Comment section:
