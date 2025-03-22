@@ -23,7 +23,7 @@ const ObsidianScreen = () => {
             <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
               <Text style={styles.backButtonText}>←</Text>
             </TouchableOpacity>
-            <Text style={styles.title}>Obsidian</Text>
+            <Text style={styles.title}>Obsian</Text>
           </View>
 
           <View style={styles.imageContainer}>
@@ -40,7 +40,7 @@ const ObsidianScreen = () => {
             </Text> 
             <Text style={styles.aboutText}>
             Known once as the ancient conqueror King Ordax, 
-            Obsidian Thrall was resurrected by cosmic forces 
+            Obsian Thrall was resurrected by cosmic forces 
             after his kingdom was lost to time. Now, he wields 
             powers granted by an otherworldly darkness, allowing 
             him to manipulate the minds and fears of his enemies. 
