@@ -8,13 +8,9 @@ import { signOut } from 'firebase/auth';
 import { auth } from '../api/firebaseConfig';
 import { AuthContext } from '../context/auth-context';
 
-// Screen dimensions
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
-
-// Desktop or Mobile
 const isDesktop = SCREEN_WIDTH > 600;
 
-// Adjustable Card Dimensions
 const cardWidth = isDesktop ? 300 : 180; 
 const cardHeight = isDesktop ? 240 : 140; 
 const cardSpacing = isDesktop ? 30 : 5;
@@ -63,32 +59,38 @@ export const HomeScreen = () => {
 
   const renderFaction = ({ item }) => (
     <Animated.View style={{ opacity: fadeAnim }}>
-          <Text style={styles.factionTitle}>
-            {item.name ? item.name : ''}
-          </Text>
-       <TouchableOpacity
-          style={[
-            styles.card,
-            { width: cardWidth, height: cardHeight, margin: cardSpacing / 2 },
-            !item.clickable && styles.disabledCard
-          ]}
-          onPress={() => item.clickable && navigation.navigate(item.screen)}
-          disabled={!item.clickable}
+      <Text style={styles.factionTitle}>
+        {item.name ? item.name : ''}
+      </Text>
+      <TouchableOpacity
+        style={[
+          styles.card,
+          { width: cardWidth, height: cardHeight, margin: cardSpacing / 2 },
+          !item.clickable && styles.disabledCard
+        ]}
+        onPress={() => item.clickable && navigation.navigate(item.screen)}
+        disabled={!item.clickable}
+      >
+        <ImageBackground 
+          source={item.image} 
+          style={styles.imageBackground} 
+          imageStyle={styles.imageOverlay}
         >
-          <ImageBackground source={item.image} style={styles.imageBackground} imageStyle={styles.imageOverlay}>
-            {!item.clickable && <Text style={styles.disabledText}>Not Clickable at the moment</Text>}
-          </ImageBackground>
-        </TouchableOpacity>
+          {/* Transparent Touch-Blocking Overlay */}
+          <View style={styles.transparentOverlay} />
+
+          {!item.clickable && <Text style={styles.disabledText}>Not Clickable at the moment</Text>}
+        </ImageBackground>
+      </TouchableOpacity>
     </Animated.View>
   );
-  
 
   return (
     <ImageBackground source={require('../assets/BackGround/Parliment.png')} style={styles.background}>
       <View style={styles.container}>
         {/* Header and Buttons */}
         <View style={styles.topBar}>
-        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+          <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
             <Text style={styles.logoutText}>🚪</Text>
           </TouchableOpacity>
           <Text style={styles.header}>The Parliament of Justice</Text>
@@ -133,13 +135,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   header: {
-    fontSize: isDesktop ? 28 : 18,  // Larger for desktop, smaller for mobile
+    fontSize: isDesktop ? 28 : 18,
     fontWeight: 'bold',
     color: '#fff',
     textShadowColor: '#00b3ff',
     textShadowRadius: 10,
-    textAlign: 'center',  // Ensures it’s centered across screen sizes
-    flexShrink: 1,         // Prevents text overflow
+    textAlign: 'center',
+    flexShrink: 1,
   },
   listContainer: {
     justifyContent: 'center',
@@ -153,7 +155,7 @@ const styles = StyleSheet.create({
   },
   imageBackground: {
     flex: 1,
-    justifyContent: 'center',  // Center the image inside the card
+    justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
     height: '100%',
@@ -161,12 +163,17 @@ const styles = StyleSheet.create({
   imageOverlay: {
     opacity: 0.9,
   },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0)',  // Fully transparent
+    zIndex: 1,  // Ensures it blocks long-press but doesn’t interfere with buttons
+  },
   factionTitle: {
-    fontSize: isDesktop ? 20 : 14, // Adjust for screen size
+    fontSize: isDesktop ? 20 : 14,
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
-    marginBottom: 5, // Adds spacing above the card
+    marginBottom: 5,
     textShadowColor: '#00b3ff',
     textShadowRadius: 10,
   },  
