@@ -24,6 +24,7 @@ import SignupScreen from "./screens/SignupScreen";
 import LoginScreen from "./screens/LoginScreen";
 import PublicChatScreen from "./screens/PublicChatScreen";
 import VillainsStack from './navigation/VillainsStack';
+import JusticeStack from './navigation/JusticeStack';
 
 const Stack = createNativeStackNavigator();
 
@@ -42,7 +43,6 @@ function AuthenticatedStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="VillainsScreen" component={VillainsStack} />
       <Stack.Screen name="PublicChat" component={PublicChatScreen} />
       <Stack.Screen name="Admin" component={AdminStack} />
       <Stack.Screen name="Titans" component={TitansStack} />
@@ -53,6 +53,8 @@ function AuthenticatedStack() {
       <Stack.Screen name="BludBruhs" component={BludBruhsStack} />
       <Stack.Screen name="Legionaires" component={LegionairesStack} />
       <Stack.Screen name="Constollation" component={ConstollationStack} />
+      <Stack.Screen name="JusticeScreen" component={JusticeStack} />
+      <Stack.Screen name="VillainsScreen" component={VillainsStack} />
       <Stack.Screen name="Designs" component={DesignsStack} /> 
     </Stack.Navigator>
   );
