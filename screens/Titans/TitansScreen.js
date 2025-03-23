@@ -11,10 +11,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-// Screen dimensions
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
-// Member Data
 const members = [
   { name: 'Spencer McNeil', codename: 'The Annihilator', screen: 'Spencer', clickable: true, position: [0, 0], image: require('../../assets/Armor/Spencer.jpg') },
   { name: 'Azure Briggs', codename: 'Mediateir', screen: 'Azure', clickable: true, position: [0, 2], image: require('../../assets/Armor/AzurePlaceHolder.jpg') },
@@ -25,7 +23,6 @@ const members = [
   { name: 'Emma Cummings', codename: 'Kintsunera', screen: 'Emma', clickable: true, position: [2, 2], image: require('../../assets/Armor/EmmaPlaceHolder.jpg') },
 ];
 
-// Empty cell checker
 const isEmpty = (row, col) => (row === 0 && col === 1) || (row === 2 && col === 1);
 const getMemberAtPosition = (row, col) =>
   members.find((member) => member.position[0] === row && member.position[1] === col);
@@ -47,7 +44,6 @@ const TitansScreen = () => {
       style={styles.background}
     >
       <SafeAreaView style={styles.container}>
-        {/* Header Section */}
         <View style={styles.headerWrapper}>
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Text style={styles.backText}>← Back</Text>
@@ -80,13 +76,17 @@ const TitansScreen = () => {
                     disabled={!member?.clickable}
                   >
                     {member?.image && (
-                      <Image source={member.image} style={styles.characterImage} />
+                      <ImageBackground
+                        source={member.image}
+                        style={styles.characterImage}
+                        imageStyle={styles.imageOverlay}
+                      >
+                        {/* Transparent Touch-Blocking Overlay */}
+                        <View style={styles.transparentOverlay} />
+                      </ImageBackground>
                     )}
                     <Text style={styles.codename}>{member?.codename || ''}</Text>
                     <Text style={styles.name}>{member?.name || ''}</Text>
-                    {/* {!member?.clickable && (
-                      <Text style={styles.disabledText}>Not Clickable</Text>
-                    )} */}
                   </TouchableOpacity>
                 );
               })}
@@ -109,6 +109,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     paddingHorizontal: 20,
     alignItems: 'center',
+  },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0)', // Fully transparent
+    zIndex: 1, // Ensures it blocks long-press but doesn’t interfere with buttons
   },
   headerWrapper: {
     flexDirection: 'row',
