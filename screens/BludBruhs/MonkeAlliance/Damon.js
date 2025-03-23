@@ -33,7 +33,7 @@ const Damon = () => {
         {/* Armor Image */}
         <View style={styles.imageContainer}>
           <Image 
-            source={require("../../../assets/Armor/DamonPlaceHolder.jpg")} 
+            source={require("../../../assets/Armor/DamonPlaceHolder_cleanup.jpg")} 
             style={styles.armorImage} 
           />
         </View>
