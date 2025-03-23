@@ -34,8 +34,12 @@ const bigBads = [
   { name: 'Sovereign Xal-Zor', screen: '', image: require('../../assets/Villains/XalZor.jpg'), clickable: false },
   { name: 'Emperor Obsidian', screen: '', image: require('../../assets/Villains/EmperorObsidian.jpg'), clickable: false }, // use for sauron after getting darkseid
   { name: 'Admiral Scyphos', screen: '', image: require('../../assets/Villains/Scyphos.jpg'), clickable: false }, //use for different after gettign thrawn
+  { name: 'Admiral', screen: '', image: require('../../assets/Villains/Admiral.jpg'), clickable: false },
+  { name: "Zein'roe", screen: '', image: require('../../assets/Villains/Zeinroe.jpg'), clickable: false },
+  { name: 'Devoes', screen: '', image: require('../../assets/Villains/Devoes.jpg'), clickable: false },
   { name: 'Cronos', screen: '', image: require('../../assets/Villains/Cronos.jpg'), clickable: false },
   { name: "Cor'vas", screen: '', image: require('../../assets/Villains/Corvas.jpg'), clickable: false },
+  
 
 
     // { name: '', screen: '', image: require('../../assets/Villains/.jpg'), clickable: false },

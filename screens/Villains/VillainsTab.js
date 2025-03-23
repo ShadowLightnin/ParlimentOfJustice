@@ -62,6 +62,13 @@ const villains = [
   { name: 'Noctura', screen: 'NocturaScreen', image: require('../../assets/Villains/Noctura.jpg'), clickable: true },
   { name: 'Red Mercury', screen: 'RedMercuryScreen', image: require('../../assets/Villains/RedMercury.jpg'), clickable: true },
   { name: 'Titanus', screen: 'TitanusScreen', image: require('../../assets/Villains/Titanus.jpg'), clickable: true },
+  { name: '', screen: '', image: require('../../assets/Villains/IMG_4325.webp'), clickable: false },
+  { name: '', screen: '', image: require('../../assets/Villains/IMG_4326.webp'), clickable: false },
+  { name: '', screen: '', image: require('../../assets/Villains/IMG_4327.webp'), clickable: false },
+  { name: '', screen: '', image: require('../../assets/Villains/IMG_4343.webp'), clickable: false },
+  { name: '', screen: '', image: require('../../assets/Villains/IMG_4345.webp'), clickable: false },
+
+  
 
 
   // { name: 'Soulless Soul', screen: 'SoullessSoulScreen', image: require('../../assets/Villains/SoullessSoul.jpg'), clickable: true },
