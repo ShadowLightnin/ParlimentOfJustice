@@ -26,9 +26,9 @@ const horizontalSpacing = isDesktop ? 40 : 20;
 const verticalSpacing = isDesktop ? 50 : 20;
 
 
-// Villains data with images & respective screens
-const villains = [
-  { name: 'Ranger', screen: '', image: require('../../assets/Armor/LoneRanger.jpg'), clickable: true },
+// Heroes data with images & respective screens
+const heroes = [
+  { name: 'Ranger', screen: '', image: require('../../assets/Armor/LoneRanger.jpg'), clickable: false },
 
 ];
 
@@ -36,23 +36,23 @@ const JusticeScreen = () => {
   const navigation = useNavigation();
 
   // Render Each Hero Card
-  const renderHeroCard = (villain) => (
+  const renderHeroCard = (hero) => (
     <TouchableOpacity
-      key={villain.name}
+      key={hero.name}
       style={[
         styles.card,
         {
           width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
           height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height
         },
-        villain.clickable ? styles.clickable : styles.notClickable
+        hero.clickable ? styles.clickable : styles.notClickable
       ]}
-      onPress={() => villain.clickable && navigation.navigate(villain.screen)}
-      disabled={!villain.clickable}
+      onPress={() => hero.clickable && navigation.navigate(hero.screen)}
+      disabled={!hero.clickable}
     >
-      <Image source={villain.image} style={styles.image} />
-      <Text style={styles.name}>{villain.name}</Text>
-      {!villain.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+      <Image source={hero.image} style={styles.image} />
+      <Text style={styles.name}>{hero.name}</Text>
+      {!hero.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );
 
@@ -73,14 +73,14 @@ const JusticeScreen = () => {
         {/* Title */}
         <Text style={styles.header}>Guardians of Justice</Text>
 
-        {/* Horizontal Scrollable Villains Grid */}
+        {/* Horizontal Scrollable Heroes Grid */}
         <View style={styles.scrollWrapper}>
           <ScrollView
             horizontal
             contentContainerStyle={styles.scrollContainer}
             showsHorizontalScrollIndicator={true}
           >
-            {villains.map(renderHeroCard)}
+            {heroes.map(renderHeroCard)}
           </ScrollView>
         </View>
       </View>
