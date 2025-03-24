@@ -1,24 +1,37 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { 
   View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions, TouchableWithoutFeedback 
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import * as ScreenCapture from "expo-screen-capture"; // Prevents screenshots on Android
+import * as ScreenCapture from "expo-screen-capture"; // Prevents screenshots
+import { useFocusEffect } from "@react-navigation/native";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const Will = () => {
   const navigation = useNavigation();
+  const [watermarkVisible, setWatermarkVisible] = useState(false);
 
-  useEffect(() => {
-    const preventScreenshot = async () => {
-      await ScreenCapture.preventScreenCaptureAsync(); // Blocks screenshots
-    };
-    preventScreenshot();
-    return () => {
-      ScreenCapture.allowScreenCaptureAsync(); // Allow screenshots when leaving screen
-    };
-  }, []);
+  // Prevent Screenshots & Screen Recording
+  useFocusEffect(
+    React.useCallback(() => {
+      const preventScreenshot = async () => {
+        await ScreenCapture.preventScreenCaptureAsync();
+      };
+      preventScreenshot();
+
+      // Listen for screenshot events
+      const subscription = ScreenCapture.addScreenshotListener(() => {
+        setWatermarkVisible(true); // Show watermark on screenshot
+        setTimeout(() => setWatermarkVisible(false), 5000); // Hide after 5 seconds
+      });
+
+      return () => {
+        ScreenCapture.allowScreenCaptureAsync(); // Allow screenshots when leaving screen
+        subscription.remove(); // Remove listener
+      };
+    }, [])
+  );
 
   return (
     <View style={styles.container}>
@@ -47,8 +60,8 @@ const Will = () => {
             />
             {/* Transparent Touch-Blocking Overlay */}
             <View style={styles.transparentOverlay} />
-            {/* Watermark Overlay */}
-            <Text style={styles.watermark}>© Will Cummings</Text>
+            {/* Watermark appears only when screenshot is taken */}
+            {watermarkVisible && <Text style={styles.watermark}>© Parliament of Justice</Text>}
           </View>
         </TouchableWithoutFeedback>
 
@@ -132,9 +145,12 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     right: 10,
-    color: "rgba(255, 255, 255, 0.5)", // Semi-transparent watermark
-    fontSize: 16,
+    color: "rgba(255, 255, 255, 0.8)", // Watermark appears on screenshot
+    fontSize: 18,
     fontWeight: "bold",
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
+    padding: 5,
+    borderRadius: 5,
   },
   aboutSection: {
     marginTop: 40,
