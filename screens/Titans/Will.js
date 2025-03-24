@@ -1,33 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { 
-  View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions, Platform 
+  View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions 
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { BlurView } from "expo-blur";
-import RNScreenshotDetector from "react-native-detect-screenshot";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const Will = () => {
   const navigation = useNavigation();
-  const [isBlurred, setIsBlurred] = useState(false);
-
-  useEffect(() => {
-    if (Platform.OS === "web") return; // No screenshot detection on web
-
-    const unsubscribe = RNScreenshotDetector.subscribe(() => {
-      setIsBlurred(true);
-      setTimeout(() => setIsBlurred(false), 5000); // Blur for 5 sec
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   return (
     <View style={styles.container}>
+      {/* Scrollable Content */}
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         
-        {/* Header */}
+        {/* Header (Now Scrolls with Everything) */}
         <View style={styles.headerContainer}>
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Text style={styles.backButtonText}>←</Text>
@@ -40,20 +27,14 @@ const Will = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Armor Image with Anti-Screenshot & No Save */}
+        {/* Armor Image */}
         <View style={styles.imageContainer}>
           <Image 
             source={require("../../assets/Armor/WillPlaceHolder.jpg")} 
             style={styles.armorImage} 
           />
-          {/* Screenshot Detection Blur */}
-          {isBlurred && (
-            <BlurView intensity={90} style={styles.blurOverlay}>
-              <Text style={styles.watermarkText}>CONFIDENTIAL</Text>
-            </BlurView>
-          )}
-          {/* Touch-Blocking Cover */}
-          <View style={styles.transparentOverlay} pointerEvents="none" />
+          {/* Transparent Touch-Blocking Overlay */}
+          <View style={styles.transparentOverlay} />
         </View>
 
         {/* About Section */}
@@ -120,7 +101,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#111",
     paddingVertical: 30,
     borderRadius: 20,
-    position: "relative",
+    position: 'relative', // Required for overlay positioning
   },
   armorImage: {
     width: SCREEN_WIDTH * 0.9,
@@ -128,21 +109,9 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
   },
   transparentOverlay: {
-    ...StyleSheet.absoluteFillObject, // Covers the image
-    backgroundColor: "rgba(0, 0, 0, 0)", // Fully transparent
-    zIndex: 2, // Blocks long-press without affecting buttons
-  },
-  blurOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.3)",
-    zIndex: 3,
-  },
-  watermarkText: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "white",
+    ...StyleSheet.absoluteFillObject, // Covers the whole image
+    backgroundColor: 'rgba(0, 0, 0, 0)', // Fully transparent
+    zIndex: 1, // Ensures it blocks long-press but doesn’t affect buttons
   },
   aboutSection: {
     marginTop: 40,
