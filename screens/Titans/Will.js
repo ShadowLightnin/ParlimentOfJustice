@@ -1,43 +1,35 @@
 import React, { useEffect, useState } from "react";
 import { 
-  View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions, TouchableWithoutFeedback 
+  View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions, AppState, Platform 
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import * as ScreenCapture from "expo-screen-capture"; // Prevents screenshots
-import { useFocusEffect } from "@react-navigation/native";
-import { BlurView } from "expo-blur"; // For blurring the image
+import { BlurView } from "expo-blur";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const Will = () => {
   const navigation = useNavigation();
-  const [screenshotDetected, setScreenshotDetected] = useState(false);
+  const [isBlurred, setIsBlurred] = useState(false);
 
-  // Prevent Screenshots & Screen Recording
-  useFocusEffect(
-    React.useCallback(() => {
-      const preventScreenshot = async () => {
-        await ScreenCapture.preventScreenCaptureAsync();
-      };
-      preventScreenshot();
+  useEffect(() => {
+    if (Platform.OS === "web") return; // Fix for desktop crash
 
-      // Listen for screenshot events
-      const subscription = ScreenCapture.addScreenshotListener(() => {
-        setScreenshotDetected(true); // Blur the image on screenshot
-        setTimeout(() => setScreenshotDetected(false), 5000); // Remove blur after 5 seconds
-      });
+    const handleAppStateChange = (nextAppState) => {
+      if (nextAppState === "active") {
+        setIsBlurred(true);
+        setTimeout(() => setIsBlurred(false), 3000); // Remove blur after 3s
+      }
+    };
 
-      return () => {
-        ScreenCapture.allowScreenCaptureAsync(); // Allow screenshots when leaving screen
-        subscription.remove(); // Remove listener
-      };
-    }, [])
-  );
+    const subscription = AppState.addEventListener("change", handleAppStateChange);
+
+    return () => subscription.remove(); // Cleanup on unmount
+  }, []);
 
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-
+        
         {/* Header */}
         <View style={styles.headerContainer}>
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
@@ -51,25 +43,18 @@ const Will = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Armor Image */}
-        <TouchableWithoutFeedback onPress={() => {}}>
-          <View style={styles.imageContainer}>
-            {screenshotDetected ? (
-              // Apply Blur Effect When Screenshot is Taken
-              <BlurView intensity={50} style={styles.armorImageBlurred}>
-                <Text style={styles.watermark}>© Parliament of Justice</Text>
-              </BlurView>
-            ) : (
-              <Image 
-                source={require("../../assets/Armor/WillPlaceHolder.jpg")} 
-                style={styles.armorImage} 
-                pointerEvents="none" // Stops touch interactions
-              />
-            )}
-            {/* Transparent Touch-Blocking Overlay */}
-            <View style={styles.transparentOverlay} />
-          </View>
-        </TouchableWithoutFeedback>
+        {/* Armor Image with Blur Protection */}
+        <View style={styles.imageContainer}>
+          <Image 
+            source={require("../../assets/Armor/WillPlaceHolder.jpg")} 
+            style={styles.armorImage} 
+          />
+          {isBlurred && Platform.OS !== "web" && ( // Only show blur on mobile
+            <BlurView intensity={90} style={styles.blurOverlay}>
+              <Text style={styles.watermarkText}>Screenshot Blocked</Text>
+            </BlurView>
+          )}
+        </View>
 
         {/* About Section */}
         <View style={styles.aboutSection}>
@@ -135,34 +120,23 @@ const styles = StyleSheet.create({
     backgroundColor: "#111",
     paddingVertical: 30,
     borderRadius: 20,
-    position: 'relative',
+    position: "relative",
   },
   armorImage: {
     width: SCREEN_WIDTH * 0.9,
     height: SCREEN_HEIGHT * 0.6,
     resizeMode: "contain",
   },
-  armorImageBlurred: {
-    width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_HEIGHT * 0.6,
+  blurOverlay: {
+    ...StyleSheet.absoluteFillObject,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.3)",
   },
-  transparentOverlay: {
-    ...StyleSheet.absoluteFillObject, // Covers the whole image
-    backgroundColor: 'rgba(0, 0, 0, 0)', // Fully transparent
-    zIndex: 1, // Ensures it blocks long-press but doesn’t affect buttons
-  },
-  watermark: {
-    position: "absolute",
-    bottom: 20,
-    right: 10,
-    color: "rgba(255, 255, 255, 0.8)", // Watermark appears on screenshot
-    fontSize: 18,
+  watermarkText: {
+    fontSize: 24,
     fontWeight: "bold",
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent background
-    padding: 5,
-    borderRadius: 5,
+    color: "#fff",
   },
   aboutSection: {
     marginTop: 40,
