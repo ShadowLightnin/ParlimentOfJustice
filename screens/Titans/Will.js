@@ -1,21 +1,30 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { 
-  View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions 
+  View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions, TouchableWithoutFeedback 
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { TouchableWithoutFeedback } from 'react-native';
+import * as ScreenCapture from "expo-screen-capture"; // Prevents screenshots on Android
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const Will = () => {
   const navigation = useNavigation();
 
+  useEffect(() => {
+    const preventScreenshot = async () => {
+      await ScreenCapture.preventScreenCaptureAsync(); // Blocks screenshots
+    };
+    preventScreenshot();
+    return () => {
+      ScreenCapture.allowScreenCaptureAsync(); // Allow screenshots when leaving screen
+    };
+  }, []);
+
   return (
     <View style={styles.container}>
-      {/* Scrollable Content */}
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        
-        {/* Header (Now Scrolls with Everything) */}
+
+        {/* Header */}
         <View style={styles.headerContainer}>
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Text style={styles.backButtonText}>←</Text>
@@ -30,16 +39,17 @@ const Will = () => {
 
         {/* Armor Image */}
         <TouchableWithoutFeedback onPress={() => {}}>
-        <View style={styles.imageContainer}>
-          <Image 
-            source={require("../../assets/Armor/WillPlaceHolder.jpg")} 
-            style={styles.armorImage} 
-            pointerEvents="none" // Prevents right-click or long-press
-          />
-
-          {/* Transparent Touch-Blocking Overlay */}
-          <View style={styles.transparentOverlay} />
-        </View>
+          <View style={styles.imageContainer}>
+            <Image 
+              source={require("../../assets/Armor/WillPlaceHolder.jpg")} 
+              style={styles.armorImage} 
+              pointerEvents="none" // Stops touch interactions
+            />
+            {/* Transparent Touch-Blocking Overlay */}
+            <View style={styles.transparentOverlay} />
+            {/* Watermark Overlay */}
+            <Text style={styles.watermark}>© Will Cummings</Text>
+          </View>
         </TouchableWithoutFeedback>
 
         {/* About Section */}
@@ -106,7 +116,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#111",
     paddingVertical: 30,
     borderRadius: 20,
-    position: 'relative', // Required for overlay positioning
+    position: 'relative',
   },
   armorImage: {
     width: SCREEN_WIDTH * 0.9,
@@ -117,6 +127,14 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject, // Covers the whole image
     backgroundColor: 'rgba(0, 0, 0, 0)', // Fully transparent
     zIndex: 1, // Ensures it blocks long-press but doesn’t affect buttons
+  },
+  watermark: {
+    position: "absolute",
+    bottom: 20,
+    right: 10,
+    color: "rgba(255, 255, 255, 0.5)", // Semi-transparent watermark
+    fontSize: 16,
+    fontWeight: "bold",
   },
   aboutSection: {
     marginTop: 40,
