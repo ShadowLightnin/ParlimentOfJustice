@@ -5,12 +5,13 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import * as ScreenCapture from "expo-screen-capture"; // Prevents screenshots
 import { useFocusEffect } from "@react-navigation/native";
+import { BlurView } from "expo-blur"; // For blurring the image
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const Will = () => {
   const navigation = useNavigation();
-  const [watermarkVisible, setWatermarkVisible] = useState(false);
+  const [screenshotDetected, setScreenshotDetected] = useState(false);
 
   // Prevent Screenshots & Screen Recording
   useFocusEffect(
@@ -22,8 +23,8 @@ const Will = () => {
 
       // Listen for screenshot events
       const subscription = ScreenCapture.addScreenshotListener(() => {
-        setWatermarkVisible(true); // Show watermark on screenshot
-        setTimeout(() => setWatermarkVisible(false), 5000); // Hide after 5 seconds
+        setScreenshotDetected(true); // Blur the image on screenshot
+        setTimeout(() => setScreenshotDetected(false), 5000); // Remove blur after 5 seconds
       });
 
       return () => {
@@ -53,15 +54,20 @@ const Will = () => {
         {/* Armor Image */}
         <TouchableWithoutFeedback onPress={() => {}}>
           <View style={styles.imageContainer}>
-            <Image 
-              source={require("../../assets/Armor/WillPlaceHolder.jpg")} 
-              style={styles.armorImage} 
-              pointerEvents="none" // Stops touch interactions
-            />
+            {screenshotDetected ? (
+              // Apply Blur Effect When Screenshot is Taken
+              <BlurView intensity={50} style={styles.armorImageBlurred}>
+                <Text style={styles.watermark}>© Parliament of Justice</Text>
+              </BlurView>
+            ) : (
+              <Image 
+                source={require("../../assets/Armor/WillPlaceHolder.jpg")} 
+                style={styles.armorImage} 
+                pointerEvents="none" // Stops touch interactions
+              />
+            )}
             {/* Transparent Touch-Blocking Overlay */}
             <View style={styles.transparentOverlay} />
-            {/* Watermark appears only when screenshot is taken */}
-            {watermarkVisible && <Text style={styles.watermark}>© Parliament of Justice</Text>}
           </View>
         </TouchableWithoutFeedback>
 
@@ -135,6 +141,12 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH * 0.9,
     height: SCREEN_HEIGHT * 0.6,
     resizeMode: "contain",
+  },
+  armorImageBlurred: {
+    width: SCREEN_WIDTH * 0.9,
+    height: SCREEN_HEIGHT * 0.6,
+    justifyContent: "center",
+    alignItems: "center",
   },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject, // Covers the whole image
