@@ -245,8 +245,9 @@ https://github.com/fireship-io/react-firebase-chat.git
 https://www.youtube.com/watch?v=k4mjF4sPITE
 https://github.com/safak/youtube2022/tree/react-chat
 https://www.youtube.com/watch?v=domt_Sx-wTY&t=0s
-at 2:13:56
+at 2:37:56
 https://github.com/Guocork/react-firebase-chat/tree/starter/src/lib
+https://github.com/xplodivity/infinite-nested-comments/blob/main/src/App.js
 
 Comment section:
 https://github.com/xplodivity/infinite-nested-comments.git
