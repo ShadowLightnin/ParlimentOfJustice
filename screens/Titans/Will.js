@@ -3,6 +3,7 @@ import {
   View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions 
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { TouchableWithoutFeedback } from 'react-native';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -28,14 +29,18 @@ const Will = () => {
         </View>
 
         {/* Armor Image */}
+        <TouchableWithoutFeedback onPress={() => {}}>
         <View style={styles.imageContainer}>
           <Image 
             source={require("../../assets/Armor/WillPlaceHolder.jpg")} 
             style={styles.armorImage} 
+            pointerEvents="none" // Prevents right-click or long-press
           />
+
           {/* Transparent Touch-Blocking Overlay */}
           <View style={styles.transparentOverlay} />
         </View>
+        </TouchableWithoutFeedback>
 
         {/* About Section */}
         <View style={styles.aboutSection}>
