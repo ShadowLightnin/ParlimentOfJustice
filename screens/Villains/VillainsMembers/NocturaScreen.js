@@ -31,6 +31,8 @@ const NocturaScreen = () => {
               source={require("../../../assets/Villains/Noctura.jpg")}
               style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
             />
+            {/* Transparent Overlay for Image Protection */}
+            <View style={styles.transparentOverlay} />
           </View>
 
           <View style={styles.aboutSection}>
@@ -106,6 +108,11 @@ const styles = StyleSheet.create({
     },
     armorImage: {
       resizeMode: "contain",
+    },
+    transparentOverlay: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: "rgba(0, 0, 0, 0)", // Transparent for visual but clickable
+      zIndex: 1,
     },
     aboutSection: {
       marginTop: 40,

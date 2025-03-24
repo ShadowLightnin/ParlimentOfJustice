@@ -14,7 +14,7 @@ const AmmonT = () => {
       {/* Scrollable Content */}
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         
-        {/* Header (Now Scrolls with Everything) */}
+        {/* Header */}
         <View style={styles.headerContainer}>
           {/* Back Button */}
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
@@ -24,7 +24,7 @@ const AmmonT = () => {
           {/* Title */}
           <Text style={styles.title}>Quick Wit</Text>
 
-          {/* Comment Button (Top Right) */}
+          {/* Comment Button */}
           <TouchableOpacity style={styles.commentButton} onPress={() => navigation.navigate("Comments")}>
             <Text style={styles.commentButtonText}>💬</Text>
           </TouchableOpacity>
@@ -36,6 +36,8 @@ const AmmonT = () => {
             source={require("../../../assets/Armor/AmmonTPlaceHolder.jpg")} 
             style={styles.armorImage} 
           />
+          {/* Transparent Touch-Blocking Overlay */}
+          <View style={styles.transparentOverlay} />
         </View>
 
         {/* About Section */}
@@ -55,7 +57,7 @@ const AmmonT = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0a0a0a", // ✅ Solid cohesive background
+    backgroundColor: "#0a0a0a",
   },
   scrollContainer: {
     paddingBottom: 20,
@@ -65,8 +67,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 20,
-    paddingVertical: 20, // ✅ Added spacing for smooth scrolling
-    backgroundColor: "#0a0a0a", // ✅ Keeps the header cohesive
+    paddingVertical: 20,
+    backgroundColor: "#0a0a0a",
     borderBottomWidth: 1,
     borderBottomColor: "#333",
   },
@@ -84,7 +86,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#00b3ff",
     textAlign: "center",
-    flex: 1, // ✅ Keeps title centered
+    flex: 1,
   },
   commentButton: {
     padding: 10,
@@ -98,18 +100,24 @@ const styles = StyleSheet.create({
   imageContainer: {
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 20, // ✅ Padding on the sides
-    backgroundColor: "#111", // ✅ Dark background behind image
-    paddingVertical: 30, // ✅ Spacing around the image
-    borderRadius: 20, // ✅ Rounded edges
+    paddingHorizontal: 20,
+    backgroundColor: "#111",
+    paddingVertical: 30,
+    borderRadius: 20,
+    position: 'relative',
   },
   armorImage: {
-    width: SCREEN_WIDTH * 0.9, // ✅ Centered with padding
-    height: SCREEN_HEIGHT * 0.6, // ✅ Larger Image
+    width: SCREEN_WIDTH * 0.9,
+    height: SCREEN_HEIGHT * 0.6,
     resizeMode: "contain",
   },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject, 
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    zIndex: 1, // Ensures it blocks long-press but doesn’t affect buttons
+  },
   aboutSection: {
-    marginTop: 40, // ✅ Spacing between image & text
+    marginTop: 40,
     padding: 20,
     backgroundColor: "#222",
     borderRadius: 15,

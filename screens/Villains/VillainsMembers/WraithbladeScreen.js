@@ -31,6 +31,8 @@ const WraithbladeScreen = () => {
               source={require("../../../assets/Villains/Wraithblade.jpg")}
               style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
             />
+            {/* Transparent Overlay for Image Protection */}
+            <View style={styles.transparentOverlay} />
           </View>
 
           <View style={styles.aboutSection}>
@@ -68,7 +70,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.8)",
     flex: 1,
   },
-  scrollContainer: { paddingBottom: 20 },
+  scrollContainer: {
+    paddingBottom: 20,
+  },
   headerContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -83,7 +87,10 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.1)",
     borderRadius: 5,
   },
-  backButtonText: { fontSize: 24, color: "#fff" },
+  backButtonText: {
+    fontSize: 24,
+    color: "#fff",
+  },
   title: {
     fontSize: 28,
     fontWeight: "bold",
@@ -98,16 +105,34 @@ const styles = StyleSheet.create({
     backgroundColor: "#111",
     paddingVertical: 30,
     borderRadius: 20,
+    position: "relative", // Required for overlay
   },
-  armorImage: { resizeMode: "contain" },
+  armorImage: {
+    resizeMode: "contain",
+  },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0)", // Transparent for visual but clickable
+    zIndex: 1,
+  },
   aboutSection: {
     marginTop: 40,
     padding: 20,
     backgroundColor: "#222",
     borderRadius: 15,
   },
-  aboutHeader: { fontSize: 22, fontWeight: "bold", color: "#ff3131", textAlign: "center" },
-  aboutText: { fontSize: 16, color: "#fff", textAlign: "center", marginTop: 10 },
+  aboutHeader: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#ff3131",
+    textAlign: "center",
+  },
+  aboutText: {
+    fontSize: 16,
+    color: "#fff",
+    textAlign: "center",
+    marginTop: 10,
+  },
 });
 
 export default WraithbladeScreen;

@@ -31,6 +31,8 @@ const ObeliskScreen = () => {
               source={require("../../../assets/Villains/Obelisk.jpg")}
               style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
             />
+            {/* Transparent Overlay for Image Protection */}
+            <View style={styles.transparentOverlay} />
           </View>
 
           <View style={styles.aboutSection}>
@@ -40,88 +42,86 @@ const ObeliskScreen = () => {
             Obelisk performs rituals that enhance Erevos’s strength and manipulate 
             supernatural forces to bend to The Enlightened's will. He also maintains a portal to the cosmic realm.
             </Text>
-            <Text style={styles.aboutText}>
-
-            </Text>
-            <Text style={styles.aboutText}>
-
-            </Text>
-            <Text style={styles.aboutText}>
-
-            </Text>  
           </View>
         </ScrollView>
       </View>
     </ImageBackground>
   );
 };
+
 const styles = StyleSheet.create({
-    background: {
-      width: SCREEN_WIDTH,
-      height: SCREEN_HEIGHT,
-      resizeMode: "cover",
-    },
-    overlay: {
-      backgroundColor: "rgba(0, 0, 0, 0.8)",
-      flex: 1,
-    },
-    scrollContainer: {
-      paddingBottom: 20,
-    },
-    headerContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      paddingHorizontal: 20,
-      paddingVertical: 20,
-      borderBottomWidth: 1,
-      borderBottomColor: "#333",
-    },
-    backButton: {
-      padding: 10,
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
-      borderRadius: 5,
-    },
-    backButtonText: {
-      fontSize: 24,
-      color: "#fff",
-    },
-    title: {
-      fontSize: 28,
-      fontWeight: "bold",
-      color: "#D4AF37",
-      textAlign: "center",
-      flex: 1,
-    },
-    imageContainer: {
-      alignItems: "center",
-      justifyContent: "center",
-      paddingHorizontal: 20,
-    //   backgroundColor: "#111",
-      paddingVertical: 30,
-      borderRadius: 20,
-    },
-    armorImage: {
-      resizeMode: "contain",
-    },
-    aboutSection: {
-      marginTop: 40,
-      padding: 20,
-      backgroundColor: "#222",
-      borderRadius: 15,
-    },
-    aboutHeader: {
-      fontSize: 22,
-      fontWeight: "bold",
-      color: "#D4AF37",
-      textAlign: "center",
-    },
-    aboutText: {
-      fontSize: 16,
-      color: "#fff",
-      textAlign: "center",
-      marginTop: 10,
-    },
-  });
-  
+  background: {
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT,
+    resizeMode: "cover",
+  },
+  overlay: {
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    flex: 1,
+  },
+  scrollContainer: {
+    paddingBottom: 20,
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#333",
+  },
+  backButton: {
+    padding: 10,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 5,
+  },
+  backButtonText: {
+    fontSize: 24,
+    color: "#fff",
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#D4AF37",
+    textAlign: "center",
+    flex: 1,
+  },
+  imageContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 20,
+    backgroundColor: "#111",
+    paddingVertical: 30,
+    borderRadius: 20,
+    position: 'relative', // Required for overlay positioning
+  },
+  armorImage: {
+    resizeMode: "contain",
+  },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject, 
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    zIndex: 1, // Ensures overlay is on top without blocking buttons
+  },
+  aboutSection: {
+    marginTop: 40,
+    padding: 20,
+    backgroundColor: "#222",
+    borderRadius: 15,
+  },
+  aboutHeader: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#D4AF37",
+    textAlign: "center",
+  },
+  aboutText: {
+    fontSize: 16,
+    color: "#fff",
+    textAlign: "center",
+    marginTop: 10,
+  },
+});
+
 export default ObeliskScreen;

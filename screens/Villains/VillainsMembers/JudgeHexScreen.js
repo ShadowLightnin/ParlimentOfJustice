@@ -35,6 +35,8 @@ const JudgeHexScreen = () => {
               source={require("../../../assets/Villains/JudgeHex.jpg")}
               style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
             />
+            {/* Transparent Overlay for Image Protection */}
+            <View style={styles.transparentOverlay} />
           </View>
 
           {/* About Section */}
@@ -104,9 +106,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#111",
     paddingVertical: 30,
     borderRadius: 20,
+    position: "relative", // Required for overlay
   },
   armorImage: {
     resizeMode: "contain",
+  },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0)", // Transparent for visual but clickable
+    zIndex: 1,
   },
   aboutSection: {
     marginTop: 40,

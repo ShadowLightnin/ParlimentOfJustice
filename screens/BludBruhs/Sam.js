@@ -14,7 +14,7 @@ const Sam = () => {
       {/* Scrollable Content */}
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         
-        {/* Header (Now Scrolls with Everything) */}
+        {/* Header */}
         <View style={styles.headerContainer}>
           {/* Back Button */}
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
@@ -24,7 +24,7 @@ const Sam = () => {
           {/* Title */}
           <Text style={styles.title}>Void Walker</Text>
 
-          {/* Comment Button (Top Right) */}
+          {/* Comment Button */}
           <TouchableOpacity style={styles.commentButton} onPress={() => navigation.navigate("Comments")}>
             <Text style={styles.commentButtonText}>💬</Text>
           </TouchableOpacity>
@@ -36,33 +36,34 @@ const Sam = () => {
             source={require("../../assets/Armor/SamPlaceHolder.jpg")} 
             style={styles.armorImage} 
           />
+          {/* Transparent Touch-Blocking Overlay */}
+          <View style={styles.transparentOverlay} />
         </View>
 
         {/* About Section */}
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
-          Early life: Once a young naive teenager that eventually 
-          embarked on an adventure to another world in a dark mansion 
-          realized his true potential and destiny.
+            Early life: Once a young naive teenager that eventually 
+            embarked on an adventure to another world in a dark mansion 
+            realized his true potential and destiny.
           </Text>
           <Text style={styles.aboutText}>
-          Recent Past: The mansion corrupted his mind and gave him 
-          strange powers over darkness and electricity. Later after 
-          seeing his masters ideals as evil he joined the Parliament of Justice 
-          and created the BludBruhs faction. While forgoing his dark past he still 
-          held on to the powers he was taught. And a love for Chroma who he met when
-          he was still a follower of Erevos. Chroma was still corrupted in the shroud 
-          of the evil ones.          
+            Recent Past: The mansion corrupted his mind and gave him 
+            strange powers over darkness and electricity. Later after 
+            seeing his master's ideals as evil, he joined the Parliament of Justice 
+            and created the BludBruhs faction. While forgoing his dark past, he still 
+            held on to the powers he was taught — and a love for Chroma, whom he met when
+            he was still a follower of Erevos.
           </Text>
           <Text style={styles.aboutText}>
-          Present: Still extremely conflicted, he caused a rift within the 
-          BludBruhs causing many to leave him to join a new faction, The Monke 
-          Alliance. A large bounty was on Sam once he left the evil Enlightened.            
+            Present: Still extremely conflicted, he caused a rift within the 
+            BludBruhs causing many to leave him to join a new faction, The Monke 
+            Alliance. A large bounty was on Sam once he left the evil Enlightened.            
           </Text>
           <Text style={styles.aboutText}>
-          Motives: Wants to use dark powers he learned from the Enlightened 
-          but the Monke Alliance is against it.          
+            Motives: Wants to use dark powers he learned from the Enlightened 
+            but the Monke Alliance is against it.          
           </Text>
         </View>
       </ScrollView>
@@ -73,7 +74,7 @@ const Sam = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0a0a0a", // ✅ Solid cohesive background
+    backgroundColor: "#0a0a0a",
   },
   scrollContainer: {
     paddingBottom: 20,
@@ -83,8 +84,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 20,
-    paddingVertical: 20, // ✅ Added spacing for smooth scrolling
-    backgroundColor: "#0a0a0a", // ✅ Keeps the header cohesive
+    paddingVertical: 20,
+    backgroundColor: "#0a0a0a",
     borderBottomWidth: 1,
     borderBottomColor: "#333",
   },
@@ -102,7 +103,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#00b3ff",
     textAlign: "center",
-    flex: 1, // ✅ Keeps title centered
+    flex: 1,
   },
   commentButton: {
     padding: 10,
@@ -116,18 +117,24 @@ const styles = StyleSheet.create({
   imageContainer: {
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 20, // ✅ Padding on the sides
-    backgroundColor: "#111", // ✅ Dark background behind image
-    paddingVertical: 30, // ✅ Spacing around the image
-    borderRadius: 20, // ✅ Rounded edges
+    paddingHorizontal: 20,
+    backgroundColor: "#111",
+    paddingVertical: 30,
+    borderRadius: 20,
+    position: 'relative',
   },
   armorImage: {
-    width: SCREEN_WIDTH * 0.9, // ✅ Centered with padding
-    height: SCREEN_HEIGHT * 0.6, // ✅ Larger Image
+    width: SCREEN_WIDTH * 0.9,
+    height: SCREEN_HEIGHT * 0.6,
     resizeMode: "contain",
   },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject, 
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    zIndex: 1, // Ensures it blocks long-press but doesn’t affect buttons
+  },
   aboutSection: {
-    marginTop: 40, // ✅ Spacing between image & text
+    marginTop: 40,
     padding: 20,
     backgroundColor: "#222",
     borderRadius: 15,
