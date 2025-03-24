@@ -81,13 +81,13 @@ const BludBruhsScreen = () => {
                     disabled={!member?.clickable}
                   >
                     {member?.image && (
-                      <Image source={member.image} style={styles.characterImage} />
+                      <>
+                        <Image source={member.image} style={styles.characterImage} />
+                        <View style={styles.transparentOverlay} />
+                      </>
                     )}
                     <Text style={styles.codename}>{member?.codename || ''}</Text>
                     <Text style={styles.name}>{member?.name || ''}</Text>
-                    {/* {!member?.clickable && (
-                      <Text style={styles.disabledText}>Not Clickable</Text>
-                    )} */}
                   </TouchableOpacity>
                 );
               })}
@@ -110,6 +110,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.6)', 
     paddingHorizontal: 20,
     alignItems: 'center',
+  },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    zIndex: 1, // Ensures overlay blocks long-press without affecting button clicks
   },
   headerWrapper: {
     flexDirection: 'row',

@@ -36,10 +36,6 @@ const getMemberAtPosition = (row, col) =>
 const SpartansScreen = () => {
   const navigation = useNavigation();
 
-  const goToChat = () => {
-    navigation.navigate('TeamChat');
-  };
-
   const isDesktop = SCREEN_WIDTH > 600; 
   const cardSize = isDesktop ? 320 : 100; 
   const cardSpacing = isDesktop ? 120 : 30; 
@@ -56,9 +52,6 @@ const SpartansScreen = () => {
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
           <Text style={styles.header}>The Spartans</Text>
-          <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
-            <Text style={styles.chatText}>🛡️</Text>
-          </TouchableOpacity>
         </View>
 
         {/* Grid Layout */}
@@ -83,13 +76,14 @@ const SpartansScreen = () => {
                     disabled={!member?.clickable}
                   >
                     {member?.image && (
-                      <Image source={member.image} style={styles.characterImage} />
+                      <>
+                        <Image source={member.image} style={styles.characterImage} />
+                        {/* Transparent Overlay for Image Protection */}
+                        <View style={styles.transparentOverlay} />
+                      </>
                     )}
                     <Text style={styles.codename}>{member?.codename || ''}</Text>
                     <Text style={styles.name}>{member?.name || ''}</Text>
-                    {/* {!member?.clickable && (
-                      <Text style={styles.disabledText}>Not Clickable</Text>
-                    )} */}
                   </TouchableOpacity>
                 );
               })}
@@ -141,15 +135,6 @@ const styles = StyleSheet.create({
     textShadowRadius: 15,
     flex: 1,
   },
-  chatButton: {
-    padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 5,
-  },
-  chatText: {
-    fontSize: 20,
-    color: '#00b3ff',
-  },
   grid: {
     flex: 1,
     justifyContent: 'center',
@@ -175,6 +160,11 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
+  },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    zIndex: 1,
   },
   codename: {
     fontSize: 12,

@@ -17,8 +17,8 @@ import legionairesMembers from './LegionairesMembers';
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // Grid layout settings
-const isDesktop = SCREEN_WIDTH > 600; 
-const columns = isDesktop ? 7 : 3; 
+const isDesktop = SCREEN_WIDTH > 600;
+const columns = isDesktop ? 7 : 3;
 const rows = Math.ceil(legionairesMembers.length / columns);
 const cardSize = isDesktop ? 160 : 100;
 const cardHeightMultiplier = 1.6;
@@ -33,7 +33,10 @@ export const LegionairesScreen = () => {
   };
 
   return (
-    <ImageBackground source={require('../../assets/BackGround/League.jpg')} style={styles.background}>
+    <ImageBackground
+      source={require('../../assets/BackGround/League.jpg')}
+      style={styles.background}
+    >
       <SafeAreaView style={styles.container}>
         {/* Header, Back, and Chat Button */}
         <View style={styles.headerWrapper}>
@@ -54,35 +57,50 @@ export const LegionairesScreen = () => {
                 const memberIndex = rowIndex * columns + colIndex;
                 const member = legionairesMembers[memberIndex];
 
-                if (!member) return <View key={colIndex} style={{ width: cardSize, height: cardSize * cardHeightMultiplier }} />;
+                if (!member)
+                  return (
+                    <View
+                      key={colIndex}
+                      style={{ width: cardSize, height: cardSize * cardHeightMultiplier }}
+                    />
+                  );
 
                 return (
                   <TouchableOpacity
                     key={colIndex}
                     style={[
                       styles.card,
-                      { 
-                        width: cardSize, 
-                        height: cardSize * cardHeightMultiplier, 
+                      {
+                        width: cardSize,
+                        height: cardSize * cardHeightMultiplier,
                         marginHorizontal: horizontalSpacing / 2,
                         ...(member.clickable ? {} : styles.disabledCard),
                       },
                     ]}
+                    onPress={() => member?.clickable && navigation.navigate(member.screen)}
                     disabled={!member.clickable}
                   >
-                    <Image source={member.image} style={styles.characterImage} />
+                    {member?.image && (
+                      <>
+                        {/* Image */}
+                        <Image
+                          source={member.image}
+                          style={styles.characterImage}
+                        />
+                        {/* Transparent Overlay to Prevent Image Save */}
+                        <View style={styles.transparentOverlay} />
+                      </>
+                    )}
 
-                    {/* Codename now appears first with larger, bold text */}
-                    {member?.codename ? (
+                    {/* Codename - Bold & Larger */}
+                    {member?.codename && (
                       <Text style={styles.codename}>{member.codename}</Text>
-                    ) : null}
+                    )}
 
-                    {/* Name now appears second with italicized, smaller text */}
-                    {member?.name ? (
+                    {/* Name - Italic & Smaller */}
+                    {member?.name && (
                       <Text style={styles.name}>{member.name}</Text>
-                    ) : null}
-
-                    {/* {!member.clickable && <Text style={styles.disabledText}>Not Clickable</Text>} */}
+                    )}
                   </TouchableOpacity>
                 );
               })}
@@ -104,6 +122,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     alignItems: 'center',
+  },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    zIndex: 1, // Prevents saving while still allowing click interactions
   },
   headerWrapper: {
     flexDirection: 'row',
@@ -170,14 +193,14 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 8,
   },
   codename: {
-    fontSize: 12,            // Now bold, larger, and prominent
+    fontSize: 12,
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
     marginTop: 5,
   },
   name: {
-    fontSize: 10,            // Now italic, smaller, and lighter
+    fontSize: 10,
     fontStyle: 'italic',
     color: '#aaa',
     textAlign: 'center',

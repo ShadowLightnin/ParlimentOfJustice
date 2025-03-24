@@ -80,13 +80,18 @@ const EclipseScreen = () => {
                     disabled={!member?.clickable}
                   >
                     {member?.image && (
-                      <Image source={member.image} style={styles.characterImage} />
+                      <>
+                        {/* Image */}
+                        <Image
+                          source={member.image}
+                          style={[styles.characterImage, { width: '100%', height: cardSize * 1.2 }]}
+                        />
+                        {/* Transparent Overlay to Prevent Image Save */}
+                        <View style={styles.transparentOverlay} />
+                      </>
                     )}
                     <Text style={styles.codename}>{member?.codename || ''}</Text>
                     <Text style={styles.name}>{member?.name || ''}</Text>
-                    {/* {!member?.clickable && (
-                      <Text style={styles.disabledText}>Not Clickable</Text>
-                    )} */}
                   </TouchableOpacity>
                 );
               })}
@@ -109,6 +114,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     paddingHorizontal: 20,
     alignItems: 'center',
+  },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    zIndex: 1, // Ensures overlay blocks saving but not button clicks
   },
   headerWrapper: {
     flexDirection: 'row',
@@ -167,8 +177,6 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   characterImage: {
-    width: '100%',
-    height: '70%',
     resizeMode: 'cover',
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,

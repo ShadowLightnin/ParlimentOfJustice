@@ -11,8 +11,10 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
+// Screen dimensions
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
+// Member Data
 const members = [
   { name: 'Spencer McNeil', codename: 'The Annihilator', screen: 'Spencer', clickable: true, position: [0, 0], image: require('../../assets/Armor/Spencer.jpg') },
   { name: 'Azure Briggs', codename: 'Mediateir', screen: 'Azure', clickable: true, position: [0, 2], image: require('../../assets/Armor/AzurePlaceHolder.jpg') },
@@ -23,6 +25,7 @@ const members = [
   { name: 'Emma Cummings', codename: 'Kintsunera', screen: 'Emma', clickable: true, position: [2, 2], image: require('../../assets/Armor/EmmaPlaceHolder.jpg') },
 ];
 
+// Empty cell checker
 const isEmpty = (row, col) => (row === 0 && col === 1) || (row === 2 && col === 1);
 const getMemberAtPosition = (row, col) =>
   members.find((member) => member.position[0] === row && member.position[1] === col);
@@ -44,6 +47,7 @@ const TitansScreen = () => {
       style={styles.background}
     >
       <SafeAreaView style={styles.container}>
+        {/* Header Section */}
         <View style={styles.headerWrapper}>
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Text style={styles.backText}>← Back</Text>
@@ -76,14 +80,18 @@ const TitansScreen = () => {
                     disabled={!member?.clickable}
                   >
                     {member?.image && (
-                      <ImageBackground
-                        source={member.image}
-                        style={styles.characterImage}
-                        imageStyle={styles.imageOverlay}
-                      >
-                        {/* Transparent Touch-Blocking Overlay */}
+                      <>
+                        {/* Image */}
+                        <Image
+                          source={member.image}
+                          style={[
+                            styles.characterImage,
+                            { width: '100%', height: cardSize * 1.2 }, // Flexible Height/Width
+                          ]}
+                        />
+                        {/* Transparent Overlay to Prevent Image Save */}
                         <View style={styles.transparentOverlay} />
-                      </ImageBackground>
+                      </>
                     )}
                     <Text style={styles.codename}>{member?.codename || ''}</Text>
                     <Text style={styles.name}>{member?.name || ''}</Text>
@@ -111,7 +119,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   transparentOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFillObject, // Covers the entire image
     backgroundColor: 'rgba(0, 0, 0, 0)', // Fully transparent
     zIndex: 1, // Ensures it blocks long-press but doesn’t interfere with buttons
   },
@@ -172,8 +180,6 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   characterImage: {
-    width: '100%',
-    height: '70%',
     resizeMode: 'cover',
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,

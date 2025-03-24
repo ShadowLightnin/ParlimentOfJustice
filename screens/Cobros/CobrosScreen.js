@@ -41,7 +41,7 @@ const members = [
 
 // Grid layout settings
 const isDesktop = SCREEN_WIDTH > 600;
-const columns = isDesktop ? 5 : 3; 
+const columns = isDesktop ? 5 : 3;
 const rows = Math.ceil(members.length / columns);
 const cardSize = isDesktop ? 160 : 100;
 const cardHeightMultiplier = 1.6;
@@ -80,7 +80,12 @@ export const CobrosScreen = () => {
                 const memberIndex = rowIndex * columns + colIndex;
                 const member = members[memberIndex];
 
-                if (!member) return <View key={colIndex} style={{ width: cardSize, height: cardSize * cardHeightMultiplier }} />;
+                if (!member) return (
+                  <View 
+                    key={colIndex} 
+                    style={{ width: cardSize, height: cardSize * cardHeightMultiplier }} 
+                  />
+                );
 
                 return (
                   <TouchableOpacity 
@@ -90,15 +95,21 @@ export const CobrosScreen = () => {
                       { width: cardSize, height: cardSize * cardHeightMultiplier },
                       !member.clickable && styles.disabledCard
                     ]}
+                    onPress={() => member?.clickable && navigation.navigate(member.screen)}
                     disabled={!member.clickable}
                   >
-                    <Image 
-                      source={member.image || require('../../assets/Armor/PlaceHolder.jpg')} 
-                      style={styles.characterImage} 
-                    />
+                    {member?.image && (
+                      <>
+                        <Image 
+                          source={member.image || require('../../assets/Armor/PlaceHolder.jpg')} 
+                          style={styles.characterImage} 
+                        />
+                        <View style={styles.transparentOverlay} />
+                      </>
+                    )}
+
                     <Text style={styles.codename}>{member.codename}</Text>
                     <Text style={styles.name}>{member.name}</Text>
-                    {/* {!member.clickable && <Text style={styles.disabledText}>Not Clickable</Text>} */}
                   </TouchableOpacity>
                 );
               })}
@@ -121,6 +132,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     alignItems: 'center',
+  },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    zIndex: 1, // Ensures overlay blocks saving but maintains button clicks
   },
   headerWrapper: {
     flexDirection: 'row',

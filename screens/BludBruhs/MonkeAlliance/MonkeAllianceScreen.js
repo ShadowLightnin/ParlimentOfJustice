@@ -25,15 +25,8 @@ const members = [
   { name: 'Ethan T', codename: 'Bolt Watcher', screen: 'EthanT', clickable: true, image: require('../../../assets/Armor/EthanPlaceHolder.jpg') },
   { name: 'Alex M', codename: 'Swiftmind', screen: 'AlexM', clickable: true, image: require('../../../assets/Armor/AlexMPlaceHolder.jpg') },
   { name: 'Damon', codename: 'Pixel Maverick', screen: 'Damon', clickable: true, image: require('../../../assets/Armor/DamonPlaceHolder_cleanup.jpg') },
-  { name: 'Taylor', codename: '', screen: '', clickable: false },
-  { name: 'Rachel', codename: '', screen: '', clickable: false },
-  { name: 'Lauren', codename: '', screen: '', clickable: false },
-  { name: 'Lizzie', codename: '', screen: '', clickable: false },
-  { name: 'Keith', codename: '', screen: '', clickable: false },
-  { name: 'Sandra', codename: '', screen: '', clickable: false },
   { name: '', codename: 'Lumiel', screen: 'LumielScreen', clickable: true, image: require('../../../assets/Armor/LumielPhantom.jpg')  },
   { name: 'MIA', codename: '', screen: '', clickable: false },
-
 ];
 
 // Grid layout settings
@@ -80,20 +73,27 @@ export const MonkeAllianceScreen = () => {
                 if (!member) return <View key={colIndex} style={{ width: cardSize, height: cardSize * cardHeightMultiplier }} />;
 
                 return (
-                    <TouchableOpacity 
-                      key={colIndex} 
-                      style={[styles.card, { width: cardSize, height: cardSize * cardHeightMultiplier }, !member.clickable && styles.disabledCard]}
-                      onPress={() => member?.clickable && navigation.navigate(member.screen)}
-                      disabled={!member.clickable}
-                    >
-
-                    <Image 
-                      source={member.image || require('../../../assets/Armor/PlaceHolder.jpg')} 
-                      style={styles.characterImage} 
-                    />
+                  <TouchableOpacity 
+                    key={colIndex} 
+                    style={[
+                      styles.card, 
+                      { width: cardSize, height: cardSize * cardHeightMultiplier },
+                      !member.clickable && styles.disabledCard
+                    ]}
+                    onPress={() => member?.clickable && navigation.navigate(member.screen)}
+                    disabled={!member.clickable}
+                  >
+                    {member?.image && (
+                      <>
+                        <Image 
+                          source={member.image || require('../../../assets/Armor/PlaceHolder.jpg')} 
+                          style={styles.characterImage} 
+                        />
+                        <View style={styles.transparentOverlay} />
+                      </>
+                    )}
                     <Text style={styles.codename}>{member.codename}</Text>
                     <Text style={styles.name}>{member.name}</Text>
-                    {/* {!member.clickable && <Text style={styles.disabledText}>Not Clickable</Text>} */}
                   </TouchableOpacity>
                 );
               })}
@@ -117,6 +117,11 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     alignItems: 'center',
+  },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    zIndex: 1, // Ensures overlay blocks long-press without affecting button clicks
   },
   headerWrapper: {
     flexDirection: 'row',
@@ -171,8 +176,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '70%',
     resizeMode: 'cover',
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
   },
   codename: {
     fontSize: 12,

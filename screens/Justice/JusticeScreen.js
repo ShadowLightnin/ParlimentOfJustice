@@ -17,14 +17,13 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 // Grid layout settings
 const isDesktop = SCREEN_WIDTH > 600;
 
-// Card dimensions for desktop and mobile (Matching Big Bads)
+// Card dimensions for desktop and mobile
 const cardSizes = {
   desktop: { width: 400, height: 600 },
   mobile: { width: 350, height: 500 },
 };
-const horizontalSpacing = isDesktop ? 40 : 20; 
+const horizontalSpacing = isDesktop ? 40 : 20;
 const verticalSpacing = isDesktop ? 50 : 20;
-
 
 // Heroes data with images & respective screens
 const heroes = [
@@ -38,7 +37,7 @@ const heroes = [
   { name: 'Inspired Hawkgirl', screen: '', clickable: false },
   { name: 'Inspired Night Wing', screen: '', clickable: false },
   { name: 'Inspired Wally West Flash', screen: '', clickable: false },
-  { name: 'Inspired Iron man', screen: '', clickable: false },
+  { name: 'Inspired Iron Man', screen: '', clickable: false },
   { name: 'Inspired Captain America', screen: '', clickable: false },
   { name: 'Inspired Thor', screen: '', clickable: false },
   { name: 'Inspired Hulk', screen: '', clickable: false },
@@ -66,7 +65,6 @@ const heroes = [
   { name: 'Inspired Shuri', screen: '', clickable: false },
   { name: 'Inspired Robin', screen: '', clickable: false },
   { name: 'Inspired Batgirl', screen: '', clickable: false },
-
 ];
 
 const JusticeScreen = () => {
@@ -80,14 +78,21 @@ const JusticeScreen = () => {
         styles.card,
         {
           width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
-          height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height
+          height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
         },
-        hero.clickable ? styles.clickable : styles.notClickable
+        hero.clickable ? styles.clickable : styles.notClickable,
       ]}
       onPress={() => hero.clickable && navigation.navigate(hero.screen)}
       disabled={!hero.clickable}
     >
-      <Image source={hero.image} style={styles.image} />
+      {hero?.image && (
+        <>
+          {/* Image */}
+          <Image source={hero.image} style={styles.image} />
+          {/* Transparent Overlay to Prevent Image Save */}
+          <View style={styles.transparentOverlay} />
+        </>
+      )}
       <Text style={styles.name}>{hero.name}</Text>
       {!hero.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
@@ -138,13 +143,17 @@ const styles = StyleSheet.create({
     paddingTop: 40,
     alignItems: 'center',
   },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    zIndex: 1, // Prevents saving while still allowing click interactions
+  },
   backButton: {
     position: 'absolute',
     top: 40,
     left: 20,
     backgroundColor: 'rgba(17, 25, 40, 0.6)',
     paddingVertical: 15,
-    // paddingHorizontal: 20,
     borderRadius: 8,
     elevation: 5,
   },
@@ -163,12 +172,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   scrollWrapper: {
-    width: SCREEN_WIDTH,  // Ensures scroll space
+    width: SCREEN_WIDTH,
     flex: 1,
   },
   scrollContainer: {
     flexDirection: 'row',
-    flexGrow: 1, // Ensures scrollable content expands naturally
+    flexGrow: 1,
     width: 'auto',
     paddingVertical: verticalSpacing,
     alignItems: 'center',

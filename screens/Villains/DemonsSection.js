@@ -27,10 +27,17 @@ const DemonsSection = () => {
   const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDemon, setSelectedDemon] = useState(null);
+  const [currentSound, setCurrentSound] = useState(null);
 
-  // Dynamic Sound Handler
+  // Dynamic Sound Handler with Cleanup
   const playDemonSound = async (audio, screen) => {
+    if (currentSound) {
+      await currentSound.stopAsync();
+      await currentSound.unloadAsync();
+    }
+
     const { sound } = await Audio.Sound.createAsync(audio);
+    setCurrentSound(sound);
     await sound.playAsync();
 
     if (screen) {
@@ -51,7 +58,7 @@ const DemonsSection = () => {
       setSelectedDemon(demon.name);
       setModalVisible(true);
     }
-};  
+  };
 
   const renderDemonLord = (demon) => (
     <TouchableOpacity
@@ -65,8 +72,11 @@ const DemonsSection = () => {
       disabled={!demon.clickable}
     >
       <Image source={demon.image} style={[styles.demonImage, { width: imageSize, height: imageSize }]} />
+
+      {/* Transparent Overlay for Image Protection */}
+      <View style={styles.transparentOverlay} />
+
       <Text style={styles.demonName}>{demon.name}</Text>
-      {/* {!demon.clickable && <Text style={styles.disabledText}>Not Clickable</Text>} */}
     </TouchableOpacity>
   );
 
@@ -92,7 +102,7 @@ const DemonsSection = () => {
           </ScrollView>
         </View>
 
-        {/* Modal for demon info */}
+        {/* Modal for Demon Info */}
         <Modal
           transparent={true}
           visible={modalVisible}
@@ -176,6 +186,11 @@ const styles = StyleSheet.create({
   demonImage: {
     borderRadius: 10,
   },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject, 
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    zIndex: 1, // Ensures overlay is on top without blocking buttons
+  },
   demonName: {
     marginTop: 15,
     color: 'white',
@@ -202,6 +217,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: 'white',
     textAlign: 'center',
+    textShadowColor: '#e25822',
+    textShadowRadius: 15,
   },
 });
 

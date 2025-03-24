@@ -22,7 +22,7 @@ const Ben = () => {
           </TouchableOpacity>
 
           {/* Title */}
-          <Text style={styles.title}>Nuscus</Text>
+          <Text style={styles.title}>Nuscis</Text>
 
           {/* Comment Button (Top Right) */}
           <TouchableOpacity style={styles.commentButton} onPress={() => navigation.navigate("Comments")}>

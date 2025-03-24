@@ -73,7 +73,7 @@ const VillainsScreen = () => {
   );
 };
 
-// Card Component
+// Card Component with Transparent Overlay
 const Card = ({
   image,
   onPress,
@@ -91,6 +91,9 @@ const Card = ({
       onPress={onPress}
     >
       <Image source={image} style={styles.cardImage} />
+      
+      {/* Transparent Overlay to Prevent Saving */}
+      <View style={styles.transparentOverlay} />
     </TouchableOpacity>
   );
 };
@@ -153,6 +156,11 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
+  },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject, 
+    backgroundColor: 'rgba(0, 0, 0, 0)', 
+    zIndex: 1, // Ensures overlay blocks saving but keeps interaction intact
   },
 });
 

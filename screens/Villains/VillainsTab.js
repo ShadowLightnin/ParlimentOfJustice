@@ -99,7 +99,13 @@ const VillainsTab = () => {
       onPress={() => villain.clickable && navigation.navigate(villain.screen)}
       disabled={!villain.clickable}
     >
+      {/* Image */}
       <Image source={villain.image} style={styles.image} />
+      
+      {/* Transparent Overlay for Protection */}
+      <View style={styles.transparentOverlay} />
+
+      {/* Villain Name */}
       <Text style={styles.name}>{villain.name}</Text>
       {!villain.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
@@ -122,7 +128,7 @@ const VillainsTab = () => {
         {/* Title */}
         <Text style={styles.header}>Villains</Text>
 
-        {/* Horizontal Scrollable Villains Grid */}
+        {/* Scrollable Grid */}
         <View style={styles.scrollWrapper}>
           <ScrollView
             horizontal
@@ -175,12 +181,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   scrollWrapper: {
-    width: SCREEN_WIDTH,  // Ensures scroll space
+    width: SCREEN_WIDTH,
     flex: 1,
   },
   scrollContainer: {
     flexDirection: 'row',
-    flexGrow: 1, // Ensures scrollable content expands naturally
+    flexGrow: 1,
     width: 'auto',
     paddingVertical: verticalSpacing,
     alignItems: 'center',
@@ -203,6 +209,11 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
+  },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject, 
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    zIndex: 1, // Ensures overlay is on top but still allows interaction
   },
   name: {
     position: 'absolute',

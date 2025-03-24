@@ -18,11 +18,11 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // Grid settings
 const isDesktop = SCREEN_WIDTH > 600;
-const columns = isDesktop ? 6 : 3; 
+const columns = isDesktop ? 6 : 3;
 const cardSize = isDesktop ? 160 : 100;
 const cardHeightMultiplier = 1.6;
-const horizontalSpacing = isDesktop ? 40 : 10; 
-const verticalSpacing = isDesktop ? 50 : 20; 
+const horizontalSpacing = isDesktop ? 40 : 10;
+const verticalSpacing = isDesktop ? 50 : 20;
 
 // Rows based on number of members
 const rows = Math.ceil(OlympiansMembers.length / columns);
@@ -35,7 +35,10 @@ export const OlympiansScreen = () => {
   };
 
   return (
-    <ImageBackground source={require('../../assets/BackGround/Olympians.jpg')} style={styles.background}>
+    <ImageBackground
+      source={require('../../assets/BackGround/Olympians.jpg')}
+      style={styles.background}
+    >
       <SafeAreaView style={styles.container}>
         {/* Header Section */}
         <View style={styles.headerWrapper}>
@@ -50,58 +53,60 @@ export const OlympiansScreen = () => {
 
         {/* Grid Layout */}
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {Array.from({ length: rows }).map((_, rowIndex) => (
-          <View
-            key={rowIndex}
-            style={[styles.row, { marginBottom: verticalSpacing, gap: horizontalSpacing }]}
-          >
-            {Array.from({ length: columns }).map((_, colIndex) => {
-              const memberIndex = rowIndex * columns + colIndex;
-              const member = OlympiansMembers[memberIndex];
-            
-              if (!member) {
+          {Array.from({ length: rows }).map((_, rowIndex) => (
+            <View
+              key={rowIndex}
+              style={[styles.row, { marginBottom: verticalSpacing, gap: horizontalSpacing }]}
+            >
+              {Array.from({ length: columns }).map((_, colIndex) => {
+                const memberIndex = rowIndex * columns + colIndex;
+                const member = OlympiansMembers[memberIndex];
+
+                if (!member) {
+                  return (
+                    <View
+                      key={colIndex}
+                      style={{ width: cardSize, height: cardSize * cardHeightMultiplier }}
+                    />
+                  );
+                }
+
                 return (
-                  <View 
-                    key={colIndex} 
-                    style={{ width: cardSize, height: cardSize * cardHeightMultiplier }}
-                  />
+                  <TouchableOpacity
+                    key={colIndex}
+                    style={[
+                      styles.card,
+                      { width: cardSize, height: cardSize * cardHeightMultiplier },
+                      !member.clickable && styles.disabledCard,
+                    ]}
+                    onPress={() => member?.clickable && navigation.navigate(member.screen)}
+                    disabled={!member?.clickable}
+                  >
+                    {member?.image && (
+                      <>
+                        {/* Image */}
+                        <Image
+                          source={member.image}
+                          style={[styles.characterImage, { width: '100%', height: cardSize * 1.2 }]}
+                        />
+                        {/* Transparent Overlay to Prevent Image Save */}
+                        <View style={styles.transparentOverlay} />
+                      </>
+                    )}
+
+                    {member?.codename && (
+                      <Text style={styles.codename}>{member.codename}</Text>
+                    )}
+
+                    {member?.name && (
+                      <Text style={styles.name}>{member.name}</Text>
+                    )}
+                  </TouchableOpacity>
                 );
-              }
-            
-              return (
-                <TouchableOpacity
-                  key={colIndex}
-                  style={[
-                    styles.card,
-                    { width: cardSize, height: cardSize * cardHeightMultiplier },
-                    !member.clickable && styles.disabledCard,
-                  ]}
-                  disabled={!member?.clickable}
-                  onPress={() => member?.clickable && navigation.navigate(member.screen)}
-                >
-                  {member?.image && (
-                    <Image source={member.image} style={styles.characterImage} />
-                  )}
-
-                  {/* Render codename ONLY if it exists */}
-                  {member?.codename ? (
-                    <Text style={styles.codename}>{member.codename}</Text>
-                  ) : null}
-
-                  {/* Render name ONLY if it exists */}
-                  {member?.name ? (
-                    <Text style={styles.name}>{member.name}</Text>
-                  ) : null}
-
-                  {/* {!member?.clickable && (
-                    <Text style={styles.disabledText}>Not Clickable</Text>
-                  )} */}
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        ))}
-      </ScrollView>
+              })}
+            </View>
+          ))}
+        </ScrollView>
       </SafeAreaView>
     </ImageBackground>
   );
@@ -118,6 +123,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     alignItems: 'center',
+  },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    zIndex: 1, // Prevents saving while still allowing click interactions
   },
   headerWrapper: {
     flexDirection: 'row',
@@ -177,27 +187,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#444',
   },
   characterImage: {
-    width: '100%',
-    height: '70%',
     resizeMode: 'cover',
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
   },
   name: {
-    fontSize: 10,            // Smaller size for names
-    fontStyle: 'italic',     // Italic for names
-    color: '#aaa',           // Lighter color for names
+    fontSize: 10,
+    fontStyle: 'italic',
+    color: '#aaa',
     textAlign: 'center',
   },
-  
   codename: {
-    fontSize: 12,            // Larger size for codenames
-    fontWeight: 'bold',      // Bold for codenames
-    color: '#fff',           // Brighter color for codenames
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#fff',
     textAlign: 'center',
     marginTop: 5,
   },
-    disabledText: {
+  disabledText: {
     fontSize: 10,
     color: '#ff4444',
     textAlign: 'center',

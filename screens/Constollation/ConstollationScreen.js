@@ -77,10 +77,18 @@ export const ConstollationScreen = () => {
                       { width: cardSize, height: cardSize * cardHeightMultiplier },
                       !member.clickable && styles.disabledCard,
                     ]}
+                    onPress={() => member?.clickable && navigation.navigate(member.screen)}
                     disabled={!member.clickable}
                   >
-                    <Image source={member.image} style={styles.characterImage} />
-                    
+                    {member?.image && (
+                      <>
+                        {/* Image */}
+                        <Image source={member.image} style={styles.characterImage} />
+                        {/* Transparent Overlay to Prevent Image Save */}
+                        <View style={styles.transparentOverlay} />
+                      </>
+                    )}
+
                     {/* Codename Now Appears First (Bold & Larger) */}
                     {member?.codename && (
                       <Text style={styles.codename}>{member.codename}</Text>
@@ -91,9 +99,6 @@ export const ConstollationScreen = () => {
                       <Text style={styles.name}>{member.name}</Text>
                     )}
 
-                    {/* {!member.clickable && (
-                      <Text style={styles.disabledText}>Not Clickable</Text>
-                    )} */}
                   </TouchableOpacity>
                 );
               })}
@@ -116,6 +121,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     alignItems: 'center',
+  },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    zIndex: 1, // Ensures overlay blocks saving but maintains button clicks
   },
   headerWrapper: {
     flexDirection: 'row',
@@ -182,14 +192,14 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 8,
   },
   codename: {
-    fontSize: 12,      // Codename now bold and larger
+    fontSize: 12,
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
     marginTop: 5,
   },
   name: {
-    fontSize: 10,      // Name now italic and smaller
+    fontSize: 10,
     fontStyle: 'italic',
     color: '#aaa',
     textAlign: 'center',

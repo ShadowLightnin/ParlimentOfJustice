@@ -71,6 +71,10 @@ const BigBadsTab = () => {
       disabled={!bigBad.clickable}
     >
       <Image source={bigBad.image} style={styles.image} />
+      
+      {/* Transparent Overlay for Image Protection */}
+      <View style={styles.transparentOverlay} />
+
       <Text style={styles.name}>{bigBad.name}</Text>
       {!bigBad.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
@@ -146,12 +150,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   scrollWrapper: {
-    width: SCREEN_WIDTH, // Ensures scrollable area expands
+    width: SCREEN_WIDTH,
     flex: 1,
   },
   scrollContainer: {
     flexDirection: 'row',
-    flexGrow: 1, // Ensures content flows horizontally
+    flexGrow: 1,
     width: 'auto',
     paddingVertical: 20,
     alignItems: 'center',
@@ -173,6 +177,11 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
+  },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject, 
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    zIndex: 1, // Ensures overlay is on top without blocking buttons
   },
   name: {
     position: 'absolute',
