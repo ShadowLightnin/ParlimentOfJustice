@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { 
-  View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions, AppState, Platform 
+  View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions, AppState 
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { BlurView } from "expo-blur";
@@ -12,18 +12,16 @@ const Will = () => {
   const [isBlurred, setIsBlurred] = useState(false);
 
   useEffect(() => {
-    if (Platform.OS === "web") return; // Fix for desktop crash
-
     const handleAppStateChange = (nextAppState) => {
       if (nextAppState === "active") {
-        setIsBlurred(true);
-        setTimeout(() => setIsBlurred(false), 3000); // Remove blur after 3s
+        setIsBlurred(true); // Blur when the app resumes (after screenshot)
+        setTimeout(() => setIsBlurred(false), 3000); // Unblur after 3 seconds
       }
     };
 
     const subscription = AppState.addEventListener("change", handleAppStateChange);
 
-    return () => subscription.remove(); // Cleanup on unmount
+    return () => subscription.remove(); // Clean up on unmount
   }, []);
 
   return (
@@ -49,7 +47,7 @@ const Will = () => {
             source={require("../../assets/Armor/WillPlaceHolder.jpg")} 
             style={styles.armorImage} 
           />
-          {isBlurred && Platform.OS !== "web" && ( // Only show blur on mobile
+          {isBlurred && (
             <BlurView intensity={90} style={styles.blurOverlay}>
               <Text style={styles.watermarkText}>Screenshot Blocked</Text>
             </BlurView>
