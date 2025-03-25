@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"; // ✅ Ensure React hooks are imported
 import { View, Text, TextInput, Button, ScrollView, StyleSheet } from "react-native";
-import { db, auth } from "../api/firebaseConfig";
+import { db, auth } from "../lib/firebase";
 import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 

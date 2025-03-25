@@ -2,11 +2,13 @@ import React, { useEffect, useContext, useState } from 'react';
 import { Animated, View, Text, StyleSheet, Dimensions } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { auth } from "./api/firebaseConfig";
+import { auth } from "./lib/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthContextProvider, { AuthContext } from './context/auth-context';
+import Notification from "./components/notification/Notification";
+
 
 import { StartScreen } from './screens/StartScreen';
 import { HomeScreen } from './screens/HomeScreen';
@@ -31,11 +33,23 @@ const Stack = createNativeStackNavigator();
 function AuthStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Start" component={StartScreen} />
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Signup" component={SignupScreen} />
+      <Stack.Screen
+        name="Start"
+        component={StartScreen}
+      />
+      <Stack.Screen
+        name="Login"
+        component={(props) => (
+          <>
+            <LoginScreen {...props} />
+            <Notification />
+          </>
+        )}
+      />
+      {/* <Stack.Screen name="Signup" component={SignupScreen} /> */}
     </Stack.Navigator>
   );
+  
 }
 
 function AuthenticatedStack() {

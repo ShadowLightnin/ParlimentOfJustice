@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { auth, db } from "../../api/firebaseConfig";
+import { auth, db } from "../../lib/firebase";
 import { collection, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { preloadedImages } from "../../HardCoded/preloadedImages"; // Import preloaded images
 
