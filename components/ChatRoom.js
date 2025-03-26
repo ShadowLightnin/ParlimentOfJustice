@@ -1,25 +1,43 @@
-import React, { useEffect, useState } from "react"; // ✅ Ensure React hooks are imported
+import React, { useEffect, useState } from "react"; 
 import { View, Text, TextInput, Button, ScrollView, StyleSheet } from "react-native";
 import { db, auth } from "../lib/firebase";
-import { collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "firebase/firestore";
-import { onAuthStateChanged } from "firebase/auth";
+import { 
+    collection, 
+    addDoc, 
+    query, 
+    orderBy, 
+    onSnapshot, 
+    doc, 
+    getDoc, 
+    serverTimestamp 
+} from "firebase/firestore";
+import { onAuthStateChanged, updateProfile } from "firebase/auth";
 
-const ChatRoom = ({ chatId }) => {  // ✅ Hooks must be inside a function component!
+const ChatRoom = ({ chatId }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const [user, setUser] = useState(null);  // ✅ Ensure `user` is a state variable
+  const [user, setUser] = useState(null);
+  const [userName, setUserName] = useState("Anonymous");
 
   useEffect(() => {
-    // ✅ Correctly use useEffect inside the functional component
-    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    const unsubscribeAuth = onAuthStateChanged(auth, async (currentUser) => {
+      setUser(currentUser);
+
+      if (currentUser) {
+        const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+        if (userDoc.exists()) {
+          setUserName(userDoc.data().username || currentUser.displayName || "Anonymous");
+        } else {
+          setUserName(currentUser.displayName || "Anonymous");
+        }
+      }
     });
 
     return () => unsubscribeAuth();
   }, []);
 
   useEffect(() => {
-    if (!user) return;  // ✅ Ensure Firestore only listens if user is authenticated
+    if (!user) return;
 
     const messagesRef = collection(db, `chats/${chatId}/messages`);
     const q = query(messagesRef, orderBy("timestamp"));
@@ -29,7 +47,7 @@ const ChatRoom = ({ chatId }) => {  // ✅ Hooks must be inside a function compo
     });
 
     return () => unsubscribeMessages();
-  }, [chatId, user]);  // ✅ Run this effect when user changes
+  }, [chatId, user]);
 
   const sendMessage = async () => {
     if (!user) {
@@ -40,10 +58,10 @@ const ChatRoom = ({ chatId }) => {  // ✅ Hooks must be inside a function compo
     if (newMessage.trim() === "") return;
 
     await addDoc(collection(db, `chats/${chatId}/messages`), {
-      sender: user.displayName || "Anonymous",
+      sender: userName,
       text: newMessage,
       timestamp: serverTimestamp(),
-      uid: user.uid,
+      uid: user.uid,  // ✅ Track who sent the message for layout control
     });
 
     setNewMessage("");
@@ -53,50 +71,92 @@ const ChatRoom = ({ chatId }) => {  // ✅ Hooks must be inside a function compo
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.messages}>
         {messages.map((msg) => (
-          <View key={msg.id} style={styles.message}>
+          <View 
+            key={msg.id} 
+            style={[
+              styles.message, 
+              msg.uid === user?.uid ? styles.sent : styles.received // ✅ Conditional styling for left/right
+            ]}
+          >
             <Text style={styles.sender}>{msg.sender}:</Text>
             <Text style={styles.text}>{msg.text}</Text>
           </View>
         ))}
       </ScrollView>
-      <TextInput
-        style={styles.input}
-        value={newMessage}
-        onChangeText={setNewMessage}
-        placeholder="Type a message..."
-      />
-      <Button title="Send" onPress={sendMessage} />
+
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          value={newMessage}
+          onChangeText={setNewMessage}
+          placeholder="Type a message..."
+        />
+        <Button title="Send" onPress={sendMessage} />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { 
+  container: {
+    flex: 1,
+    width: '90%',                // Responsive width for better balance
+    maxWidth: 400,               // Prevents excessive stretching
+    alignSelf: 'center',         // Centers the container horizontally
+    justifyContent: 'center',    // Centers the content vertically
+    padding: 20,
+    // backgroundColor: "rgba(0, 0, 0, 0.6)", 
+    borderRadius: 15,
+    overflow: "hidden",
+    paddingVertical: 30,        
+    paddingHorizontal: 25,
+    marginHorizontal: 'auto',    // Ensures horizontal centering
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.6,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  messages: {
+    flexGrow: 1,
+    justifyContent: "flex-end",
+  },
+  message: {
+    maxWidth: '75%', // ✅ Compact the message bubbles
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  sent: {
+    alignSelf: "flex-end",         // ✅ Messages from the sender on the right
+    backgroundColor: "#1f8ef1",    // 🔵 Blue for sent messages
+    borderTopRightRadius: 0,       // Visual detail for bubble effect
+  },
+  received: {
+    alignSelf: "flex-start",       // ✅ Messages received on the left
+    backgroundColor: "#333",       // ⚫ Dark grey for received messages
+    borderTopLeftRadius: 0,        // Visual detail for bubble effect
+  },
+  sender: {
+    fontWeight: "bold",
+    color: "#fff",                 // 🔹 White text for both sides
+    marginBottom: 2,
+  },
+  text: {
+    color: "#fff",
+  },
+  inputContainer: {
+    flexDirection: "row",           // 🟦 Align input & button side by side
+    alignItems: "center",
+    gap: 10,
+    marginTop: 10,
+  },
+  input: {
     flex: 1, 
-    padding: 20, 
-  },
-  messages: { 
-    flexGrow: 1, 
-    justifyContent: "flex-end" 
-  },
-  message: { 
-    marginBottom: 10, 
-    padding: 10, 
-    backgroundColor: "#333", 
-    borderRadius: 5 
-  },
-  sender: { 
-    fontWeight: "bold", 
-    color: "#00b3ff" 
-  },
-  text: { 
-    color: "#fff" 
-  },
-  input: { 
-    backgroundColor: "#fff", 
-    padding: 10, 
-    borderRadius: 5, 
-    marginBottom: 10 
+    backgroundColor: "#222",
+    color: "white",
+    padding: 10,
+    borderRadius: 5,
   },
 });
 

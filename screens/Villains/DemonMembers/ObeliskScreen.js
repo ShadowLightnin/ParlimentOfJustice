@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 20,
-    backgroundColor: "#111",
+    // backgroundColor: "#111",
     paddingVertical: 30,
     borderRadius: 20,
     position: 'relative', // Required for overlay positioning
