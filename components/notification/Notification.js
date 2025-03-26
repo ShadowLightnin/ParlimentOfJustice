@@ -1,12 +1,7 @@
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css';
+import Toast from 'react-native-toast-message';
 
 const Notification = () => {
-  return (
-    <div className='notification'>
-        <ToastContainer position='bottom-right'/>
-    </div>
-  )
-}
+  return <Toast />;
+};
 
-export default Notification
+export default Notification;

@@ -7,6 +7,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthContextProvider, { AuthContext } from './context/auth-context';
+import Toast from 'react-native-toast-message';
 import Notification from "./components/notification/Notification";
 
 
@@ -37,15 +38,14 @@ function AuthStack() {
         name="Start"
         component={StartScreen}
       />
-      <Stack.Screen
-        name="Login"
-        component={(props) => (
+      <Stack.Screen name="Login">
+        {props => (
           <>
             <LoginScreen {...props} />
             <Notification />
           </>
         )}
-      />
+      </Stack.Screen>
       {/* <Stack.Screen name="Signup" component={SignupScreen} /> */}
     </Stack.Navigator>
   );
@@ -88,7 +88,6 @@ const FactionScreen = ({ route }) => {
 
 function Navigation() {
   const authCtx = useContext(AuthContext);
-
   return (
     <NavigationContainer>
       {!authCtx.isAuthenticated && <AuthStack />}
@@ -127,6 +126,7 @@ export default function App() {
       <AuthContextProvider>
         <Root />
       </AuthContextProvider>
+      <Toast />
     </>
   );
 }
