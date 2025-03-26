@@ -1,5 +1,15 @@
-import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, Button, Image, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
+import React, { useState, useContext, useEffect } from 'react';
+import { 
+    View, 
+    Text, 
+    TextInput, 
+    Button, 
+    Image, 
+    TouchableOpacity, 
+    ActivityIndicator, 
+    StyleSheet, 
+    Animated 
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
@@ -7,20 +17,52 @@ import { auth, db } from '../lib/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import upload from '../lib/upload';
 import * as ImagePicker from 'expo-image-picker';
-import { AuthContext } from '../context/auth-context'; // Import AuthContext
+import { AuthContext } from '../context/auth-context';
+
+const backgroundImages = [
+    require('../assets/BackGround/Parliment.png'),
+    require('../assets/BackGround/TitansPlaceHolder.jpg'),
+    require('../assets/BackGround/EclipsePlaceHolder.jpg'),
+    require('../assets/BackGround/Olympians.jpg'),
+    require('../assets/BackGround/Cobros.jpg'),
+    require('../assets/BackGround/26.jpg'),
+    require('../assets/BackGround/Bludbruh2.jpg'),
+    require('../assets/BackGround/League.jpg'),
+    require('../assets/BackGround/Constollation.jpg'),
+    require('../assets/BackGround/Justice.jpg'),
+    require('../assets/BackGround/VillainsHub.jpg'),
+    require('../assets/BackGround/Villains.jpg'),
+    require('../assets/BackGround/BigBad.jpg'),
+    require('../assets/BackGround/NateEmblem.jpg'),
+
+];
 
 const LoginScreen = () => {
     const navigation = useNavigation();
-    const authCtx = useContext(AuthContext); // Access AuthContext
+    const authCtx = useContext(AuthContext);
 
-    const [avatar, setAvatar] = useState({
-        file: null,
-        url: ""
-    });
+    const [avatar, setAvatar] = useState({ file: null, url: "" });
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [username, setUsername] = useState("");
     const [loading, setLoading] = useState(false);
+
+    // Animated Background Logic
+    const fadeAnim = useState(new Animated.Value(1))[0];
+    const [bgIndex, setBgIndex] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            Animated.sequence([
+                Animated.timing(fadeAnim, { toValue: 0, duration: 10, useNativeDriver: true }),
+                Animated.timing(fadeAnim, { toValue: 1, duration: 1000, useNativeDriver: true })
+            ]).start();
+
+            setBgIndex((prevIndex) => (prevIndex + 1) % backgroundImages.length);
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, []);
 
     const handleAvatar = async () => {
         try {
@@ -57,16 +99,12 @@ const LoginScreen = () => {
                 blocked: [],
             });
 
-            await setDoc(doc(db, "userchats", res.user.uid), {
-                chats: []
-            });
+            await setDoc(doc(db, "userchats", res.user.uid), { chats: [] });
 
-            // Update AuthContext with the token
             const token = await res.user.getIdToken();
             authCtx.authenticate(token);
 
             Toast.show({ type: 'success', text1: 'Success', text2: 'Account created! Welcome!' });
-            // navigation.navigate('Home'); // No need to navigate manually now
         } catch (err) {
             console.error(err);
             Toast.show({ type: 'error', text1: 'Error', text2: err.message });
@@ -79,11 +117,10 @@ const LoginScreen = () => {
         setLoading(true);
         try {
             const res = await signInWithEmailAndPassword(auth, email, password);
-            const token = await res.user.getIdToken(); // Get the Firebase ID token
-            authCtx.authenticate(token); // Update AuthContext with the token
+            const token = await res.user.getIdToken();
+            authCtx.authenticate(token);
 
             Toast.show({ type: 'success', text1: 'Success', text2: 'Welcome back!' });
-            // navigation.navigate('Home'); // No need to navigate manually now
         } catch (err) {
             console.error(err);
             Toast.show({ type: 'error', text1: 'Error', text2: err.message });
@@ -93,74 +130,111 @@ const LoginScreen = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.login}>
-                <Text style={styles.title}>Welcome back</Text>
-                <TextInput 
-                    style={styles.input} 
-                    placeholder='Email' 
-                    autoCapitalize='none' 
-                    onChangeText={(text) => setEmail(text)} 
-                />
-                <TextInput 
-                    style={styles.input} 
-                    placeholder='Password' 
-                    secureTextEntry 
-                    onChangeText={(text) => setPassword(text)} 
-                />
-                <Button title={loading ? "Loading..." : "Sign In"} onPress={handleLogin} disabled={loading} />
-            </View>
-
-            <View style={styles.separator} />
-
-            <View style={styles.signup}>
-                <Text style={styles.title}>Create an Account</Text>
-                <TouchableOpacity onPress={handleAvatar}>
-                    <Image
-                        source={{ uri: avatar.url || "https://example.com/default-avatar.png" }}
-                        style={styles.avatar}
+        <View style={styles.wrapper}>
+            <Animated.Image
+                source={backgroundImages[bgIndex]}
+                style={[styles.background, { opacity: fadeAnim }]}
+                resizeMode="cover"
+            />
+            <View style={styles.container}>
+                <View style={styles.login}>
+                    <Text style={styles.title}>Welcome back</Text>
+                    <TextInput 
+                        style={styles.input} 
+                        placeholder='Email' 
+                        autoCapitalize='none' 
+                        onChangeText={setEmail}
                     />
-                    <Text>Upload Image (Optional)</Text>
-                </TouchableOpacity>
+                    <TextInput 
+                        style={styles.input} 
+                        placeholder='Password' 
+                        secureTextEntry 
+                        onChangeText={setPassword} 
+                    />
+                    <Button title={loading ? "Loading..." : "Sign In"} onPress={handleLogin} disabled={loading} />
+                </View>
 
-                <TextInput 
-                    style={styles.input} 
-                    placeholder='First and Last name' 
-                    onChangeText={(text) => setUsername(text)} 
-                />
-                <TextInput 
-                    style={styles.input} 
-                    placeholder='Email' 
-                    autoCapitalize='none' 
-                    onChangeText={(text) => setEmail(text)} 
-                />
-                <TextInput 
-                    style={styles.input} 
-                    placeholder='Password' 
-                    secureTextEntry 
-                    onChangeText={(text) => setPassword(text)} 
-                />
-                <Button title={loading ? "Loading..." : "Sign Up"} onPress={handleRegister} disabled={loading} />
+                <View style={styles.separator} />
+
+                <View style={styles.signup}>
+                    <Text style={styles.title}>Create an Account</Text>
+                    <TouchableOpacity onPress={handleAvatar}>
+                        <Image
+                            source={{ uri: avatar.url || "https://example.com/default-avatar.png" }}
+                            style={styles.avatar}
+                        />
+                        <Text style={styles.text}>Upload Image (Optional)</Text>
+                    </TouchableOpacity>
+
+                    <TextInput 
+                        style={styles.input} 
+                        placeholder='First and Last name' 
+                        onChangeText={setUsername} 
+                    />
+                    <TextInput 
+                        style={styles.input} 
+                        placeholder='Email' 
+                        autoCapitalize='none' 
+                        onChangeText={setEmail} 
+                    />
+                    <TextInput 
+                        style={styles.input} 
+                        placeholder='Password' 
+                        secureTextEntry 
+                        onChangeText={setPassword} 
+                    />
+                    <Button title={loading ? "Loading..." : "Sign Up"} onPress={handleRegister} disabled={loading} />
+                </View>
+
+                {loading && <ActivityIndicator size="large" color="#fff" />}
             </View>
-
-            {loading && <ActivityIndicator size="large" color="#fff" />}
         </View>
     );
 };
 
-// Styles remain unchanged
 const styles = StyleSheet.create({
+    wrapper: {
+        flex: 1,
+        position: 'relative'
+    },
+    background: {
+        ...StyleSheet.absoluteFillObject, // Full-screen background
+        width: '100%',                   // Ensures it scales appropriately
+        height: '100%',                  // Covers the entire screen
+        opacity: 0.5,                    // Slightly stronger fade effect for visibility
+        resizeMode: 'contain',             // Ensures it scales proportionally
+    },    
     container: {
         flex: 1,
+        width: '90%',                // More compact width to avoid stretching
+        maxWidth: 400,               // Prevents it from becoming too wide on larger screens
         justifyContent: 'center',
-        padding: 20,
-        backgroundColor: '#121828',
+        alignItems: 'center',
+        padding: 30,
+        backgroundColor: 'rgba(0, 0, 0, 0.6)', // Transparent background
+        borderRadius: 20,
+        paddingVertical: 30,         // Added padding to create a spacious feel
+        paddingHorizontal: 25,
+        borderRadius: 20,
+        alignSelf: 'center',         // Centers horizontally
+        justifyContent: 'center',    // Centers vertically
+        marginHorizontal: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.6,
+        shadowRadius: 10,
+        elevation: 5
     },
     title: {
-        fontSize: 24,
-        color: 'white',
+        fontSize: 26,
+        color: '#fff',
         fontWeight: 'bold',
-        marginBottom: 10
+        marginBottom: 15
+    },
+    text: {
+        fontSize: 14,
+        color: '#ddd',
+        marginBottom: 5
     },
     input: {
         backgroundColor: '#222',
@@ -168,6 +242,7 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 10,
         marginVertical: 5,
+        width: '100%',
     },
     avatar: {
         width: 100,
@@ -178,9 +253,10 @@ const styles = StyleSheet.create({
         marginVertical: 10,
     },
     separator: {
-        height: 1,
+        height: 2,
         backgroundColor: '#555',
         marginVertical: 20,
+        width: '80%'
     }
 });
 
