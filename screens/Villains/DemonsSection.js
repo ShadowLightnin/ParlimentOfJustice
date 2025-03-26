@@ -152,10 +152,10 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#FFF',
+    color: 'rgba(107, 9, 9, 1)',
     textAlign: 'center',
-    textShadowColor: '#750000',
-    textShadowRadius: 50,
+    textShadowColor: 'rgba(241, 99, 43, 1)',
+    textShadowRadius: 20,
     marginBottom: 20,
   },
   scrollWrapper: {

@@ -128,10 +128,10 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#FFF',
+    color: '#630404',
     textAlign: 'center',
-    textShadowColor: '#750000',
-    textShadowRadius: 50,
+    textShadowColor: '#ff1c1c',
+    textShadowRadius: 30,
   },
   cardContainer: {
     width: '100%',

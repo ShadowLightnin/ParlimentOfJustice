@@ -143,10 +143,10 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#FFF',
+    color: '#1b084d',
     textAlign: 'center',
-    textShadowColor: '#750000',
-    textShadowRadius: 50,
+    textShadowColor: '#9561f5',
+    textShadowRadius: 25,
     marginBottom: 20,
   },
   scrollWrapper: {

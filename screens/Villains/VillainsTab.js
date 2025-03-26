@@ -62,11 +62,11 @@ const villains = [
   { name: 'Noctura', screen: 'NocturaScreen', image: require('../../assets/Villains/Noctura.jpg'), clickable: true },
   { name: 'Red Mercury', screen: 'RedMercuryScreen', image: require('../../assets/Villains/RedMercury.jpg'), clickable: true },
   { name: 'Titanus', screen: 'TitanusScreen', image: require('../../assets/Villains/Titanus.jpg'), clickable: true },
-  { name: '', screen: '', image: require('../../assets/Villains/IMG_4325.webp'), clickable: false },
-  { name: '', screen: '', image: require('../../assets/Villains/IMG_4326.webp'), clickable: false },
-  { name: '', screen: '', image: require('../../assets/Villains/IMG_4327.webp'), clickable: false },
-  { name: '', screen: '', image: require('../../assets/Villains/IMG_4343.webp'), clickable: false },
-  { name: '', screen: '', image: require('../../assets/Villains/IMG_4345.webp'), clickable: false },
+  { name: ' ', screen: '', image: require('../../assets/Villains/IMG_4325.webp'), clickable: false },
+  { name: '  ', screen: '', image: require('../../assets/Villains/IMG_4326.webp'), clickable: false },
+  { name: '   ', screen: '', image: require('../../assets/Villains/IMG_4327.webp'), clickable: false },
+  { name: '    ', screen: '', image: require('../../assets/Villains/IMG_4343.webp'), clickable: false },
+  { name: '     ', screen: '', image: require('../../assets/Villains/IMG_4345.webp'), clickable: false },
 
   
 
@@ -174,10 +174,10 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#FFF',
+    color: 'rgba(63, 0, 0, 0.897)',
     textAlign: 'center',
-    textShadowColor: '#750000',
-    textShadowRadius: 50,
+    textShadowColor: '#ff4d4dff',
+    textShadowRadius: 20,
     marginBottom: 20,
   },
   scrollWrapper: {

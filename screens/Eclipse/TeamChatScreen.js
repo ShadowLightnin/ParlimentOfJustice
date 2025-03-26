@@ -20,6 +20,9 @@ const TeamChatScreen = () => {
           <Text style={styles.header}>Eclipses Chat</Text>
         </TouchableOpacity>
       <ChatRoom chatId="EclipsesTeamChat" />
+      
+      {/* Aileen and I's special chat */}
+      {/* <ChatRoom chatId="TeamChat" /> */}
       </View>
     </ImageBackground>
   );
