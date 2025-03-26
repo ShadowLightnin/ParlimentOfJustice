@@ -57,11 +57,11 @@ const TeamChatScreen = () => {
       <View style={styles.container}>
         {/* 🟢 Header as a Back Button */}
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.header}>Endogons Chat</Text>
+          <Text style={styles.header}>Thunder Born Chat</Text>
           <Text style={styles.header}>+ Monke</Text>
         </TouchableOpacity>
 
-        <ChatRoom chatId="EndogonsTeamChat" />
+        <ChatRoom chatId="ThunderBornTeamChat" />
       </View>
     </View>
   );

@@ -6,7 +6,7 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window'); // Get device width
 
 const factions = [
   'The Parliament of Justice', 'Titans', 'Eclipse', 'Olympians', 'Cobros',
-  'Advanced Spartan 3 Corp', 'Endogons', 'Legionaires', 'Constellation'
+  'Advanced Spartan 3 Corp', 'Thunder Born', 'Legionaires', 'Constellation'
 ];
 
 export const StartScreen = () => {

@@ -53,7 +53,7 @@ const BludBruhsScreen = () => {
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
-          <Text style={styles.header}>Endogons</Text>
+          <Text style={styles.header}>Thunder Born</Text>
           <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
             <Text style={styles.chatText}>🛡️</Text>
           </TouchableOpacity>
