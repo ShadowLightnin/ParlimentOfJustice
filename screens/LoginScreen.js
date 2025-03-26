@@ -133,11 +133,17 @@ const LoginScreen = () => {
 
     return (
         <View style={styles.wrapper}>
+            {/* Background Image with No Interaction */}
             <Animated.Image
                 source={backgroundImages[bgIndex]}
                 style={[styles.background, { opacity: fadeAnim }]}
                 resizeMode="cover"
+                pointerEvents="none"  // Prevents long-press interactions on the image
             />
+    
+            {/* Transparent Overlay to Prevent Save/Download */}
+            <View style={styles.transparentOverlay} />
+    
             <View style={styles.container}>
                 <View style={styles.login}>
                     <Text style={styles.title}>Welcome back</Text>
@@ -155,9 +161,9 @@ const LoginScreen = () => {
                     />
                     <Button title={loading ? "Loading..." : "Sign In"} onPress={handleLogin} disabled={loading} />
                 </View>
-
+    
                 <View style={styles.separator} />
-
+    
                 <View style={styles.signup}>
                     <Text style={styles.title}>Create an Account</Text>
                     <TouchableOpacity onPress={handleAvatar}>
@@ -167,7 +173,7 @@ const LoginScreen = () => {
                         />
                         <Text style={styles.text}>Upload Image (Optional)</Text>
                     </TouchableOpacity>
-
+    
                     <TextInput 
                         style={styles.input} 
                         placeholder='First and Last name' 
@@ -187,7 +193,7 @@ const LoginScreen = () => {
                     />
                     <Button title={loading ? "Loading..." : "Sign Up"} onPress={handleRegister} disabled={loading} />
                 </View>
-
+    
                 {loading && <ActivityIndicator size="large" color="#fff" />}
             </View>
         </View>
@@ -205,6 +211,12 @@ const styles = StyleSheet.create({
         height: '100%',                  // Covers the entire screen
         opacity: 0.5,                    // Slightly stronger fade effect for visibility
         resizeMode: 'contain',             // Ensures it scales proportionally
+    },
+    transparentOverlay: {
+        ...StyleSheet.absoluteFillObject, // Covers the entire image
+        backgroundColor: 'rgba(0, 0, 0, 0)', // Fully transparent
+        zIndex: 1, // Ensures it sits above the image
+        pointerEvents: 'box-only' // Blocks touch events on the image but allows buttons to work
     },    
     container: {
         flex: 1,
