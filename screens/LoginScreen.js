@@ -138,11 +138,11 @@ const LoginScreen = () => {
                 source={backgroundImages[bgIndex]}
                 style={[styles.background, { opacity: fadeAnim }]}
                 resizeMode="cover"
-                pointerEvents="none"  // Prevents long-press interactions on the image
+                pointerEvents="none"  // ✅ Prevents image saving without blocking UI
             />
     
-            {/* Transparent Overlay to Prevent Save/Download */}
-            <View style={styles.transparentOverlay} />
+            {/* Transparent Overlay for Image Protection */}
+            <View style={styles.transparentOverlay} pointerEvents="box-none" />
     
             <View style={styles.container}>
                 <View style={styles.login}>
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
         ...StyleSheet.absoluteFillObject, // Covers the entire image
         backgroundColor: 'rgba(0, 0, 0, 0)', // Fully transparent
         zIndex: 1, // Ensures it sits above the image
-        pointerEvents: 'box-only' // Blocks touch events on the image but allows buttons to work
+        pointerEvents: 'box-none' // ✅ Blocks saving but allows UI interactions
     },    
     container: {
         flex: 1,
