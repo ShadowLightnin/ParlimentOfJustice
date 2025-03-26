@@ -17,9 +17,9 @@ const TeamChatScreen = () => {
       <View style={styles.container}>
         {/* 🟢 Header as a Back Button */}
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.header}>Team Chat</Text>
+          <Text style={styles.header}>Eclipses Chat</Text>
         </TouchableOpacity>
-      <ChatRoom chatId="TeamChat" />
+      <ChatRoom chatId="EclipsesTeamChat" />
       </View>
     </ImageBackground>
   );
