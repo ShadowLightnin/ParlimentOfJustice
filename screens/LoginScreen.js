@@ -36,6 +36,7 @@ const backgroundImages = [
     require('../assets/BackGround/Villains.jpg'),
     require('../assets/BackGround/BigBad.jpg'),
     require('../assets/BackGround/NateEmblem.jpg'),
+    require('../assets/BackGround/Enlightened.jpg'),
 
 ];
 
