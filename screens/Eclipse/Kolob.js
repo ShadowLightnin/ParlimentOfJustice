@@ -15,6 +15,8 @@ const Kolob = () => {
                 source={require("../../assets/Kolob.jpg")}
                 style={styles.planetImage}
             />
+            {/* Transparent Touch-Blocking Overlay */}
+            <View style={styles.transparentOverlay} />
         </TouchableOpacity>
     );
 };
