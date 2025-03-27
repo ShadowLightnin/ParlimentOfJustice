@@ -15,6 +15,8 @@ const Kolob = () => {
                 source={require("../../assets/Kolob.jpg")}
                 style={styles.planetImage}
             />
+                      {/* Transparent Touch-Blocking Overlay */}
+          <View style={styles.transparentOverlay} />
         </TouchableOpacity>
     );
 };
@@ -31,6 +33,11 @@ const styles = StyleSheet.create({
         height: "100%", // ✅ Full screen height
         resizeMode: "cover", // Ensures it fills the screen neatly
     },
+    transparentOverlay: {
+        ...StyleSheet.absoluteFillObject, // Covers the whole image
+        backgroundColor: 'rgba(0, 0, 0, 0)', // Fully transparent
+        zIndex: 1, // Ensures it blocks long-press but doesn’t affect buttons
+      },
 });
 
 export default Kolob;
