@@ -1,6 +1,13 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { 
-  View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions 
+  View, 
+  Text, 
+  Image, 
+  ScrollView, 
+  StyleSheet, 
+  TouchableOpacity, 
+  Dimensions, 
+  Animated 
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
@@ -8,23 +15,37 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const Sam = () => {
   const navigation = useNavigation();
+  const flashAnim = useRef(new Animated.Value(1)).current;
+
+  // ⚡ Flashing Animation Effect for Planet
+  useEffect(() => {
+    const interval = setInterval(() => {
+      Animated.sequence([
+        Animated.timing(flashAnim, { toValue: 0.3, duration: 500, useNativeDriver: true }),
+        Animated.timing(flashAnim, { toValue: 1, duration: 500, useNativeDriver: true }),
+      ]).start();
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // 🌌 Planet Click Handler → Leads to Warp Screen
+  const handlePlanetPress = () => {
+    navigation.navigate("WarpScreen"); // 🔄 Navigate to WarpScreen
+  };
 
   return (
     <View style={styles.container}>
-      {/* Scrollable Content */}
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         
         {/* Header */}
         <View style={styles.headerContainer}>
-          {/* Back Button */}
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Text style={styles.backButtonText}>←</Text>
           </TouchableOpacity>
 
-          {/* Title */}
           <Text style={styles.title}>Void Walker</Text>
 
-          {/* Comment Button */}
           <TouchableOpacity style={styles.commentButton} onPress={() => navigation.navigate("Comments")}>
             <Text style={styles.commentButtonText}>💬</Text>
           </TouchableOpacity>
@@ -36,9 +57,16 @@ const Sam = () => {
             source={require("../../assets/Armor/SamPlaceHolder.jpg")} 
             style={styles.armorImage} 
           />
-          {/* Transparent Touch-Blocking Overlay */}
           <View style={styles.transparentOverlay} />
         </View>
+
+        {/* 🌍 Planet Icon (Clickable) */}
+        <TouchableOpacity onPress={handlePlanetPress} style={styles.planetContainer}>
+          <Animated.Image 
+            source={require("../../assets/ExoPlanet2.jpg")}
+            style={[styles.planetImage, { opacity: flashAnim }]}
+          />
+        </TouchableOpacity>
 
         {/* About Section */}
         <View style={styles.aboutSection}>
@@ -55,15 +83,6 @@ const Sam = () => {
             and created the BludBruhs faction. While forgoing his dark past, he still 
             held on to the powers he was taught — and a love for Chroma, whom he met when
             he was still a follower of Erevos.
-          </Text>
-          <Text style={styles.aboutText}>
-            Present: Still extremely conflicted, he caused a rift within the 
-            BludBruhs causing many to leave him to join a new faction, The Monke 
-            Alliance. A large bounty was on Sam once he left the evil Enlightened.            
-          </Text>
-          <Text style={styles.aboutText}>
-            Motives: Wants to use dark powers he learned from the Enlightened 
-            but the Monke Alliance is against it.          
           </Text>
         </View>
       </ScrollView>
@@ -128,10 +147,19 @@ const styles = StyleSheet.create({
     height: SCREEN_HEIGHT * 0.6,
     resizeMode: "contain",
   },
+  planetContainer: {
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  planetImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+  },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject, 
     backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1, // Ensures it blocks long-press but doesn’t affect buttons
+    zIndex: 1, 
   },
   aboutSection: {
     marginTop: 40,

@@ -1,0 +1,38 @@
+import React, { useEffect } from "react";
+import { View, Image, StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
+const BackWarpScreen = () => {
+    const navigation = useNavigation();
+
+    useEffect(() => {
+        setTimeout(() => {
+            navigation.replace("Sam");  // Navigate back to Sam's screen
+        }, 3000); // Delay for warp effect
+    }, []);
+
+    return (
+        <View style={styles.container}>
+            <Image 
+                source={require("../../assets/warp2.gif")} 
+                style={styles.warpImage} 
+            />
+        </View>
+    );
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "#000",
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    warpImage: {
+        width: '100%',
+        height: '100%',
+        resizeMode: "cover",
+    }
+});
+
+export default BackWarpScreen;
