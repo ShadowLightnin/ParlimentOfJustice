@@ -18,6 +18,7 @@ import { doc, setDoc } from 'firebase/firestore';
 import upload from '../lib/upload';
 import * as ImagePicker from 'expo-image-picker';
 import { AuthContext } from '../context/auth-context';
+import { createUserDocument, initializeChatDocument } from "../lib/firebaseUtils";
 
 const backgroundImages = [
     require('../assets/BackGround/Parliment.png'),
@@ -93,20 +94,19 @@ const LoginScreen = () => {
         try {
             const imgUrl = avatar.file ? await upload(avatar.file) : "./avatar.png";
             const res = await createUserWithEmailAndPassword(auth, email, password);
-
-            await setDoc(doc(db, "users", res.user.uid), {
+    
+            // New Utility Usage for Cleaner Code
+            await createUserDocument(res.user.uid, {
                 username,
                 email,
                 avatar: imgUrl,
-                id: res.user.uid,
-                blocked: [],
             });
-
-            await setDoc(doc(db, "userchats", res.user.uid), { chats: [] });
-
+    
+            await initializeChatDocument(res.user.uid);
+    
             const token = await res.user.getIdToken();
             authCtx.authenticate(token);
-
+    
             Toast.show({ type: 'success', text1: 'Success', text2: 'Account created! Welcome!' });
         } catch (err) {
             console.error(err);
@@ -115,7 +115,7 @@ const LoginScreen = () => {
             setLoading(false);
         }
     };
-
+    
     const handleLogin = async () => {
         setLoading(true);
         try {
