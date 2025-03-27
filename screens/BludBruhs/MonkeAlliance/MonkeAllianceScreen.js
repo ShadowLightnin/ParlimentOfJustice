@@ -25,7 +25,12 @@ const members = [
   { name: 'Ethan T', codename: 'Bolt Watcher', screen: 'EthanT', clickable: true, image: require('../../../assets/Armor/EthanPlaceHolder.jpg') },
   { name: 'Alex M', codename: 'Swiftmind', screen: 'AlexM', clickable: true, image: require('../../../assets/Armor/AlexMPlaceHolder.jpg') },
   { name: 'Damon', codename: 'Pixel Maverick', screen: 'Damon', clickable: true, image: require('../../../assets/Armor/DamonPlaceHolder_cleanup.jpg') },
-  { name: '', codename: 'Lumiel', screen: 'LumielScreen', clickable: true, image: require('../../../assets/Armor/LumielPhantom.jpg')  },
+  { name: 'Going home soon', codename: 'Lumiel', screen: 'LumielScreen', clickable: true, image: require('../../../assets/Armor/LumielPhantom.jpg')  },
+  { name: 'Lauren', codename: '', screen: '', clickable: false },
+  { name: 'Lizzie', codename: '', screen: '', clickable: false },
+  { name: 'Rachel', codename: '', screen: '', clickable: false },
+  { name: 'Keith', codename: '', screen: '', clickable: false },
+  { name: 'Sandra', codename: '', screen: '', clickable: false },
   { name: 'MIA', codename: '', screen: '', clickable: false },
 ];
 
