@@ -93,6 +93,9 @@ const LoginScreen = () => {
         try {
             const imgUrl = avatar.file ? await upload(avatar.file) : "./avatar.png";
             const res = await createUserWithEmailAndPassword(auth, email, password);
+            
+            console.log('User Auth UID:', res.user.uid);
+            console.log('ID Token:', await res.user.getIdToken());
 
             await setDoc(doc(db, "users", res.user.uid), {
                 username,
@@ -105,6 +108,7 @@ const LoginScreen = () => {
             await setDoc(doc(db, "userchats", res.user.uid), { chats: [] });
 
             const token = await res.user.getIdToken();
+            console.log("ID Token:", token); // 🔎 Debugging step
             authCtx.authenticate(token);
 
             Toast.show({ type: 'success', text1: 'Success', text2: 'Account created! Welcome!' });
