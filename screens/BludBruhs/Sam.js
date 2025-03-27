@@ -40,15 +40,24 @@ const Sam = () => {
         
         {/* Header */}
         <View style={styles.headerContainer}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-            <Text style={styles.backButtonText}>←</Text>
-          </TouchableOpacity>
-
+        <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.reset({
+                index: 0,
+                routes: [{ name: "BludBruhsHome" }]  // ✅ Clean navigation flow
+            })}
+        >
+            <Text style={styles.backButtonText}>⬅️</Text>
+        </TouchableOpacity>
           <Text style={styles.title}>Void Walker</Text>
 
-          <TouchableOpacity style={styles.commentButton} onPress={() => navigation.navigate("Comments")}>
-            <Text style={styles.commentButtonText}>💬</Text>
-          </TouchableOpacity>
+        {/* 🌍 Planet Icon (Clickable) */}
+        <TouchableOpacity onPress={handlePlanetPress} style={styles.planetContainer}>
+          <Animated.Image 
+            source={require("../../assets/ExoPlanet2.jpg")}
+            style={[styles.planetImage, { opacity: flashAnim }]}
+          />
+        </TouchableOpacity>
         </View>
 
         {/* Armor Image */}
@@ -59,14 +68,6 @@ const Sam = () => {
           />
           <View style={styles.transparentOverlay} />
         </View>
-
-        {/* 🌍 Planet Icon (Clickable) */}
-        <TouchableOpacity onPress={handlePlanetPress} style={styles.planetContainer}>
-          <Animated.Image 
-            source={require("../../assets/ExoPlanet2.jpg")}
-            style={[styles.planetImage, { opacity: flashAnim }]}
-          />
-        </TouchableOpacity>
 
         {/* About Section */}
         <View style={styles.aboutSection}>
@@ -150,11 +151,13 @@ const styles = StyleSheet.create({
   planetContainer: {
     alignItems: 'center',
     marginVertical: 20,
+    backgroundColor: 'transparent' // ✅ Fully transparent background
   },
   planetImage: {
-    width: 80,
-    height: 80,
+    width: 40,
+    height: 40,
     borderRadius: 40,
+    opacity: 0.8  // ✅ Slight transparency for a cool effect
   },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject, 

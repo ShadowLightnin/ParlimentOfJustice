@@ -12,6 +12,7 @@ const MontroseManorScreen = () => {
 
     return (
         <View style={styles.container}>
+            <Text style={styles.text}>Montrose Manor... Coming Soon</Text>
             {/* Planet Image */}
             <Image
                 source={require("../../../assets/ExoPlanet.jpg")}
@@ -50,6 +51,12 @@ const styles = StyleSheet.create({
         color: "#FFF",
         fontSize: 18,
         fontWeight: "bold",
+    },
+    text:{
+        color: "#FFF",
+        fontSize: 24,
+        fontWeight: "bold",
+        marginBottom: 10,
     },
 });
 

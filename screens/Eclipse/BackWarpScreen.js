@@ -7,14 +7,14 @@ const BackWarpScreen = () => {
 
     useEffect(() => {
         setTimeout(() => {
-            navigation.replace("Sam");  // ✅ Replace instead of reset
+            navigation.replace("Aileen");  // ✅ Replace instead of reset
         }, 5500);  // Warp effect delay
     }, []);
 
     return (
         <View style={styles.container}>
             <Image 
-                source={require("../../assets/warp2.gif")} 
+                source={require("../../assets/warp.gif")} 
                 style={styles.warpImage} 
             />
         </View>

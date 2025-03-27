@@ -1,6 +1,13 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { 
-  View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions 
+  View, 
+  Text, 
+  Image, 
+  ScrollView, 
+  StyleSheet, 
+  TouchableOpacity, 
+  Dimensions, 
+  Animated 
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
@@ -8,6 +15,24 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const Aileen = () => {
   const navigation = useNavigation();
+  const flashAnim = useRef(new Animated.Value(1)).current;
+
+  // ⚡ Flashing Animation Effect for Planet
+  useEffect(() => {
+    const interval = setInterval(() => {
+      Animated.sequence([
+        Animated.timing(flashAnim, { toValue: 0.3, duration: 500, useNativeDriver: true }),
+        Animated.timing(flashAnim, { toValue: 1, duration: 500, useNativeDriver: true }),
+      ]).start();
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // 🌌 Planet Click Handler → Leads to Warp Screen
+  const handlePlanetPress = () => {
+    navigation.navigate("WarpScreen"); // 🔄 Navigate to WarpScreen
+  };
 
   return (
     <View style={styles.container}>
@@ -16,18 +41,27 @@ const Aileen = () => {
         
         {/* Header */}
         <View style={styles.headerContainer}>
-          {/* Back Button */}
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-            <Text style={styles.backButtonText}>←</Text>
-          </TouchableOpacity>
+        <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.reset({
+                index: 0,
+                routes: [{ name: "EclipseHome" }]  // ✅ Clean navigation flow
+            })}
+        >            
+          <Text style={styles.backButtonText}>←</Text>
+        </TouchableOpacity>
 
           {/* Title */}
           <Text style={styles.title}>Ariata</Text>
 
           {/* Comment Button */}
-          <TouchableOpacity style={styles.commentButton} onPress={() => navigation.navigate("Comments")}>
-            <Text style={styles.commentButtonText}>💬</Text>
-          </TouchableOpacity>
+        {/* 🌍 Planet Icon (Clickable) */}
+        <TouchableOpacity onPress={handlePlanetPress} style={styles.planetContainer}>
+          <Animated.Image 
+            source={require("../../assets/Earth_hero.jpg")}
+            style={[styles.planetImage, { opacity: flashAnim }]}
+          />
+        </TouchableOpacity>
         </View>
 
         {/* Armor Image */}
@@ -115,6 +149,17 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH * 0.9,
     height: SCREEN_HEIGHT * 0.6,
     resizeMode: "contain",
+  },
+  planetContainer: {
+    alignItems: 'center',
+    marginVertical: 20,
+    backgroundColor: 'transparent' // ✅ Fully transparent background
+  },
+  planetImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 40,
+    opacity: 0.8  // ✅ Slight transparency for a cool effect
   },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject, // Covers the whole image
