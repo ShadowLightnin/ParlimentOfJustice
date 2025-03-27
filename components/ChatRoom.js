@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"; 
+import React, { useEffect, useRef, useState } from "react"; 
 import { View, Text, TextInput, Button, ScrollView, StyleSheet } from "react-native";
 import { db, auth } from "../lib/firebase";
 import { 
@@ -11,13 +11,15 @@ import {
     getDoc, 
     serverTimestamp 
 } from "firebase/firestore";
-import { onAuthStateChanged, updateProfile } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 
 const ChatRoom = ({ chatId }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [user, setUser] = useState(null);
   const [userName, setUserName] = useState("Anonymous");
+
+  const scrollViewRef = useRef();  // ✅ Add ref for ScrollView
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, async (currentUser) => {
@@ -43,7 +45,13 @@ const ChatRoom = ({ chatId }) => {
     const q = query(messagesRef, orderBy("timestamp"));
 
     const unsubscribeMessages = onSnapshot(q, (snapshot) => {
-      setMessages(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+      const newMessages = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setMessages(newMessages);
+
+      // ✅ Auto-scroll to the bottom when messages update
+      setTimeout(() => {
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+      }, 100);  
     });
 
     return () => unsubscribeMessages();
@@ -61,7 +69,7 @@ const ChatRoom = ({ chatId }) => {
       sender: userName,
       text: newMessage,
       timestamp: serverTimestamp(),
-      uid: user.uid,  // ✅ Track who sent the message for layout control
+      uid: user.uid,
     });
 
     setNewMessage("");
@@ -69,13 +77,16 @@ const ChatRoom = ({ chatId }) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.messages}>
+      <ScrollView 
+        ref={scrollViewRef}    // ✅ Attach ref to ScrollView
+        contentContainerStyle={styles.messages}
+      >
         {messages.map((msg) => (
           <View 
             key={msg.id} 
             style={[
               styles.message, 
-              msg.uid === user?.uid ? styles.sent : styles.received // ✅ Conditional styling for left/right
+              msg.uid === user?.uid ? styles.sent : styles.received
             ]}
           >
             <Text style={styles.sender}>{msg.sender}:</Text>
@@ -100,17 +111,16 @@ const ChatRoom = ({ chatId }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '90%',                // Responsive width for better balance
-    maxWidth: 400,               // Prevents excessive stretching
-    alignSelf: 'center',         // Centers the container horizontally
-    justifyContent: 'center',    // Centers the content vertically
+    width: '90%',
+    maxWidth: 400,
+    alignSelf: 'center',
+    justifyContent: 'center',
     padding: 20,
-    // backgroundColor: "rgba(0, 0, 0, 0.6)", 
     borderRadius: 15,
     overflow: "hidden",
-    paddingVertical: 30,        
+    paddingVertical: 30,
     paddingHorizontal: 25,
-    marginHorizontal: 'auto',    // Ensures horizontal centering
+    marginHorizontal: 'auto',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.6,
@@ -122,31 +132,31 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   message: {
-    maxWidth: '75%', // ✅ Compact the message bubbles
+    maxWidth: '75%',
     padding: 10,
     borderRadius: 10,
     marginBottom: 10,
   },
   sent: {
-    alignSelf: "flex-end",         // ✅ Messages from the sender on the right
-    backgroundColor: "#1f8ef1",    // 🔵 Blue for sent messages
-    borderTopRightRadius: 0,       // Visual detail for bubble effect
+    alignSelf: "flex-end",
+    backgroundColor: "#1f8ef1",
+    borderTopRightRadius: 0,
   },
   received: {
-    alignSelf: "flex-start",       // ✅ Messages received on the left
-    backgroundColor: "#333",       // ⚫ Dark grey for received messages
-    borderTopLeftRadius: 0,        // Visual detail for bubble effect
+    alignSelf: "flex-start",
+    backgroundColor: "#333",
+    borderTopLeftRadius: 0,
   },
   sender: {
     fontWeight: "bold",
-    color: "#fff",                 // 🔹 White text for both sides
+    color: "#fff",
     marginBottom: 2,
   },
   text: {
     color: "#fff",
   },
   inputContainer: {
-    flexDirection: "row",           // 🟦 Align input & button side by side
+    flexDirection: "row",
     alignItems: "center",
     gap: 10,
     marginTop: 10,
