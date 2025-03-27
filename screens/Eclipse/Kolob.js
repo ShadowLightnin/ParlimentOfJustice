@@ -12,7 +12,7 @@ const Kolob = () => {
     return (
         <TouchableOpacity style={styles.container} onPress={handleBack} activeOpacity={0.9}>
             <Image
-                source={require("../../assets/Earth_hero.jpg")}
+                source={require("../../assets/Kolob.jpg")}
                 style={styles.planetImage}
             />
         </TouchableOpacity>
