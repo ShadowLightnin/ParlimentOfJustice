@@ -130,12 +130,12 @@ const ModelsScreen = () => {
               resizeMode="contain"
             />
             {/* Close button inside the preview */}
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.closeButton}
               onPress={() => setPreviewImage(null)}
             >
               <Text style={styles.closeText}>X</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             {/* Transparent overlay to prevent saving */}
             <View style={styles.transparentOverlay} />
           </TouchableOpacity>
