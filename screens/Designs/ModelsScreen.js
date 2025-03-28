@@ -8,6 +8,8 @@ import {
   StyleSheet,
   Alert,
   Modal,
+  ImageBackground,
+  Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { auth, db } from "../../lib/firebase";
@@ -19,10 +21,15 @@ const ModelsScreen = () => {
   const [uploadedImages, setUploadedImages] = useState([]);
   const [userRole, setUserRole] = useState("viewer");
   const [previewImage, setPreviewImage] = useState(null);
+  const [backgroundImage, setBackgroundImage] = useState(null); // State for background image
 
   useEffect(() => {
     fetchUploadedImages();
     fetchUserRole();
+    // Set initial background to the first preloaded image (optional)
+    if (preloadedImages.length > 0) {
+      setBackgroundImage(preloadedImages[0]);
+    }
   }, []);
 
   const fetchUserRole = async () => {
@@ -37,7 +44,7 @@ const ModelsScreen = () => {
   const fetchUploadedImages = async () => {
     const q = query(collection(db, "uploads"), where("type", "==", "image"));
     const querySnapshot = await getDocs(q);
-    const images = querySnapshot.docs.map(doc => ({
+    const images = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
       contentType: doc.data().contentType || "image/jpeg",
@@ -54,100 +61,124 @@ const ModelsScreen = () => {
         onPress: async () => {
           await deleteDoc(doc(db, "uploads", imageId));
           fetchUploadedImages();
+          // Reset background if the deleted image was the current background
+          if (uploadedImages.find((img) => img.id === imageId)?.url === backgroundImage?.uri) {
+            setBackgroundImage(preloadedImages[0] || null);
+          }
         },
       },
     ]);
   };
 
+  const handleImagePress = (image) => {
+    setPreviewImage(image);
+    setBackgroundImage(image); // Set the selected image as background
+  };
+
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Text style={styles.backText}>← Back</Text>
-      </TouchableOpacity>
+    <ImageBackground
+      source={backgroundImage || { uri: "https://via.placeholder.com/150" }} // Fallback if no image
+      style={styles.background}
+    >
+      <View style={styles.overlay}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Text style={styles.backText}>← Back</Text>
+        </TouchableOpacity>
 
-      <Text style={styles.header}>Models</Text>
+        <Text style={styles.header}>Models</Text>
 
-      <ScrollView contentContainerStyle={styles.imageGrid}>
-        {/* Preloaded Images */}
-        {preloadedImages.map((image, index) => (
-          <TouchableOpacity key={`pre-${index}`} onPress={() => setPreviewImage(image)}>
-            <View style={styles.imageWrapper}>
-              <Image source={image} style={styles.image} />
-              <View style={styles.overlay} />
-            </View>
-          </TouchableOpacity>
-        ))}
-
-        {/* Uploaded Images */}
-        {uploadedImages.map((image) => (
-          <View key={image.id} style={styles.imageContainer}>
-            <TouchableOpacity onPress={() => setPreviewImage({ uri: image.url })}>
+        <ScrollView contentContainerStyle={styles.imageGrid}>
+          {/* Preloaded Images */}
+          {preloadedImages.map((image, index) => (
+            <TouchableOpacity
+              key={`pre-${index}`}
+              onPress={() => handleImagePress(image)}
+            >
               <View style={styles.imageWrapper}>
-                <Image
-                  source={{ uri: image.url }}
-                  style={styles.image}
-                  resizeMode="cover"
-                />
-                <View style={styles.overlay} />
+                <Image source={image} style={styles.image} resizeMode="cover" />
+                <View style={styles.imageOverlay} />
               </View>
             </TouchableOpacity>
+          ))}
 
-            {(auth.currentUser?.uid === image.userId || userRole === "admin") && (
-              <TouchableOpacity
-                style={styles.deleteButton}
-                onPress={() => deleteImage(image.id)}
-              >
-                <Text style={styles.deleteText}>X</Text>
+          {/* Uploaded Images */}
+          {uploadedImages.map((image) => (
+            <View key={image.id} style={styles.imageContainer}>
+              <TouchableOpacity onPress={() => handleImagePress({ uri: image.url })}>
+                <View style={styles.imageWrapper}>
+                  <Image
+                    source={{ uri: image.url }}
+                    style={styles.image}
+                    resizeMode="cover"
+                  />
+                  <View style={styles.imageOverlay} />
+                </View>
               </TouchableOpacity>
-            )}
-          </View>
-        ))}
-      </ScrollView>
 
-      <TouchableOpacity
-        style={styles.uploadButton}
-        onPress={() => navigation.navigate("UploadDesign", { type: "image" })}
-      >
-        <Text style={styles.uploadText}>Upload New Image</Text>
-      </TouchableOpacity>
+              {(auth.currentUser?.uid === image.userId || userRole === "admin") && (
+                <TouchableOpacity
+                  style={styles.deleteButton}
+                  onPress={() => deleteImage(image.id)}
+                >
+                  <Text style={styles.deleteText}>X</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          ))}
+        </ScrollView>
 
-      {/* Image Preview Modal */}
-      <Modal
-        visible={!!previewImage}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setPreviewImage(null)}
-      >
-        <View style={styles.modalBackground}>
-          <TouchableOpacity
-            style={styles.modalContainer}
-            activeOpacity={1}
-            onPress={() => setPreviewImage(null)} // Close preview when clicking outside the image
-          >
-            <Image
-              source={previewImage}
-              style={styles.previewImage}
-              resizeMode="contain"
-            />
-            {/* Close button inside the preview */}
-            {/* <TouchableOpacity
-              style={styles.closeButton}
+        <TouchableOpacity
+          style={styles.uploadButton}
+          onPress={() => navigation.navigate("UploadDesign", { type: "image" })}
+        >
+          <Text style={styles.uploadText}>Upload New Image</Text>
+        </TouchableOpacity>
+
+        {/* Image Preview Modal */}
+        <Modal
+          visible={!!previewImage}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => setPreviewImage(null)}
+        >
+          <View style={styles.modalBackground}>
+            <TouchableOpacity
+              style={styles.modalContainer}
+              activeOpacity={1}
               onPress={() => setPreviewImage(null)}
             >
-              <Text style={styles.closeText}>X</Text>
-            </TouchableOpacity> */}
-            {/* Transparent overlay to prevent saving */}
-            <View style={styles.transparentOverlay} />
-          </TouchableOpacity>
-        </View>
-      </Modal>
-    </View>
+              <Image
+                source={previewImage}
+                style={styles.previewImage}
+                resizeMode="contain"
+              />
+              <View style={styles.transparentOverlay} />
+            </TouchableOpacity>
+          </View>
+        </Modal>
+      </View>
+    </ImageBackground>
   );
 };
 
+const { width, height } = Dimensions.get("window");
+
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#1c1c1c", paddingTop: 50, alignItems: "center" },
-  header: { fontSize: 24, fontWeight: "bold", color: "#fff", marginBottom: 10 },
+  background: {
+    flex: 1,
+    width: width,
+    height: height,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    resizeMode: "cover", // Ensure background fits nicely
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent overlay for readability
+    paddingTop: 50,
+    alignItems: "center",
+  },
   backButton: {
     position: "absolute",
     top: 40,
@@ -156,10 +187,23 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     borderRadius: 5,
   },
-  backText: { fontSize: 18, color: "#00b3ff", fontWeight: "bold" },
-  imageGrid: { flexDirection: "row", flexWrap: "wrap", justifyContent: "center", paddingVertical: 20 },
-
-  // Image and Overlay Styles
+  backText: {
+    fontSize: 18,
+    color: "#00b3ff",
+    fontWeight: "bold",
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#fff",
+    marginBottom: 10,
+  },
+  imageGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    paddingVertical: 20,
+  },
   imageWrapper: {
     position: "relative",
   },
@@ -170,13 +214,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: "#444",
   },
-  overlay: {
+  imageOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.3)", // Transparent cover
+    backgroundColor: "rgba(0, 0, 0, 0.3)", // Overlay for individual images
     borderRadius: 10,
   },
-
-  imageContainer: { position: "relative" },
+  imageContainer: {
+    position: "relative",
+  },
   deleteButton: {
     position: "absolute",
     top: 5,
@@ -188,11 +233,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  deleteText: { color: "white", fontSize: 16, fontWeight: "bold" },
-  uploadButton: { marginTop: 20, backgroundColor: "#00b3ff", padding: 15, borderRadius: 8 },
-  uploadText: { fontSize: 18, color: "#fff", fontWeight: "bold" },
-
-  // Modal Styles
+  deleteText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  uploadButton: {
+    marginTop: 20,
+    backgroundColor: "#00b3ff",
+    padding: 15,
+    borderRadius: 8,
+  },
+  uploadText: {
+    fontSize: 18,
+    color: "#fff",
+    fontWeight: "bold",
+  },
   modalBackground: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.9)",
@@ -212,22 +268,10 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  closeButton: {
-    position: "absolute",
-    top: 10,
-    right: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.5)",
-    borderRadius: 15,
-    width: 30,
-    height: 30,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  closeText: { color: "#000", fontSize: 18, fontWeight: "bold" },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0)', // Transparent overlay to prevent saving
-    zIndex: 1, // Ensures overlay blocks long-press without affecting button clicks
+    backgroundColor: "rgba(0, 0, 0, 0)",
+    zIndex: 1,
   },
 });
 

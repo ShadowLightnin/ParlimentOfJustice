@@ -13,19 +13,22 @@ import {
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { db, storage } from "../../../lib/firebase";
-import { collection, addDoc, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
 
 const BookDetails = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { bookId, bookTitle, bookImageUrl } = route.params; // Added bookImageUrl
+  const { bookId, bookTitle, bookImageUrl } = route.params;
 
   const [characters, setCharacters] = useState([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
+  const [editingCharId, setEditingCharId] = useState(null); // Track editing character
+  const [editName, setEditName] = useState(""); // Store edited name
+  const [editDescription, setEditDescription] = useState(""); // Store edited description
 
   useEffect(() => {
     const fetchCharacters = async () => {
@@ -115,9 +118,34 @@ const BookDetails = () => {
     );
   };
 
+  const startEditing = (char) => {
+    setEditingCharId(char.id);
+    setEditName(char.name);
+    setEditDescription(char.description);
+  };
+
+  const saveEdit = async (id) => {
+    if (!editName || !editDescription) {
+      Alert.alert("Error", "Name and description cannot be empty");
+      return;
+    }
+    await updateDoc(doc(db, "books", bookId, "characters", id), {
+      name: editName,
+      description: editDescription,
+    });
+    setCharacters(
+      characters.map((char) =>
+        char.id === id ? { ...char, name: editName, description: editDescription } : char
+      )
+    );
+    setEditingCharId(null);
+    setEditName("");
+    setEditDescription("");
+  };
+
   return (
     <ImageBackground
-      source={{ uri: bookImageUrl || "https://via.placeholder.com/150" }} // Use book image as background
+      source={{ uri: bookImageUrl || "https://via.placeholder.com/150" }}
       style={styles.background}
     >
       <View style={styles.overlay}>
@@ -157,15 +185,51 @@ const BookDetails = () => {
             <View key={char.id} style={styles.characterCard}>
               <Image source={{ uri: char.imageUrl }} style={styles.characterImage} />
               <View style={styles.characterInfo}>
-                <Text style={styles.characterName}>{char.name}</Text>
-                <Text style={styles.characterDescription}>{char.description}</Text>
+                {editingCharId === char.id ? (
+                  <>
+                    <TextInput
+                      style={styles.editInput}
+                      value={editName}
+                      onChangeText={setEditName}
+                      autoFocus
+                    />
+                    <TextInput
+                      style={[styles.editInput, styles.editDescriptionInput]}
+                      value={editDescription}
+                      onChangeText={setEditDescription}
+                      multiline
+                    />
+                  </>
+                ) : (
+                  <>
+                    <Text style={styles.characterName}>{char.name}</Text>
+                    <Text style={styles.characterDescription}>{char.description}</Text>
+                  </>
+                )}
               </View>
-              <TouchableOpacity
-                onPress={() => deleteCharacter(char.id)}
-                style={styles.deleteButton}
-              >
-                <Text style={styles.deleteButtonText}>Delete</Text>
-              </TouchableOpacity>
+              <View style={styles.buttonContainer}>
+                {editingCharId === char.id ? (
+                  <TouchableOpacity
+                    onPress={() => saveEdit(char.id)}
+                    style={styles.saveButton}
+                  >
+                    <Text style={styles.saveButtonText}>Save</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    onPress={() => startEditing(char)}
+                    style={styles.editButton}
+                  >
+                    <Text style={styles.editButtonText}>Edit</Text>
+                  </TouchableOpacity>
+                )}
+                <TouchableOpacity
+                  onPress={() => deleteCharacter(char.id)}
+                  style={styles.deleteButton}
+                >
+                  <Text style={styles.deleteButtonText}>Delete</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           ))}
         </ScrollView>
@@ -184,11 +248,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 0,
-    resizeMode: "cover", // Ensure the background image fits nicely
+    resizeMode: "cover",
   },
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent overlay for readability
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     paddingTop: 50,
   },
   backButton: {
@@ -199,6 +263,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 8,
+    zIndex: 10, // Ensure it’s clickable
   },
   backButtonText: {
     color: "#FFF",
@@ -210,14 +275,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 20,
-    color: "#FFF", // White text for visibility on background
+    color: "#FFF",
   },
   formContainer: {
     padding: 20,
     alignItems: "center",
   },
   input: {
-    backgroundColor: "rgba(255, 255, 255, 0.9)", // Slightly transparent white for contrast
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
     width: "90%",
     padding: 10,
     borderRadius: 5,
@@ -258,7 +323,7 @@ const styles = StyleSheet.create({
   },
   characterCard: {
     flexDirection: "row",
-    backgroundColor: "rgba(255, 255, 255, 0.9)", // Slightly transparent for contrast
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
     borderRadius: 10,
     padding: 10,
     marginBottom: 10,
@@ -276,11 +341,49 @@ const styles = StyleSheet.create({
   characterName: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#333", // Darker color for readability
+    color: "#333",
   },
   characterDescription: {
     fontSize: 14,
     color: "#666",
+  },
+  editInput: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+    backgroundColor: "rgba(255, 255, 255, 0.7)",
+    borderRadius: 5,
+    padding: 5,
+    marginBottom: 5,
+  },
+  editDescriptionInput: {
+    fontSize: 14,
+    height: 60,
+    textAlignVertical: "top",
+  },
+  buttonContainer: {
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  editButton: {
+    backgroundColor: "#FFC107",
+    padding: 5,
+    borderRadius: 5,
+    marginBottom: 5,
+  },
+  editButtonText: {
+    color: "#FFF",
+    fontWeight: "bold",
+  },
+  saveButton: {
+    backgroundColor: "#4CAF50",
+    padding: 5,
+    borderRadius: 5,
+    marginBottom: 5,
+  },
+  saveButtonText: {
+    color: "#FFF",
+    fontWeight: "bold",
   },
   deleteButton: {
     backgroundColor: "#F44336",

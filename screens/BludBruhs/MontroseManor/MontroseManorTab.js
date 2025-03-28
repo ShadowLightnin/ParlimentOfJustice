@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { db, storage } from "../../../lib/firebase";
-import { collection, addDoc, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
 
@@ -22,6 +22,8 @@ const MontroseManorTab = () => {
   const [books, setBooks] = useState([]);
   const [title, setTitle] = useState("");
   const [image, setImage] = useState(null);
+  const [editingBookId, setEditingBookId] = useState(null); // Track which book is being edited
+  const [editTitle, setEditTitle] = useState(""); // Store the edited title
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -60,7 +62,7 @@ const MontroseManorTab = () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [1, 1], // Keep aspect ratio 1:1 for consistency
+      aspect: [1, 1],
       quality: 0.5,
     });
 
@@ -109,6 +111,22 @@ const MontroseManorTab = () => {
     );
   };
 
+  const startEditing = (book) => {
+    setEditingBookId(book.id);
+    setEditTitle(book.title);
+  };
+
+  const saveEdit = async (id) => {
+    if (!editTitle) {
+      Alert.alert("Error", "Title cannot be empty");
+      return;
+    }
+    await updateDoc(doc(db, "books", id), { title: editTitle });
+    setBooks(books.map((book) => (book.id === id ? { ...book, title: editTitle } : book)));
+    setEditingBookId(null);
+    setEditTitle("");
+  };
+
   return (
     <ImageBackground
       source={require("../../../assets/MontroseManorPlaceHolder.jpg")}
@@ -122,7 +140,6 @@ const MontroseManorTab = () => {
       </TouchableOpacity>
 
       <View style={styles.overlay}>
-        {/* Header Title */}
         <Text style={styles.headerTitle}>Montrose Manor</Text>
 
         <View style={styles.formContainer}>
@@ -152,15 +169,45 @@ const MontroseManorTab = () => {
                 navigation.navigate("BookDetails", {
                   bookId: book.id,
                   bookTitle: book.title,
-                  bookImageUrl: book.imageUrl, // Pass the image URL
+                  bookImageUrl: book.imageUrl,
                 })
               }
             >
-              <Text style={styles.bookTitle}>{book.title}</Text>
+              {editingBookId === book.id ? (
+                <TextInput
+                  style={styles.editInput}
+                  value={editTitle}
+                  onChangeText={setEditTitle}
+                  onSubmitEditing={() => saveEdit(book.id)}
+                  autoFocus
+                />
+              ) : (
+                <Text style={styles.bookTitle}>{book.title}</Text>
+              )}
               <Image source={{ uri: book.imageUrl }} style={styles.bookImage} resizeMode="cover" />
-              <TouchableOpacity onPress={() => deleteBook(book.id)} style={styles.deleteButton}>
-                <Text style={styles.deleteButtonText}>Delete</Text>
-              </TouchableOpacity>
+              <View style={styles.buttonContainer}>
+                {editingBookId === book.id ? (
+                  <TouchableOpacity
+                    onPress={() => saveEdit(book.id)}
+                    style={styles.saveButton}
+                  >
+                    <Text style={styles.saveButtonText}>Save</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    onPress={() => startEditing(book)}
+                    style={styles.editButton}
+                  >
+                    <Text style={styles.editButtonText}>Edit</Text>
+                  </TouchableOpacity>
+                )}
+                <TouchableOpacity
+                  onPress={() => deleteBook(book.id)}
+                  style={styles.deleteButton}
+                >
+                  <Text style={styles.deleteButtonText}>Delete</Text>
+                </TouchableOpacity>
+              </View>
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -183,7 +230,7 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.3)",
-    paddingTop: 80, // Adjusted to accommodate header
+    paddingTop: 80,
   },
   headerTitle: {
     fontSize: 28,
@@ -201,6 +248,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 8,
+    zIndex: 10, // Ensure it’s above the overlay
   },
   backButtonText: {
     color: "#FFF",
@@ -233,7 +281,7 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 5,
     marginBottom: 10,
-    resizeMode: "cover", // Ensure preview also fits whole image
+    resizeMode: "cover",
   },
   addButton: {
     backgroundColor: "#2196F3",
@@ -260,13 +308,47 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 5,
     textAlign: "center",
-    color: "#FFF", // Added for better visibility on dark background
+    color: "#FFF",
+  },
+  editInput: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
+    textAlign: "center",
+    color: "#FFF",
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    borderRadius: 5,
+    padding: 5,
+    width: "100%",
   },
   bookImage: {
-    width: 130, // Increased width to fit more of the image
-    height: 130, // Increased height to fit more of the image
+    width: 130,
+    height: 130,
     borderRadius: 5,
     marginBottom: 5,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  editButton: {
+    backgroundColor: "#FFC107",
+    padding: 5,
+    borderRadius: 5,
+  },
+  editButtonText: {
+    color: "#FFF",
+    fontWeight: "bold",
+  },
+  saveButton: {
+    backgroundColor: "#4CAF50",
+    padding: 5,
+    borderRadius: 5,
+  },
+  saveButtonText: {
+    color: "#FFF",
+    fontWeight: "bold",
   },
   deleteButton: {
     backgroundColor: "#F44336",
