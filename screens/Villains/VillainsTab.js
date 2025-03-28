@@ -62,8 +62,8 @@ const villains = [
   { name: 'Noctura', screen: 'NocturaScreen', image: require('../../assets/Villains/Noctura.jpg'), clickable: true },
   { name: 'Red Mercury', screen: 'RedMercuryScreen', image: require('../../assets/Villains/RedMercury.jpg'), clickable: true },
   { name: 'Titanus', screen: 'TitanusScreen', image: require('../../assets/Villains/Titanus.jpg'), clickable: true },
-  { name: ' ', screen: '', image: require('../../assets/Villains/IMG_4325.webp'), clickable: false },
-  { name: '    ', screen: '', image: require('../../assets/Villains/IMG_4343.webp'), clickable: false },
+  { name: 'The Blind Witch', screen: '', image: require('../../assets/Villains/IMG_4325.webp'), clickable: false },
+  { name: 'Elick', screen: '', image: require('../../assets/Villains/IMG_4343.webp'), clickable: false },
 
   
 
