@@ -8,7 +8,7 @@ const BackWarpScreen = () => {
     useEffect(() => {
         setTimeout(() => {
             navigation.replace("Sam");  // ✅ Replace instead of reset
-        }, 5500);  // Warp effect delay
+        }, 4500);  // Warp effect delay
     }, []);
 
     return (

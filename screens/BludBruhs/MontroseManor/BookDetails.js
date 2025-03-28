@@ -8,6 +8,8 @@ import {
   Image,
   ScrollView,
   Alert,
+  ImageBackground,
+  Dimensions,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { db, storage } from "../../../lib/firebase";
@@ -18,14 +20,13 @@ import * as ImagePicker from "expo-image-picker";
 const BookDetails = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { bookId, bookTitle } = route.params;
+  const { bookId, bookTitle, bookImageUrl } = route.params; // Added bookImageUrl
 
   const [characters, setCharacters] = useState([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
 
-  // Fetch characters for this book
   useEffect(() => {
     const fetchCharacters = async () => {
       const querySnapshot = await getDocs(collection(db, "books", bookId, "characters"));
@@ -38,7 +39,6 @@ const BookDetails = () => {
     fetchCharacters();
   }, [bookId]);
 
-  // Upload image to Firebase Storage
   const uploadImage = async (uri) => {
     const response = await fetch(uri);
     const blob = await response.blob();
@@ -60,7 +60,6 @@ const BookDetails = () => {
     });
   };
 
-  // Pick image for character
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -74,7 +73,6 @@ const BookDetails = () => {
     }
   };
 
-  // Add a new character
   const addCharacter = async () => {
     if (!name || !description) {
       Alert.alert("Error", "Please enter a name and description");
@@ -99,7 +97,6 @@ const BookDetails = () => {
     setImage(null);
   };
 
-  // Delete a character with confirmation
   const deleteCharacter = (id) => {
     Alert.alert(
       "Confirm Deletion",
@@ -119,72 +116,86 @@ const BookDetails = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-        <Text style={styles.backButtonText}>Back to Books</Text>
-      </TouchableOpacity>
-
-      <Text style={styles.title}>{bookTitle} - Characters</Text>
-
-      {/* Character Creation Form */}
-      <View style={styles.formContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Character Name"
-          value={name}
-          onChangeText={setName}
-        />
-        <TextInput
-          style={[styles.input, styles.descriptionInput]}
-          placeholder="Description"
-          value={description}
-          onChangeText={setDescription}
-          multiline
-        />
-        <TouchableOpacity onPress={pickImage} style={styles.uploadButton}>
-          <Text style={styles.uploadButtonText}>
-            {image ? "Image Selected" : "Upload Image"}
-          </Text>
+    <ImageBackground
+      source={{ uri: bookImageUrl || "https://via.placeholder.com/150" }} // Use book image as background
+      style={styles.background}
+    >
+      <View style={styles.overlay}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Text style={styles.backButtonText}>Back to Books</Text>
         </TouchableOpacity>
-        {image && <Image source={{ uri: image }} style={styles.previewImage} />}
-        <TouchableOpacity onPress={addCharacter} style={styles.addButton}>
-          <Text style={styles.addButtonText}>Add Character</Text>
-        </TouchableOpacity>
-      </View>
 
-      {/* Character List */}
-      <ScrollView style={styles.characterList}>
-        {characters.map((char) => (
-          <View key={char.id} style={styles.characterCard}>
-            <Image source={{ uri: char.imageUrl }} style={styles.characterImage} />
-            <View style={styles.characterInfo}>
-              <Text style={styles.characterName}>{char.name}</Text>
-              <Text style={styles.characterDescription}>{char.description}</Text>
+        <Text style={styles.title}>{bookTitle} - Characters</Text>
+
+        <View style={styles.formContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Character Name"
+            value={name}
+            onChangeText={setName}
+          />
+          <TextInput
+            style={[styles.input, styles.descriptionInput]}
+            placeholder="Description"
+            value={description}
+            onChangeText={setDescription}
+            multiline
+          />
+          <TouchableOpacity onPress={pickImage} style={styles.uploadButton}>
+            <Text style={styles.uploadButtonText}>
+              {image ? "Image Selected" : "Upload Image"}
+            </Text>
+          </TouchableOpacity>
+          {image && <Image source={{ uri: image }} style={styles.previewImage} />}
+          <TouchableOpacity onPress={addCharacter} style={styles.addButton}>
+            <Text style={styles.addButtonText}>Add Character</Text>
+          </TouchableOpacity>
+        </View>
+
+        <ScrollView style={styles.characterList}>
+          {characters.map((char) => (
+            <View key={char.id} style={styles.characterCard}>
+              <Image source={{ uri: char.imageUrl }} style={styles.characterImage} />
+              <View style={styles.characterInfo}>
+                <Text style={styles.characterName}>{char.name}</Text>
+                <Text style={styles.characterDescription}>{char.description}</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => deleteCharacter(char.id)}
+                style={styles.deleteButton}
+              >
+                <Text style={styles.deleteButtonText}>Delete</Text>
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              onPress={() => deleteCharacter(char.id)}
-              style={styles.deleteButton}
-            >
-              <Text style={styles.deleteButtonText}>Delete</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-      </ScrollView>
-    </View>
+          ))}
+        </ScrollView>
+      </View>
+    </ImageBackground>
   );
 };
 
+const { width, height } = Dimensions.get("window");
+
 const styles = StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
-    backgroundColor: "#f0f0f0",
+    width: width,
+    height: height,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    resizeMode: "cover", // Ensure the background image fits nicely
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent overlay for readability
     paddingTop: 50,
   },
   backButton: {
     position: "absolute",
     top: 10,
     left: 10,
-    backgroundColor: "rgba(118, 11, 11, 0.6)",
+    backgroundColor: "rgba(118, 11, 11, 0.8)",
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 8,
@@ -199,13 +210,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 20,
+    color: "#FFF", // White text for visibility on background
   },
   formContainer: {
     padding: 20,
     alignItems: "center",
   },
   input: {
-    backgroundColor: "#FFF",
+    backgroundColor: "rgba(255, 255, 255, 0.9)", // Slightly transparent white for contrast
     width: "90%",
     padding: 10,
     borderRadius: 5,
@@ -246,7 +258,7 @@ const styles = StyleSheet.create({
   },
   characterCard: {
     flexDirection: "row",
-    backgroundColor: "#FFF",
+    backgroundColor: "rgba(255, 255, 255, 0.9)", // Slightly transparent for contrast
     borderRadius: 10,
     padding: 10,
     marginBottom: 10,
@@ -264,6 +276,7 @@ const styles = StyleSheet.create({
   characterName: {
     fontSize: 18,
     fontWeight: "bold",
+    color: "#333", // Darker color for readability
   },
   characterDescription: {
     fontSize: 14,

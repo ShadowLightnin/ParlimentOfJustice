@@ -60,7 +60,7 @@ const MontroseManorTab = () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [1, 1],
+      aspect: [1, 1], // Keep aspect ratio 1:1 for consistency
       quality: 0.5,
     });
 
@@ -122,6 +122,9 @@ const MontroseManorTab = () => {
       </TouchableOpacity>
 
       <View style={styles.overlay}>
+        {/* Header Title */}
+        <Text style={styles.headerTitle}>Montrose Manor</Text>
+
         <View style={styles.formContainer}>
           <TextInput
             style={styles.input}
@@ -145,14 +148,17 @@ const MontroseManorTab = () => {
             <TouchableOpacity
               key={book.id}
               style={styles.bookTab}
-              onPress={() => navigation.navigate("BookDetails", { bookId: book.id, bookTitle: book.title })}
+              onPress={() =>
+                navigation.navigate("BookDetails", {
+                  bookId: book.id,
+                  bookTitle: book.title,
+                  bookImageUrl: book.imageUrl, // Pass the image URL
+                })
+              }
             >
               <Text style={styles.bookTitle}>{book.title}</Text>
-              <Image source={{ uri: book.imageUrl }} style={styles.bookImage} />
-              <TouchableOpacity
-                onPress={() => deleteBook(book.id)}
-                style={styles.deleteButton}
-              >
+              <Image source={{ uri: book.imageUrl }} style={styles.bookImage} resizeMode="cover" />
+              <TouchableOpacity onPress={() => deleteBook(book.id)} style={styles.deleteButton}>
                 <Text style={styles.deleteButtonText}>Delete</Text>
               </TouchableOpacity>
             </TouchableOpacity>
@@ -163,7 +169,6 @@ const MontroseManorTab = () => {
   );
 };
 
-// Styles remain the same as before
 const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
@@ -178,7 +183,15 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.3)",
-    paddingTop: 80,
+    paddingTop: 80, // Adjusted to accommodate header
+  },
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#FFF",
+    textAlign: "center",
+    marginTop: 20,
+    marginBottom: 20,
   },
   backButton: {
     position: "absolute",
@@ -220,6 +233,7 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 5,
     marginBottom: 10,
+    resizeMode: "cover", // Ensure preview also fits whole image
   },
   addButton: {
     backgroundColor: "#2196F3",
@@ -236,7 +250,7 @@ const styles = StyleSheet.create({
   bookTab: {
     width: 150,
     marginHorizontal: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    backgroundColor: "rgba(65, 62, 62, 0.9)",
     borderRadius: 10,
     padding: 10,
     alignItems: "center",
@@ -246,10 +260,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 5,
     textAlign: "center",
+    color: "#FFF", // Added for better visibility on dark background
   },
   bookImage: {
-    width: 100,
-    height: 100,
+    width: 130, // Increased width to fit more of the image
+    height: 130, // Increased height to fit more of the image
     borderRadius: 5,
     marginBottom: 5,
   },

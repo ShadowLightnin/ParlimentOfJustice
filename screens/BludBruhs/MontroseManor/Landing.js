@@ -10,7 +10,7 @@ const Landing = () => {
     // 🚀 Animate zoom-in effect
     Animated.timing(scaleAnim, {
       toValue: 8, // Double the size
-      duration: 11000, // 11 seconds
+      duration: 4500, // 11 seconds
       useNativeDriver: true,
     }).start(() => {
       navigation.replace("MontroseManorTab"); // 🌌 Transition after zoom
