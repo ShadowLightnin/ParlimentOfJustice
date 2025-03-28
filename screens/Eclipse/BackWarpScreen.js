@@ -14,7 +14,7 @@ const BackWarpScreen = () => {
     return (
         <View style={styles.container}>
             <Image 
-                source={require("../../assets/warp.gif")} 
+                source={require("../../assets/Space/warp.gif")} 
                 style={styles.warpImage} 
             />
         </View>

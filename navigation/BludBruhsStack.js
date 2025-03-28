@@ -14,6 +14,10 @@ import MontroseManorScreen from "../screens/BludBruhs/MontroseManor/MontroseMano
 import BackWarpScreen from "../screens/BludBruhs/BackWarpScreen";
 import Landing from "../screens/BludBruhs/MontroseManor/Landing";
 import MontroseManorTab from "../screens/BludBruhs/MontroseManor/MontroseManorTab";
+import EvilMontroseManorScreen from "../screens/BludBruhs/MontroseManor/EvilMontroseManorScreen"; // Your new tab screen
+import EvilBackWarpScreen from "../screens/BludBruhs/EvilBackWarpScreen";
+import EvilSam from '../screens/Villains/VillainsMembers/EvilSam';
+import VillainsTab from '../screens/Villains/VillainsTab';
 
 import Cole from '../screens/BludBruhs/Cole';
 import JosephD from '../screens/BludBruhs/JosephD';
@@ -49,6 +53,10 @@ export function BludBruhsStack() {
       <Stack.Screen name="BackWarpScreen" component={BackWarpScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Landing" component={Landing} />
       <Stack.Screen name="MontroseManorTab" component={MontroseManorTab} />
+      <Stack.Screen name="EvilMontrose" component={EvilMontroseManorScreen} />
+      <Stack.Screen name="EvilBackWarpScreen" component={EvilBackWarpScreen} />
+      <Stack.Screen name="EvilSam" component={EvilSam} />
+      <Stack.Screen name="VillainsTab" component={VillainsTab} />
 
       <Stack.Screen name="Cole" component={Cole} />
       <Stack.Screen name="JosephD" component={JosephD} />

@@ -21,12 +21,12 @@ const Landing = () => {
     <View style={styles.container}>
       {/* Background zoom */}
       <Animated.Image
-        source={require("../../../assets/Space.jpg")} // Add your background image here
+        source={require("../../../assets/Space/Space.jpg")} // Add your background image here
         style={[styles.backgroundImage, { transform: [{ scale: scaleAnim }] }]}
       />
       {/* Planet zoom */}
       <Animated.Image
-        source={require("../../../assets/ExoPlanet2.jpg")}
+        source={require("../../../assets/Space/ExoPlanet2.jpg")}
         style={[styles.planetImage, { transform: [{ scale: scaleAnim }] }]}
       />
     </View>

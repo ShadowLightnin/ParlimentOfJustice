@@ -171,13 +171,13 @@ const LoginScreen = () => {
     
                 <View style={styles.signup}>
                     <Text style={styles.title}>Create an Account</Text>
-                    <TouchableOpacity onPress={handleAvatar}>
+                    {/* <TouchableOpacity onPress={handleAvatar}> */}
                         <Image
                             source={{ uri: avatar.url || "https://example.com/default-avatar.png" }}
                             style={styles.avatar}
                         />
                         <Text style={styles.text}>Upload Image (Optional)</Text>
-                    </TouchableOpacity>
+                    {/* </TouchableOpacity> */}
     
                     <TextInput 
                         style={styles.input} 

@@ -1,21 +1,30 @@
-import React, { useRef, useEffect } from "react";
-import { 
-  View, 
-  Text, 
-  Image, 
-  ScrollView, 
-  StyleSheet, 
-  TouchableOpacity, 
-  Dimensions, 
-  Animated 
+import React, { useRef, useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+  Animated,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
+const { height: SCREEN_HEIGHT } = Dimensions.get("window");
+
+// Array of Aileen-related images (replace with your actual image paths)
+const aileenImages = [
+  { name: "Aileen Default", image: require("../../assets/Armor/AileenPlaceHolder2.jpg"), clickable: true },
+  { name: "Aileen Variant 1", image: require("../../assets/Armor/AileenPlaceHolder.jpg"), clickable: true }, // Example placeholder
+  { name: "Aileen Variant 2", image: require("../../assets/Armor/AileenPlaceHolder3.jpg"), clickable: true }, // Example placeholder
+  // Add more images here as needed
+];
 
 const Aileen = () => {
   const navigation = useNavigation();
   const flashAnim = useRef(new Animated.Value(1)).current;
+  const [windowWidth, setWindowWidth] = useState(Dimensions.get("window").width);
 
   // ⚡ Flashing Animation Effect for Planet
   useEffect(() => {
@@ -29,49 +38,77 @@ const Aileen = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Update window width on resize
+  useEffect(() => {
+    const updateDimensions = () => {
+      setWindowWidth(Dimensions.get("window").width);
+    };
+    const subscription = Dimensions.addEventListener("change", updateDimensions);
+    return () => subscription?.remove();
+  }, []);
+
   // 🌌 Planet Click Handler → Leads to Warp Screen
   const handlePlanetPress = () => {
     navigation.navigate("WarpScreen"); // 🔄 Navigate to WarpScreen
   };
 
+  // Determine if it's desktop or mobile based on width (768px breakpoint)
+  const isDesktop = windowWidth >= 768;
+
+  // Render each image card
+  const renderImageCard = (item) => (
+    <TouchableOpacity
+      key={item.name}
+      style={[styles.card(isDesktop, windowWidth), item.clickable ? styles.clickable : styles.notClickable]}
+      onPress={() => item.clickable && console.log(`${item.name} clicked`)} // Replace with navigation if needed
+      disabled={!item.clickable}
+    >
+      <Image source={item.image} style={styles.armorImage} />
+      <View style={styles.transparentOverlay} />
+      <Text style={styles.cardName}>{item.name}</Text>
+      {!item.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+    </TouchableOpacity>
+  );
+
   return (
     <View style={styles.container}>
       {/* Scrollable Content */}
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        
         {/* Header */}
         <View style={styles.headerContainer}>
-        <TouchableOpacity
+          <TouchableOpacity
             style={styles.backButton}
-            onPress={() => navigation.reset({
+            onPress={() =>
+              navigation.reset({
                 index: 0,
-                routes: [{ name: "EclipseHome" }]  // ✅ Clean navigation flow
-            })}
-        >            
-          <Text style={styles.backButtonText}>←</Text>
-        </TouchableOpacity>
+                routes: [{ name: "EclipseHome" }], // ✅ Clean navigation flow
+              })
+            }
+          >
+            <Text style={styles.backButtonText}>←</Text>
+          </TouchableOpacity>
 
           {/* Title */}
           <Text style={styles.title}>Ariata</Text>
 
-          {/* Comment Button */}
-        {/* 🌍 Planet Icon (Clickable) */}
-        <TouchableOpacity onPress={handlePlanetPress} style={styles.planetContainer}>
-          <Animated.Image 
-            source={require("../../assets/Earth_hero.jpg")}
-            style={[styles.planetImage, { opacity: flashAnim }]}
-          />
-        </TouchableOpacity>
+          {/* 🌍 Planet Icon (Clickable) */}
+          <TouchableOpacity onPress={handlePlanetPress} style={styles.planetContainer}>
+            <Animated.Image
+              source={require("../../assets/Space/Earth_hero.jpg")}
+              style={[styles.planetImage, { opacity: flashAnim }]}
+            />
+          </TouchableOpacity>
         </View>
 
-        {/* Armor Image */}
+        {/* Horizontal Scroll for Images */}
         <View style={styles.imageContainer}>
-          <Image 
-            source={require("../../assets/Armor/AileenPlaceHolder2.jpg")} 
-            style={styles.armorImage} 
-          />
-          {/* Transparent Touch-Blocking Overlay */}
-          <View style={styles.transparentOverlay} />
+          <ScrollView
+            horizontal={true}
+            contentContainerStyle={styles.imageScrollContainer}
+            showsHorizontalScrollIndicator={true}
+          >
+            {aileenImages.map(renderImageCard)}
+          </ScrollView>
         </View>
 
         {/* About Section */}
@@ -124,47 +161,69 @@ const styles = StyleSheet.create({
     color: "#000000",
     textAlign: "center",
     flex: 1,
-    textShadowColor: 'gold',
+    textShadowColor: "gold",
     textShadowRadius: 25,
   },
-  commentButton: {
-    padding: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: 5,
-  },
-  commentButtonText: {
-    fontSize: 22,
-    color: "#fff",
-  },
-  imageContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 20,
-    backgroundColor: "#111",
-    paddingVertical: 30,
-    borderRadius: 20,
-    position: 'relative', // Required for overlay positioning
-  },
-  armorImage: {
-    width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_HEIGHT * 0.6,
-    resizeMode: "contain",
-  },
   planetContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginVertical: 20,
-    backgroundColor: 'transparent' // ✅ Fully transparent background
+    backgroundColor: "transparent", // ✅ Fully transparent background
   },
   planetImage: {
     width: 40,
     height: 40,
     borderRadius: 40,
-    opacity: 0.8  // ✅ Slight transparency for a cool effect
+    opacity: 0.8, // ✅ Slight transparency for a cool effect
+  },
+  imageContainer: {
+    width: "100%",
+    paddingVertical: 20,
+    backgroundColor: "#111",
+  },
+  imageScrollContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 10,
+    alignItems: "center",
+  },
+  card: (isDesktop, windowWidth) => ({
+    width: isDesktop ? windowWidth * 0.4 : windowWidth * 0.7, // 40% on desktop, 70% on mobile
+    height: isDesktop ? SCREEN_HEIGHT * 0.5 : SCREEN_HEIGHT * 0.6, // Slightly taller on mobile
+    borderRadius: 15,
+    overflow: "hidden",
+    elevation: 5,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    marginRight: 20,
+  }),
+  clickable: {
+    borderWidth: 2,
+  },
+  notClickable: {
+    opacity: 0.8,
+  },
+  armorImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "contain",
   },
   transparentOverlay: {
-    ...StyleSheet.absoluteFillObject, // Covers the whole image
-    backgroundColor: 'rgba(0, 0, 0, 0)', // Fully transparent
-    zIndex: 1, // Ensures it blocks long-press but doesn’t affect buttons
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0)",
+    zIndex: 1,
+  },
+  cardName: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    fontSize: 16,
+    color: "white",
+    fontWeight: "bold",
+  },
+  disabledText: {
+    fontSize: 12,
+    color: "#ff4444",
+    position: "absolute",
+    bottom: 30,
+    left: 10,
   },
   aboutSection: {
     marginTop: 40,
@@ -177,7 +236,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#000000",
     textAlign: "center",
-    textShadowColor: 'gold',
+    textShadowColor: "gold",
     textShadowRadius: 25,
   },
   aboutText: {

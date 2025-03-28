@@ -40,6 +40,7 @@ import VirusVortexScreen from '../screens/Villains/VillainsMembers/VirusVortexSc
 import ShadeStalkerScreen from '../screens/Villains/VillainsMembers/ShadeStalkerScreen';
 import VoltShadeScreen from '../screens/Villains/VillainsMembers/VoltShadeScreen';
 import SableScreen from '../screens/Villains/VillainsMembers/SableScreen';
+import EvilSam from '../screens/Villains/VillainsMembers/EvilSam';
 import SteelJuggernautScreen from '../screens/Villains/VillainsMembers/SteelJuggernautScreen';
 import WarhoundScreen from '../screens/Villains/VillainsMembers/WarhoundScreen';
 import OvermindScreen from '../screens/Villains/VillainsMembers/OvermindScreen';
@@ -103,6 +104,7 @@ const VillainsStack = () => {
       <Stack.Screen name="ShadeStalkerScreen" component={ShadeStalkerScreen} />
       <Stack.Screen name="VoltShadeScreen" component={VoltShadeScreen} />
       <Stack.Screen name="SableScreen" component={SableScreen} />
+      <Stack.Screen name="EvilSam" component={EvilSam} />
       <Stack.Screen name="SteelJuggernautScreen" component={SteelJuggernautScreen} />
       <Stack.Screen name="WarhoundScreen" component={WarhoundScreen} />
       <Stack.Screen name="OvermindScreen" component={OvermindScreen} />

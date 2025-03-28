@@ -54,7 +54,7 @@ const Sam = () => {
         {/* 🌍 Planet Icon (Clickable) */}
         <TouchableOpacity onPress={handlePlanetPress} style={styles.planetContainer}>
           <Animated.Image 
-            source={require("../../assets/ExoPlanet2.jpg")}
+            source={require("../../assets/Space/ExoPlanet2.jpg")}
             style={[styles.planetImage, { opacity: flashAnim }]}
           />
         </TouchableOpacity>

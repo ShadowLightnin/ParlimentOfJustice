@@ -16,7 +16,7 @@ const MontroseManorTab = () => {
       style={styles.background}
     >
       {/* Back Button */}
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+      <TouchableOpacity onPress={() => navigation.navigate('EvilMontrose')} style={styles.backButton}>
         <Text style={styles.backButtonText}>Escape</Text>
       </TouchableOpacity>
 
