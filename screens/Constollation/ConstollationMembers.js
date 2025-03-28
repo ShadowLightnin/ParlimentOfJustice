@@ -17,7 +17,7 @@ const moreMembers = [
       // High School 12th
   'Weston Kidder','David Pilkington','Nate Hillyard','Kori Schriver','Jack Hattaway','','','','','',
   // College
-  'Carey Anson','Sean Fears','John Bitter','','Sarina Sinatra','','George Ray','Brent','Claudine','Braiden',
+  'Carey Anson','Sean Fears','John Bitter','Nathan Meyer','Sarina Sinatra','George Ray','Brent','Claudine','Braiden',
   // Influencers
   '','','','','','','','','','','','','','','','','','','',
 
