@@ -14,6 +14,8 @@ import MontroseManorScreen from "../screens/BludBruhs/MontroseManor/MontroseMano
 import BackWarpScreen from "../screens/BludBruhs/BackWarpScreen";
 import Landing from "../screens/BludBruhs/MontroseManor/Landing";
 import MontroseManorTab from "../screens/BludBruhs/MontroseManor/MontroseManorTab";
+import BookDetails from '../screens/BludBruhs/MontroseManor/BookDetails';
+
 import EvilMontroseManorScreen from "../screens/BludBruhs/MontroseManor/EvilMontroseManorScreen"; // Your new tab screen
 import EvilBackWarpScreen from "../screens/BludBruhs/EvilBackWarpScreen";
 import EvilSam from '../screens/Villains/VillainsMembers/EvilSam';
@@ -53,6 +55,8 @@ export function BludBruhsStack() {
       <Stack.Screen name="BackWarpScreen" component={BackWarpScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Landing" component={Landing} />
       <Stack.Screen name="MontroseManorTab" component={MontroseManorTab} />
+      <Stack.Screen name="BookDetails" component={BookDetails} />
+      
       <Stack.Screen name="EvilMontrose" component={EvilMontroseManorScreen} />
       <Stack.Screen name="EvilBackWarpScreen" component={EvilBackWarpScreen} />
       <Stack.Screen name="EvilSam" component={EvilSam} />
