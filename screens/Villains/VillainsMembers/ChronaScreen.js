@@ -1,21 +1,53 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View, Text, ImageBackground, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
+const { height: SCREEN_HEIGHT } = Dimensions.get("window");
+
+// Array of Sable-related images (replace with your actual image paths)
+const sableImages = [
+  { name: "Chrona", image: require("../../../assets/Villains/Chrona.jpg"), clickable: true },
+  { name: "Chrona the Time-Bender", image: require("../../../assets/Villains/Chrona2.jpg"), clickable: true }, // Example placeholder
+  // Add more images here as needed
+];
 
 const ChronaScreen = () => {
   const navigation = useNavigation();
-  const isDesktop = SCREEN_WIDTH > 600;
-  const imageSize = isDesktop ? SCREEN_WIDTH * 0.6 : SCREEN_WIDTH * 0.9;
-  const imageHeight = isDesktop ? SCREEN_HEIGHT * 0.5 : SCREEN_HEIGHT * 0.6;
+  const [windowWidth, setWindowWidth] = useState(Dimensions.get("window").width);
+
+  // Update window width on resize
+  useEffect(() => {
+    const updateDimensions = () => {
+      setWindowWidth(Dimensions.get("window").width);
+    };
+    const subscription = Dimensions.addEventListener("change", updateDimensions);
+    return () => subscription?.remove();
+  }, []);
+
+  // Determine if it's desktop or mobile based on width (768px breakpoint)
+  const isDesktop = windowWidth >= 768;
+
+  // Render each image card
+  const renderImageCard = (item) => (
+    <TouchableOpacity
+      key={item.name}
+      style={[styles.card(isDesktop, windowWidth), item.clickable ? styles.clickable : styles.notClickable]}
+      onPress={() => item.clickable && console.log(`${item.name} clicked`)} // Replace with navigation if needed
+      disabled={!item.clickable}
+    >
+      <Image source={item.image} style={styles.armorImage} />
+      <View style={styles.transparentOverlay} />
+      <Text style={styles.cardName}>{item.name}</Text>
+      {!item.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+    </TouchableOpacity>
+  );
 
   return (
     <ImageBackground
       source={require("../../../assets/BackGround/Enlightened.jpg")}
-      style={styles.background}
+      style={styles.background(windowWidth, SCREEN_HEIGHT)}
     >
       <View style={styles.overlay}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -23,16 +55,17 @@ const ChronaScreen = () => {
             <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
               <Text style={styles.backButtonText}>←</Text>
             </TouchableOpacity>
-            <Text style={styles.title}> Chrona the Time-Bender</Text>
+            <Text style={styles.title}>Chrona the Time-Bender</Text>
           </View>
 
           <View style={styles.imageContainer}>
-            <Image
-              source={require("../../../assets/Villains/Chrona.jpg")}
-              style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
-            />
-            {/* Transparent Overlay for Image Protection */}
-            <View style={styles.transparentOverlay} />
+            <ScrollView
+              horizontal={true}
+              contentContainerStyle={styles.imageScrollContainer}
+              showsHorizontalScrollIndicator={true}
+            >
+              {sableImages.map(renderImageCard)}
+            </ScrollView>
           </View>
 
           <View style={styles.aboutSection}>
@@ -61,77 +94,111 @@ const ChronaScreen = () => {
   );
 };
 const styles = StyleSheet.create({
-    background: {
-      width: SCREEN_WIDTH,
-      height: SCREEN_HEIGHT,
-      resizeMode: "cover",
-    },
-    overlay: {
-      backgroundColor: "rgba(0, 0, 0, 0.8)",
-      flex: 1,
-    },
-    scrollContainer: {
-      paddingBottom: 20,
-    },
-    headerContainer: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      paddingHorizontal: 20,
-      paddingVertical: 20,
-      borderBottomWidth: 1,
-      borderBottomColor: "#333",
-    },
-    backButton: {
-      padding: 10,
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
-      borderRadius: 5,
-    },
-    backButtonText: {
-      fontSize: 24,
-      color: "#fff",
-    },
-    title: {
-      fontSize: 28,
-      fontWeight: "bold",
-      color: "#D4AF37",
-      textAlign: "center",
-      flex: 1,
-    },
-    imageContainer: {
-      alignItems: "center",
-      justifyContent: "center",
-      paddingHorizontal: 20,
-    //   backgroundColor: "#111",
-      paddingVertical: 30,
-      borderRadius: 20,
-    },
-    armorImage: {
-      resizeMode: "contain",
-    },
-    transparentOverlay: {
-      ...StyleSheet.absoluteFillObject,
-      backgroundColor: "rgba(0, 0, 0, 0)", // Transparent for visual but clickable
-      zIndex: 1,
-    },
-    aboutSection: {
-      marginTop: 40,
-      padding: 20,
-      backgroundColor: "#222",
-      borderRadius: 15,
-    },
-    aboutHeader: {
-      fontSize: 22,
-      fontWeight: "bold",
-      color: "#D4AF37",
-      textAlign: "center",
-    },
-    aboutText: {
-      fontSize: 16,
-      color: "#fff",
-      textAlign: "center",
-      marginTop: 10,
-    },
+  background: (width, height) => ({
+    width: width,
+    height: height,
+    resizeMode: "cover",
+  }),
+  overlay: {
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    flex: 1,
+  },
+  scrollContainer: {
+    paddingBottom: 20,
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#333",
+  },
+  backButton: {
+    padding: 10,
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 5,
+  },
+  backButtonText: {
+    fontSize: 24,
+    color: "#fff",
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#D4AF37",
+    textAlign: "center",
+    flex: 1,
+  },
+  imageContainer: {
+    width: "100%",
+    paddingVertical: 20,
+    // backgroundColor: "#111",
+  },
+  imageScrollContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 10,
+    alignItems: "center",
+  },
+  card: (isDesktop, windowWidth) => ({
+    width: isDesktop ? windowWidth * 0.4 : windowWidth * 0.7, // 40% on desktop, 70% on mobile
+    height: isDesktop ? SCREEN_HEIGHT * 0.5 : SCREEN_HEIGHT * 0.6, // Slightly taller on mobile
+    borderRadius: 15,
+    overflow: "hidden",
+    elevation: 5,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    marginRight: 20,
+  }),
+  clickable: {
+    borderWidth: 2,
+  },
+  notClickable: {
+    opacity: 0.8,
+  },
+  armorImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "contain",
+  },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0)",
+    zIndex: 1,
+  },
+  cardName: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    fontSize: 16,
+    color: "white",
+    fontWeight: "bold",
+  },
+  disabledText: {
+    fontSize: 12,
+    color: "#ff4444",
+    position: "absolute",
+    bottom: 30,
+    left: 10,
+  },
+  aboutSection: {
+    marginTop: 40,
+    padding: 20,
+    backgroundColor: "#222",
+    borderRadius: 15,
+  },
+  aboutHeader: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#D4AF37",
+    textAlign: "center",
+  },
+  aboutText: {
+    fontSize: 16,
+    color: "#fff",
+    textAlign: "center",
+    marginTop: 10,
+  },
   });
   
 export default ChronaScreen;
