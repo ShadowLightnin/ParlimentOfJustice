@@ -20,12 +20,12 @@ const MontroseManorScreen = () => {
             <Text style={styles.text}>Montrose Manor... Coming Soon</Text>
             
             {/* 🌍 Make the planet clickable */}
-            {/* <TouchableOpacity onPress={handlePlanetClick}> */}
+            <TouchableOpacity onPress={handlePlanetClick}>
                 <Image 
                     source={require("../../../assets/Space/ExoPlanet.jpg")}
                     style={styles.planetImage}
                 />
-            {/* </TouchableOpacity> */}
+            </TouchableOpacity>
 
             {/* 🔙 Back Button */}
             <TouchableOpacity onPress={() => navigation.navigate("BackWarpScreen")} style={styles.backButton}>
