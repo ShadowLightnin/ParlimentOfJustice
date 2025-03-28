@@ -129,7 +129,7 @@ const MontroseManorTab = () => {
 
   return (
     <ImageBackground
-      source={require("../../../assets/MontroseManor.jpg")}
+      source={require("../../../assets/MontroseMansion.jpg")}
       style={styles.background}
     >
       <TouchableOpacity
