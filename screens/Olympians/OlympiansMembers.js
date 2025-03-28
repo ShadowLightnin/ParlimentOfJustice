@@ -221,7 +221,7 @@ const additionalMembers = familyData.flatMap((family, familyIndex) =>
     name: member,
     codename: `${family.family}`,
     screen: `${family.family}Screen`,
-    clickable: false,
+    clickable: true,
     position: [Math.floor((i + (familyIndex * 10)) / 3), (i + (familyIndex * 10)) % 3],
     image: characterImages[member] || require('../../assets/Armor/PlaceHolder.jpg'),
   }))

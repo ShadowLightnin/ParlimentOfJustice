@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   ScrollView,
   Dimensions,
+  Modal,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
@@ -17,26 +18,23 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // Member Data with Unique Image Paths
 const members = [
-  { name: 'Tanner Despain', codename: 'Titanium', screen: '', clickable: false, image: require('../../assets/Armor/TannerDPlaceHolder.jpg') },
-  { name: 'Wesley Holbrook', codename: 'Warlock', screen: '', clickable: false, image: require('../../assets/Armor/WesleyHPlaceHolder.jpg') },
-  { name: 'Josh Larson', codename: 'Juggernaut', screen: '', clickable: false, image: require('../../assets/Armor/JoshLPlaceHolder.jpg') },
-  // { name: 'Ethan Workman', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/PlaceHolder.jpg') },
-  { name: 'Jonah Gray', codename: 'Echo Song', screen: '', clickable: false, image: require('../../assets/Armor/JonahPlaceHolder.jpg') },
-  { name: 'Joseph Slack', codename: 'Caster', screen: '', clickable: false, image: require('../../assets/Armor/JosephSPlaceHolder_cleanup.jpg') },
-  { name: 'Jaden Boyer', codename: 'Socialation', screen: '', clickable: false, image: require('../../assets/Armor/JadenPlaceHolder.jpg') },
-  { name: 'Jonas Boyer', codename: 'Sports Master', screen: '', clickable: false, image: require('../../assets/Armor/JonasPlaceHolder.jpg') },
-  { name: 'Andrew DeDen', codename: 'Loneman', screen: '', clickable: false, image: require('../../assets/Armor/AndrewDPlaceHolder.jpg') },
-  { name: 'Jimmy Larson', codename: 'Renaissance', screen: '', clickable: false, image: require('../../assets/Armor/JimmyPlaceHolder.jpg') },
-  { name: 'Johnathon Gray', codename: 'Voice Fry', screen: '', clickable: false, image: require('../../assets/Armor/JohnathonPlaceHolder_cleanup.jpg') },
-  { name: 'Nick Larsen', codename: 'Iron Quard', screen: '', clickable: false, image: require('../../assets/Armor/NickPlaceHolder.jpg') },
-  { name: 'Vanner Johnson', codename: 'Viral', screen: '', clickable: false, image: require('../../assets/Armor/Vanner3PlaceHolder.jpg') },
-  { name: 'Tommy Holbrook', codename: 'Swift Shadow', screen: '', clickable: false, image: require('../../assets/Armor/TommyHPlaceHolder.jpg') },
-  // { name: 'Alex Wood', codename: 'Vortex Flash', screen: '', clickable: false, image: require('../../assets/Armor/PlaceHolder.jpg') },
-  { name: 'Rick Holly', codename: 'Valor Knight', screen: '', clickable: false, image: require('../../assets/Armor/RickPlaceHolder.jpg') },
-  { name: 'Trent Cook', codename: 'Captain', screen: '', clickable: false, image: require('../../assets/Armor/TrentPlaceHolder.jpg') },
-  { name: 'Robbie Petersen', codename: 'Quickstike', screen: '', clickable: false, image: require('../../assets/Armor/RobbiePlaceHolder.jpg') },
-  { name: 'Micheal', codename: 'Guardian Sentinel', screen: '', clickable: false, image: require('../../assets/Armor/MichealPlaceHolder.jpg') },
-  // { name: 'Kyle', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/PlaceHolder.jpg') },
+  { name: 'Tanner Despain', codename: 'Titanium', screen: '', clickable: true, image: require('../../assets/Armor/TannerDPlaceHolder.jpg') },
+  { name: 'Wesley Holbrook', codename: 'Warlock', screen: '', clickable: true, image: require('../../assets/Armor/WesleyHPlaceHolder.jpg') },
+  { name: 'Josh Larson', codename: 'Juggernaut', screen: '', clickable: true, image: require('../../assets/Armor/JoshLPlaceHolder.jpg') },
+  { name: 'Jonah Gray', codename: 'Echo Song', screen: '', clickable: true, image: require('../../assets/Armor/JonahPlaceHolder.jpg') },
+  { name: 'Joseph Slack', codename: 'Caster', screen: '', clickable: true, image: require('../../assets/Armor/JosephSPlaceHolder_cleanup.jpg') },
+  { name: 'Jaden Boyer', codename: 'Socialation', screen: '', clickable: true, image: require('../../assets/Armor/JadenPlaceHolder.jpg') },
+  { name: 'Jonas Boyer', codename: 'Sports Master', screen: '', clickable: true, image: require('../../assets/Armor/JonasPlaceHolder.jpg') },
+  { name: 'Andrew DeDen', codename: 'Loneman', screen: '', clickable: true, image: require('../../assets/Armor/AndrewDPlaceHolder.jpg') },
+  { name: 'Jimmy Larson', codename: 'Renaissance', screen: '', clickable: true, image: require('../../assets/Armor/JimmyPlaceHolder.jpg') },
+  { name: 'Johnathon Gray', codename: 'Voice Fry', screen: '', clickable: true, image: require('../../assets/Armor/JohnathonPlaceHolder_cleanup.jpg') },
+  { name: 'Nick Larsen', codename: 'Iron Quard', screen: '', clickable: true, image: require('../../assets/Armor/NickPlaceHolder.jpg') },
+  { name: 'Vanner Johnson', codename: 'Viral', screen: '', clickable: true, image: require('../../assets/Armor/Vanner3PlaceHolder.jpg') },
+  { name: 'Tommy Holbrook', codename: 'Swift Shadow', screen: '', clickable: true, image: require('../../assets/Armor/TommyHPlaceHolder.jpg') },
+  { name: 'Rick Holly', codename: 'Valor Knight', screen: '', clickable: true, image: require('../../assets/Armor/RickPlaceHolder.jpg') },
+  { name: 'Trent Cook', codename: 'Captain', screen: '', clickable: true, image: require('../../assets/Armor/TrentPlaceHolder.jpg') },
+  { name: 'Robbie Petersen', codename: 'Quickstike', screen: '', clickable: true, image: require('../../assets/Armor/RobbiePlaceHolder.jpg') },
+  { name: 'Micheal', codename: 'Guardian Sentinel', screen: '', clickable: true, image: require('../../assets/Armor/MichealPlaceHolder.jpg') },
 ];
 
 // Grid layout settings
@@ -50,6 +48,7 @@ const verticalSpacing = isDesktop ? 50 : 20;
 
 export const CobrosScreen = () => {
   const navigation = useNavigation();
+  const [previewMember, setPreviewMember] = useState(null); // State for preview modal
 
   const goToChat = () => {
     navigation.navigate('TeamChat');
@@ -95,7 +94,7 @@ export const CobrosScreen = () => {
                       { width: cardSize, height: cardSize * cardHeightMultiplier },
                       !member.clickable && styles.disabledCard
                     ]}
-                    onPress={() => member?.clickable && navigation.navigate(member.screen)}
+                    onPress={() => member.clickable && setPreviewMember(member)} // Open preview if clickable
                     disabled={!member.clickable}
                   >
                     {member?.image && (
@@ -107,7 +106,6 @@ export const CobrosScreen = () => {
                         <View style={styles.transparentOverlay} />
                       </>
                     )}
-
                     <Text style={styles.codename}>{member.codename}</Text>
                     <Text style={styles.name}>{member.name}</Text>
                   </TouchableOpacity>
@@ -116,6 +114,31 @@ export const CobrosScreen = () => {
             </View>
           ))}
         </ScrollView>
+
+        {/* Preview Modal */}
+        <Modal
+          visible={!!previewMember}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => setPreviewMember(null)}
+        >
+          <View style={styles.modalBackground}>
+            <TouchableOpacity
+              style={styles.modalContainer}
+              activeOpacity={1}
+              onPress={() => setPreviewMember(null)} // Close preview when clicking outside
+            >
+              <Image
+                source={previewMember?.image || require('../../assets/Armor/PlaceHolder.jpg')}
+                style={styles.previewImage}
+                resizeMode="contain"
+              />
+              <Text style={styles.previewCodename}>{previewMember?.codename}</Text>
+              <Text style={styles.previewName}>{previewMember?.name}</Text>
+              <View style={styles.transparentOverlay} />
+            </TouchableOpacity>
+          </View>
+        </Modal>
       </SafeAreaView>
     </ImageBackground>
   );
@@ -162,6 +185,15 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
   },
+  chatButton: {
+    padding: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 5,
+  },
+  chatText: {
+    fontSize: 24,
+    color: '#fff',
+  },
   scrollContainer: {
     paddingBottom: 20,
     flexGrow: 1,
@@ -204,10 +236,38 @@ const styles = StyleSheet.create({
     color: '#aaa',
     textAlign: 'center',
   },
-  disabledText: {
-    fontSize: 10,
-    color: '#ff4444',
-    marginTop: 5,
+  // Modal Styles
+  modalBackground: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: '90%',
+    height: '80%',
+    backgroundColor: '#000',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 15,
+  },
+  previewImage: {
+    width: '100%',
+    height: '80%',
+  },
+  previewCodename: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
+    textAlign: 'center',
+    marginTop: 10,
+  },
+  previewName: {
+    fontSize: 16,
+    fontStyle: 'italic',
+    color: '#aaa',
+    textAlign: 'center',
   },
 });
 

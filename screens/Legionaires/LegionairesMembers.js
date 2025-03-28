@@ -26,7 +26,7 @@ const codenameList = [ 'Alpha', 'Beta', 'Gamma', 'Delta', 'Epsilon', 'Zeta', 'Et
 
 // 🎯 Generate member list with image and clickable status from legionImages
 const generatedMembers = moreMembers.map((name, i) => {
-    const memberData = legionImages[name] || { image: require('../../assets/Armor/PlaceHolder.jpg'), clickable: false };
+    const memberData = legionImages[name] || { image: require('../../assets/Armor/PlaceHolder.jpg'), clickable: true };
 
     return {
         name,

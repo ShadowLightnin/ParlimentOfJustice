@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   ScrollView,
   Dimensions,
+  Modal,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import OlympiansMembers from './OlympiansMembers';
@@ -29,6 +30,7 @@ const rows = Math.ceil(OlympiansMembers.length / columns);
 
 export const OlympiansScreen = () => {
   const navigation = useNavigation();
+  const [previewMember, setPreviewMember] = useState(null); // State for preview modal
 
   const goToChat = () => {
     navigation.navigate('TeamChat');
@@ -79,7 +81,7 @@ export const OlympiansScreen = () => {
                       { width: cardSize, height: cardSize * cardHeightMultiplier },
                       !member.clickable && styles.disabledCard,
                     ]}
-                    onPress={() => member?.clickable && navigation.navigate(member.screen)}
+                    onPress={() => member?.clickable && setPreviewMember(member)} // Open preview if clickable
                     disabled={!member?.clickable}
                   >
                     {member?.image && (
@@ -107,6 +109,31 @@ export const OlympiansScreen = () => {
             </View>
           ))}
         </ScrollView>
+
+        {/* Preview Modal */}
+        <Modal
+          visible={!!previewMember}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => setPreviewMember(null)}
+        >
+          <View style={styles.modalBackground}>
+            <TouchableOpacity
+              style={styles.modalContainer}
+              activeOpacity={1}
+              onPress={() => setPreviewMember(null)} // Close preview when clicking outside
+            >
+              <Image
+                source={previewMember?.image || require('../../assets/Armor/PlaceHolder.jpg')}
+                style={styles.previewImage}
+                resizeMode="contain"
+              />
+              <Text style={styles.previewCodename}>{previewMember?.codename}</Text>
+              <Text style={styles.previewName}>{previewMember?.name}</Text>
+              <View style={styles.transparentOverlay} />
+            </TouchableOpacity>
+          </View>
+        </Modal>
       </SafeAreaView>
     </ImageBackground>
   );
@@ -204,11 +231,38 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 5,
   },
-  disabledText: {
-    fontSize: 10,
-    color: '#ff4444',
+  // Modal Styles
+  modalBackground: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: '90%',
+    height: '80%',
+    backgroundColor: '#000',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 15,
+  },
+  previewImage: {
+    width: '100%',
+    height: '80%',
+  },
+  previewCodename: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#fff',
     textAlign: 'center',
-    marginTop: 5,
+    marginTop: 10,
+  },
+  previewName: {
+    fontSize: 16,
+    fontStyle: 'italic',
+    color: '#aaa',
+    textAlign: 'center',
   },
 });
 
