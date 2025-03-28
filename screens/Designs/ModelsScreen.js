@@ -1,21 +1,30 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  Modal,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { auth, db } from "../../lib/firebase";
 import { collection, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
-import { preloadedImages } from "../../HardCoded/preloadedImages"; // Import preloaded images
+import { preloadedImages } from "../../HardCoded/preloadedImages";
 
 const ModelsScreen = () => {
   const navigation = useNavigation();
   const [uploadedImages, setUploadedImages] = useState([]);
   const [userRole, setUserRole] = useState("viewer");
+  const [previewImage, setPreviewImage] = useState(null);
 
   useEffect(() => {
     fetchUploadedImages();
     fetchUserRole();
   }, []);
 
-  // Get user role
   const fetchUserRole = async () => {
     if (!auth.currentUser) return;
     const userRef = doc(db, "users", auth.currentUser.uid);
@@ -25,48 +34,69 @@ const ModelsScreen = () => {
     }
   };
 
-  // Fetch uploaded images
   const fetchUploadedImages = async () => {
     const q = query(collection(db, "uploads"), where("type", "==", "image"));
     const querySnapshot = await getDocs(q);
-    const images = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const images = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+      contentType: doc.data().contentType || "image/jpeg",
+    }));
     setUploadedImages(images);
   };
 
-  // Delete Image
   const deleteImage = async (imageId) => {
     Alert.alert("Delete Image?", "Are you sure you want to delete this image?", [
       { text: "Cancel", style: "cancel" },
-      { text: "Delete", style: "destructive", onPress: async () => {
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: async () => {
           await deleteDoc(doc(db, "uploads", imageId));
           fetchUploadedImages();
-        }
-      }
+        },
+      },
     ]);
   };
 
   return (
     <View style={styles.container}>
-      {/* Back Button */}
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Text style={styles.backText}>← Back</Text>
       </TouchableOpacity>
 
       <Text style={styles.header}>Models</Text>
 
-      {/* Image Gallery */}
       <ScrollView contentContainerStyle={styles.imageGrid}>
         {/* Preloaded Images */}
         {preloadedImages.map((image, index) => (
-          <Image key={`pre-${index}`} source={image} style={styles.image} />
+          <TouchableOpacity key={`pre-${index}`} onPress={() => setPreviewImage(image)}>
+            <View style={styles.imageWrapper}>
+              <Image source={image} style={styles.image} />
+              <View style={styles.overlay} />
+            </View>
+          </TouchableOpacity>
         ))}
 
         {/* Uploaded Images */}
         {uploadedImages.map((image) => (
           <View key={image.id} style={styles.imageContainer}>
-            <Image source={{ uri: image.url }} style={styles.image} />
+            <TouchableOpacity onPress={() => setPreviewImage({ uri: image.url })}>
+              <View style={styles.imageWrapper}>
+                <Image
+                  source={{ uri: image.url }}
+                  style={styles.image}
+                  resizeMode="cover"
+                />
+                <View style={styles.overlay} />
+              </View>
+            </TouchableOpacity>
+
             {(auth.currentUser?.uid === image.userId || userRole === "admin") && (
-              <TouchableOpacity style={styles.deleteButton} onPress={() => deleteImage(image.id)}>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => deleteImage(image.id)}
+              >
                 <Text style={styles.deleteText}>X</Text>
               </TouchableOpacity>
             )}
@@ -74,10 +104,40 @@ const ModelsScreen = () => {
         ))}
       </ScrollView>
 
-      {/* Upload Button */}
-      <TouchableOpacity style={styles.uploadButton} onPress={() => navigation.navigate("UploadDesign", { type: "image" })}>
+      <TouchableOpacity
+        style={styles.uploadButton}
+        onPress={() => navigation.navigate("UploadDesign", { type: "image" })}
+      >
         <Text style={styles.uploadText}>Upload New Image</Text>
       </TouchableOpacity>
+
+      {/* Image Preview Modal */}
+      <Modal
+        visible={!!previewImage}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setPreviewImage(null)}
+      >
+        <View style={styles.modalBackground}>
+          <TouchableOpacity
+            style={styles.modalContainer}
+            activeOpacity={1}
+            onPress={() => setPreviewImage(null)}
+          >
+            <Image
+              source={previewImage}
+              style={styles.previewImage}
+              resizeMode="contain"
+            />
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setPreviewImage(null)}
+            >
+              <Text style={styles.closeText}>✖</Text>
+            </TouchableOpacity>
+          </TouchableOpacity>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -85,15 +145,82 @@ const ModelsScreen = () => {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#1c1c1c", paddingTop: 50, alignItems: "center" },
   header: { fontSize: 24, fontWeight: "bold", color: "#fff", marginBottom: 10 },
-  backButton: { position: "absolute", top: 40, left: 20, padding: 10, backgroundColor: "rgba(255, 255, 255, 0.2)", borderRadius: 5 },
+  backButton: {
+    position: "absolute",
+    top: 40,
+    left: 20,
+    padding: 10,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    borderRadius: 5,
+  },
   backText: { fontSize: 18, color: "#00b3ff", fontWeight: "bold" },
   imageGrid: { flexDirection: "row", flexWrap: "wrap", justifyContent: "center", paddingVertical: 20 },
-  image: { width: 100, height: 100, margin: 5, borderRadius: 10 },
+
+  // Image and Overlay Styles
+  imageWrapper: {
+    position: "relative",
+  },
+  image: {
+    width: 100,
+    height: 100,
+    margin: 5,
+    borderRadius: 10,
+    backgroundColor: "#444",
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.3)", // Transparent cover
+    borderRadius: 10,
+  },
+
   imageContainer: { position: "relative" },
-  deleteButton: { position: "absolute", top: 5, right: 5, backgroundColor: "red", borderRadius: 15, width: 30, height: 30, alignItems: "center", justifyContent: "center" },
+  deleteButton: {
+    position: "absolute",
+    top: 5,
+    right: 5,
+    backgroundColor: "red",
+    borderRadius: 15,
+    width: 30,
+    height: 30,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   deleteText: { color: "white", fontSize: 16, fontWeight: "bold" },
   uploadButton: { marginTop: 20, backgroundColor: "#00b3ff", padding: 15, borderRadius: 8 },
   uploadText: { fontSize: 18, color: "#fff", fontWeight: "bold" },
+
+  // Modal Styles
+  modalBackground: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.9)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContainer: {
+    width: "90%",
+    height: "80%",
+    backgroundColor: "#000",
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 15,
+  },
+  previewImage: {
+    width: "100%",
+    height: "100%",
+  },
+  closeButton: {
+    position: "absolute",
+    top: 20,
+    right: 20,
+    backgroundColor: "#ff0000",
+    borderRadius: 20,
+    width: 35,
+    height: 35,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  closeText: { color: "#fff", fontSize: 18, fontWeight: "bold" },
 });
 
 export default ModelsScreen;

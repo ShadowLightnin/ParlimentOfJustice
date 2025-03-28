@@ -12,15 +12,20 @@ const MontroseManorScreen = () => {
 
     return (
         <View style={styles.container}>
+            {/* Background Image */}
+            {/* <Image
+                source={require("../../../assets/Space.jpg")} // Your background image
+                style={styles.backgroundImage}
+            /> */}
             <Text style={styles.text}>Montrose Manor... Coming Soon</Text>
             
             {/* 🌍 Make the planet clickable */}
-            {/* <TouchableOpacity onPress={handlePlanetClick}> */}
+            <TouchableOpacity onPress={handlePlanetClick}>
                 <Image 
                     source={require("../../../assets/ExoPlanet.jpg")}
                     style={styles.planetImage}
                 />
-            {/* </TouchableOpacity> */}
+            </TouchableOpacity>
 
             {/* 🔙 Back Button */}
             <TouchableOpacity onPress={() => navigation.navigate("BackWarpScreen")} style={styles.backButton}>
@@ -36,6 +41,13 @@ const styles = StyleSheet.create({
         backgroundColor: "#000",
         alignItems: "center",
         justifyContent: "center",
+    },
+    backgroundImage: {
+        position: "absolute", // Keep the background behind everything else
+        width: "100%",
+        height: "100%",
+        resizeMode: "cover", // Make sure the background covers the screen
+        zIndex: -1, // Ensure the background stays behind other elements
     },
     planetImage: {
         width: 300,

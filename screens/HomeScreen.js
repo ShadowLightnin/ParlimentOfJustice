@@ -27,7 +27,7 @@ const factions = [
   { name: 'Guardians of Justice', screen: 'JusticeScreen', clickable: true, image: require('../assets/BackGround/Justice.jpg') },
   { name: 'Villains', screen: 'VillainsScreen', clickable: true, image: require('../assets/BackGround/VillainsHub.jpg') },
   { name: 'Designs', screen: 'Designs', clickable: true, image: require('../assets/BackGround/donut_hologram.png') },
-  { name: 'Admin', screen: 'Admin', clickable: true, image: require('../assets/BackGround/donut_hologram.png') },
+  // { name: 'Admin', screen: 'Admin', clickable: true, image: require('../assets/BackGround/donut_hologram.png') },
 ];
 
 export const HomeScreen = () => {
