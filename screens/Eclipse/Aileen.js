@@ -15,9 +15,9 @@ const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 // Array of Aileen-related images (replace with your actual image paths)
 const aileenImages = [
-  { name: "Aileen Default", image: require("../../assets/Armor/AileenPlaceHolder2.jpg"), clickable: true },
-  { name: "Aileen Variant 1", image: require("../../assets/Armor/AileenPlaceHolder.jpg"), clickable: true }, // Example placeholder
-  { name: "Aileen Variant 2", image: require("../../assets/Armor/AileenPlaceHolder3.jpg"), clickable: true }, // Example placeholder
+  { name: "", image: require("../../assets/Armor/AileenPlaceHolder2.jpg"), clickable: true },
+  { name: "", image: require("../../assets/Armor/AileenPlaceHolder.jpg"), clickable: true }, // Example placeholder
+  { name: "", image: require("../../assets/Armor/AileenPlaceHolder3.jpg"), clickable: true }, // Example placeholder
   // Add more images here as needed
 ];
 
@@ -186,8 +186,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   card: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.4 : windowWidth * 0.7, // 40% on desktop, 70% on mobile
-    height: isDesktop ? SCREEN_HEIGHT * 0.5 : SCREEN_HEIGHT * 0.6, // Slightly taller on mobile
+    width: isDesktop ? windowWidth * 0.2 : windowWidth * 0.7, // 40% on desktop, 70% on mobile
+    height: isDesktop ? SCREEN_HEIGHT * 0.7 : SCREEN_HEIGHT * 0.6, // Slightly taller on mobile
     borderRadius: 15,
     overflow: "hidden",
     elevation: 5,
@@ -195,7 +195,12 @@ const styles = StyleSheet.create({
     marginRight: 20,
   }),
   clickable: {
+    borderColor: 'gold',
     borderWidth: 2,
+    shadowColor: 'gold',
+    shadowOffset: { width: 0, height: 5 },
+    shadowRadius: 8,
+    shadowOpacity: 0.7,
   },
   notClickable: {
     opacity: 0.8,
