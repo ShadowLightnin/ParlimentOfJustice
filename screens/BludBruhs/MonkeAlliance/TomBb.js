@@ -33,7 +33,7 @@ const TomBb = () => {
         {/* Armor Image */}
         <View style={styles.imageContainer}>
           <Image 
-            source={require("../../../assets/Armor/TomCPlaceHolder.jpg")} 
+            source={require("../../../assets/Armor/TomCPlaceHolder3_cleanup.jpg")} 
             style={styles.armorImage} 
           />
           {/* Transparent Overlay for Image Protection */}

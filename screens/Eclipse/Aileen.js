@@ -16,8 +16,13 @@ const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 // Array of Aileen-related images (replace with your actual image paths)
 const aileenImages = [
   { name: "", image: require("../../assets/Armor/AileenPlaceHolder2.jpg"), clickable: true },
-  { name: "", image: require("../../assets/Armor/AileenPlaceHolder.jpg"), clickable: true }, // Example placeholder
-  { name: "", image: require("../../assets/Armor/AileenPlaceHolder3.jpg"), clickable: true }, // Example placeholder
+  { name: "", image: require("../../assets/Armor/AileenPlaceHolder.jpg"), clickable: true },
+  { name: "", image: require("../../assets/Armor/AileenPlaceHolder3.jpg"), clickable: true },
+  { name: "", image: require("../../assets/Armor/AileenPlaceHolder5.jpg"), clickable: true },
+  { name: "", image: require("../../assets/Armor/AileenPlaceHolder6.jpg"), clickable: true },
+  { name: "", image: require("../../assets/Armor/AileenPlaceHolder9.jpg"), clickable: true },
+  { name: "", image: require("../../assets/Armor/AileenPlaceHolder8.jpg"), clickable: true },
+  { name: "", image: require("../../assets/Armor/AileenPlaceHolder7.jpg"), clickable: true },
   // Add more images here as needed
 ];
 

@@ -19,7 +19,7 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 const members = [
   { name: 'Zeke', codename: 'Enderstrike', screen: 'Zeke', clickable: true, image: require('../../../assets/Armor/ZekePlaceHolder.jpg') },
   { name: 'Elijah Potter', codename: 'Chaos Wither', screen: 'Elijah', clickable: true, image: require('../../../assets/Armor/ElijahPlaceHolder.jpg') },
-  { name: 'Tom C', codename: 'Thunder Whisperer', screen: 'TomBb', clickable: true, image: require('../../../assets/Armor/TomCPlaceHolder.jpg') },
+  { name: 'Tom C', codename: 'Thunder Whisperer', screen: 'TomBb', clickable: true, image: require('../../../assets/Armor/TomCPlaceHolder3_cleanup.jpg') },
   { name: 'Ammon T', codename: 'Quick Wit', screen: 'AmmonT', clickable: true, image: require('../../../assets/Armor/AmmonTPlaceHolder.jpg') },
   { name: 'Eli C', codename: 'Shawdow Hunter', screen: 'Eli', clickable: true, image: require('../../../assets/Armor/EliPlaceHolder.jpg') },
   { name: 'Ethan T', codename: 'Bolt Watcher', screen: 'EthanT', clickable: true, image: require('../../../assets/Armor/EthanPlaceHolder.jpg') },
