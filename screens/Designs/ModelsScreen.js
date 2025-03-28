@@ -21,23 +21,23 @@ const ModelsScreen = () => {
   const [uploadedImages, setUploadedImages] = useState([]);
   const [userRole, setUserRole] = useState("viewer");
   const [previewImage, setPreviewImage] = useState(null);
-  const [backgroundImage, setBackgroundImage] = useState(null); // State for background image
+  const [backgroundImage, setBackgroundImage] = useState(null);
 
   useEffect(() => {
     fetchUploadedImages();
     fetchUserRole();
-    // Set initial background to the first preloaded image (optional)
     if (preloadedImages.length > 0) {
-      setBackgroundImage(preloadedImages[0]);
+      setBackgroundImage(preloadedImages[0]); // Set initial background
     }
   }, []);
 
   const fetchUserRole = async () => {
     if (!auth.currentUser) return;
     const userRef = doc(db, "users", auth.currentUser.uid);
-    const userSnap = await getDocs(userRef);
-    if (userSnap.exists()) {
-      setUserRole(userSnap.data().role);
+    const userSnap = await getDocs(userRef); // This was incorrect; should use getDoc
+    const userDoc = await getDocs(query(collection(db, "users"), where("uid", "==", auth.currentUser.uid)));
+    if (userDoc.docs.length > 0) {
+      setUserRole(userDoc.docs[0].data().role || "viewer");
     }
   };
 
@@ -61,7 +61,6 @@ const ModelsScreen = () => {
         onPress: async () => {
           await deleteDoc(doc(db, "uploads", imageId));
           fetchUploadedImages();
-          // Reset background if the deleted image was the current background
           if (uploadedImages.find((img) => img.id === imageId)?.url === backgroundImage?.uri) {
             setBackgroundImage(preloadedImages[0] || null);
           }
@@ -71,13 +70,13 @@ const ModelsScreen = () => {
   };
 
   const handleImagePress = (image) => {
-    setPreviewImage(image);
-    setBackgroundImage(image); // Set the selected image as background
+    setPreviewImage(image); // Show in preview modal
+    setBackgroundImage(image); // Set as background
   };
 
   return (
     <ImageBackground
-      source={backgroundImage || { uri: "https://via.placeholder.com/150" }} // Fallback if no image
+      source={backgroundImage || { uri: "https://via.placeholder.com/150" }}
       style={styles.background}
     >
       <View style={styles.overlay}>
@@ -88,7 +87,6 @@ const ModelsScreen = () => {
         <Text style={styles.header}>Models</Text>
 
         <ScrollView contentContainerStyle={styles.imageGrid}>
-          {/* Preloaded Images */}
           {preloadedImages.map((image, index) => (
             <TouchableOpacity
               key={`pre-${index}`}
@@ -101,7 +99,6 @@ const ModelsScreen = () => {
             </TouchableOpacity>
           ))}
 
-          {/* Uploaded Images */}
           {uploadedImages.map((image) => (
             <View key={image.id} style={styles.imageContainer}>
               <TouchableOpacity onPress={() => handleImagePress({ uri: image.url })}>
@@ -129,12 +126,11 @@ const ModelsScreen = () => {
 
         <TouchableOpacity
           style={styles.uploadButton}
-          onPress={() => navigation.navigate("UploadDesign", { type: "image" })}
+          onPress={() => navigation.navigate("UploadDesign", { type: "image", callback: fetchUploadedImages })}
         >
           <Text style={styles.uploadText}>Upload New Image</Text>
         </TouchableOpacity>
 
-        {/* Image Preview Modal */}
         <Modal
           visible={!!previewImage}
           transparent={true}
@@ -171,11 +167,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 0,
-    resizeMode: "cover", // Ensure background fits nicely
+    resizeMode: "cover",
   },
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent overlay for readability
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
     paddingTop: 50,
     alignItems: "center",
   },
@@ -186,6 +182,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     borderRadius: 5,
+    zIndex: 10, // Ensure clickable
   },
   backText: {
     fontSize: 18,
@@ -216,7 +213,7 @@ const styles = StyleSheet.create({
   },
   imageOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.3)", // Overlay for individual images
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
     borderRadius: 10,
   },
   imageContainer: {

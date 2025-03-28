@@ -1,27 +1,28 @@
+import { auth, db, storage } from "../lib/firebase";
+import { doc, getDoc, addDoc, collection } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+
 export const uploadDesign = async (designData, file) => {
   try {
     const user = auth.currentUser;
     if (!user) throw new Error("❌ User not logged in");
 
-    // Fetch user role
     const userRef = doc(db, "users", user.uid);
     const userSnap = await getDoc(userRef);
 
     if (!userSnap.exists()) throw new Error("❌ User data not found");
 
     const userData = userSnap.data();
-    console.log(`✅ User Role: ${userData.role}`); // Debug Role
+    console.log(`✅ User Role: ${userData.role}`);
 
     if (userData.role !== "editor" && userData.role !== "admin") {
       throw new Error("❌ Permission Denied: You must be an Editor or Admin to upload.");
     }
 
-    // Upload File to Firebase Storage
-    const fileRef = ref(storage, `uploads/${file.name}`);
+    const fileRef = ref(storage, `uploads/${designData.name}`);
     await uploadBytes(fileRef, file);
     const fileUrl = await getDownloadURL(fileRef);
 
-    // Save Design Data in Firestore
     const newDesign = {
       name: designData.name,
       category: designData.category,

@@ -14,7 +14,7 @@ const familyData = [
   {
     family: 'Jensen',
     members: [
-      'Savanna', 'Lee', 'Emily', 'Samantha',
+      'Savannah', 'Lee', 'Emily', 'Samantha',
       'Ella',
     ],
   },
@@ -40,20 +40,20 @@ const familyData = [
   {
     family: 'Stillman',
     members: [
-      'Wesley', 'Melisa', 'Jackson', 'Mason',
+      'Wesley', 'Melissa', 'Jackson', 'Mason',
       'Rylie', 'Sammy',
     ],
   },
   {
     family: 'Stillman',
     members: [
-      'David', 'Isiade', 'Darron', 'Isabel',
+      'David', 'Isaydy', 'Darron', 'Isabel',
     ],
   },
   {
     family: 'Stillman',
     members: [
-      'Gary jr', 'Sara', 'Josh', 'Garden',
+      'Gary jr', 'Sarah', 'Josh', 'Garden',
       'Sophia', 'Paisley', 'Ellie',
     ],
   },
@@ -130,7 +130,7 @@ const familyData = [
 const characterImages = {
   Angela: require('../../assets/Armor/AngelaPlaceHolder.jpg'),
   Todd: require('../../assets/Armor/ToddPlaceHolder.jpg'),
-  Savanna: require('../../assets/Armor/SavannaPlaceHolder.jpg'),
+  Savannah: require('../../assets/Armor/SavannaPlaceHolder.jpg'),
   Lee: require('../../assets/Armor/LeePlaceHolder.jpg'),
   Emily: require('../../assets/Armor/EmilyPlaceHolder.jpg'),
   Samantha: require('../../assets/Armor/SamanthaPlaceHolder.jpg'),
@@ -149,17 +149,17 @@ const characterImages = {
   Whitney: require('../../assets/Armor/WhitneyPlaceHolder_cleanup.jpg'),
   Vinson: require('../../assets/Armor/VinsonPlaceHolder.jpg'),
   Wesley: require('../../assets/Armor/WesleySPlaceHolder_cleanup.jpg'),
-  Melisa: require('../../assets/Armor/MelisaPlaceHolder.jpg'),
+  Melissa: require('../../assets/Armor/MelisaPlaceHolder.jpg'),
   Jackson: require('../../assets/Armor/JacksonPlaceHolder.jpg'),
   Mason: require('../../assets/Armor/MasonSPlaceHolder.jpg'),
   Rylie: require('../../assets/Armor/RyliePlaceHolder.jpg'),
   Sammy: require('../../assets/Armor/SammyPlaceHolder.jpg'),
   David: require('../../assets/Armor/DavidPlaceHolder.jpg'),
-  Isiade: require('../../assets/Armor/IsiadePlaceHolder.jpg'),
+  Isaydy: require('../../assets/Armor/IsiadePlaceHolder.jpg'),
   Darron: require('../../assets/Armor/DarronPlaceHolder.jpg'),
   Isabel: require('../../assets/Armor/IsabelPlaceHolder.jpg'),
   'Gary jr': require('../../assets/Armor/GaryjrPlaceHolder.jpg'),
-  Sara: require('../../assets/Armor/SaraPlaceHolder.jpg'),
+  Sarah: require('../../assets/Armor/SaraPlaceHolder.jpg'),
   Josh: require('../../assets/Armor/JoshSPlaceHolder.jpg'),
   Garden: require('../../assets/Armor/GardenPlaceHolder.jpg'),
   Sophia: require('../../assets/Armor/SophiaPlaceHolder.jpg'),

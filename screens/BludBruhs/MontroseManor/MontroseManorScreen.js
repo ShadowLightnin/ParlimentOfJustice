@@ -17,7 +17,6 @@ const MontroseManorScreen = () => {
                 source={require("../../../assets/Space.jpg")} // Your background image
                 style={styles.backgroundImage}
             /> */}
-            <Text style={styles.text}>Montrose Manor... Coming Soon</Text>
             
             {/* 🌍 Make the planet clickable */}
             <TouchableOpacity onPress={handlePlanetClick}>
