@@ -1,26 +1,29 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { View, Image, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 const MontroseManorScreen = () => {
     const navigation = useNavigation();
 
-    // 🌀 Warp Animation for Back Transition
-    const handleBack = () => {
-        navigation.navigate("BackWarpScreen");  // Navigate to BackWarpScreen
+    // 🌀 Navigate to the Landing Screen
+    const handlePlanetClick = () => {
+        navigation.navigate("Landing");
     };
 
     return (
         <View style={styles.container}>
             <Text style={styles.text}>Montrose Manor... Coming Soon</Text>
-            {/* Planet Image */}
-            <Image
-                source={require("../../../assets/ExoPlanet.jpg")}
-                style={styles.planetImage}
-            />
+            
+            {/* 🌍 Make the planet clickable */}
+            {/* <TouchableOpacity onPress={handlePlanetClick}> */}
+                <Image 
+                    source={require("../../../assets/ExoPlanet.jpg")}
+                    style={styles.planetImage}
+                />
+            {/* </TouchableOpacity> */}
 
-            {/* Back Button */}
-            <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+            {/* 🔙 Back Button */}
+            <TouchableOpacity onPress={() => navigation.navigate("BackWarpScreen")} style={styles.backButton}>
                 <Text style={styles.backButtonText}>⬅️ Back to Sam</Text>
             </TouchableOpacity>
         </View>
@@ -52,7 +55,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "bold",
     },
-    text:{
+    text: {
         color: "#FFF",
         fontSize: 24,
         fontWeight: "bold",
