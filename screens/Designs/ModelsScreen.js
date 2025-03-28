@@ -122,19 +122,22 @@ const ModelsScreen = () => {
           <TouchableOpacity
             style={styles.modalContainer}
             activeOpacity={1}
-            onPress={() => setPreviewImage(null)}
+            onPress={() => setPreviewImage(null)} // Close preview when clicking outside the image
           >
             <Image
               source={previewImage}
               style={styles.previewImage}
               resizeMode="contain"
             />
+            {/* Close button inside the preview */}
             <TouchableOpacity
               style={styles.closeButton}
               onPress={() => setPreviewImage(null)}
             >
-              <Text style={styles.closeText}>✖</Text>
+              <Text style={styles.closeText}>X</Text>
             </TouchableOpacity>
+            {/* Transparent overlay to prevent saving */}
+            <View style={styles.transparentOverlay} />
           </TouchableOpacity>
         </View>
       </Modal>
@@ -211,16 +214,21 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     position: "absolute",
-    top: 20,
-    right: 20,
-    backgroundColor: "#ff0000",
-    borderRadius: 20,
-    width: 35,
-    height: 35,
+    top: 10,
+    right: 10,
+    backgroundColor: "rgba(255, 255, 255, 0.5)",
+    borderRadius: 15,
+    width: 30,
+    height: 30,
     alignItems: "center",
     justifyContent: "center",
   },
-  closeText: { color: "#fff", fontSize: 18, fontWeight: "bold" },
+  closeText: { color: "#000", fontSize: 18, fontWeight: "bold" },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0)', // Transparent overlay to prevent saving
+    zIndex: 1, // Ensures overlay blocks long-press without affecting button clicks
+  },
 });
 
 export default ModelsScreen;
