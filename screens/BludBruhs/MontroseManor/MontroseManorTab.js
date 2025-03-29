@@ -181,6 +181,11 @@ const MontroseManorTab = () => {
     }
   };
 
+  const goToHomeScreen = () => {
+    console.log("Navigating to HomeScreen at:", new Date().toISOString());
+    navigation.navigate('Home');
+  };
+
   const renderBookCard = (book) => (
     <View key={book.id} style={styles.bookContainer}>
       <TouchableOpacity
@@ -240,6 +245,14 @@ const MontroseManorTab = () => {
         style={styles.backButton}
       >
         <Text style={styles.backButtonText}>Escape</Text>
+      </TouchableOpacity>
+
+      {/* Book Button to HomeScreen */}
+      <TouchableOpacity
+        onPress={goToHomeScreen}
+        style={styles.homeButton}
+      >
+        <Text style={styles.homeButtonText}>📖</Text>
       </TouchableOpacity>
 
       <ScrollView contentContainerStyle={styles.verticalScrollContainer}>
@@ -313,6 +326,19 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   backButtonText: { color: "#FFF", fontSize: 18, fontWeight: "bold" },
+  homeButton: {
+    position: "absolute",
+    top: 40,
+    right: 20,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    padding: 10,
+    borderRadius: 8,
+    zIndex: 10,
+  },
+  homeButtonText: {
+    fontSize: 24,
+    color: "#FFF",
+  },
   formContainer: { padding: 20, alignItems: "center" },
   input: {
     backgroundColor: "#FFF",

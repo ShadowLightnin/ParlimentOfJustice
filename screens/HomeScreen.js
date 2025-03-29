@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useContext } from 'react';
 import { 
   View, Text, ImageBackground, TouchableOpacity, StyleSheet, FlatList, 
-  Animated, Alert, Dimensions 
+  Animated, Alert, Dimensions, ScrollView 
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { signOut } from 'firebase/auth';
@@ -58,6 +58,17 @@ export const HomeScreen = () => {
     navigation.navigate('PublicChat');
   };
 
+  const goToMontroseManor = () => {
+    try {
+      console.log("Attempting to navigate to MontroseManorTab at:", new Date().toISOString());
+      navigation.navigate('MontroseManorTab');
+      console.log("Navigation to MontroseManorTab triggered successfully");
+    } catch (error) {
+      console.error("Navigation to MontroseManorTab failed:", error.message);
+      Alert.alert('Navigation Error', 'Could not navigate to Montrose Manor. Check the screen name or navigation setup.');
+    }
+  };
+
   const renderFaction = ({ item }) => (
     <Animated.View style={{ opacity: fadeAnim }}>
       <Text style={styles.factionTitle}>
@@ -88,27 +99,39 @@ export const HomeScreen = () => {
 
   return (
     <ImageBackground source={require('../assets/BackGround/Parliment.png')} style={styles.background}>
-      <View style={styles.container}>
-        {/* Header and Buttons */}
-        <View style={styles.topBar}>
-          <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-            <Text style={styles.logoutText}>🚪</Text>
-          </TouchableOpacity>
-          <Text style={styles.header}>The Parliament of Justice</Text>
-          <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
-            <Text style={styles.chatText}>🗨️</Text>
-          </TouchableOpacity>
-        </View>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.container}>
+          {/* Header and Buttons */}
+          <View style={styles.topBar}>
+            <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+              <Text style={styles.logoutText}>🚪</Text>
+            </TouchableOpacity>
+            <Text style={styles.header}>The Parliament of Justice</Text>
+            <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
+              <Text style={styles.chatText}>🗨️</Text>
+            </TouchableOpacity>
+          </View>
 
-        {/* Factions List */}
-        <FlatList
-          data={factions}
-          keyExtractor={(item) => item.name}
-          renderItem={renderFaction}
-          numColumns={numColumns}
-          contentContainerStyle={styles.listContainer}
-        />
-      </View>
+          {/* Factions List Container */}
+          <View style={styles.factionsContainer}>
+            <FlatList
+              data={factions}
+              keyExtractor={(item) => item.name}
+              renderItem={renderFaction}
+              numColumns={numColumns}
+              contentContainerStyle={styles.listContainer}
+              scrollEnabled={false} // Disable FlatList scrolling, let ScrollView handle it
+            />
+          </View>
+
+          {/* Book Button Below Factions */}
+          <View style={styles.bookButtonContainer}>
+            <TouchableOpacity onPress={goToMontroseManor} style={styles.bookButton}>
+              <Text style={styles.bookButtonText}>📖</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
     </ImageBackground>
   );
 };
@@ -121,11 +144,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  scrollContainer: {
+    flexGrow: 1,
+    width: SCREEN_WIDTH,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+  },
   container: {
     flex: 1,
-    width: SCREEN_WIDTH,
     padding: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
   },
   topBar: {
     width: "100%",
@@ -143,6 +169,10 @@ const styles = StyleSheet.create({
     textShadowRadius: 10,
     textAlign: 'center',
     flexShrink: 1,
+  },
+  factionsContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   listContainer: {
     justifyContent: 'center',
@@ -201,5 +231,20 @@ const styles = StyleSheet.create({
   logoutText: {
     fontSize: 22,
     color: "white",
+  },
+  bookButtonContainer: {
+    alignItems: 'center',
+    paddingVertical: 20,
+  },
+  bookButton: {
+    padding: 15,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bookButtonText: {
+    fontSize: isDesktop ? 30 : 24,
+    color: '#fff',
   },
 });
