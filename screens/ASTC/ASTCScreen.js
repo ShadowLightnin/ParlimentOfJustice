@@ -19,6 +19,19 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 // 🎵 Background Music
 let backgroundSound;
 
+// 🌄 Background Images Array
+const backgroundImages = [
+  require('../../assets/Halo/6.jpg'),
+  require('../../assets/Halo/2.jpg'),
+  require('../../assets/Halo/7.jpg'),
+  require('../../assets/Halo/8.jpg'),
+  require('../../assets/Halo/18.jpg'),
+  require('../../assets/Halo/12.jpg'),
+  require('../../assets/Halo/33.jpg'),
+  require('../../assets/Halo/14.jpg'),
+  require('../../assets/Halo/19.jpg'),
+];
+
 const playBackgroundMusic = async () => {
   if (!backgroundSound) {
     const { sound } = await Audio.Sound.createAsync(
@@ -61,18 +74,22 @@ const ASTCScreen = () => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const topPosition = useState(new Animated.Value(-SCREEN_HEIGHT * 1))[0]; 
+  const [backgroundImage, setBackgroundImage] = useState(
+    backgroundImages[Math.floor(Math.random() * backgroundImages.length)]
+  );
 
   // 🎯 Control key stopping point
   const keyStopPosition = SCREEN_WIDTH > 600 ? SCREEN_HEIGHT * 0.30 : SCREEN_HEIGHT * 0.40;
 
   useEffect(() => {
     if (isFocused) {
+      setBackgroundImage(backgroundImages[Math.floor(Math.random() * backgroundImages.length)]);
       playBackgroundMusic();
     }
+    // Removed stopBackgroundMusic from cleanup here to keep music playing when navigating forward
     return () => {
-      if (!isFocused) {
-        stopBackgroundMusic(); 
-      }
+      // Only cleanup when component unmounts completely, not on navigation
+      // We handle stopping music explicitly in handleBackPress instead
     };
   }, [isFocused]);
 
@@ -81,7 +98,12 @@ const ASTCScreen = () => {
       toValue: keyStopPosition,
       duration: 5000,
       useNativeDriver: false,
-    }).start(() => navigation.navigate('SpartansScreen'));
+    }).start(() => navigation.navigate('SpartansScreen')); // Music continues here
+  };
+
+  const handleBackPress = async () => {
+    await stopBackgroundMusic(); // Explicitly stop music only on back press
+    navigation.goBack();
   };
 
   const cardSize = SCREEN_WIDTH > 600 ? 200 : 120; 
@@ -89,7 +111,7 @@ const ASTCScreen = () => {
   const cardSpacing = SCREEN_WIDTH > 600 ? 40 : 10; 
 
   return (
-    <ImageBackground source={require('../../assets/Halo/6.jpg')} style={styles.background}>
+    <ImageBackground source={backgroundImage} style={styles.background}>
       <SafeAreaView style={styles.container}>
         {/* 🛡️ Spartan Activation Animation */}
         <Animated.View 
@@ -103,7 +125,7 @@ const ASTCScreen = () => {
 
         {/* Header Section */}
         <View style={styles.headerWrapper}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
           <Text style={styles.header}>Advanced Spartan 3 Corp</Text>
@@ -151,7 +173,6 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row' },
   card: { backgroundColor: '#1c1c1c', justifyContent: 'center', alignItems: 'center', borderRadius: 8, padding: 5 },
   name: { fontSize: 12, fontWeight: 'bold', color: '#fff', textAlign: 'center', marginTop: 5 },
-
   imageContainer: { position: 'absolute', transform: [{ translateX: -50 }] },
   image: { width: 200, height: 200, resizeMode: 'contain' },
 });

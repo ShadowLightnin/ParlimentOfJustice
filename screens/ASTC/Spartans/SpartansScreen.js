@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,10 +9,50 @@ import {
   SafeAreaView,
   Dimensions,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 
 // Screen dimensions
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
+
+// Background Images Array
+const backgroundImages = [
+  require('../../../assets/Halo/26.jpg'),
+  require('../../../assets/Halo/26.jpg'),
+  require('../../../assets/Halo/5.jpg'),  // Add more images as needed
+  require('../../../assets/Halo/9.jpg'),
+  require('../../../assets/Halo/9.png'),
+  require('../../../assets/Halo/10.jpg'),
+  require('../../../assets/Halo/26.jpg'),
+  require('../../../assets/Halo/11.jpg'),
+  require('../../../assets/Halo/13.jpg'),
+  require('../../../assets/Halo/26.jpg'),
+  require('../../../assets/Halo/15.jpg'),
+  require('../../../assets/Halo/26.jpg'),
+  require('../../../assets/Halo/26.jpg'),
+  require('../../../assets/Halo/16.jpg'),
+  require('../../../assets/Halo/18.jpg'),
+  require('../../../assets/Halo/19.jpg'),
+  require('../../../assets/Halo/20.png'),
+  require('../../../assets/Halo/26.jpg'),
+  require('../../../assets/Halo/21.jpg'),
+  require('../../../assets/Halo/22.jpg'),
+  require('../../../assets/Halo/23.jpg'),
+  require('../../../assets/Halo/24.jpg'),
+  require('../../../assets/Halo/26.jpg'),
+  require('../../../assets/Halo/25.jpg'),
+  require('../../../assets/Halo/26.jpg'),
+  require('../../../assets/Halo/26.jpg'),
+  require('../../../assets/Halo/27.jpg'),
+  require('../../../assets/Halo/28.jpg'),
+  require('../../../assets/Halo/29.jpg'),
+  require('../../../assets/Halo/26.jpg'),
+  require('../../../assets/Halo/30.jpg'),
+  require('../../../assets/Halo/31.jpg'),
+  require('../../../assets/Halo/32.png'),
+  require('../../../assets/Halo/33.jpg'),
+
+  // Add additional background image paths here based on your assets
+];
 
 // Member Data
 const members = [
@@ -35,6 +75,17 @@ const getMemberAtPosition = (row, col) =>
 
 const SpartansScreen = () => {
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
+  const [backgroundImage, setBackgroundImage] = useState(
+    backgroundImages[Math.floor(Math.random() * backgroundImages.length)]
+  );
+
+  useEffect(() => {
+    if (isFocused) {
+      // Set new random background when screen is focused
+      setBackgroundImage(backgroundImages[Math.floor(Math.random() * backgroundImages.length)]);
+    }
+  }, [isFocused]);
 
   const isDesktop = SCREEN_WIDTH > 600; 
   const cardSize = isDesktop ? 320 : 100; 
@@ -42,7 +93,7 @@ const SpartansScreen = () => {
 
   return (
     <ImageBackground 
-      source={require('../../../assets/BackGround/26.jpg')} 
+      source={backgroundImage} 
       style={styles.background}
     >
       <SafeAreaView style={styles.container}>
