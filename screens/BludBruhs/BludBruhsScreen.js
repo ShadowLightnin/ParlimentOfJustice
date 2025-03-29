@@ -21,7 +21,7 @@ const members = [
   { name: 'James', codename: 'Shadowmind', screen: 'JamesBb', clickable: true, position: [1, 1], image: require('../../assets/Armor/JamesBbPlaceHolder.jpg') },
   { name: 'Tanner', codename: 'Wolff', screen: 'TannerBb', clickable: true, position: [1, 2], image: require('../../assets/Armor/TannerBbPlaceHolder.jpg') },
   { name: '', codename: 'Ranger Squad', screen: 'RangerSquad', clickable: true, position: [2, 0], image: require('../../assets/BackGround/RangerSquad.jpg') },
-  { name: '?', codename: '', screen: 'MontroseManorTab', clickable: true, position: [2, 1] }, // New subtle button
+  { name: '.', codename: '', screen: 'MontroseManorTab', clickable: true, position: [2, 1] }, // Subtle button
   { name: '', codename: 'MonkeAlliance', screen: 'MonkeAllianceScreen', clickable: true, position: [2, 2], image: require('../../assets/BackGround/Monke.jpg') },
 ];
 
@@ -36,6 +36,11 @@ const BludBruhsScreen = () => {
     navigation.navigate('TeamChat');
   };
 
+  const goToHomeScreen = () => {
+    console.log("Navigating to HomeScreen from BludBruhsScreen at:", new Date().toISOString());
+    navigation.navigate('Home');
+  };
+
   const isDesktop = SCREEN_WIDTH > 600;
   const cardSize = isDesktop ? 160 : 100;
   const cardSpacing = isDesktop ? 25 : 10;
@@ -48,7 +53,7 @@ const BludBruhsScreen = () => {
       <SafeAreaView style={styles.container}>
         {/* Header & Back Button */}
         <View style={styles.headerWrapper}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={styles.backButton} onPress={goToHomeScreen}>
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
           <Text style={styles.header}>Thunder Born</Text>
@@ -70,7 +75,7 @@ const BludBruhsScreen = () => {
                       styles.card,
                       { width: cardSize, height: cardSize * 1.6 },
                       !member?.clickable && styles.disabledCard,
-                      member?.name === '?' && styles.subtleButton, // Subtle styling
+                      member?.name === '.' && styles.subtleButton,
                     ]}
                     onPress={() => member?.clickable && navigation.navigate(member.screen, { from: 'BludBruhsHome' })}
                     disabled={!member?.clickable}
@@ -168,10 +173,10 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   subtleButton: {
-    backgroundColor: '#2a2a2a00', // Slightly darker, less noticeable
-    shadowColor: '#444', // Muted shadow
+    backgroundColor: '#2a2a2a00', // Transparent subtle button
+    shadowColor: '#444',
     shadowOpacity: 0.1,
-    elevation: 2, // Lower elevation
+    elevation: 2,
   },
   characterImage: {
     width: '100%',
