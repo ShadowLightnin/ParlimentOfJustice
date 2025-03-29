@@ -22,7 +22,7 @@ const James = () => {
           </TouchableOpacity>
 
           {/* Title */}
-          <Text style={styles.title}>Gentle Guardian</Text>
+          <Text style={styles.title}>Gentle Hand</Text>
 
           {/* Comment Button */}
           <TouchableOpacity style={styles.commentButton} onPress={() => navigation.navigate("Comments")}>

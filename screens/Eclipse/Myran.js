@@ -22,7 +22,7 @@ const Myran = () => {
           </TouchableOpacity>
 
           {/* Title */}
-          <Text style={styles.title}>Techno Sentinel</Text>
+          <Text style={styles.title}>Techno Guard</Text>
 
           {/* Comment Button */}
           <TouchableOpacity style={styles.commentButton} onPress={() => navigation.navigate("Comments")}>

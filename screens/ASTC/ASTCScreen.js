@@ -32,6 +32,16 @@ const backgroundImages = [
   require('../../assets/Halo/19.jpg'),
 ];
 
+// 🖼️ Button Images Array
+const buttonImages = [
+  require('../../assets/Halo/23.jpg'),
+  require('../../assets/Halo/24.jpg'),
+  require('../../assets/Halo/25.jpg'),
+  require('../../assets/Halo/18.jpg'),
+  require('../../assets/Halo/22.jpg'),
+  require('../../assets/Halo/31.jpg'),
+];
+
 const playBackgroundMusic = async () => {
   if (!backgroundSound) {
     const { sound } = await Audio.Sound.createAsync(
@@ -53,7 +63,7 @@ const stopBackgroundMusic = async () => {
 
 // 🌄 Member Data
 const members = [
-  { name: 'The Spartans', codename: '', screen: 'SpartansScreen', clickable: true, position: [1, 1] },
+  { name: '', codename: '', screen: 'SpartansScreen', clickable: true, position: [1, 1] },
 ];
 
 // Empty cell checker
@@ -77,20 +87,22 @@ const ASTCScreen = () => {
   const [backgroundImage, setBackgroundImage] = useState(
     backgroundImages[Math.floor(Math.random() * backgroundImages.length)]
   );
+  const [buttonImage, setButtonImage] = useState(
+    buttonImages[Math.floor(Math.random() * buttonImages.length)]
+  );
 
-  // 🎯 Control key stopping point
-  const keyStopPosition = SCREEN_WIDTH > 600 ? SCREEN_HEIGHT * 0.30 : SCREEN_HEIGHT * 0.40;
+  // 🎯 Control key stopping point (vertical center-ish)
+  const keyStopPosition = SCREEN_HEIGHT * 0.35;
+  const imageWidth = 200;
+  const centeredLeftPosition = SCREEN_WIDTH / 2 - imageWidth / 2;
 
   useEffect(() => {
     if (isFocused) {
       setBackgroundImage(backgroundImages[Math.floor(Math.random() * backgroundImages.length)]);
+      setButtonImage(buttonImages[Math.floor(Math.random() * buttonImages.length)]);
       playBackgroundMusic();
     }
-    // Removed stopBackgroundMusic from cleanup here to keep music playing when navigating forward
-    return () => {
-      // Only cleanup when component unmounts completely, not on navigation
-      // We handle stopping music explicitly in handleBackPress instead
-    };
+    return () => {};
   }, [isFocused]);
 
   const handleCardPress = () => {
@@ -98,11 +110,11 @@ const ASTCScreen = () => {
       toValue: keyStopPosition,
       duration: 5000,
       useNativeDriver: false,
-    }).start(() => navigation.navigate('SpartansScreen')); // Music continues here
+    }).start(() => navigation.navigate('SpartansScreen'));
   };
 
   const handleBackPress = async () => {
-    await stopBackgroundMusic(); // Explicitly stop music only on back press
+    await stopBackgroundMusic();
     navigation.goBack();
   };
 
@@ -117,7 +129,7 @@ const ASTCScreen = () => {
         <Animated.View 
           style={[
             styles.imageContainer, 
-            { top: topPosition, left: SCREEN_WIDTH > 600 ? '47.2%' : '40%' }
+            { top: topPosition, left: centeredLeftPosition }
           ]}
         >
           <Image source={require('../../assets/Halo/Activation_Index.jpg')} style={styles.image} />
@@ -126,7 +138,7 @@ const ASTCScreen = () => {
         {/* Header Section */}
         <View style={styles.headerWrapper}>
           <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
-            <Text style={styles.backText}>← Back</Text>
+            <Text style={styles.backText}>←</Text>
           </TouchableOpacity>
           <Text style={styles.header}>Advanced Spartan 3 Corp</Text>
         </View>
@@ -150,6 +162,7 @@ const ASTCScreen = () => {
                     ]}
                     onPress={handleCardPress}
                   >
+                    <Image source={buttonImage} style={styles.cardImage} />
                     <Text style={styles.name}>{member.name}</Text>
                   </TouchableOpacity>
                 );
@@ -171,9 +184,29 @@ const styles = StyleSheet.create({
   header: { fontSize: 28, fontWeight: 'bold', color: '#fff', textShadowColor: '#00b3ff', textShadowRadius: 15, textAlign: 'center', flex: 1 },
   grid: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   row: { flexDirection: 'row' },
-  card: { backgroundColor: '#1c1c1c', justifyContent: 'center', alignItems: 'center', borderRadius: 8, padding: 5 },
-  name: { fontSize: 12, fontWeight: 'bold', color: '#fff', textAlign: 'center', marginTop: 5 },
-  imageContainer: { position: 'absolute', transform: [{ translateX: -50 }] },
+  card: { 
+    backgroundColor: '#1c1c1c', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    borderRadius: 8, 
+    padding: 5,
+    overflow: 'hidden', // Ensure image doesn’t spill out
+  },
+  cardImage: {
+    width: '100%',
+    height: '100%', // Takes up most of the card height, leaving room for text
+    resizeMode: 'cover',
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+  },
+  name: { 
+    fontSize: 12, 
+    fontWeight: 'bold', 
+    color: '#fff', 
+    textAlign: 'center', 
+    marginTop: 5 
+  },
+  imageContainer: { position: 'absolute' },
   image: { width: 200, height: 200, resizeMode: 'contain' },
 });
 
