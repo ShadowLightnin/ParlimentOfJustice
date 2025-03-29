@@ -1,4 +1,6 @@
 export const preloadedImages  = [
+  require("../assets/img/donut.png"),
+  require("../assets/img/donut_hologram.png"),
     require("../assets/img/alex.webp"),
     require("../assets/img/AT-RT_BF2.webp"),
     require("../assets/img/ATTE-SWE.webp"),
@@ -18,8 +20,6 @@ export const preloadedImages  = [
     require("../assets/img/cam.jpg"),
     require("../assets/img/clonehelmets.jpg"),
     require("../assets/img/clones.jpg"),
-    require("../assets/img/donut.png"),
-    require("../assets/img/donut_hologram.png"),
     require("../assets/img/dragon1.png"),
     require("../assets/img/dragon3.jpg"),
     require("../assets/img/dragon4.jpg"),

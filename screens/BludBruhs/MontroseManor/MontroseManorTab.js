@@ -27,18 +27,17 @@ const MontroseManorTab = () => {
 
   const PLACEHOLDER_IMAGE = require("../../../assets/Armor/PlaceHolder.jpg");
 
-  // Hardcoded books
   const hardcodedBooks = [
     // {
     //   id: "hardcoded-1",
     //   title: "The Crimson Tome",
-    //   imageUrl: require("../../../assets/Books/CrimsonTome.jpg"), // Adjust path as needed
+    //   imageUrl: require("../../../assets/Books/CrimsonTome.jpg"),
     //   hardcoded: true,
     // },
     // {
     //   id: "hardcoded-2",
     //   title: "Whispers of the Void",
-    //   imageUrl: require("../../../assets/Books/VoidWhispers.jpg"), // Adjust path as needed
+    //   imageUrl: require("../../../assets/Books/VoidWhispers.jpg"),
     //   hardcoded: true,
     // },
   ];
@@ -243,35 +242,37 @@ const MontroseManorTab = () => {
         <Text style={styles.backButtonText}>Escape</Text>
       </TouchableOpacity>
 
-      <View style={styles.overlay}>
-        <Text style={styles.headerTitle}>Montrose Manor</Text>
+      <ScrollView contentContainerStyle={styles.verticalScrollContainer}>
+        <View style={styles.overlay}>
+          <Text style={styles.headerTitle}>Montrose Manor</Text>
 
-        <View style={styles.formContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Book Title"
-            value={title}
-            onChangeText={setTitle}
-          />
-          <TouchableOpacity onPress={pickImage} style={styles.uploadButton}>
-            <Text style={styles.uploadButtonText}>
-              {image ? "Image Selected" : "Upload Image"}
-            </Text>
-          </TouchableOpacity>
-          {image && <Image source={{ uri: image }} style={styles.previewImage} />}
-          <TouchableOpacity onPress={addBook} style={styles.addButton}>
-            <Text style={styles.addButtonText}>Add Book</Text>
-          </TouchableOpacity>
+          <View style={styles.formContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Book Title"
+              value={title}
+              onChangeText={setTitle}
+            />
+            <TouchableOpacity onPress={pickImage} style={styles.uploadButton}>
+              <Text style={styles.uploadButtonText}>
+                {image ? "Image Selected" : "Upload Image"}
+              </Text>
+            </TouchableOpacity>
+            {image && <Image source={{ uri: image }} style={styles.previewImage} />}
+            <TouchableOpacity onPress={addBook} style={styles.addButton}>
+              <Text style={styles.addButtonText}>Add Book</Text>
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.horizontalScrollContainer}
+          >
+            {books.map(renderBookCard)}
+          </ScrollView>
         </View>
-
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContainer}
-        >
-          {books.map(renderBookCard)}
-        </ScrollView>
-      </View>
+      </ScrollView>
     </ImageBackground>
   );
 };
@@ -279,15 +280,20 @@ const MontroseManorTab = () => {
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const isDesktop = SCREEN_WIDTH > 600;
 
-// Responsive card sizes
 const cardSizes = {
-  desktop: { width: 300, height: 450 }, // Bigger on desktop
-  mobile: { width: 200, height: 300 },  // Slightly larger than before on mobile
+  desktop: { width: 300, height: 450 },
+  mobile: { width: 200, height: 300 },
 };
 
 const styles = StyleSheet.create({
   background: { flex: 1, width: SCREEN_WIDTH, height: SCREEN_HEIGHT, position: "absolute", top: 0, left: 0 },
-  overlay: { flex: 1, backgroundColor: "rgba(0, 0, 0, 0.3)", paddingTop: 80 },
+  verticalScrollContainer: {
+    paddingBottom: 20, // Extra padding at bottom for scroll
+  },
+  overlay: {
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    paddingTop: 80,
+  },
   headerTitle: {
     fontSize: 28,
     fontWeight: "bold",
@@ -335,7 +341,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   addButtonText: { color: "#FFF", fontWeight: "bold" },
-  scrollContainer: {
+  horizontalScrollContainer: {
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
@@ -354,7 +360,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   hardcodedBook: {
-    borderColor: "#FFD700", // Gold border for hardcoded books
+    borderColor: "#FFD700",
     borderWidth: 2,
   },
   bookTitle: {
@@ -377,13 +383,13 @@ const styles = StyleSheet.create({
   },
   bookImage: {
     width: "100%",
-    height: isDesktop ? cardSizes.desktop.height - 50 : cardSizes.mobile.height - 50, // Adjust for title only
+    height: isDesktop ? cardSizes.desktop.height - 50 : cardSizes.mobile.height - 50,
     borderRadius: 10,
   },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width, // Match card width
+    width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
     marginTop: 10,
   },
   editButton: {

@@ -27,14 +27,14 @@ const BookDetails = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
-  const [useImage, setUseImage] = useState(null); // null = undecided, true = upload, false = no image
+  const [useImage, setUseImage] = useState(null);
   const [editingCharId, setEditingCharId] = useState(null);
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
-  const [selectedCharacter, setSelectedCharacter] = useState(null); // For preview
+  const [selectedCharacter, setSelectedCharacter] = useState(null);
 
   const PLACEHOLDER_IMAGE = require("../../../assets/Armor/PlaceHolder.jpg");
-  const PLACEHOLDER_URL = "placeholder"; // Unique string for placeholder intent
+  const PLACEHOLDER_URL = "placeholder";
 
   useEffect(() => {
     const fetchCharacters = async () => {
@@ -95,7 +95,7 @@ const BookDetails = () => {
 
   const skipImage = () => {
     setImage(null);
-    setUseImage(false); // Explicitly no image
+    setUseImage(false);
   };
 
   const addCharacter = async () => {
@@ -107,11 +107,11 @@ const BookDetails = () => {
     try {
       let imageUrl;
       if (useImage === true && image) {
-        imageUrl = await uploadImage(image); // Upload selected image
+        imageUrl = await uploadImage(image);
       } else if (useImage === false) {
-        imageUrl = null; // No image, blank
+        imageUrl = null;
       } else {
-        imageUrl = PLACEHOLDER_URL; // Neither pressed, use placeholder
+        imageUrl = PLACEHOLDER_URL;
       }
 
       const newCharacter = {
@@ -125,7 +125,7 @@ const BookDetails = () => {
       setName("");
       setDescription("");
       setImage(null);
-      setUseImage(null); // Reset to undecided
+      setUseImage(null);
       Alert.alert("Success", "Character added successfully!");
     } catch (error) {
       console.error("Error adding character:", error);
@@ -146,7 +146,7 @@ const BookDetails = () => {
             try {
               await deleteDoc(doc(db, "books", bookId, "characters", id));
               setCharacters(characters.filter((char) => char.id !== id));
-              setSelectedCharacter(null); // Close preview if deleted
+              setSelectedCharacter(null);
               Alert.alert("Success", "Character deleted successfully!");
             } catch (error) {
               console.error("Error deleting character:", error);
@@ -162,7 +162,7 @@ const BookDetails = () => {
     setEditingCharId(char.id);
     setEditName(char.name);
     setEditDescription(char.description);
-    setSelectedCharacter(char); // Open preview in edit mode
+    setSelectedCharacter(char);
   };
 
   const saveEdit = async (id) => {
@@ -183,7 +183,7 @@ const BookDetails = () => {
       setEditingCharId(null);
       setEditName("");
       setEditDescription("");
-      setSelectedCharacter(null); // Close preview after saving
+      setSelectedCharacter(null);
       Alert.alert("Success", "Character updated successfully!");
     } catch (error) {
       console.error("Error updating character:", error);
@@ -230,54 +230,55 @@ const BookDetails = () => {
           <Text style={styles.backButtonText}>Back to Books</Text>
         </TouchableOpacity>
 
-        <Text style={styles.title}>{bookTitle} - Characters</Text>
+        <ScrollView contentContainerStyle={styles.verticalScrollContainer}>
+          <Text style={styles.title}>{bookTitle} - Characters</Text>
 
-        <View style={styles.formContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Character Name"
-            value={name}
-            onChangeText={setName}
-          />
-          <TextInput
-            style={[styles.input, styles.descriptionInput]}
-            placeholder="Description"
-            value={description}
-            onChangeText={setDescription}
-            multiline
-          />
-          <View style={styles.imageOptions}>
-            <TouchableOpacity onPress={pickImage} style={styles.uploadButton}>
-              <Text style={styles.uploadButtonText}>
-                {image ? "Image Selected" : "Upload Image"}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={skipImage} style={styles.noImageButton}>
-              <Text style={styles.noImageButtonText}>No Image</Text>
+          <View style={styles.formContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Character Name"
+              value={name}
+              onChangeText={setName}
+            />
+            <TextInput
+              style={[styles.input, styles.descriptionInput]}
+              placeholder="Description"
+              value={description}
+              onChangeText={setDescription}
+              multiline
+            />
+            <View style={styles.imageOptions}>
+              <TouchableOpacity onPress={pickImage} style={styles.uploadButton}>
+                <Text style={styles.uploadButtonText}>
+                  {image ? "Image Selected" : "Upload Image"}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={skipImage} style={styles.noImageButton}>
+                <Text style={styles.noImageButtonText}>No Image</Text>
+              </TouchableOpacity>
+            </View>
+            {image && <Image source={{ uri: image }} style={styles.previewImage} />}
+            <TouchableOpacity onPress={addCharacter} style={styles.addButton}>
+              <Text style={styles.addButtonText}>Add Character</Text>
             </TouchableOpacity>
           </View>
-          {image && <Image source={{ uri: image }} style={styles.previewImage} />}
-          <TouchableOpacity onPress={addCharacter} style={styles.addButton}>
-            <Text style={styles.addButtonText}>Add Character</Text>
-          </TouchableOpacity>
-        </View>
 
-        <ScrollView
-          horizontal
-          contentContainerStyle={styles.characterScrollContainer}
-          showsHorizontalScrollIndicator={false}
-        >
-          {characters.map(renderCharacterCard)}
+          <ScrollView
+            horizontal
+            contentContainerStyle={styles.horizontalScrollContainer}
+            showsHorizontalScrollIndicator={false}
+          >
+            {characters.map(renderCharacterCard)}
+          </ScrollView>
         </ScrollView>
 
-        {/* Character Preview/Edit Modal */}
         <Modal
           visible={!!selectedCharacter}
           transparent
           animationType="slide"
           onRequestClose={() => {
             setSelectedCharacter(null);
-            setEditingCharId(null); // Exit edit mode if closed
+            setEditingCharId(null);
           }}
         >
           <View style={styles.modalOverlay}>
@@ -313,7 +314,7 @@ const BookDetails = () => {
                 <TouchableOpacity
                   onPress={() => {
                     setSelectedCharacter(null);
-                    setEditingCharId(null); // Exit edit mode if closed
+                    setEditingCharId(null);
                   }}
                   style={styles.closeButton}
                 >
@@ -359,6 +360,9 @@ const styles = StyleSheet.create({
     color: "#FFF",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  verticalScrollContainer: {
+    paddingBottom: 20, // Extra padding at bottom for scroll
   },
   title: {
     fontSize: 24,
@@ -427,7 +431,7 @@ const styles = StyleSheet.create({
     color: "#FFF",
     fontWeight: "bold",
   },
-  characterScrollContainer: {
+  horizontalScrollContainer: {
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
@@ -436,7 +440,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   characterCard: {
-    width: 350, // Matches VillainsTab mobile size
+    width: 350,
     height: 450,
     borderRadius: 15,
     overflow: "hidden",
@@ -452,7 +456,7 @@ const styles = StyleSheet.create({
   noImagePlaceholder: {
     width: "100%",
     height: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.9)", // Blank space
+    backgroundColor: "rgba(0, 0, 0, 0.9)",
   },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -470,7 +474,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: 350, // Match card width
+    width: 350,
     marginTop: 10,
   },
   editButton: {
