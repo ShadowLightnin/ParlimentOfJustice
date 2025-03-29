@@ -21,10 +21,11 @@ const members = [
   { name: 'James', codename: 'Shadowmind', screen: 'JamesBb', clickable: true, position: [1, 1], image: require('../../assets/Armor/JamesBbPlaceHolder.jpg') },
   { name: 'Tanner', codename: 'Wolff', screen: 'TannerBb', clickable: true, position: [1, 2], image: require('../../assets/Armor/TannerBbPlaceHolder.jpg') },
   { name: '', codename: 'Ranger Squad', screen: 'RangerSquad', clickable: true, position: [2, 0], image: require('../../assets/BackGround/RangerSquad.jpg') },
+  { name: '?', codename: '', screen: 'MontroseManorTab', clickable: true, position: [2, 1] }, // New subtle button
   { name: '', codename: 'MonkeAlliance', screen: 'MonkeAllianceScreen', clickable: true, position: [2, 2], image: require('../../assets/BackGround/Monke.jpg') },
 ];
 
-const isEmpty = (row, col) => (row === 2 && col === 1);
+const isEmpty = (row, col) => false; // No empty spots now
 const getMemberAtPosition = (row, col) =>
   members.find((member) => member.position[0] === row && member.position[1] === col);
 
@@ -45,7 +46,6 @@ const BludBruhsScreen = () => {
       style={styles.background}
     >
       <SafeAreaView style={styles.container}>
-        
         {/* Header & Back Button */}
         <View style={styles.headerWrapper}>
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
@@ -62,10 +62,6 @@ const BludBruhsScreen = () => {
           {[0, 1, 2].map((row) => (
             <View key={row} style={[styles.row, { gap: cardSpacing }]}>
               {[0, 1, 2].map((col) => {
-                if (isEmpty(row, col)) {
-                  return <View key={col} style={{ width: cardSize, height: cardSize * 1.4 }} />;
-                }
-
                 const member = getMemberAtPosition(row, col);
                 return (
                   <TouchableOpacity
@@ -74,6 +70,7 @@ const BludBruhsScreen = () => {
                       styles.card,
                       { width: cardSize, height: cardSize * 1.6 },
                       !member?.clickable && styles.disabledCard,
+                      member?.name === '?' && styles.subtleButton, // Subtle styling
                     ]}
                     onPress={() => member?.clickable && navigation.navigate(member.screen, { from: 'BludBruhsHome' })}
                     disabled={!member?.clickable}
@@ -112,7 +109,7 @@ const styles = StyleSheet.create({
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1, // Ensures overlay blocks long-press without affecting button clicks
+    zIndex: 1,
   },
   headerWrapper: {
     flexDirection: 'row',
@@ -170,6 +167,12 @@ const styles = StyleSheet.create({
     elevation: 5,
     padding: 5,
   },
+  subtleButton: {
+    backgroundColor: '#2a2a2a00', // Slightly darker, less noticeable
+    shadowColor: '#444', // Muted shadow
+    shadowOpacity: 0.1,
+    elevation: 2, // Lower elevation
+  },
   characterImage: {
     width: '100%',
     height: '70%',
@@ -193,12 +196,6 @@ const styles = StyleSheet.create({
   disabledCard: {
     backgroundColor: '#444',
     shadowColor: 'transparent',
-  },
-  disabledText: {
-    fontSize: 10,
-    color: '#ff4444',
-    textAlign: 'center',
-    marginTop: 5,
   },
 });
 

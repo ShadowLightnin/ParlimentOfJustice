@@ -28,7 +28,6 @@ import LoginScreen from "./screens/LoginScreen";
 import PublicChatScreen from "./screens/PublicChatScreen";
 import VillainsStack from './navigation/VillainsStack';
 import JusticeStack from './navigation/JusticeStack';
-import MontroseManorTab from "./screens/BludBruhs/MontroseManor/MontroseManorTab";
 
 const Stack = createNativeStackNavigator();
 
@@ -71,7 +70,6 @@ function AuthenticatedStack() {
       <Stack.Screen name="JusticeScreen" component={JusticeStack} />
       <Stack.Screen name="VillainsScreen" component={VillainsStack} />
       <Stack.Screen name="Designs" component={DesignsStack} /> 
-      <Stack.Screen name="MontroseManorTab" component={MontroseManorTab} />
     </Stack.Navigator>
   );
 }

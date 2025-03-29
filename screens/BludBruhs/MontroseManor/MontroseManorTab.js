@@ -182,8 +182,8 @@ const MontroseManorTab = () => {
   };
 
   const goToHomeScreen = () => {
-    console.log("Navigating to HomeScreen at:", new Date().toISOString());
-    navigation.navigate('Home');
+    console.log("Navigating to BludBruhsHome at:", new Date().toISOString());
+    navigation.navigate('BludBruhsHome');
   };
 
   const renderBookCard = (book) => (
