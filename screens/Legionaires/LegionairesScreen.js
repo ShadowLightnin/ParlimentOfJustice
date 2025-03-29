@@ -12,7 +12,8 @@ import {
   Modal,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import legionairesMembers from './LegionairesMembers';
+import { memberCategories } from './LegionairesMembers'; // Import memberCategories directly
+import legionImages from './LegionairesImages'; // Import legionImages for image mapping
 
 // Screen dimensions
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -20,7 +21,6 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 // Grid layout settings
 const isDesktop = SCREEN_WIDTH > 600;
 const columns = isDesktop ? 7 : 3;
-const rows = Math.ceil(legionairesMembers.length / columns);
 const cardSize = isDesktop ? 160 : 100;
 const cardHeightMultiplier = 1.6;
 const horizontalSpacing = isDesktop ? 40 : 10;
@@ -51,63 +51,69 @@ export const LegionairesScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Grid Layout with Scroll Support */}
+        {/* Scrollable Category Sections */}
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          {Array.from({ length: rows }).map((_, rowIndex) => (
-            <View key={rowIndex} style={[styles.row, { marginBottom: verticalSpacing }]}>
-              {Array.from({ length: columns }).map((_, colIndex) => {
-                const memberIndex = rowIndex * columns + colIndex;
-                const member = legionairesMembers[memberIndex];
+          {memberCategories.map((categoryData, categoryIndex) => {
+            const rows = Math.ceil(categoryData.members.length / columns);
 
-                if (!member)
-                  return (
-                    <View
-                      key={colIndex}
-                      style={{ width: cardSize, height: cardSize * cardHeightMultiplier }}
-                    />
-                  );
+            return (
+              <View key={categoryIndex} style={styles.categorySection}>
+                {/* Category Header */}
+                <Text style={styles.categoryHeader}>{categoryData.category}</Text>
+                <View style={styles.divider} />
 
-                return (
-                  <TouchableOpacity
-                    key={colIndex}
-                    style={[
-                      styles.card,
-                      {
-                        width: cardSize,
-                        height: cardSize * cardHeightMultiplier,
-                        marginHorizontal: horizontalSpacing / 2,
-                        ...(member.clickable ? {} : styles.disabledCard),
-                      },
-                    ]}
-                    onPress={() => member?.clickable && setPreviewMember(member)} // Open preview if clickable
-                    disabled={!member.clickable}
-                  >
-                    {member?.image && (
-                      <>
-                        {/* Image */}
-                        <Image
-                          source={member.image}
-                          style={styles.characterImage}
-                        />
-                        {/* Transparent Overlay to Prevent Image Save */}
-                        <View style={styles.transparentOverlay} />
-                      </>
-                    )}
+                {/* Grid of Members */}
+                {Array.from({ length: rows }).map((_, rowIndex) => (
+                  <View key={rowIndex} style={[styles.row, { marginBottom: verticalSpacing }]}>
+                    {Array.from({ length: columns }).map((_, colIndex) => {
+                      const memberIndex = rowIndex * columns + colIndex;
+                      const memberName = categoryData.members[memberIndex];
+                      if (!memberName) return <View key={colIndex} style={styles.cardSpacer} />;
 
-                    {/* Codename - Bold & Larger */}
-                    {member?.codename && (
-                      <Text style={styles.codename}>{member.codename}</Text>
-                    )}
+                      const memberData = legionImages[memberName] || {
+                        image: require('../../assets/Armor/PlaceHolder.jpg'),
+                        clickable: false,
+                      };
 
-                    {/* Name - Italic & Smaller */}
-                    {member?.name && (
-                      <Text style={styles.name}>{member.name}</Text>
-                    )}
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          ))}
+                      const member = {
+                        name: memberName,
+                        codename: categoryData.category,
+                        screen: `Member${categoryIndex * 100 + memberIndex + 1}`,
+                        image: memberData.image,
+                        clickable: memberData.clickable,
+                      };
+
+                      return (
+                        <TouchableOpacity
+                          key={colIndex}
+                          style={[
+                            styles.card,
+                            {
+                              width: cardSize,
+                              height: cardSize * cardHeightMultiplier,
+                              marginHorizontal: horizontalSpacing / 2,
+                              ...(member.clickable ? {} : styles.disabledCard),
+                            },
+                          ]}
+                          onPress={() => member.clickable && setPreviewMember(member)}
+                          disabled={!member.clickable}
+                        >
+                          {member.image && (
+                            <>
+                              <Image source={member.image} style={styles.characterImage} />
+                              <View style={styles.transparentOverlay} />
+                            </>
+                          )}
+                          <Text style={styles.codename}>{member.codename}</Text>
+                          <Text style={styles.name}>{member.name}</Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                ))}
+              </View>
+            );
+          })}
         </ScrollView>
 
         {/* Preview Modal */}
@@ -121,7 +127,7 @@ export const LegionairesScreen = () => {
             <TouchableOpacity
               style={styles.modalContainer}
               activeOpacity={1}
-              onPress={() => setPreviewMember(null)} // Close preview when clicking outside
+              onPress={() => setPreviewMember(null)}
             >
               <Image
                 source={previewMember?.image || require('../../assets/Armor/PlaceHolder.jpg')}
@@ -153,7 +159,7 @@ const styles = StyleSheet.create({
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1, // Prevents saving while still allowing click interactions
+    zIndex: 1,
   },
   headerWrapper: {
     flexDirection: 'row',
@@ -162,6 +168,7 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 50,
     marginBottom: 20,
+    paddingHorizontal: 20,
   },
   backButton: {
     padding: 10,
@@ -193,9 +200,28 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
     alignItems: 'center',
   },
+  categorySection: {
+    marginBottom: verticalSpacing * 2,
+    width: '100%',
+  },
+  categoryHeader: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#fff',
+    paddingHorizontal: 20,
+    marginBottom: 5,
+    textAlign: 'center',
+  },
+  divider: {
+    height: 2,
+    backgroundColor: '#00b3ff',
+    marginHorizontal: 20,
+    marginBottom: 10,
+  },
   row: {
     flexDirection: 'row',
     justifyContent: 'center',
+    flexWrap: 'wrap',
   },
   card: {
     backgroundColor: '#1c1c1c',
@@ -207,6 +233,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 1.5,
     shadowRadius: 10,
     elevation: 5,
+  },
+  cardSpacer: {
+    width: cardSize,
+    height: cardSize * cardHeightMultiplier,
+    marginHorizontal: horizontalSpacing / 2,
   },
   disabledCard: {
     backgroundColor: '#444',
@@ -232,7 +263,6 @@ const styles = StyleSheet.create({
     color: '#aaa',
     textAlign: 'center',
   },
-  // Modal Styles
   modalBackground: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.9)',

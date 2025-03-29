@@ -11,7 +11,8 @@ import {
   Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import ConstollationMembers from './ConstollationMembers';
+import { memberCategories } from './ConstollationMembers';
+import constollationImages from './ConstollationImages';
 
 // Screen dimensions
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -24,8 +25,41 @@ const cardHeightMultiplier = 1.6;
 const horizontalSpacing = isDesktop ? 40 : 10;
 const verticalSpacing = isDesktop ? 50 : 20;
 
-// Calculate rows based on number of members
-const rows = Math.ceil(ConstollationMembers.length / columns);
+// Define broader category groupings
+const categoryGroups = [
+  {
+    title: "Doctors",
+    categories: ["Doctors"],
+  },
+  {
+    title: "Elementary",
+    categories: ["Elementary"],
+  },
+  {
+    title: "Jr High (7th-9th)",
+    categories: ["Jr. High 7th", "Jr. High 8th", "Jr. High 9th", "NT Seminary 9th"],
+  },
+  {
+    title: "High School (10th-12th)",
+    categories: [
+      "High School 10th", "BoM Seminary 10th",
+      "High School 11th", "D&C Seminary 11th",
+      "High School 12th", "OT Seminary 12th",
+    ],
+  },
+  {
+    title: "College",
+    categories: ["College"],
+  },
+  {
+    title: "Influencers",
+    categories: ["Influencers"],
+  },
+  {
+    title: "Acquaintances",
+    categories: ["Acquaintances"],
+  },
+];
 
 export const ConstollationScreen = () => {
   const navigation = useNavigation();
@@ -40,7 +74,6 @@ export const ConstollationScreen = () => {
       style={styles.background}
     >
       <SafeAreaView style={styles.container}>
-        {/* Header Section */}
         <View style={styles.headerWrapper}>
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Text style={styles.backText}>← Back</Text>
@@ -51,59 +84,78 @@ export const ConstollationScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Grid Layout */}
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          {Array.from({ length: rows }).map((_, rowIndex) => (
-            <View 
-              key={rowIndex} 
-              style={[styles.row, { marginBottom: verticalSpacing, gap: horizontalSpacing }]}
-            >
-              {Array.from({ length: columns }).map((_, colIndex) => {
-                const memberIndex = rowIndex * columns + colIndex;
-                const member = ConstollationMembers[memberIndex];
+          {categoryGroups.map((group, groupIndex) => {
+            // Filter memberCategories to include only those in this group
+            const groupCategories = memberCategories.filter(category => 
+              group.categories.includes(category.category)
+            );
+            if (groupCategories.length === 0) return null;
 
-                if (!member) return (
-                  <View 
-                    key={colIndex} 
-                    style={{ width: cardSize, height: cardSize * cardHeightMultiplier }}
-                  />
-                );
+            return (
+              <View key={groupIndex} style={styles.categorySection}>
+                <Text style={styles.categoryHeader}>{group.title}</Text>
+                <View style={styles.divider} />
 
-                return (
-                  <TouchableOpacity
-                    key={colIndex}
-                    style={[
-                      styles.card,
-                      { width: cardSize, height: cardSize * cardHeightMultiplier },
-                      !member.clickable && styles.disabledCard,
-                    ]}
-                    onPress={() => member?.clickable && navigation.navigate(member.screen)}
-                    disabled={!member.clickable}
-                  >
-                    {member?.image && (
-                      <>
-                        {/* Image */}
-                        <Image source={member.image} style={styles.characterImage} />
-                        {/* Transparent Overlay to Prevent Image Save */}
-                        <View style={styles.transparentOverlay} />
-                      </>
-                    )}
+                {groupCategories.map((categoryData, categoryIndex) => {
+                  const rows = Math.ceil(categoryData.members.length / columns);
 
-                    {/* Codename Now Appears First (Bold & Larger) */}
-                    {member?.codename && (
-                      <Text style={styles.codename}>{member.codename}</Text>
-                    )}
+                  return (
+                    <View key={categoryIndex}>
+                      {Array.from({ length: rows }).map((_, rowIndex) => (
+                        <View key={rowIndex} style={[styles.row, { marginBottom: verticalSpacing }]}>
+                          {Array.from({ length: columns }).map((_, colIndex) => {
+                            const memberIndex = rowIndex * columns + colIndex;
+                            const memberName = categoryData.members[memberIndex];
+                            if (!memberName) return <View key={colIndex} style={styles.cardSpacer} />;
 
-                    {/* Name Now Appears Second (Italic & Smaller) */}
-                    {member?.name && (
-                      <Text style={styles.name}>{member.name}</Text>
-                    )}
+                            const memberData = constollationImages[memberName] || {
+                              image: require('../../assets/Armor/PlaceHolder.jpg'),
+                              clickable: false,
+                            };
 
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          ))}
+                            const member = {
+                              name: memberName,
+                              codename: categoryData.category, // Specific category as codename
+                              screen: `Member${memberCategories.indexOf(categoryData) * 100 + memberIndex + 1}`,
+                              image: memberData.image,
+                              clickable: memberData.clickable,
+                            };
+
+                            return (
+                              <TouchableOpacity
+                                key={colIndex}
+                                style={[
+                                  styles.card,
+                                  {
+                                    width: cardSize,
+                                    height: cardSize * cardHeightMultiplier,
+                                    marginHorizontal: horizontalSpacing / 2,
+                                    ...(member.clickable ? {} : styles.disabledCard),
+                                  },
+                                ]}
+                                onPress={() => member.clickable && navigation.navigate(member.screen)}
+                                disabled={!member.clickable}
+                              >
+                                {member.image && (
+                                  <>
+                                    <Image source={member.image} style={styles.characterImage} />
+                                    <View style={styles.transparentOverlay} />
+                                  </>
+                                )}
+                                <Text style={styles.codename}>{member.codename}</Text>
+                                <Text style={styles.name}>{member.name}</Text>
+                              </TouchableOpacity>
+                            );
+                          })}
+                        </View>
+                      ))}
+                    </View>
+                  );
+                })}
+              </View>
+            );
+          })}
         </ScrollView>
       </SafeAreaView>
     </ImageBackground>
@@ -125,7 +177,7 @@ const styles = StyleSheet.create({
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1, // Ensures overlay blocks saving but maintains button clicks
+    zIndex: 1,
   },
   headerWrapper: {
     flexDirection: 'row',
@@ -165,9 +217,29 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
     alignItems: 'center',
   },
+  categorySection: {
+    marginBottom: verticalSpacing * 2,
+    width: '100%',
+  },
+  categoryHeader: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#fff',
+    paddingHorizontal: 20,
+    marginBottom: 5,
+    textAlign: 'center',
+  },
+  divider: {
+    height: 2,
+    backgroundColor: '#00b3ff',
+    marginHorizontal: 20,
+    marginBottom: 10,
+  },
   row: {
     flexDirection: 'row',
     justifyContent: 'center',
+    flexWrap: 'wrap',
+    gap: horizontalSpacing,
   },
   card: {
     backgroundColor: '#1c1c1c',
@@ -179,6 +251,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 1.5,
     shadowRadius: 10,
     elevation: 5,
+  },
+  cardSpacer: {
+    width: cardSize,
+    height: cardSize * cardHeightMultiplier,
+    marginHorizontal: horizontalSpacing / 2,
   },
   disabledCard: {
     backgroundColor: '#444',
@@ -203,12 +280,6 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     color: '#aaa',
     textAlign: 'center',
-  },
-  disabledText: {
-    fontSize: 10,
-    color: '#ff4444',
-    textAlign: 'center',
-    marginTop: 5,
   },
 });
 
