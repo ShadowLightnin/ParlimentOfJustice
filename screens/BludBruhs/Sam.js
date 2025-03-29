@@ -14,26 +14,57 @@ import { Audio } from 'expo-av';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
-// 🎵 Background Music from MP4
-let backgroundSound;
-const MUSIC_LOOP = false; // Set this to true if you want music and popup to loop
+// 🎵 Background Music from MP4 - Global management
+let backgroundSound = null; // Explicitly initialize as null
+const MUSIC_LOOP = false; // Set this to true if you want music to loop
 
 const playBackgroundMusic = async () => {
-  if (!backgroundSound) {
+  if (backgroundSound) {
+    try {
+      await backgroundSound.stopAsync();
+      await backgroundSound.unloadAsync();
+      backgroundSound = null;
+      console.log("Existing music stopped before replay at:", new Date().toISOString());
+    } catch (error) {
+      console.error("Error stopping existing music:", error);
+    }
+  }
+  
+  try {
     const { sound } = await Audio.Sound.createAsync(
       require('../../assets/audio/Sam.mp4'),
-      { shouldPlay: true, isLooping: MUSIC_LOOP }
+      { shouldPlay: true, isLooping: MUSIC_LOOP, volume: 1.0 }
     );
     backgroundSound = sound;
     await sound.playAsync();
+    console.log("Music started playing at:", new Date().toISOString());
+  } catch (error) {
+    console.error("Error playing background music:", error);
   }
 };
 
 const stopBackgroundMusic = async () => {
   if (backgroundSound) {
-    await backgroundSound.stopAsync();
-    await backgroundSound.unloadAsync();
-    backgroundSound = null;
+    try {
+      console.log("Attempting to stop music at:", new Date().toISOString());
+      await backgroundSound.setVolumeAsync(0.0);
+      await backgroundSound.pauseAsync();
+      await backgroundSound.stopAsync();
+      await backgroundSound.unloadAsync();
+      backgroundSound = null;
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: false,
+        playsInSilentModeIOS: false,
+        staysActiveInBackground: false,
+        shouldDuckAndroid: false,
+        playThroughEarpieceAndroid: false,
+      });
+      console.log("Music fully stopped, unloaded, and audio mode reset at:", new Date().toISOString());
+    } catch (error) {
+      console.error("Error stopping background music:", error);
+    }
+  } else {
+    console.log("No music to stop at:", new Date().toISOString());
   }
 };
 
@@ -44,17 +75,20 @@ const Sam = () => {
   const flashAnim = useRef(new Animated.Value(1)).current;
   const popupAnim = useRef(new Animated.Value(-100)).current;
   const [isPopupVisible, setIsPopupVisible] = useState(false);
-  const [hasShownPopup, setHasShownPopup] = useState(false); // Track if popup has appeared
-  const [fromBludBruhsHome, setFromBludBruhsHome] = useState(false); // Track entry source
+  const [hasShownPopup, setHasShownPopup] = useState(false);
+  const [fromBludBruhsHome, setFromBludBruhsHome] = useState(false);
 
   // Check navigation params to determine source
   useEffect(() => {
     const params = route.params || {};
+    console.log("Route params on mount:", params);
     if (params.from === "BludBruhsHome") {
       setFromBludBruhsHome(true);
-      setHasShownPopup(false); // Reset popup state when coming from BludBruhsHome
+      setHasShownPopup(false);
+      console.log("Set fromBludBruhsHome to true at:", new Date().toISOString());
     } else {
       setFromBludBruhsHome(false);
+      console.log("Set fromBludBruhsHome to false at:", new Date().toISOString());
     }
   }, [route.params]);
 
@@ -70,12 +104,24 @@ const Sam = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // 🎵 Audio Control and Popup Timing
+  // 🎵 Audio Control - Play on mount, no cleanup on focus loss
   useEffect(() => {
     if (isFocused) {
       playBackgroundMusic();
+    }
+    // Cleanup only on full unmount, not focus loss
+    return () => {
+      console.log("Sam component fully unmounting at:", new Date().toISOString());
+      // Do not stop music here - let it persist to WarpScreen
+    };
+  }, [isFocused]);
 
+  // Popup Timing - Separate from audio
+  useEffect(() => {
+    console.log("Popup useEffect - isFocused:", isFocused, "fromBludBruhsHome:", fromBludBruhsHome, "hasShownPopup:", hasShownPopup);
+    if (isFocused && fromBludBruhsHome && !hasShownPopup) {
       const showPopup = () => {
+        console.log("Showing popup at:", new Date().toISOString());
         setIsPopupVisible(true);
         Animated.timing(popupAnim, {
           toValue: 0,
@@ -83,39 +129,32 @@ const Sam = () => {
           useNativeDriver: true,
         }).start();
 
-        // Auto-close popup after 3 seconds if no action
         const autoCloseTimer = setTimeout(() => {
           Animated.timing(popupAnim, {
             toValue: -100,
             duration: 300,
             useNativeDriver: true,
           }).start(() => setIsPopupVisible(false));
-        }, 3000); // 3 seconds
-
-        if (!MUSIC_LOOP) {
-          setHasShownPopup(true); // Mark popup as shown if not looping
-        }
+          setHasShownPopup(true);
+          console.log("Popup closed, hasShownPopup set to true at:", new Date().toISOString());
+        }, 3000);
 
         return () => clearTimeout(autoCloseTimer);
       };
 
-      // Only show popup if coming from BludBruhsHome and it hasn't shown yet (or looping is enabled)
-      if (fromBludBruhsHome && (!hasShownPopup || MUSIC_LOOP)) {
-        const timer = setTimeout(showPopup, 26500); // 26.5 seconds
-        return () => clearTimeout(timer);
-      }
+      console.log("Scheduling popup in 26.5s at:", new Date().toISOString());
+      const timer = setTimeout(showPopup, 26500);
+      return () => clearTimeout(timer);
     }
-    return () => {
-      // Cleanup only when component fully unmounts, not on navigation
-    };
-  }, [isFocused, hasShownPopup, fromBludBruhsHome]);
+  }, [isFocused, fromBludBruhsHome, hasShownPopup]);
 
-  // 🌌 Planet Click Handler → Leads to WarpScreen
+  // 🌌 Planet Click Handler → Leads to WarpScreen (No audio stop)
   const handlePlanetPress = () => {
+    console.log("Navigating to WarpScreen without stopping music at:", new Date().toISOString());
     navigation.navigate("WarpScreen", { from: "Sam" });
   };
 
-  // ✅ Confirm Warp to WarpScreen
+  // ✅ Confirm Warp to WarpScreen (No audio stop)
   const confirmWarp = () => {
     Animated.timing(popupAnim, {
       toValue: -100,
@@ -123,6 +162,7 @@ const Sam = () => {
       useNativeDriver: true,
     }).start(() => {
       setIsPopupVisible(false);
+      console.log("Navigating to WarpScreen without stopping music at:", new Date().toISOString());
       navigation.navigate("WarpScreen", { from: "Sam" });
     });
   };
@@ -138,13 +178,11 @@ const Sam = () => {
     });
   };
 
-  // 🔙 Back Button Handler
+  // 🔙 Back Button Handler - Explicitly stop music
   const handleBackPress = async () => {
+    console.log("Back button pressed at:", new Date().toISOString());
     await stopBackgroundMusic();
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "BludBruhsHome" }]
-    });
+    navigation.pop();
   };
 
   return (
@@ -216,6 +254,7 @@ const Sam = () => {
   );
 };
 
+// Styles remain unchanged
 const styles = StyleSheet.create({
   container: {
     flex: 1,

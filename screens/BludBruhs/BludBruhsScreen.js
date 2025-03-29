@@ -11,10 +11,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-// Screen dimensions
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
-// Member Data
 const members = [
   { name: 'Sam', codename: 'Void Walker', screen: 'Sam', clickable: true, position: [0, 0], image: require('../../assets/Armor/SamPlaceHolder.jpg') },
   { name: 'Taylor', codename: '', screen: '', clickable: false, position: [0, 1], image: require('../../assets/Armor/PlaceHolder.jpg') },
@@ -26,7 +24,6 @@ const members = [
   { name: '', codename: 'MonkeAlliance', screen: 'MonkeAllianceScreen', clickable: true, position: [2, 2], image: require('../../assets/BackGround/Monke.jpg') },
 ];
 
-// Empty cell checker
 const isEmpty = (row, col) => (row === 2 && col === 1);
 const getMemberAtPosition = (row, col) =>
   members.find((member) => member.position[0] === row && member.position[1] === col);
@@ -36,15 +33,6 @@ const BludBruhsScreen = () => {
 
   const goToChat = () => {
     navigation.navigate('TeamChat');
-  };
-
-  const handleMemberPress = (screen) => {
-    // Pass params only for Sam to track source
-    if (screen === 'Sam') {
-      navigation.navigate(screen, { from: 'BludBruhsHome' });
-    } else {
-      navigation.navigate(screen);
-    }
   };
 
   const isDesktop = SCREEN_WIDTH > 600;
@@ -87,7 +75,7 @@ const BludBruhsScreen = () => {
                       { width: cardSize, height: cardSize * 1.6 },
                       !member?.clickable && styles.disabledCard,
                     ]}
-                    onPress={() => member?.clickable && handleMemberPress(member.screen)}
+                    onPress={() => member?.clickable && navigation.navigate(member.screen, { from: 'BludBruhsHome' })}
                     disabled={!member?.clickable}
                   >
                     {member?.image && (
@@ -205,6 +193,12 @@ const styles = StyleSheet.create({
   disabledCard: {
     backgroundColor: '#444',
     shadowColor: 'transparent',
+  },
+  disabledText: {
+    fontSize: 10,
+    color: '#ff4444',
+    textAlign: 'center',
+    marginTop: 5,
   },
 });
 
