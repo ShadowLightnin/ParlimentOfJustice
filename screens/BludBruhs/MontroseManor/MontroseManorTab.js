@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { db, storage } from "../../../lib/firebase";
-import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
 
@@ -22,40 +22,54 @@ const MontroseManorTab = () => {
   const [books, setBooks] = useState([]);
   const [title, setTitle] = useState("");
   const [image, setImage] = useState(null);
-  const [editingBookId, setEditingBookId] = useState(null); // Track which book is being edited
-  const [editTitle, setEditTitle] = useState(""); // Store the edited title
+  const [editingBookId, setEditingBookId] = useState(null);
+  const [editTitle, setEditTitle] = useState("");
+
+  const PLACEHOLDER_IMAGE = require("../../../assets/Armor/PlaceHolder.jpg"); // Confirm this path
 
   useEffect(() => {
-    const fetchBooks = async () => {
-      const querySnapshot = await getDocs(collection(db, "books"));
-      const bookList = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setBooks(bookList);
-    };
-    fetchBooks();
+    const unsubscribe = onSnapshot(
+      collection(db, "books"),
+      (querySnapshot) => {
+        const bookList = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setBooks(bookList);
+        console.log("Books updated in real-time:", bookList);
+      },
+      (error) => {
+        console.error("Error listening to books:", error);
+        Alert.alert("Error", "Failed to load books: " + error.message);
+      }
+    );
+    return () => unsubscribe();
   }, []);
 
   const uploadImage = async (uri) => {
-    const response = await fetch(uri);
-    const blob = await response.blob();
-    const storageRef = ref(storage, `books/${Date.now()}_${Math.random().toString(36).substring(7)}`);
-    const uploadTask = uploadBytesResumable(storageRef, blob);
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      const storageRef = ref(storage, `books/${Date.now()}_${Math.random().toString(36).substring(7)}`);
+      const uploadTask = uploadBytesResumable(storageRef, blob);
 
-    return new Promise((resolve, reject) => {
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
-        },
-        (error) => reject(error),
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then(resolve).catch(reject);
-        }
-      );
-    });
+      return new Promise((resolve, reject) => {
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log("Upload is " + progress + "% done");
+          },
+          (error) => reject(error),
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then(resolve).catch(reject);
+          }
+        );
+      });
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      throw error;
+    }
   };
 
   const pickImage = async () => {
@@ -77,23 +91,25 @@ const MontroseManorTab = () => {
       return;
     }
 
-    let imageUrl = "";
-    if (image) {
-      imageUrl = await uploadImage(image);
+    try {
+      let imageUrl = "";
+      if (image) {
+        imageUrl = await uploadImage(image);
+      }
+
+      const newBook = { title, imageUrl: imageUrl || "" };
+      const docRef = await addDoc(collection(db, "books"), newBook);
+      console.log("Book added with ID:", docRef.id);
+      Alert.alert("Success", "Book added successfully!");
+      setTitle("");
+      setImage(null);
+    } catch (error) {
+      console.error("Error adding book:", error);
+      Alert.alert("Error", "Failed to add book: " + error.message);
     }
-
-    const newBook = {
-      title,
-      imageUrl: imageUrl || "https://via.placeholder.com/150",
-    };
-
-    const docRef = await addDoc(collection(db, "books"), newBook);
-    setBooks([...books, { id: docRef.id, ...newBook }]);
-    setTitle("");
-    setImage(null);
   };
 
-  const deleteBook = (id) => {
+  const deleteBook = async (id) => {
     Alert.alert(
       "Confirm Deletion",
       "Are you sure you want to delete this book?",
@@ -103,8 +119,15 @@ const MontroseManorTab = () => {
           text: "Delete",
           style: "destructive",
           onPress: async () => {
-            await deleteDoc(doc(db, "books", id));
-            setBooks(books.filter((book) => book.id !== id));
+            try {
+              console.log("Attempting to delete book with ID:", id);
+              await deleteDoc(doc(db, "books", id));
+              console.log("Book deleted successfully with ID:", id);
+              Alert.alert("Success", "Book deleted successfully!");
+            } catch (error) {
+              console.error("Error deleting book:", error);
+              Alert.alert("Error", "Failed to delete book: " + error.message);
+            }
           },
         },
       ]
@@ -121,10 +144,16 @@ const MontroseManorTab = () => {
       Alert.alert("Error", "Title cannot be empty");
       return;
     }
-    await updateDoc(doc(db, "books", id), { title: editTitle });
-    setBooks(books.map((book) => (book.id === id ? { ...book, title: editTitle } : book)));
-    setEditingBookId(null);
-    setEditTitle("");
+    try {
+      await updateDoc(doc(db, "books", id), { title: editTitle });
+      console.log("Book updated with ID:", id);
+      Alert.alert("Success", "Book updated successfully!");
+      setEditingBookId(null);
+      setEditTitle("");
+    } catch (error) {
+      console.error("Error updating book:", error);
+      Alert.alert("Error", "Failed to update book: " + error.message);
+    }
   };
 
   return (
@@ -141,6 +170,9 @@ const MontroseManorTab = () => {
 
       <View style={styles.overlay}>
         <Text style={styles.headerTitle}>Montrose Manor</Text>
+        <Text style={styles.headerTitle}>Books not working properly on backend</Text>
+        <Text style={styles.headerTitle}>Do not make anymore books or characters please</Text>
+        <Text style={styles.headerTitle}>or at the very least adding images to them</Text>
 
         <View style={styles.formContainer}>
           <TextInput
@@ -169,7 +201,7 @@ const MontroseManorTab = () => {
                 navigation.navigate("BookDetails", {
                   bookId: book.id,
                   bookTitle: book.title,
-                  bookImageUrl: book.imageUrl,
+                  bookImageUrl: book.imageUrl || "",
                 })
               }
             >
@@ -184,7 +216,12 @@ const MontroseManorTab = () => {
               ) : (
                 <Text style={styles.bookTitle}>{book.title}</Text>
               )}
-              <Image source={{ uri: book.imageUrl }} style={styles.bookImage} resizeMode="cover" />
+              <Image
+                source={book.imageUrl ? { uri: book.imageUrl } : PLACEHOLDER_IMAGE}
+                style={styles.bookImage}
+                resizeMode="cover"
+                defaultSource={PLACEHOLDER_IMAGE}
+              />
               <View style={styles.buttonContainer}>
                 {editingBookId === book.id ? (
                   <TouchableOpacity
@@ -219,19 +256,8 @@ const MontroseManorTab = () => {
 const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    width: width,
-    height: height,
-    position: "absolute",
-    top: 0,
-    left: 0,
-  },
-  overlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.3)",
-    paddingTop: 80,
-  },
+  background: { flex: 1, width, height, position: "absolute", top: 0, left: 0 },
+  overlay: { flex: 1, backgroundColor: "rgba(0, 0, 0, 0.3)", paddingTop: 80 },
   headerTitle: {
     fontSize: 28,
     fontWeight: "bold",
@@ -248,17 +274,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 8,
-    zIndex: 10, // Ensure it’s above the overlay
+    zIndex: 10,
   },
-  backButtonText: {
-    color: "#FFF",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  formContainer: {
-    padding: 20,
-    alignItems: "center",
-  },
+  backButtonText: { color: "#FFF", fontSize: 18, fontWeight: "bold" },
+  formContainer: { padding: 20, alignItems: "center" },
   input: {
     backgroundColor: "#FFF",
     width: width * 0.8,
@@ -272,10 +291,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 10,
   },
-  uploadButtonText: {
-    color: "#FFF",
-    fontWeight: "bold",
-  },
+  uploadButtonText: { color: "#FFF", fontWeight: "bold" },
   previewImage: {
     width: 100,
     height: 100,
@@ -288,13 +304,8 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
   },
-  addButtonText: {
-    color: "#FFF",
-    fontWeight: "bold",
-  },
-  scrollView: {
-    flexGrow: 0,
-  },
+  addButtonText: { color: "#FFF", fontWeight: "bold" },
+  scrollView: { flexGrow: 0 },
   bookTab: {
     width: 150,
     marginHorizontal: 10,
@@ -321,12 +332,7 @@ const styles = StyleSheet.create({
     padding: 5,
     width: "100%",
   },
-  bookImage: {
-    width: 130,
-    height: 130,
-    borderRadius: 5,
-    marginBottom: 5,
-  },
+  bookImage: { width: 130, height: 130, borderRadius: 5, marginBottom: 5 },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -337,28 +343,19 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 5,
   },
-  editButtonText: {
-    color: "#FFF",
-    fontWeight: "bold",
-  },
+  editButtonText: { color: "#FFF", fontWeight: "bold" },
   saveButton: {
     backgroundColor: "#4CAF50",
     padding: 5,
     borderRadius: 5,
   },
-  saveButtonText: {
-    color: "#FFF",
-    fontWeight: "bold",
-  },
+  saveButtonText: { color: "#FFF", fontWeight: "bold" },
   deleteButton: {
     backgroundColor: "#F44336",
     padding: 5,
     borderRadius: 5,
   },
-  deleteButtonText: {
-    color: "#FFF",
-    fontWeight: "bold",
-  },
+  deleteButtonText: { color: "#FFF", fontWeight: "bold" },
 });
 
 export default MontroseManorTab;

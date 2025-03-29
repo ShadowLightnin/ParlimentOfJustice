@@ -26,41 +26,53 @@ const BookDetails = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
-  const [editingCharId, setEditingCharId] = useState(null); // Track editing character
-  const [editName, setEditName] = useState(""); // Store edited name
-  const [editDescription, setEditDescription] = useState(""); // Store edited description
+  const [editingCharId, setEditingCharId] = useState(null);
+  const [editName, setEditName] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+
+  const PLACEHOLDER_IMAGE = require("../../../assets/Armor/PlaceHolder.jpg");
 
   useEffect(() => {
     const fetchCharacters = async () => {
-      const querySnapshot = await getDocs(collection(db, "books", bookId, "characters"));
-      const characterList = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setCharacters(characterList);
+      try {
+        const querySnapshot = await getDocs(collection(db, "books", bookId, "characters"));
+        const characterList = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setCharacters(characterList);
+      } catch (error) {
+        console.error("Error fetching characters:", error);
+        Alert.alert("Error", "Failed to load characters: " + error.message);
+      }
     };
     fetchCharacters();
   }, [bookId]);
 
   const uploadImage = async (uri) => {
-    const response = await fetch(uri);
-    const blob = await response.blob();
-    const storageRef = ref(storage, `characters/${Date.now()}_${Math.random().toString(36).substring(7)}`);
-    const uploadTask = uploadBytesResumable(storageRef, blob);
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      const storageRef = ref(storage, `characters/${Date.now()}_${Math.random().toString(36).substring(7)}`);
+      const uploadTask = uploadBytesResumable(storageRef, blob);
 
-    return new Promise((resolve, reject) => {
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log("Upload is " + progress + "% done");
-        },
-        (error) => reject(error),
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then(resolve).catch(reject);
-        }
-      );
-    });
+      return new Promise((resolve, reject) => {
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log("Upload is " + progress + "% done");
+          },
+          (error) => reject(error),
+          () => {
+            getDownloadURL(uploadTask.snapshot.ref).then(resolve).catch(reject);
+          }
+        );
+      });
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      throw error;
+    }
   };
 
   const pickImage = async () => {
@@ -82,25 +94,31 @@ const BookDetails = () => {
       return;
     }
 
-    let imageUrl = "";
-    if (image) {
-      imageUrl = await uploadImage(image);
+    try {
+      let imageUrl = "";
+      if (image) {
+        imageUrl = await uploadImage(image);
+      }
+
+      const newCharacter = {
+        name,
+        description,
+        imageUrl: imageUrl || "", // Empty string if no image
+      };
+
+      const docRef = await addDoc(collection(db, "books", bookId, "characters"), newCharacter);
+      setCharacters([...characters, { id: docRef.id, ...newCharacter }]);
+      setName("");
+      setDescription("");
+      setImage(null);
+      Alert.alert("Success", "Character added successfully!");
+    } catch (error) {
+      console.error("Error adding character:", error);
+      Alert.alert("Error", "Failed to add character: " + error.message);
     }
-
-    const newCharacter = {
-      name,
-      description,
-      imageUrl: imageUrl || "https://via.placeholder.com/150",
-    };
-
-    const docRef = await addDoc(collection(db, "books", bookId, "characters"), newCharacter);
-    setCharacters([...characters, { id: docRef.id, ...newCharacter }]);
-    setName("");
-    setDescription("");
-    setImage(null);
   };
 
-  const deleteCharacter = (id) => {
+  const deleteCharacter = async (id) => {
     Alert.alert(
       "Confirm Deletion",
       "Are you sure you want to delete this character?",
@@ -110,8 +128,14 @@ const BookDetails = () => {
           text: "Delete",
           style: "destructive",
           onPress: async () => {
-            await deleteDoc(doc(db, "books", bookId, "characters", id));
-            setCharacters(characters.filter((char) => char.id !== id));
+            try {
+              await deleteDoc(doc(db, "books", bookId, "characters", id));
+              setCharacters(characters.filter((char) => char.id !== id));
+              Alert.alert("Success", "Character deleted successfully!");
+            } catch (error) {
+              console.error("Error deleting character:", error);
+              Alert.alert("Error", "Failed to delete character: " + error.message);
+            }
           },
         },
       ]
@@ -129,23 +153,29 @@ const BookDetails = () => {
       Alert.alert("Error", "Name and description cannot be empty");
       return;
     }
-    await updateDoc(doc(db, "books", bookId, "characters", id), {
-      name: editName,
-      description: editDescription,
-    });
-    setCharacters(
-      characters.map((char) =>
-        char.id === id ? { ...char, name: editName, description: editDescription } : char
-      )
-    );
-    setEditingCharId(null);
-    setEditName("");
-    setEditDescription("");
+    try {
+      await updateDoc(doc(db, "books", bookId, "characters", id), {
+        name: editName,
+        description: editDescription,
+      });
+      setCharacters(
+        characters.map((char) =>
+          char.id === id ? { ...char, name: editName, description: editDescription } : char
+        )
+      );
+      setEditingCharId(null);
+      setEditName("");
+      setEditDescription("");
+      Alert.alert("Success", "Character updated successfully!");
+    } catch (error) {
+      console.error("Error updating character:", error);
+      Alert.alert("Error", "Failed to update character: " + error.message);
+    }
   };
 
   return (
     <ImageBackground
-      source={{ uri: bookImageUrl || "https://via.placeholder.com/150" }}
+      source={bookImageUrl ? { uri: bookImageUrl } : PLACEHOLDER_IMAGE}
       style={styles.background}
     >
       <View style={styles.overlay}>
@@ -183,7 +213,11 @@ const BookDetails = () => {
         <ScrollView style={styles.characterList}>
           {characters.map((char) => (
             <View key={char.id} style={styles.characterCard}>
-              <Image source={{ uri: char.imageUrl }} style={styles.characterImage} />
+              <Image
+                source={char.imageUrl ? { uri: char.imageUrl } : PLACEHOLDER_IMAGE}
+                style={styles.characterImage}
+                defaultSource={PLACEHOLDER_IMAGE}
+              />
               <View style={styles.characterInfo}>
                 {editingCharId === char.id ? (
                   <>
@@ -263,7 +297,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 8,
-    zIndex: 10, // Ensure it’s clickable
+    zIndex: 10,
   },
   backButtonText: {
     color: "#FFF",
