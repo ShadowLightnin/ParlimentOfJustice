@@ -8,7 +8,7 @@ const WarpScreen = () => {
   useEffect(() => {
     setTimeout(() => {
       navigation.replace("Montrose"); // 🌌 Navigate to the new tabs screen
-    }, 3500); // Delay for warp effect
+    }, 5700); // Delay for warp effect
   }, []);
 
   return (

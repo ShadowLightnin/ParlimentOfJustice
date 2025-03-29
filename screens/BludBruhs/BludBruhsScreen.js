@@ -17,7 +17,7 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 // Member Data
 const members = [
   { name: 'Sam', codename: 'Void Walker', screen: 'Sam', clickable: true, position: [0, 0], image: require('../../assets/Armor/SamPlaceHolder.jpg') },
-  { name: 'Taylor', codename: '', screen: '', clickable: false, position: [0, 1],image: require('../../assets/Armor/PlaceHolder.jpg') },
+  { name: 'Taylor', codename: '', screen: '', clickable: false, position: [0, 1], image: require('../../assets/Armor/PlaceHolder.jpg') },
   { name: 'Cole', codename: 'Cruiser', screen: 'Cole', clickable: true, position: [0, 2], image: require('../../assets/Armor/ColePlaceHolder.jpg') },
   { name: 'Joseph', codename: 'Technoman', screen: 'JosephD', clickable: true, position: [1, 0], image: require('../../assets/Armor/JosephDPlaceHolder.jpg') },
   { name: 'James', codename: 'Shadowmind', screen: 'JamesBb', clickable: true, position: [1, 1], image: require('../../assets/Armor/JamesBbPlaceHolder.jpg') },
@@ -36,6 +36,15 @@ const BludBruhsScreen = () => {
 
   const goToChat = () => {
     navigation.navigate('TeamChat');
+  };
+
+  const handleMemberPress = (screen) => {
+    // Pass params only for Sam to track source
+    if (screen === 'Sam') {
+      navigation.navigate(screen, { from: 'BludBruhsHome' });
+    } else {
+      navigation.navigate(screen);
+    }
   };
 
   const isDesktop = SCREEN_WIDTH > 600;
@@ -78,7 +87,7 @@ const BludBruhsScreen = () => {
                       { width: cardSize, height: cardSize * 1.6 },
                       !member?.clickable && styles.disabledCard,
                     ]}
-                    onPress={() => member?.clickable && navigation.navigate(member.screen)}
+                    onPress={() => member?.clickable && handleMemberPress(member.screen)}
                     disabled={!member?.clickable}
                   >
                     {member?.image && (
@@ -196,12 +205,6 @@ const styles = StyleSheet.create({
   disabledCard: {
     backgroundColor: '#444',
     shadowColor: 'transparent',
-  },
-  disabledText: {
-    fontSize: 10,
-    color: '#ff4444',
-    textAlign: 'center',
-    marginTop: 5,
   },
 });
 

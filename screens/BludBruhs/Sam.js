@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { 
   View, 
   Text, 
@@ -9,13 +9,54 @@ import {
   Dimensions, 
   Animated 
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useIsFocused, useRoute } from "@react-navigation/native";
+import { Audio } from 'expo-av';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
+// 🎵 Background Music from MP4
+let backgroundSound;
+const MUSIC_LOOP = false; // Set this to true if you want music and popup to loop
+
+const playBackgroundMusic = async () => {
+  if (!backgroundSound) {
+    const { sound } = await Audio.Sound.createAsync(
+      require('../../assets/audio/Sam.mp4'),
+      { shouldPlay: true, isLooping: MUSIC_LOOP }
+    );
+    backgroundSound = sound;
+    await sound.playAsync();
+  }
+};
+
+const stopBackgroundMusic = async () => {
+  if (backgroundSound) {
+    await backgroundSound.stopAsync();
+    await backgroundSound.unloadAsync();
+    backgroundSound = null;
+  }
+};
+
 const Sam = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const isFocused = useIsFocused();
   const flashAnim = useRef(new Animated.Value(1)).current;
+  const popupAnim = useRef(new Animated.Value(-100)).current;
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [hasShownPopup, setHasShownPopup] = useState(false); // Track if popup has appeared
+  const [fromBludBruhsHome, setFromBludBruhsHome] = useState(false); // Track entry source
+
+  // Check navigation params to determine source
+  useEffect(() => {
+    const params = route.params || {};
+    if (params.from === "BludBruhsHome") {
+      setFromBludBruhsHome(true);
+      setHasShownPopup(false); // Reset popup state when coming from BludBruhsHome
+    } else {
+      setFromBludBruhsHome(false);
+    }
+  }, [route.params]);
 
   // ⚡ Flashing Animation Effect for Planet
   useEffect(() => {
@@ -29,9 +70,81 @@ const Sam = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // 🌌 Planet Click Handler → Leads to Warp Screen
+  // 🎵 Audio Control and Popup Timing
+  useEffect(() => {
+    if (isFocused) {
+      playBackgroundMusic();
+
+      const showPopup = () => {
+        setIsPopupVisible(true);
+        Animated.timing(popupAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }).start();
+
+        // Auto-close popup after 3 seconds if no action
+        const autoCloseTimer = setTimeout(() => {
+          Animated.timing(popupAnim, {
+            toValue: -100,
+            duration: 300,
+            useNativeDriver: true,
+          }).start(() => setIsPopupVisible(false));
+        }, 3000); // 3 seconds
+
+        if (!MUSIC_LOOP) {
+          setHasShownPopup(true); // Mark popup as shown if not looping
+        }
+
+        return () => clearTimeout(autoCloseTimer);
+      };
+
+      // Only show popup if coming from BludBruhsHome and it hasn't shown yet (or looping is enabled)
+      if (fromBludBruhsHome && (!hasShownPopup || MUSIC_LOOP)) {
+        const timer = setTimeout(showPopup, 26500); // 26.5 seconds
+        return () => clearTimeout(timer);
+      }
+    }
+    return () => {
+      // Cleanup only when component fully unmounts, not on navigation
+    };
+  }, [isFocused, hasShownPopup, fromBludBruhsHome]);
+
+  // 🌌 Planet Click Handler → Leads to WarpScreen
   const handlePlanetPress = () => {
-    navigation.navigate("WarpScreen"); // 🔄 Navigate to WarpScreen
+    navigation.navigate("WarpScreen", { from: "Sam" });
+  };
+
+  // ✅ Confirm Warp to WarpScreen
+  const confirmWarp = () => {
+    Animated.timing(popupAnim, {
+      toValue: -100,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {
+      setIsPopupVisible(false);
+      navigation.navigate("WarpScreen", { from: "Sam" });
+    });
+  };
+
+  // ❌ Cancel Warp
+  const cancelWarp = () => {
+    Animated.timing(popupAnim, {
+      toValue: -100,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {
+      setIsPopupVisible(false);
+    });
+  };
+
+  // 🔙 Back Button Handler
+  const handleBackPress = async () => {
+    await stopBackgroundMusic();
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "BludBruhsHome" }]
+    });
   };
 
   return (
@@ -40,24 +153,21 @@ const Sam = () => {
         
         {/* Header */}
         <View style={styles.headerContainer}>
-        <TouchableOpacity
+          <TouchableOpacity
             style={styles.backButton}
-            onPress={() => navigation.reset({
-                index: 0,
-                routes: [{ name: "BludBruhsHome" }]  // ✅ Clean navigation flow
-            })}
-        >
+            onPress={handleBackPress}
+          >
             <Text style={styles.backButtonText}>⬅️</Text>
-        </TouchableOpacity>
+          </TouchableOpacity>
           <Text style={styles.title}>Void Walker</Text>
 
-        {/* 🌍 Planet Icon (Clickable) */}
-        <TouchableOpacity onPress={handlePlanetPress} style={styles.planetContainer}>
-          <Animated.Image 
-            source={require("../../assets/Space/ExoPlanet2.jpg")}
-            style={[styles.planetImage, { opacity: flashAnim }]}
-          />
-        </TouchableOpacity>
+          {/* 🌍 Planet Icon (Clickable) */}
+          <TouchableOpacity onPress={handlePlanetPress} style={styles.planetContainer}>
+            <Animated.Image 
+              source={require("../../assets/Space/ExoPlanet2.jpg")}
+              style={[styles.planetImage, { opacity: flashAnim }]}
+            />
+          </TouchableOpacity>
         </View>
 
         {/* Armor Image */}
@@ -87,6 +197,21 @@ const Sam = () => {
           </Text>
         </View>
       </ScrollView>
+
+      {/* Warp Popup */}
+      {isPopupVisible && (
+        <Animated.View style={[styles.popup, { transform: [{ translateY: popupAnim }] }]}>
+          <Text style={styles.popupText}>Would you like to warp to Montrose?</Text>
+          <View style={styles.popupButtons}>
+            <TouchableOpacity style={styles.popupButton} onPress={confirmWarp}>
+              <Text style={styles.popupButtonText}>Yes</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.popupButton} onPress={cancelWarp}>
+              <Text style={styles.popupButtonText}>No</Text>
+            </TouchableOpacity>
+          </View>
+        </Animated.View>
+      )}
     </View>
   );
 };
@@ -125,14 +250,16 @@ const styles = StyleSheet.create({
     textAlign: "center",
     flex: 1,
   },
-  commentButton: {
-    padding: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: 5,
+  planetContainer: {
+    alignItems: 'center',
+    marginVertical: 20,
+    backgroundColor: 'transparent'
   },
-  commentButtonText: {
-    fontSize: 22,
-    color: "#fff",
+  planetImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 40,
+    opacity: 0.8
   },
   imageContainer: {
     alignItems: "center",
@@ -147,17 +274,6 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH * 0.9,
     height: SCREEN_HEIGHT * 0.6,
     resizeMode: "contain",
-  },
-  planetContainer: {
-    alignItems: 'center',
-    marginVertical: 20,
-    backgroundColor: 'transparent' // ✅ Fully transparent background
-  },
-  planetImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 40,
-    opacity: 0.8  // ✅ Slight transparency for a cool effect
   },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject, 
@@ -181,6 +297,42 @@ const styles = StyleSheet.create({
     color: "#fff",
     textAlign: "center",
     marginTop: 10,
+  },
+  popup: {
+    position: 'absolute',
+    top: 0,
+    left: SCREEN_WIDTH * 0.1,
+    right: SCREEN_WIDTH * 0.1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    padding: 15,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    zIndex: 10,
+    alignItems: 'center',
+  },
+  popupText: {
+    fontSize: 16,
+    color: '#00b3ff',
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  popupButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '60%',
+  },
+  popupButton: {
+    padding: 8,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 5,
+    width: '40%',
+    alignItems: 'center',
+  },
+  popupButtonText: {
+    fontSize: 14,
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
 
