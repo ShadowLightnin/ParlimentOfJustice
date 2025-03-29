@@ -10,6 +10,7 @@ import {
   Alert,
   ImageBackground,
   Dimensions,
+  Modal,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { db, storage } from "../../../lib/firebase";
@@ -26,11 +27,14 @@ const BookDetails = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
+  const [useImage, setUseImage] = useState(null); // null = undecided, true = upload, false = no image
   const [editingCharId, setEditingCharId] = useState(null);
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
+  const [selectedCharacter, setSelectedCharacter] = useState(null); // For preview
 
   const PLACEHOLDER_IMAGE = require("../../../assets/Armor/PlaceHolder.jpg");
+  const PLACEHOLDER_URL = "placeholder"; // Unique string to indicate placeholder intent
 
   useEffect(() => {
     const fetchCharacters = async () => {
@@ -85,7 +89,13 @@ const BookDetails = () => {
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);
+      setUseImage(true);
     }
+  };
+
+  const skipImage = () => {
+    setImage(null);
+    setUseImage(false); // Explicitly no image
   };
 
   const addCharacter = async () => {
@@ -95,15 +105,19 @@ const BookDetails = () => {
     }
 
     try {
-      let imageUrl = "";
-      if (image) {
-        imageUrl = await uploadImage(image);
+      let imageUrl;
+      if (useImage === true && image) {
+        imageUrl = await uploadImage(image); // Upload selected image
+      } else if (useImage === false) {
+        imageUrl = null; // No image, blank
+      } else {
+        imageUrl = PLACEHOLDER_URL; // Neither pressed, use placeholder
       }
 
       const newCharacter = {
         name,
         description,
-        imageUrl: imageUrl || "", // Empty string if no image
+        imageUrl,
       };
 
       const docRef = await addDoc(collection(db, "books", bookId, "characters"), newCharacter);
@@ -111,6 +125,7 @@ const BookDetails = () => {
       setName("");
       setDescription("");
       setImage(null);
+      setUseImage(null); // Reset to undecided
       Alert.alert("Success", "Character added successfully!");
     } catch (error) {
       console.error("Error adding character:", error);
@@ -131,6 +146,7 @@ const BookDetails = () => {
             try {
               await deleteDoc(doc(db, "books", bookId, "characters", id));
               setCharacters(characters.filter((char) => char.id !== id));
+              setSelectedCharacter(null); // Close preview if deleted
               Alert.alert("Success", "Character deleted successfully!");
             } catch (error) {
               console.error("Error deleting character:", error);
@@ -146,6 +162,7 @@ const BookDetails = () => {
     setEditingCharId(char.id);
     setEditName(char.name);
     setEditDescription(char.description);
+    setSelectedCharacter(null); // Close preview when editing
   };
 
   const saveEdit = async (id) => {
@@ -173,6 +190,38 @@ const BookDetails = () => {
     }
   };
 
+  const renderCharacterCard = (char) => (
+    <TouchableOpacity
+      key={char.id}
+      style={styles.characterCard}
+      onPress={() => setSelectedCharacter(char)}
+    >
+      {char.imageUrl === null ? (
+        <View style={styles.noImagePlaceholder} />
+      ) : (
+        <Image
+          source={char.imageUrl && char.imageUrl !== PLACEHOLDER_URL ? { uri: char.imageUrl } : PLACEHOLDER_IMAGE}
+          style={styles.characterImage}
+          defaultSource={PLACEHOLDER_IMAGE}
+        />
+      )}
+      <View style={styles.transparentOverlay} />
+      <Text style={styles.characterName}>{char.name}</Text>
+      {editingCharId === char.id ? (
+        <TouchableOpacity onPress={() => saveEdit(char.id)} style={styles.saveButton}>
+          <Text style={styles.saveButtonText}>Save</Text>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity onPress={() => startEditing(char)} style={styles.editButton}>
+          <Text style={styles.editButtonText}>Edit</Text>
+        </TouchableOpacity>
+      )}
+      <TouchableOpacity onPress={() => deleteCharacter(char.id)} style={styles.deleteButton}>
+        <Text style={styles.deleteButtonText}>Delete</Text>
+      </TouchableOpacity>
+    </TouchableOpacity>
+  );
+
   return (
     <ImageBackground
       source={bookImageUrl ? { uri: bookImageUrl } : PLACEHOLDER_IMAGE}
@@ -199,74 +248,52 @@ const BookDetails = () => {
             onChangeText={setDescription}
             multiline
           />
-          <TouchableOpacity onPress={pickImage} style={styles.uploadButton}>
-            <Text style={styles.uploadButtonText}>
-              {image ? "Image Selected" : "Upload Image"}
-            </Text>
-          </TouchableOpacity>
+          <View style={styles.imageOptions}>
+            <TouchableOpacity onPress={pickImage} style={styles.uploadButton}>
+              <Text style={styles.uploadButtonText}>
+                {image ? "Image Selected" : "Upload Image"}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={skipImage} style={styles.noImageButton}>
+              <Text style={styles.noImageButtonText}>No Image</Text>
+            </TouchableOpacity>
+          </View>
           {image && <Image source={{ uri: image }} style={styles.previewImage} />}
           <TouchableOpacity onPress={addCharacter} style={styles.addButton}>
             <Text style={styles.addButtonText}>Add Character</Text>
           </TouchableOpacity>
         </View>
 
-        <ScrollView style={styles.characterList}>
-          {characters.map((char) => (
-            <View key={char.id} style={styles.characterCard}>
-              <Image
-                source={char.imageUrl ? { uri: char.imageUrl } : PLACEHOLDER_IMAGE}
-                style={styles.characterImage}
-                defaultSource={PLACEHOLDER_IMAGE}
-              />
-              <View style={styles.characterInfo}>
-                {editingCharId === char.id ? (
-                  <>
-                    <TextInput
-                      style={styles.editInput}
-                      value={editName}
-                      onChangeText={setEditName}
-                      autoFocus
-                    />
-                    <TextInput
-                      style={[styles.editInput, styles.editDescriptionInput]}
-                      value={editDescription}
-                      onChangeText={setEditDescription}
-                      multiline
-                    />
-                  </>
-                ) : (
-                  <>
-                    <Text style={styles.characterName}>{char.name}</Text>
-                    <Text style={styles.characterDescription}>{char.description}</Text>
-                  </>
-                )}
-              </View>
-              <View style={styles.buttonContainer}>
-                {editingCharId === char.id ? (
-                  <TouchableOpacity
-                    onPress={() => saveEdit(char.id)}
-                    style={styles.saveButton}
-                  >
-                    <Text style={styles.saveButtonText}>Save</Text>
-                  </TouchableOpacity>
-                ) : (
-                  <TouchableOpacity
-                    onPress={() => startEditing(char)}
-                    style={styles.editButton}
-                  >
-                    <Text style={styles.editButtonText}>Edit</Text>
-                  </TouchableOpacity>
-                )}
-                <TouchableOpacity
-                  onPress={() => deleteCharacter(char.id)}
-                  style={styles.deleteButton}
-                >
-                  <Text style={styles.deleteButtonText}>Delete</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          ))}
+        <ScrollView
+          horizontal
+          contentContainerStyle={styles.characterScrollContainer}
+          showsHorizontalScrollIndicator={false}
+        >
+          {characters.map(renderCharacterCard)}
         </ScrollView>
+
+        {/* Character Preview Modal */}
+        <Modal
+          visible={!!selectedCharacter}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setSelectedCharacter(null)}
+        >
+          <View style={styles.modalOverlay}>
+            {selectedCharacter && (
+              <ScrollView style={styles.previewContainer}>
+                <Text style={styles.previewName}>{selectedCharacter.name}</Text>
+                <Text style={styles.previewDescription}>{selectedCharacter.description}</Text>
+                <TouchableOpacity
+                  onPress={() => setSelectedCharacter(null)}
+                  style={styles.closeButton}
+                >
+                  <Text style={styles.closeButtonText}>Close</Text>
+                </TouchableOpacity>
+              </ScrollView>
+            )}
+          </View>
+        </Modal>
       </View>
     </ImageBackground>
   );
@@ -277,8 +304,8 @@ const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    width: width,
-    height: height,
+    width,
+    height,
     position: "absolute",
     top: 0,
     left: 0,
@@ -326,15 +353,35 @@ const styles = StyleSheet.create({
     height: 80,
     textAlignVertical: "top",
   },
+  imageOptions: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "90%",
+    marginBottom: 10,
+  },
   uploadButton: {
     backgroundColor: "#4CAF50",
     padding: 10,
     borderRadius: 5,
-    marginBottom: 10,
+    flex: 1,
+    marginRight: 5,
   },
   uploadButtonText: {
     color: "#FFF",
     fontWeight: "bold",
+    textAlign: "center",
+  },
+  noImageButton: {
+    backgroundColor: "#F44336",
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginLeft: 5,
+  },
+  noImageButtonText: {
+    color: "#FFF",
+    fontWeight: "bold",
+    textAlign: "center",
   },
   previewImage: {
     width: 100,
@@ -351,80 +398,113 @@ const styles = StyleSheet.create({
     color: "#FFF",
     fontWeight: "bold",
   },
-  characterList: {
-    flex: 1,
+  characterScrollContainer: {
     paddingHorizontal: 20,
+    paddingVertical: 10,
   },
   characterCard: {
-    flexDirection: "row",
-    backgroundColor: "rgba(255, 255, 255, 0.9)",
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 10,
+    width: 350, // Matches VillainsTab mobile size
+    height: 500,
+    marginHorizontal: 10,
+    borderRadius: 15,
+    overflow: "hidden",
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
     alignItems: "center",
+    borderColor: "red",
+    borderWidth: 2,
   },
   characterImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 5,
-    marginRight: 10,
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
   },
-  characterInfo: {
-    flex: 1,
+  noImagePlaceholder: {
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.9)", // Blank space
+  },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0)",
+    zIndex: 1,
   },
   characterName: {
-    fontSize: 18,
+    position: "absolute",
+    bottom: 50,
+    left: 10,
+    fontSize: 16,
+    color: "white",
     fontWeight: "bold",
-    color: "#333",
-  },
-  characterDescription: {
-    fontSize: 14,
-    color: "#666",
-  },
-  editInput: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#333",
-    backgroundColor: "rgba(255, 255, 255, 0.7)",
-    borderRadius: 5,
-    padding: 5,
-    marginBottom: 5,
-  },
-  editDescriptionInput: {
-    fontSize: 14,
-    height: 60,
-    textAlignVertical: "top",
-  },
-  buttonContainer: {
-    flexDirection: "column",
-    alignItems: "center",
   },
   editButton: {
+    position: "absolute",
+    bottom: 20,
+    left: 10,
     backgroundColor: "#FFC107",
     padding: 5,
     borderRadius: 5,
-    marginBottom: 5,
   },
   editButtonText: {
     color: "#FFF",
     fontWeight: "bold",
   },
   saveButton: {
+    position: "absolute",
+    bottom: 20,
+    left: 10,
     backgroundColor: "#4CAF50",
     padding: 5,
     borderRadius: 5,
-    marginBottom: 5,
   },
   saveButtonText: {
     color: "#FFF",
     fontWeight: "bold",
   },
   deleteButton: {
+    position: "absolute",
+    bottom: 20,
+    right: 10,
     backgroundColor: "#F44336",
     padding: 5,
     borderRadius: 5,
   },
   deleteButtonText: {
+    color: "#FFF",
+    fontWeight: "bold",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  previewContainer: {
+    width: width * 0.9,
+    maxHeight: height * 0.7,
+    backgroundColor: "rgba(255, 255, 255, 0.95)",
+    borderRadius: 15,
+    padding: 20,
+  },
+  previewName: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#333",
+    textAlign: "center",
+    marginBottom: 10,
+  },
+  previewDescription: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  closeButton: {
+    backgroundColor: "#2196F3",
+    padding: 10,
+    borderRadius: 5,
+    alignSelf: "center",
+  },
+  closeButtonText: {
     color: "#FFF",
     fontWeight: "bold",
   },

@@ -25,18 +25,36 @@ const MontroseManorTab = () => {
   const [editingBookId, setEditingBookId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
 
-  const PLACEHOLDER_IMAGE = require("../../../assets/Armor/PlaceHolder.jpg"); // Confirm this path
+  const PLACEHOLDER_IMAGE = require("../../../assets/Armor/PlaceHolder.jpg");
+
+  // Hardcoded books
+  const hardcodedBooks = [
+    // {
+    //   id: "hardcoded-1",
+    //   title: "The Crimson Tome",
+    //   imageUrl: require("../../../assets/Books/CrimsonTome.jpg"), // Adjust path as needed
+    //   hardcoded: true,
+    // },
+    // {
+    //   id: "hardcoded-2",
+    //   title: "Whispers of the Void",
+    //   imageUrl: require("../../../assets/Books/VoidWhispers.jpg"), // Adjust path as needed
+    //   hardcoded: true,
+    // },
+  ];
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
       collection(db, "books"),
       (querySnapshot) => {
-        const bookList = querySnapshot.docs.map((doc) => ({
+        const firestoreBooks = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
+          hardcoded: false,
         }));
-        setBooks(bookList);
-        console.log("Books updated in real-time:", bookList);
+        // Combine Firestore books with hardcoded books
+        setBooks([...hardcodedBooks, ...firestoreBooks]);
+        console.log("Books updated in real-time:", [...hardcodedBooks, ...firestoreBooks]);
       },
       (error) => {
         console.error("Error listening to books:", error);
@@ -109,7 +127,12 @@ const MontroseManorTab = () => {
     }
   };
 
-  const deleteBook = async (id) => {
+  const deleteBook = async (id, hardcoded) => {
+    if (hardcoded) {
+      Alert.alert("Error", "Cannot delete hardcoded books!");
+      return;
+    }
+
     Alert.alert(
       "Confirm Deletion",
       "Are you sure you want to delete this book?",
@@ -135,6 +158,10 @@ const MontroseManorTab = () => {
   };
 
   const startEditing = (book) => {
+    if (book.hardcoded) {
+      Alert.alert("Error", "Cannot edit hardcoded books!");
+      return;
+    }
     setEditingBookId(book.id);
     setEditTitle(book.title);
   };
@@ -156,6 +183,54 @@ const MontroseManorTab = () => {
     }
   };
 
+  const renderBookCard = (book) => (
+    <TouchableOpacity
+      key={book.id}
+      style={[styles.bookTab, book.hardcoded && styles.hardcodedBook]}
+      onPress={() =>
+        navigation.navigate("BookDetails", {
+          bookId: book.id,
+          bookTitle: book.title,
+          bookImageUrl: book.imageUrl || "",
+        })
+      }
+    >
+      {editingBookId === book.id ? (
+        <TextInput
+          style={styles.editInput}
+          value={editTitle}
+          onChangeText={setEditTitle}
+          onSubmitEditing={() => saveEdit(book.id)}
+          autoFocus
+        />
+      ) : (
+        <Text style={styles.bookTitle}>{book.title}</Text>
+      )}
+      <Image
+        source={book.imageUrl ? (book.hardcoded ? book.imageUrl : { uri: book.imageUrl }) : PLACEHOLDER_IMAGE}
+        style={styles.bookImage}
+        resizeMode="cover"
+        defaultSource={PLACEHOLDER_IMAGE}
+      />
+      {!book.hardcoded && (
+        <View style={styles.buttonContainer}>
+          {editingBookId === book.id ? (
+            <TouchableOpacity onPress={() => saveEdit(book.id)} style={styles.saveButton}>
+              <Text style={styles.saveButtonText}>Save</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={() => startEditing(book)} style={styles.editButton}>
+              <Text style={styles.editButtonText}>Edit</Text>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity onPress={() => deleteBook(book.id, book.hardcoded)} style={styles.deleteButton}>
+            <Text style={styles.deleteButtonText}>Delete</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+    </TouchableOpacity>
+  );
+
   return (
     <ImageBackground
       source={require("../../../assets/MontroseMansion.jpg")}
@@ -170,9 +245,6 @@ const MontroseManorTab = () => {
 
       <View style={styles.overlay}>
         <Text style={styles.headerTitle}>Montrose Manor</Text>
-        <Text style={styles.headerTitle}>Books not working properly on backend</Text>
-        <Text style={styles.headerTitle}>Do not make anymore books or characters please</Text>
-        <Text style={styles.headerTitle}>or at the very least adding images to them</Text>
 
         <View style={styles.formContainer}>
           <TextInput
@@ -192,71 +264,29 @@ const MontroseManorTab = () => {
           </TouchableOpacity>
         </View>
 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scrollView}>
-          {books.map((book) => (
-            <TouchableOpacity
-              key={book.id}
-              style={styles.bookTab}
-              onPress={() =>
-                navigation.navigate("BookDetails", {
-                  bookId: book.id,
-                  bookTitle: book.title,
-                  bookImageUrl: book.imageUrl || "",
-                })
-              }
-            >
-              {editingBookId === book.id ? (
-                <TextInput
-                  style={styles.editInput}
-                  value={editTitle}
-                  onChangeText={setEditTitle}
-                  onSubmitEditing={() => saveEdit(book.id)}
-                  autoFocus
-                />
-              ) : (
-                <Text style={styles.bookTitle}>{book.title}</Text>
-              )}
-              <Image
-                source={book.imageUrl ? { uri: book.imageUrl } : PLACEHOLDER_IMAGE}
-                style={styles.bookImage}
-                resizeMode="cover"
-                defaultSource={PLACEHOLDER_IMAGE}
-              />
-              <View style={styles.buttonContainer}>
-                {editingBookId === book.id ? (
-                  <TouchableOpacity
-                    onPress={() => saveEdit(book.id)}
-                    style={styles.saveButton}
-                  >
-                    <Text style={styles.saveButtonText}>Save</Text>
-                  </TouchableOpacity>
-                ) : (
-                  <TouchableOpacity
-                    onPress={() => startEditing(book)}
-                    style={styles.editButton}
-                  >
-                    <Text style={styles.editButtonText}>Edit</Text>
-                  </TouchableOpacity>
-                )}
-                <TouchableOpacity
-                  onPress={() => deleteBook(book.id)}
-                  style={styles.deleteButton}
-                >
-                  <Text style={styles.deleteButtonText}>Delete</Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
-          ))}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContainer}
+        >
+          {books.map(renderBookCard)}
         </ScrollView>
       </View>
     </ImageBackground>
   );
 };
 
-const { width, height } = Dimensions.get("window");
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
+const isDesktop = SCREEN_WIDTH > 600;
+
+// Responsive card sizes
+const cardSizes = {
+  desktop: { width: 300, height: 450 }, // Bigger on desktop
+  mobile: { width: 200, height: 300 },  // Slightly larger than before on mobile
+};
 
 const styles = StyleSheet.create({
-  background: { flex: 1, width, height, position: "absolute", top: 0, left: 0 },
+  background: { flex: 1, width: SCREEN_WIDTH, height: SCREEN_HEIGHT, position: "absolute", top: 0, left: 0 },
   overlay: { flex: 1, backgroundColor: "rgba(0, 0, 0, 0.3)", paddingTop: 80 },
   headerTitle: {
     fontSize: 28,
@@ -280,7 +310,7 @@ const styles = StyleSheet.create({
   formContainer: { padding: 20, alignItems: "center" },
   input: {
     backgroundColor: "#FFF",
-    width: width * 0.8,
+    width: SCREEN_WIDTH * 0.8,
     padding: 10,
     borderRadius: 5,
     marginBottom: 10,
@@ -305,26 +335,36 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   addButtonText: { color: "#FFF", fontWeight: "bold" },
-  scrollView: { flexGrow: 0 },
+  scrollContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
   bookTab: {
-    width: 150,
+    width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
+    height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
     marginHorizontal: 10,
     backgroundColor: "rgba(65, 62, 62, 0.9)",
-    borderRadius: 10,
+    borderRadius: 15,
     padding: 10,
     alignItems: "center",
+    overflow: "hidden",
+    elevation: 5,
+  },
+  hardcodedBook: {
+    borderColor: "#FFD700", // Gold border for hardcoded books
+    borderWidth: 2,
   },
   bookTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 5,
+    marginBottom: 10,
     textAlign: "center",
     color: "#FFF",
   },
   editInput: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 5,
+    marginBottom: 10,
     textAlign: "center",
     color: "#FFF",
     backgroundColor: "rgba(255, 255, 255, 0.2)",
@@ -332,11 +372,16 @@ const styles = StyleSheet.create({
     padding: 5,
     width: "100%",
   },
-  bookImage: { width: 130, height: 130, borderRadius: 5, marginBottom: 5 },
+  bookImage: {
+    width: "100%",
+    height: isDesktop ? cardSizes.desktop.height - 80 : cardSizes.mobile.height - 80, // Adjust for title/buttons
+    borderRadius: 10,
+  },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
+    paddingTop: 10,
   },
   editButton: {
     backgroundColor: "#FFC107",
