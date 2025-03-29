@@ -182,7 +182,7 @@ const Sam = () => {
   const handleBackPress = async () => {
     console.log("Back button pressed at:", new Date().toISOString());
     await stopBackgroundMusic();
-    navigation.pop();
+    navigation.navigate("BludBruhsHome");
   };
 
   return (
