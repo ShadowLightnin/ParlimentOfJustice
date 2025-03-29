@@ -34,7 +34,7 @@ const BookDetails = () => {
   const [selectedCharacter, setSelectedCharacter] = useState(null); // For preview
 
   const PLACEHOLDER_IMAGE = require("../../../assets/Armor/PlaceHolder.jpg");
-  const PLACEHOLDER_URL = "placeholder"; // Unique string to indicate placeholder intent
+  const PLACEHOLDER_URL = "placeholder"; // Unique string for placeholder intent
 
   useEffect(() => {
     const fetchCharacters = async () => {
@@ -162,7 +162,7 @@ const BookDetails = () => {
     setEditingCharId(char.id);
     setEditName(char.name);
     setEditDescription(char.description);
-    setSelectedCharacter(null); // Close preview when editing
+    setSelectedCharacter(char); // Open preview in edit mode
   };
 
   const saveEdit = async (id) => {
@@ -183,6 +183,7 @@ const BookDetails = () => {
       setEditingCharId(null);
       setEditName("");
       setEditDescription("");
+      setSelectedCharacter(null); // Close preview after saving
       Alert.alert("Success", "Character updated successfully!");
     } catch (error) {
       console.error("Error updating character:", error);
@@ -191,35 +192,32 @@ const BookDetails = () => {
   };
 
   const renderCharacterCard = (char) => (
-    <TouchableOpacity
-      key={char.id}
-      style={styles.characterCard}
-      onPress={() => setSelectedCharacter(char)}
-    >
-      {char.imageUrl === null ? (
-        <View style={styles.noImagePlaceholder} />
-      ) : (
-        <Image
-          source={char.imageUrl && char.imageUrl !== PLACEHOLDER_URL ? { uri: char.imageUrl } : PLACEHOLDER_IMAGE}
-          style={styles.characterImage}
-          defaultSource={PLACEHOLDER_IMAGE}
-        />
-      )}
-      <View style={styles.transparentOverlay} />
-      <Text style={styles.characterName}>{char.name}</Text>
-      {editingCharId === char.id ? (
-        <TouchableOpacity onPress={() => saveEdit(char.id)} style={styles.saveButton}>
-          <Text style={styles.saveButtonText}>Save</Text>
-        </TouchableOpacity>
-      ) : (
+    <View key={char.id} style={styles.characterContainer}>
+      <TouchableOpacity
+        style={styles.characterCard}
+        onPress={() => setSelectedCharacter(char)}
+      >
+        {char.imageUrl === null ? (
+          <View style={styles.noImagePlaceholder} />
+        ) : (
+          <Image
+            source={char.imageUrl && char.imageUrl !== PLACEHOLDER_URL ? { uri: char.imageUrl } : PLACEHOLDER_IMAGE}
+            style={styles.characterImage}
+            defaultSource={PLACEHOLDER_IMAGE}
+          />
+        )}
+        <View style={styles.transparentOverlay} />
+        <Text style={styles.characterName}>{char.name}</Text>
+      </TouchableOpacity>
+      <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={() => startEditing(char)} style={styles.editButton}>
           <Text style={styles.editButtonText}>Edit</Text>
         </TouchableOpacity>
-      )}
-      <TouchableOpacity onPress={() => deleteCharacter(char.id)} style={styles.deleteButton}>
-        <Text style={styles.deleteButtonText}>Delete</Text>
-      </TouchableOpacity>
-    </TouchableOpacity>
+        <TouchableOpacity onPress={() => deleteCharacter(char.id)} style={styles.deleteButton}>
+          <Text style={styles.deleteButtonText}>Delete</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 
   return (
@@ -272,20 +270,51 @@ const BookDetails = () => {
           {characters.map(renderCharacterCard)}
         </ScrollView>
 
-        {/* Character Preview Modal */}
+        {/* Character Preview/Edit Modal */}
         <Modal
           visible={!!selectedCharacter}
           transparent
           animationType="slide"
-          onRequestClose={() => setSelectedCharacter(null)}
+          onRequestClose={() => {
+            setSelectedCharacter(null);
+            setEditingCharId(null); // Exit edit mode if closed
+          }}
         >
           <View style={styles.modalOverlay}>
             {selectedCharacter && (
               <ScrollView style={styles.previewContainer}>
-                <Text style={styles.previewName}>{selectedCharacter.name}</Text>
-                <Text style={styles.previewDescription}>{selectedCharacter.description}</Text>
+                {editingCharId === selectedCharacter.id ? (
+                  <>
+                    <TextInput
+                      style={styles.previewEditName}
+                      value={editName}
+                      onChangeText={setEditName}
+                      autoFocus
+                    />
+                    <TextInput
+                      style={styles.previewEditDescription}
+                      value={editDescription}
+                      onChangeText={setEditDescription}
+                      multiline
+                    />
+                    <TouchableOpacity
+                      onPress={() => saveEdit(selectedCharacter.id)}
+                      style={styles.saveButton}
+                    >
+                      <Text style={styles.saveButtonText}>Save</Text>
+                    </TouchableOpacity>
+                  </>
+                ) : (
+                  <>
+                    <Text style={styles.previewName}>{selectedCharacter.name}</Text>
+                    <Text style={styles.previewDescription}>{selectedCharacter.description}</Text>
+                  </>
+                )}
                 <TouchableOpacity
-                  onPress={() => setSelectedCharacter(null)}
+                  onPress={() => {
+                    setSelectedCharacter(null);
+                    setEditingCharId(null); // Exit edit mode if closed
+                  }}
                   style={styles.closeButton}
                 >
                   <Text style={styles.closeButtonText}>Close</Text>
@@ -402,14 +431,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
+  characterContainer: {
+    marginHorizontal: 10,
+    alignItems: "center",
+  },
   characterCard: {
     width: 350, // Matches VillainsTab mobile size
-    height: 500,
-    marginHorizontal: 10,
+    height: 450,
     borderRadius: 15,
     overflow: "hidden",
     backgroundColor: "rgba(0, 0, 0, 0.7)",
-    alignItems: "center",
     borderColor: "red",
     borderWidth: 2,
   },
@@ -430,47 +461,41 @@ const styles = StyleSheet.create({
   },
   characterName: {
     position: "absolute",
-    bottom: 50,
+    bottom: 10,
     left: 10,
     fontSize: 16,
     color: "white",
     fontWeight: "bold",
   },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: 350, // Match card width
+    marginTop: 10,
+  },
   editButton: {
-    position: "absolute",
-    bottom: 20,
-    left: 10,
     backgroundColor: "#FFC107",
     padding: 5,
     borderRadius: 5,
+    flex: 1,
+    marginRight: 5,
   },
   editButtonText: {
     color: "#FFF",
     fontWeight: "bold",
-  },
-  saveButton: {
-    position: "absolute",
-    bottom: 20,
-    left: 10,
-    backgroundColor: "#4CAF50",
-    padding: 5,
-    borderRadius: 5,
-  },
-  saveButtonText: {
-    color: "#FFF",
-    fontWeight: "bold",
+    textAlign: "center",
   },
   deleteButton: {
-    position: "absolute",
-    bottom: 20,
-    right: 10,
     backgroundColor: "#F44336",
     padding: 5,
     borderRadius: 5,
+    flex: 1,
+    marginLeft: 5,
   },
   deleteButtonText: {
     color: "#FFF",
     fontWeight: "bold",
+    textAlign: "center",
   },
   modalOverlay: {
     flex: 1,
@@ -481,22 +506,54 @@ const styles = StyleSheet.create({
   previewContainer: {
     width: width * 0.9,
     maxHeight: height * 0.7,
-    backgroundColor: "rgba(255, 255, 255, 0.95)",
+    backgroundColor: "rgba(72, 63, 63, 0.95)",
     borderRadius: 15,
     padding: 20,
   },
   previewName: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#333",
+    color: "white",
     textAlign: "center",
     marginBottom: 10,
   },
   previewDescription: {
     fontSize: 16,
-    color: "#666",
+    color: "#fff7f7",
     textAlign: "center",
     marginBottom: 20,
+  },
+  previewEditName: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#e5e5e5",
+    textAlign: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  previewEditDescription: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 20,
+    minHeight: 100,
+    textAlignVertical: "top",
+  },
+  saveButton: {
+    backgroundColor: "#4CAF50",
+    padding: 10,
+    borderRadius: 5,
+    alignSelf: "center",
+    marginBottom: 10,
+  },
+  saveButtonText: {
+    color: "#FFF",
+    fontWeight: "bold",
   },
   closeButton: {
     backgroundColor: "#2196F3",

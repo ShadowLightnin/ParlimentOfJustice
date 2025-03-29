@@ -52,7 +52,6 @@ const MontroseManorTab = () => {
           ...doc.data(),
           hardcoded: false,
         }));
-        // Combine Firestore books with hardcoded books
         setBooks([...hardcodedBooks, ...firestoreBooks]);
         console.log("Books updated in real-time:", [...hardcodedBooks, ...firestoreBooks]);
       },
@@ -184,34 +183,35 @@ const MontroseManorTab = () => {
   };
 
   const renderBookCard = (book) => (
-    <TouchableOpacity
-      key={book.id}
-      style={[styles.bookTab, book.hardcoded && styles.hardcodedBook]}
-      onPress={() =>
-        navigation.navigate("BookDetails", {
-          bookId: book.id,
-          bookTitle: book.title,
-          bookImageUrl: book.imageUrl || "",
-        })
-      }
-    >
-      {editingBookId === book.id ? (
-        <TextInput
-          style={styles.editInput}
-          value={editTitle}
-          onChangeText={setEditTitle}
-          onSubmitEditing={() => saveEdit(book.id)}
-          autoFocus
+    <View key={book.id} style={styles.bookContainer}>
+      <TouchableOpacity
+        style={[styles.bookTab, book.hardcoded && styles.hardcodedBook]}
+        onPress={() =>
+          navigation.navigate("BookDetails", {
+            bookId: book.id,
+            bookTitle: book.title,
+            bookImageUrl: book.imageUrl || "",
+          })
+        }
+      >
+        {editingBookId === book.id ? (
+          <TextInput
+            style={styles.editInput}
+            value={editTitle}
+            onChangeText={setEditTitle}
+            onSubmitEditing={() => saveEdit(book.id)}
+            autoFocus
+          />
+        ) : (
+          <Text style={styles.bookTitle}>{book.title}</Text>
+        )}
+        <Image
+          source={book.imageUrl ? (book.hardcoded ? book.imageUrl : { uri: book.imageUrl }) : PLACEHOLDER_IMAGE}
+          style={styles.bookImage}
+          resizeMode="cover"
+          defaultSource={PLACEHOLDER_IMAGE}
         />
-      ) : (
-        <Text style={styles.bookTitle}>{book.title}</Text>
-      )}
-      <Image
-        source={book.imageUrl ? (book.hardcoded ? book.imageUrl : { uri: book.imageUrl }) : PLACEHOLDER_IMAGE}
-        style={styles.bookImage}
-        resizeMode="cover"
-        defaultSource={PLACEHOLDER_IMAGE}
-      />
+      </TouchableOpacity>
       {!book.hardcoded && (
         <View style={styles.buttonContainer}>
           {editingBookId === book.id ? (
@@ -228,7 +228,7 @@ const MontroseManorTab = () => {
           </TouchableOpacity>
         </View>
       )}
-    </TouchableOpacity>
+    </View>
   );
 
   return (
@@ -339,10 +339,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
+  bookContainer: {
+    marginHorizontal: 10,
+    alignItems: "center",
+  },
   bookTab: {
     width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
     height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
-    marginHorizontal: 10,
     backgroundColor: "rgba(65, 62, 62, 0.9)",
     borderRadius: 15,
     padding: 10,
@@ -374,33 +377,39 @@ const styles = StyleSheet.create({
   },
   bookImage: {
     width: "100%",
-    height: isDesktop ? cardSizes.desktop.height - 80 : cardSizes.mobile.height - 80, // Adjust for title/buttons
+    height: isDesktop ? cardSizes.desktop.height - 50 : cardSizes.mobile.height - 50, // Adjust for title only
     borderRadius: 10,
   },
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    width: "100%",
-    paddingTop: 10,
+    width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width, // Match card width
+    marginTop: 10,
   },
   editButton: {
     backgroundColor: "#FFC107",
     padding: 5,
     borderRadius: 5,
+    flex: 1,
+    marginRight: 5,
   },
-  editButtonText: { color: "#FFF", fontWeight: "bold" },
+  editButtonText: { color: "#FFF", fontWeight: "bold", textAlign: "center" },
   saveButton: {
     backgroundColor: "#4CAF50",
     padding: 5,
     borderRadius: 5,
+    flex: 1,
+    marginRight: 5,
   },
-  saveButtonText: { color: "#FFF", fontWeight: "bold" },
+  saveButtonText: { color: "#FFF", fontWeight: "bold", textAlign: "center" },
   deleteButton: {
     backgroundColor: "#F44336",
     padding: 5,
     borderRadius: 5,
+    flex: 1,
+    marginLeft: 5,
   },
-  deleteButtonText: { color: "#FFF", fontWeight: "bold" },
+  deleteButtonText: { color: "#FFF", fontWeight: "bold", textAlign: "center" },
 });
 
 export default MontroseManorTab;
