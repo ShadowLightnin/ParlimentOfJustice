@@ -138,10 +138,11 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#00FFFF',
     textAlign: 'center',
-    textShadowColor: '#00b3ff',
-    textShadowRadius: 15,
+    textShadowColor: '#fffb00', // Electric cyan glow
+    textShadowOffset: { width: 1, height: 2 }, // Centered glow
+    textShadowRadius: 20, // Stronger glow effect
     flex: 1,
   },
   chatButton: {
@@ -166,7 +167,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 8,
-    shadowColor: '#00b3ff',
+    shadowColor: '#00FFFF',
     shadowOpacity: 1.5,
     shadowRadius: 10,
     elevation: 5,

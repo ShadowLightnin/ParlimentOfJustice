@@ -142,10 +142,10 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#fff',
+    color: 'rgba(107, 107, 107, 1)',
     textAlign: 'center',
     textShadowColor: '#00b3ff',
-    textShadowRadius: 15,
+    textShadowRadius: 35,
     flex: 1,
   },
   chatButton: {

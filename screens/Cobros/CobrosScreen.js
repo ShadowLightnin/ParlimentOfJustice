@@ -13,10 +13,8 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-// Screen dimensions
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
-// Member Data with Unique Image Paths
 const members = [
   { name: 'Tanner Despain', codename: 'Titanium', screen: '', clickable: true, image: require('../../assets/Armor/TannerDPlaceHolder.jpg') },
   { name: 'Wesley Holbrook', codename: 'Warlock', screen: '', clickable: true, image: require('../../assets/Armor/WesleyHPlaceHolder.jpg') },
@@ -37,7 +35,6 @@ const members = [
   { name: 'Micheal', codename: 'Guardian Sentinel', screen: '', clickable: true, image: require('../../assets/Armor/MichealPlaceHolder.jpg') },
 ];
 
-// Grid layout settings
 const isDesktop = SCREEN_WIDTH > 600;
 const columns = isDesktop ? 5 : 3;
 const rows = Math.ceil(members.length / columns);
@@ -48,7 +45,7 @@ const verticalSpacing = isDesktop ? 50 : 20;
 
 export const CobrosScreen = () => {
   const navigation = useNavigation();
-  const [previewMember, setPreviewMember] = useState(null); // State for preview modal
+  const [previewMember, setPreviewMember] = useState(null);
 
   const goToChat = () => {
     navigation.navigate('TeamChat');
@@ -94,7 +91,7 @@ export const CobrosScreen = () => {
                       { width: cardSize, height: cardSize * cardHeightMultiplier },
                       !member.clickable && styles.disabledCard
                     ]}
-                    onPress={() => member.clickable && setPreviewMember(member)} // Open preview if clickable
+                    onPress={() => member.clickable && setPreviewMember(member)}
                     disabled={!member.clickable}
                   >
                     {member?.image && (
@@ -126,7 +123,7 @@ export const CobrosScreen = () => {
             <TouchableOpacity
               style={styles.modalContainer}
               activeOpacity={1}
-              onPress={() => setPreviewMember(null)} // Close preview when clicking outside
+              onPress={() => setPreviewMember(null)}
             >
               <Image
                 source={previewMember?.image || require('../../assets/Armor/PlaceHolder.jpg')}
@@ -159,7 +156,7 @@ const styles = StyleSheet.create({
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1, // Ensures overlay blocks saving but maintains button clicks
+    zIndex: 1,
   },
   headerWrapper: {
     flexDirection: 'row',
@@ -182,8 +179,12 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#7d1a1a',
     textAlign: 'center',
+    textShadowColor: '#e0cd22', 
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 40,
+    flex: 1,
   },
   chatButton: {
     padding: 10,
@@ -209,9 +210,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 8,
     padding: 5,
-    shadowColor: '#00b3ff',
+    shadowColor: 'rgba(82, 17, 17, 1)',
     shadowOpacity: 1.5,
-    shadowRadius: 10,
+    shadowRadius: 20,
     elevation: 5,
   },
   disabledCard: {
@@ -236,7 +237,6 @@ const styles = StyleSheet.create({
     color: '#aaa',
     textAlign: 'center',
   },
-  // Modal Styles
   modalBackground: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.9)',

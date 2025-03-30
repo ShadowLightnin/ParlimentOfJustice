@@ -149,8 +149,12 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#fff',
+    color: 'brown',
     textAlign: 'center',
+    textShadowColor: 'gold',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 30,
+    flex: 1,
   },
   scrollContainer: {
     paddingBottom: 20,
@@ -168,9 +172,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 8,
     padding: 5,
-    shadowColor: '#00b3ff',
+    shadowColor: 'brown',
     shadowOpacity: 1.5,
-    shadowRadius: 10,
+    shadowRadius: 20,
     elevation: 5,
   },
   disabledCard: {
