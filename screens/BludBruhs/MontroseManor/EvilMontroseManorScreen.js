@@ -1,26 +1,26 @@
 import React from "react";
-import { View, Image, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { View, Image, TouchableOpacity, Text, StyleSheet, Dimensions } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+
+const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const MontroseManorScreen = () => {
     const navigation = useNavigation();
 
-    // 🌀 Navigate to the Landing Screen
     const handlePlanetClick = () => {
         navigation.navigate("Landing");
     };
 
     return (
         <View style={styles.container}>
-            {/* Background Image */}
+            {/* Background Image (Uncomment if needed) */}
             {/* <Image
-                source={require("../../../assets/Space.jpg")} // Your background image
+                source={require("../../../assets/Space/Space.jpg")}
                 style={styles.backgroundImage}
             /> */}
-            <Text style={styles.text}></Text>
-            
-            {/* 🌍 Make the planet clickable */}
-            <TouchableOpacity onPress={handlePlanetClick}>
+            {/* Planet and Text Wrapper */}
+            <TouchableOpacity onPress={handlePlanetClick} style={styles.planetWrapper}>
+                <Text style={styles.text}>Melcornia</Text>
                 <Image 
                     source={require("../../../assets/Space/ExoPlanet.jpg")}
                     style={styles.planetImage}
@@ -35,6 +35,7 @@ const MontroseManorScreen = () => {
     );
 };
 
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -43,17 +44,33 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     backgroundImage: {
-        position: "absolute", // Keep the background behind everything else
+        position: "absolute",
         width: "100%",
         height: "100%",
-        resizeMode: "cover", // Make sure the background covers the screen
-        zIndex: -1, // Ensure the background stays behind other elements
+        resizeMode: "cover",
+        zIndex: -1,
+    },
+    planetWrapper: {
+        alignItems: "center", // Center children horizontally
+        justifyContent: "center", // Center children vertically
+        position: "absolute", // Center within the container
+        top: SCREEN_HEIGHT / 2 - 180, // Adjust based on planet + text height (300px planet + 30px text + margins)
+        left: SCREEN_WIDTH / 2 - 150, // Half of planet width (300px)
     },
     planetImage: {
         width: 300,
         height: 300,
         resizeMode: "contain",
-        marginBottom: 30,
+    },
+    text: {
+        color: "black", // White base color
+        fontSize: 30, // Larger for ominous effect
+        fontWeight: "900", // Extra bold to mimic creepy fonts
+        textTransform: "uppercase", // All caps for spookiness
+        textShadowColor: "#FF4500", // Orange-red glow for eeriness
+        textShadowOffset: { width: 2, height: 2 }, // Slight offset for depth
+        textShadowRadius: 2.5, // Wide glow effect
+        marginBottom: 10,
     },
     backButton: {
         backgroundColor: "#750000",
@@ -61,17 +78,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         borderRadius: 8,
         elevation: 5,
+        position: "absolute",
+        bottom: 30, // Move to bottom of screen
     },
     backButtonText: {
         color: "#FFF",
         fontSize: 18,
         fontWeight: "bold",
-    },
-    text: {
-        color: "#FFF",
-        fontSize: 24,
-        fontWeight: "bold",
-        marginBottom: 10,
     },
 });
 
