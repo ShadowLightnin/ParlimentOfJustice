@@ -44,7 +44,7 @@ const Aileenchat = () => {
 
   return (
     <ImageBackground
-      source={require("../../assets/BackGround/EclipsePlaceHolder.jpg")}
+      source={require("../../assets/BackGround/Temple.jpg")}
       style={styles.background}
     >
       <View style={styles.container}>
@@ -56,7 +56,7 @@ const Aileenchat = () => {
         {/* Private Chat */}
         {canAccessPrivateChat ? (
           <View style={styles.privateChatContainer}>
-            <Text style={styles.privateChatHeader}>Our Special Chat</Text>
+            <Text style={styles.privateChatHeader}>AiWill</Text>
             <ChatRoom
               chatId="TeamChat"
               ref={flatListRef} // Pass ref if ChatRoom supports it
