@@ -13,7 +13,6 @@ import { useNavigation } from "@react-navigation/native";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
-// Array of Aileen-related images (replace with your actual image paths)
 const aileenImages = [
   { name: "Ariata", image: require("../../assets/Armor/AileenPlaceHolder2.jpg"), clickable: true },
   { name: "Baybayin", image: require("../../assets/Armor/AileenPlaceHolder.jpg"), clickable: true },
@@ -22,8 +21,7 @@ const aileenImages = [
   { name: "Nialla", image: require("../../assets/Armor/AileenPlaceHolder6.jpg"), clickable: true },
   { name: "Ailethra", image: require("../../assets/Armor/AileenPlaceHolder9.jpg"), clickable: true },
   { name: "Aishal", image: require("../../assets/Armor/AileenPlaceHolder8.jpg"), clickable: true },
-  { name: "Seraphina", image: require("../../assets/Armor/AileenPlaceHolder7.jpg"), clickable: true },
-  // Add more images here as needed
+  { name: "Seraphina", image: require("../../assets/Armor/AileenPlaceHolder7.jpg"), clickable: true, screen: "Aileenchat" }, // Updated to Aileenchat
 ];
 
 const Aileen = () => {
@@ -31,7 +29,6 @@ const Aileen = () => {
   const flashAnim = useRef(new Animated.Value(1)).current;
   const [windowWidth, setWindowWidth] = useState(Dimensions.get("window").width);
 
-  // ⚡ Flashing Animation Effect for Planet
   useEffect(() => {
     const interval = setInterval(() => {
       Animated.sequence([
@@ -39,11 +36,9 @@ const Aileen = () => {
         Animated.timing(flashAnim, { toValue: 1, duration: 500, useNativeDriver: true }),
       ]).start();
     }, 2000);
-
     return () => clearInterval(interval);
   }, []);
 
-  // Update window width on resize
   useEffect(() => {
     const updateDimensions = () => {
       setWindowWidth(Dimensions.get("window").width);
@@ -52,20 +47,27 @@ const Aileen = () => {
     return () => subscription?.remove();
   }, []);
 
-  // 🌌 Planet Click Handler → Leads to Warp Screen
   const handlePlanetPress = () => {
-    navigation.navigate("WarpScreen"); // 🔄 Navigate to WarpScreen
+    navigation.navigate("WarpScreen");
   };
 
-  // Determine if it's desktop or mobile based on width (768px breakpoint)
+  const handleCardPress = (item) => {
+    if (item.clickable) {
+      if (item.name === "Seraphina") {
+        navigation.navigate("Aileenchat"); // Updated to Aileenchat
+      } else {
+        console.log(`${item.name} clicked`);
+      }
+    }
+  };
+
   const isDesktop = windowWidth >= 768;
 
-  // Render each image card
   const renderImageCard = (item) => (
     <TouchableOpacity
       key={item.name}
       style={[styles.card(isDesktop, windowWidth), item.clickable ? styles.clickable : styles.notClickable]}
-      onPress={() => item.clickable && console.log(`${item.name} clicked`)} // Replace with navigation if needed
+      onPress={() => handleCardPress(item)}
       disabled={!item.clickable}
     >
       <Image source={item.image} style={styles.armorImage} />
@@ -77,26 +79,20 @@ const Aileen = () => {
 
   return (
     <View style={styles.container}>
-      {/* Scrollable Content */}
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {/* Header */}
         <View style={styles.headerContainer}>
           <TouchableOpacity
             style={styles.backButton}
             onPress={() =>
               navigation.reset({
                 index: 0,
-                routes: [{ name: "EclipseHome" }], // ✅ Clean navigation flow
+                routes: [{ name: "EclipseHome" }],
               })
             }
           >
             <Text style={styles.backButtonText}>←</Text>
           </TouchableOpacity>
-
-          {/* Title */}
           <Text style={styles.title}>Ariata</Text>
-
-          {/* 🌍 Planet Icon (Clickable) */}
           <TouchableOpacity onPress={handlePlanetPress} style={styles.planetContainer}>
             <Animated.Image
               source={require("../../assets/Space/Earth_hero.jpg")}
@@ -104,8 +100,6 @@ const Aileen = () => {
             />
           </TouchableOpacity>
         </View>
-
-        {/* Horizontal Scroll for Images */}
         <View style={styles.imageContainer}>
           <ScrollView
             horizontal={true}
@@ -115,8 +109,6 @@ const Aileen = () => {
             {aileenImages.map(renderImageCard)}
           </ScrollView>
         </View>
-
-        {/* About Section */}
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
@@ -172,13 +164,13 @@ const styles = StyleSheet.create({
   planetContainer: {
     alignItems: "center",
     marginVertical: 20,
-    backgroundColor: "transparent", // ✅ Fully transparent background
+    backgroundColor: "transparent",
   },
   planetImage: {
     width: 40,
     height: 40,
     borderRadius: 40,
-    opacity: 0.8, // ✅ Slight transparency for a cool effect
+    opacity: 0.8,
   },
   imageContainer: {
     width: "100%",
@@ -191,8 +183,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   card: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.2 : windowWidth * 0.7, // 40% on desktop, 70% on mobile
-    height: isDesktop ? SCREEN_HEIGHT * 0.7 : SCREEN_HEIGHT * 0.6, // Slightly taller on mobile
+    width: isDesktop ? windowWidth * 0.2 : windowWidth * 0.7,
+    height: isDesktop ? SCREEN_HEIGHT * 0.7 : SCREEN_HEIGHT * 0.6,
     borderRadius: 15,
     overflow: "hidden",
     elevation: 5,

@@ -2,6 +2,7 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import EclipseScreen from '../screens/Eclipse/EclipseScreen';
 import TeamChatScreen from "../screens/Eclipse/TeamChatScreen";
+import Aileenchat from "../screens/Eclipse/Aileenchat";
 
 import Aileen from '../screens/Eclipse/Aileen';
 import WarpScreen from "../screens/Eclipse/WarpScreen";
@@ -21,6 +22,7 @@ export function EclipseStack() {
       <Stack.Screen name="EclipseHome" component={EclipseScreen} />
       <Stack.Screen name="TeamChat" component={TeamChatScreen} />
       <Stack.Screen name="Aileen" component={Aileen} />
+      <Stack.Screen name="Aileenchat" component={Aileenchat} />
       <Stack.Screen name="WarpScreen" component={WarpScreen} />
       <Stack.Screen name="Kolob" component={Kolob} />
       <Stack.Screen name="BackWarpScreen" component={BackWarpScreen} />
