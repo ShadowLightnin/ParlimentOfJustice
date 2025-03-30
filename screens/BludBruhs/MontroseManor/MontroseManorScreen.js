@@ -14,12 +14,12 @@ const MontroseManorScreen = () => {
         <View style={styles.container}>
             {/* Background Image */}
             {/* <Image
-                source={require("../../../assets/Space.jpg")} // Your background image
+                source={require("../../../assets/Space/Space.jpg")} // Your background image
                 style={styles.backgroundImage}
-            /> */}
-            
+                /> */}
             {/* 🌍 Make the planet clickable */}
             <TouchableOpacity onPress={handlePlanetClick}>
+            <Text style={styles.text}>Melcornia</Text>
                 <Image 
                     source={require("../../../assets/Space/ExoPlanet.jpg")}
                     style={styles.planetImage}
