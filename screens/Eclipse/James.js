@@ -21,19 +21,20 @@ const James = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "", image: require("../../assets/Armor/JamesPlaceHolder.jpg"), clickable: true },
+    { name: "Gentle Hand", image: require("../../assets/Armor/JamesPlaceHolder.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (
     <TouchableOpacity
       key={armor.name}
-      style={[styles.card(isDesktop, windowWidth), armor.clickable ? styles.clickable : styles.notClickable]}
+      style={armor.clickable ? styles.clickable : styles.notClickable}
       onPress={() => armor.clickable && console.log(`${armor.name} clicked`)}
       disabled={!armor.clickable}
     >
       <Image source={armor.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>{armor.name}</Text>
+      {/* Only show cardName if name is not empty */}
+      {armor.name && <Text style={styles.cardName}>{armor.name}</Text>}
       {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );
@@ -52,16 +53,7 @@ const James = () => {
         </View>
 
         <View style={styles.imageContainer}>
-          <ScrollView
-            horizontal
-            contentContainerStyle={styles.imageScrollContainer}
-            showsHorizontalScrollIndicator={false}
-            snapToAlignment="center"
-            snapToInterval={SCREEN_WIDTH * 0.7 + 20}
-            decelerationRate="fast"
-          >
-            {armors.map(renderArmorCard)}
-          </ScrollView>
+          {armors.map(renderArmorCard)}
         </View>
 
         <View style={styles.aboutSection}>
@@ -121,34 +113,27 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   imageContainer: {
-    width: "100%",
-    paddingVertical: 20,
-    backgroundColor: "#111",
-  },
-  imageScrollContainer: {
-    flexDirection: "row",
-    paddingHorizontal: 10,
     alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 20,
+    backgroundColor: "#111",
+    paddingVertical: 30,
+    borderRadius: 20,
+    position: "relative",
   },
-  card: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.7,
-    height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.5,
-    borderRadius: 15,
-    overflow: "hidden",
-    elevation: 5,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-    marginRight: 20,
-  }),
+  armorImage: {
+    width: SCREEN_WIDTH * 0.9,
+    height: SCREEN_HEIGHT * 0.6,
+    resizeMode: "contain",
+  },
   clickable: {
     borderWidth: 2,
+    borderColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 15,
   },
   notClickable: {
     opacity: 0.8,
-  },
-  armorImage: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "cover",
+    borderRadius: 15,
   },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
