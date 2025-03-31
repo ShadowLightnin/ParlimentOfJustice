@@ -19,18 +19,27 @@ const ErevosScreen = () => {
   }, []);
 
   const isDesktop = windowWidth >= 768;
-  const imageSize = isDesktop ? windowWidth * 0.4 : SCREEN_WIDTH * 0.4; // Smaller for horizontal scroll
-  const imageHeight = isDesktop ? SCREEN_HEIGHT * 0.6 : SCREEN_HEIGHT * 0.4;
+  // Main Erevos image (large, like original)
+  const mainImageSize = isDesktop ? windowWidth * 0.9 : SCREEN_WIDTH * 0.9;
+  const mainImageHeight = isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.6;
+  // Secondary images (smaller, for horizontal scroll)
+  const secondaryImageSize = isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.3;
+  const secondaryImageHeight = isDesktop ? SCREEN_HEIGHT * 0.4 : SCREEN_HEIGHT * 0.3;
 
-  const characters = [
+  const mainCharacter = [
+    { name: "Erevos the Ascendancy", image: require("../../../assets/Villains/Erevos.jpg"), clickable: true },
+  ];
+
+  const secondaryCharacters = [
     { name: "Erevan", image: require("../../../assets/Villains/Erevan.jpg"), clickable: true },
     { name: "Erevos the Eternal", image: require("../../../assets/Villains/GreatErevos.jpg"), clickable: true },
     { name: "Erevos", image: require("../../../assets/Villains/Erevos2.jpg"), clickable: true },
-    { name: "Erevos the Asecendancy", image: require("../../../assets/Villains/Erevos.jpg"), clickable: true },
-    // You can add more characters here if needed for horizontal scrolling
+    // { name: "Erevos the Ascendancy", image: require("../../../assets/Villains/Erevos.jpg"), clickable: true },
+
+    // Add more if needed
   ];
 
-  const renderCharacterCard = (character) => (
+  const renderCharacterCard = (character, isSecondary = false) => (
     <TouchableOpacity
       key={character.name}
       style={character.clickable ? styles.clickable : styles.notClickable}
@@ -39,7 +48,10 @@ const ErevosScreen = () => {
     >
       <Image
         source={character.image}
-        style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
+        style={[styles.armorImage, {
+          width: isSecondary ? secondaryImageSize : mainImageSize,
+          height: isSecondary ? secondaryImageHeight : mainImageHeight,
+        }]}
       />
       <View style={styles.transparentOverlay} />
       {character.name && <Text style={styles.cardName}>{character.name}</Text>}
@@ -60,13 +72,20 @@ const ErevosScreen = () => {
             <Text style={styles.title}>Erevos</Text>
           </View>
 
+          {/* Main Erevos Image (Single, Large, Centered) */}
+          <View style={styles.imageContainer}>
+            {mainCharacter.map((character) => renderCharacterCard(character, false))}
+          </View>
+
+          {/* Secondary Images (Horizontal Scroll) */}
+          <Text style={styles.secondaryTitle}>Erevos’s Legacy</Text>
           <ScrollView
-            horizontal={true} // Enable horizontal scrolling
+            horizontal={true}
             style={styles.horizontalImageContainer}
-            showsHorizontalScrollIndicator={false} // Optional: hide scroll bar
+            showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.horizontalScrollContent}
           >
-            {characters.map(renderCharacterCard)}
+            {secondaryCharacters.map((character) => renderCharacterCard(character, true))}
           </ScrollView>
 
           <View style={styles.aboutSection}>
@@ -396,13 +415,35 @@ const styles = StyleSheet.create({
     textAlign: "center",
     flex: 1,
   },
+  imageContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 20,
+    backgroundColor: "#111",
+    paddingVertical: 30,
+    borderRadius: 20,
+    borderColor: "#8B0000", // Red border to match original feel
+    // borderWidth: isDesktop ? 6 : 4,
+    position: 'relative', // Required for overlay positioning
+    marginTop: 20,
+  },
   horizontalImageContainer: {
     marginTop: 20,
     paddingHorizontal: 10,
+    width: '100%', // Ensure full width for scrolling
   },
   horizontalScrollContent: {
+    flexDirection: 'row', // Ensure horizontal layout
     alignItems: "center",
     paddingVertical: 10,
+  },
+  secondaryTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#D4AF37", // Gold-like hue
+    textAlign: "center",
+    marginTop: 20,
+    marginBottom: 10,
   },
   armorImage: {
     resizeMode: "contain",
@@ -430,13 +471,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "white",
     fontWeight: "bold",
-  },
-  disabledText: {
-    fontSize: 12,
-    color: "#ff4444",
-    position: "absolute",
-    bottom: 30,
-    left: 10,
   },
   aboutSection: {
     marginTop: 40,

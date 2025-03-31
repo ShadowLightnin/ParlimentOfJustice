@@ -22,8 +22,8 @@ const NateScreen = () => {
   }, []);
 
   // Sizes for Nate (full size)
-  const nateImageSize = isDesktop ? windowWidth * 0.4 : SCREEN_WIDTH * 0.4;
-  const nateImageHeight = isDesktop ? SCREEN_HEIGHT * 0.6 : SCREEN_HEIGHT * 0.4;
+  const nateImageSize = isDesktop ? windowWidth * 0.8 : SCREEN_WIDTH * 0.8; // Larger for single image
+  const nateImageHeight = isDesktop ? SCREEN_HEIGHT * 0.6 : SCREEN_HEIGHT * 0.5;
 
   // Sizes for Spawn (half the size of Nate)
   const spawnImageSize = isDesktop ? windowWidth * 0.2 : SCREEN_WIDTH * 0.2; // Half of Nate's width
@@ -37,10 +37,10 @@ const NateScreen = () => {
     { name: "Spawn", image: require('../../../assets/Villains/Spawn.jpg'), clickable: true },
     { name: "Spawn 1", image: require('../../../assets/Villains/Spawn1.jpg'), clickable: true },
     { name: "Spawn 2", image: require('../../../assets/Villains/Spawn2.jpg'), clickable: true },
-    // { name: "Spawn 3", image: require('../../../assets/Villains/Spawn3.jpg'), clickable: true },
+    { name: "Spawn 3", image: require('../../../assets/Villains/Spawn3.jpg'), clickable: true },
     { name: "Spawn 4", image: require('../../../assets/Villains/Spawn4.jpg'), clickable: true },
-    // { name: "Spawn 5", image: require('../../../assets/Villains/Spawn5.jpg'), clickable: true },
-    // { name: "Spawn 6", image: require('../../../assets/Villains/Spawn6.jpg'), clickable: true },
+    { name: "Spawn 5", image: require('../../../assets/Villains/Spawn5.jpg'), clickable: true },
+    { name: "Spawn 6", image: require('../../../assets/Villains/Spawn6.jpg'), clickable: true },
     // Add more spawn as needed
   ];
 
@@ -76,22 +76,17 @@ const NateScreen = () => {
             🔥 Demon Lord Nate 🔥
           </Text>
 
-          {/* Nate's Image (Horizontal Scroll) */}
-          <ScrollView
-            horizontal={true}
-            style={styles.horizontalImageContainer}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.horizontalScrollContent}
-          >
+          {/* Nate's Image (Single, Non-Scrolling Container) */}
+          <View style={styles.nateImageContainer}>
             {nateCharacters.map((character) => renderCharacterCard(character, false))}
-          </ScrollView>
+          </View>
 
-          {/* Spawn's Image (Horizontal Scroll) */}
+          {/* Spawn's Image (Horizontal Scroll Container) */}
           <Text style={styles.spawnTitle}>Nate's Spawn</Text>
           <ScrollView
             horizontal={true}
             style={styles.horizontalImageContainer}
-            showsHorizontalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false} // Hide scrollbar to reduce distraction
             contentContainerStyle={styles.horizontalScrollContent}
           >
             {spawnCharacters.map((character) => renderCharacterCard(character, true))}
@@ -163,12 +158,25 @@ const styles = StyleSheet.create({
     textShadowRadius: 35,
   },
 
-  // 🔥 Horizontal Image Containers
+  // 🔥 Image Containers
+  nateImageContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    backgroundColor: '#111',
+    paddingVertical: 30,
+    borderRadius: isDesktop ? 20 : 15,
+    borderColor: '#8B0000',
+    borderWidth: isDesktop ? 6 : 4,
+  },
   horizontalImageContainer: {
     marginTop: 20,
     paddingHorizontal: 10,
+    width: '100%', // Ensure it takes full width
   },
   horizontalScrollContent: {
+    flexDirection: 'row', // Ensure items are laid out horizontally
     alignItems: 'center',
     paddingVertical: 10,
   },
