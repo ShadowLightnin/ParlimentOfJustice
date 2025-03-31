@@ -199,7 +199,7 @@ const Sam = () => {
     { name: "", image: require("../../assets/Armor/SamPlaceHolder.jpg"), clickable: true },
     { name: "", image: require("../../assets/Armor/SamPlaceHolder4.jpg"), clickable: true },
     { name: "", image: require("../../assets/Armor/SamPlaceHolder7.jpg"), clickable: true },
-    { name: "", image: require("../../assets/Armor/SamPlaceHolder6.jpg"), clickable: true },
+    // { name: "", image: require("../../assets/Armor/SamPlaceHolder6.jpg"), clickable: true },
     { name: "", image: require("../../assets/Armor/SamPlaceHolder3.jpg"), clickable: true },
     { name: "", image: require("../../assets/Armor/SamPlaceHolder5.jpg"), clickable: true },
   ];

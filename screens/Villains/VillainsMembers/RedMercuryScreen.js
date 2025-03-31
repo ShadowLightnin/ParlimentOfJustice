@@ -9,7 +9,7 @@ const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 // Array of Sable-related images (replace with your actual image paths)
 const sableImages = [
   { name: "Lane Mercury", image: require("../../../assets/Villains/RedMercury.jpg"), clickable: true },
-  { name: "Red Mercury", image: require("../../../assets/Villains/RedMercury2.jpg"), clickable: true }, // Example placeholder
+  { name: "Red Murcury", image: require("../../../assets/Villains/RedMercury2.jpg"), clickable: true }, // Example placeholder
   // Add more images here as needed
 ];
 
@@ -71,7 +71,7 @@ const RedMercuryScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-            Lane Murcury aka Red Mercury: An industrialist who serves as the public 
+            Lane Mercury aka Red Murcury: An industrialist who serves as the public 
             face and financial powerhouse behind many of Erevos’s schemes. 
             Red Mercury provides The Enlightened with money, resources, and 
             political connections, shielding their plans from public scrutiny.

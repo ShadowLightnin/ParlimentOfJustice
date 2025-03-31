@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View, Text, ImageBackground, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions
 } from "react-native";
@@ -8,9 +8,40 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const HadesRavageScreen = () => {
   const navigation = useNavigation();
-  const isDesktop = SCREEN_WIDTH > 600;
-  const imageSize = isDesktop ? SCREEN_WIDTH * 0.6 : SCREEN_WIDTH * 0.9;
+  const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      setWindowWidth(Dimensions.get("window").width);
+    };
+    const subscription = Dimensions.addEventListener("change", updateDimensions);
+    return () => subscription?.remove();
+  }, []);
+
+  const isDesktop = windowWidth >= 768;
+  const imageSize = isDesktop ? windowWidth * 0.6 : SCREEN_WIDTH * 0.9;
   const imageHeight = isDesktop ? SCREEN_HEIGHT * 0.5 : SCREEN_HEIGHT * 0.6;
+
+  const characters = [
+    { name: "Hades Ravage", image: require("../../../assets/Villains/HadesRavage.jpg"), clickable: true },
+    // Add more related characters here if desired
+  ];
+
+  const renderCharacterCard = (character) => (
+    <TouchableOpacity
+      key={character.name}
+      style={character.clickable ? styles.clickable : styles.notClickable}
+      onPress={() => character.clickable && console.log(`${character.name} clicked`)}
+      disabled={!character.clickable}
+    >
+      <Image
+        source={character.image}
+        style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
+      />
+      <View style={styles.transparentOverlay} />
+      {character.name && <Text style={styles.cardName}>{character.name}</Text>}
+    </TouchableOpacity>
+  );
 
   return (
     <ImageBackground
@@ -27,31 +58,22 @@ const HadesRavageScreen = () => {
           </View>
 
           <View style={styles.imageContainer}>
-            <Image
-              source={require("../../../assets/Villains/HadesRavage.jpg")}
-              style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
-            />
-            {/* Transparent Overlay for Image Protection */}
-            <View style={styles.transparentOverlay} />
+            {characters.map(renderCharacterCard)}
           </View>
 
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-            • Nemesis: Cam Paul “Court Chief”
-
+              • Nemesis: Cam Paul “Court Chief”
             </Text>
             <Text style={styles.aboutText}>
-            • Motivation: Sees leadership as weakness and believes only the strongest deserve power, aiming to prove that Cam’s leadership is misguided.
-
+              • Motivation: Sees leadership as weakness and believes only the strongest deserve power, aiming to prove that Cam’s leadership is misguided.
             </Text>
             <Text style={styles.aboutText}>
-            • Powers: Controls intense heat and flame, creating infernos around him to incinerate anything he touches.
-
+              • Powers: Controls intense heat and flame, creating infernos around him to incinerate anything he touches.
             </Text>
             <Text style={styles.aboutText}>
-            • Weapon: Twin battle axes that ignite on contact, designed to break through Cam’s defenses.
-
+              • Weapon: Twin battle axes that ignite on contact, designed to break through Cam’s defenses.
             </Text>  
           </View>
         </ScrollView>
@@ -94,7 +116,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#ff3131",
+    color: "#ff3131", // Red hue from original
     textAlign: "center",
     flex: 1,
   },
@@ -102,7 +124,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 20,
-    backgroundColor: "#111",
+    backgroundColor: "#111", // Dark background from original
     paddingVertical: 30,
     borderRadius: 20,
     position: "relative", // Required for overlay
@@ -110,10 +132,27 @@ const styles = StyleSheet.create({
   armorImage: {
     resizeMode: "contain",
   },
+  clickable: {
+    borderWidth: 2,
+    borderColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 15,
+  },
+  notClickable: {
+    opacity: 0.8,
+    borderRadius: 15,
+  },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0, 0, 0, 0)", // Transparent for visual but clickable
     zIndex: 1,
+  },
+  cardName: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    fontSize: 16,
+    color: "white",
+    fontWeight: "bold",
   },
   aboutSection: {
     marginTop: 40,
@@ -124,7 +163,7 @@ const styles = StyleSheet.create({
   aboutHeader: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#ff3131",
+    color: "#ff3131", // Red hue from original
     textAlign: "center",
   },
   aboutText: {

@@ -23,7 +23,7 @@ const AlmarraScreen = () => {
   const imageHeight = isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.6;
 
   const armors = [
-    { name: "Almarra the Enchantress-Empress", image: require("../../../assets/Villains/Almarra.jpg"), clickable: true },
+    { name: "Almarra", image: require("../../../assets/Villains/Almarra.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (
@@ -54,7 +54,7 @@ const AlmarraScreen = () => {
             <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
               <Text style={styles.backButtonText}>←</Text>
             </TouchableOpacity>
-            <Text style={styles.title}>Almarra the Enchantress-Empress</Text>
+            <Text style={styles.title}>Almarra the Enchanted Empress</Text>
           </View>
 
           <View style={styles.imageContainer}>

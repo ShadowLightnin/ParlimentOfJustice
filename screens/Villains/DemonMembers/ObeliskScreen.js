@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View, Text, ImageBackground, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions
 } from "react-native";
@@ -8,9 +8,40 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const ObeliskScreen = () => {
   const navigation = useNavigation();
-  const isDesktop = SCREEN_WIDTH > 600;
-  const imageSize = isDesktop ? SCREEN_WIDTH * 0.6 : SCREEN_WIDTH * 0.9;
-  const imageHeight = isDesktop ? SCREEN_HEIGHT * 0.5 : SCREEN_HEIGHT * 0.6;
+  const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      setWindowWidth(Dimensions.get("window").width);
+    };
+    const subscription = Dimensions.addEventListener("change", updateDimensions);
+    return () => subscription?.remove();
+  }, []);
+
+  const isDesktop = windowWidth >= 768;
+  const imageSize = isDesktop ? windowWidth * 0.8 : SCREEN_WIDTH * 1;
+  const imageHeight = isDesktop ? SCREEN_HEIGHT * 0.7 : SCREEN_HEIGHT * 0.8;
+
+  const characters = [
+    { name: "Obelisk", image: require("../../../assets/Villains/Obelisk.jpg"), clickable: true },
+    // Add more related characters here if desired
+  ];
+
+  const renderCharacterCard = (character) => (
+    <TouchableOpacity
+      key={character.name}
+      style={character.clickable ? styles.clickable : styles.notClickable}
+      onPress={() => character.clickable && console.log(`${character.name} clicked`)}
+      disabled={!character.clickable}
+    >
+      <Image
+        source={character.image}
+        style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
+      />
+      <View style={styles.transparentOverlay} />
+      {character.name && <Text style={styles.cardName}>{character.name}</Text>}
+    </TouchableOpacity>
+  );
 
   return (
     <ImageBackground
@@ -27,20 +58,15 @@ const ObeliskScreen = () => {
           </View>
 
           <View style={styles.imageContainer}>
-            <Image
-              source={require("../../../assets/Villains/Obelisk.jpg")}
-              style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
-            />
-            {/* Transparent Overlay for Image Protection */}
-            <View style={styles.transparentOverlay} />
+            {characters.map(renderCharacterCard)}
           </View>
 
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-            Obelisk, the Warlock: A master of ancient dark arts and mysticism, 
-            Obelisk performs rituals that enhance Erevos’s strength and manipulate 
-            supernatural forces to bend to The Enlightened's will. He also maintains a portal to the cosmic realm.
+              Obelisk, the Warlock: A master of ancient dark arts and mysticism, 
+              Obelisk performs rituals that enhance Erevos’s strength and manipulate 
+              supernatural forces to bend to The Enlightened's will. He also maintains a portal to the cosmic realm.
             </Text>
           </View>
         </ScrollView>
@@ -83,7 +109,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#D4AF37",
+    color: "#D4AF37", // Gold-like hue from original
     textAlign: "center",
     flex: 1,
   },
@@ -91,7 +117,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 20,
-    // backgroundColor: "#111",
+    // backgroundColor: "#111", // Uncomment if you want the original dark background
     paddingVertical: 30,
     borderRadius: 20,
     position: 'relative', // Required for overlay positioning
@@ -99,10 +125,27 @@ const styles = StyleSheet.create({
   armorImage: {
     resizeMode: "contain",
   },
+  clickable: {
+    // borderWidth: 2,
+    // borderColor: "rgba(255, 255, 255, 0.1)",
+    // borderRadius: 15,
+  },
+  notClickable: {
+    opacity: 0.8,
+    borderRadius: 15,
+  },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject, 
     backgroundColor: 'rgba(0, 0, 0, 0)',
     zIndex: 1, // Ensures overlay is on top without blocking buttons
+  },
+  cardName: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    fontSize: 16,
+    color: "white",
+    fontWeight: "bold",
   },
   aboutSection: {
     marginTop: 40,
@@ -113,7 +156,7 @@ const styles = StyleSheet.create({
   aboutHeader: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#D4AF37",
+    color: "#D4AF37", // Gold-like hue from original
     textAlign: "center",
   },
   aboutText: {

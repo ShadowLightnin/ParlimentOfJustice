@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     left: 0,
     backgroundColor: '#750000',
     paddingVertical: 8,
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     borderRadius: 8,
     elevation: 5,
   },

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View, Text, ImageBackground, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions
 } from "react-native";
@@ -8,9 +8,41 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const GildedShardScreen = () => {
   const navigation = useNavigation();
-  const isDesktop = SCREEN_WIDTH > 600;
-  const imageSize = isDesktop ? SCREEN_WIDTH * 0.6 : SCREEN_WIDTH * 0.9;
+  const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      setWindowWidth(Dimensions.get("window").width);
+    };
+    const subscription = Dimensions.addEventListener("change", updateDimensions);
+    return () => subscription?.remove();
+  }, []);
+
+  const isDesktop = windowWidth >= 768;
+  const imageSize = isDesktop ? windowWidth * 0.6 : SCREEN_WIDTH * 0.9;
   const imageHeight = isDesktop ? SCREEN_HEIGHT * 0.5 : SCREEN_HEIGHT * 0.6;
+
+  const characters = [
+    { name: "Gilded Shard", image: require("../../../assets/Villains/GildedShard.jpg"), clickable: true },
+    { name: "Girl Gilded Shard", image: require("../../../assets/Villains/FGildedShard.jpg"), clickable: true },
+    // Add more related characters here if desired
+  ];
+
+  const renderCharacterCard = (character) => (
+    <TouchableOpacity
+      key={character.name}
+      style={character.clickable ? styles.clickable : styles.notClickable}
+      onPress={() => character.clickable && console.log(`${character.name} clicked`)}
+      disabled={!character.clickable}
+    >
+      <Image
+        source={character.image}
+        style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
+      />
+      <View style={styles.transparentOverlay} />
+      {character.name && <Text style={styles.cardName}>{character.name}</Text>}
+    </TouchableOpacity>
+  );
 
   return (
     <ImageBackground
@@ -26,14 +58,14 @@ const GildedShardScreen = () => {
             <Text style={styles.title}>Gilded Shard</Text>
           </View>
 
-          <View style={styles.imageContainer}>
-            <Image
-              source={require("../../../assets/Villains/GildedShard.jpg")}
-              style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
-            />
-            {/* Transparent Overlay for Image Protection */}
-            <View style={styles.transparentOverlay} />
-          </View>
+          <ScrollView
+            horizontal={true}
+            style={styles.horizontalImageContainer}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.horizontalScrollContent}
+          >
+            {characters.map(renderCharacterCard)}
+          </ScrollView>
 
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
@@ -92,26 +124,46 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#ff3131",
+    color: "#ff3131", // Red hue from original
     textAlign: "center",
     flex: 1,
   },
-  imageContainer: {
+  horizontalImageContainer: {
+    marginTop: 20,
+    paddingHorizontal: 10,
+    width: "100%", // Ensure full width for scrolling
+  },
+  horizontalScrollContent: {
+    flexDirection: "row", // Ensure horizontal layout
     alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 20,
-    backgroundColor: "#111",
-    paddingVertical: 30,
-    borderRadius: 20,
-    position: "relative", // Required for overlay
+    paddingVertical: 10,
   },
   armorImage: {
     resizeMode: "contain",
+  },
+  clickable: {
+    borderWidth: 2,
+    borderColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 15,
+    marginHorizontal: 10, // Space between cards in horizontal scroll
+  },
+  notClickable: {
+    opacity: 0.8,
+    borderRadius: 15,
+    marginHorizontal: 10,
   },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0, 0, 0, 0)", // Transparent for visual but clickable
     zIndex: 1,
+  },
+  cardName: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    fontSize: 16,
+    color: "white",
+    fontWeight: "bold",
   },
   aboutSection: {
     marginTop: 40,
@@ -122,7 +174,7 @@ const styles = StyleSheet.create({
   aboutHeader: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#ff3131",
+    color: "#ff3131", // Red hue from original
     textAlign: "center",
   },
   aboutText: {

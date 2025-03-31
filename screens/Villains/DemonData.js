@@ -34,8 +34,8 @@ export const demonLords = [
     name: 'Skin Stalker', 
     screen: '', 
     image: require('../../assets/Villains/SkinStalker.jpg'), 
-    // audio: require('../../assets/audio/.mp4'),
-    clickable: false 
+    audio: require('../../assets/audio/SkinStalker.mp4'),
+    clickable: true 
   },
 
     // { 

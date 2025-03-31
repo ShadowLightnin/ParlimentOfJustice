@@ -1,6 +1,6 @@
-import React from "react";
-import { 
-  View, Text, ImageBackground, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions 
+import React, { useState, useEffect } from "react";
+import {
+  View, Text, ImageBackground, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
@@ -8,10 +8,40 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const JudgeHexScreen = () => {
   const navigation = useNavigation();
+  const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
 
-  const isDesktop = SCREEN_WIDTH > 600;
-  const imageSize = isDesktop ? SCREEN_WIDTH * 0.6 : SCREEN_WIDTH * 0.9;
+  useEffect(() => {
+    const updateDimensions = () => {
+      setWindowWidth(Dimensions.get("window").width);
+    };
+    const subscription = Dimensions.addEventListener("change", updateDimensions);
+    return () => subscription?.remove();
+  }, []);
+
+  const isDesktop = windowWidth >= 768;
+  const imageSize = isDesktop ? windowWidth * 0.6 : SCREEN_WIDTH * 0.9;
   const imageHeight = isDesktop ? SCREEN_HEIGHT * 0.5 : SCREEN_HEIGHT * 0.6;
+
+  const characters = [
+    { name: "Judge Hex", image: require("../../../assets/Villains/JudgeHex.jpg"), clickable: true },
+    // Add more related characters here if desired
+  ];
+
+  const renderCharacterCard = (character) => (
+    <TouchableOpacity
+      key={character.name}
+      style={character.clickable ? styles.clickable : styles.notClickable}
+      onPress={() => character.clickable && console.log(`${character.name} clicked`)}
+      disabled={!character.clickable}
+    >
+      <Image
+        source={character.image}
+        style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
+      />
+      <View style={styles.transparentOverlay} />
+      {character.name && <Text style={styles.cardName}>{character.name}</Text>}
+    </TouchableOpacity>
+  );
 
   return (
     <ImageBackground
@@ -20,7 +50,6 @@ const JudgeHexScreen = () => {
     >
       <View style={styles.overlay}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-
           {/* Header Section */}
           <View style={styles.headerContainer}>
             <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
@@ -31,28 +60,23 @@ const JudgeHexScreen = () => {
 
           {/* Character Image */}
           <View style={styles.imageContainer}>
-            <Image
-              source={require("../../../assets/Villains/JudgeHex.jpg")}
-              style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
-            />
-            {/* Transparent Overlay for Image Protection */}
-            <View style={styles.transparentOverlay} />
+            {characters.map(renderCharacterCard)}
           </View>
 
           {/* About Section */}
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-            • Nemesis: "Midigator"
+              • Nemesis: "Midigator"
             </Text>
             <Text style={styles.aboutText}>
-            • Backstory: Once a renowned psychologist who used her influence for manipulation, Judge Hex fell into darkness, using hypnosis and mind control for personal gain. She developed a toxic armor that emits a disorienting fog, allowing her to exploit others’ vulnerabilities. Seeing Azure as a weak link obsessed with balance and empathy, Judge Hex believes people are most easily controlled when they are unsure of themselves. Her whip is her tool for control, both physically and psychologically, and she’s determined to unravel Azure’s confidence and faith in her principles.
+              • Backstory: Once a renowned psychologist who used her influence for manipulation, Judge Hex fell into darkness, using hypnosis and mind control for personal gain. She developed a toxic armor that emits a disorienting fog, allowing her to exploit others’ vulnerabilities. Seeing Azure as a weak link obsessed with balance and empathy, Judge Hex believes people are most easily controlled when they are unsure of themselves. Her whip is her tool for control, both physically and psychologically, and she’s determined to unravel Azure’s confidence and faith in her principles.
             </Text>
             <Text style={styles.aboutText}>
-            • Powers: Expert in manipulation and hypnosis, with armor that emits a toxic fog to disorient her foes.
+              • Powers: Expert in manipulation and hypnosis, with armor that emits a toxic fog to disorient her foes.
             </Text>
             <Text style={styles.aboutText}>
-            • Weapon: A whip with electrified barbs, used to strike from a distance or ensnare hertarget.
+              • Weapon: A whip with electrified barbs, used to strike from a distance or ensnare her target.
             </Text>  
           </View>
         </ScrollView>
@@ -95,7 +119,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#ff3131",
+    color: "#ff3131", // Red hue from original
     textAlign: "center",
     flex: 1,
   },
@@ -103,7 +127,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 20,
-    backgroundColor: "#111",
+    backgroundColor: "#111", // Dark background from original
     paddingVertical: 30,
     borderRadius: 20,
     position: "relative", // Required for overlay
@@ -111,10 +135,27 @@ const styles = StyleSheet.create({
   armorImage: {
     resizeMode: "contain",
   },
+  clickable: {
+    borderWidth: 2,
+    borderColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 15,
+  },
+  notClickable: {
+    opacity: 0.8,
+    borderRadius: 15,
+  },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0, 0, 0, 0)", // Transparent for visual but clickable
     zIndex: 1,
+  },
+  cardName: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    fontSize: 16,
+    color: "white",
+    fontWeight: "bold",
   },
   aboutSection: {
     marginTop: 40,
@@ -125,7 +166,7 @@ const styles = StyleSheet.create({
   aboutHeader: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#ff3131",
+    color: "#ff3131", // Red hue from original
     textAlign: "center",
   },
   aboutText: {
