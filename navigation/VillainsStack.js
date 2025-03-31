@@ -41,6 +41,17 @@ import ShadeStalkerScreen from '../screens/Villains/VillainsMembers/ShadeStalker
 import VoltShadeScreen from '../screens/Villains/VillainsMembers/VoltShadeScreen';
 import SableScreen from '../screens/Villains/VillainsMembers/SableScreen';
 import EvilSam from '../screens/Villains/VillainsMembers/EvilSam';
+import WarpScreen from "../screens/BludBruhs/WarpScreen";
+import MontroseManorScreen from "../screens/BludBruhs/MontroseManor/MontroseManorScreen"; // Your new tab screen
+// import BackWarpScreen from "../screens/BludBruhs/BackWarpScreen";
+import Landing from "../screens/BludBruhs/MontroseManor/Landing";
+import MontroseManorTab from "../screens/BludBruhs/MontroseManor/MontroseManorTab";
+import BookDetails from '../screens/BludBruhs/MontroseManor/BookDetails';
+
+import EvilMontroseManorScreen from "../screens/BludBruhs/MontroseManor/EvilMontroseManorScreen"; // Your new tab screen
+import EvilBackWarpScreen from "../screens/BludBruhs/EvilBackWarpScreen";
+
+
 import SteelJuggernautScreen from '../screens/Villains/VillainsMembers/SteelJuggernautScreen';
 import WarhoundScreen from '../screens/Villains/VillainsMembers/WarhoundScreen';
 import OvermindScreen from '../screens/Villains/VillainsMembers/OvermindScreen';
@@ -105,6 +116,17 @@ const VillainsStack = () => {
       <Stack.Screen name="VoltShadeScreen" component={VoltShadeScreen} />
       <Stack.Screen name="SableScreen" component={SableScreen} />
       <Stack.Screen name="EvilSam" component={EvilSam} />
+      <Stack.Screen name="WarpScreen" component={WarpScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Montrose" component={MontroseManorScreen} />
+      {/* <Stack.Screen name="BackWarpScreen" component={BackWarpScreen} options={{ headerShown: false }} /> */}
+      <Stack.Screen name="Landing" component={Landing} />
+      <Stack.Screen name="MontroseManorTab" component={MontroseManorTab} />
+      <Stack.Screen name="BookDetails" component={BookDetails} />
+      
+      <Stack.Screen name="EvilMontrose" component={EvilMontroseManorScreen} />
+      <Stack.Screen name="EvilBackWarpScreen" component={EvilBackWarpScreen} />
+
+
       <Stack.Screen name="SteelJuggernautScreen" component={SteelJuggernautScreen} />
       <Stack.Screen name="WarhoundScreen" component={WarhoundScreen} />
       <Stack.Screen name="OvermindScreen" component={OvermindScreen} />
