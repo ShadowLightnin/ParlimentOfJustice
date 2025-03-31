@@ -1,6 +1,6 @@
-import React from "react";
-import { 
-  View, Text, ImageBackground, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions 
+import React, { useState, useEffect } from "react";
+import {
+  View, Text, ImageBackground, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
@@ -8,9 +8,39 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const VoidConquerorScreen = () => {
   const navigation = useNavigation();
-  const isDesktop = SCREEN_WIDTH > 600;
-  const imageSize = isDesktop ? SCREEN_WIDTH * 0.9 : SCREEN_WIDTH * 0.9;
+  const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      setWindowWidth(Dimensions.get("window").width);
+    };
+    const subscription = Dimensions.addEventListener("change", updateDimensions);
+    return () => subscription?.remove();
+  }, []);
+
+  const isDesktop = windowWidth >= 768;
+  const imageSize = isDesktop ? windowWidth * 0.9 : SCREEN_WIDTH * 0.9;
   const imageHeight = isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.6;
+
+  const characters = [
+    { name: "Void Conqueror", image: require("../../../assets/Villains/Kharon.jpg"), clickable: true },
+  ];
+
+  const renderCharacterCard = (character) => (
+    <TouchableOpacity
+      key={character.name}
+      style={character.clickable ? styles.clickable : styles.notClickable}
+      onPress={() => character.clickable && console.log(`${character.name} clicked`)}
+      disabled={!character.clickable}
+    >
+      <Image
+        source={character.image}
+        style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
+      />
+      <View style={styles.transparentOverlay} />
+      {character.name && <Text style={styles.cardName}>{character.name}</Text>}
+    </TouchableOpacity>
+  );
 
   return (
     <ImageBackground
@@ -27,48 +57,38 @@ const VoidConquerorScreen = () => {
           </View>
 
           <View style={styles.imageContainer}>
-            <Image
-              source={require("../../../assets/Villains/Kharon.jpg")}
-              style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
-            />
-            {/* Transparent Overlay for Image Protection */}
-            <View style={styles.transparentOverlay} />
+            {characters.map(renderCharacterCard)}
           </View>
 
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-             The Monke Alliance’s Big Bad
-             </Text> 
+              The Monke Alliance’s Big Bad
+            </Text> 
             <Text style={styles.aboutText}>
-            Kharon is an ancient entity who discovered the 
-            secrets of life and death through a forbidden ritual. 
-            With centuries of knowledge, he has traveled through 
-            dimensions, gathering power and followers. Known for 
-            his brutal yet cunning nature, Kharon believes the 
-            Monkie Alliance’s power is wasted on those with no ambition. 
-            He intends to subjugate them or eliminate them if they refuse 
-            to serve his purpose of ruling across worlds.            
+              Kharon is an ancient entity who discovered the 
+              secrets of life and death through a forbidden ritual. 
+              With centuries of knowledge, he has traveled through 
+              dimensions, gathering power and followers. Known for 
+              his brutal yet cunning nature, Kharon believes the 
+              Monkie Alliance’s power is wasted on those with no ambition. 
+              He intends to subjugate them or eliminate them if they refuse 
+              to serve his purpose of ruling across worlds.            
             </Text>
             <Text style={styles.aboutText}>
-            • Abilities and Gear:
-
+              • Abilities and Gear:
             </Text>
             <Text style={styles.aboutText}>
-            • Life Force Absorption: Draws strength from defeated enemies, regenerating himself and becoming stronger.
-
+              • Life Force Absorption: Draws strength from defeated enemies, regenerating himself and becoming stronger.
             </Text>
             <Text style={styles.aboutText}>
-            • Necromancy: Can summon shadowed warriors of those he’s defeated, who fight relentlessly until dispelled.
-
+              • Necromancy: Can summon shadowed warriors of those he’s defeated, who fight relentlessly until dispelled.
             </Text>
             <Text style={styles.aboutText}>
-            • Time Dilation: Can manipulate time around him to slow or freeze his enemies, making it easier for him to strike.
-
+              • Time Dilation: Can manipulate time around him to slow or freeze his enemies, making it easier for him to strike.
             </Text>  
             <Text style={styles.aboutText}>
-            • Master Combatant: Has unparalleled knowledge of ancient and modern combat styles, often surprising opponents with new techniques.
-
+              • Master Combatant: Has unparalleled knowledge of ancient and modern combat styles, often surprising opponents with new techniques.
             </Text>  
           </View>
         </ScrollView>
@@ -122,15 +142,39 @@ const styles = StyleSheet.create({
     backgroundColor: "#111",
     paddingVertical: 30,
     borderRadius: 20,
-    position: 'relative', // Required for overlay positioning
+    position: "relative",
   },
   armorImage: {
     resizeMode: "contain",
   },
+  clickable: {
+    borderWidth: 2,
+    borderColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 15,
+  },
+  notClickable: {
+    opacity: 0.8,
+    borderRadius: 15,
+  },
   transparentOverlay: {
-    ...StyleSheet.absoluteFillObject, 
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1, // Ensures overlay is on top without blocking buttons
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0)",
+    zIndex: 1,
+  },
+  cardName: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    fontSize: 16,
+    color: "white",
+    fontWeight: "bold",
+  },
+  disabledText: {
+    fontSize: 12,
+    color: "#ff4444",
+    position: "absolute",
+    bottom: 30,
+    left: 10,
   },
   aboutSection: {
     marginTop: 40,

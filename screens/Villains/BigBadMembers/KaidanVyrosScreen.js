@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { 
   View, Text, ImageBackground, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions 
 } from "react-native";
@@ -8,9 +8,40 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const KaidanVyrosScreen = () => {
   const navigation = useNavigation();
-  const isDesktop = SCREEN_WIDTH > 600;
-  const imageSize = isDesktop ? SCREEN_WIDTH * 0.9 : SCREEN_WIDTH * 0.9;
+  const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      setWindowWidth(Dimensions.get("window").width);
+    };
+    const subscription = Dimensions.addEventListener("change", updateDimensions);
+    return () => subscription?.remove();
+  }, []);
+
+  const isDesktop = windowWidth >= 768;
+  const imageSize = isDesktop ? windowWidth * 0.9 : SCREEN_WIDTH * 0.9;
   const imageHeight = isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.6;
+
+  const armors = [
+    { name: "Kaidan Vyros", image: require("../../../assets/Villains/KaidanVyros.jpg"), clickable: true },
+  ];
+
+  const renderArmorCard = (armor) => (
+    <TouchableOpacity
+      key={armor.name}
+      style={armor.clickable ? styles.clickable : styles.notClickable}
+      onPress={() => armor.clickable && console.log(`${armor.name} clicked`)}
+      disabled={!armor.clickable}
+    >
+      <Image
+        source={armor.image}
+        style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
+      />
+      <View style={styles.transparentOverlay} />
+      {armor.name && <Text style={styles.cardName}>{armor.name}</Text>}
+      {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+    </TouchableOpacity>
+  );
 
   return (
     <ImageBackground
@@ -27,51 +58,41 @@ const KaidanVyrosScreen = () => {
           </View>
 
           <View style={styles.imageContainer}>
-            <Image
-              source={require("../../../assets/Villains/KaidanVyros.jpg")}
-              style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
-            />
-            {/* Transparent Overlay for Image Protection */}
-            <View style={styles.transparentOverlay} />
+            {armors.map(renderArmorCard)}
           </View>
 
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
-             <Text style={styles.aboutText}>
-            The Spartan's Big Bad
-            </Text> 
             <Text style={styles.aboutText}>
-            Once an elite soldier in a rival faction, 
-            Kaidan Vyros was betrayed by his own leaders and 
-            left to die on a hostile planet filled with colossal 
-            monsters. Surviving in isolation, he adapted, hunting creatures 
-            far more dangerous than any human. His armor is now fused with 
-            alien scales and energy-absorbing plating, giving him monstrous 
-            strength and a near-psychic bond with beasts he’s tamed. Now, he 
-            seeks to turn his survival instincts and creature-taming abilities 
-            against the Spartans who embody everything he once believed in but 
-            now despises.            
+              The Spartan's Big Bad
             </Text>
             <Text style={styles.aboutText}>
-            • Abilities and Gear:
-
+              Once an elite soldier in a rival faction, 
+              Kaidan Vyros was betrayed by his own leaders and 
+              left to die on a hostile planet filled with colossal 
+              monsters. Surviving in isolation, he adapted, hunting creatures 
+              far more dangerous than any human. His armor is now fused with 
+              alien scales and energy-absorbing plating, giving him monstrous 
+              strength and a near-psychic bond with beasts he’s tamed. Now, he 
+              seeks to turn his survival instincts and creature-taming abilities 
+              against the Spartans who embody everything he once believed in but 
+              now despises.            
             </Text>
             <Text style={styles.aboutText}>
-            • Monstrous Armor: A blend of Halo armor and Monster Hunter beast plating that can withstand extreme damage and emit a fear-inducing energy.
-
+              • Abilities and Gear:
             </Text>
             <Text style={styles.aboutText}>
-            • Beast Summoning: Can call upon otherworldly creatures, like a dark, mutated Hydra that attacks in sync with him.
-
+              • Monstrous Armor: A blend of Halo armor and Monster Hunter beast plating that can withstand extreme damage and emit a fear-inducing energy.
             </Text>
             <Text style={styles.aboutText}>
-            • Crushing Strength: Enhanced strength rivaling even the strongest Spartans, allowing him to overpower foes.
-
-            </Text>  
+              • Beast Summoning: Can call upon otherworldly creatures, like a dark, mutated Hydra that attacks in sync with him.
+            </Text>
             <Text style={styles.aboutText}>
-            • Energy Pulse Cannon: Wielding a shoulder-mounted cannon that fires concentrated energy pulses, capable of shattering defenses.
-
-            </Text>  
+              • Crushing Strength: Enhanced strength rivaling even the strongest Spartans, allowing him to overpower foes.
+            </Text>
+            <Text style={styles.aboutText}>
+              • Energy Pulse Cannon: Wielding a shoulder-mounted cannon that fires concentrated energy pulses, capable of shattering defenses.
+            </Text>
           </View>
         </ScrollView>
       </View>
@@ -124,15 +145,39 @@ const styles = StyleSheet.create({
     backgroundColor: "#111",
     paddingVertical: 30,
     borderRadius: 20,
-    position: 'relative', // Required for overlay positioning
+    position: "relative",
   },
   armorImage: {
     resizeMode: "contain",
   },
+  clickable: {
+    borderWidth: 2,
+    borderColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 15,
+  },
+  notClickable: {
+    opacity: 0.8,
+    borderRadius: 15,
+  },
   transparentOverlay: {
-    ...StyleSheet.absoluteFillObject, 
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1, // Ensures overlay is on top without blocking buttons
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0)",
+    zIndex: 1,
+  },
+  cardName: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    fontSize: 16,
+    color: "white",
+    fontWeight: "bold",
+  },
+  disabledText: {
+    fontSize: 12,
+    color: "#ff4444",
+    position: "absolute",
+    bottom: 30,
+    left: 10,
   },
   aboutSection: {
     marginTop: 40,

@@ -1,14 +1,46 @@
-import React from "react";
-import { View, Text, ImageBackground, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  View, Text, ImageBackground, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const UmbraNexScreen = () => {
   const navigation = useNavigation();
-  const isDesktop = SCREEN_WIDTH > 600;
-  const imageSize = isDesktop ? SCREEN_WIDTH * 0.9 : SCREEN_WIDTH * 0.9;
+  const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      setWindowWidth(Dimensions.get("window").width);
+    };
+    const subscription = Dimensions.addEventListener("change", updateDimensions);
+    return () => subscription?.remove();
+  }, []);
+
+  const isDesktop = windowWidth >= 768;
+  const imageSize = isDesktop ? windowWidth * 0.9 : SCREEN_WIDTH * 0.9;
   const imageHeight = isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.6;
+
+  const characters = [
+    { name: "Umbra Nex", image: require("../../../assets/Villains/UmbraNex.jpg"), clickable: true },
+  ];
+
+  const renderCharacterCard = (character) => (
+    <TouchableOpacity
+      key={character.name}
+      style={character.clickable ? styles.clickable : styles.notClickable}
+      onPress={() => character.clickable && console.log(`${character.name} clicked`)}
+      disabled={!character.clickable}
+    >
+      <Image
+        source={character.image}
+        style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
+      />
+      <View style={styles.transparentOverlay} />
+      {character.name && <Text style={styles.cardName}>{character.name}</Text>}
+    </TouchableOpacity>
+  );
 
   return (
     <ImageBackground
@@ -25,50 +57,40 @@ const UmbraNexScreen = () => {
           </View>
 
           <View style={styles.imageContainer}>
-            <Image
-              source={require("../../../assets/Villains/UmbraNex.jpg")}
-              style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
-            />
-            {/* Transparent Overlay for Image Protection */}
-            <View style={styles.transparentOverlay} />
+            {characters.map(renderCharacterCard)}
           </View>
 
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
-             <Text style={styles.aboutText}>
-             The Eclipse’s Big Bad
-             </Text> 
             <Text style={styles.aboutText}>
-            Umbra Nex was a cosmic entity from a parallel 
-            universe who once ruled a race of dark beings but 
-            was overthrown and banished by his own creations. 
-            Stranded in the Eclipse’s universe, Umbra Nex has 
-            one objective: to rebuild his empire by absorbing 
-            the life forces of other worlds. He sees Eclipse as 
-            a flawed team and a stepping stone to proving his 
-            superiority, intending to siphon their powers to 
-            elevate himself to godhood. Each member of Eclipse 
-            represents, in his eyes, a unique type of strength to harvest and consume.            
+              The Eclipse’s Big Bad
+            </Text> 
+            <Text style={styles.aboutText}>
+              Umbra Nex was a cosmic entity from a parallel 
+              universe who once ruled a race of dark beings but 
+              was overthrown and banished by his own creations. 
+              Stranded in the Eclipse’s universe, Umbra Nex has 
+              one objective: to rebuild his empire by absorbing 
+              the life forces of other worlds. He sees Eclipse as 
+              a flawed team and a stepping stone to proving his 
+              superiority, intending to siphon their powers to 
+              elevate himself to godhood. Each member of Eclipse 
+              represents, in his eyes, a unique type of strength to harvest and consume.            
             </Text>
             <Text style={styles.aboutText}>
-            • Powers and Abilities:
-
+              • Powers and Abilities:
             </Text>
             <Text style={styles.aboutText}>
-            • Life Force Absorption: Steals energy and powers from his victims, adding them to his own and sometimes even gaining a distorted version of their abilities.
-
+              • Life Force Absorption: Steals energy and powers from his victims, adding them to his own and sometimes even gaining a distorted version of their abilities.
             </Text>
             <Text style={styles.aboutText}>
-            • Reality Warping: Twists the physical and metaphysical properties of his surroundings, creating mind-bending environments.
-
+              • Reality Warping: Twists the physical and metaphysical properties of his surroundings, creating mind-bending environments.
             </Text>
             <Text style={styles.aboutText}>
-            • Resurrection: Can resurrect the fallen as shadow versions of themselves, loyal to him alone.
-
+              • Resurrection: Can resurrect the fallen as shadow versions of themselves, loyal to him alone.
             </Text>  
             <Text style={styles.aboutText}>
-            • Temporal Distortion: Alters the flow of time, trapping his enemies in time loops or accelerating his own movements.
-
+              • Temporal Distortion: Alters the flow of time, trapping his enemies in time loops or accelerating his own movements.
             </Text>  
           </View>
         </ScrollView>
@@ -122,15 +144,39 @@ const styles = StyleSheet.create({
     backgroundColor: "#111",
     paddingVertical: 30,
     borderRadius: 20,
-    position: 'relative', // Required for overlay positioning
+    position: "relative",
   },
   armorImage: {
     resizeMode: "contain",
   },
+  clickable: {
+    borderWidth: 2,
+    borderColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 15,
+  },
+  notClickable: {
+    opacity: 0.8,
+    borderRadius: 15,
+  },
   transparentOverlay: {
-    ...StyleSheet.absoluteFillObject, 
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1, // Ensures overlay is on top without blocking buttons
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0)",
+    zIndex: 1,
+  },
+  cardName: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    fontSize: 16,
+    color: "white",
+    fontWeight: "bold",
+  },
+  disabledText: {
+    fontSize: 12,
+    color: "#ff4444",
+    position: "absolute",
+    bottom: 30,
+    left: 10,
   },
   aboutSection: {
     marginTop: 40,

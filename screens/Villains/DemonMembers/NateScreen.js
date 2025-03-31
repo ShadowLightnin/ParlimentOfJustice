@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  View, Text, StyleSheet, ImageBackground, Image, ScrollView, TouchableOpacity, Dimensions 
+  View, Text, ImageBackground, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions 
 } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 
@@ -11,6 +11,57 @@ const isDesktop = SCREEN_WIDTH > 600;
 
 const NateScreen = () => { 
   const navigation = useNavigation();
+  const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      setWindowWidth(Dimensions.get("window").width);
+    };
+    const subscription = Dimensions.addEventListener("change", updateDimensions);
+    return () => subscription?.remove();
+  }, []);
+
+  // Sizes for Nate (full size)
+  const nateImageSize = isDesktop ? windowWidth * 0.4 : SCREEN_WIDTH * 0.4;
+  const nateImageHeight = isDesktop ? SCREEN_HEIGHT * 0.6 : SCREEN_HEIGHT * 0.4;
+
+  // Sizes for Spawn (half the size of Nate)
+  const spawnImageSize = isDesktop ? windowWidth * 0.2 : SCREEN_WIDTH * 0.2; // Half of Nate's width
+  const spawnImageHeight = isDesktop ? SCREEN_HEIGHT * 0.3 : SCREEN_HEIGHT * 0.2; // Half of Nate's height
+
+  const nateCharacters = [
+    { name: "Demon Lord Nate", image: require('../../../assets/Villains/Nate.jpg'), clickable: true },
+  ];
+
+  const spawnCharacters = [
+    { name: "Spawn", image: require('../../../assets/Villains/Spawn.jpg'), clickable: true },
+    { name: "Spawn 1", image: require('../../../assets/Villains/Spawn1.jpg'), clickable: true },
+    { name: "Spawn 2", image: require('../../../assets/Villains/Spawn2.jpg'), clickable: true },
+    // { name: "Spawn 3", image: require('../../../assets/Villains/Spawn3.jpg'), clickable: true },
+    { name: "Spawn 4", image: require('../../../assets/Villains/Spawn4.jpg'), clickable: true },
+    // { name: "Spawn 5", image: require('../../../assets/Villains/Spawn5.jpg'), clickable: true },
+    // { name: "Spawn 6", image: require('../../../assets/Villains/Spawn6.jpg'), clickable: true },
+    // Add more spawn as needed
+  ];
+
+  const renderCharacterCard = (character, isSpawn = false) => (
+    <TouchableOpacity
+      key={character.name}
+      style={character.clickable ? styles.clickable : styles.notClickable}
+      onPress={() => character.clickable && console.log(`${character.name} clicked`)}
+      disabled={!character.clickable}
+    >
+      <Image
+        source={character.image}
+        style={[styles.armorImage, {
+          width: isSpawn ? spawnImageSize : nateImageSize,
+          height: isSpawn ? spawnImageHeight : nateImageHeight,
+        }]}
+      />
+      <View style={styles.transparentOverlay} />
+      {character.name && <Text style={styles.cardName}>{character.name}</Text>}
+    </TouchableOpacity>
+  );
 
   return (
     <ImageBackground
@@ -25,14 +76,26 @@ const NateScreen = () => {
             🔥 Demon Lord Nate 🔥
           </Text>
 
-          {/* Image with Transparent Overlay */}
-          <View style={isDesktop ? styles.desktopImageContainer : styles.mobileImageContainer}>
-            <Image 
-              source={require('../../../assets/Villains/Nate.jpg')} 
-              style={isDesktop ? styles.desktopImage : styles.mobileImage} 
-            />
-            <View style={styles.transparentOverlay} />
-          </View>
+          {/* Nate's Image (Horizontal Scroll) */}
+          <ScrollView
+            horizontal={true}
+            style={styles.horizontalImageContainer}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.horizontalScrollContent}
+          >
+            {nateCharacters.map((character) => renderCharacterCard(character, false))}
+          </ScrollView>
+
+          {/* Spawn's Image (Horizontal Scroll) */}
+          <Text style={styles.spawnTitle}>Nate's Spawn</Text>
+          <ScrollView
+            horizontal={true}
+            style={styles.horizontalImageContainer}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.horizontalScrollContent}
+          >
+            {spawnCharacters.map((character) => renderCharacterCard(character, true))}
+          </ScrollView>
 
           {/* Description */}
           <Text style={isDesktop ? styles.desktopDescription : styles.mobileDescription}>
@@ -100,42 +163,57 @@ const styles = StyleSheet.create({
     textShadowRadius: 35,
   },
 
-  // 🔥 Image Containers
-  mobileImageContainer: {
-    position: 'relative',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
-    borderColor: '#8B0000',
-    borderWidth: 4,
-    borderRadius: 15,
+  // 🔥 Horizontal Image Containers
+  horizontalImageContainer: {
+    marginTop: 20,
+    paddingHorizontal: 10,
   },
-  desktopImageContainer: {
-    position: 'relative',
+  horizontalScrollContent: {
     alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 40,
-    borderColor: '#8B0000',
-    borderWidth: 6,
-    borderRadius: 20,
+    paddingVertical: 10,
+  },
+  spawnTitle: {
+    fontSize: 24,
+    color: '#ff4500',
+    textAlign: 'center',
+    marginTop: 20,
+    marginBottom: 10,
+    fontWeight: 'bold',
+    textShadowColor: '#8B0000',
+    textShadowRadius: 15,
   },
 
   // 🔥 Images
-  mobileImage: {
-    width: SCREEN_WIDTH * 0.8,
-    height: SCREEN_HEIGHT * 0.5,
-    borderRadius: 15,
+  armorImage: {
+    resizeMode: "contain",
+    borderRadius: isDesktop ? 20 : 15,
   },
-  desktopImage: {
-    width: SCREEN_WIDTH * 0.5,
-    height: SCREEN_HEIGHT * 0.9,
-    borderRadius: 20,
+
+  clickable: {
+    borderWidth: 2,
+    borderColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: isDesktop ? 20 : 15,
+    marginHorizontal: 10, // Space between cards in horizontal scroll
+  },
+  notClickable: {
+    opacity: 0.8,
+    borderRadius: isDesktop ? 20 : 15,
+    marginHorizontal: 10,
   },
 
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0)',
     zIndex: 1,
+  },
+
+  cardName: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    fontSize: 16,
+    color: "white",
+    fontWeight: "bold",
   },
 
   // 🔥 Descriptions

@@ -29,7 +29,14 @@ export const demonLords = [
     image: require('../../assets/Villains/Thorax.jpg'), 
     clickable: false,
     showSummonPopup: true // ✅ Popup enabled
-  }
+  },
+    { 
+    name: 'Skin Stalker', 
+    screen: '', 
+    image: require('../../assets/Villains/SkinStalker.jpg'), 
+    // audio: require('../../assets/audio/.mp4'),
+    clickable: false 
+  },
 
     // { 
     //   name: 'Lucifer', 

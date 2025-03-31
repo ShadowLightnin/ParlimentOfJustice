@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View, Text, ImageBackground, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions
 } from "react-native";
@@ -8,9 +8,39 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const VortigarScreen = () => {
   const navigation = useNavigation();
-  const isDesktop = SCREEN_WIDTH > 600;
-  const imageSize = isDesktop ? SCREEN_WIDTH * 0.9 : SCREEN_WIDTH * 0.9;
+  const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      setWindowWidth(Dimensions.get("window").width);
+    };
+    const subscription = Dimensions.addEventListener("change", updateDimensions);
+    return () => subscription?.remove();
+  }, []);
+
+  const isDesktop = windowWidth >= 768;
+  const imageSize = isDesktop ? windowWidth * 0.9 : SCREEN_WIDTH * 0.9;
   const imageHeight = isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.6;
+
+  const characters = [
+    { name: "Vortigar the Inevitable", image: require("../../../assets/Villains/Vortigar.jpg"), clickable: true },
+  ];
+
+  const renderCharacterCard = (character) => (
+    <TouchableOpacity
+      key={character.name}
+      style={character.clickable ? styles.clickable : styles.notClickable}
+      onPress={() => character.clickable && console.log(`${character.name} clicked`)}
+      disabled={!character.clickable}
+    >
+      <Image
+        source={character.image}
+        style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
+      />
+      <View style={styles.transparentOverlay} />
+      {character.name && <Text style={styles.cardName}>{character.name}</Text>}
+    </TouchableOpacity>
+  );
 
   return (
     <ImageBackground
@@ -27,34 +57,25 @@ const VortigarScreen = () => {
           </View>
 
           <View style={styles.imageContainer}>
-            <Image
-              source={require("../../../assets/Villains/Vortigar.jpg")}
-              style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
-            />
-            {/* Transparent Overlay for Image Protection */}
-            <View style={styles.transparentOverlay} />
+            {characters.map(renderCharacterCard)}
           </View>
 
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-            Vortigar is a cosmic warlord who believes in the doctrine of "Cosmic Equilibrium." He sees civilizations as endlessly consuming resources, leading to inevitable collapse. To "preserve existence," he enforces mass culling across star systems. His race was wiped out by unchecked expansion, and he now enacts ruthless “cleansings” to ensure no species meets the same fate—by his logic, survival must be earned.
+              Vortigar is a cosmic warlord who believes in the doctrine of "Cosmic Equilibrium." He sees civilizations as endlessly consuming resources, leading to inevitable collapse. To "preserve existence," he enforces mass culling across star systems. His race was wiped out by unchecked expansion, and he now enacts ruthless “cleansings” to ensure no species meets the same fate—by his logic, survival must be earned.
             </Text>
             <Text style={styles.aboutText}>
-            • Powers and Abilities:
-
+              • Powers and Abilities:
             </Text>
             <Text style={styles.aboutText}>
-            Celestial Physiology – Nearly indestructible and impossibly strong.
-
+              Celestial Physiology – Nearly indestructible and impossibly strong.
             </Text>
             <Text style={styles.aboutText}>
-            Entropy Gauntlet – A gauntlet capable of unraveling energy and matter at will.
-
+              Entropy Gauntlet – A gauntlet capable of unraveling energy and matter at will.
             </Text>
             <Text style={styles.aboutText}>
-            Fate Domination – Can peer into potential futures to determine which must be "pruned."
-
+              Fate Domination – Can peer into potential futures to determine which must be "pruned."
             </Text>  
           </View>
         </ScrollView>
@@ -108,15 +129,39 @@ const styles = StyleSheet.create({
     backgroundColor: "#111",
     paddingVertical: 30,
     borderRadius: 20,
-    position: 'relative', // Required for overlay positioning
+    position: "relative",
   },
   armorImage: {
     resizeMode: "contain",
   },
+  clickable: {
+    borderWidth: 2,
+    borderColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 15,
+  },
+  notClickable: {
+    opacity: 0.8,
+    borderRadius: 15,
+  },
   transparentOverlay: {
-    ...StyleSheet.absoluteFillObject, 
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1, // Ensures overlay is on top without blocking buttons
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0)",
+    zIndex: 1,
+  },
+  cardName: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    fontSize: 16,
+    color: "white",
+    fontWeight: "bold",
+  },
+  disabledText: {
+    fontSize: 12,
+    color: "#ff4444",
+    position: "absolute",
+    bottom: 30,
+    left: 10,
   },
   aboutSection: {
     marginTop: 40,

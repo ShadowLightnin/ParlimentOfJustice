@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View, Text, ImageBackground, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions
 } from "react-native";
@@ -8,9 +8,39 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const StormshadeScreen = () => {
   const navigation = useNavigation();
-  const isDesktop = SCREEN_WIDTH > 600;
-  const imageSize = isDesktop ? SCREEN_WIDTH * 0.9 : SCREEN_WIDTH * 0.9;
+  const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      setWindowWidth(Dimensions.get("window").width);
+    };
+    const subscription = Dimensions.addEventListener("change", updateDimensions);
+    return () => subscription?.remove();
+  }, []);
+
+  const isDesktop = windowWidth >= 768;
+  const imageSize = isDesktop ? windowWidth * 0.9 : SCREEN_WIDTH * 0.9;
   const imageHeight = isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.6;
+
+  const characters = [
+    { name: "Stormshade", image: require("../../../assets/Villains/Stormshade.jpg"), clickable: true },
+  ];
+
+  const renderCharacterCard = (character) => (
+    <TouchableOpacity
+      key={character.name}
+      style={character.clickable ? styles.clickable : styles.notClickable}
+      onPress={() => character.clickable && console.log(`${character.name} clicked`)}
+      disabled={!character.clickable}
+    >
+      <Image
+        source={character.image}
+        style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
+      />
+      <View style={styles.transparentOverlay} />
+      {character.name && <Text style={styles.cardName}>{character.name}</Text>}
+    </TouchableOpacity>
+  );
 
   return (
     <ImageBackground
@@ -27,48 +57,38 @@ const StormshadeScreen = () => {
           </View>
 
           <View style={styles.imageContainer}>
-            <Image
-              source={require("../../../assets/Villains/Stormshade.jpg")}
-              style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
-            />
-            {/* Transparent Overlay for Image Protection */}
-            <View style={styles.transparentOverlay} />
+            {characters.map(renderCharacterCard)}
           </View>
 
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
-             <Text style={styles.aboutText}>
+            <Text style={styles.aboutText}>
               The Bludbruhs’ Big Bad
-              </Text> 
-            <Text style={styles.aboutText}>
-            A former ally turned enemy, Varak was a powerful 
-            psychic who could manipulate shadows and storms. 
-            Left isolated in a hostile dimension, he honed his 
-            skills and gained control over both shadow and electric 
-            energy, making him a deadly threat to the Bludbruhs. 
-            Varak views the Bludbruhs’ power as an affront to his 
-            control and wants to dominate them, seeing them as 
-            potential soldiers in his growing dark empire.            
             </Text>
             <Text style={styles.aboutText}>
-            • Abilities and Gear:
-
+              A former ally turned enemy, Varak was a powerful 
+              psychic who could manipulate shadows and storms. 
+              Left isolated in a hostile dimension, he honed his 
+              skills and gained control over both shadow and electric 
+              energy, making him a deadly threat to the Bludbruhs. 
+              Varak views the Bludbruhs’ power as an affront to his 
+              control and wants to dominate them, seeing them as 
+              potential soldiers in his growing dark empire.            
             </Text>
             <Text style={styles.aboutText}>
-            • Shadow and Storm Manipulation: Can create electrical storms within shadows, summoning bolts of dark lightning that paralyze and drain energy.
-
+              • Abilities and Gear:
             </Text>
             <Text style={styles.aboutText}>
-            • Mind Control: Possesses powerful telepathic skills, able to dominate weaker minds or distract powerful ones like Sam.
-
+              • Shadow and Storm Manipulation: Can create electrical storms within shadows, summoning bolts of dark lightning that paralyze and drain energy.
             </Text>
             <Text style={styles.aboutText}>
-            • Invisibility and Cloaking: Disappears into shadows and can instantly phase out of sight.
-
+              • Mind Control: Possesses powerful telepathic skills, able to dominate weaker minds or distract powerful ones like Sam.
+            </Text>
+            <Text style={styles.aboutText}>
+              • Invisibility and Cloaking: Disappears into shadows and can instantly phase out of sight.
             </Text>  
             <Text style={styles.aboutText}>
-            • Shadow Blade: A weapon forged from darkness itself, able to cut through most known armor types.
-
+              • Shadow Blade: A weapon forged from darkness itself, able to cut through most known armor types.
             </Text>  
           </View>
         </ScrollView>
@@ -122,15 +142,39 @@ const styles = StyleSheet.create({
     backgroundColor: "#111",
     paddingVertical: 30,
     borderRadius: 20,
-    position: 'relative', // Required for overlay positioning
+    position: "relative",
   },
   armorImage: {
     resizeMode: "contain",
   },
+  clickable: {
+    borderWidth: 2,
+    borderColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 15,
+  },
+  notClickable: {
+    opacity: 0.8,
+    borderRadius: 15,
+  },
   transparentOverlay: {
-    ...StyleSheet.absoluteFillObject, 
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1, // Ensures overlay is on top without blocking buttons
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0)",
+    zIndex: 1,
+  },
+  cardName: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    fontSize: 16,
+    color: "white",
+    fontWeight: "bold",
+  },
+  disabledText: {
+    fontSize: 12,
+    color: "#ff4444",
+    position: "absolute",
+    bottom: 30,
+    left: 10,
   },
   aboutSection: {
     marginTop: 40,

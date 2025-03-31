@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { 
   View, Text, ImageBackground, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions 
 } from "react-native";
@@ -8,9 +8,43 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const ErevosScreen = () => {
   const navigation = useNavigation();
-  const isDesktop = SCREEN_WIDTH > 600;
-  const imageSize = isDesktop ? SCREEN_WIDTH * 0.9 : SCREEN_WIDTH * 0.9;
-  const imageHeight = isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.6;
+  const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      setWindowWidth(Dimensions.get("window").width);
+    };
+    const subscription = Dimensions.addEventListener("change", updateDimensions);
+    return () => subscription?.remove();
+  }, []);
+
+  const isDesktop = windowWidth >= 768;
+  const imageSize = isDesktop ? windowWidth * 0.4 : SCREEN_WIDTH * 0.4; // Smaller for horizontal scroll
+  const imageHeight = isDesktop ? SCREEN_HEIGHT * 0.6 : SCREEN_HEIGHT * 0.4;
+
+  const characters = [
+    { name: "Erevan", image: require("../../../assets/Villains/Erevan.jpg"), clickable: true },
+    { name: "Erevos the Eternal", image: require("../../../assets/Villains/GreatErevos.jpg"), clickable: true },
+    { name: "Erevos", image: require("../../../assets/Villains/Erevos2.jpg"), clickable: true },
+    { name: "Erevos the Asecendancy", image: require("../../../assets/Villains/Erevos.jpg"), clickable: true },
+    // You can add more characters here if needed for horizontal scrolling
+  ];
+
+  const renderCharacterCard = (character) => (
+    <TouchableOpacity
+      key={character.name}
+      style={character.clickable ? styles.clickable : styles.notClickable}
+      onPress={() => character.clickable && console.log(`${character.name} clicked`)}
+      disabled={!character.clickable}
+    >
+      <Image
+        source={character.image}
+        style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
+      />
+      <View style={styles.transparentOverlay} />
+      {character.name && <Text style={styles.cardName}>{character.name}</Text>}
+    </TouchableOpacity>
+  );
 
   return (
     <ImageBackground
@@ -26,19 +60,19 @@ const ErevosScreen = () => {
             <Text style={styles.title}>Erevos</Text>
           </View>
 
-          <View style={styles.imageContainer}>
-            <Image
-              source={require("../../../assets/Villains/Erevos.jpg")}
-              style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
-            />
-            {/* Transparent Overlay for Image Protection */}
-            <View style={styles.transparentOverlay} />
-          </View>
+          <ScrollView
+            horizontal={true} // Enable horizontal scrolling
+            style={styles.horizontalImageContainer}
+            showsHorizontalScrollIndicator={false} // Optional: hide scroll bar
+            contentContainerStyle={styles.horizontalScrollContent}
+          >
+            {characters.map(renderCharacterCard)}
+          </ScrollView>
 
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
-            <Text style={styles.aboutText}>
-             The Parliament of Justice’s Big Bad
+             <Text style={styles.aboutText}>
+              The Parliament of Justice’s Big Bad
              </Text> 
             <Text style={styles.aboutText}>
             Once a prehistoric warrior named Erevos, he gained immortality after 
@@ -316,9 +350,8 @@ Erevos is deeply convinced that humanity is doomed to chaos and self-destruction
             </Text> 
             <Text style={styles.aboutText}>
             • An Ongoing Rivalry: Though they share a common goal, Erevos and The Devourer remain cautious of one another, always aware that betrayal could come at any moment. Their meeting marked the beginning of a dark alliance, setting the stage for conflicts that would resonate through the ages as they both pursued their grand designs.
-
-            </Text> 
-          </View>
+            </Text>
+            </View>
         </ScrollView>
       </View>
     </ImageBackground>
@@ -363,22 +396,47 @@ const styles = StyleSheet.create({
     textAlign: "center",
     flex: 1,
   },
-  imageContainer: {
+  horizontalImageContainer: {
+    marginTop: 20,
+    paddingHorizontal: 10,
+  },
+  horizontalScrollContent: {
     alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 20,
-    backgroundColor: "#111",
-    paddingVertical: 30,
-    borderRadius: 20,
-    position: 'relative', // Required for overlay positioning
+    paddingVertical: 10,
   },
   armorImage: {
     resizeMode: "contain",
   },
+  clickable: {
+    borderWidth: 2,
+    borderColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 15,
+    marginHorizontal: 10, // Space between cards in horizontal scroll
+  },
+  notClickable: {
+    opacity: 0.8,
+    borderRadius: 15,
+    marginHorizontal: 10,
+  },
   transparentOverlay: {
-    ...StyleSheet.absoluteFillObject, 
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1, // Ensures overlay is on top without blocking buttons
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0)",
+    zIndex: 1,
+  },
+  cardName: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    fontSize: 16,
+    color: "white",
+    fontWeight: "bold",
+  },
+  disabledText: {
+    fontSize: 12,
+    color: "#ff4444",
+    position: "absolute",
+    bottom: 30,
+    left: 10,
   },
   aboutSection: {
     marginTop: 40,
