@@ -77,6 +77,7 @@ const Sam = () => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [hasShownPopup, setHasShownPopup] = useState(false);
   const [fromBludBruhsHome, setFromBludBruhsHome] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
 
   // Check navigation params to determine source
   useEffect(() => {
@@ -100,7 +101,6 @@ const Sam = () => {
         Animated.timing(flashAnim, { toValue: 1, duration: 500, useNativeDriver: true }),
       ]).start();
     }, 2000);
-
     return () => clearInterval(interval);
   }, []);
 
@@ -109,7 +109,6 @@ const Sam = () => {
     if (isFocused) {
       playBackgroundMusic();
     }
-    // Cleanup only on full unmount, not focus loss
     return () => {
       console.log("Sam component fully unmounting at:", new Date().toISOString());
       // Do not stop music here - let it persist to WarpScreen
@@ -148,6 +147,15 @@ const Sam = () => {
     }
   }, [isFocused, fromBludBruhsHome, hasShownPopup]);
 
+  // Responsive width handling
+  useEffect(() => {
+    const updateDimensions = () => {
+      setWindowWidth(Dimensions.get("window").width);
+    };
+    const subscription = Dimensions.addEventListener("change", updateDimensions);
+    return () => subscription?.remove();
+  }, []);
+
   // 🌌 Planet Click Handler → Leads to WarpScreen (No audio stop)
   const handlePlanetPress = () => {
     console.log("Navigating to WarpScreen without stopping music at:", new Date().toISOString());
@@ -185,10 +193,29 @@ const Sam = () => {
     navigation.navigate("BludBruhsHome");
   };
 
+  const isDesktop = windowWidth >= 768;
+
+  const armors = [
+    { name: "", image: require("../../assets/Armor/SamPlaceHolder.jpg"), clickable: true },
+  ];
+
+  const renderArmorCard = (armor) => (
+    <TouchableOpacity
+      key={armor.name}
+      style={[styles.card(isDesktop, windowWidth), armor.clickable ? styles.clickable : styles.notClickable]}
+      onPress={() => armor.clickable && console.log(`${armor.name} clicked`)}
+      disabled={!armor.clickable}
+    >
+      <Image source={armor.image} style={styles.armorImage} />
+      <View style={styles.transparentOverlay} />
+      <Text style={styles.cardName}>{armor.name}</Text>
+      {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+    </TouchableOpacity>
+  );
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        
         {/* Header */}
         <View style={styles.headerContainer}>
           <TouchableOpacity
@@ -198,8 +225,6 @@ const Sam = () => {
             <Text style={styles.backButtonText}>⬅️</Text>
           </TouchableOpacity>
           <Text style={styles.title}>Void Walker</Text>
-
-          {/* 🌍 Planet Icon (Clickable) */}
           <TouchableOpacity onPress={handlePlanetPress} style={styles.planetContainer}>
             <Animated.Image 
               source={require("../../assets/Space/ExoPlanet2.jpg")}
@@ -208,13 +233,18 @@ const Sam = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Armor Image */}
+        {/* Armor Cards */}
         <View style={styles.imageContainer}>
-          <Image 
-            source={require("../../assets/Armor/SamPlaceHolder.jpg")} 
-            style={styles.armorImage} 
-          />
-          <View style={styles.transparentOverlay} />
+          <ScrollView
+            horizontal
+            contentContainerStyle={styles.imageScrollContainer}
+            showsHorizontalScrollIndicator={false}
+            snapToAlignment="center"
+            snapToInterval={SCREEN_WIDTH * 0.7 + 20}
+            decelerationRate="fast"
+          >
+            {armors.map(renderArmorCard)}
+          </ScrollView>
         </View>
 
         {/* About Section */}
@@ -254,7 +284,6 @@ const Sam = () => {
   );
 };
 
-// Styles remain unchanged
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -291,33 +320,63 @@ const styles = StyleSheet.create({
   },
   planetContainer: {
     alignItems: 'center',
-    marginVertical: 20,
-    backgroundColor: 'transparent'
+    backgroundColor: 'transparent',
   },
   planetImage: {
     width: 40,
     height: 40,
     borderRadius: 40,
-    opacity: 0.8
+    opacity: 0.8,
   },
   imageContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 20,
+    width: "100%",
+    paddingVertical: 20,
     backgroundColor: "#111",
-    paddingVertical: 30,
-    borderRadius: 20,
-    position: 'relative',
+  },
+  imageScrollContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 10,
+    alignItems: "center",
+  },
+  card: (isDesktop, windowWidth) => ({
+    width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.7,
+    height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.5,
+    borderRadius: 15,
+    overflow: "hidden",
+    elevation: 5,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    marginRight: 20,
+  }),
+  clickable: {
+    borderWidth: 2,
+  },
+  notClickable: {
+    opacity: 0.8,
   },
   armorImage: {
-    width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_HEIGHT * 0.6,
-    resizeMode: "contain",
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
   },
   transparentOverlay: {
-    ...StyleSheet.absoluteFillObject, 
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1, 
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0)",
+    zIndex: 1,
+  },
+  cardName: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    fontSize: 16,
+    color: "white",
+    fontWeight: "bold",
+  },
+  disabledText: {
+    fontSize: 12,
+    color: "#ff4444",
+    position: "absolute",
+    bottom: 30,
+    left: 10,
   },
   aboutSection: {
     marginTop: 40,

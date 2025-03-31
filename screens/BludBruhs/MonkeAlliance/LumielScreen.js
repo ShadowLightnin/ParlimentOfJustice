@@ -1,6 +1,6 @@
-import React from "react";
-import {
-  View, Text, ImageBackground, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions
+import React, { useState, useEffect } from "react";
+import { 
+  View, Text, ImageBackground, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions 
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
@@ -8,9 +8,35 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const LumielScreen = () => {
   const navigation = useNavigation();
-  const isDesktop = SCREEN_WIDTH > 600;
-  const imageSize = isDesktop ? SCREEN_WIDTH * 0.6 : SCREEN_WIDTH * 0.9;
-  const imageHeight = isDesktop ? SCREEN_HEIGHT * 0.5 : SCREEN_HEIGHT * 0.6;
+  const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      setWindowWidth(Dimensions.get("window").width);
+    };
+    const subscription = Dimensions.addEventListener("change", updateDimensions);
+    return () => subscription?.remove();
+  }, []);
+
+  const isDesktop = windowWidth >= 768;
+
+  const armors = [
+    { name: "Lumiel", image: require("../../../assets/Armor/LumielPhantom.jpg"), clickable: true },
+  ];
+
+  const renderArmorCard = (armor) => (
+    <TouchableOpacity
+      key={armor.name}
+      style={[styles.card(isDesktop, windowWidth), armor.clickable ? styles.clickable : styles.notClickable]}
+      onPress={() => armor.clickable && console.log(`${armor.name} clicked`)}
+      disabled={!armor.clickable}
+    >
+      <Image source={armor.image} style={styles.armorImage} />
+      <View style={styles.transparentOverlay} />
+      <Text style={styles.cardName}>{armor.name}</Text>
+      {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+    </TouchableOpacity>
+  );
 
   return (
     <ImageBackground
@@ -27,24 +53,28 @@ const LumielScreen = () => {
           </View>
 
           <View style={styles.imageContainer}>
-            <Image
-              source={require("../../../assets/Armor/LumielPhantom.jpg")}
-              style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
-            />
-            {/* Transparent Overlay for Image Protection */}
-            <View style={styles.transparentOverlay} />
+            <ScrollView
+              horizontal
+              contentContainerStyle={styles.imageScrollContainer}
+              showsHorizontalScrollIndicator={false}
+              snapToAlignment="center"
+              snapToInterval={SCREEN_WIDTH * 0.7 + 20}
+              decelerationRate="fast"
+            >
+              {armors.map(renderArmorCard)}
+            </ScrollView>
           </View>
 
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-            “No, I am a physical memory of what I once was, I am the life blood of the Mansion you see before you.”
+              “No, I am a physical memory of what I once was, I am the life blood of the Mansion you see before you.”
             </Text>
             <Text style={styles.aboutText}>
-            “It is my duty to protect all mortals in Melcornia. I created the Mansion as a sanctuary for a lost family that was stranded here long ago. The Mansion would protect them from the creatures on this planet. Until the demons came and stole the Mansion from me and defiled it. I was once an angel of light, but the grief and sadness of my failure to protect the Montrose family withered away my magnificence."
+              “It is my duty to protect all mortals in Melcornia. I created the Mansion as a sanctuary for a lost family that was stranded here long ago. The Mansion would protect them from the creatures on this planet. Until the demons came and stole the Mansion from me and defiled it. I was once an angel of light, but the grief and sadness of my failure to protect the Montrose family withered away my magnificence."
             </Text>
             <Text style={styles.aboutText}>
-            “My name was in a tongue mortals would not understand. In your tongue it would sound something like… Lumiel.”
+              “My name was in a tongue mortals would not understand. In your tongue it would sound something like… Lumiel.”
             </Text>
           </View>
         </ScrollView>
@@ -92,21 +122,53 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   imageContainer: {
+    width: "100%",
+    paddingVertical: 20,
+  },
+  imageScrollContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 10,
     alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 30,
-    borderRadius: 20,
-    position: 'relative', // Required for overlay positioning
+  },
+  card: (isDesktop, windowWidth) => ({
+    width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.7,
+    height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.5,
+    borderRadius: 15,
+    overflow: "hidden",
+    elevation: 5,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    marginRight: 20,
+  }),
+  clickable: {
+    borderWidth: 2,
+  },
+  notClickable: {
+    opacity: 0.8,
   },
   armorImage: {
-    resizeMode: "contain",
-    opacity: 0.5,
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
   },
   transparentOverlay: {
-    ...StyleSheet.absoluteFillObject, 
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1, // Ensures overlay is on top without blocking buttons
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0)",
+    zIndex: 1,
+  },
+  cardName: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    fontSize: 16,
+    color: "white",
+    fontWeight: "bold",
+  },
+  disabledText: {
+    fontSize: 12,
+    color: "#ff4444",
+    position: "absolute",
+    bottom: 30,
+    left: 10,
   },
   aboutSection: {
     marginTop: 40,

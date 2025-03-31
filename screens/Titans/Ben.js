@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { 
   View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions 
 } from "react-native";
@@ -8,39 +8,66 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const Ben = () => {
   const navigation = useNavigation();
+  const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      setWindowWidth(Dimensions.get("window").width);
+    };
+    const subscription = Dimensions.addEventListener("change", updateDimensions);
+    return () => subscription?.remove();
+  }, []);
+
+  const isDesktop = windowWidth >= 768;
+
+  const armors = [
+    { name: "", image: require("../../assets/Armor/BenPlaceHolder3.jpg"), clickable: true },
+    { name: "", image: require("../../assets/Armor/BenPlaceHolder.jpg"), clickable: true },
+    { name: "", image: require("../../assets/Armor/BenPlaceHolder2.jpg"), clickable: true },
+    { name: "", image: require("../../assets/Armor/BensSymbol.jpg"), clickable: true },
+  ];
+
+  const renderArmorCard = (armor) => (
+    <TouchableOpacity
+      key={armor.name}
+      style={[styles.card(isDesktop, windowWidth), armor.clickable ? styles.clickable : styles.notClickable]}
+      onPress={() => armor.clickable && console.log(`${armor.name} clicked`)}
+      disabled={!armor.clickable}
+    >
+      <Image source={armor.image} style={styles.armorImage} />
+      <View style={styles.transparentOverlay} />
+      <Text style={styles.cardName}>{armor.name}</Text>
+      {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+    </TouchableOpacity>
+  );
 
   return (
     <View style={styles.container}>
-      {/* Scrollable Content */}
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        
-        {/* Header (Now Scrolls with Everything) */}
         <View style={styles.headerContainer}>
-          {/* Back Button */}
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Text style={styles.backButtonText}>←</Text>
           </TouchableOpacity>
-
-          {/* Title */}
           <Text style={styles.title}>Nuscis</Text>
-
-          {/* Comment Button (Top Right) */}
           <TouchableOpacity style={styles.commentButton} onPress={() => navigation.navigate("Comments")}>
             <Text style={styles.commentButtonText}>💬</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Armor Image with Transparent Overlay */}
         <View style={styles.imageContainer}>
-          <Image 
-            source={require("../../assets/Armor/BenPlaceHolder3.jpg")} 
-            style={styles.armorImage} 
-          />
-          {/* Transparent Overlay to Prevent Saving */}
-          <View style={styles.transparentOverlay} />
+          <ScrollView
+            horizontal
+            contentContainerStyle={styles.imageScrollContainer}
+            showsHorizontalScrollIndicator={false}
+            snapToAlignment="center"
+            snapToInterval={SCREEN_WIDTH * 0.7 + 20}
+            decelerationRate="fast"
+            contentOffset={{ x: (SCREEN_WIDTH - (SCREEN_WIDTH * 0.7)) / 2 - 10, y: 0 }} // Centers first image
+          >
+            {armors.map(renderArmorCard)}
+          </ScrollView>
         </View>
 
-        {/* About Section */}
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
@@ -57,7 +84,7 @@ const Ben = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0a0a0a", 
+    backgroundColor: "#0a0a0a",
   },
   scrollContainer: {
     paddingBottom: 20,
@@ -98,23 +125,54 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   imageContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 20,
+    width: "100%",
+    paddingVertical: 20,
     backgroundColor: "#111",
-    paddingVertical: 30,
-    borderRadius: 20,
-    position: 'relative', // Required for overlay positioning
+  },
+  imageScrollContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 10,
+    alignItems: "center",
+  },
+  card: (isDesktop, windowWidth) => ({
+    width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.7,
+    height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.5,
+    borderRadius: 15,
+    overflow: "hidden",
+    elevation: 5,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    marginRight: 20,
+  }),
+  clickable: {
+    borderWidth: 2,
+  },
+  notClickable: {
+    opacity: 0.8,
   },
   armorImage: {
-    width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_HEIGHT * 0.6,
-    resizeMode: "contain",
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
   },
   transparentOverlay: {
-    ...StyleSheet.absoluteFillObject, // Covers the entire image
-    backgroundColor: 'rgba(0, 0, 0, 0)', // Fully transparent
-    zIndex: 1, // Ensures it blocks long-press but doesn’t affect buttons
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0)",
+    zIndex: 1,
+  },
+  cardName: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    fontSize: 16,
+    color: "white",
+    fontWeight: "bold",
+  },
+  disabledText: {
+    fontSize: 12,
+    color: "#ff4444",
+    position: "absolute",
+    bottom: 30,
+    left: 10,
   },
   aboutSection: {
     marginTop: 40,
