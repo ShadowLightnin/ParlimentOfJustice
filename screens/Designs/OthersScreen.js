@@ -11,8 +11,9 @@ import {
   Linking,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { auth, db } from "../../lib/firebase";
-import { collection, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { auth, db, storage } from "../../lib/firebase"; // Add storage
+import { collection, query, where, getDocs, deleteDoc, doc, getDoc } from "firebase/firestore";
+import { ref, deleteObject } from "firebase/storage"; // Add deleteObject
 
 const ALLOWED_EMAILS = [
   "samuelp.woodwell@gmail.com",
@@ -54,12 +55,14 @@ const OthersScreen = () => {
     setUploadedFiles(files);
   };
 
-  const deleteFile = async (fileId) => {
+  const deleteFile = (fileId) => {
+    console.log("deleteFile called - ID:", fileId, "CanDelete:", canDelete);
     if (!canDelete) {
       Alert.alert("Access Denied", "You are not authorized to delete files!");
+      console.log("Blocked - User not authorized");
       return;
     }
-
+  
     Alert.alert(
       "Delete File",
       "Are you sure you want to delete this file?",
@@ -68,24 +71,52 @@ const OthersScreen = () => {
         {
           text: "Yes",
           style: "destructive",
-          onPress: async () => {
-            console.log("Delete confirmed - Proceeding with deletion for ID:", fileId);
-            try {
-              await deleteDoc(doc(db, "uploads", fileId));
-              console.log("File deleted from Firestore with ID:", fileId);
-              fetchUploadedFiles();
-              Alert.alert("Success", "File deleted successfully!");
-            } catch (error) {
-              console.error("Delete Error:", error.message);
-              Alert.alert("Error", "Failed to delete file: " + error.message);
-            }
+          onPress: () => {
+            console.log("Yes pressed - Triggering deletion for ID:", fileId);
+            performDeleteFile(fileId);
           },
         },
       ],
       { cancelable: true, onDismiss: () => console.log("Alert dismissed") }
     );
   };
-
+  
+  const performDeleteFile = async (fileId) => {
+    try {
+      console.log("Performing deletion for ID:", fileId);
+      const fileRef = doc(db, "uploads", fileId);
+  
+      const fileSnap = await getDoc(fileRef);
+      if (!fileSnap.exists()) {
+        console.log("File not found with ID:", fileId);
+        Alert.alert("Error", "File not found");
+        return;
+      }
+      const fileData = fileSnap.data();
+      const fileUrl = fileData.url;
+  
+      await deleteDoc(fileRef);
+      console.log("File document deleted from Firestore with ID:", fileId);
+  
+      if (fileUrl) {
+        const filePath = fileUrl.split('/o/')[1]?.split('?')[0];
+        if (filePath) {
+          const storageRef = ref(storage, filePath);
+          await deleteObject(storageRef);
+          console.log("File deleted from Storage with ID:", fileId);
+        } else {
+          console.log("Invalid file URL format:", fileUrl);
+        }
+      }
+  
+      fetchUploadedFiles();
+      Alert.alert("Success", "File deleted successfully!");
+    } catch (error) {
+      console.error("Delete Error:", error.message);
+      Alert.alert("Error", "Failed to delete file: " + error.message);
+    }
+  };
+  
   const handleFilePress = async (fileUrl) => {
     const supported = await Linking.canOpenURL(fileUrl);
     if (supported) {
@@ -140,6 +171,8 @@ const OthersScreen = () => {
     </ImageBackground>
   );
 };
+
+// ... (styles remain unchanged)
 
 const { width } = Dimensions.get("window");
 

@@ -12,8 +12,9 @@ import {
   Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { auth, db } from "../../lib/firebase";
-import { collection, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { auth, db, storage } from "../../lib/firebase";
+import { collection, query, where, getDocs, deleteDoc, doc, getDoc } from "firebase/firestore";
+import { ref, deleteObject } from "firebase/storage";
 import { preloadedImages } from "../../HardCoded/preloadedImages";
 
 const ALLOWED_EMAILS = [
@@ -27,7 +28,7 @@ const ALLOWED_EMAILS = [
 const ModelsScreen = () => {
   const navigation = useNavigation();
   const [uploadedImages, setUploadedImages] = useState([]);
-  const [canDelete, setCanDelete] = useState(false); // New state for deletion permission
+  const [canDelete, setCanDelete] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
   const [backgroundImage, setBackgroundImage] = useState(null);
 
@@ -35,7 +36,7 @@ const ModelsScreen = () => {
     fetchUploadedImages();
     checkUserAuthorization();
     if (preloadedImages.length > 0) {
-      setBackgroundImage(preloadedImages[0]); // Set initial background
+      setBackgroundImage(preloadedImages[0]);
     }
   }, []);
 
@@ -60,38 +61,54 @@ const ModelsScreen = () => {
   };
 
   const deleteImage = async (imageId) => {
+    console.log("deleteImage called - ID:", imageId, "CanDelete:", canDelete);
     if (!canDelete) {
       Alert.alert("Access Denied", "You are not authorized to delete images!");
+      console.log("Blocked - User not authorized");
       return;
     }
 
-    Alert.alert(
-      "Delete Image",
-      "Are you sure you want to delete this image?",
-      [
-        { text: "No", style: "cancel", onPress: () => console.log("Delete canceled") },
-        {
-          text: "Yes",
-          style: "destructive",
-          onPress: async () => {
-            console.log("Delete confirmed - Proceeding with deletion for ID:", imageId);
-            try {
-              await deleteDoc(doc(db, "uploads", imageId));
-              console.log("Image deleted from Firestore with ID:", imageId);
-              fetchUploadedImages();
-              if (uploadedImages.find((img) => img.id === imageId)?.url === backgroundImage?.uri) {
-                setBackgroundImage(preloadedImages[0] || null);
-              }
-              Alert.alert("Success", "Image deleted successfully!");
-            } catch (error) {
-              console.error("Delete Error:", error.message);
-              Alert.alert("Error", "Failed to delete image: " + error.message);
-            }
-          },
-        },
-      ],
-      { cancelable: true, onDismiss: () => console.log("Alert dismissed") }
-    );
+    // Bypass alert for testing
+    console.log("Proceeding with deletion for ID:", imageId);
+    try {
+      const imageRef = doc(db, "uploads", imageId);
+
+      // Step 1: Get image data for URL
+      const imageSnap = await getDoc(imageRef);
+      if (!imageSnap.exists()) {
+        console.log("Image not found with ID:", imageId);
+        Alert.alert("Error", "Image not found");
+        return;
+      }
+      const imageData = imageSnap.data();
+      const imageUrl = imageData.url;
+
+      // Step 2: Delete from Firestore
+      await deleteDoc(imageRef);
+      console.log("Image document deleted from Firestore with ID:", imageId);
+
+      // Step 3: Delete from Storage
+      if (imageUrl) {
+        const imagePath = imageUrl.split('/o/')[1]?.split('?')[0];
+        if (imagePath) {
+          const storageRef = ref(storage, imagePath);
+          await deleteObject(storageRef);
+          console.log("Image file deleted from Storage with ID:", imageId);
+        } else {
+          console.log("Invalid image URL format:", imageUrl);
+        }
+      }
+
+      // Refresh UI
+      fetchUploadedImages();
+      if (imageUrl === backgroundImage?.uri) {
+        setBackgroundImage(preloadedImages[0] || null);
+      }
+      Alert.alert("Success", "Image deleted successfully!");
+    } catch (error) {
+      console.error("Delete Error:", error.message);
+      Alert.alert("Error", "Failed to delete image: " + error.message);
+    }
   };
 
   const handleImagePress = (image) => {
