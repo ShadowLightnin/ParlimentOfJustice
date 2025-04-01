@@ -14,29 +14,37 @@ import { useNavigation } from "@react-navigation/native";
 import { auth, db } from "../../lib/firebase";
 import { collection, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
 
+const ALLOWED_EMAILS = [
+  "samuelp.woodwell@gmail.com",
+  "cummingsnialla@gmail.com",
+  "will@test.com",
+  "c1wcummings@gmail.com",
+  "aileen@test.com",
+];
+
 const OthersScreen = () => {
   const navigation = useNavigation();
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [userRole, setUserRole] = useState("viewer");
+  const [canDelete, setCanDelete] = useState(false);
 
   useEffect(() => {
     fetchUploadedFiles();
-    fetchUserRole();
+    checkUserAuthorization();
   }, []);
 
-  const fetchUserRole = async () => {
-    if (!auth.currentUser) return;
-    const userQuery = query(collection(db, "users"), where("uid", "==", auth.currentUser.uid));
-    const userSnap = await getDocs(userQuery);
-    if (userSnap.docs.length > 0) {
-      setUserRole(userSnap.docs[0].data().role || "viewer");
+  const checkUserAuthorization = () => {
+    const user = auth.currentUser;
+    if (user && ALLOWED_EMAILS.includes(user.email)) {
+      setCanDelete(true);
+    } else {
+      setCanDelete(false);
     }
   };
 
   const fetchUploadedFiles = async () => {
     const q = query(
       collection(db, "uploads"),
-      where("type", "not-in", ["image", "video"]) // Exclude images and videos
+      where("type", "not-in", ["image", "video"])
     );
     const querySnapshot = await getDocs(q);
     const files = querySnapshot.docs.map((doc) => ({
@@ -47,21 +55,38 @@ const OthersScreen = () => {
   };
 
   const deleteFile = async (fileId) => {
-    Alert.alert("Delete File?", "Are you sure you want to delete this file?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Delete",
-        style: "destructive",
-        onPress: async () => {
-          await deleteDoc(doc(db, "uploads", fileId));
-          fetchUploadedFiles();
+    if (!canDelete) {
+      Alert.alert("Access Denied", "You are not authorized to delete files!");
+      return;
+    }
+
+    Alert.alert(
+      "Delete File",
+      "Are you sure you want to delete this file?",
+      [
+        { text: "No", style: "cancel", onPress: () => console.log("Delete canceled") },
+        {
+          text: "Yes",
+          style: "destructive",
+          onPress: async () => {
+            console.log("Delete confirmed - Proceeding with deletion for ID:", fileId);
+            try {
+              await deleteDoc(doc(db, "uploads", fileId));
+              console.log("File deleted from Firestore with ID:", fileId);
+              fetchUploadedFiles();
+              Alert.alert("Success", "File deleted successfully!");
+            } catch (error) {
+              console.error("Delete Error:", error.message);
+              Alert.alert("Error", "Failed to delete file: " + error.message);
+            }
+          },
         },
-      },
-    ]);
+      ],
+      { cancelable: true, onDismiss: () => console.log("Alert dismissed") }
+    );
   };
 
   const handleFilePress = async (fileUrl) => {
-    // Open the file URL in the default app/browser
     const supported = await Linking.canOpenURL(fileUrl);
     if (supported) {
       await Linking.openURL(fileUrl);
@@ -72,7 +97,7 @@ const OthersScreen = () => {
 
   return (
     <ImageBackground
-      source={{ uri: "https://via.placeholder.com/150" }} // Static background (customize as needed)
+      source={{ uri: "https://via.placeholder.com/150" }}
       style={styles.background}
     >
       <View style={styles.overlay}>
@@ -93,7 +118,7 @@ const OthersScreen = () => {
                   <Text style={styles.fileType}>{file.type || "File"}</Text>
                 </View>
               </TouchableOpacity>
-              {(auth.currentUser?.uid === file.userId || userRole === "admin") && (
+              {canDelete && (
                 <TouchableOpacity
                   style={styles.deleteButton}
                   onPress={() => deleteFile(file.id)}

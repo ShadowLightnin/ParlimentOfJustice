@@ -16,28 +16,35 @@ import { auth, db } from "../../lib/firebase";
 import { collection, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { preloadedImages } from "../../HardCoded/preloadedImages";
 
+const ALLOWED_EMAILS = [
+  "samuelp.woodwell@gmail.com",
+  "cummingsnialla@gmail.com",
+  "will@test.com",
+  "c1wcummings@gmail.com",
+  "aileen@test.com",
+];
+
 const ModelsScreen = () => {
   const navigation = useNavigation();
   const [uploadedImages, setUploadedImages] = useState([]);
-  const [userRole, setUserRole] = useState("viewer");
+  const [canDelete, setCanDelete] = useState(false); // New state for deletion permission
   const [previewImage, setPreviewImage] = useState(null);
   const [backgroundImage, setBackgroundImage] = useState(null);
 
   useEffect(() => {
     fetchUploadedImages();
-    fetchUserRole();
+    checkUserAuthorization();
     if (preloadedImages.length > 0) {
       setBackgroundImage(preloadedImages[0]); // Set initial background
     }
   }, []);
 
-  const fetchUserRole = async () => {
-    if (!auth.currentUser) return;
-    const userRef = doc(db, "users", auth.currentUser.uid);
-    const userSnap = await getDocs(userRef); // This was incorrect; should use getDoc
-    const userDoc = await getDocs(query(collection(db, "users"), where("uid", "==", auth.currentUser.uid)));
-    if (userDoc.docs.length > 0) {
-      setUserRole(userDoc.docs[0].data().role || "viewer");
+  const checkUserAuthorization = () => {
+    const user = auth.currentUser;
+    if (user && ALLOWED_EMAILS.includes(user.email)) {
+      setCanDelete(true);
+    } else {
+      setCanDelete(false);
     }
   };
 
@@ -53,25 +60,43 @@ const ModelsScreen = () => {
   };
 
   const deleteImage = async (imageId) => {
-    Alert.alert("Delete Image?", "Are you sure you want to delete this image?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "Delete",
-        style: "destructive",
-        onPress: async () => {
-          await deleteDoc(doc(db, "uploads", imageId));
-          fetchUploadedImages();
-          if (uploadedImages.find((img) => img.id === imageId)?.url === backgroundImage?.uri) {
-            setBackgroundImage(preloadedImages[0] || null);
-          }
+    if (!canDelete) {
+      Alert.alert("Access Denied", "You are not authorized to delete images!");
+      return;
+    }
+
+    Alert.alert(
+      "Delete Image",
+      "Are you sure you want to delete this image?",
+      [
+        { text: "No", style: "cancel", onPress: () => console.log("Delete canceled") },
+        {
+          text: "Yes",
+          style: "destructive",
+          onPress: async () => {
+            console.log("Delete confirmed - Proceeding with deletion for ID:", imageId);
+            try {
+              await deleteDoc(doc(db, "uploads", imageId));
+              console.log("Image deleted from Firestore with ID:", imageId);
+              fetchUploadedImages();
+              if (uploadedImages.find((img) => img.id === imageId)?.url === backgroundImage?.uri) {
+                setBackgroundImage(preloadedImages[0] || null);
+              }
+              Alert.alert("Success", "Image deleted successfully!");
+            } catch (error) {
+              console.error("Delete Error:", error.message);
+              Alert.alert("Error", "Failed to delete image: " + error.message);
+            }
+          },
         },
-      },
-    ]);
+      ],
+      { cancelable: true, onDismiss: () => console.log("Alert dismissed") }
+    );
   };
 
   const handleImagePress = (image) => {
-    setPreviewImage(image); // Show in preview modal
-    setBackgroundImage(image); // Set as background
+    setPreviewImage(image);
+    setBackgroundImage(image);
   };
 
   return (
@@ -112,7 +137,7 @@ const ModelsScreen = () => {
                 </View>
               </TouchableOpacity>
 
-              {(auth.currentUser?.uid === image.userId || userRole === "admin") && (
+              {canDelete && (
                 <TouchableOpacity
                   style={styles.deleteButton}
                   onPress={() => deleteImage(image.id)}

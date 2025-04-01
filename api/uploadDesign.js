@@ -2,21 +2,21 @@ import { auth, db, storage } from "../lib/firebase";
 import { doc, getDoc, addDoc, collection } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
+const ALLOWED_EMAILS = [
+  "samuelp.woodwell@gmail.com",
+  "cummingsnialla@gmail.com",
+  "will@test.com",
+  "c1wcummings@gmail.com",
+  "aileen@test.com",
+];
+
 export const uploadDesign = async (designData, file) => {
   try {
     const user = auth.currentUser;
     if (!user) throw new Error("❌ User not logged in");
 
-    const userRef = doc(db, "users", user.uid);
-    const userSnap = await getDoc(userRef);
-
-    if (!userSnap.exists()) throw new Error("❌ User data not found");
-
-    const userData = userSnap.data();
-    console.log(`✅ User Role: ${userData.role}`);
-
-    if (userData.role !== "editor" && userData.role !== "admin") {
-      throw new Error("❌ Permission Denied: You must be an Editor or Admin to upload.");
+    if (!ALLOWED_EMAILS.includes(user.email)) {
+      throw new Error("❌ Permission Denied: You are not authorized to upload.");
     }
 
     const fileRef = ref(storage, `uploads/${designData.name}`);
