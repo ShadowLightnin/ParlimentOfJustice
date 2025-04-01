@@ -173,25 +173,42 @@ const MontroseManorTab = () => {
     }
   
     if (!canUpload) {
-      Alert.alert("Access Denied", "You are not authorized to delete books!");
+      Alert.alert("Access Denied", "You are not authorized to delete books.");
       console.log("Blocked - User not authorized");
       return;
     }
   
+    // Temporarily bypass Alert for testing
+    console.log("Proceeding with deletion for ID:", id);
+    try {
+      console.log("Attempting to delete book with ID:", id);
+      const docRef = doc(db, "books", id);
+      await deleteDoc(docRef);
+      setTimeout(async () => {
+        const checkSnap = await getDoc(docRef);
+        console.log("Book still exists after delete?:", checkSnap.exists());
+      }, 1000);
+        console.log("Book deleted successfully with ID:", id);
+      setBooks(books.filter((book) => book.id !== id));
+      Alert.alert("Success", "Book deleted successfully!");
+    } catch (error) {
+      console.error("Delete Error:", error.message);
+      Alert.alert("Error", "Failed to delete book: " + error.message);
+    }
+  
     Alert.alert(
-      "Delete Book",
-      "Are you sure you want to delete this book?",
+      "Confirm",
+      "Delete this book and all its characters/images?",
       [
         { text: "No", style: "cancel", onPress: () => console.log("Delete canceled") },
-        {
-          text: "Yes",
+        { 
+          text: "Yes", 
           style: "destructive",
           onPress: async () => {
-            console.log("Delete confirmed - Proceeding with deletion for ID:", id);
+            console.log("Delete confirmed for ID:", id);
             try {
+              // Step 1: Get book data to find image URL (if any)
               const bookRef = doc(db, "books", id);
-  
-              // Step 1: Get book data for image URL
               const bookSnap = await getDoc(bookRef);
               if (!bookSnap.exists()) {
                 console.log("Book not found with ID:", id);
@@ -204,15 +221,11 @@ const MontroseManorTab = () => {
               // Step 2: Delete characters subcollection
               const charactersRef = collection(db, "books", id, "characters");
               const charactersSnapshot = await getDocs(charactersRef);
-              if (!charactersSnapshot.empty) {
-                const deleteCharactersPromises = charactersSnapshot.docs.map((charDoc) =>
-                  deleteDoc(doc(db, "books", id, "characters", charDoc.id))
-                );
-                await Promise.all(deleteCharactersPromises);
-                console.log("All characters deleted for book ID:", id);
-              } else {
-                console.log("No characters to delete for book ID:", id);
-              }
+              const deleteCharactersPromises = charactersSnapshot.docs.map((charDoc) =>
+                deleteDoc(doc(db, "books", id, "characters", charDoc.id))
+              );
+              await Promise.all(deleteCharactersPromises);
+              console.log("All characters deleted for book ID:", id);
   
               // Step 3: Delete the book document
               await deleteDoc(bookRef);
@@ -220,14 +233,17 @@ const MontroseManorTab = () => {
   
               // Step 4: Delete the image from Storage (if it exists)
               if (imageUrl) {
-                const imagePath = imageUrl.split('/o/')[1]?.split('?')[0];
-                if (imagePath) {
-                  const imageRef = ref(storage, imagePath);
-                  await deleteObject(imageRef);
-                  console.log("Image deleted from Storage for ID:", id);
-                } else {
-                  console.log("Invalid image URL format:", imageUrl);
-                }
+                // Use the full imageUrl from Firestore if it’s the exact Storage path
+                const imageRef = ref(storage, imageUrl.split('/o/')[1].split('?')[0]); // Extract path from URL
+                await deleteObject(imageRef).catch((error) => {
+                  if (error.code === "storage/object-not-found") {
+                    console.log("No image found to delete for ID:", id);
+                    console.log("Image URL to delete:", imageUrl);
+                  } else {
+                    throw error;
+                  }
+                });
+                console.log("Image deleted from Storage for ID:", id);
               }
   
               // Update UI
@@ -235,7 +251,7 @@ const MontroseManorTab = () => {
               Alert.alert("Success", "Book, characters, and image deleted successfully!");
             } catch (error) {
               console.error("Delete Error:", error.message);
-              Alert.alert("Error", "Failed to delete book: " + error.message);
+              Alert.alert("Error", "Failed to delete: " + error.message);
             }
           },
         },
@@ -448,8 +464,8 @@ const styles = StyleSheet.create({
     color: "#FFF",
     textAlign: "center",
     marginTop: 20,
-    marginBottom: 10,
-  },  
+    marginBottom: 20,
+  },
   headerWarning: {
     fontSize: 16,
     fontWeight: "bold",
