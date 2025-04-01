@@ -12,42 +12,33 @@ import {
 } from "react-native";
 import { Video } from "expo-av";
 import { useNavigation } from "@react-navigation/native";
-import { auth, db, storage } from "../../lib/firebase"; // Add storage
-import { collection, query, where, getDocs, deleteDoc, doc, getDoc } from "firebase/firestore";
-import { ref, deleteObject } from "firebase/storage"; // Add deleteObject
+import { auth, db } from "../../lib/firebase";
+import { collection, query, where, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { preloadedVideos } from "../../HardCoded/preloadedVideos";
-
-const ALLOWED_EMAILS = [
-  "samuelp.woodwell@gmail.com",
-  "cummingsnialla@gmail.com",
-  "will@test.com",
-  "c1wcummings@gmail.com",
-  "aileen@test.com",
-];
 
 const VideosScreen = () => {
   const navigation = useNavigation();
   const [uploadedVideos, setUploadedVideos] = useState([]);
-  const [canDelete, setCanDelete] = useState(false);
+  const [userRole, setUserRole] = useState("viewer");
   const [backgroundVideo, setBackgroundVideo] = useState(null);
   const [playingVideoId, setPlayingVideoId] = useState(null);
-  const [fullscreenVideo, setFullscreenVideo] = useState(null);
+  const [fullscreenVideo, setFullscreenVideo] = useState(null); // Track video for full-screen modal
   const videoRefs = useRef({});
 
   useEffect(() => {
     fetchUploadedVideos();
-    checkUserAuthorization();
+    fetchUserRole();
     if (preloadedVideos.length > 0) {
       setBackgroundVideo(preloadedVideos[0]);
     }
   }, []);
 
-  const checkUserAuthorization = () => {
-    const user = auth.currentUser;
-    if (user && ALLOWED_EMAILS.includes(user.email)) {
-      setCanDelete(true);
-    } else {
-      setCanDelete(false);
+  const fetchUserRole = async () => {
+    if (!auth.currentUser) return;
+    const userQuery = query(collection(db, "users"), where("uid", "==", auth.currentUser.uid));
+    const userSnap = await getDocs(userQuery);
+    if (userSnap.docs.length > 0) {
+      setUserRole(userSnap.docs[0].data().role || "viewer");
     }
   };
 
@@ -62,71 +53,23 @@ const VideosScreen = () => {
     setUploadedVideos(videos);
   };
 
-  const deleteVideo = (videoId) => {
-    console.log("deleteVideo called - ID:", videoId, "CanDelete:", canDelete);
-    if (!canDelete) {
-      Alert.alert("Access Denied", "You are not authorized to delete videos!");
-      console.log("Blocked - User not authorized");
-      return;
-    }
-  
-    Alert.alert(
-      "Delete Video",
-      "Are you sure you want to delete this video?",
-      [
-        { text: "No", style: "cancel", onPress: () => console.log("Delete canceled") },
-        {
-          text: "Yes",
-          style: "destructive",
-          onPress: () => {
-            console.log("Yes pressed - Triggering deletion for ID:", videoId);
-            performDeleteVideo(videoId);
-          },
+  const deleteVideo = async (videoId) => {
+    Alert.alert("Delete Video?", "Are you sure you want to delete this video?", [
+      { text: "Cancel", style: "cancel" },
+      {
+        text: "Delete",
+        style: "destructive",
+        onPress: async () => {
+          await deleteDoc(doc(db, "uploads", videoId));
+          fetchUploadedVideos();
+          if (uploadedVideos.find((vid) => vid.id === videoId)?.url === backgroundVideo?.url) {
+            setBackgroundVideo(preloadedVideos[0] || null);
+          }
+          if (playingVideoId === videoId) setPlayingVideoId(null);
+          if (fullscreenVideo?.id === videoId) setFullscreenVideo(null);
         },
-      ],
-      { cancelable: true, onDismiss: () => console.log("Alert dismissed") }
-    );
-  };
-  
-  const performDeleteVideo = async (videoId) => {
-    try {
-      console.log("Performing deletion for ID:", videoId);
-      const videoRef = doc(db, "uploads", videoId);
-  
-      const videoSnap = await getDoc(videoRef);
-      if (!videoSnap.exists()) {
-        console.log("Video not found with ID:", videoId);
-        Alert.alert("Error", "Video not found");
-        return;
-      }
-      const videoData = videoSnap.data();
-      const videoUrl = videoData.url;
-  
-      await deleteDoc(videoRef);
-      console.log("Video document deleted from Firestore with ID:", videoId);
-  
-      if (videoUrl) {
-        const videoPath = videoUrl.split('/o/')[1]?.split('?')[0];
-        if (videoPath) {
-          const storageRef = ref(storage, videoPath);
-          await deleteObject(storageRef);
-          console.log("Video file deleted from Storage with ID:", videoId);
-        } else {
-          console.log("Invalid video URL format:", videoUrl);
-        }
-      }
-  
-      fetchUploadedVideos();
-      if (videoUrl === backgroundVideo?.url) {
-        setBackgroundVideo(preloadedVideos[0] || null);
-      }
-      if (playingVideoId === videoId) setPlayingVideoId(null);
-      if (fullscreenVideo?.id === videoId) setFullscreenVideo(null);
-      Alert.alert("Success", "Video deleted successfully!");
-    } catch (error) {
-      console.error("Delete Error:", error.message);
-      Alert.alert("Error", "Failed to delete video: " + error.message);
-    }
+      },
+    ]);
   };
 
   const handleVideoPress = async (video, id) => {
@@ -144,15 +87,16 @@ const VideosScreen = () => {
       setPlayingVideoId(videoId);
     }
 
-    setBackgroundVideo(video);
+    setBackgroundVideo(video); // Optional: remove if not needed
   };
 
   const openFullscreen = (video) => {
+    // Pause any playing inline video
     if (playingVideoId && videoRefs.current[playingVideoId]) {
       videoRefs.current[playingVideoId].pauseAsync();
       setPlayingVideoId(null);
     }
-    setFullscreenVideo(video);
+    setFullscreenVideo(video); // Open modal with video
   };
 
   const closeFullscreen = () => {
@@ -172,6 +116,7 @@ const VideosScreen = () => {
         <Text style={styles.header}>Videos</Text>
 
         <ScrollView contentContainerStyle={styles.videoGrid}>
+          {/* Preloaded Videos */}
           {preloadedVideos.map((video, index) => {
             const videoId = `pre-${index}`;
             return (
@@ -202,6 +147,7 @@ const VideosScreen = () => {
             );
           })}
 
+          {/* Uploaded Videos */}
           {uploadedVideos.map((video) => (
             <View key={video.id} style={styles.videoContainer}>
               <TouchableOpacity onPress={() => handleVideoPress(video, video.id)}>
@@ -226,7 +172,7 @@ const VideosScreen = () => {
               >
                 <Text style={styles.fullscreenText}>⤢</Text>
               </TouchableOpacity>
-              {canDelete && (
+              {(auth.currentUser?.uid === video.userId || userRole === "admin") && (
                 <TouchableOpacity
                   style={styles.deleteButton}
                   onPress={() => deleteVideo(video.id)}
@@ -245,6 +191,7 @@ const VideosScreen = () => {
           <Text style={styles.uploadText}>Upload New Video</Text>
         </TouchableOpacity>
 
+        {/* Fullscreen Modal */}
         <Modal
           visible={!!fullscreenVideo}
           transparent={true}
@@ -258,10 +205,10 @@ const VideosScreen = () => {
             <Video
               source={fullscreenVideo?.url ? { uri: fullscreenVideo.url } : fullscreenVideo}
               style={styles.fullscreenVideo}
-              useNativeControls={true}
+              useNativeControls={true} // Enable native controls for full screen
               resizeMode="contain"
               isLooping
-              shouldPlay={true}
+              shouldPlay={true} // Auto-play in full screen
             />
           </View>
         </Modal>
@@ -269,8 +216,6 @@ const VideosScreen = () => {
     </ImageBackground>
   );
 };
-
-// ... (styles remain unchanged)
 
 const { width, height } = Dimensions.get("window");
 
