@@ -22,6 +22,7 @@ const aileenImages = [
   { name: "Ailethra", image: require("../../assets/Armor/AileenPlaceHolder9.jpg"), clickable: true },
   { name: "Aishal", image: require("../../assets/Armor/AileenPlaceHolder8.jpg"), clickable: true },
   { name: "Seraphina", image: require("../../assets/Armor/AileenPlaceHolder7.jpg"), clickable: true, screen: "Aileenchat" }, // Updated to Aileenchat
+  { name: "", image: require("../../assets/Armor/AileensSymbol.jpg"), clickable: true },
 ];
 
 const Aileen = () => {

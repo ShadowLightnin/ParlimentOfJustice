@@ -26,8 +26,8 @@ const NateScreen = () => {
   const nateImageHeight = isDesktop ? SCREEN_HEIGHT * 0.6 : SCREEN_HEIGHT * 0.5;
 
   // Sizes for Spawn (half the size of Nate)
-  const spawnImageSize = isDesktop ? windowWidth * 0.2 : SCREEN_WIDTH * 0.2; // Half of Nate's width
-  const spawnImageHeight = isDesktop ? SCREEN_HEIGHT * 0.3 : SCREEN_HEIGHT * 0.2; // Half of Nate's height
+  const spawnImageSize = isDesktop ? windowWidth * 0.2 : SCREEN_WIDTH * 0.5; // Half of Nate's width
+  const spawnImageHeight = isDesktop ? SCREEN_HEIGHT * 0.3 : SCREEN_HEIGHT * 0.5; // Half of Nate's height
 
   const nateCharacters = [
     { name: "Demon Lord Nate", image: require('../../../assets/Villains/Nate.jpg'), clickable: true },

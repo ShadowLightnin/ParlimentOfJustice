@@ -23,8 +23,8 @@ const ErevosScreen = () => {
   const mainImageSize = isDesktop ? windowWidth * 0.9 : SCREEN_WIDTH * 0.9;
   const mainImageHeight = isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.6;
   // Secondary images (smaller, for horizontal scroll)
-  const secondaryImageSize = isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.3;
-  const secondaryImageHeight = isDesktop ? SCREEN_HEIGHT * 0.4 : SCREEN_HEIGHT * 0.3;
+  const secondaryImageSize = isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.6;
+  const secondaryImageHeight = isDesktop ? SCREEN_HEIGHT * 0.4 : SCREEN_HEIGHT * 0.6;
 
   const mainCharacter = [
     { name: "Erevos the Ascendancy", image: require("../../../assets/Villains/Erevos.jpg"), clickable: true },
@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
   horizontalScrollContent: {
     flexDirection: 'row', // Ensure horizontal layout
     alignItems: "center",
-    paddingVertical: 10,
+    paddingVertical: 5,
   },
   secondaryTitle: {
     fontSize: 20,

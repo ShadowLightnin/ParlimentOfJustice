@@ -8,6 +8,7 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const armors = [
   { name: "Night Hawk", image: require("../../assets/Armor/NightHawkPlaceHolder.jpg"), clickable: true },
+  { name: "True Night Hawk", image: require("../../assets/NightHawkWillBeBorn.jpg"), clickable: true },
   { name: "Lightning Leopard", image: require("../../assets/Armor/WillPlaceHolder.jpg"), clickable: true },
   { name: "Defender 1", image: require("../../assets/Armor/Defender1PlaceHolder.jpg"), clickable: true },
   { name: "Defender 2", image: require("../../assets/Armor/Defender2PlaceHolder.jpg"), clickable: true },

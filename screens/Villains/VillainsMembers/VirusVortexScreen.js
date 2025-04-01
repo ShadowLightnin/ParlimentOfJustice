@@ -19,8 +19,8 @@ const VirusVortexScreen = () => {
   }, []);
 
   const isDesktop = windowWidth >= 768;
-  const imageSize = isDesktop ? windowWidth * 0.4 : SCREEN_WIDTH * 0.4; // Reduced size for horizontal scroll
-  const imageHeight = isDesktop ? SCREEN_HEIGHT * 0.4 : SCREEN_HEIGHT * 0.3;
+  const imageSize = isDesktop ? windowWidth * 0.6 : SCREEN_WIDTH * 0.9;
+  const imageHeight = isDesktop ? SCREEN_HEIGHT * 0.5 : SCREEN_HEIGHT * 0.6;
 
   const characters = [
     { name: "Virus Vortex", image: require("../../../assets/Villains/VirusVortex2.jpg"), clickable: true },
