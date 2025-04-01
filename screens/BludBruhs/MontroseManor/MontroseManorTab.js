@@ -13,8 +13,8 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { db, storage, auth } from "../../../lib/firebase";
-import { collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc } from "firebase/firestore";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, getDoc, getDocs } from "firebase/firestore"; // Ensure getDoc and getDocs are imported
+import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage"; // Ensure deleteObject is imported
 import * as ImagePicker from "expo-image-picker";
 
 const ALLOWED_EMAILS = [
@@ -165,41 +165,97 @@ const MontroseManorTab = () => {
   };
 
   const deleteBook = async (id, hardcoded) => {
+    console.log("DeleteBook called - ID:", id, "Hardcoded:", hardcoded, "CanUpload:", canUpload);
     if (hardcoded) {
       Alert.alert("Error", "Cannot delete hardcoded books!");
+      console.log("Blocked - Hardcoded book");
       return;
     }
-
+  
     if (!canUpload) {
-      Alert.alert("Access Denied", "You are not authorized to delete books.");
+      Alert.alert("Access Denied", "You are not authorized to delete books!");
+      console.log("Blocked - User not authorized");
       return;
     }
-
+  
     Alert.alert(
-      "Confirm Deletion",
+      "Delete Book",
       "Are you sure you want to delete this book?",
       [
-        { text: "Cancel", style: "cancel" },
+        { text: "No", style: "cancel", onPress: () => console.log("Delete canceled") },
         {
-          text: "Delete",
+          text: "Yes",
           style: "destructive",
           onPress: async () => {
+            console.log("Delete confirmed - Proceeding with deletion for ID:", id);
             try {
-              console.log("Attempting to delete book with ID:", id);
-              await deleteDoc(doc(db, "books", id));
-              console.log("Book deleted successfully with ID:", id);
-              Alert.alert("Success", "Book deleted successfully!");
-              // Optimistically update state to reflect deletion immediately
+              const bookRef = doc(db, "books", id);
+  
+              // Step 1: Get book data for image URL
+              const bookSnap = await getDoc(bookRef);
+              if (!bookSnap.exists()) {
+                console.log("Book not found with ID:", id);
+                Alert.alert("Error", "Book not found");
+                return;
+              }
+              const bookData = bookSnap.data();
+              const imageUrl = bookData.imageUrl;
+  
+              // Step 2: Delete characters subcollection
+              const charactersRef = collection(db, "books", id, "characters");
+              const charactersSnapshot = await getDocs(charactersRef);
+              if (!charactersSnapshot.empty) {
+                const deleteCharactersPromises = charactersSnapshot.docs.map((charDoc) =>
+                  deleteDoc(doc(db, "books", id, "characters", charDoc.id))
+                );
+                await Promise.all(deleteCharactersPromises);
+                console.log("All characters deleted for book ID:", id);
+              } else {
+                console.log("No characters to delete for book ID:", id);
+              }
+  
+              // Step 3: Delete the book document
+              await deleteDoc(bookRef);
+              console.log("Book document deleted from Firestore with ID:", id);
+  
+              // Step 4: Delete the image from Storage (if it exists)
+              if (imageUrl) {
+                const imagePath = imageUrl.split('/o/')[1]?.split('?')[0];
+                if (imagePath) {
+                  const imageRef = ref(storage, imagePath);
+                  await deleteObject(imageRef);
+                  console.log("Image deleted from Storage for ID:", id);
+                } else {
+                  console.log("Invalid image URL format:", imageUrl);
+                }
+              }
+  
+              // Update UI
               setBooks(books.filter((book) => book.id !== id));
+              Alert.alert("Success", "Book, characters, and image deleted successfully!");
             } catch (error) {
-              console.error("Error deleting book:", error);
+              console.error("Delete Error:", error.message);
               Alert.alert("Error", "Failed to delete book: " + error.message);
             }
           },
         },
       ],
-      { cancelable: true } // Ensures the alert can be dismissed
+      { cancelable: true, onDismiss: () => console.log("Alert dismissed") }
     );
+  };
+  
+  const deleteBookConfirmed = async (id) => {
+    try {
+      console.log("Attempting to delete book with ID:", id);
+      const docRef = doc(db, "books", id);
+      await deleteDoc(docRef);
+      console.log("Delete promise resolved for ID:", id);
+      setBooks(books.filter((book) => book.id !== id));
+      Alert.alert("Success", "Book deleted successfully!");
+    } catch (error) {
+      console.error("Delete Error:", error.message);
+      Alert.alert("Error", "Failed to delete book: " + error.message);
+    }
   };
 
   const startEditing = (book) => {
@@ -277,16 +333,16 @@ const MontroseManorTab = () => {
               <Text style={styles.editButtonText}>Edit</Text>
             </TouchableOpacity>
           )}
-          <TouchableOpacity 
-            onPress={() => {
-              console.log("Delete button pressed for book:", book.id);
-              deleteBook(book.id, book.hardcoded);
-            }} 
-            style={[styles.deleteButton, !canUpload && styles.disabledButton]}
-            disabled={!canUpload}
-          >
-            <Text style={styles.deleteButtonText}>Delete</Text>
-          </TouchableOpacity>
+            <TouchableOpacity 
+              onPress={() => {
+                console.log("Delete button pressed for ID:", book.id);
+                deleteBook(book.id, book.hardcoded);
+              }} 
+              style={[styles.deleteButton, !canUpload && styles.disabledButton]}
+              disabled={!canUpload}
+            >
+              <Text style={styles.deleteButtonText}>Delete</Text>
+            </TouchableOpacity>
         </View>
       )}
     </View>
@@ -314,6 +370,7 @@ const MontroseManorTab = () => {
       <ScrollView contentContainerStyle={styles.verticalScrollContainer}>
         <View style={styles.overlay}>
           <Text style={styles.headerTitle}>Montrose Manor</Text>
+          <Text style={styles.headerWarning}>(Warning: there is no deletion confirmation)</Text>
 
           <View style={styles.formContainer}>
             <TextInput
@@ -391,6 +448,14 @@ const styles = StyleSheet.create({
     color: "#FFF",
     textAlign: "center",
     marginTop: 20,
+    marginBottom: 10,
+  },  
+  headerWarning: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "rgba(201, 11, 11, 1)",
+    textAlign: "center",
+    marginTop: 5,
     marginBottom: 20,
   },
   backButton: {

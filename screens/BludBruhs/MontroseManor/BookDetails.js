@@ -14,8 +14,8 @@ import {
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { db, storage, auth } from "../../../lib/firebase"; // Ensure auth is imported
-import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc, getDoc } from "firebase/firestore";
+import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
 
 // Define allowed emails for image uploads and other actions (replace with actual emails)
@@ -179,33 +179,82 @@ const BookDetails = () => {
   };
 
   const deleteCharacter = async (id) => {
-    if (!canModify) { // Assuming canModify is your permission state
+    console.log("DeleteCharacter called - ID:", id, "CanModify:", canModify);
+    if (!canModify) {
       Alert.alert("Access Denied", "You are not authorized to delete characters.");
       return;
     }
   
+    console.log("Proceeding with deletion for ID:", id); // Bypass alert
+    try {
+      const charRef = doc(db, "books", bookId, "characters", id);
+      await deleteDoc(charRef);
+      console.log("Character document deleted from Firestore with ID:", id);
+      setCharacters(characters.filter((char) => char.id !== id));
+      setSelectedCharacter(null);
+      Alert.alert("Success", "Character deleted (bypass test)!");
+    } catch (error) {
+      console.error("Delete Error:", error.message);
+      Alert.alert("Error", "Failed to delete character: " + error.message);
+    }
+  
     Alert.alert(
-      "Confirm Deletion",
-      "Are you sure you want to delete this character?",
+      "Confirm",
+      "Delete this character and its image?",
       [
-        { text: "Cancel", style: "cancel" },
+        { text: "Cancel", style: "cancel", onPress: () => console.log("Delete canceled") },
         {
           text: "Delete",
           style: "destructive",
           onPress: async () => {
+            console.log("Delete confirmed - Proceeding with deletion for ID:", id);
             try {
-              await deleteDoc(doc(db, "books", bookId, "characters", id));
+              const charRef = doc(db, "books", bookId, "characters", id);
+  
+              // Step 1: Get character data for image URL
+              const charSnap = await getDoc(charRef);
+              if (!charSnap.exists()) {
+                console.log("Character not found with ID:", id);
+                Alert.alert("Error", "Character not found");
+                return;
+              }
+              const charData = charSnap.data();
+              const imageUrl = charData.imageUrl;
+  
+              // Step 2: Delete the character document
+              await deleteDoc(charRef);
+              console.log("Character document deleted from Firestore with ID:", id);
+  
+              // Step 3: Delete the image from Storage (if it exists)
+              if (imageUrl) {
+                const imagePath = imageUrl.split('/o/')[1]?.split('?')[0];
+                if (imagePath) {
+                  const imageRef = ref(storage, imagePath);
+                  await deleteObject(imageRef).catch((error) => {
+                    if (error.code === "storage/object-not-found") {
+                      console.log("No image found to delete at:", imagePath);
+                    } else {
+                      throw error;
+                    }
+                  });
+                  console.log("Image deleted from Storage for ID:", id);
+                } else {
+                  console.log("Invalid image URL format:", imageUrl);
+                }
+              }
+  
+              // Update UI
               setCharacters(characters.filter((char) => char.id !== id));
               setSelectedCharacter(null);
-              Alert.alert("Success", "Character deleted successfully!");
+              Alert.alert("Success", "Character and image deleted successfully!");
             } catch (error) {
-              console.error("Error deleting character:", error);
+              console.error("Delete Error:", error.message);
               Alert.alert("Error", "Failed to delete character: " + error.message);
             }
           },
         },
       ],
-      { cancelable: true }
+      { cancelable: true, onDismiss: () => console.log("Alert dismissed") }
     );
   };
 
@@ -278,13 +327,16 @@ const BookDetails = () => {
         >
           <Text style={styles.editButtonText}>Edit</Text>
         </TouchableOpacity>
-          <TouchableOpacity 
-            onPress={() => deleteCharacter(char.id)} 
-            style={[styles.deleteButton, !canModify && styles.disabledButton]}
-            disabled={!canModify}
-          >
-            <Text style={styles.deleteButtonText}>Delete</Text>
-          </TouchableOpacity>
+        <TouchableOpacity 
+          onPress={() => {
+            console.log("Delete character button pressed for ID:", char.id);
+            deleteCharacter(char.id);
+          }} 
+          style={[styles.deleteButton, !canModify && styles.disabledButton]}
+          disabled={!canModify}
+        >
+          <Text style={styles.deleteButtonText}>Delete</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -301,6 +353,7 @@ const BookDetails = () => {
 
         <ScrollView contentContainerStyle={styles.verticalScrollContainer}>
           <Text style={styles.title}>{bookTitle} - Characters</Text>
+          <Text style={styles.headerWarning}>(Warning: there is no deletion confirmation)</Text>
 
           <View style={styles.formContainer}>
             <TextInput
@@ -467,8 +520,16 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
-    marginBottom: 20,
+    marginBottom: 10,
     color: "#FFF",
+  },
+  headerWarning: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "rgba(201, 11, 11, 1)",
+    textAlign: "center",
+    marginTop: 5,
+    marginBottom: 20,
   },
   formContainer: {
     padding: 20,
