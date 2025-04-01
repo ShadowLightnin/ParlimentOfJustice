@@ -72,7 +72,7 @@ const OthersScreen = () => {
 
   return (
     <ImageBackground
-      source={{ uri: "https://via.placeholder.com/150" }} // Static background (customize as needed)
+      source={require('../../assets/file.jpg')} // Static background (customize as needed)
       style={styles.background}
     >
       <View style={styles.overlay}>
