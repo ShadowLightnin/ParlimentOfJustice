@@ -13,10 +13,19 @@ import {
   Modal,
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { db, storage } from "../../../lib/firebase";
+import { db, storage, auth } from "../../../lib/firebase"; // Ensure auth is imported
 import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
+
+// Define allowed emails for image uploads and other actions (replace with actual emails)
+const ALLOWED_EMAILS = [
+  "samuelp.woodwell@gmail.com", // Replace with actual emails
+  "cummingsnialla@gmail.com",
+  "will@test.com",
+  "c1wcummings@gmail.com",
+  "aileen@test.com",
+];
 
 const BookDetails = () => {
   const navigation = useNavigation();
@@ -32,11 +41,21 @@ const BookDetails = () => {
   const [editName, setEditName] = useState("");
   const [editDescription, setEditDescription] = useState("");
   const [selectedCharacter, setSelectedCharacter] = useState(null);
+  const [canModify, setCanModify] = useState(false); // Track modification permission
 
   const PLACEHOLDER_IMAGE = require("../../../assets/Armor/PlaceHolder.jpg");
   const PLACEHOLDER_URL = "placeholder";
 
   useEffect(() => {
+    const checkUserAuthorization = () => {
+      const user = auth.currentUser;
+      if (user && ALLOWED_EMAILS.includes(user.email)) {
+        setCanModify(true);
+      } else {
+        setCanModify(false);
+      }
+    };
+
     const fetchCharacters = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "books", bookId, "characters"));
@@ -50,10 +69,22 @@ const BookDetails = () => {
         Alert.alert("Error", "Failed to load characters: " + error.message);
       }
     };
+
+    checkUserAuthorization();
     fetchCharacters();
+
+    // Set up auth state listener
+    const unsubscribeAuth = auth.onAuthStateChanged(checkUserAuthorization);
+
+    return () => unsubscribeAuth(); // Clean up auth listener
   }, [bookId]);
 
   const uploadImage = async (uri) => {
+    if (!canModify) {
+      Alert.alert("Access Denied", "You are not authorized to upload images.");
+      return Promise.reject(new Error("Unauthorized"));
+    }
+
     try {
       const response = await fetch(uri);
       const blob = await response.blob();
@@ -80,6 +111,11 @@ const BookDetails = () => {
   };
 
   const pickImage = async () => {
+    if (!canModify) {
+      Alert.alert("Access Denied", "You are not authorized to upload images.");
+      return;
+    }
+
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -94,6 +130,10 @@ const BookDetails = () => {
   };
 
   const skipImage = () => {
+    if (!canModify) {
+      Alert.alert("Access Denied", "You are not authorized to modify characters.");
+      return;
+    }
     setImage(null);
     setUseImage(false);
   };
@@ -101,6 +141,11 @@ const BookDetails = () => {
   const addCharacter = async () => {
     if (!name || !description) {
       Alert.alert("Error", "Please enter a name and description");
+      return;
+    }
+
+    if (!canModify) {
+      Alert.alert("Access Denied", "You are not authorized to add characters.");
       return;
     }
 
@@ -134,6 +179,11 @@ const BookDetails = () => {
   };
 
   const deleteCharacter = async (id) => {
+    if (!canModify) { // Assuming canModify is your permission state
+      Alert.alert("Access Denied", "You are not authorized to delete characters.");
+      return;
+    }
+  
     Alert.alert(
       "Confirm Deletion",
       "Are you sure you want to delete this character?",
@@ -154,11 +204,16 @@ const BookDetails = () => {
             }
           },
         },
-      ]
+      ],
+      { cancelable: true }
     );
   };
 
   const startEditing = (char) => {
+    if (!canModify) {
+      Alert.alert("Access Denied", "You are not authorized to edit characters.");
+      return;
+    }
     setEditingCharId(char.id);
     setEditName(char.name);
     setEditDescription(char.description);
@@ -166,6 +221,11 @@ const BookDetails = () => {
   };
 
   const saveEdit = async (id) => {
+    if (!canModify) {
+      Alert.alert("Access Denied", "You are not authorized to save changes.");
+      return;
+    }
+
     if (!editName || !editDescription) {
       Alert.alert("Error", "Name and description cannot be empty");
       return;
@@ -196,6 +256,7 @@ const BookDetails = () => {
       <TouchableOpacity
         style={styles.characterCard}
         onPress={() => setSelectedCharacter(char)}
+        disabled={!canModify}
       >
         {char.imageUrl === null ? (
           <View style={styles.noImagePlaceholder} />
@@ -210,12 +271,20 @@ const BookDetails = () => {
         <Text style={styles.characterName}>{char.name}</Text>
       </TouchableOpacity>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={() => startEditing(char)} style={styles.editButton}>
+        <TouchableOpacity 
+          onPress={() => startEditing(char)} 
+          style={[styles.editButton, !canModify && styles.disabledButton]}
+          disabled={!canModify}
+        >
           <Text style={styles.editButtonText}>Edit</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => deleteCharacter(char.id)} style={styles.deleteButton}>
-          <Text style={styles.deleteButtonText}>Delete</Text>
-        </TouchableOpacity>
+          <TouchableOpacity 
+            onPress={() => deleteCharacter(char.id)} 
+            style={[styles.deleteButton, !canModify && styles.disabledButton]}
+            disabled={!canModify}
+          >
+            <Text style={styles.deleteButtonText}>Delete</Text>
+          </TouchableOpacity>
       </View>
     </View>
   );
@@ -239,6 +308,7 @@ const BookDetails = () => {
               placeholder="Character Name"
               value={name}
               onChangeText={setName}
+              editable={canModify}
             />
             <TextInput
               style={[styles.input, styles.descriptionInput]}
@@ -246,21 +316,37 @@ const BookDetails = () => {
               value={description}
               onChangeText={setDescription}
               multiline
+              editable={canModify}
             />
             <View style={styles.imageOptions}>
-              <TouchableOpacity onPress={pickImage} style={styles.uploadButton}>
+              <TouchableOpacity 
+                onPress={pickImage} 
+                style={[styles.uploadButton, !canModify && styles.disabledButton]}
+                disabled={!canModify}
+              >
                 <Text style={styles.uploadButtonText}>
-                  {image ? "Image Selected" : "Upload Image"}
+                  {canModify ? (image ? "Image Selected" : "Upload Image") : "Upload Restricted"}
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={skipImage} style={styles.noImageButton}>
+              <TouchableOpacity 
+                onPress={skipImage} 
+                style={[styles.noImageButton, !canModify && styles.disabledButton]}
+                disabled={!canModify}
+              >
                 <Text style={styles.noImageButtonText}>No Image</Text>
               </TouchableOpacity>
             </View>
             {image && <Image source={{ uri: image }} style={styles.previewImage} />}
-            <TouchableOpacity onPress={addCharacter} style={styles.addButton}>
+            <TouchableOpacity 
+              onPress={addCharacter} 
+              style={[styles.addButton, !canModify && styles.disabledButton]}
+              disabled={!canModify}
+            >
               <Text style={styles.addButtonText}>Add Character</Text>
             </TouchableOpacity>
+            {!canModify && (
+              <Text style={styles.accessDeniedText}>Only authorized users can modify characters.</Text>
+            )}
           </View>
 
           <ScrollView
@@ -291,16 +377,19 @@ const BookDetails = () => {
                       value={editName}
                       onChangeText={setEditName}
                       autoFocus
+                      editable={canModify}
                     />
                     <TextInput
                       style={styles.previewEditDescription}
                       value={editDescription}
                       onChangeText={setEditDescription}
                       multiline
+                      editable={canModify}
                     />
                     <TouchableOpacity
                       onPress={() => saveEdit(selectedCharacter.id)}
-                      style={styles.saveButton}
+                      style={[styles.saveButton, !canModify && styles.disabledButton]}
+                      disabled={!canModify}
                     >
                       <Text style={styles.saveButtonText}>Save</Text>
                     </TouchableOpacity>
@@ -340,6 +429,16 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     resizeMode: "cover",
+  },
+  disabledButton: {
+    backgroundColor: "#cccccc", // Grayed out color for disabled buttons
+    opacity: 0.6,
+  },
+  accessDeniedText: {
+    color: "#ff4444",
+    textAlign: "center",
+    marginTop: 10,
+    fontSize: 14,
   },
   overlay: {
     flex: 1,

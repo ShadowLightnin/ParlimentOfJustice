@@ -12,10 +12,18 @@ import {
   Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { db, storage } from "../../../lib/firebase";
+import { db, storage, auth } from "../../../lib/firebase";
 import { collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
+
+const ALLOWED_EMAILS = [
+  "samuelp.woodwell@gmail.com",
+  "cummingsnialla@gmail.com",
+  "will@test.com",
+  "c1wcummings@gmail.com",
+  "aileen@test.com",
+];
 
 const MontroseManorTab = () => {
   const navigation = useNavigation();
@@ -24,6 +32,7 @@ const MontroseManorTab = () => {
   const [image, setImage] = useState(null);
   const [editingBookId, setEditingBookId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
+  const [canUpload, setCanUpload] = useState(false);
 
   const PLACEHOLDER_IMAGE = require("../../../assets/Armor/PlaceHolder.jpg");
 
@@ -43,6 +52,15 @@ const MontroseManorTab = () => {
   ];
 
   useEffect(() => {
+    const checkUserAuthorization = () => {
+      const user = auth.currentUser;
+      if (user && ALLOWED_EMAILS.includes(user.email)) {
+        setCanUpload(true);
+      } else {
+        setCanUpload(false);
+      }
+    };
+
     const unsubscribe = onSnapshot(
       collection(db, "books"),
       (querySnapshot) => {
@@ -59,10 +77,22 @@ const MontroseManorTab = () => {
         Alert.alert("Error", "Failed to load books: " + error.message);
       }
     );
-    return () => unsubscribe();
+
+    checkUserAuthorization();
+    const unsubscribeAuth = auth.onAuthStateChanged(checkUserAuthorization);
+
+    return () => {
+      unsubscribe();
+      unsubscribeAuth();
+    };
   }, []);
 
   const uploadImage = async (uri) => {
+    if (!canUpload) {
+      Alert.alert("Access Denied", "You are not authorized to upload images.");
+      return Promise.reject(new Error("Unauthorized"));
+    }
+
     try {
       const response = await fetch(uri);
       const blob = await response.blob();
@@ -89,6 +119,11 @@ const MontroseManorTab = () => {
   };
 
   const pickImage = async () => {
+    if (!canUpload) {
+      Alert.alert("Access Denied", "You are not authorized to upload images.");
+      return;
+    }
+
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -104,6 +139,10 @@ const MontroseManorTab = () => {
   const addBook = async () => {
     if (!title) {
       Alert.alert("Error", "Please enter a title");
+      return;
+    }
+    if (!canUpload) {
+      Alert.alert("Access Denied", "You are not authorized to add books.");
       return;
     }
 
@@ -131,6 +170,11 @@ const MontroseManorTab = () => {
       return;
     }
 
+    if (!canUpload) {
+      Alert.alert("Access Denied", "You are not authorized to delete books.");
+      return;
+    }
+
     Alert.alert(
       "Confirm Deletion",
       "Are you sure you want to delete this book?",
@@ -145,19 +189,22 @@ const MontroseManorTab = () => {
               await deleteDoc(doc(db, "books", id));
               console.log("Book deleted successfully with ID:", id);
               Alert.alert("Success", "Book deleted successfully!");
+              // Optimistically update state to reflect deletion immediately
+              setBooks(books.filter((book) => book.id !== id));
             } catch (error) {
               console.error("Error deleting book:", error);
               Alert.alert("Error", "Failed to delete book: " + error.message);
             }
           },
         },
-      ]
+      ],
+      { cancelable: true } // Ensures the alert can be dismissed
     );
   };
 
   const startEditing = (book) => {
-    if (book.hardcoded) {
-      Alert.alert("Error", "Cannot edit hardcoded books!");
+    if (!canUpload) {
+      Alert.alert("Access Denied", "You are not authorized to edit books.");
       return;
     }
     setEditingBookId(book.id);
@@ -165,8 +212,8 @@ const MontroseManorTab = () => {
   };
 
   const saveEdit = async (id) => {
-    if (!editTitle) {
-      Alert.alert("Error", "Title cannot be empty");
+    if (!canUpload) {
+      Alert.alert("Access Denied", "You are not authorized to save changes.");
       return;
     }
     try {
@@ -182,7 +229,6 @@ const MontroseManorTab = () => {
   };
 
   const goToHomeScreen = () => {
-    console.log("Navigating to BludBruhsHome at:", new Date().toISOString());
     navigation.navigate('BludBruhsHome');
   };
 
@@ -210,7 +256,7 @@ const MontroseManorTab = () => {
           <Text style={styles.bookTitle}>{book.title}</Text>
         )}
         <Image
-          source={book.imageUrl ? (book.hardcoded ? book.imageUrl : { uri: book.imageUrl }) : PLACEHOLDER_IMAGE}
+          source={book.imageUrl ? { uri: book.imageUrl } : PLACEHOLDER_IMAGE}
           style={styles.bookImage}
           resizeMode="cover"
           defaultSource={PLACEHOLDER_IMAGE}
@@ -223,11 +269,22 @@ const MontroseManorTab = () => {
               <Text style={styles.saveButtonText}>Save</Text>
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity onPress={() => startEditing(book)} style={styles.editButton}>
+            <TouchableOpacity 
+              onPress={() => startEditing(book)} 
+              style={[styles.editButton, !canUpload && styles.disabledButton]}
+              disabled={!canUpload}
+            >
               <Text style={styles.editButtonText}>Edit</Text>
             </TouchableOpacity>
           )}
-          <TouchableOpacity onPress={() => deleteBook(book.id, book.hardcoded)} style={styles.deleteButton}>
+          <TouchableOpacity 
+            onPress={() => {
+              console.log("Delete button pressed for book:", book.id);
+              deleteBook(book.id, book.hardcoded);
+            }} 
+            style={[styles.deleteButton, !canUpload && styles.disabledButton]}
+            disabled={!canUpload}
+          >
             <Text style={styles.deleteButtonText}>Delete</Text>
           </TouchableOpacity>
         </View>
@@ -247,7 +304,6 @@ const MontroseManorTab = () => {
         <Text style={styles.backButtonText}>Escape</Text>
       </TouchableOpacity>
 
-      {/* Book Button to HomeScreen */}
       <TouchableOpacity
         onPress={goToHomeScreen}
         style={styles.homeButton}
@@ -265,16 +321,28 @@ const MontroseManorTab = () => {
               placeholder="Book Title"
               value={title}
               onChangeText={setTitle}
+              editable={canUpload}
             />
-            <TouchableOpacity onPress={pickImage} style={styles.uploadButton}>
+            <TouchableOpacity 
+              onPress={pickImage} 
+              style={[styles.uploadButton, !canUpload && styles.disabledButton]}
+              disabled={!canUpload}
+            >
               <Text style={styles.uploadButtonText}>
-                {image ? "Image Selected" : "Upload Image"}
+                {canUpload ? (image ? "Image Selected" : "Upload Image") : "Upload Restricted"}
               </Text>
             </TouchableOpacity>
             {image && <Image source={{ uri: image }} style={styles.previewImage} />}
-            <TouchableOpacity onPress={addBook} style={styles.addButton}>
+            <TouchableOpacity 
+              onPress={addBook} 
+              style={[styles.addButton, !canUpload && styles.disabledButton]}
+              disabled={!canUpload}
+            >
               <Text style={styles.addButtonText}>Add Book</Text>
             </TouchableOpacity>
+            {!canUpload && (
+              <Text style={styles.accessDeniedText}>Only authorized users can upload images and add books.</Text>
+            )}
           </View>
 
           <ScrollView
@@ -306,6 +374,16 @@ const styles = StyleSheet.create({
   overlay: {
     backgroundColor: "rgba(0, 0, 0, 0.3)",
     paddingTop: 80,
+  },
+  disabledButton: {
+    backgroundColor: "#cccccc", // Grayed out color for disabled buttons
+    opacity: 0.6,
+  },
+  accessDeniedText: {
+    color: "#ff4444",
+    textAlign: "center",
+    marginTop: 10,
+    fontSize: 14,
   },
   headerTitle: {
     fontSize: 28,
