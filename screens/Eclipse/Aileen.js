@@ -56,7 +56,7 @@ const Aileen = () => {
 
   const handleCardPress = (item) => {
     if (item.clickable) {
-      if (item.name === "©Seraphina; William Cummings") {
+      if (item.name === "Seraphina") {
         navigation.navigate("Aileenchat");
       } else {
         console.log(`${item.name} clicked`);
