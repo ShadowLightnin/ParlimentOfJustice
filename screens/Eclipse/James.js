@@ -129,6 +129,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingHorizontal: 10,
     alignItems: "center",
+    paddingLeft: 15,
   },
   card: (isDesktop, windowWidth) => ({
     width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9,

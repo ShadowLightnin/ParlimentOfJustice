@@ -51,6 +51,49 @@ export const CobrosScreen = () => {
     navigation.navigate('TeamChat');
   };
 
+  const renderMemberCard = (member) => (
+    <TouchableOpacity 
+      key={member.name} 
+      style={[
+        styles.card, 
+        { width: cardSize, height: cardSize * cardHeightMultiplier },
+        !member.clickable && styles.disabledCard
+      ]}
+      onPress={() => member.clickable && setPreviewMember(member)}
+      disabled={!member.clickable}
+    >
+      {member?.image && (
+        <>
+          <Image 
+            source={member.image || require('../../assets/Armor/PlaceHolder.jpg')} 
+            style={styles.characterImage} 
+          />
+          <View style={styles.transparentOverlay} />
+        </>
+      )}
+      <Text style={styles.codename}>{member.codename}</Text>
+      <Text style={styles.name}>{member.name}</Text>
+    </TouchableOpacity>
+  );
+
+  const renderPreviewCard = (member) => (
+    <TouchableOpacity
+      key={member.name}
+      style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
+      onPress={() => setPreviewMember(null)} // Close modal on card press
+    >
+      <Image
+        source={member.image || require('../../assets/Armor/PlaceHolder.jpg')}
+        style={styles.previewImage}
+        resizeMode="cover"
+      />
+      <View style={styles.transparentOverlay} />
+      <Text style={styles.cardName}>
+        © {member.codename || 'Unknown'}; William Cummings
+      </Text>
+    </TouchableOpacity>
+  );
+
   return (
     <ImageBackground source={require('../../assets/BackGround/Cobros.jpg')} style={styles.background}>
       <SafeAreaView style={styles.container}>
@@ -83,30 +126,7 @@ export const CobrosScreen = () => {
                   />
                 );
 
-                return (
-                  <TouchableOpacity 
-                    key={colIndex} 
-                    style={[
-                      styles.card, 
-                      { width: cardSize, height: cardSize * cardHeightMultiplier },
-                      !member.clickable && styles.disabledCard
-                    ]}
-                    onPress={() => member.clickable && setPreviewMember(member)}
-                    disabled={!member.clickable}
-                  >
-                    {member?.image && (
-                      <>
-                        <Image 
-                          source={member.image || require('../../assets/Armor/PlaceHolder.jpg')} 
-                          style={styles.characterImage} 
-                        />
-                        <View style={styles.transparentOverlay} />
-                      </>
-                    )}
-                    <Text style={styles.codename}>{member.codename}</Text>
-                    <Text style={styles.name}>{member.name}</Text>
-                  </TouchableOpacity>
-                );
+                return renderMemberCard(member);
               })}
             </View>
           ))}
@@ -121,18 +141,27 @@ export const CobrosScreen = () => {
         >
           <View style={styles.modalBackground}>
             <TouchableOpacity
-              style={styles.modalContainer}
+              style={styles.modalOuterContainer}
               activeOpacity={1}
               onPress={() => setPreviewMember(null)}
             >
-              <Image
-                source={previewMember?.image || require('../../assets/Armor/PlaceHolder.jpg')}
-                style={styles.previewImage}
-                resizeMode="contain"
-              />
-              <Text style={styles.previewCodename}>{previewMember?.codename}</Text>
-              <Text style={styles.previewName}>{previewMember?.name}</Text>
-              <View style={styles.transparentOverlay} />
+              <View style={styles.imageContainer}>
+                <ScrollView
+                  horizontal
+                  contentContainerStyle={styles.imageScrollContainer}
+                  showsHorizontalScrollIndicator={false}
+                  snapToAlignment="center"
+                  snapToInterval={SCREEN_WIDTH * 0.7 + 20}
+                  decelerationRate="fast"
+                  centerContent={true}
+                >
+                  {previewMember && renderPreviewCard(previewMember)}
+                </ScrollView>
+              </View>
+              <View style={styles.previewAboutSection}>
+                <Text style={styles.previewCodename}>{previewMember?.codename || 'N/A'}</Text>
+                <Text style={styles.previewName}> {previewMember?.name || 'Unknown'}</Text>
+              </View>
             </TouchableOpacity>
           </View>
         </Modal>
@@ -243,31 +272,69 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  modalContainer: {
+  modalOuterContainer: {
     width: '90%',
     height: '80%',
-    backgroundColor: '#000',
-    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 15,
+  },
+  imageContainer: {
+    width: '100%',
+    paddingVertical: 20,
+    backgroundColor: '#111',
+    alignItems: 'center',
+    paddingLeft: 20,
+  },
+  imageScrollContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  previewCard: (isDesktop, windowWidth) => ({
+    width: isDesktop ? windowWidth * 0.6 : SCREEN_WIDTH * 0.9,
+    height: isDesktop ? SCREEN_HEIGHT * 0.5 : SCREEN_HEIGHT * 0.6,
+    borderRadius: 15,
+    overflow: 'hidden',
+    elevation: 5,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    marginRight: 20,
+  }),
+  clickable: {
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
   },
   previewImage: {
     width: '100%',
-    height: '80%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  cardName: {
+    position: 'absolute',
+    bottom: 10,
+    left: 10,
+    fontSize: 16,
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  previewAboutSection: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#222',
+    borderRadius: 10,
+    width: '100%',
   },
   previewCodename: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#00b3ff',
     textAlign: 'center',
-    marginTop: 10,
   },
   previewName: {
     fontSize: 16,
-    fontStyle: 'italic',
-    color: '#aaa',
+    color: '#fff',
     textAlign: 'center',
+    marginTop: 5,
   },
 });
 

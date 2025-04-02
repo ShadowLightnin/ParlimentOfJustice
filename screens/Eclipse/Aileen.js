@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-const { height: SCREEN_HEIGHT } = Dimensions.get("window");
+const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const aileenImages = [
   { name: "©Ariata; William Cummings", image: require("../../assets/Armor/AileenPlaceHolder2.jpg"), clickable: true },
@@ -21,15 +21,25 @@ const aileenImages = [
   { name: "©Nialla; William Cummings", image: require("../../assets/Armor/AileenPlaceHolder6.jpg"), clickable: true },
   { name: "©Ailethra; William Cummings", image: require("../../assets/Armor/AileenPlaceHolder9.jpg"), clickable: true },
   { name: "©Aishal; William Cummings", image: require("../../assets/Armor/AileenPlaceHolder8.jpg"), clickable: true },
-  { name: "©Seraphina; William Cummings", image: require("../../assets/Armor/AileenPlaceHolder7.jpg"), clickable: true, screen: "Aileenchat" }, // Updated to Aileenchat
-  { name: "©Philipinnes Crusader; William Cummings", image: require("../../assets/Armor/AileensSymbol.jpg"), clickable: true },
+  { name: "©Seraphina; William Cummings", image: require("../../assets/Armor/AileenPlaceHolder7.jpg"), clickable: true, screen: "Aileenchat" },
+  { name: "©Philippines Crusader; William Cummings", image: require("../../assets/Armor/AileensSymbol.jpg"), clickable: true },
 ];
 
 const Aileen = () => {
   const navigation = useNavigation();
   const flashAnim = useRef(new Animated.Value(1)).current;
-  const [windowWidth, setWindowWidth] = useState(Dimensions.get("window").width);
+  const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
 
+  // Dynamic window sizing
+  useEffect(() => {
+    const updateDimensions = () => {
+      setWindowWidth(Dimensions.get("window").width);
+    };
+    const subscription = Dimensions.addEventListener("change", updateDimensions);
+    return () => subscription?.remove();
+  }, []);
+
+  // ⚡ Flashing Animation Effect for Planet
   useEffect(() => {
     const interval = setInterval(() => {
       Animated.sequence([
@@ -40,22 +50,14 @@ const Aileen = () => {
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const updateDimensions = () => {
-      setWindowWidth(Dimensions.get("window").width);
-    };
-    const subscription = Dimensions.addEventListener("change", updateDimensions);
-    return () => subscription?.remove();
-  }, []);
-
   const handlePlanetPress = () => {
     navigation.navigate("WarpScreen");
   };
 
   const handleCardPress = (item) => {
     if (item.clickable) {
-      if (item.name === "Seraphina") {
-        navigation.navigate("Aileenchat"); // Updated to Aileenchat
+      if (item.name === "©Seraphina; William Cummings") {
+        navigation.navigate("Aileenchat");
       } else {
         console.log(`${item.name} clicked`);
       }
@@ -101,15 +103,20 @@ const Aileen = () => {
             />
           </TouchableOpacity>
         </View>
+
         <View style={styles.imageContainer}>
           <ScrollView
-            horizontal={true}
+            horizontal
             contentContainerStyle={styles.imageScrollContainer}
-            showsHorizontalScrollIndicator={true}
+            showsHorizontalScrollIndicator={false}
+            snapToAlignment="center"
+            snapToInterval={windowWidth * 0.7 + 20} // Adjusted for dynamic width
+            decelerationRate="fast"
           >
             {aileenImages.map(renderImageCard)}
           </ScrollView>
         </View>
+
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
@@ -182,10 +189,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     paddingHorizontal: 10,
     alignItems: "center",
+    paddingLeft: 15,
   },
   card: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.2 : windowWidth * 0.9,
-    height: isDesktop ? SCREEN_HEIGHT * 0.7 : SCREEN_HEIGHT * 0.7,
+    width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9, // Adjusted for consistency with James
+    height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7,
     borderRadius: 15,
     overflow: "hidden",
     elevation: 5,
@@ -193,6 +201,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
   }),
   clickable: {
+    borderWidth: 2,
     borderColor: 'gold',
     borderWidth: 2,
     shadowColor: 'gold',
@@ -206,7 +215,7 @@ const styles = StyleSheet.create({
   armorImage: {
     width: "100%",
     height: "100%",
-    resizeMode: "contain",
+    resizeMode: "cover", // Changed to match James
   },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,

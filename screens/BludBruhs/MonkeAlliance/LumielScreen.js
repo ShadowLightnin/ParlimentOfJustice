@@ -124,6 +124,7 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: "100%",
     paddingVertical: 20,
+    paddingLeft: 15,
   },
   imageScrollContainer: {
     flexDirection: "row",

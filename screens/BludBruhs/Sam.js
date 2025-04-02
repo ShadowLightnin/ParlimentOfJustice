@@ -337,6 +337,7 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingVertical: 20,
     backgroundColor: "#111",
+    paddingLeft: 15,
   },
   imageScrollContainer: {
     flexDirection: "row",

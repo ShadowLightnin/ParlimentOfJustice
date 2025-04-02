@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -31,10 +31,62 @@ const rows = Math.ceil(OlympiansMembers.length / columns);
 export const OlympiansScreen = () => {
   const navigation = useNavigation();
   const [previewMember, setPreviewMember] = useState(null); // State for preview modal
+  const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      setWindowWidth(Dimensions.get("window").width);
+    };
+    const subscription = Dimensions.addEventListener("change", updateDimensions);
+    return () => subscription?.remove();
+  }, []);
 
   const goToChat = () => {
     navigation.navigate('TeamChat');
   };
+
+  const renderMemberCard = (member) => (
+    <TouchableOpacity
+      key={member.name}
+      style={[
+        styles.card,
+        { width: cardSize, height: cardSize * cardHeightMultiplier },
+        !member.clickable && styles.disabledCard,
+      ]}
+      onPress={() => member?.clickable && setPreviewMember(member)} // Open preview if clickable
+      disabled={!member?.clickable}
+    >
+      {member?.image && (
+        <>
+          <Image
+            source={member.image}
+            style={[styles.characterImage, { width: '100%', height: cardSize * 1.2 }]}
+          />
+          <View style={styles.transparentOverlay} />
+        </>
+      )}
+      {member?.codename && <Text style={styles.codename}>{member.codename}</Text>}
+      {member?.name && <Text style={styles.name}>{member.name}</Text>}
+    </TouchableOpacity>
+  );
+
+  const renderPreviewCard = (member) => (
+    <TouchableOpacity
+      key={member.name}
+      style={[styles.previewCard(isDesktop, windowWidth), styles.clickable]}
+      onPress={() => setPreviewMember(null)} // Close modal on card press
+    >
+      <Image
+        source={member.image || require('../../assets/Armor/PlaceHolder.jpg')}
+        style={styles.previewImage}
+        resizeMode="cover"
+      />
+      <View style={styles.transparentOverlay} />
+      <Text style={styles.cardName}>
+        © {member.name || 'Unknown'}; William Cummings
+      </Text>
+    </TouchableOpacity>
+  );
 
   return (
     <ImageBackground
@@ -73,38 +125,7 @@ export const OlympiansScreen = () => {
                   );
                 }
 
-                return (
-                  <TouchableOpacity
-                    key={colIndex}
-                    style={[
-                      styles.card,
-                      { width: cardSize, height: cardSize * cardHeightMultiplier },
-                      !member.clickable && styles.disabledCard,
-                    ]}
-                    onPress={() => member?.clickable && setPreviewMember(member)} // Open preview if clickable
-                    disabled={!member?.clickable}
-                  >
-                    {member?.image && (
-                      <>
-                        {/* Image */}
-                        <Image
-                          source={member.image}
-                          style={[styles.characterImage, { width: '100%', height: cardSize * 1.2 }]}
-                        />
-                        {/* Transparent Overlay to Prevent Image Save */}
-                        <View style={styles.transparentOverlay} />
-                      </>
-                    )}
-
-                    {member?.codename && (
-                      <Text style={styles.codename}>{member.codename}</Text>
-                    )}
-
-                    {member?.name && (
-                      <Text style={styles.name}>{member.name}</Text>
-                    )}
-                  </TouchableOpacity>
-                );
+                return renderMemberCard(member);
               })}
             </View>
           ))}
@@ -119,18 +140,27 @@ export const OlympiansScreen = () => {
         >
           <View style={styles.modalBackground}>
             <TouchableOpacity
-              style={styles.modalContainer}
+              style={styles.modalOuterContainer}
               activeOpacity={1}
               onPress={() => setPreviewMember(null)} // Close preview when clicking outside
             >
-              <Image
-                source={previewMember?.image || require('../../assets/Armor/PlaceHolder.jpg')}
-                style={styles.previewImage}
-                resizeMode="contain"
-              />
-              <Text style={styles.previewCodename}>{previewMember?.codename}</Text>
-              <Text style={styles.previewName}>{previewMember?.name}</Text>
-              <View style={styles.transparentOverlay} />
+              <View style={styles.imageContainer}>
+                <ScrollView
+                  horizontal
+                  contentContainerStyle={styles.imageScrollContainer}
+                  showsHorizontalScrollIndicator={false}
+                  snapToAlignment="center"
+                  snapToInterval={windowWidth * 0.7 + 20}
+                  decelerationRate="fast"
+                  centerContent={true} // Ensure content is centered
+                >
+                  {previewMember && renderPreviewCard(previewMember)}
+                </ScrollView>
+              </View>
+              <View style={styles.previewAboutSection}>
+                <Text style={styles.previewName}>{previewMember?.name || 'Unknown'}</Text>
+                <Text style={styles.previewCodename}>{previewMember?.codename || 'N/A'}</Text>
+              </View>
             </TouchableOpacity>
           </View>
         </Modal>
@@ -154,7 +184,7 @@ const styles = StyleSheet.create({
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1, // Prevents saving while still allowing click interactions
+    zIndex: 1,
   },
   headerWrapper: {
     flexDirection: 'row',
@@ -238,31 +268,69 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  modalContainer: {
+  modalOuterContainer: {
     width: '90%',
     height: '80%',
-    backgroundColor: '#000',
-    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 15,
+  },
+  imageContainer: {
+    width: '100%',
+    paddingVertical: 20,
+    backgroundColor: '#111',
+    alignItems: 'center', // Center the ScrollView horizontally
+    paddingLeft: 20,
+  },
+  imageScrollContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    justifyContent: 'center', // Center the cards within the ScrollView
+  },
+  previewCard: (isDesktop, windowWidth) => ({
+    width: isDesktop ? windowWidth * 0.6 : SCREEN_WIDTH * 0.9,
+    height: isDesktop ? SCREEN_HEIGHT * 0.5 : SCREEN_HEIGHT * 0.6,
+    borderRadius: 15,
+    overflow: 'hidden',
+    elevation: 5,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    marginRight: 20,
+  }),
+  clickable: {
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
   },
   previewImage: {
     width: '100%',
-    height: '80%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  cardName: {
+    position: 'absolute',
+    bottom: 10,
+    left: 10,
+    fontSize: 16,
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  previewAboutSection: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#222',
+    borderRadius: 10,
+    width: '100%',
   },
   previewCodename: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#00b3ff',
     textAlign: 'center',
-    marginTop: 10,
   },
   previewName: {
     fontSize: 16,
-    fontStyle: 'italic',
-    color: '#aaa',
+    color: '#fff',
     textAlign: 'center',
+    marginTop: 5,
   },
 });
 
