@@ -34,13 +34,13 @@ const NateScreen = () => {
   ];
 
   const spawnCharacters = [
-    { name: "Spawn", image: require('../../../assets/Villains/Spawn.jpg'), clickable: true },
-    { name: "Spawn 1", image: require('../../../assets/Villains/Spawn1.jpg'), clickable: true },
-    { name: "Spawn 2", image: require('../../../assets/Villains/Spawn2.jpg'), clickable: true },
-    { name: "Spawn 3", image: require('../../../assets/Villains/Spawn3.jpg'), clickable: true },
-    { name: "Spawn 4", image: require('../../../assets/Villains/Spawn4.jpg'), clickable: true },
-    { name: "Spawn 5", image: require('../../../assets/Villains/Spawn5.jpg'), clickable: true },
-    { name: "Spawn 6", image: require('../../../assets/Villains/Spawn6.jpg'), clickable: true },
+    { name: "Morphisto", image: require('../../../assets/Villains/Spawn.jpg'), clickable: true },
+    { name: "Slendral", image: require('../../../assets/Villains/Spawn1.jpg'), clickable: true },
+    { name: "Verndigo", image: require('../../../assets/Villains/Spawn2.jpg'), clickable: true },
+    { name: "Howler", image: require('../../../assets/Villains/Spawn3.jpg'), clickable: true },
+    { name: "Skullroot", image: require('../../../assets/Villains/Spawn4.jpg'), clickable: true },
+    { name: "Wooddrift", image: require('../../../assets/Villains/Spawn5.jpg'), clickable: true },
+    { name: "Creeking", image: require('../../../assets/Villains/Spawn6.jpg'), clickable: true },
     // Add more spawn as needed
   ];
 
