@@ -19,8 +19,6 @@ const MallikhanScreen = () => {
   }, []);
 
   const isDesktop = windowWidth >= 768;
-  const imageSize = isDesktop ? windowWidth * 0.6 : SCREEN_WIDTH * 0.9;
-  const imageHeight = isDesktop ? SCREEN_HEIGHT * 0.5 : SCREEN_HEIGHT * 0.6;
 
   const characters = [
     { name: "Mal'likhan", image: require("../../../assets/Villains/Mallikhan.jpg"), clickable: true },
@@ -31,19 +29,20 @@ const MallikhanScreen = () => {
   const renderCharacterCard = (character) => (
     <TouchableOpacity
       key={character.name}
-      style={character.clickable ? styles.clickable : styles.notClickable}
+      style={[styles.card(isDesktop, windowWidth), character.clickable ? styles.clickable : styles.notClickable]}
       onPress={() => character.clickable && console.log(`${character.name} clicked`)}
       disabled={!character.clickable}
     >
       <Image
         source={character.image}
-        style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
+        style={styles.armorImage}
       />
       <View style={styles.transparentOverlay} />
       <Text style={styles.cardName}>
         © {character.name || 'Unknown'}; William Cummings
       </Text>
-    </TouchableOpacity>  );
+    </TouchableOpacity>
+  );
 
   return (
     <ImageBackground
@@ -59,14 +58,18 @@ const MallikhanScreen = () => {
             <Text style={styles.title}>Mal'likhan</Text>
           </View>
 
-          <ScrollView
-            horizontal={true}
-            style={styles.horizontalImageContainer}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.horizontalScrollContent}
-          >
-            {characters.map(renderCharacterCard)}
-          </ScrollView>
+          <View style={styles.imageContainer}>
+            <ScrollView
+              horizontal
+              contentContainerStyle={styles.imageScrollContainer}
+              showsHorizontalScrollIndicator={false}
+              snapToAlignment="center"
+              snapToInterval={windowWidth * 0.7 + 20}
+              decelerationRate="fast"
+            >
+              {characters.map(renderCharacterCard)}
+            </ScrollView>
+          </View>
 
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
@@ -134,33 +137,41 @@ const styles = StyleSheet.create({
     textAlign: "center",
     flex: 1,
   },
-  horizontalImageContainer: {
-    marginTop: 20,
+  imageContainer: {
+    width: "100%",
+    paddingVertical: 20,
+    backgroundColor: "#111",
+    paddingLeft: 15,
+  },
+  imageScrollContainer: {
+    flexDirection: "row",
     paddingHorizontal: 10,
-    width: "100%", // Ensure full width for scrolling
-  },
-  horizontalScrollContent: {
-    flexDirection: "row", // Ensure horizontal layout
     alignItems: "center",
-    paddingVertical: 10,
   },
-  armorImage: {
-    resizeMode: "contain",
-  },
+  card: (isDesktop, windowWidth) => ({
+    width: isDesktop ? windowWidth * 0.2 : SCREEN_WIDTH * 0.9,
+    height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7,
+    borderRadius: 15,
+    overflow: "hidden",
+    elevation: 5,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    marginRight: 20,
+  }),
   clickable: {
     borderWidth: 2,
     borderColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: 15,
-    marginHorizontal: 10, // Space between cards in horizontal scroll
   },
   notClickable: {
     opacity: 0.8,
-    borderRadius: 15,
-    marginHorizontal: 10,
+  },
+  armorImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
   },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0)", // Transparent for visual but clickable
+    backgroundColor: "rgba(0, 0, 0, 0)",
     zIndex: 1,
   },
   cardName: {
@@ -170,6 +181,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "white",
     fontWeight: "bold",
+  },
+  disabledText: {
+    fontSize: 12,
+    color: "#ff4444",
+    position: "absolute",
+    bottom: 30,
+    left: 10,
   },
   aboutSection: {
     marginTop: 40,
