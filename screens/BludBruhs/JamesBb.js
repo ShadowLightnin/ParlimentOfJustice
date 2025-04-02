@@ -21,7 +21,7 @@ const JameBb = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "©Shadowmind; William Cummings", image: require("../../assets/Armor/JamesBbPlaceHolder.jpg"), clickable: true },
+    { name: "Shadowmind", image: require("../../assets/Armor/JamesBbPlaceHolder.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (
@@ -33,7 +33,9 @@ const JameBb = () => {
     >
       <Image source={armor.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>{armor.name}</Text>
+      <Text style={styles.cardName}>
+        © {armor.name || 'Unknown'}; William Cummings
+      </Text>
       {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );

@@ -59,7 +59,9 @@ const NateScreen = () => {
         }]}
       />
       <View style={styles.transparentOverlay} />
-      {character.name && <Text style={styles.cardName}>{character.name}</Text>}
+      <Text style={styles.cardName}>
+        © {character.name || 'Unknown'}; William Cummings
+      </Text>
     </TouchableOpacity>
   );
 

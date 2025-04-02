@@ -21,7 +21,7 @@ const AmmonT = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "©Quick Wit; William Cummings", image: require("../../../assets/Armor/AmmonTPlaceHolder.jpg"), clickable: true },
+    { name: "Quick Wit", image: require("../../../assets/Armor/AmmonTPlaceHolder.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (
@@ -33,7 +33,9 @@ const AmmonT = () => {
     >
       <Image source={armor.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>{armor.name}</Text>
+      <Text style={styles.cardName}>
+        © {armor.name || 'Unknown'}; William Cummings
+      </Text>
       {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );

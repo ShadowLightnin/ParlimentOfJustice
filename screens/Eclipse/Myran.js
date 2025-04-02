@@ -21,7 +21,7 @@ const Myran = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "©Techno Guard; William Cummings", image: require("../../assets/Armor/MyranPlaceHolder.jpg"), clickable: true },
+    { name: "Techno Guard", image: require("../../assets/Armor/MyranPlaceHolder.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (
@@ -33,7 +33,9 @@ const Myran = () => {
     >
       <Image source={armor.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>{armor.name}</Text>
+      <Text style={styles.cardName}>
+        © {armor.name || 'Unknown'}; William Cummings
+      </Text>
       {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );

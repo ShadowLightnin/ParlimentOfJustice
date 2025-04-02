@@ -21,8 +21,8 @@ const Azure = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "©Mediateir; William Cummings", image: require("../../assets/Armor/AzurePlaceHolder.jpg"), clickable: true },
-    { name: "©Mediateir; William Cummings", image: require("../../assets/Armor/AzurePlaceHolder2.jpg"), clickable: true },
+    { name: "Mediateir", image: require("../../assets/Armor/AzurePlaceHolder.jpg"), clickable: true },
+    { name: "Mediateir", image: require("../../assets/Armor/AzurePlaceHolder2.jpg"), clickable: true },
     { name: "", image: require("../../assets/Armor/AzuresSymbol.jpg"), clickable: true },
   ];
 
@@ -35,7 +35,9 @@ const Azure = () => {
     >
       <Image source={armor.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>{armor.name}</Text>
+      <Text style={styles.cardName}>
+        © {armor.name || 'Unknown'}; William Cummings
+      </Text>
       {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );

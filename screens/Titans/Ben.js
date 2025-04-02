@@ -21,9 +21,9 @@ const Ben = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "©Nuscus; William Cummings", image: require("../../assets/Armor/BenPlaceHolder3.jpg"), clickable: true },
-    { name: "©Nuscus; William Cummings", image: require("../../assets/Armor/BenPlaceHolder.jpg"), clickable: true },
-    { name: "©Nuscus; William Cummings", image: require("../../assets/Armor/BenPlaceHolder2.jpg"), clickable: true },
+    { name: "Nuscus", image: require("../../assets/Armor/BenPlaceHolder3.jpg"), clickable: true },
+    { name: "Nuscus", image: require("../../assets/Armor/BenPlaceHolder.jpg"), clickable: true },
+    { name: "Nuscus", image: require("../../assets/Armor/BenPlaceHolder2.jpg"), clickable: true },
     { name: "", image: require("../../assets/Armor/BensSymbol.jpg"), clickable: true },
   ];
 
@@ -36,7 +36,9 @@ const Ben = () => {
     >
       <Image source={armor.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>{armor.name}</Text>
+      <Text style={styles.cardName}>
+        © {armor.name || 'Unknown'}; William Cummings
+      </Text>
       {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );

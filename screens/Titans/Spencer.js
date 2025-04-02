@@ -21,7 +21,7 @@ const Spencer = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "©Annihilator; William Cummings", image: require("../../assets/Armor/Spencer3.jpg"), clickable: true },
+    { name: "Annihilator", image: require("../../assets/Armor/Spencer3.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (
@@ -33,7 +33,9 @@ const Spencer = () => {
     >
       <Image source={armor.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>{armor.name}</Text>
+      <Text style={styles.cardName}>
+        © {armor.name || 'Unknown'}; William Cummings
+      </Text>
       {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );

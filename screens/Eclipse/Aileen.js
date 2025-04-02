@@ -13,16 +13,16 @@ import { useNavigation } from "@react-navigation/native";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
-const aileenImages = [
-  { name: "©Ariata; William Cummings", image: require("../../assets/Armor/AileenPlaceHolder2.jpg"), clickable: true },
-  { name: "©Baybayin; William Cummings", image: require("../../assets/Armor/AileenPlaceHolder.jpg"), clickable: true },
-  { name: "©Luminara; William Cummings", image: require("../../assets/Armor/AileenPlaceHolder3.jpg"), clickable: true },
-  { name: "©Aileara; William Cummings", image: require("../../assets/Armor/AileenPlaceHolder5.jpg"), clickable: true },
-  { name: "©Nialla; William Cummings", image: require("../../assets/Armor/AileenPlaceHolder6.jpg"), clickable: true },
-  { name: "©Ailethra; William Cummings", image: require("../../assets/Armor/AileenPlaceHolder9.jpg"), clickable: true },
-  { name: "©Aishal; William Cummings", image: require("../../assets/Armor/AileenPlaceHolder8.jpg"), clickable: true },
-  { name: "©Seraphina; William Cummings", image: require("../../assets/Armor/AileenPlaceHolder7.jpg"), clickable: true, screen: "Aileenchat" },
-  { name: "©Philippines Crusader; William Cummings", image: require("../../assets/Armor/AileensSymbol.jpg"), clickable: true },
+const armor = [
+  { name: "Ariata", image: require("../../assets/Armor/AileenPlaceHolder2.jpg"), clickable: true },
+  { name: "Baybayin", image: require("../../assets/Armor/AileenPlaceHolder.jpg"), clickable: true },
+  { name: "Luminara", image: require("../../assets/Armor/AileenPlaceHolder3.jpg"), clickable: true },
+  { name: "Aileara", image: require("../../assets/Armor/AileenPlaceHolder5.jpg"), clickable: true },
+  { name: "Nialla", image: require("../../assets/Armor/AileenPlaceHolder6.jpg"), clickable: true },
+  { name: "Ailethra", image: require("../../assets/Armor/AileenPlaceHolder9.jpg"), clickable: true },
+  { name: "Aishal", image: require("../../assets/Armor/AileenPlaceHolder8.jpg"), clickable: true },
+  { name: "Seraphina", image: require("../../assets/Armor/AileenPlaceHolder7.jpg"), clickable: true, screen: "Aileenchat" },
+  { name: "Philippines Crusader", image: require("../../assets/Armor/AileensSymbol.jpg"), clickable: true },
 ];
 
 const Aileen = () => {
@@ -75,7 +75,9 @@ const Aileen = () => {
     >
       <Image source={item.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>{item.name}</Text>
+      <Text style={styles.cardName}>
+        © {armor.name || 'Unknown'}; William Cummings
+      </Text>
       {!item.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );
@@ -113,7 +115,7 @@ const Aileen = () => {
             snapToInterval={windowWidth * 0.7 + 20} // Adjusted for dynamic width
             decelerationRate="fast"
           >
-            {aileenImages.map(renderImageCard)}
+            {armor.map(renderImageCard)}
           </ScrollView>
         </View>
 

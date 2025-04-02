@@ -17,6 +17,7 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const members = [
   { name: 'Tanner Despain', codename: 'Titanium', screen: '', clickable: true, image: require('../../assets/Armor/TannerDPlaceHolder.jpg') },
+  { name: 'Ethan Workman', codename: '', screen: '', clickable: true },
   { name: 'Wesley Holbrook', codename: 'Warlock', screen: '', clickable: true, image: require('../../assets/Armor/WesleyHPlaceHolder.jpg') },
   { name: 'Josh Larson', codename: 'Juggernaut', screen: '', clickable: true, image: require('../../assets/Armor/JoshLPlaceHolder.jpg') },
   { name: 'Jonah Gray', codename: 'Echo Song', screen: '', clickable: true, image: require('../../assets/Armor/JonahPlaceHolder.jpg') },
@@ -29,10 +30,12 @@ const members = [
   { name: 'Nick Larsen', codename: 'Iron Quard', screen: '', clickable: true, image: require('../../assets/Armor/NickPlaceHolder.jpg') },
   { name: 'Vanner Johnson', codename: 'Viral', screen: '', clickable: true, image: require('../../assets/Armor/Vanner3PlaceHolder.jpg') },
   { name: 'Tommy Holbrook', codename: 'Swift Shadow', screen: '', clickable: true, image: require('../../assets/Armor/TommyHPlaceHolder.jpg') },
+  { name: 'Alex Wood', codename: '', screen: '', clickable: true },
   { name: 'Rick Holly', codename: 'Valor Knight', screen: '', clickable: true, image: require('../../assets/Armor/RickPlaceHolder.jpg') },
   { name: 'Trent Cook', codename: 'Captain', screen: '', clickable: true, image: require('../../assets/Armor/TrentPlaceHolder.jpg') },
   { name: 'Robbie Petersen', codename: 'Quickstike', screen: '', clickable: true, image: require('../../assets/Armor/RobbiePlaceHolder.jpg') },
   { name: 'Micheal', codename: 'Guardian Sentinel', screen: '', clickable: true, image: require('../../assets/Armor/MichealPlaceHolder.jpg') },
+  { name: 'Kyle', codename: '', screen: '', clickable: true },
 ];
 
 const isDesktop = SCREEN_WIDTH > 600;

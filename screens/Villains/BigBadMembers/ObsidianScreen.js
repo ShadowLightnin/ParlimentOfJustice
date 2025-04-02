@@ -38,7 +38,9 @@ const ObsidianScreen = () => {
         style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
       />
       <View style={styles.transparentOverlay} />
-      {armor.name && <Text style={styles.cardName}>{armor.name}</Text>}
+      <Text style={styles.cardName}>
+        © {armor.name || 'Unknown'}; William Cummings
+      </Text>
       {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );

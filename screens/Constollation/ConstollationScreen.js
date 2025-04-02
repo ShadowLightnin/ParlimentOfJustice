@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   ScrollView,
   Dimensions,
+  Modal,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { memberCategories } from './ConstollationMembers';
@@ -63,10 +64,55 @@ const categoryGroups = [
 
 export const ConstollationScreen = () => {
   const navigation = useNavigation();
+  const [previewMember, setPreviewMember] = useState(null); // State for preview modal
 
   const goToChat = () => {
     navigation.navigate('TeamChat');
   };
+
+  const renderMemberCard = (member) => (
+    <TouchableOpacity
+      key={member.name}
+      style={[
+        styles.card,
+        {
+          width: cardSize,
+          height: cardSize * cardHeightMultiplier,
+          marginHorizontal: horizontalSpacing / 2,
+          ...(member.clickable ? {} : styles.disabledCard),
+        },
+      ]}
+      onPress={() => member.clickable && setPreviewMember(member)}
+      disabled={!member.clickable}
+    >
+      {member.image && (
+        <>
+          <Image source={member.image} style={styles.characterImage} />
+          <View style={styles.transparentOverlay} />
+        </>
+      )}
+      <Text style={styles.category}>{member.category}</Text> {/* Changed from codename to category */}
+      <Text style={styles.name}>{member.name}</Text>
+    </TouchableOpacity>
+  );
+
+  const renderPreviewCard = (member) => (
+    <TouchableOpacity
+      key={member.name}
+      style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
+      onPress={() => setPreviewMember(null)} // Close modal on card press
+    >
+      <Image
+        source={member.image || require('../../assets/Armor/PlaceHolder.jpg')}
+        style={styles.previewImage}
+        resizeMode="cover"
+      />
+      <View style={styles.transparentOverlay} />
+      <Text style={styles.cardName}>
+        © {member.name || 'Unknown'}; William Cummings
+      </Text>
+    </TouchableOpacity>
+  );
 
   return (
     <ImageBackground 
@@ -86,7 +132,6 @@ export const ConstollationScreen = () => {
 
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {categoryGroups.map((group, groupIndex) => {
-            // Filter memberCategories to include only those in this group
             const groupCategories = memberCategories.filter(category => 
               group.categories.includes(category.category)
             );
@@ -106,47 +151,18 @@ export const ConstollationScreen = () => {
                         <View key={rowIndex} style={[styles.row, { marginBottom: verticalSpacing }]}>
                           {Array.from({ length: columns }).map((_, colIndex) => {
                             const memberIndex = rowIndex * columns + colIndex;
-                            const memberName = categoryData.members[memberIndex];
-                            if (!memberName) return <View key={colIndex} style={styles.cardSpacer} />;
-
-                            const memberData = constollationImages[memberName] || {
-                              image: require('../../assets/Armor/PlaceHolder.jpg'),
-                              clickable: false,
-                            };
+                            const memberObj = categoryData.members[memberIndex];
+                            if (!memberObj) return <View key={colIndex} style={styles.cardSpacer} />;
 
                             const member = {
-                              name: memberName,
-                              codename: categoryData.category, // Specific category as codename
-                              screen: `Member${memberCategories.indexOf(categoryData) * 100 + memberIndex + 1}`,
-                              image: memberData.image,
-                              clickable: memberData.clickable,
+                              name: memberObj.name,
+                              codename: memberObj.codename, // Superhero codename
+                              category: categoryData.category,
+                              image: constollationImages[memberObj.name]?.image || require('../../assets/Armor/PlaceHolder.jpg'),
+                              clickable: constollationImages[memberObj.name]?.clickable || false,
                             };
 
-                            return (
-                              <TouchableOpacity
-                                key={colIndex}
-                                style={[
-                                  styles.card,
-                                  {
-                                    width: cardSize,
-                                    height: cardSize * cardHeightMultiplier,
-                                    marginHorizontal: horizontalSpacing / 2,
-                                    ...(member.clickable ? {} : styles.disabledCard),
-                                  },
-                                ]}
-                                onPress={() => member.clickable && navigation.navigate(member.screen)}
-                                disabled={!member.clickable}
-                              >
-                                {member.image && (
-                                  <>
-                                    <Image source={member.image} style={styles.characterImage} />
-                                    <View style={styles.transparentOverlay} />
-                                  </>
-                                )}
-                                <Text style={styles.codename}>{member.codename}</Text>
-                                <Text style={styles.name}>{member.name}</Text>
-                              </TouchableOpacity>
-                            );
+                            return renderMemberCard(member);
                           })}
                         </View>
                       ))}
@@ -157,6 +173,41 @@ export const ConstollationScreen = () => {
             );
           })}
         </ScrollView>
+
+        {/* Preview Modal */}
+        <Modal
+          visible={!!previewMember}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => setPreviewMember(null)}
+        >
+          <View style={styles.modalBackground}>
+            <TouchableOpacity
+              style={styles.modalOuterContainer}
+              activeOpacity={1}
+              onPress={() => setPreviewMember(null)}
+            >
+              <View style={styles.imageContainer}>
+                <ScrollView
+                  horizontal
+                  contentContainerStyle={styles.imageScrollContainer}
+                  showsHorizontalScrollIndicator={false}
+                  snapToAlignment="center"
+                  snapToInterval={SCREEN_WIDTH * 0.7 + 20}
+                  decelerationRate="fast"
+                  centerContent={true}
+                >
+                  {previewMember && renderPreviewCard(previewMember)}
+                </ScrollView>
+              </View>
+              <View style={styles.previewAboutSection}>
+                <Text style={styles.previewCodename}>{previewMember?.codename || 'N/A'}</Text>
+                <Text style={styles.previewCategory}>Category: {previewMember?.category || 'Unknown'}</Text>
+                <Text style={styles.previewName}>Name: {previewMember?.name || 'Unknown'}</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </Modal>
       </SafeAreaView>
     </ImageBackground>
   );
@@ -268,7 +319,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
   },
-  codename: {
+  category: { // Changed from codename to category
     fontSize: 12,
     fontWeight: 'bold',
     color: '#fff',
@@ -280,6 +331,83 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     color: '#aaa',
     textAlign: 'center',
+  },
+  modalBackground: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalOuterContainer: {
+    width: '90%',
+    height: '80%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imageContainer: {
+    width: '100%',
+    paddingVertical: 20,
+    backgroundColor: '#111',
+    alignItems: 'center',
+  },
+  imageScrollContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  previewCard: (isDesktop, windowWidth) => ({
+    width: isDesktop ? windowWidth * 0.6 : SCREEN_WIDTH * 0.9,
+    height: isDesktop ? SCREEN_HEIGHT * 0.5 : SCREEN_HEIGHT * 0.6,
+    borderRadius: 15,
+    overflow: 'hidden',
+    elevation: 5,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    marginRight: 20,
+  }),
+  clickable: {
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  previewImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode 
+   
+: 'cover',
+  },
+  cardName: {
+    position: 'absolute',
+    bottom: 10,
+    left: 10,
+    fontSize: 16,
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  previewAboutSection: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#222',
+    borderRadius: 10,
+    width: '100%',
+  },
+  previewCodename: { // Shows superhero codename
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#00b3ff',
+    textAlign: 'center',
+  },
+  previewCategory: { // New style for category
+    fontSize: 16,
+    color: '#fff',
+    textAlign: 'center',
+    marginTop: 5,
+  },
+  previewName: {
+    fontSize: 16,
+    color: '#fff',
+    textAlign: 'center',
+    marginTop: 5,
   },
 });
 

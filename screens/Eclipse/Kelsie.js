@@ -21,8 +21,8 @@ const Kelsie = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "©Eliptic Dancer; William Cummings", image: require("../../assets/Armor/KelsiePlaceHolder.jpg"), clickable: true },
-    { name: "©Eliptic Dancer; William Cummings", image: require("../../assets/Armor/KelsiePlaceHolder2.jpg"), clickable: true },
+    { name: "Eliptic Dancer", image: require("../../assets/Armor/KelsiePlaceHolder.jpg"), clickable: true },
+    { name: "Eliptic Dancer", image: require("../../assets/Armor/KelsiePlaceHolder2.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (
@@ -34,7 +34,9 @@ const Kelsie = () => {
     >
       <Image source={armor.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>{armor.name}</Text>
+      <Text style={styles.cardName}>
+        © {armor.name || 'Unknown'}; William Cummings
+      </Text>
       {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );

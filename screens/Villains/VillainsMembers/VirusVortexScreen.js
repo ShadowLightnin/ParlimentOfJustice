@@ -40,9 +40,10 @@ const VirusVortexScreen = () => {
         style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
       />
       <View style={styles.transparentOverlay} />
-      {character.name && <Text style={styles.cardName}>{character.name}</Text>}
-    </TouchableOpacity>
-  );
+      <Text style={styles.cardName}>
+        © {character.name || 'Unknown'}; William Cummings
+      </Text>
+    </TouchableOpacity>  );
 
   return (
     <ImageBackground

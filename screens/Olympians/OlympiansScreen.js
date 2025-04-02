@@ -65,7 +65,7 @@ export const OlympiansScreen = () => {
           <View style={styles.transparentOverlay} />
         </>
       )}
-      {member?.codename && <Text style={styles.codename}>{member.codename}</Text>}
+      {member?.family && <Text style={styles.family}>{member.family}</Text>} {/* Changed from codename to family */}
       {member?.name && <Text style={styles.name}>{member.name}</Text>}
     </TouchableOpacity>
   );
@@ -158,8 +158,9 @@ export const OlympiansScreen = () => {
                 </ScrollView>
               </View>
               <View style={styles.previewAboutSection}>
-                <Text style={styles.previewName}>{previewMember?.name || 'Unknown'}</Text>
                 <Text style={styles.previewCodename}>{previewMember?.codename || 'N/A'}</Text>
+                <Text style={styles.previewFamily}> {previewMember?.family || 'Unknown'}</Text>
+                <Text style={styles.previewName}> {previewMember?.name || 'Unknown'}</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -254,7 +255,7 @@ const styles = StyleSheet.create({
     color: '#aaa',
     textAlign: 'center',
   },
-  codename: {
+  family: { // Changed from codename to family
     fontSize: 12,
     fontWeight: 'bold',
     color: '#fff',
@@ -320,11 +321,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: '100%',
   },
-  previewCodename: {
+  previewCodename: { // Now shows superhero codename
     fontSize: 18,
     fontWeight: 'bold',
     color: '#00b3ff',
     textAlign: 'center',
+  },
+  previewFamily: { // New style for family
+    fontSize: 16,
+    color: '#fff',
+    textAlign: 'center',
+    marginTop: 5,
   },
   previewName: {
     fontSize: 16,

@@ -7,15 +7,15 @@ import { useNavigation } from "@react-navigation/native";
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const armors = [
-  { name: "©True Night Hawk; William Cummings", image: require("../../assets/NightHawkWillBeBorn.jpg"), clickable: true },
-  { name: "©Night Hawk; William Cummings", image: require("../../assets/Armor/NightHawkPlaceHolder.jpg"), clickable: true },
-  { name: "©Lightning Leopard; William Cummings", image: require("../../assets/Armor/WillPlaceHolder.jpg"), clickable: true },
-  { name: "©Defender 1; William Cummings", image: require("../../assets/Armor/Defender1PlaceHolder.jpg"), clickable: true },
-  { name: "©Defender 2; William Cummings", image: require("../../assets/Armor/Defender2PlaceHolder.jpg"), clickable: true },
-  { name: "©Shadow Storm; William Cummings", image: require("../../assets/Armor/ShadowStormPlaceHolder.jpg"), clickable: true },
-  { name: "©Celestial; William Cummings", image: require("../../assets/Armor/CelestialPlaceHolder.jpg"), clickable: true },
-  { name: "©Sentinel; William Cummings", image: require("../../assets/Armor/SentinelPlaceHolder.jpg"), clickable: true },
-  { name: "©Wrath; William Cummings", image: require("../../assets/Armor/WrathPlaceHolder.jpg"), clickable: true },
+  { name: "True Night Hawk", image: require("../../assets/NightHawkWillBeBorn.jpg"), clickable: true },
+  { name: "Night Hawk", image: require("../../assets/Armor/NightHawkPlaceHolder.jpg"), clickable: true },
+  { name: "Lightning Leopard", image: require("../../assets/Armor/WillPlaceHolder.jpg"), clickable: true },
+  { name: "Defender 1", image: require("../../assets/Armor/Defender1PlaceHolder.jpg"), clickable: true },
+  { name: "Defender 2", image: require("../../assets/Armor/Defender2PlaceHolder.jpg"), clickable: true },
+  { name: "Shadow Storm", image: require("../../assets/Armor/ShadowStormPlaceHolder.jpg"), clickable: true },
+  { name: "Celestial", image: require("../../assets/Armor/CelestialPlaceHolder.jpg"), clickable: true },
+  { name: "Sentinel", image: require("../../assets/Armor/SentinelPlaceHolder.jpg"), clickable: true },
+  { name: "Wrath", image: require("../../assets/Armor/WrathPlaceHolder.jpg"), clickable: true },
 ];
 
 const Will = () => {
@@ -44,7 +44,9 @@ const Will = () => {
     >
       <Image source={armor.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>{armor.name}</Text>
+      <Text style={styles.cardName}>
+        © {armor.name || 'Unknown'}; William Cummings
+      </Text>
       {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );

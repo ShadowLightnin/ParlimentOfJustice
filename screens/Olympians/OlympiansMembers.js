@@ -3,127 +3,185 @@ const baseMembers = [
   // { name: 'TBA', codename: '???', screen: '', clickable: false, position: [0, 0], image: require('../../assets/Armor/PlaceHolder.jpg') },
 ];
 
-// 🎯 Families grouped with corresponding codename and positions
+// 🎯 Families grouped with corresponding superhero codenames and positions
 const familyData = [
   {
     family: 'Parents',
     members: [
-      'Angela', 'Todd',
+      { name: 'Angela', codename: 'Storm Guardian' },
+      { name: 'Todd', codename: 'Iron Patriarch' },
     ],
   },
   {
     family: 'Jensen',
     members: [
-      'Savannah', 'Lee', 'Emily', 'Samantha',
-      'Ella',
+      { name: 'Savannah', codename: 'Solar Flare' },
+      { name: 'Lee', codename: 'Thunderstrike' },
+      { name: 'Emily', codename: 'Lunar Shadow' },
+      { name: 'Samantha', codename: 'Cosmic Wave' },
+      { name: 'Ella', codename: 'Starlight' },
     ],
   },
   {
     family: 'McNeil',
     members: [
-      'Mary', 'Chance', 'Ava', 'Charlie',
+      { name: 'Mary', codename: 'Earth Warden' },
+      { name: 'Chance', codename: 'Wind Runner' },
+      { name: 'Ava', codename: 'Fire Blossom' },
+      { name: 'Charlie', codename: 'Aqua Knight' },
     ],
   },
   {
     family: 'Briggs',
     members: [
-      'Heather S', 'Bobby', 'Ammon', 'Piper',
+      { name: 'Heather S', codename: 'Blaze Queen' },
+      { name: 'Bobby', codename: 'Steel Titan' },
+      { name: 'Ammon', codename: 'Frost Giant' },
+      { name: 'Piper', codename: 'Echo Siren' },
     ],
   },
   {
     family: 'Bolander',
     members: [
-      'Annie', 'Paul', 'McKinley', 'Whitney',
-      'Vinson',
+      { name: 'Annie', codename: 'Mystic Veil' },
+      { name: 'Paul', codename: 'Shadow Blade' },
+      { name: 'McKinley', codename: 'Golden Arrow' },
+      { name: 'Whitney', codename: 'Crystal Pulse' },
+      { name: 'Vinson', codename: 'Night Hawk' },
     ],
   },
   {
     family: 'Stillman',
     members: [
-      'Wesley', 'Melissa', 'Jackson', 'Mason',
-      'Rylie', 'Sammy',
+      { name: 'Wesley', codename: 'Thunder Lord' },
+      { name: 'Melissa', codename: 'Ice Empress' },
+      { name: 'Jackson', codename: 'Flame Rider' },
+      { name: 'Mason', codename: 'Stone Sentinel' },
+      { name: 'Rylie', codename: 'Wind Whisperer' },
+      { name: 'Sammy', codename: 'Light Weaver' },
     ],
   },
   {
     family: 'Stillman',
     members: [
-      'David', 'Isaydy', 'Darron', 'Isabel',
+      { name: 'David', codename: 'Dark Vortex' },
+      { name: 'Isaydy', codename: 'Radiant Star' },
+      { name: 'Darron', codename: 'Iron Fang' },
+      { name: 'Isabel', codename: 'Sky Dancer' },
     ],
   },
   {
     family: 'Stillman',
     members: [
-      'Gary jr', 'Sarah', 'Josh', 'Garden',
-      'Sophia', 'Paisley', 'Ellie',
+      { name: 'Gary jr', codename: 'Stormbreaker' },
+      { name: 'Sarah', codename: 'Frost Phoenix' },
+      { name: 'Josh', codename: 'Blaze Striker' },
+      { name: 'Garden', codename: 'Earth Shifter' },
+      { name: 'Sophia', codename: 'Lunar Tide' },
+      { name: 'Paisley', codename: 'Solar Wind' },
+      { name: 'Ellie', codename: 'Starborn' },
     ],
   },
   {
     family: 'Cummings',
     members: [
-      'Sean', 'Heather C', 'Brett small', 'Jake',
-      'Ailey', 'Aubrey', 'James',
+      { name: 'Sean', codename: 'Nova Burst' },
+      { name: 'Heather C', codename: 'Ice Shard' },
+      { name: 'Brett small', codename: 'Lightning Bolt' },
+      { name: 'Jake', codename: 'Shadow Claw' },
+      { name: 'Ailey', codename: 'Firestorm' },
+      { name: 'Aubrey', codename: 'Aqua Surge' },
+      { name: 'James', codename: 'Steel Phantom' },
     ],
   },
   {
     family: 'Cummings',
     members: [
-      'Ryan', 'Marin', 'Sasha', 'Ian',
-      'Riker', 'Dakota',
+      { name: 'Ryan', codename: 'Thunder Hawk' },
+      { name: 'Marin', codename: 'Frostbite' },
+      { name: 'Sasha', codename: 'Blaze Fury' },
+      { name: 'Ian', codename: 'Wind Stalker' },
+      { name: 'Riker', codename: 'Earth Crusher' },
+      { name: 'Dakota', codename: 'Sky Serpent' },
     ],
   },
   {
     family: 'Cummings',
     members: [
-      'Laura', 'Waine', 'Elizabeth', 'Christopher',
-      'Tom',
+      { name: 'Laura', codename: 'Starfire' },
+      { name: 'Waine', codename: 'Iron Vortex' },
+      { name: 'Elizabeth', codename: 'Lunar Blade' },
+      { name: 'Christopher', codename: 'Solar Strike' },
+      { name: 'Tom', codename: 'Shadow Storm' },
     ],
   },
   {
     family: 'Cummings',
     members: [
-      'Brett', 'Angie', 'Bryce', 'Lillie',
-      'Addie',
+      { name: 'Brett', codename: 'Thunder Titan' },
+      { name: 'Angie', codename: 'Ice Queen' },
+      { name: 'Bryce', codename: 'Flame Vortex' },
+      { name: 'Lillie', codename: 'Wind Sprite' },
+      { name: 'Addie', codename: 'Crystal Flame' },
     ],
   },
   {
     family: 'Cummings',
     members: [
-      'Matt', 'Jessica', 'Kyle',
-      'Daisy', 'Rose', 'Mikie', 'Prairie', 'Ryan kid',
+      { name: 'Matt', codename: 'Stone Fury' },
+      { name: 'Jessica', codename: 'Light Phoenix' },
+      { name: 'Kyle', codename: 'Dark Surge' },
+      { name: 'Daisy', codename: 'Sky Blossom' },
+      { name: 'Rose', codename: 'Fire Rose' },
+      { name: 'Mikie', codename: 'Aqua Flash' },
+      { name: 'Prairie', codename: 'Earth Whisper' },
+      { name: 'Ryan kid', codename: 'Storm Spark' },
     ],
   },
   {
     family: 'Cummings',
     members: [
-      'Chad', 'Rachel', 'Annabeth', 'Levi',
-      '', '',
+      { name: 'Chad', codename: 'Nova Knight' },
+      { name: 'Rachel', codename: 'Ice Storm' },
+      { name: 'Annabeth', codename: 'Blaze Wing' },
+      { name: 'Levi', codename: 'Wind Blade' },
+      { name: '', codename: 'Phantom Shade' },
+      { name: '', codename: 'Star Dust' },
     ],
   },
   {
     family: 'Cummings',
     members: [
-      'Troy',
+      { name: 'Troy', codename: 'Thunder King' },
     ],
   },
   {
     family: 'Stillman Grandparents',
     members: [
-      'Gary', 'Jennine',
+      { name: 'Gary', codename: 'Iron Sage' },
+      { name: 'Jennine', codename: 'Frost Matriarch' },
     ],
   },
-{
-  family: 'Cummings Grandparents',
-  members: [
-    'Sheryl', 'Dorthy', 'Great Grandma Parker',
-  ],
-},
-{
-  family: 'Eduria',
-  members: [
-    'Marlyn', 'Robert', 'Arlene Hendricks', 'Nate Hendricks',
-    'Kris', 'Carlo', 'Cham Cham Kaleigha',
-  ],
-},
+  {
+    family: 'Cummings Grandparents',
+    members: [
+      { name: 'Sheryl', codename: 'Light Oracle' },
+      { name: 'Dorthy', codename: 'Earth Mother' },
+      { name: 'Great Grandma Parker', codename: 'Star Elder' },
+    ],
+  },
+  {
+    family: 'Eduria',
+    members: [
+      { name: 'Marlyn', codename: 'Sky Weaver' },
+      { name: 'Robert', codename: 'Iron Sentinel' },
+      { name: 'Arlene Hendricks', codename: 'Flame Guardian' },
+      { name: 'Nate Hendricks', codename: 'Wind Striker' },
+      { name: 'Kris', codename: 'Aqua Spirit' },
+      { name: 'Carlo', codename: 'Shadow Flame' },
+      { name: 'Cham Cham Kaleigha', codename: 'Star Vortex' },
+    ],
+  },
 ];
 
 // 🎯 Static image mapping (React Native requires explicit imports)
@@ -215,19 +273,20 @@ const characterImages = {
   'Cham Cham Kaleigha': require('../../assets/Armor/ChamPlaceHolder.jpg'),
 };
 
-// 🎯 Generate additional members with family names and auto-assign positions
+// 🎯 Generate additional members with family names and superhero codenames
 const additionalMembers = familyData.flatMap((family, familyIndex) =>
   family.members.map((member, i) => ({
-    name: member,
-    codename: `${family.family}`,
+    name: member.name,
+    codename: member.codename, // Use superhero codename
+    family: family.family, // Store family separately
     screen: `${family.family}Screen`,
     clickable: true,
     position: [Math.floor((i + (familyIndex * 10)) / 3), (i + (familyIndex * 10)) % 3],
-    image: characterImages[member] || require('../../assets/Armor/PlaceHolder.jpg'),
+    image: characterImages[member.name] || require('../../assets/Armor/PlaceHolder.jpg'),
   }))
 );
 
 // 🎯 Merge base members with auto-generated family members
-const fullOlympiansList = [...baseMembers, ...additionalMembers];
+const fullOlympiansList = [...baseMembers, ...additionalMembers].filter(member => member.name); // Filter out empty names
 
 export default fullOlympiansList;

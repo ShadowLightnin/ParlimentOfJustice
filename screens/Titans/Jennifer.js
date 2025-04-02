@@ -21,7 +21,7 @@ const Jennifer = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "©Kintsugi; William Cummings", image: require("../../assets/Armor/JenniferPlaceHolder.jpg"), clickable: true },
+    { name: "Kintsugi", image: require("../../assets/Armor/JenniferPlaceHolder.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (
@@ -33,7 +33,9 @@ const Jennifer = () => {
     >
       <Image source={armor.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>{armor.name}</Text>
+      <Text style={styles.cardName}>
+        © {armor.name || 'Unknown'}; William Cummings
+      </Text>
       {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );

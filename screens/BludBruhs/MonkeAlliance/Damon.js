@@ -21,7 +21,7 @@ const Damon = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "©Pixel Maverick; William Cummings", image: require("../../../assets/Armor/DamonPlaceHolder_cleanup.jpg"), clickable: true },
+    { name: "Pixel Maverick", image: require("../../../assets/Armor/DamonPlaceHolder_cleanup.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (
@@ -33,7 +33,9 @@ const Damon = () => {
     >
       <Image source={armor.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>{armor.name}</Text>
+      <Text style={styles.cardName}>
+        © {armor.name || 'Unknown'}; William Cummings
+      </Text>
       {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );

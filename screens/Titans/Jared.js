@@ -21,7 +21,7 @@ const Jared = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "©Spector; William Cummings", image: require("../../assets/Armor/JaredPlaceHolder.jpg"), clickable: true },
+    { name: "Spector", image: require("../../assets/Armor/JaredPlaceHolder.jpg"), clickable: true },
     { name: "", image: require("../../assets/Armor/JaredsSymbol.jpg"), clickable: true },
   ];
 
@@ -34,7 +34,9 @@ const Jared = () => {
     >
       <Image source={armor.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>{armor.name}</Text>
+      <Text style={styles.cardName}>
+        © {armor.name || 'Unknown'}; William Cummings
+      </Text>
       {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );

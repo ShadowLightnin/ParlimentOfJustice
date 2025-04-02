@@ -21,7 +21,7 @@ const TomBb = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "©Thunder Whisperer; William Cummings", image: require("../../../assets/Armor/TomCPlaceHolder3_cleanup.jpg"), clickable: true },
+    { name: "Thunder Whisperer", image: require("../../../assets/Armor/TomCPlaceHolder3_cleanup.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (
@@ -33,7 +33,9 @@ const TomBb = () => {
     >
       <Image source={armor.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>{armor.name}</Text>
+      <Text style={styles.cardName}>
+        © {armor.name || 'Unknown'}; William Cummings
+      </Text>
       {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );
