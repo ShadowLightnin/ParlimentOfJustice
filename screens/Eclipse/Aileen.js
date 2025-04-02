@@ -76,7 +76,7 @@ const Aileen = () => {
       <Image source={item.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
       <Text style={styles.cardName}>
-        © {armor.name || 'Unknown'}; William Cummings
+        © {item.name || 'Unknown'}; William Cummings
       </Text>
       {!item.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
