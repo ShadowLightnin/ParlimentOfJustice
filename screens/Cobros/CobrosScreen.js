@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   previewCard: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.2 : SCREEN_WIDTH * 0.9,
+    width: isDesktop ? windowWidth * 0.2 : SCREEN_WIDTH * 0.8,
     height: isDesktop ? SCREEN_HEIGHT * 0.7 : SCREEN_HEIGHT * 0.6,
     borderRadius: 15,
     overflow: 'hidden',
