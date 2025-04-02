@@ -7,15 +7,15 @@ import { useNavigation } from "@react-navigation/native";
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const armors = [
-  { name: "True Night Hawk", image: require("../../assets/NightHawkWillBeBorn.jpg"), clickable: true },
-  { name: "Night Hawk", image: require("../../assets/Armor/NightHawkPlaceHolder.jpg"), clickable: true },
-  { name: "Lightning Leopard", image: require("../../assets/Armor/WillPlaceHolder.jpg"), clickable: true },
-  { name: "Defender 1", image: require("../../assets/Armor/Defender1PlaceHolder.jpg"), clickable: true },
-  { name: "Defender 2", image: require("../../assets/Armor/Defender2PlaceHolder.jpg"), clickable: true },
-  { name: "Shadow Storm", image: require("../../assets/Armor/ShadowStormPlaceHolder.jpg"), clickable: true },
-  { name: "Celestial", image: require("../../assets/Armor/CelestialPlaceHolder.jpg"), clickable: true },
-  { name: "Sentinel", image: require("../../assets/Armor/SentinelPlaceHolder.jpg"), clickable: true },
-  { name: "Wrath", image: require("../../assets/Armor/WrathPlaceHolder.jpg"), clickable: true },
+  { name: "©True Night Hawk; William Cummings", image: require("../../assets/NightHawkWillBeBorn.jpg"), clickable: true },
+  { name: "©Night Hawk; William Cummings", image: require("../../assets/Armor/NightHawkPlaceHolder.jpg"), clickable: true },
+  { name: "©Lightning Leopard; William Cummings", image: require("../../assets/Armor/WillPlaceHolder.jpg"), clickable: true },
+  { name: "©Defender 1; William Cummings", image: require("../../assets/Armor/Defender1PlaceHolder.jpg"), clickable: true },
+  { name: "©Defender 2; William Cummings", image: require("../../assets/Armor/Defender2PlaceHolder.jpg"), clickable: true },
+  { name: "©Shadow Storm; William Cummings", image: require("../../assets/Armor/ShadowStormPlaceHolder.jpg"), clickable: true },
+  { name: "©Celestial; William Cummings", image: require("../../assets/Armor/CelestialPlaceHolder.jpg"), clickable: true },
+  { name: "©Sentinel; William Cummings", image: require("../../assets/Armor/SentinelPlaceHolder.jpg"), clickable: true },
+  { name: "©Wrath; William Cummings", image: require("../../assets/Armor/WrathPlaceHolder.jpg"), clickable: true },
 ];
 
 const Will = () => {
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   card: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.7, // 30% of screen width on desktop, 70% on mobile
+    width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9, // 30% of screen width on desktop, 70% on mobile
     height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7, // Taller on desktop
     borderRadius: 15,
     overflow: "hidden",

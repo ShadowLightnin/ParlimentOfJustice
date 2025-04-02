@@ -21,7 +21,7 @@ const AlexM = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Chaos Wither", image: require("../../../assets/Armor/AlexMPlaceHolder.jpg"), clickable: true },
+    { name: "©Swiftmind; William Cummings", image: require("../../../assets/Armor/AlexMPlaceHolder.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (
@@ -45,7 +45,7 @@ const AlexM = () => {
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Text style={styles.backButtonText}>←</Text>
           </TouchableOpacity>
-          <Text style={styles.title}>Chaos Wither</Text>
+          <Text style={styles.title}>Swiftmind</Text>
           <TouchableOpacity style={styles.commentButton} onPress={() => navigation.navigate("Comments")}>
             <Text style={styles.commentButtonText}>💬</Text>
           </TouchableOpacity>
@@ -131,8 +131,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   card: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.7,
-    height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.5,
+    width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9,
+    height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7,
     borderRadius: 15,
     overflow: "hidden",
     elevation: 5,

@@ -14,15 +14,15 @@ import { useNavigation } from "@react-navigation/native";
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const aileenImages = [
-  { name: "Ariata", image: require("../../assets/Armor/AileenPlaceHolder2.jpg"), clickable: true },
-  { name: "Baybayin", image: require("../../assets/Armor/AileenPlaceHolder.jpg"), clickable: true },
-  { name: "Luminara", image: require("../../assets/Armor/AileenPlaceHolder3.jpg"), clickable: true },
-  { name: "Aileara", image: require("../../assets/Armor/AileenPlaceHolder5.jpg"), clickable: true },
-  { name: "Nialla", image: require("../../assets/Armor/AileenPlaceHolder6.jpg"), clickable: true },
-  { name: "Ailethra", image: require("../../assets/Armor/AileenPlaceHolder9.jpg"), clickable: true },
-  { name: "Aishal", image: require("../../assets/Armor/AileenPlaceHolder8.jpg"), clickable: true },
-  { name: "Seraphina", image: require("../../assets/Armor/AileenPlaceHolder7.jpg"), clickable: true, screen: "Aileenchat" }, // Updated to Aileenchat
-  { name: "", image: require("../../assets/Armor/AileensSymbol.jpg"), clickable: true },
+  { name: "©Ariata; William Cummings", image: require("../../assets/Armor/AileenPlaceHolder2.jpg"), clickable: true },
+  { name: "©Baybayin; William Cummings", image: require("../../assets/Armor/AileenPlaceHolder.jpg"), clickable: true },
+  { name: "©Luminara; William Cummings", image: require("../../assets/Armor/AileenPlaceHolder3.jpg"), clickable: true },
+  { name: "©Aileara; William Cummings", image: require("../../assets/Armor/AileenPlaceHolder5.jpg"), clickable: true },
+  { name: "©Nialla; William Cummings", image: require("../../assets/Armor/AileenPlaceHolder6.jpg"), clickable: true },
+  { name: "©Ailethra; William Cummings", image: require("../../assets/Armor/AileenPlaceHolder9.jpg"), clickable: true },
+  { name: "©Aishal; William Cummings", image: require("../../assets/Armor/AileenPlaceHolder8.jpg"), clickable: true },
+  { name: "©Seraphina; William Cummings", image: require("../../assets/Armor/AileenPlaceHolder7.jpg"), clickable: true, screen: "Aileenchat" }, // Updated to Aileenchat
+  { name: "©Philipinnes Crusader; William Cummings", image: require("../../assets/Armor/AileensSymbol.jpg"), clickable: true },
 ];
 
 const Aileen = () => {
@@ -184,8 +184,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   card: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.2 : windowWidth * 0.7,
-    height: isDesktop ? SCREEN_HEIGHT * 0.7 : SCREEN_HEIGHT * 0.6,
+    width: isDesktop ? windowWidth * 0.2 : windowWidth * 0.9,
+    height: isDesktop ? SCREEN_HEIGHT * 0.7 : SCREEN_HEIGHT * 0.7,
     borderRadius: 15,
     overflow: "hidden",
     elevation: 5,

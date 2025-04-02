@@ -21,8 +21,8 @@ const Azure = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "", image: require("../../assets/Armor/AzurePlaceHolder.jpg"), clickable: true },
-    { name: "", image: require("../../assets/Armor/AzurePlaceHolder2.jpg"), clickable: true },
+    { name: "©Mediateir; William Cummings", image: require("../../assets/Armor/AzurePlaceHolder.jpg"), clickable: true },
+    { name: "©Mediateir; William Cummings", image: require("../../assets/Armor/AzurePlaceHolder2.jpg"), clickable: true },
     { name: "", image: require("../../assets/Armor/AzuresSymbol.jpg"), clickable: true },
   ];
 
@@ -134,8 +134,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   card: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.7,
-    height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.5,
+    width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9,
+    height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7,
     borderRadius: 15,
     overflow: "hidden",
     elevation: 5,

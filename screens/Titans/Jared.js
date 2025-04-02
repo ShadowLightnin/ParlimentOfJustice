@@ -21,7 +21,7 @@ const Jared = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "", image: require("../../assets/Armor/JaredPlaceHolder.jpg"), clickable: true },
+    { name: "©Spector; William Cummings", image: require("../../assets/Armor/JaredPlaceHolder.jpg"), clickable: true },
     { name: "", image: require("../../assets/Armor/JaredsSymbol.jpg"), clickable: true },
   ];
 
@@ -133,8 +133,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   card: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.7,
-    height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.5,
+    width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9,
+    height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7,
     borderRadius: 15,
     overflow: "hidden",
     elevation: 5,
