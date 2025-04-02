@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { 
   View, 
   Text, 
@@ -17,7 +17,7 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 const EvilSam = () => {
   const navigation = useNavigation();
   const flashAnim = useRef(new Animated.Value(1)).current;
-  const [windowWidth, setWindowWidth] = React.useState(SCREEN_WIDTH);
+  const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
 
   // Dynamic window sizing
   useEffect(() => {
@@ -29,8 +29,6 @@ const EvilSam = () => {
   }, []);
 
   const isDesktop = windowWidth >= 768;
-  const imageSize = isDesktop ? windowWidth * 0.6 : SCREEN_WIDTH * 0.9;
-  const imageHeight = isDesktop ? SCREEN_HEIGHT * 0.5 : SCREEN_HEIGHT * 0.6;
 
   // ⚡ Flashing Animation Effect for Planet
   useEffect(() => {
@@ -46,31 +44,31 @@ const EvilSam = () => {
 
   // 🌌 Planet Click Handler → Leads to Warp Screen
   const handlePlanetPress = () => {
-    navigation.navigate("WarpScreen"); // 🔄 Navigate to WarpScreen
+    navigation.navigate("WarpScreen");
   };
 
   const characters = [
-    { name: "", image: require("../../../assets/Armor/SamPlaceHolder2.jpg"), clickable: true },
-    { name: "", image: require("../../../assets/Armor/SamPlaceHolder6.jpg"), clickable: true },
-    // Add more related characters here if desired
+    { name: "Void Walker", image: require("../../../assets/Armor/SamPlaceHolder2.jpg"), copyright: "William Cummings", clickable: true },
+    { name: "Void Walker", image: require("../../../assets/Armor/SamPlaceHolder6.jpg"), copyright: "Samuel Woodwell", clickable: true },
   ];
 
   const renderCharacterCard = (character) => (
     <TouchableOpacity
-      key={character.name + Math.random().toString()} // Added random key to differentiate duplicates
-      style={character.clickable ? styles.clickable : styles.notClickable}
+      key={`${character.name}-${character.copyright}`} // Unique key using name and copyright
+      style={[styles.card(isDesktop, windowWidth), character.clickable ? styles.clickable : styles.notClickable]}
       onPress={() => character.clickable && console.log(`${character.name} clicked`)}
       disabled={!character.clickable}
     >
       <Image
         source={character.image}
-        style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
+        style={styles.armorImage}
       />
       <View style={styles.transparentOverlay} />
       <Text style={styles.cardName}>
-        © {character.name || 'Unknown'}; William Cummings
+        © {character.name || 'Unknown'}; {character.copyright}
       </Text>
-    </TouchableOpacity>  );
+    </TouchableOpacity>
+  );
 
   return (
     <ImageBackground
@@ -85,31 +83,34 @@ const EvilSam = () => {
               style={styles.backButton}
               onPress={() => navigation.reset({
                 index: 0,
-                routes: [{ name: "VillainsTab" }]  // ✅ Clean navigation flow
+                routes: [{ name: "VillainsTab" }]
               })}
             >
               <Text style={styles.backButtonText}>⬅️</Text>
             </TouchableOpacity>
             <Text style={styles.title}>Void Walker (Evil Edition)</Text>
-
-            {/* 🌍 Planet Icon (Clickable) */}
-            <TouchableOpacity onPress={handlePlanetPress} style={styles.planetContainer}>
-              <Animated.Image 
-                source={require("../../../assets/Space/ExoPlanet.jpg")}
-                style={[styles.planetImage, { opacity: flashAnim }]}
-              />
-            </TouchableOpacity>
+          {/* Planet Button */}
+          <TouchableOpacity onPress={handlePlanetPress} style={styles.planetContainer}>
+            <Animated.Image 
+              source={require("../../../assets/Space/ExoPlanet.jpg")}
+              style={[styles.planetImage, { opacity: flashAnim }]}
+            />
+          </TouchableOpacity>
           </View>
 
           {/* Armor Images in Horizontal Scroll */}
-          <ScrollView
-            horizontal={true}
-            style={styles.horizontalImageContainer}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.horizontalScrollContent}
-          >
-            {characters.map(renderCharacterCard)}
-          </ScrollView>
+          <View style={styles.imageContainer}>
+            <ScrollView
+              horizontal
+              contentContainerStyle={styles.imageScrollContainer}
+              showsHorizontalScrollIndicator={false}
+              snapToAlignment="center"
+              snapToInterval={windowWidth * 0.7 + 20}
+              decelerationRate="fast"
+            >
+              {characters.map(renderCharacterCard)}
+            </ScrollView>
+          </View>
 
           {/* About Section */}
           <View style={styles.aboutSection}>
@@ -169,44 +170,51 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#00b3ff", // Blue hue from original
+    color: "#00b3ff",
     textAlign: "center",
     flex: 1,
   },
   planetContainer: {
     alignItems: "center",
     marginVertical: 20,
-    backgroundColor: "transparent", // ✅ Fully transparent background
+    backgroundColor: "transparent",
   },
   planetImage: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    opacity: 0.8, // ✅ Slight transparency for a cool effect
+    opacity: 0.8,
   },
-  horizontalImageContainer: {
-    marginTop: 20,
+  imageContainer: {
+    width: "100%",
+    paddingVertical: 20,
+    paddingLeft: 15,
+  },
+  imageScrollContainer: {
+    flexDirection: "row",
     paddingHorizontal: 10,
-    width: "100%", // Ensure full width for scrolling
-  },
-  horizontalScrollContent: {
-    flexDirection: "row", // Ensure horizontal layout
     alignItems: "center",
-    paddingVertical: 10,
   },
-  armorImage: {
-    resizeMode: "contain",
-  },
+  card: (isDesktop, windowWidth) => ({
+    width: isDesktop ? windowWidth * 0.2 : SCREEN_WIDTH * 0.9,
+    height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7,
+    borderRadius: 15,
+    overflow: "hidden",
+    elevation: 5,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    marginRight: 20,
+  }),
   clickable: {
     borderWidth: 2,
     borderColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: 15,
-    marginHorizontal: 10, // Space between cards in horizontal scroll
   },
   notClickable: {
     opacity: 0.8,
-    borderRadius: 15,
-    marginHorizontal: 10,
+  },
+  armorImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
   },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -230,7 +238,7 @@ const styles = StyleSheet.create({
   aboutHeader: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#D4AF37", // Gold-like hue from original
+    color: "#D4AF37",
     textAlign: "center",
   },
   aboutText: {

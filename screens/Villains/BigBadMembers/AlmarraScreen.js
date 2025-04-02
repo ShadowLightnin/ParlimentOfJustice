@@ -19,8 +19,6 @@ const AlmarraScreen = () => {
   }, []);
 
   const isDesktop = windowWidth >= 768;
-  const imageSize = isDesktop ? windowWidth * 0.9 : SCREEN_WIDTH * 0.9;
-  const imageHeight = isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.6;
 
   const armors = [
     { name: "Almarra", image: require("../../../assets/Villains/Almarra.jpg"), clickable: true },
@@ -29,14 +27,11 @@ const AlmarraScreen = () => {
   const renderArmorCard = (armor) => (
     <TouchableOpacity
       key={armor.name}
-      style={armor.clickable ? styles.clickable : styles.notClickable}
+      style={[styles.card(isDesktop, windowWidth), armor.clickable ? styles.clickable : styles.notClickable]}
       onPress={() => armor.clickable && console.log(`${armor.name} clicked`)}
       disabled={!armor.clickable}
     >
-      <Image
-        source={armor.image}
-        style={[styles.armorImage, { width: imageSize, height: imageHeight }]}
-      />
+      <Image source={armor.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
       <Text style={styles.cardName}>
         © {armor.name || 'Unknown'}; William Cummings
@@ -60,7 +55,16 @@ const AlmarraScreen = () => {
           </View>
 
           <View style={styles.imageContainer}>
-            {armors.map(renderArmorCard)}
+            <ScrollView
+              horizontal
+              contentContainerStyle={styles.imageScrollContainer}
+              showsHorizontalScrollIndicator={false}
+              snapToAlignment="center"
+              snapToInterval={windowWidth * 0.7 + 20}
+              decelerationRate="fast"
+            >
+              {armors.map(renderArmorCard)}
+            </ScrollView>
           </View>
 
           <View style={styles.aboutSection}>
@@ -138,25 +142,36 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   imageContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 20,
+    width: "100%",
+    paddingVertical: 20,
     backgroundColor: "#111",
-    paddingVertical: 30,
-    borderRadius: 20,
-    position: "relative",
+    paddingLeft: 15,
   },
-  armorImage: {
-    resizeMode: "contain",
+  imageScrollContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 10,
+    alignItems: "center",
   },
+  card: (isDesktop, windowWidth) => ({
+    width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9,
+    height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7,
+    borderRadius: 15,
+    overflow: "hidden",
+    elevation: 5,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    marginRight: 20,
+  }),
   clickable: {
     borderWidth: 2,
     borderColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: 15,
   },
   notClickable: {
     opacity: 0.8,
-    borderRadius: 15,
+  },
+  armorImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
   },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,

@@ -15,8 +15,8 @@ import { Audio } from 'expo-av';
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 // 🎵 Background Music from MP4 - Global management
-let backgroundSound = null; // Explicitly initialize as null
-const MUSIC_LOOP = false; // Set this to true if you want music to loop
+let backgroundSound = null;
+const MUSIC_LOOP = false;
 
 const playBackgroundMusic = async () => {
   if (backgroundSound) {
@@ -111,7 +111,6 @@ const Sam = () => {
     }
     return () => {
       console.log("Sam component fully unmounting at:", new Date().toISOString());
-      // Do not stop music here - let it persist to WarpScreen
     };
   }, [isFocused]);
 
@@ -196,24 +195,25 @@ const Sam = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "©Void Walker; William Cummings", image: require("../../assets/Armor/SamPlaceHolder.jpg"), clickable: true },
-    { name: "©Void Walker; Samuel Woodwell", image: require("../../assets/Armor/SamPlaceHolder4.jpg"), clickable: true },
-    { name: "©Void Walker; Samuel Woodwell", image: require("../../assets/Armor/SamPlaceHolder7.jpg"), clickable: true },
-    // { name: "", image: require("../../assets/Armor/SamPlaceHolder6.jpg"), clickable: true },
-    { name: "©Void Walker; Samuel Woodwell", image: require("../../assets/Armor/SamPlaceHolder3.jpg"), clickable: true },
-    { name: "©Void Walker; Samuel Woodwell", image: require("../../assets/Armor/SamPlaceHolder5.jpg"), clickable: true },
+    { name: "Void Walker", copyright: "William Cummings", image: require("../../assets/Armor/SamPlaceHolder.jpg"), clickable: true },
+    { name: "Void Walker", copyright: "Samuel Woodwell", image: require("../../assets/Armor/SamPlaceHolder4.jpg"), clickable: true },
+    { name: "Void Walker", copyright: "Samuel Woodwell", image: require("../../assets/Armor/SamPlaceHolder7.jpg"), clickable: true },
+    { name: "Void Walker", copyright: "Samuel Woodwell", image: require("../../assets/Armor/SamPlaceHolder3.jpg"), clickable: true },
+    { name: "Void Walker", copyright: "Samuel Woodwell", image: require("../../assets/Armor/SamPlaceHolder5.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (
     <TouchableOpacity
-      key={armor.name}
+      key={`${armor.name}-${armor.copyright}`} // Unique key using name and copyright
       style={[styles.card(isDesktop, windowWidth), armor.clickable ? styles.clickable : styles.notClickable]}
       onPress={() => armor.clickable && console.log(`${armor.name} clicked`)}
       disabled={!armor.clickable}
     >
       <Image source={armor.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>{armor.name}</Text>
+      <Text style={styles.cardName}>
+        © {armor.name || 'Unknown'}; {armor.copyright}
+      </Text>
       {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );
@@ -245,7 +245,7 @@ const Sam = () => {
             contentContainerStyle={styles.imageScrollContainer}
             showsHorizontalScrollIndicator={false}
             snapToAlignment="center"
-            snapToInterval={SCREEN_WIDTH * 0.7 + 20}
+            snapToInterval={windowWidth * 0.7 + 20}
             decelerationRate="fast"
           >
             {armors.map(renderArmorCard)}
@@ -355,6 +355,7 @@ const styles = StyleSheet.create({
   }),
   clickable: {
     borderWidth: 2,
+    borderColor: "rgba(255, 255, 255, 0.1)",
   },
   notClickable: {
     opacity: 0.8,

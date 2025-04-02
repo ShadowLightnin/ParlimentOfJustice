@@ -4,10 +4,10 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-const { height: SCREEN_HEIGHT } = Dimensions.get("window");
+const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 // Array of Sable-related images (replace with your actual image paths)
-const sableImages = [
+const characters = [
   { name: "Chrona", image: require("../../../assets/Villains/Chrona.jpg"), clickable: true },
   { name: "Chrona the Time-Bender", image: require("../../../assets/Villains/Chrona2.jpg"), clickable: true }, // Example placeholder
   // Add more images here as needed
@@ -30,24 +30,28 @@ const ChronaScreen = () => {
   const isDesktop = windowWidth >= 768;
 
   // Render each image card
-  const renderImageCard = (item) => (
+  const renderCharacterCard = (character) => (
     <TouchableOpacity
-      key={item.name}
-      style={[styles.card(isDesktop, windowWidth), item.clickable ? styles.clickable : styles.notClickable]}
-      onPress={() => item.clickable && console.log(`${item.name} clicked`)} // Replace with navigation if needed
-      disabled={!item.clickable}
+      key={character.name}
+      style={[styles.card(isDesktop, windowWidth), character.clickable ? styles.clickable : styles.notClickable]}
+      onPress={() => character.clickable && console.log(`${character.name} clicked`)}
+      disabled={!character.clickable}
     >
-      <Image source={item.image} style={styles.armorImage} />
+      <Image
+        source={character.image}
+        style={styles.armorImage}
+      />
       <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>{item.name}</Text>
-      {!item.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+      <Text style={styles.cardName}>
+        © {character.name || 'Unknown'}; William Cummings
+      </Text>
     </TouchableOpacity>
   );
 
   return (
     <ImageBackground
       source={require("../../../assets/BackGround/Enlightened.jpg")}
-      style={styles.background(windowWidth, SCREEN_HEIGHT)}
+      style={styles.background}
     >
       <View style={styles.overlay}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -60,11 +64,14 @@ const ChronaScreen = () => {
 
           <View style={styles.imageContainer}>
             <ScrollView
-              horizontal={true}
+              horizontal
               contentContainerStyle={styles.imageScrollContainer}
-              showsHorizontalScrollIndicator={true}
+              showsHorizontalScrollIndicator={false}
+              snapToAlignment="center"
+              snapToInterval={windowWidth * 0.7 + 20}
+              decelerationRate="fast"
             >
-              {sableImages.map(renderImageCard)}
+              {characters.map(renderCharacterCard)}
             </ScrollView>
           </View>
 
@@ -94,11 +101,11 @@ const ChronaScreen = () => {
   );
 };
 const styles = StyleSheet.create({
-  background: (width, height) => ({
-    width: width,
-    height: height,
+  background: {
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT,
     resizeMode: "cover",
-  }),
+  },
   overlay: {
     backgroundColor: "rgba(0, 0, 0, 0.8)",
     flex: 1,
@@ -127,14 +134,14 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#D4AF37",
+    color: "#D4AF37", // Gold-like hue from original
     textAlign: "center",
     flex: 1,
   },
   imageContainer: {
     width: "100%",
     paddingVertical: 20,
-    // backgroundColor: "#111",
+    paddingLeft: 15,
   },
   imageScrollContainer: {
     flexDirection: "row",
@@ -142,8 +149,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   card: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.4 : windowWidth * 0.7, // 40% on desktop, 70% on mobile
-    height: isDesktop ? SCREEN_HEIGHT * 0.5 : SCREEN_HEIGHT * 0.6, // Slightly taller on mobile
+    width: isDesktop ? windowWidth * 0.2 : SCREEN_WIDTH * 0.9,
+    height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7,
     borderRadius: 15,
     overflow: "hidden",
     elevation: 5,
@@ -152,6 +159,7 @@ const styles = StyleSheet.create({
   }),
   clickable: {
     borderWidth: 2,
+    borderColor: "rgba(255, 255, 255, 0.1)",
   },
   notClickable: {
     opacity: 0.8,
@@ -159,7 +167,7 @@ const styles = StyleSheet.create({
   armorImage: {
     width: "100%",
     height: "100%",
-    resizeMode: "contain",
+    resizeMode: "cover",
   },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -190,7 +198,7 @@ const styles = StyleSheet.create({
   aboutHeader: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#D4AF37",
+    color: "#D4AF37", // Gold-like hue from original
     textAlign: "center",
   },
   aboutText: {
@@ -199,6 +207,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 10,
   },
-  });
+});
   
 export default ChronaScreen;

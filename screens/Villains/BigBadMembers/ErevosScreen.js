@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { 
-  View, Text, ImageBackground, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions 
+import {
+  View, Text, ImageBackground, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
@@ -19,12 +19,6 @@ const ErevosScreen = () => {
   }, []);
 
   const isDesktop = windowWidth >= 768;
-  // Main Erevos image (large, like original)
-  const mainImageSize = isDesktop ? windowWidth * 0.9 : SCREEN_WIDTH * 0.9;
-  const mainImageHeight = isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.6;
-  // Secondary images (smaller, for horizontal scroll)
-  const secondaryImageSize = isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.6;
-  const secondaryImageHeight = isDesktop ? SCREEN_HEIGHT * 0.4 : SCREEN_HEIGHT * 0.6;
 
   const mainCharacter = [
     { name: "Erevos the Ascendancy", image: require("../../../assets/Villains/Erevos.jpg"), clickable: true },
@@ -34,29 +28,27 @@ const ErevosScreen = () => {
     { name: "Erevan", image: require("../../../assets/Villains/Erevan.jpg"), clickable: true },
     { name: "Erevos the Eternal", image: require("../../../assets/Villains/GreatErevos.jpg"), clickable: true },
     { name: "Erevos", image: require("../../../assets/Villains/Erevos2.jpg"), clickable: true },
-    // { name: "Erevos the Ascendancy", image: require("../../../assets/Villains/Erevos.jpg"), clickable: true },
-
-    // Add more if needed
   ];
 
   const renderCharacterCard = (character, isSecondary = false) => (
     <TouchableOpacity
       key={character.name}
-      style={character.clickable ? styles.clickable : styles.notClickable}
+      style={[styles.card(isDesktop, windowWidth, isSecondary), character.clickable ? styles.clickable : styles.notClickable]}
       onPress={() => character.clickable && console.log(`${character.name} clicked`)}
       disabled={!character.clickable}
     >
       <Image
         source={character.image}
-        style={[styles.armorImage, {
-          width: isSecondary ? secondaryImageSize : mainImageSize,
-          height: isSecondary ? secondaryImageHeight : mainImageHeight,
-        }]}
+        style={styles.armorImage}
       />
       <View style={styles.transparentOverlay} />
+      {/* <Text style={styles.cardName}>
+        {isSecondary ? character.name : `© ${character.name || 'Unknown'}; William Cummings`}
+      </Text> */}
       <Text style={styles.cardName}>
         © {character.name || 'Unknown'}; William Cummings
       </Text>
+      {!character.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );
 
@@ -76,13 +68,22 @@ const ErevosScreen = () => {
 
           {/* Main Erevos Image (Single, Large, Centered) */}
           <View style={styles.imageContainer}>
-            {mainCharacter.map((character) => renderCharacterCard(character, false))}
+            <ScrollView
+              horizontal
+              contentContainerStyle={styles.imageScrollContainer}
+              showsHorizontalScrollIndicator={false}
+              snapToAlignment="center"
+              snapToInterval={windowWidth * 0.7 + 20}
+              decelerationRate="fast"
+            >
+              {mainCharacter.map((character) => renderCharacterCard(character, false))}
+            </ScrollView>
           </View>
 
           {/* Secondary Images (Horizontal Scroll) */}
           <Text style={styles.secondaryTitle}>Erevos’s Legacy</Text>
           <ScrollView
-            horizontal={true}
+            horizontal
             style={styles.horizontalImageContainer}
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.horizontalScrollContent}
@@ -92,9 +93,9 @@ const ErevosScreen = () => {
 
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
-             <Text style={styles.aboutText}>
+            <Text style={styles.aboutText}>
               The Parliament of Justice’s Big Bad
-             </Text> 
+            </Text>
             <Text style={styles.aboutText}>
             Once a prehistoric warrior named Erevos, he gained immortality after 
             a cosmic artifact crash-landed on Earth during his early reign. With 
@@ -418,48 +419,54 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   imageContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 20,
+    width: "100%",
+    paddingVertical: 20,
     backgroundColor: "#111",
-    paddingVertical: 30,
-    borderRadius: 20,
-    borderColor: "#8B0000", // Red border to match original feel
-    // borderWidth: isDesktop ? 6 : 4,
-    position: 'relative', // Required for overlay positioning
-    marginTop: 20,
+    paddingLeft: 15,
+  },
+  imageScrollContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 10,
+    alignItems: "center",
   },
   horizontalImageContainer: {
     marginTop: 20,
     paddingHorizontal: 10,
-    width: '100%', // Ensure full width for scrolling
+    width: '100%',
   },
   horizontalScrollContent: {
-    flexDirection: 'row', // Ensure horizontal layout
+    flexDirection: 'row',
     alignItems: "center",
     paddingVertical: 5,
   },
   secondaryTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#D4AF37", // Gold-like hue
+    color: "#D4AF37",
     textAlign: "center",
     marginTop: 20,
     marginBottom: 10,
   },
-  armorImage: {
-    resizeMode: "contain",
-  },
+  card: (isDesktop, windowWidth, isSecondary) => ({
+    width: isSecondary ? (isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.6) : (isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9),
+    height: isSecondary ? (isDesktop ? SCREEN_HEIGHT * 0.4 : SCREEN_HEIGHT * 0.6) : (isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7),
+    borderRadius: 15,
+    overflow: "hidden",
+    elevation: 5,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    marginRight: 20,
+  }),
   clickable: {
     borderWidth: 2,
     borderColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: 15,
-    marginHorizontal: 10, // Space between cards in horizontal scroll
   },
   notClickable: {
     opacity: 0.8,
-    borderRadius: 15,
-    marginHorizontal: 10,
+  },
+  armorImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
   },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -474,6 +481,13 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
   },
+  disabledText: {
+    fontSize: 12,
+    color: "#ff4444",
+    position: "absolute",
+    bottom: 30,
+    left: 10,
+  },
   aboutSection: {
     marginTop: 40,
     padding: 20,
@@ -483,7 +497,7 @@ const styles = StyleSheet.create({
   aboutHeader: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#D4AF37", // Gold-like hue for power & significance
+    color: "#D4AF37",
     textAlign: "center",
   },
   aboutText: {

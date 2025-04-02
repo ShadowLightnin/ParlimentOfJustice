@@ -35,7 +35,8 @@ export const demonLords = [
     screen: '', 
     image: require('../../assets/Villains/SkinStalker.jpg'), 
     audio: require('../../assets/audio/SkinStalker.mp4'),
-    clickable: true 
+    clickable: true, 
+    showSummonPopup: true // ✅ Popup enabled
   },
 
     // { 
