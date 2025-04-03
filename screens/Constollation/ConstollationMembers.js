@@ -7,6 +7,7 @@ export const memberCategories = [
     members: [
       { name: 'Beckstead', codename: 'Healing Pulse' },
       { name: 'Huffaker', codename: 'Vital Spark' },
+      { name: 'Misty', codename: '' },
     ],
   },
   {

@@ -15,10 +15,8 @@ import { useNavigation } from '@react-navigation/native';
 import { memberCategories } from './ConstollationMembers';
 import constollationImages from './ConstollationImages';
 
-// Screen dimensions
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
-// Grid layout settings
 const isDesktop = SCREEN_WIDTH > 600;
 const columns = isDesktop ? 6 : 3;
 const cardSize = isDesktop ? 160 : 100;
@@ -26,45 +24,19 @@ const cardHeightMultiplier = 1.6;
 const horizontalSpacing = isDesktop ? 40 : 10;
 const verticalSpacing = isDesktop ? 50 : 20;
 
-// Define broader category groupings
 const categoryGroups = [
-  {
-    title: "Doctors",
-    categories: ["Doctors"],
-  },
-  {
-    title: "Elementary",
-    categories: ["Elementary"],
-  },
-  {
-    title: "Jr High (7th-9th)",
-    categories: ["Jr. High 7th", "Jr. High 8th", "Jr. High 9th", "NT Seminary 9th"],
-  },
-  {
-    title: "High School (10th-12th)",
-    categories: [
-      "High School 10th", "BoM Seminary 10th",
-      "High School 11th", "D&C Seminary 11th",
-      "High School 12th", "OT Seminary 12th",
-    ],
-  },
-  {
-    title: "College",
-    categories: ["College"],
-  },
-  {
-    title: "Influencers",
-    categories: ["Influencers"],
-  },
-  {
-    title: "Acquaintances",
-    categories: ["Acquaintances"],
-  },
+  { title: "Doctors", categories: ["Doctors"] },
+  { title: "Elementary", categories: ["Elementary"] },
+  { title: "Jr High (7th-9th)", categories: ["Jr. High 7th", "Jr. High 8th", "Jr. High 9th", "NT Seminary 9th"] },
+  { title: "High School (10th-12th)", categories: ["High School 10th", "BoM Seminary 10th", "High School 11th", "D&C Seminary 11th", "High School 12th", "OT Seminary 12th"] },
+  { title: "College", categories: ["College"] },
+  { title: "Influencers", categories: ["Influencers"] },
+  { title: "Acquaintances", categories: ["Acquaintances"] },
 ];
 
 export const ConstollationScreen = () => {
   const navigation = useNavigation();
-  const [previewMember, setPreviewMember] = useState(null); // State for preview modal
+  const [previewMember, setPreviewMember] = useState(null);
 
   const goToChat = () => {
     navigation.navigate('TeamChat');
@@ -91,8 +63,8 @@ export const ConstollationScreen = () => {
           <View style={styles.transparentOverlay} />
         </>
       )}
-      <Text style={styles.category}>{member.category}</Text> {/* Changed from codename to category */}
-      <Text style={styles.name}>{member.name}</Text>
+      {member.category && <Text style={styles.category}>{member.category}</Text>}
+      {member.name && <Text style={styles.name}>{member.name}</Text>}
     </TouchableOpacity>
   );
 
@@ -100,7 +72,7 @@ export const ConstollationScreen = () => {
     <TouchableOpacity
       key={member.name}
       style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
-      onPress={() => setPreviewMember(null)} // Close modal on card press
+      onPress={() => setPreviewMember(null)}
     >
       <Image
         source={member.image || require('../../assets/Armor/PlaceHolder.jpg')}
@@ -141,7 +113,6 @@ export const ConstollationScreen = () => {
               <View key={groupIndex} style={styles.categorySection}>
                 <Text style={styles.categoryHeader}>{group.title}</Text>
                 <View style={styles.divider} />
-
                 {groupCategories.map((categoryData, categoryIndex) => {
                   const rows = Math.ceil(categoryData.members.length / columns);
 
@@ -152,11 +123,11 @@ export const ConstollationScreen = () => {
                           {Array.from({ length: columns }).map((_, colIndex) => {
                             const memberIndex = rowIndex * columns + colIndex;
                             const memberObj = categoryData.members[memberIndex];
-                            if (!memberObj) return <View key={colIndex} style={styles.cardSpacer} />;
+                            if (!memberObj || !memberObj.name) return <View key={colIndex} style={styles.cardSpacer} />;
 
                             const member = {
                               name: memberObj.name,
-                              codename: memberObj.codename, // Superhero codename
+                              codename: memberObj.codename,
                               category: categoryData.category,
                               image: constollationImages[memberObj.name]?.image || require('../../assets/Armor/PlaceHolder.jpg'),
                               clickable: constollationImages[memberObj.name]?.clickable || false,
@@ -174,7 +145,6 @@ export const ConstollationScreen = () => {
           })}
         </ScrollView>
 
-        {/* Preview Modal */}
         <Modal
           visible={!!previewMember}
           transparent={true}
@@ -187,23 +157,24 @@ export const ConstollationScreen = () => {
               activeOpacity={1}
               onPress={() => setPreviewMember(null)}
             >
-              <View style={styles.imageContainer}>
-                <ScrollView
-                  horizontal
-                  contentContainerStyle={styles.imageScrollContainer}
-                  showsHorizontalScrollIndicator={false}
-                  snapToAlignment="center"
-                  snapToInterval={SCREEN_WIDTH * 0.7 + 20}
-                  decelerationRate="fast"
-                  centerContent={true}
-                >
-                  {previewMember && renderPreviewCard(previewMember)}
-                </ScrollView>
-              </View>
-              <View style={styles.previewAboutSection}>
-                <Text style={styles.previewCodename}>{previewMember?.codename || 'N/A'}</Text>
-                <Text style={styles.previewCategory}>Category: {previewMember?.category || 'Unknown'}</Text>
-                <Text style={styles.previewName}>Name: {previewMember?.name || 'Unknown'}</Text>
+              <View style={styles.previewContent}>
+                <View style={styles.imagePreviewContainer}>
+                  <ScrollView
+                    horizontal
+                    contentContainerStyle={styles.imageScrollContainer}
+                    showsHorizontalScrollIndicator={false}
+                    snapToAlignment="center"
+                    snapToInterval={SCREEN_WIDTH * 0.7 + 20}
+                    decelerationRate="fast"
+                  >
+                    {previewMember && renderPreviewCard(previewMember)}
+                  </ScrollView>
+                </View>
+                <View style={styles.previewDetails}>
+                  <Text style={styles.previewCodename}>{previewMember?.codename || 'N/A'}</Text>
+                  <Text style={styles.previewCategory}> {previewMember?.category || 'Unknown'}</Text>
+                  <Text style={styles.previewName}> {previewMember?.name || 'Unknown'}</Text>
+                </View>
               </View>
             </TouchableOpacity>
           </View>
@@ -319,7 +290,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
   },
-  category: { // Changed from codename to category
+  category: {
     fontSize: 12,
     fontWeight: 'bold',
     color: '#fff',
@@ -344,17 +315,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  imageContainer: {
+  previewContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imagePreviewContainer: {
     width: '100%',
     paddingVertical: 20,
     backgroundColor: '#111',
-    alignItems: 'center',
+    paddingLeft: 15,
   },
   imageScrollContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingHorizontal: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
   },
   previewCard: (isDesktop, windowWidth) => ({
     width: isDesktop ? windowWidth * 0.6 : SCREEN_WIDTH * 0.9,
@@ -372,9 +347,7 @@ const styles = StyleSheet.create({
   previewImage: {
     width: '100%',
     height: '100%',
-    resizeMode 
-   
-: 'cover',
+    resizeMode: 'cover',
   },
   cardName: {
     position: 'absolute',
@@ -384,20 +357,20 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
-  previewAboutSection: {
+  previewDetails: {
     marginTop: 20,
     padding: 10,
     backgroundColor: '#222',
     borderRadius: 10,
     width: '100%',
   },
-  previewCodename: { // Shows superhero codename
+  previewCodename: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#00b3ff',
     textAlign: 'center',
   },
-  previewCategory: { // New style for category
+  previewCategory: {
     fontSize: 16,
     color: '#fff',
     textAlign: 'center',

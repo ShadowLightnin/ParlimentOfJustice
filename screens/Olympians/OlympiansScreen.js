@@ -14,10 +14,8 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import OlympiansMembers from './OlympiansMembers';
 
-// Screen dimensions
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
-// Grid settings
 const isDesktop = SCREEN_WIDTH > 600;
 const columns = isDesktop ? 6 : 3;
 const cardSize = isDesktop ? 160 : 100;
@@ -25,12 +23,11 @@ const cardHeightMultiplier = 1.6;
 const horizontalSpacing = isDesktop ? 40 : 10;
 const verticalSpacing = isDesktop ? 50 : 20;
 
-// Rows based on number of members
 const rows = Math.ceil(OlympiansMembers.length / columns);
 
 export const OlympiansScreen = () => {
   const navigation = useNavigation();
-  const [previewMember, setPreviewMember] = useState(null); // State for preview modal
+  const [previewMember, setPreviewMember] = useState(null);
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
 
   useEffect(() => {
@@ -53,7 +50,7 @@ export const OlympiansScreen = () => {
         { width: cardSize, height: cardSize * cardHeightMultiplier },
         !member.clickable && styles.disabledCard,
       ]}
-      onPress={() => member?.clickable && setPreviewMember(member)} // Open preview if clickable
+      onPress={() => member?.clickable && setPreviewMember(member)}
       disabled={!member?.clickable}
     >
       {member?.image && (
@@ -65,7 +62,7 @@ export const OlympiansScreen = () => {
           <View style={styles.transparentOverlay} />
         </>
       )}
-      {member?.family && <Text style={styles.family}>{member.family}</Text>} {/* Changed from codename to family */}
+      {member?.family && <Text style={styles.family}>{member.family}</Text>}
       {member?.name && <Text style={styles.name}>{member.name}</Text>}
     </TouchableOpacity>
   );
@@ -74,7 +71,7 @@ export const OlympiansScreen = () => {
     <TouchableOpacity
       key={member.name}
       style={[styles.previewCard(isDesktop, windowWidth), styles.clickable]}
-      onPress={() => setPreviewMember(null)} // Close modal on card press
+      onPress={() => setPreviewMember(null)}
     >
       <Image
         source={member.image || require('../../assets/Armor/PlaceHolder.jpg')}
@@ -94,7 +91,6 @@ export const OlympiansScreen = () => {
       style={styles.background}
     >
       <SafeAreaView style={styles.container}>
-        {/* Header Section */}
         <View style={styles.headerWrapper}>
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Text style={styles.backText}>← Back</Text>
@@ -105,7 +101,6 @@ export const OlympiansScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Grid Layout */}
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {Array.from({ length: rows }).map((_, rowIndex) => (
             <View
@@ -116,7 +111,7 @@ export const OlympiansScreen = () => {
                 const memberIndex = rowIndex * columns + colIndex;
                 const member = OlympiansMembers[memberIndex];
 
-                if (!member) {
+                if (!member || !member.name) {
                   return (
                     <View
                       key={colIndex}
@@ -131,7 +126,6 @@ export const OlympiansScreen = () => {
           ))}
         </ScrollView>
 
-        {/* Preview Modal */}
         <Modal
           visible={!!previewMember}
           transparent={true}
@@ -142,25 +136,26 @@ export const OlympiansScreen = () => {
             <TouchableOpacity
               style={styles.modalOuterContainer}
               activeOpacity={1}
-              onPress={() => setPreviewMember(null)} // Close preview when clicking outside
+              onPress={() => setPreviewMember(null)}
             >
-              <View style={styles.imageContainer}>
-                <ScrollView
-                  horizontal
-                  contentContainerStyle={styles.imageScrollContainer}
-                  showsHorizontalScrollIndicator={false}
-                  snapToAlignment="center"
-                  snapToInterval={windowWidth * 0.7 + 20}
-                  decelerationRate="fast"
-                  centerContent={true} // Ensure content is centered
-                >
-                  {previewMember && renderPreviewCard(previewMember)}
-                </ScrollView>
-              </View>
-              <View style={styles.previewAboutSection}>
-                <Text style={styles.previewCodename}>{previewMember?.codename || 'N/A'}</Text>
-                <Text style={styles.previewFamily}> {previewMember?.family || 'Unknown'}</Text>
-                <Text style={styles.previewName}> {previewMember?.name || 'Unknown'}</Text>
+              <View style={styles.previewContent}>
+                <View style={styles.imagePreviewContainer}>
+                  <ScrollView
+                    horizontal
+                    contentContainerStyle={styles.imageScrollContainer}
+                    showsHorizontalScrollIndicator={false}
+                    snapToAlignment="center"
+                    snapToInterval={windowWidth * 0.7 + 20}
+                    decelerationRate="fast"
+                  >
+                    {previewMember && renderPreviewCard(previewMember)}
+                  </ScrollView>
+                </View>
+                <View style={styles.previewDetails}>
+                  <Text style={styles.previewCodename}>{previewMember?.codename || 'N/A'}</Text>
+                  <Text style={styles.previewFamily}> {previewMember?.family || 'Unknown'}</Text>
+                  <Text style={styles.previewName}> {previewMember?.name || 'Unknown'}</Text>
+                </View>
               </View>
             </TouchableOpacity>
           </View>
@@ -255,14 +250,13 @@ const styles = StyleSheet.create({
     color: '#aaa',
     textAlign: 'center',
   },
-  family: { // Changed from codename to family
+  family: {
     fontSize: 12,
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
     marginTop: 5,
   },
-  // Modal Styles
   modalBackground: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.9)',
@@ -275,18 +269,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  imageContainer: {
+  previewContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imagePreviewContainer: {
     width: '100%',
     paddingVertical: 20,
     backgroundColor: '#111',
-    alignItems: 'center', // Center the ScrollView horizontally
-    paddingLeft: 20,
+    paddingLeft: 15,
   },
   imageScrollContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingHorizontal: 10,
-    alignItems: 'center',
-    justifyContent: 'center', // Center the cards within the ScrollView
+    alignItems: "center",
   },
   previewCard: (isDesktop, windowWidth) => ({
     width: isDesktop ? windowWidth * 0.2 : SCREEN_WIDTH * 0.8,
@@ -314,20 +311,20 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
-  previewAboutSection: {
+  previewDetails: {
     marginTop: 20,
     padding: 10,
     backgroundColor: '#222',
     borderRadius: 10,
     width: '100%',
   },
-  previewCodename: { // Now shows superhero codename
+  previewCodename: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#00b3ff',
     textAlign: 'center',
   },
-  previewFamily: { // New style for family
+  previewFamily: {
     fontSize: 16,
     color: '#fff',
     textAlign: 'center',

@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#00b3ff",
+    color: "#2a6d5d",
     textAlign: "center",
     flex: 1,
   },
@@ -152,6 +152,12 @@ const styles = StyleSheet.create({
   }),
   clickable: {
     borderWidth: 2,
+    borderColor: '#2a6d5d',
+    borderWidth: 2,
+    shadowColor: '#089272',
+    shadowOffset: { width: 0, height: 5 },
+    shadowRadius: 8,
+    shadowOpacity: 0.7,
   },
   notClickable: {
     opacity: 0.8,
@@ -176,7 +182,7 @@ const styles = StyleSheet.create({
   },
   disabledText: {
     fontSize: 12,
-    color: "#ff4444",
+    color: "#2a6d5d",
     position: "absolute",
     bottom: 30,
     left: 10,
@@ -190,7 +196,7 @@ const styles = StyleSheet.create({
   aboutHeader: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#00b3ff",
+    color: "#2a6d5d",
     textAlign: "center",
   },
   aboutText: {

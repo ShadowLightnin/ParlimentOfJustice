@@ -12,13 +12,11 @@ import {
   Modal,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { memberCategories } from './LegionairesMembers'; // Import updated memberCategories
+import { memberCategories } from './LegionairesMembers';
 import legionImages from './LegionairesImages';
 
-// Screen dimensions
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
-// Grid layout settings
 const isDesktop = SCREEN_WIDTH > 600;
 const columns = isDesktop ? 7 : 3;
 const cardSize = isDesktop ? 160 : 100;
@@ -28,7 +26,7 @@ const verticalSpacing = isDesktop ? 20 : 10;
 
 export const LegionairesScreen = () => {
   const navigation = useNavigation();
-  const [previewMember, setPreviewMember] = useState(null); // State for preview modal
+  const [previewMember, setPreviewMember] = useState(null);
 
   const goToChat = () => {
     navigation.navigate('TeamChat');
@@ -55,8 +53,8 @@ export const LegionairesScreen = () => {
           <View style={styles.transparentOverlay} />
         </>
       )}
-      <Text style={styles.category}>{member.category}</Text> {/* Changed from codename to category */}
-      <Text style={styles.name}>{member.name}</Text>
+      {member.category && <Text style={styles.category}>{member.category}</Text>}
+      {member.name && <Text style={styles.name}>{member.name}</Text>}
     </TouchableOpacity>
   );
 
@@ -64,7 +62,7 @@ export const LegionairesScreen = () => {
     <TouchableOpacity
       key={member.name}
       style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
-      onPress={() => setPreviewMember(null)} // Close modal on card press
+      onPress={() => setPreviewMember(null)}
     >
       <Image
         source={member.image || require('../../assets/Armor/PlaceHolder.jpg')}
@@ -84,7 +82,6 @@ export const LegionairesScreen = () => {
       style={styles.background}
     >
       <SafeAreaView style={styles.container}>
-        {/* Header, Back, and Chat Button */}
         <View style={styles.headerWrapper}>
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Text style={styles.backText}>← Back</Text>
@@ -95,28 +92,24 @@ export const LegionairesScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Scrollable Category Sections */}
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {memberCategories.map((categoryData, categoryIndex) => {
             const rows = Math.ceil(categoryData.members.length / columns);
 
             return (
               <View key={categoryIndex} style={styles.categorySection}>
-                {/* Category Header */}
                 <Text style={styles.categoryHeader}>{categoryData.category}</Text>
                 <View style={styles.divider} />
-
-                {/* Grid of Members */}
                 {Array.from({ length: rows }).map((_, rowIndex) => (
                   <View key={rowIndex} style={[styles.row, { marginBottom: verticalSpacing }]}>
                     {Array.from({ length: columns }).map((_, colIndex) => {
                       const memberIndex = rowIndex * columns + colIndex;
                       const memberObj = categoryData.members[memberIndex];
-                      if (!memberObj) return <View key={colIndex} style={styles.cardSpacer} />;
+                      if (!memberObj || !memberObj.name) return <View key={colIndex} style={styles.cardSpacer} />;
 
                       const member = {
                         name: memberObj.name,
-                        codename: memberObj.codename, // Superhero codename
+                        codename: memberObj.codename,
                         category: categoryData.category,
                         image: legionImages[memberObj.name]?.image || require('../../assets/Armor/PlaceHolder.jpg'),
                         clickable: legionImages[memberObj.name]?.clickable || false,
@@ -131,7 +124,6 @@ export const LegionairesScreen = () => {
           })}
         </ScrollView>
 
-        {/* Preview Modal */}
         <Modal
           visible={!!previewMember}
           transparent={true}
@@ -144,23 +136,24 @@ export const LegionairesScreen = () => {
               activeOpacity={1}
               onPress={() => setPreviewMember(null)}
             >
-              <View style={styles.imageContainer}>
-                <ScrollView
-                  horizontal
-                  contentContainerStyle={styles.imageScrollContainer}
-                  showsHorizontalScrollIndicator={false}
-                  snapToAlignment="center"
-                  snapToInterval={SCREEN_WIDTH * 0.7 + 20}
-                  decelerationRate="fast"
-                  centerContent={true}
-                >
-                  {previewMember && renderPreviewCard(previewMember)}
-                </ScrollView>
-              </View>
-              <View style={styles.previewAboutSection}>
-                <Text style={styles.previewCodename}>{previewMember?.codename || 'N/A'}</Text>
-                <Text style={styles.previewCategory}> {previewMember?.category || 'Unknown'}</Text>
-                <Text style={styles.previewName}> {previewMember?.name || 'Unknown'}</Text>
+              <View style={styles.previewContent}>
+                <View style={styles.imagePreviewContainer}>
+                  <ScrollView
+                    horizontal
+                    contentContainerStyle={styles.imageScrollContainer}
+                    showsHorizontalScrollIndicator={false}
+                    snapToAlignment="center"
+                    snapToInterval={SCREEN_WIDTH * 0.7 + 20}
+                    decelerationRate="fast"
+                  >
+                    {previewMember && renderPreviewCard(previewMember)}
+                  </ScrollView>
+                </View>
+                <View style={styles.previewDetails}>
+                  <Text style={styles.previewCodename}>{previewMember?.codename || 'N/A'}</Text>
+                  <Text style={styles.previewCategory}> {previewMember?.category || 'Unknown'}</Text>
+                  <Text style={styles.previewName}> {previewMember?.name || 'Unknown'}</Text>
+                </View>
               </View>
             </TouchableOpacity>
           </View>
@@ -300,22 +293,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  imageContainer: {
+  previewContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imagePreviewContainer: {
     width: '100%',
     paddingVertical: 20,
     backgroundColor: '#111',
-    alignItems: 'center',
-    paddingLeft: 20,
+    paddingLeft: 15,
   },
   imageScrollContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingHorizontal: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
   },
   previewCard: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.2 : SCREEN_WIDTH * 0.8,
-    height: isDesktop ? SCREEN_HEIGHT * 0.7 : SCREEN_HEIGHT * 0.6,
+    width: isDesktop ? windowWidth * 0.6 : SCREEN_WIDTH * 0.9,
+    height: isDesktop ? SCREEN_HEIGHT * 0.5 : SCREEN_HEIGHT * 0.6,
     borderRadius: 15,
     overflow: 'hidden',
     elevation: 5,
@@ -339,12 +335,11 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
-  previewAboutSection: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#222',
-    borderRadius: 10,
-    width: '100%',
+  previewCategory: {
+    fontSize: 16,
+    color: '#fff',
+    textAlign: 'center',
+    marginTop: 5,
   },
   previewCodename: {
     fontSize: 18,
@@ -352,17 +347,18 @@ const styles = StyleSheet.create({
     color: '#00b3ff',
     textAlign: 'center',
   },
-  previewCategory: {
-    fontSize: 16,
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 5,
-  },
   previewName: {
     fontSize: 16,
     color: '#fff',
     textAlign: 'center',
     marginTop: 5,
+  },
+  previewDetails: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#222',
+    borderRadius: 10,
+    width: '100%',
   },
 });
 
