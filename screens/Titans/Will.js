@@ -130,8 +130,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   card: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.15 : SCREEN_WIDTH * 0.35, // 30% of screen width on desktop, 70% on mobile
-    height: isDesktop ? SCREEN_HEIGHT * 0.15 * 1.4 : SCREEN_HEIGHT * 0.35 * 1.4, // Taller on desktop
+    width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9, // 30% of screen width on desktop, 70% on mobile
+    height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7, // Taller on desktop
     borderRadius: 15,
     overflow: "hidden",
     elevation: 5,
