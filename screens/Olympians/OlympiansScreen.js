@@ -62,8 +62,8 @@ export const OlympiansScreen = () => {
           <View style={styles.transparentOverlay} />
         </>
       )}
-      {member?.family && <Text style={styles.family}>{member.family}</Text>}
-      {member?.name && <Text style={styles.name}>{member.name}</Text>}
+      {/* {member?.family && <Text style={styles.family}>{member.family}</Text>} */}
+      {member?.name && <Text style={styles.family}>{member.name}</Text>}
     </TouchableOpacity>
   );
 
@@ -80,7 +80,7 @@ export const OlympiansScreen = () => {
       />
       <View style={styles.transparentOverlay} />
       <Text style={styles.cardName}>
-        © {member.name || 'Unknown'}; William Cummings
+        © {member.codename || 'Unknown'}; William Cummings
       </Text>
     </TouchableOpacity>
   );
