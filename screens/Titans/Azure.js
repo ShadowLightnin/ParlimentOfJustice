@@ -22,7 +22,7 @@ const Azure = () => {
 
   const armors = [
     { name: "Mediateir", image: require("../../assets/Armor/AzurePlaceHolder.jpg"), clickable: true },
-    { name: "Mediateir", image: require("../../assets/Armor/AzurePlaceHolder2.jpg"), clickable: true },
+    { name: "Midigator", image: require("../../assets/Armor/AzurePlaceHolder2.jpg"), clickable: true },
     { name: "", image: require("../../assets/Armor/AzuresSymbol.jpg"), clickable: true },
   ];
 
