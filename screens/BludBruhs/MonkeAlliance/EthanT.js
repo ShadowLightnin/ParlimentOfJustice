@@ -48,9 +48,6 @@ const EthanT = () => {
             <Text style={styles.backButtonText}>←</Text>
           </TouchableOpacity>
           <Text style={styles.title}>Bolt Watcher</Text>
-          <TouchableOpacity style={styles.commentButton} onPress={() => navigation.navigate("Comments")}>
-            <Text style={styles.commentButtonText}>💬</Text>
-          </TouchableOpacity>
         </View>
 
         <View style={styles.imageContainer}>
@@ -112,15 +109,6 @@ const styles = StyleSheet.create({
     color: "#00b3ff",
     textAlign: "center",
     flex: 1,
-  },
-  commentButton: {
-    padding: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: 5,
-  },
-  commentButtonText: {
-    fontSize: 22,
-    color: "#fff",
   },
   imageContainer: {
     width: "100%",
