@@ -132,7 +132,7 @@ export const memberCategories = [
     category: "Acquaintances",
     members: [
       { name: 'Sheryl', codename: 'Sage' },
-      { name: 'Krystal', codename: 'Prism' },
+      { name: 'Krystel', codename: 'Prism' },
       { name: 'Deb', codename: 'Oracle' },
       { name: 'Jack Smith', codename: 'Sentinel' },
       { name: 'Dustin Edmonds', codename: 'Falcon' },

@@ -78,6 +78,9 @@ const legionImages = {
   Quinton: { image: require('../../assets/Armor/PlaceHolder.jpg'), clickable: false },
   'Quinton C': { image: require('../../assets/Armor/PlaceHolder.jpg'), clickable: false },
   Quincy: { image: require('../../assets/Armor/PlaceHolder.jpg'), clickable: false },
+  Sheryl: { image: require('../../assets/Armor/ShePlaceHolder.jpg'), clickable: true },
+  Krystel: { image: require('../../assets/Armor/KrystelPlaceHolder.jpg'), clickable: true },
+  Deb: { image: require('../../assets/Armor/DebPlaceHolder.jpg'), clickable: true },
   };
   
   export default legionImages;
