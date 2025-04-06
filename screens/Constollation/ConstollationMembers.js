@@ -165,14 +165,6 @@ export const memberCategories = [
       { name: 'Lazarbeam', codename: 'Chaos Beam' },
     ],
   },
-  {
-    category: "Acquaintances",
-    members: [
-      { name: 'Sheryl', codename: 'Kindred Light' },
-      { name: 'Krystal', codename: 'Gem Spark' },
-      { name: 'Deb', codename: 'Warm Echo' },
-    ],
-  },
 ];
 
 // 🎯 Generate member list with superhero codenames
