@@ -1,7 +1,7 @@
 // 🎯 Static mapping of character images for Legionaires
 const legionImages = {
   'Mason Erickson': { image: require('../../assets/Armor/MasonEPlaceHolder.jpg'), clickable: true },
-  'Davis Clark': { image: require('../../assets/Armor/PlaceHolder.jpg'), clickable: false },
+  'Davis Clark': { image: require('../../assets/Armor/DavisPlaceHolder.jpg'), clickable: true },
   'Cody Cline': { image: require('../../assets/Armor/CodyPlaceHolder.jpg'), clickable: true },
   'Kinnley Cline': { image: require('../../assets/Armor/KinnleyPlaceHolder.jpg'), clickable: true },
   'Cassidy Cline': { image: require('../../assets/Armor/CassidyPlaceHolder.jpg'), clickable: true },

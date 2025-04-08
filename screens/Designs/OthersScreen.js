@@ -47,7 +47,7 @@ const OthersScreen = () => {
   };
 
   const deleteFile = async (fileId) => {
-    Alert.alert("Delete File?", "Are you sure you want to delete this file?", [
+    Alert.alert("Delete Media?", "Are you sure you want to delete this media file?", [
       { text: "Cancel", style: "cancel" },
       {
         text: "Delete",
@@ -72,7 +72,7 @@ const OthersScreen = () => {
 
   return (
     <ImageBackground
-      source={require('../../assets/file.jpg')} // Static background (customize as needed)
+      source={require('../../assets/camera2.jpg')} // Static background (customize as needed)
       style={styles.background}
     >
       <View style={styles.overlay}>
