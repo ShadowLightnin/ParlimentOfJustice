@@ -474,48 +474,13 @@ const BookDetails = () => {
 const { width, height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    width,
-    height,
-    position: "absolute",
-    top: 0,
-    left: 0,
-    resizeMode: "cover",
-  },
-  disabledButton: {
-    backgroundColor: "#cccccc", // Grayed out color for disabled buttons
-    opacity: 0.6,
-  },
-  accessDeniedText: {
-    color: "#ff4444",
-    textAlign: "center",
-    marginTop: 10,
-    fontSize: 14,
-  },
-  overlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    paddingTop: 50,
-  },
-  backButton: {
-    position: "absolute",
-    top: 10,
-    left: 10,
-    backgroundColor: "rgba(118, 11, 11, 0.8)",
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    zIndex: 10,
-  },
-  backButtonText: {
-    color: "#FFF",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  verticalScrollContainer: {
-    paddingBottom: 20, // Extra padding at bottom for scroll
-  },
+  background: { flex: 1, width, height, position: "absolute", top: 0, left: 0, resizeMode: "cover", },
+  disabledButton: { backgroundColor: "#cccccc", opacity: 0.6 },
+  accessDeniedText: { color: "#ff4444", textAlign: "center", marginTop: 10, fontSize: 14 },
+  overlay: { flex: 1, backgroundColor: "rgba(0, 0, 0, 0.5)", paddingTop: 50 },
+  backButton: { position: "absolute", top: 10, left: 10, backgroundColor: "rgba(118, 11, 11, 0.8)", paddingVertical: 8, paddingHorizontal: 12, borderRadius: 8, zIndex: 10 },
+  backButtonText: { color: "#FFF", fontSize: 16, fontWeight: "bold" },
+  verticalScrollContainer: { paddingBottom: 20, },
   title: {
     fontSize: 24,
     fontWeight: "bold",
@@ -719,16 +684,8 @@ const styles = StyleSheet.create({
     color: "#FFF",
     fontWeight: "bold",
   },
-  closeButton: {
-    backgroundColor: "#2196F3",
-    padding: 10,
-    borderRadius: 5,
-    alignSelf: "center",
-  },
-  closeButtonText: {
-    color: "#FFF",
-    fontWeight: "bold",
-  },
+  closeButton: { backgroundColor: "#2196F3", padding: 10, borderRadius: 5, alignSelf: "center", },
+  closeButtonText: { color: "#FFF", fontWeight: "bold", },
 });
 
 export default BookDetails;
