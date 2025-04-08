@@ -21,23 +21,23 @@ const Ben = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Nuscus", image: require("../../assets/Armor/BenPlaceHolder3.jpg"), clickable: true },
-    { name: "Nuscus", image: require("../../assets/Armor/BenPlaceHolder.jpg"), clickable: true },
-    { name: "Nuscus", image: require("../../assets/Armor/BenPlaceHolder2.jpg"), clickable: true },
+    { name: "Nuscis", copyright: "William Cummings", image: require("../../assets/Armor/BenPlaceHolder3.jpg"), clickable: true },
+    { name: "Nuscus", copyright: "William Cummings", image: require("../../assets/Armor/BenPlaceHolder.jpg"), clickable: true },
+    { name: "Nuscus", copyright: "William Cummings", image: require("../../assets/Armor/BenPlaceHolder2.jpg"), clickable: true },
     { name: "", image: require("../../assets/Armor/BensSymbol.jpg"), clickable: true },
   ];
 
-  const renderArmorCard = (armor) => (
+  const renderArmorCard = (armor, index) => (
     <TouchableOpacity
-      key={armor.name}
+      key={`${armor.name}-${armor.copyright || index}`} // Unique key using name, copyright, or index
       style={[styles.card(isDesktop, windowWidth), armor.clickable ? styles.clickable : styles.notClickable]}
-      onPress={() => armor.clickable && console.log(`${armor.name} clicked`)}
+      onPress={() => armor.clickable && console.log(`${armor.name || 'Unnamed'} clicked`)}
       disabled={!armor.clickable}
     >
       <Image source={armor.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
       <Text style={styles.cardName}>
-        © {armor.name || 'Unknown'}; William Cummings
+        {armor.copyright ? `© ${armor.name || 'Unknown'}; ${armor.copyright}` : (armor.name)}
       </Text>
       {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>

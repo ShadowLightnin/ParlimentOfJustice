@@ -22,20 +22,19 @@ const BenP = () => {
 
   const armors = [
     { name: "", image: require("../../../assets/Armor/BenpPlaceHolder.jpg"), clickable: true },
-    { name: "", image: require("../../../assets/Armor/BenpPlaceHolder2.jpg"), clickable: true },
+    { name: "", copyright: "William Cummings", image: require("../../../assets/Armor/BenpPlaceHolder2.jpg"), clickable: true },
   ];
-
-  const renderArmorCard = (armor) => (
+  const renderArmorCard = (armor, index) => (
     <TouchableOpacity
-      key={armor.name}
+      key={`${armor.name}-${armor.copyright || index}`} // Unique key using name, copyright, or index
       style={[styles.card(isDesktop, windowWidth), armor.clickable ? styles.clickable : styles.notClickable]}
-      onPress={() => armor.clickable && console.log(`${armor.name} clicked`)}
+      onPress={() => armor.clickable && console.log(`${armor.name || 'Unnamed'} clicked`)}
       disabled={!armor.clickable}
     >
       <Image source={armor.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
       <Text style={styles.cardName}>
-        © {armor.name || 'Unknown'}; William Cummings
+        {armor.copyright ? `© ${armor.name || 'Unknown'}; ${armor.copyright}` : (armor.name)}
       </Text>
       {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
