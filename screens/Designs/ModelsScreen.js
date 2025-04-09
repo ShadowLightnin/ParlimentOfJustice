@@ -126,7 +126,7 @@ const ModelsScreen = () => {
           <Text style={styles.backText}>← Back</Text>
         </TouchableOpacity>
 
-        <Text style={styles.header}>Models</Text>
+        <Text style={styles.header}>3D Models</Text>
 
         <ScrollView contentContainerStyle={styles.imageGrid}>
           {preloadedImages.map((image, index) => (

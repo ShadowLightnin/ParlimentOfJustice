@@ -36,7 +36,8 @@ const OthersScreen = () => {
   const fetchUploadedFiles = async () => {
     const q = query(
       collection(db, "uploads"),
-      where("type", "not-in", ["image", "video"]) // Exclude images and videos
+      where("type", "in", ["image", "video"]), // Include only images and videos
+      where("category", "==", "media") // Strictly filter by "media" category
     );
     const querySnapshot = await getDocs(q);
     const files = querySnapshot.docs.map((doc) => ({
@@ -61,18 +62,17 @@ const OthersScreen = () => {
   };
 
   const handleFilePress = async (fileUrl) => {
-    // Open the file URL in the default app/browser
     const supported = await Linking.canOpenURL(fileUrl);
     if (supported) {
       await Linking.openURL(fileUrl);
     } else {
-      Alert.alert("Error", "Cannot open this file type on your device.");
+      Alert.alert("Error", "Cannot open this media type on your device.");
     }
   };
 
   return (
     <ImageBackground
-      source={require('../../assets/camera2.jpg')} // Static background (customize as needed)
+      source={require('../../assets/camera2.jpg')}
       style={styles.background}
     >
       <View style={styles.overlay}>
@@ -80,7 +80,7 @@ const OthersScreen = () => {
           <Text style={styles.backText}>← Back</Text>
         </TouchableOpacity>
 
-        <Text style={styles.header}>Others</Text>
+        <Text style={styles.header}>Media</Text>
 
         <ScrollView contentContainerStyle={styles.fileGrid}>
           {uploadedFiles.map((file) => (
@@ -90,7 +90,7 @@ const OthersScreen = () => {
                   <Text style={styles.fileName} numberOfLines={2}>
                     {file.name}
                   </Text>
-                  <Text style={styles.fileType}>{file.type || "File"}</Text>
+                  <Text style={styles.fileType}>{file.type || "Media"}</Text>
                 </View>
               </TouchableOpacity>
               {(auth.currentUser?.uid === file.userId || userRole === "admin") && (
@@ -107,9 +107,9 @@ const OthersScreen = () => {
 
         <TouchableOpacity
           style={styles.uploadButton}
-          onPress={() => navigation.navigate("UploadDesign", { type: "file", callback: fetchUploadedFiles })}
+          onPress={() => navigation.navigate("UploadDesign", { type: "media", category: "media", callback: fetchUploadedFiles })}
         >
-          <Text style={styles.uploadText}>Upload New File</Text>
+          <Text style={styles.uploadText}>Upload New Media</Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>

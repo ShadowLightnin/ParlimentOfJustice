@@ -7,6 +7,7 @@ import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebas
 import * as ImagePicker from "expo-image-picker";
 
 const ALLOWED_EMAILS = ["samuelp.woodwell@gmail.com", "cummingsnialla@gmail.com", "will@test.com", "c1wcummings@gmail.com", "aileen@test.com"];
+const RESTRICT_ACCESS = true; // Set to true to restrict to ALLOWED_EMAILS, false to allow anyone
 const PLACEHOLDER_IMAGE = require("../../../assets/Armor/PlaceHolder.jpg");
 const PLACEHOLDER_URL = "placeholder";
 
@@ -22,10 +23,15 @@ const BookDetails = () => {
   const [editName, setEditName] = useState("");
   const [editDesc, setEditDesc] = useState("");
   const [selChar, setSelChar] = useState(null);
-  const [canMod, setCanMod] = useState(false);
+  const [canMod, setCanMod] = useState(!RESTRICT_ACCESS);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [charToDelete, setCharToDelete] = useState(null);
 
   useEffect(() => {
-    const checkAuth = () => setCanMod(auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email));
+    const checkAuth = () => {
+      const user = auth.currentUser;
+      setCanMod(!RESTRICT_ACCESS || (user && ALLOWED_EMAILS.includes(user.email)));
+    };
     const fetchChars = async () => getDocs(collection(db, "books", bookId, "characters")).then(snap => 
       setChars(snap.docs.map(doc => ({ id: doc.id, ...doc.data() }))), e => Alert.alert("Error", e.message));
     checkAuth(); fetchChars(); const authUnsub = auth.onAuthStateChanged(checkAuth); return () => authUnsub();
@@ -43,10 +49,9 @@ const BookDetails = () => {
     mediaTypes: ImagePicker.MediaTypeOptions.Images, allowsEditing: true, aspect: [1, 1], quality: 0.5
   }).then(r => !r.canceled && (setImg(r.assets[0].uri), setUseImg(true)));
 
-  const skipImg = () => canMod && (setImg(null), setUseImg(false));
-
   const addChar = async () => {
-    if (!name || !desc || !canMod) return Alert.alert("Error", canMod ? "Enter name and description" : "Access Denied");
+    if (!name || !desc) return Alert.alert("Error", "Enter name and description");
+    if (!canMod) return Alert.alert("Error", "Access Denied");
     try { 
       const imgUrl = useImg === true && img ? await uploadImg(img) : useImg === false ? null : PLACEHOLDER_URL;
       await addDoc(collection(db, "books", bookId, "characters"), { name, description: desc, imageUrl: imgUrl });
@@ -54,80 +59,47 @@ const BookDetails = () => {
     } catch (e) { Alert.alert("Error", e.message); }
   };
 
-  const deleteCharacter = async (id) => {
-    console.log("DeleteCharacter called - ID:", id, "CanModify:", canMod); // Updated to use canMod
-    if (!canMod) {
-      Alert.alert("Access Denied", "You are not authorized to delete characters.");
-      return;
+  const skipImgAndAdd = async () => {
+    if (canMod) {
+      setImg(null);
+      setUseImg(false);
+      await addChar();
     }
-  
-    console.log("Proceeding with deletion for ID:", id);
+  };
+
+  const confirmDeleteChar = async (id) => {
     try {
       const charRef = doc(db, "books", bookId, "characters", id);
+      const charSnap = await getDoc(charRef);
+      if (!charSnap.exists()) return Alert.alert("Error", "Character not found");
+      const charData = charSnap.data();
+      const imageUrl = charData.imageUrl;
+
       await deleteDoc(charRef);
-      console.log("Character document deleted from Firestore with ID:", id);
-      setChars(chars.filter((char) => char.id !== id)); // Updated to use chars
-      setSelChar(null); // Updated to use setSelChar
-      Alert.alert("Success", "Character deleted (bypass test)!");
+      if (imageUrl) {
+        const imagePath = imageUrl.split('/o/')[1]?.split('?')[0];
+        if (imagePath) {
+          const imageRef = ref(storage, imagePath);
+          await deleteObject(imageRef).catch((error) => {
+            if (error.code !== "storage/object-not-found") throw error;
+          });
+        }
+      }
+
+      setChars(chars.filter((char) => char.id !== id));
+      setSelChar(null);
+      setDeleteModalVisible(false);
+      setCharToDelete(null);
+      Alert.alert("Success", "Character and image deleted successfully!");
     } catch (error) {
-      console.error("Delete Error:", error.message);
       Alert.alert("Error", "Failed to delete character: " + error.message);
     }
-  
-    Alert.alert(
-      "Confirm",
-      "Delete this character and its image?",
-      [
-        { text: "Cancel", style: "cancel", onPress: () => console.log("Delete canceled") },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            console.log("Delete confirmed - Proceeding with deletion for ID:", id);
-            try {
-              const charRef = doc(db, "books", bookId, "characters", id);
-  
-              const charSnap = await getDoc(charRef);
-              if (!charSnap.exists()) {
-                console.log("Character not found with ID:", id);
-                Alert.alert("Error", "Character not found");
-                return;
-              }
-              const charData = charSnap.data();
-              const imageUrl = charData.imageUrl;
-  
-              await deleteDoc(charRef);
-              console.log("Character document deleted from Firestore with ID:", id);
-  
-              if (imageUrl) {
-                const imagePath = imageUrl.split('/o/')[1]?.split('?')[0];
-                if (imagePath) {
-                  const imageRef = ref(storage, imagePath);
-                  await deleteObject(imageRef).catch((error) => {
-                    if (error.code === "storage/object-not-found") {
-                      console.log("No image found to delete at:", imagePath);
-                    } else {
-                      throw error;
-                    }
-                  });
-                  console.log("Image deleted from Storage for ID:", id);
-                } else {
-                  console.log("Invalid image URL format:", imageUrl);
-                }
-              }
-  
-              setChars(chars.filter((char) => char.id !== id)); // Updated to use chars
-              setSelChar(null); // Updated to use setSelChar
-              Alert.alert("Success", "Character and image deleted successfully!");
-            } catch (error) {
-              console.error("Delete Error:", error.message);
-              Alert.alert("Error", "Failed to delete character: " + error.message);
-            }
-          },
-        },
-      ],
-      { cancelable: true, onDismiss: () => console.log("Alert dismissed") }
-    );
+  };
+
+  const handleDeletePress = (id, name) => {
+    if (!canMod) return Alert.alert("Access Denied", "You are not authorized to delete characters!");
+    setCharToDelete({ id, name });
+    setDeleteModalVisible(true);
   };
 
   const startEdit = (char) => canMod && (setEditId(char.id), setEditName(char.name), setEditDesc(char.description), setSelChar(char));
@@ -140,8 +112,10 @@ const BookDetails = () => {
         {char.imageUrl === null ? <View style={styles.noImg} /> : <Image source={char.imageUrl && char.imageUrl !== PLACEHOLDER_URL ? { uri: char.imageUrl } : PLACEHOLDER_IMAGE} style={styles.charImg} defaultSource={PLACEHOLDER_IMAGE} />}
         <View style={styles.overlay} /><Text style={styles.charName}>{char.name}</Text>
       </TouchableOpacity>
-      <View style={styles.buttons}><TouchableOpacity onPress={() => startEdit(char)} style={[styles.edit, !canMod && styles.disabled]} disabled={!canMod}><Text>Edit</Text></TouchableOpacity>
-      <TouchableOpacity onPress={() => deleteCharacter(char.id)} style={[styles.delete, !canMod && styles.disabled]} disabled={!canMod}><Text>Delete</Text></TouchableOpacity></View>
+      <View style={styles.buttons}>
+        <TouchableOpacity onPress={() => startEdit(char)} style={[styles.edit, !canMod && styles.disabled]} disabled={!canMod}><Text>Edit</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => handleDeletePress(char.id, char.name)} style={[styles.delete, !canMod && styles.disabled]} disabled={!canMod}><Text>Delete</Text></TouchableOpacity>
+      </View>
     </View>
   );
 
@@ -150,12 +124,14 @@ const BookDetails = () => {
       <View style={styles.overlay}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.back}><Text>Back</Text></TouchableOpacity>
         <ScrollView contentContainerStyle={styles.scroll}>
-          <Text style={styles.title}>{bookTitle} - Characters</Text><Text style={styles.warning}>(No deletion confirmation)</Text>
+          <Text style={styles.title}>{bookTitle} - Characters</Text>
           <View style={styles.form}>
             <TextInput style={styles.input} placeholder="Name" value={name} onChangeText={setName} editable={canMod} />
             <TextInput style={[styles.input, styles.descInput]} placeholder="Description" value={desc} onChangeText={setDesc} multiline editable={canMod} />
-            <View style={styles.imgOpts}><TouchableOpacity onPress={pickImg} style={[styles.upload, !canMod && styles.disabled]} disabled={!canMod}><Text>{canMod ? (img ? "Selected" : "Upload") : "Restricted"}</Text></TouchableOpacity>
-            <TouchableOpacity onPress={skipImg} style={[styles.noImgBtn, !canMod && styles.disabled]} disabled={!canMod}><Text>No Image</Text></TouchableOpacity></View>
+            <View style={styles.imgOpts}>
+              <TouchableOpacity onPress={pickImg} style={[styles.upload, !canMod && styles.disabled]} disabled={!canMod}><Text>{canMod ? (img ? "Selected" : "Upload") : "Restricted"}</Text></TouchableOpacity>
+              <TouchableOpacity onPress={skipImgAndAdd} style={[styles.noImgBtn, !canMod && styles.disabled]} disabled={!canMod}><Text>No Image</Text></TouchableOpacity>
+            </View>
             {img && <Image source={{ uri: img }} style={styles.preview} />}
             <TouchableOpacity onPress={addChar} style={[styles.add, !canMod && styles.disabled]} disabled={!canMod}><Text>Add</Text></TouchableOpacity>
             {!canMod && <Text style={styles.denied}>Only authorized users can modify.</Text>}
@@ -174,6 +150,21 @@ const BookDetails = () => {
             <TouchableOpacity onPress={() => (setSelChar(null), setEditId(null))} style={styles.close}><Text>Close</Text></TouchableOpacity>
           </ScrollView></View>
         </Modal>
+        <Modal visible={deleteModalVisible} transparent animationType="slide">
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalText}>{`Are you sure you want to delete "${charToDelete?.name || ''}" and its image?`}</Text>
+              <View style={styles.modalButtons}>
+                <TouchableOpacity style={styles.modalCancel} onPress={() => setDeleteModalVisible(false)}>
+                  <Text style={styles.modalCancelText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.modalDelete} onPress={() => charToDelete && confirmDeleteChar(charToDelete.id)}>
+                  <Text style={styles.modalDeleteText}>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </View>
     </ImageBackground>
   );
@@ -187,7 +178,6 @@ const styles = StyleSheet.create({
   back: { position: "absolute", top: 10, left: 10, backgroundColor: "rgba(118,11,11,0.8)", padding: 8, borderRadius: 8, zIndex: 10 },
   scroll: { paddingBottom: 20 },
   title: { fontSize: 24, fontWeight: "bold", color: "#FFF", textAlign: "center", marginBottom: 10 },
-  warning: { fontSize: 16, fontWeight: "bold", color: "rgba(201,11,11,1)", textAlign: "center", marginBottom: 20 },
   form: { padding: 20, alignItems: "center" },
   input: { backgroundColor: "rgba(255,255,255,0.9)", width: "90%", padding: 10, borderRadius: 5, marginBottom: 10 },
   descInput: { height: 80, textAlignVertical: "top" },
@@ -210,15 +200,18 @@ const styles = StyleSheet.create({
   preview: { width: "90%", maxHeight: Dimensions.get("window").height * 0.7, backgroundColor: "rgba(72,63,63,0.95)", borderRadius: 15, padding: 20 },
   previewName: { fontSize: 22, fontWeight: "bold", color: "white", textAlign: "center", marginBottom: 10 },
   previewDesc: { fontSize: 16, color: "#fff7f7", textAlign: "center", marginBottom: 20 },
-
-  editName: { fontSize: 22, fontWeight: "bold", color: "#ffffff", textAlign: "center", backgroundColor: "rgba(92,86,86,0.95)", 
-    padding: 10, borderRadius: 5, marginBottom: 10 },
-    
-  editDesc: { fontSize: 16, color: "#ffffff", textAlign: "center", backgroundColor: "rgba(100,95,95,0.95)", padding: 10, 
-    borderRadius: 5, marginBottom: 20, minHeight: 100, textAlignVertical: "top" },
-    
+  editName: { fontSize: 22, fontWeight: "bold", color: "#ffffff", textAlign: "center", backgroundColor: "rgba(92,86,86,0.95)", padding: 10, borderRadius: 5, marginBottom: 10 },
+  editDesc: { fontSize: 16, color: "#ffffff", textAlign: "center", backgroundColor: "rgba(100,95,95,0.95)", padding: 10, borderRadius: 5, marginBottom: 20, minHeight: 100, textAlignVertical: "top" },
   save: { backgroundColor: "#4CAF50", padding: 10, borderRadius: 5, alignSelf: "center", marginBottom: 10 },
   close: { backgroundColor: "#2196F3", padding: 10, borderRadius: 5, alignSelf: "center" },
+  modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.7)", justifyContent: "center", alignItems: "center" },
+  modalContent: { backgroundColor: "rgba(255,255,255,0.9)", padding: 20, borderRadius: 10, alignItems: "center" },
+  modalText: { fontSize: 18, color: "#000", marginBottom: 20, textAlign: "center" },
+  modalButtons: { flexDirection: "row", justifyContent: "space-between", width: "80%" },
+  modalCancel: { backgroundColor: "#2196F3", padding: 10, borderRadius: 5, flex: 1, marginRight: 10 },
+  modalCancelText: { color: "#FFF", fontWeight: "bold", textAlign: "center" },
+  modalDelete: { backgroundColor: "#F44336", padding: 10, borderRadius: 5, flex: 1, marginLeft: 10 },
+  modalDeleteText: { color: "#FFF", fontWeight: "bold", textAlign: "center" }
 });
 
 export default BookDetails;

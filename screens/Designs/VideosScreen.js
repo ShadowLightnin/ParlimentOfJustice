@@ -113,7 +113,7 @@ const VideosScreen = () => {
           <Text style={styles.backText}>← Back</Text>
         </TouchableOpacity>
 
-        <Text style={styles.header}>Videos</Text>
+        <Text style={styles.header}>Animation Videos</Text>
 
         <ScrollView contentContainerStyle={styles.videoGrid}>
           {/* Preloaded Videos */}

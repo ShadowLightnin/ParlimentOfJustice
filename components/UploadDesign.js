@@ -17,26 +17,48 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 const UploadDesign = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { type, callback } = route.params || { type: "file" }; // "image", "video", or "file"
+  const { type, category, callback } = route.params || { type: "file", category: "design" }; // Include category
 
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const pickFile = async () => {
-    if (type === "image" || type === "video") {
-      const options = {
-        mediaTypes:
-          type === "video"
-            ? ImagePicker.MediaTypeOptions.Videos
-            : ImagePicker.MediaTypeOptions.Images,
+    if (type === "image") {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
         quality: 0.5,
-      };
-      const result = await ImagePicker.launchImageLibraryAsync(options);
+      });
       if (!result.canceled) {
         setFile({
           uri: result.assets[0].uri,
-          name: `${type}_${Date.now()}.${type === "video" ? "mp4" : "jpg"}`,
+          name: `image_${Date.now()}.jpg`,
+        });
+      }
+    } else if (type === "video") {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Videos,
+        allowsEditing: true,
+        quality: 0.5,
+      });
+      if (!result.canceled) {
+        setFile({
+          uri: result.assets[0].uri,
+          name: `video_${Date.now()}.mp4`,
+        });
+      }
+    } else if (type === "media") {
+      // Allow picking either image or video
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All, // Both images and videos
+        allowsEditing: true,
+        quality: 0.5,
+      });
+      if (!result.canceled) {
+        const isVideo = result.assets[0].type === "video" || result.assets[0].uri.endsWith(".mp4");
+        setFile({
+          uri: result.assets[0].uri,
+          name: `${isVideo ? "video" : "image"}_${Date.now()}.${isVideo ? "mp4" : "jpg"}`,
         });
       }
     } else {
@@ -60,7 +82,12 @@ const UploadDesign = () => {
       const response = await fetch(file.uri);
       const blob = await response.blob();
 
-      const result = await uploadDesign({ name: file.name, type, category: "design" }, blob);
+      // Determine type based on file extension or context
+      const uploadType = type === "media" ? (file.name.endsWith(".mp4") ? "video" : "image") : type;
+      const result = await uploadDesign(
+        { name: file.name, type: uploadType, category: category || "design" }, // Use category from params
+        blob
+      );
       alert(result.message);
 
       if (result.success) {
@@ -87,8 +114,10 @@ const UploadDesign = () => {
       {file && (
         <View style={styles.preview}>
           <Text style={styles.fileName}>{file.name}</Text>
-          {type === "image" && <Image source={{ uri: file.uri }} style={styles.previewMedia} />}
-          {type === "video" && (
+          {(type === "image" || (type === "media" && !file.name.endsWith(".mp4"))) && (
+            <Image source={{ uri: file.uri }} style={styles.previewMedia} />
+          )}
+          {(type === "video" || (type === "media" && file.name.endsWith(".mp4"))) && (
             <Video
               source={{ uri: file.uri }}
               style={styles.previewMedia}
@@ -150,8 +179,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   previewMedia: {
-    width: 150,
-    height: 100,
+    width: 250,
+    height: 150,
     marginVertical: 10,
     borderRadius: 10,
   },

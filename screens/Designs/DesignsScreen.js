@@ -15,8 +15,8 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // Member Data
 const members = [
-  { codename: 'Models', screen: 'ModelsScreen', clickable: true, position: [1, 0], image: require('../../assets/img/donut.png') },
-  { codename: 'Video', screen: 'VideosScreen', clickable: true, position: [1, 1], image: require('../../assets/Space/warp3.gif') },
+  { codename: '3D Models', screen: 'ModelsScreen', clickable: true, position: [1, 0], image: require('../../assets/img/donut.png') },
+  { codename: 'Animations', screen: 'VideosScreen', clickable: true, position: [1, 1], image: require('../../assets/Space/warp3.gif') },
   { codename: 'Media', screen: 'OthersScreen', clickable: true, position: [1, 2], image: require('../../assets/camera.jpg') },
 ];
 
