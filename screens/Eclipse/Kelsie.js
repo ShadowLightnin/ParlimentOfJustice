@@ -21,8 +21,8 @@ const Kelsie = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Eliptic Dancer", image: require("../../assets/Armor/KelsiePlaceHolder.jpg"), clickable: true },
-    { name: "Shutter Dancer", image: require("../../assets/Armor/KelsiePlaceHolder2.jpg"), clickable: true },
+    { name: "Shutter Dancer", image: require("../../assets/Armor/KelsiePlaceHolder.jpg"), clickable: true },
+    { name: "Eliptic Dancer", image: require("../../assets/Armor/KelsiePlaceHolder2.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (
