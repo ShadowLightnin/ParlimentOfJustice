@@ -61,9 +61,9 @@ const stopBackgroundMusic = async () => {
   }
 };
 
-// 🌄 Member Data
+// Member Data
 const members = [
-  { name: '', codename: '', screen: 'SpartansScreen', clickable: true, position: [1, 1] },
+  { name: '(Animation Trigger)', codename: '', screen: 'SpartansScreen', clickable: true, position: [1, 1] },
 ];
 
 // Empty cell checker
@@ -125,7 +125,7 @@ const ASTCScreen = () => {
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
       <SafeAreaView style={styles.container}>
-        {/* 🛡️ Spartan Activation Animation */}
+        {/* Spartan Activation Animation */}
         <Animated.View 
           style={[
             styles.imageContainer, 
@@ -194,13 +194,13 @@ const styles = StyleSheet.create({
   },
   cardImage: {
     width: '100%',
-    height: '100%', // Takes up most of the card height, leaving room for text
+    height: '90%', // Takes up most of the card height, leaving room for text
     resizeMode: 'cover',
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
   },
   name: { 
-    fontSize: 12, 
+    fontSize: 10, 
     fontWeight: 'bold', 
     color: '#fff', 
     textAlign: 'center', 

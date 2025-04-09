@@ -1,197 +1,73 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-  Alert,
-  ImageBackground,
-  Dimensions,
-  Modal,
-} from "react-native";
+import { View, ImageBackground, StyleSheet, Dimensions, TouchableOpacity, Text, ScrollView, TextInput, Image, Alert, Modal } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { db, storage, auth } from "../../../lib/firebase"; // Ensure auth is imported
+import { db, storage, auth } from "../../../lib/firebase";
 import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc, getDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
 
-// Define allowed emails for image uploads and other actions (replace with actual emails)
-const ALLOWED_EMAILS = [
-  "samuelp.woodwell@gmail.com", // Replace with actual emails
-  "cummingsnialla@gmail.com",
-  "will@test.com",
-  "c1wcummings@gmail.com",
-  "aileen@test.com",
-];
+const ALLOWED_EMAILS = ["samuelp.woodwell@gmail.com", "cummingsnialla@gmail.com", "will@test.com", "c1wcummings@gmail.com", "aileen@test.com"];
+const PLACEHOLDER_IMAGE = require("../../../assets/Armor/PlaceHolder.jpg");
+const PLACEHOLDER_URL = "placeholder";
 
 const BookDetails = () => {
   const navigation = useNavigation();
-  const route = useRoute();
-  const { bookId, bookTitle, bookImageUrl } = route.params;
-
-  const [characters, setCharacters] = useState([]);
+  const { bookId, bookTitle, bookImageUrl } = useRoute().params;
+  const [chars, setChars] = useState([]);
   const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [image, setImage] = useState(null);
-  const [useImage, setUseImage] = useState(null);
-  const [editingCharId, setEditingCharId] = useState(null);
+  const [desc, setDesc] = useState("");
+  const [img, setImg] = useState(null);
+  const [useImg, setUseImg] = useState(null);
+  const [editId, setEditId] = useState(null);
   const [editName, setEditName] = useState("");
-  const [editDescription, setEditDescription] = useState("");
-  const [selectedCharacter, setSelectedCharacter] = useState(null);
-  const [canModify, setCanModify] = useState(false); // Track modification permission
-
-  const PLACEHOLDER_IMAGE = require("../../../assets/Armor/PlaceHolder.jpg");
-  const PLACEHOLDER_URL = "placeholder";
+  const [editDesc, setEditDesc] = useState("");
+  const [selChar, setSelChar] = useState(null);
+  const [canMod, setCanMod] = useState(false);
 
   useEffect(() => {
-    const checkUserAuthorization = () => {
-      const user = auth.currentUser;
-      if (user && ALLOWED_EMAILS.includes(user.email)) {
-        setCanModify(true);
-      } else {
-        setCanModify(false);
-      }
-    };
-
-    const fetchCharacters = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "books", bookId, "characters"));
-        const characterList = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setCharacters(characterList);
-      } catch (error) {
-        console.error("Error fetching characters:", error);
-        Alert.alert("Error", "Failed to load characters: " + error.message);
-      }
-    };
-
-    checkUserAuthorization();
-    fetchCharacters();
-
-    // Set up auth state listener
-    const unsubscribeAuth = auth.onAuthStateChanged(checkUserAuthorization);
-
-    return () => unsubscribeAuth(); // Clean up auth listener
+    const checkAuth = () => setCanMod(auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email));
+    const fetchChars = async () => getDocs(collection(db, "books", bookId, "characters")).then(snap => 
+      setChars(snap.docs.map(doc => ({ id: doc.id, ...doc.data() }))), e => Alert.alert("Error", e.message));
+    checkAuth(); fetchChars(); const authUnsub = auth.onAuthStateChanged(checkAuth); return () => authUnsub();
   }, [bookId]);
 
-  const uploadImage = async (uri) => {
-    if (!canModify) {
-      Alert.alert("Access Denied", "You are not authorized to upload images.");
-      return Promise.reject(new Error("Unauthorized"));
-    }
+  const uploadImg = async (uri) => canMod ? new Promise((res, rej) => {
+    fetch(uri).then(r => r.blob()).then(blob => {
+      const refPath = `characters/${Date.now()}_${Math.random().toString(36).substring(7)}`;
+      uploadBytesResumable(ref(storage, refPath), blob).on("state_changed", null, rej, () => 
+        getDownloadURL(ref(storage, refPath)).then(res).catch(rej));
+    }).catch(rej);
+  }) : Promise.reject(new Error("Unauthorized"));
 
-    try {
-      const response = await fetch(uri);
-      const blob = await response.blob();
-      const storageRef = ref(storage, `characters/${Date.now()}_${Math.random().toString(36).substring(7)}`);
-      const uploadTask = uploadBytesResumable(storageRef, blob);
+  const pickImg = async () => canMod && ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images, allowsEditing: true, aspect: [1, 1], quality: 0.5
+  }).then(r => !r.canceled && (setImg(r.assets[0].uri), setUseImg(true)));
 
-      return new Promise((resolve, reject) => {
-        uploadTask.on(
-          "state_changed",
-          (snapshot) => {
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log("Upload is " + progress + "% done");
-          },
-          (error) => reject(error),
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then(resolve).catch(reject);
-          }
-        );
-      });
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      throw error;
-    }
-  };
+  const skipImg = () => canMod && (setImg(null), setUseImg(false));
 
-  const pickImage = async () => {
-    if (!canModify) {
-      Alert.alert("Access Denied", "You are not authorized to upload images.");
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.5,
-    });
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-      setUseImage(true);
-    }
-  };
-
-  const skipImage = () => {
-    if (!canModify) {
-      Alert.alert("Access Denied", "You are not authorized to modify characters.");
-      return;
-    }
-    setImage(null);
-    setUseImage(false);
-  };
-
-  const addCharacter = async () => {
-    if (!name || !description) {
-      Alert.alert("Error", "Please enter a name and description");
-      return;
-    }
-
-    if (!canModify) {
-      Alert.alert("Access Denied", "You are not authorized to add characters.");
-      return;
-    }
-
-    try {
-      let imageUrl;
-      if (useImage === true && image) {
-        imageUrl = await uploadImage(image);
-      } else if (useImage === false) {
-        imageUrl = null;
-      } else {
-        imageUrl = PLACEHOLDER_URL;
-      }
-
-      const newCharacter = {
-        name,
-        description,
-        imageUrl,
-      };
-
-      const docRef = await addDoc(collection(db, "books", bookId, "characters"), newCharacter);
-      setCharacters([...characters, { id: docRef.id, ...newCharacter }]);
-      setName("");
-      setDescription("");
-      setImage(null);
-      setUseImage(null);
-      Alert.alert("Success", "Character added successfully!");
-    } catch (error) {
-      console.error("Error adding character:", error);
-      Alert.alert("Error", "Failed to add character: " + error.message);
-    }
+  const addChar = async () => {
+    if (!name || !desc || !canMod) return Alert.alert("Error", canMod ? "Enter name and description" : "Access Denied");
+    try { 
+      const imgUrl = useImg === true && img ? await uploadImg(img) : useImg === false ? null : PLACEHOLDER_URL;
+      await addDoc(collection(db, "books", bookId, "characters"), { name, description: desc, imageUrl: imgUrl });
+      setChars([...chars, { name, description: desc, imageUrl: imgUrl }]); setName(""); setDesc(""); setImg(null); setUseImg(null); Alert.alert("Success", "Character added!");
+    } catch (e) { Alert.alert("Error", e.message); }
   };
 
   const deleteCharacter = async (id) => {
-    console.log("DeleteCharacter called - ID:", id, "CanModify:", canModify);
-    if (!canModify) {
+    console.log("DeleteCharacter called - ID:", id, "CanModify:", canMod); // Updated to use canMod
+    if (!canMod) {
       Alert.alert("Access Denied", "You are not authorized to delete characters.");
       return;
     }
   
-    console.log("Proceeding with deletion for ID:", id); // Bypass alert
+    console.log("Proceeding with deletion for ID:", id);
     try {
       const charRef = doc(db, "books", bookId, "characters", id);
       await deleteDoc(charRef);
       console.log("Character document deleted from Firestore with ID:", id);
-      setCharacters(characters.filter((char) => char.id !== id));
-      setSelectedCharacter(null);
+      setChars(chars.filter((char) => char.id !== id)); // Updated to use chars
+      setSelChar(null); // Updated to use setSelChar
       Alert.alert("Success", "Character deleted (bypass test)!");
     } catch (error) {
       console.error("Delete Error:", error.message);
@@ -211,7 +87,6 @@ const BookDetails = () => {
             try {
               const charRef = doc(db, "books", bookId, "characters", id);
   
-              // Step 1: Get character data for image URL
               const charSnap = await getDoc(charRef);
               if (!charSnap.exists()) {
                 console.log("Character not found with ID:", id);
@@ -221,11 +96,9 @@ const BookDetails = () => {
               const charData = charSnap.data();
               const imageUrl = charData.imageUrl;
   
-              // Step 2: Delete the character document
               await deleteDoc(charRef);
               console.log("Character document deleted from Firestore with ID:", id);
   
-              // Step 3: Delete the image from Storage (if it exists)
               if (imageUrl) {
                 const imagePath = imageUrl.split('/o/')[1]?.split('?')[0];
                 if (imagePath) {
@@ -243,9 +116,8 @@ const BookDetails = () => {
                 }
               }
   
-              // Update UI
-              setCharacters(characters.filter((char) => char.id !== id));
-              setSelectedCharacter(null);
+              setChars(chars.filter((char) => char.id !== id)); // Updated to use chars
+              setSelChar(null); // Updated to use setSelChar
               Alert.alert("Success", "Character and image deleted successfully!");
             } catch (error) {
               console.error("Delete Error:", error.message);
@@ -258,434 +130,95 @@ const BookDetails = () => {
     );
   };
 
-  const startEditing = (char) => {
-    if (!canModify) {
-      Alert.alert("Access Denied", "You are not authorized to edit characters.");
-      return;
-    }
-    setEditingCharId(char.id);
-    setEditName(char.name);
-    setEditDescription(char.description);
-    setSelectedCharacter(char);
-  };
+  const startEdit = (char) => canMod && (setEditId(char.id), setEditName(char.name), setEditDesc(char.description), setSelChar(char));
+  const saveEdit = async (id) => canMod && (editName && editDesc) && (await updateDoc(doc(db, "books", bookId, "characters", id), { name: editName, description: editDesc }),
+    setChars(chars.map(c => c.id === id ? { ...c, name: editName, description: editDesc } : c)), setEditId(null), setEditName(""), setEditDesc(""), setSelChar(null), Alert.alert("Success", "Updated!"));
 
-  const saveEdit = async (id) => {
-    if (!canModify) {
-      Alert.alert("Access Denied", "You are not authorized to save changes.");
-      return;
-    }
-
-    if (!editName || !editDescription) {
-      Alert.alert("Error", "Name and description cannot be empty");
-      return;
-    }
-    try {
-      await updateDoc(doc(db, "books", bookId, "characters", id), {
-        name: editName,
-        description: editDescription,
-      });
-      setCharacters(
-        characters.map((char) =>
-          char.id === id ? { ...char, name: editName, description: editDescription } : char
-        )
-      );
-      setEditingCharId(null);
-      setEditName("");
-      setEditDescription("");
-      setSelectedCharacter(null);
-      Alert.alert("Success", "Character updated successfully!");
-    } catch (error) {
-      console.error("Error updating character:", error);
-      Alert.alert("Error", "Failed to update character: " + error.message);
-    }
-  };
-
-  const renderCharacterCard = (char) => (
-    <View key={char.id} style={styles.characterContainer}>
-      <TouchableOpacity
-        style={styles.characterCard}
-        onPress={() => setSelectedCharacter(char)}
-        disabled={!canModify}
-      >
-        {char.imageUrl === null ? (
-          <View style={styles.noImagePlaceholder} />
-        ) : (
-          <Image
-            source={char.imageUrl && char.imageUrl !== PLACEHOLDER_URL ? { uri: char.imageUrl } : PLACEHOLDER_IMAGE}
-            style={styles.characterImage}
-            defaultSource={PLACEHOLDER_IMAGE}
-          />
-        )}
-        <View style={styles.transparentOverlay} />
-        <Text style={styles.characterName}>{char.name}</Text>
+  const renderChar = (char) => (
+    <View key={char.id} style={styles.charCont}>
+      <TouchableOpacity style={styles.charCard} onPress={() => setSelChar(char)} disabled={!canMod}>
+        {char.imageUrl === null ? <View style={styles.noImg} /> : <Image source={char.imageUrl && char.imageUrl !== PLACEHOLDER_URL ? { uri: char.imageUrl } : PLACEHOLDER_IMAGE} style={styles.charImg} defaultSource={PLACEHOLDER_IMAGE} />}
+        <View style={styles.overlay} /><Text style={styles.charName}>{char.name}</Text>
       </TouchableOpacity>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity 
-          onPress={() => startEditing(char)} 
-          style={[styles.editButton, !canModify && styles.disabledButton]}
-          disabled={!canModify}
-        >
-          <Text style={styles.editButtonText}>Edit</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          onPress={() => {
-            console.log("Delete character button pressed for ID:", char.id);
-            deleteCharacter(char.id);
-          }} 
-          style={[styles.deleteButton, !canModify && styles.disabledButton]}
-          disabled={!canModify}
-        >
-          <Text style={styles.deleteButtonText}>Delete</Text>
-        </TouchableOpacity>
-      </View>
+      <View style={styles.buttons}><TouchableOpacity onPress={() => startEdit(char)} style={[styles.edit, !canMod && styles.disabled]} disabled={!canMod}><Text>Edit</Text></TouchableOpacity>
+      <TouchableOpacity onPress={() => deleteCharacter(char.id)} style={[styles.delete, !canMod && styles.disabled]} disabled={!canMod}><Text>Delete</Text></TouchableOpacity></View>
     </View>
   );
 
   return (
-    <ImageBackground
-      source={bookImageUrl ? { uri: bookImageUrl } : PLACEHOLDER_IMAGE}
-      style={styles.background}
-    >
+    <ImageBackground source={bookImageUrl ? { uri: bookImageUrl } : PLACEHOLDER_IMAGE} style={styles.bg}>
       <View style={styles.overlay}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Text style={styles.backButtonText}>Back to Books</Text>
-        </TouchableOpacity>
-
-        <ScrollView contentContainerStyle={styles.verticalScrollContainer}>
-          <Text style={styles.title}>{bookTitle} - Characters</Text>
-          <Text style={styles.headerWarning}>(Warning: there is no deletion confirmation)</Text>
-
-          <View style={styles.formContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="Character Name"
-              value={name}
-              onChangeText={setName}
-              editable={canModify}
-            />
-            <TextInput
-              style={[styles.input, styles.descriptionInput]}
-              placeholder="Description"
-              value={description}
-              onChangeText={setDescription}
-              multiline
-              editable={canModify}
-            />
-            <View style={styles.imageOptions}>
-              <TouchableOpacity 
-                onPress={pickImage} 
-                style={[styles.uploadButton, !canModify && styles.disabledButton]}
-                disabled={!canModify}
-              >
-                <Text style={styles.uploadButtonText}>
-                  {canModify ? (image ? "Image Selected" : "Upload Image") : "Upload Restricted"}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                onPress={skipImage} 
-                style={[styles.noImageButton, !canModify && styles.disabledButton]}
-                disabled={!canModify}
-              >
-                <Text style={styles.noImageButtonText}>No Image</Text>
-              </TouchableOpacity>
-            </View>
-            {image && <Image source={{ uri: image }} style={styles.previewImage} />}
-            <TouchableOpacity 
-              onPress={addCharacter} 
-              style={[styles.addButton, !canModify && styles.disabledButton]}
-              disabled={!canModify}
-            >
-              <Text style={styles.addButtonText}>Add Character</Text>
-            </TouchableOpacity>
-            {!canModify && (
-              <Text style={styles.accessDeniedText}>Only authorized users can modify characters.</Text>
-            )}
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.back}><Text>Back</Text></TouchableOpacity>
+        <ScrollView contentContainerStyle={styles.scroll}>
+          <Text style={styles.title}>{bookTitle} - Characters</Text><Text style={styles.warning}>(No deletion confirmation)</Text>
+          <View style={styles.form}>
+            <TextInput style={styles.input} placeholder="Name" value={name} onChangeText={setName} editable={canMod} />
+            <TextInput style={[styles.input, styles.descInput]} placeholder="Description" value={desc} onChangeText={setDesc} multiline editable={canMod} />
+            <View style={styles.imgOpts}><TouchableOpacity onPress={pickImg} style={[styles.upload, !canMod && styles.disabled]} disabled={!canMod}><Text>{canMod ? (img ? "Selected" : "Upload") : "Restricted"}</Text></TouchableOpacity>
+            <TouchableOpacity onPress={skipImg} style={[styles.noImgBtn, !canMod && styles.disabled]} disabled={!canMod}><Text>No Image</Text></TouchableOpacity></View>
+            {img && <Image source={{ uri: img }} style={styles.preview} />}
+            <TouchableOpacity onPress={addChar} style={[styles.add, !canMod && styles.disabled]} disabled={!canMod}><Text>Add</Text></TouchableOpacity>
+            {!canMod && <Text style={styles.denied}>Only authorized users can modify.</Text>}
           </View>
-
-          <ScrollView
-            horizontal
-            contentContainerStyle={styles.horizontalScrollContainer}
-            showsHorizontalScrollIndicator={false}
-          >
-            {characters.map(renderCharacterCard)}
-          </ScrollView>
+          <ScrollView horizontal contentContainerStyle={styles.hScroll} showsHorizontalScrollIndicator={false}>{chars.map(renderChar)}</ScrollView>
         </ScrollView>
-
-        <Modal
-          visible={!!selectedCharacter}
-          transparent
-          animationType="slide"
-          onRequestClose={() => {
-            setSelectedCharacter(null);
-            setEditingCharId(null);
-          }}
-        >
-          <View style={styles.modalOverlay}>
-            {selectedCharacter && (
-              <ScrollView style={styles.previewContainer}>
-                {editingCharId === selectedCharacter.id ? (
-                  <>
-                    <TextInput
-                      style={styles.previewEditName}
-                      value={editName}
-                      onChangeText={setEditName}
-                      autoFocus
-                      editable={canModify}
-                    />
-                    <TextInput
-                      style={styles.previewEditDescription}
-                      value={editDescription}
-                      onChangeText={setEditDescription}
-                      multiline
-                      editable={canModify}
-                    />
-                    <TouchableOpacity
-                      onPress={() => saveEdit(selectedCharacter.id)}
-                      style={[styles.saveButton, !canModify && styles.disabledButton]}
-                      disabled={!canModify}
-                    >
-                      <Text style={styles.saveButtonText}>Save</Text>
-                    </TouchableOpacity>
-                  </>
-                ) : (
-                  <>
-                    <Text style={styles.previewName}>{selectedCharacter.name}</Text>
-                    <Text style={styles.previewDescription}>{selectedCharacter.description}</Text>
-                  </>
-                )}
-                <TouchableOpacity
-                  onPress={() => {
-                    setSelectedCharacter(null);
-                    setEditingCharId(null);
-                  }}
-                  style={styles.closeButton}
-                >
-                  <Text style={styles.closeButtonText}>Close</Text>
-                </TouchableOpacity>
-              </ScrollView>
-            )}
-          </View>
+        <Modal visible={!!selChar} transparent animationType="slide" onRequestClose={() => (setSelChar(null), setEditId(null))}>
+          <View style={styles.modal}><ScrollView style={styles.preview}>
+            {selChar && (editId === selChar.id ? <>
+              <TextInput style={styles.editName} value={editName} onChangeText={setEditName} autoFocus editable={canMod} />
+              <TextInput style={styles.editDesc} value={editDesc} onChangeText={setEditDesc} multiline editable={canMod} />
+              <TouchableOpacity onPress={() => saveEdit(selChar.id)} style={[styles.save, !canMod && styles.disabled]} disabled={!canMod}><Text>Save</Text></TouchableOpacity>
+            </> : <>
+              <Text style={styles.previewName}>{selChar.name}</Text><Text style={styles.previewDesc}>{selChar.description}</Text>
+            </>)}
+            <TouchableOpacity onPress={() => (setSelChar(null), setEditId(null))} style={styles.close}><Text>Close</Text></TouchableOpacity>
+          </ScrollView></View>
         </Modal>
       </View>
     </ImageBackground>
   );
 };
 
-const { width, height } = Dimensions.get("window");
-
 const styles = StyleSheet.create({
-  background: { flex: 1, width, height, position: "absolute", top: 0, left: 0, resizeMode: "cover", },
-  disabledButton: { backgroundColor: "#cccccc", opacity: 0.6 },
-  accessDeniedText: { color: "#ff4444", textAlign: "center", marginTop: 10, fontSize: 14 },
-  overlay: { flex: 1, backgroundColor: "rgba(0, 0, 0, 0.5)", paddingTop: 50 },
-  backButton: { position: "absolute", top: 10, left: 10, backgroundColor: "rgba(118, 11, 11, 0.8)", paddingVertical: 8, paddingHorizontal: 12, borderRadius: 8, zIndex: 10 },
-  backButtonText: { color: "#FFF", fontSize: 16, fontWeight: "bold" },
-  verticalScrollContainer: { paddingBottom: 20, },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 10,
-    color: "#FFF",
-  },
-  headerWarning: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "rgba(201, 11, 11, 1)",
-    textAlign: "center",
-    marginTop: 5,
-    marginBottom: 20,
-  },
-  formContainer: {
-    padding: 20,
-    alignItems: "center",
-  },
-  input: {
-    backgroundColor: "rgba(255, 255, 255, 0.9)",
-    width: "90%",
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  descriptionInput: {
-    height: 80,
-    textAlignVertical: "top",
-  },
-  imageOptions: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "90%",
-    marginBottom: 10,
-  },
-  uploadButton: {
-    backgroundColor: "#4CAF50",
-    padding: 10,
-    borderRadius: 5,
-    flex: 1,
-    marginRight: 5,
-  },
-  uploadButtonText: {
-    color: "#FFF",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  noImageButton: {
-    backgroundColor: "#F44336",
-    padding: 10,
-    borderRadius: 5,
-    flex: 1,
-    marginLeft: 5,
-  },
-  noImageButtonText: {
-    color: "#FFF",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  previewImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  addButton: {
-    backgroundColor: "#2196F3",
-    padding: 10,
-    borderRadius: 5,
-  },
-  addButtonText: {
-    color: "#FFF",
-    fontWeight: "bold",
-  },
-  horizontalScrollContainer: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-  characterContainer: {
-    marginHorizontal: 10,
-    alignItems: "center",
-  },
-  characterCard: {
-    width: 350,
-    height: 450,
-    borderRadius: 15,
-    overflow: "hidden",
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-    borderColor: "red",
-    borderWidth: 2,
-  },
-  characterImage: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "cover",
-  },
-  noImagePlaceholder: {
-    width: "100%",
-    height: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.9)",
-  },
-  transparentOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0)",
-    zIndex: 1,
-  },
-  characterName: {
-    position: "absolute",
-    bottom: 10,
-    left: 10,
-    fontSize: 16,
-    color: "white",
-    fontWeight: "bold",
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: 350,
-    marginTop: 10,
-  },
-  editButton: {
-    backgroundColor: "#FFC107",
-    padding: 5,
-    borderRadius: 5,
-    flex: 1,
-    marginRight: 5,
-  },
-  editButtonText: {
-    color: "#FFF",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  deleteButton: {
-    backgroundColor: "#F44336",
-    padding: 5,
-    borderRadius: 5,
-    flex: 1,
-    marginLeft: 5,
-  },
-  deleteButtonText: {
-    color: "#FFF",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.8)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  previewContainer: {
-    width: width * 0.9,
-    maxHeight: height * 0.7,
-    backgroundColor: "rgba(72, 63, 63, 0.95)",
-    borderRadius: 15,
-    padding: 20,
-  },
-  previewName: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "white",
-    textAlign: "center",
-    marginBottom: 10,
-  },
-  previewDescription: {
-    fontSize: 16,
-    color: "#fff7f7",
-    textAlign: "center",
-    marginBottom: 20,
-  },
-  previewEditName: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#ffffff",
-    textAlign: "center",
-    backgroundColor: "rgba(92, 86, 86, 0.95)",
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  previewEditDescription: {
-    fontSize: 16,
-    color: "#ffffff",
-    textAlign: "center",
-    backgroundColor: "rgba(100, 95, 95, 0.95)",
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 20,
-    minHeight: 100,
-    textAlignVertical: "top",
-  },
-  saveButton: {
-    backgroundColor: "#4CAF50",
-    padding: 10,
-    borderRadius: 5,
-    alignSelf: "center",
-    marginBottom: 10,
-  },
-  saveButtonText: {
-    color: "#FFF",
-    fontWeight: "bold",
-  },
-  closeButton: { backgroundColor: "#2196F3", padding: 10, borderRadius: 5, alignSelf: "center", },
-  closeButtonText: { color: "#FFF", fontWeight: "bold", },
+  bg: { flex: 1, width: Dimensions.get("window").width, height: Dimensions.get("window").height, position: "absolute", resizeMode: "cover" },
+  overlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.5)", paddingTop: 50 },
+  disabled: { backgroundColor: "#ccc", opacity: 0.6 },
+  denied: { color: "#ff4444", textAlign: "center", marginTop: 10, fontSize: 14 },
+  back: { position: "absolute", top: 10, left: 10, backgroundColor: "rgba(118,11,11,0.8)", padding: 8, borderRadius: 8, zIndex: 10 },
+  scroll: { paddingBottom: 20 },
+  title: { fontSize: 24, fontWeight: "bold", color: "#FFF", textAlign: "center", marginBottom: 10 },
+  warning: { fontSize: 16, fontWeight: "bold", color: "rgba(201,11,11,1)", textAlign: "center", marginBottom: 20 },
+  form: { padding: 20, alignItems: "center" },
+  input: { backgroundColor: "rgba(255,255,255,0.9)", width: "90%", padding: 10, borderRadius: 5, marginBottom: 10 },
+  descInput: { height: 80, textAlignVertical: "top" },
+  imgOpts: { flexDirection: "row", justifyContent: "space-between", width: "90%", marginBottom: 10 },
+  upload: { backgroundColor: "#4CAF50", padding: 10, borderRadius: 5, flex: 1, marginRight: 5 },
+  noImgBtn: { backgroundColor: "#F44336", padding: 10, borderRadius: 5, flex: 1, marginLeft: 5 },
+  preview: { width: 100, height: 100, borderRadius: 5, marginBottom: 10, resizeMode: "cover" },
+  add: { backgroundColor: "#2196F3", padding: 10, borderRadius: 5 },
+  hScroll: { paddingHorizontal: 20, paddingVertical: 10 },
+  charCont: { marginHorizontal: 10, alignItems: "center" },
+  charCard: { width: 350, height: 450, borderRadius: 15, overflow: "hidden", backgroundColor: "rgba(0,0,0,0.7)", borderColor: "red", borderWidth: 2 },
+  charImg: { width: "100%", height: "100%", resizeMode: "cover" },
+  noImg: { width: "100%", height: "100%", backgroundColor: "rgba(0,0,0,0.9)" },
+  overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "transparent", zIndex: 1 },
+  charName: { position: "absolute", bottom: 10, left: 10, fontSize: 16, color: "white", fontWeight: "bold" },
+  buttons: { flexDirection: "row", justifyContent: "space-between", width: 350, marginTop: 10 },
+  edit: { backgroundColor: "#FFC107", padding: 5, borderRadius: 5, flex: 1, marginRight: 5 },
+  delete: { backgroundColor: "#F44336", padding: 5, borderRadius: 5, flex: 1, marginLeft: 5 },
+  modal: { flex: 1, backgroundColor: "rgba(0,0,0,0.8)", justifyContent: "center", alignItems: "center" },
+  preview: { width: "90%", maxHeight: Dimensions.get("window").height * 0.7, backgroundColor: "rgba(72,63,63,0.95)", borderRadius: 15, padding: 20 },
+  previewName: { fontSize: 22, fontWeight: "bold", color: "white", textAlign: "center", marginBottom: 10 },
+  previewDesc: { fontSize: 16, color: "#fff7f7", textAlign: "center", marginBottom: 20 },
+
+  editName: { fontSize: 22, fontWeight: "bold", color: "#ffffff", textAlign: "center", backgroundColor: "rgba(92,86,86,0.95)", 
+    padding: 10, borderRadius: 5, marginBottom: 10 },
+    
+  editDesc: { fontSize: 16, color: "#ffffff", textAlign: "center", backgroundColor: "rgba(100,95,95,0.95)", padding: 10, 
+    borderRadius: 5, marginBottom: 20, minHeight: 100, textAlignVertical: "top" },
+    
+  save: { backgroundColor: "#4CAF50", padding: 10, borderRadius: 5, alignSelf: "center", marginBottom: 10 },
+  close: { backgroundColor: "#2196F3", padding: 10, borderRadius: 5, alignSelf: "center" },
 });
 
 export default BookDetails;

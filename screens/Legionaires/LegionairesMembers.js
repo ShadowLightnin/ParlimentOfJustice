@@ -10,6 +10,13 @@ export const memberCategories = [
     ],
   },
   {
+    category: "Aileen's Friends",
+    members: [
+      { name: 'Sheryl', codename: 'Sage' },
+      { name: 'Krystel', codename: 'Prism' },
+      { name: 'Deb', codename: 'Oracle' },    ],
+  },
+  {
     category: "High School",
     members: [
       { name: 'Kenndedy Carman', codename: '' },
@@ -134,13 +141,6 @@ export const memberCategories = [
       { name: 'Jack Smith', codename: 'Sentinel' },
       { name: 'Dustin Edmonds', codename: 'Falcon' },
     ],
-  },
-  {
-    category: "Aileen's Friends",
-    members: [
-      { name: 'Sheryl', codename: 'Sage' },
-      { name: 'Krystel', codename: 'Prism' },
-      { name: 'Deb', codename: 'Oracle' },    ],
   },
 ];
 

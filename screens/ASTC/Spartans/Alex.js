@@ -22,7 +22,7 @@ const Alex = () => {
 
   const armors = [
     { name: "", image: require("../../../assets/Armor/AlexPlaceHolder.jpg"), clickable: true },
-    { name: "", copyright: "William Cummings", image: require("../../../assets/Armor/AlexPlaceHolder2.jpg"), clickable: true },
+    { name: "Huntsman", copyright: "William Cummings", image: require("../../../assets/Armor/AlexPlaceHolder2.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor, index) => (
@@ -48,7 +48,7 @@ const Alex = () => {
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Text style={styles.backButtonText}>←</Text>
           </TouchableOpacity>
-          <Text style={styles.title}>Alex</Text>
+          <Text style={styles.title}>Huntsman</Text>
         </View>
 
         <View style={styles.imageContainer}>
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#00b3ff",
+    color: "#662bd3",
     textAlign: "center",
     flex: 1,
   },
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
   aboutHeader: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#00b3ff",
+    color: "#418230",
     textAlign: "center",
   },
   aboutText: {

@@ -168,7 +168,7 @@ const familyData = [
     members: [
       { name: 'Sheryl', codename: '' },
       { name: 'Dorthy', codename: '' },
-      { name: 'Great Grandma Parker', codename: '' },
+      { name: 'GMA Parker', codename: 'Great Grand' },
     ],
   },
   {
@@ -264,7 +264,7 @@ const characterImages = {
   Jennine: require('../../assets/Armor/JenninePlaceHolder.jpg'),
   Sheryl: require('../../assets/Armor/SherylPlaceHolder.jpg'),
   Dorthy: require('../../assets/Armor/DorthyPlaceHolder.jpg'),
-  'Great Grandma Parker': require('../../assets/Armor/ParkerPlaceHolder_cleanup.jpg'),
+  'GMA Parker': require('../../assets/Armor/ParkerPlaceHolder_cleanup.jpg'),
   Marlyn: require('../../assets/Armor/MarlynPlaceHolder.jpg'),
   Robert: require('../../assets/Armor/RobertPlaceHolder.jpg'),
   'Arlene Hendricks': require('../../assets/Armor/ArlenePlaceHolder.jpg'),

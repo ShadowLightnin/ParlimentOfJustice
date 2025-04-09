@@ -215,15 +215,19 @@ const styles = StyleSheet.create({
   add: { backgroundColor: "#2196F3", padding: 10, borderRadius: 5 },
   hScroll: { paddingHorizontal: 20, paddingVertical: 10 },
   bookCont: { marginHorizontal: 10, alignItems: "center" },
-  bookTab: { width: Dimensions.get("window").width > 600 ? 300 : 200, height: Dimensions.get("window").width > 600 ? 450 : 300, backgroundColor: "rgba(65,62,62,0.9)", borderRadius: 15, padding: 10, alignItems: "center", overflow: "hidden", elevation: 5 },
+  bookTab: { width: Dimensions.get("window").width > 600 ? 300 : 200, height: Dimensions.get("window").width > 600 ? 450 : 300, 
+    backgroundColor: "rgba(65,62,62,0.9)", borderRadius: 15, padding: 10, alignItems: "center", overflow: "hidden", elevation: 5 },
+
   hardcoded: { borderColor: "#FFD700", borderWidth: 2 },
   bookTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10, textAlign: "center", color: "#FFF" },
-  editInput: { fontSize: 18, fontWeight: "bold", marginBottom: 10, textAlign: "center", color: "#FFF", backgroundColor: "rgba(255,255,255,0.2)", borderRadius: 5, padding: 5, width: "100%" },
+  editInput: { fontSize: 18, fontWeight: "bold", marginBottom: 10, textAlign: "center", color: "#FFF", backgroundColor: "rgba(255,255,255,0.2)", 
+    borderRadius: 5, padding: 5, width: "100%" },
+
   bookImg: { width: "100%", height: Dimensions.get("window").width > 600 ? 400 : 250, borderRadius: 10 },
   buttons: { flexDirection: "row", justifyContent: "space-between", width: Dimensions.get("window").width > 600 ? 300 : 200, marginTop: 10 },
   edit: { backgroundColor: "#FFC107", padding: 5, borderRadius: 5, flex: 1, marginRight: 5 },
   save: { backgroundColor: "#4CAF50", padding: 5, borderRadius: 5, flex: 1, marginRight: 5 },
-  delete: { backgroundColor: "#F44336", padding: 5, borderRadius: 5, flex: 1, marginLeft: 5 }
+  delete: { backgroundColor: "#F44336", padding: 5, borderRadius: 5, flex: 1, marginLeft: 5 },
 });
 
 export default MontroseManorTab;

@@ -22,7 +22,7 @@ const BenP = () => {
 
   const armors = [
     { name: "", image: require("../../../assets/Armor/BenpPlaceHolder.jpg"), clickable: true },
-    { name: "", copyright: "William Cummings", image: require("../../../assets/Armor/BenpPlaceHolder2.jpg"), clickable: true },
+    { name: "Chemoshock", copyright: "William Cummings", image: require("../../../assets/Armor/BenpPlaceHolder2.jpg"), clickable: true },
   ];
   const renderArmorCard = (armor, index) => (
     <TouchableOpacity
@@ -47,7 +47,7 @@ const BenP = () => {
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Text style={styles.backButtonText}>←</Text>
           </TouchableOpacity>
-          <Text style={styles.title}>Ben Preston</Text>
+          <Text style={styles.title}>Chemoshock</Text>
         </View>
 
         <View style={styles.imageContainer}>

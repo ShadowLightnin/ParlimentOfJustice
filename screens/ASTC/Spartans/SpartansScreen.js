@@ -56,9 +56,9 @@ const backgroundImages = [
 
 // Member Data
 const members = [
-  { name: 'Cam', codename: '', screen: 'Cam', clickable: true, position: [1, 0], image: require('../../../assets/Armor/CamPlaceHolder2.jpg') },
-  { name: 'Ben', codename: '', screen: 'BenP', clickable: true, position: [1, 1], image: require('../../../assets/Armor/BenpPlaceHolder2.jpg') },
-  { name: 'Alex', codename: '', screen: 'Alex', clickable: true, position: [1, 2], image: require('../../../assets/Armor/AlexPlaceHolder2.jpg') },
+  { name: 'Cam', codename: 'Court Chief', screen: 'Cam', clickable: true, position: [1, 0], image: require('../../../assets/Armor/CamPlaceHolder2.jpg') },
+  { name: 'Ben', codename: 'Chemoshock', screen: 'BenP', clickable: true, position: [1, 1], image: require('../../../assets/Armor/BenpPlaceHolder2.jpg') },
+  { name: 'Alex', codename: 'Huntsman', screen: 'Alex', clickable: true, position: [1, 2], image: require('../../../assets/Armor/AlexPlaceHolder2.jpg') },
 ];
 
 // Empty cell checker
@@ -91,6 +91,10 @@ const SpartansScreen = () => {
   const cardSize = isDesktop ? 320 : 100; 
   const cardSpacing = isDesktop ? 120 : 30; 
 
+  const goToChat = () => {
+    navigation.navigate('TeamChat');
+  };
+
   return (
     <ImageBackground 
       source={backgroundImage} 
@@ -103,6 +107,9 @@ const SpartansScreen = () => {
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
           <Text style={styles.header}>The Spartans</Text>
+          <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
+            <Text style={styles.chatText}>🛡️</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Grid Layout */}
@@ -185,6 +192,15 @@ const styles = StyleSheet.create({
     textShadowColor: '#00b3ff',
     textShadowRadius: 15,
     flex: 1,
+  },
+  chatButton: {
+    padding: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 5,
+  },
+  chatText: {
+    fontSize: 20,
+    color: '#00b3ff',
   },
   grid: {
     flex: 1,

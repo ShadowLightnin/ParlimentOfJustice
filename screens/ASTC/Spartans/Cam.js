@@ -22,7 +22,7 @@ const Cam = () => {
 
   const armors = [
     { name: "", image: require("../../../assets/Armor/CamPlaceHolder.jpg"), clickable: true }, // No copyright
-    { name: "", copyright: "William Cummings", image: require("../../../assets/Armor/CamPlaceHolder2.jpg"), clickable: true }, // With copyright
+    { name: "Court Chief", copyright: "William Cummings", image: require("../../../assets/Armor/CamPlaceHolder2.jpg"), clickable: true }, // With copyright
   ];
 
   const renderArmorCard = (armor, index) => (
@@ -48,7 +48,7 @@ const Cam = () => {
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Text style={styles.backButtonText}>←</Text>
           </TouchableOpacity>
-          <Text style={styles.title}>Cam</Text>
+          <Text style={styles.title}>Court Chief</Text>
 
         </View>
 
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#00b3ff",
+    color: "#c222ba",
     textAlign: "center",
     flex: 1,
   },
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
   aboutHeader: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#00b3ff",
+    color: "#c222ba",
     textAlign: "center",
   },
   aboutText: {

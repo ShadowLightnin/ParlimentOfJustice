@@ -30,7 +30,7 @@ const members = [
   { name: 'Nick Larsen', codename: 'Iron Guard', screen: '', clickable: true, image: require('../../assets/Armor/NickPlaceHolder2.jpg') },
   { name: 'Vanner Johnson', codename: 'Viral', screen: '', clickable: true, image: require('../../assets/Armor/VannerPlaceHolder.jpg') },
   { name: 'Tommy Holbrook', codename: 'Swift Shadow', screen: '', clickable: true, image: require('../../assets/Armor/TommyHPlaceHolder.jpg') },
-  { name: 'Alex Wood', codename: '', screen: '', clickable: true, image: require('../../assets/Armor/AlexWPlaceHolder.jpg') },
+  { name: 'Alex Wood', codename: 'Vortex Flash', screen: '', clickable: true, image: require('../../assets/Armor/AlexWPlaceHolder.jpg') },
   { name: 'Rick Holly', codename: 'Valor Knight', screen: '', clickable: true, image: require('../../assets/Armor/RickPlaceHolder.jpg') },
   { name: 'Trent Cook', codename: 'Captain', screen: '', clickable: true, image: require('../../assets/Armor/TrentPlaceHolder.jpg') },
   { name: 'Robbie Petersen', codename: 'Quickstike', screen: '', clickable: true, image: require('../../assets/Armor/RobbiePlaceHolder.jpg') },
