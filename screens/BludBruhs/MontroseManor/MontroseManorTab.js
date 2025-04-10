@@ -9,7 +9,10 @@ import * as ImagePicker from "expo-image-picker";
 const ALLOWED_EMAILS = ["samuelp.woodwell@gmail.com", "cummingsnialla@gmail.com", "will@test.com", "c1wcummings@gmail.com", "aileen@test.com"];
 const RESTRICT_ACCESS = true; // Set to true to restrict to ALLOWED_EMAILS, false to allow anyone
 const PLACEHOLDER_IMAGE = require("../../../assets/Armor/PlaceHolder.jpg");
-const HARDCODED_BOOKS = [{ id: "hardcoded-1", title: "Hardcode test", hardcoded: true }, { id: "hardcoded-2", title: "Hardcode test 2", hardcoded: true }];
+const HARDCODED_BOOKS = [
+  { id: "hardcoded-1", title: "Montrose Manor", coverImage: require("../../../assets/MontroseManor.jpg"), hardcoded: true },
+  // Add more hardcoded books here with their cover images
+];
 
 const MontroseManorTab = () => {
   const navigation = useNavigation();
@@ -109,20 +112,24 @@ const MontroseManorTab = () => {
 
   const goHome = () => navigation.navigate('BludBruhsHome');
   const renderBook = (book) => (
-    <View key={book.id} style={styles.bookCont}>
-      <TouchableOpacity style={[styles.bookTab, book.hardcoded && styles.hardcoded]} onPress={() => 
-        navigation.navigate("BookDetails", { bookId: book.id, bookTitle: book.title, bookImageUrl: book.imageUrl || "" })}>
-        {editingBookId === book.id ? <TextInput style={styles.editInput} value={editTitle} onChangeText={setEditTitle} onSubmitEditing={() => saveEdit(book.id)} autoFocus /> 
-          : <Text style={styles.bookTitle}>{book.title}</Text>}
-        <Image source={book.imageUrl ? { uri: book.imageUrl } : PLACEHOLDER_IMAGE} style={styles.bookImg} resizeMode="cover" defaultSource={PLACEHOLDER_IMAGE} />
-      </TouchableOpacity>
-      {!book.hardcoded && <View style={styles.buttons}>
-        {editingBookId === book.id ? <TouchableOpacity onPress={() => saveEdit(book.id)} style={styles.save}><Text>Save</Text></TouchableOpacity> 
-          : <TouchableOpacity onPress={() => startEditing(book)} style={[styles.edit, !canUpload && styles.disabled]} disabled={!canUpload}><Text>Edit</Text></TouchableOpacity>}
-        <TouchableOpacity onPress={() => handleDeletePress(book.id, book.hardcoded, book.title)} style={[styles.delete, !canUpload && styles.disabled]} disabled={!canUpload}><Text>Delete</Text></TouchableOpacity>
-      </View>}
-    </View>
-  );
+<View key={book.id} style={styles.bookCont}>
+    <TouchableOpacity style={[styles.bookTab, book.hardcoded && styles.hardcoded]} onPress={() => 
+      navigation.navigate("BookDetails", { 
+        bookId: book.id, 
+        bookTitle: book.title, 
+        bookImageUrl: book.imageUrl || (book.coverImage ? book.coverImage : ""), // Pass coverImage if available
+      })}>
+      {editingBookId === book.id ? <TextInput style={styles.editInput} value={editTitle} onChangeText={setEditTitle} onSubmitEditing={() => saveEdit(book.id)} autoFocus /> 
+        : <Text style={styles.bookTitle}>{book.title}</Text>}
+      <Image source={book.imageUrl ? { uri: book.imageUrl } : book.coverImage || PLACEHOLDER_IMAGE} style={styles.bookImg} resizeMode="cover" defaultSource={PLACEHOLDER_IMAGE} />
+    </TouchableOpacity>
+    {!book.hardcoded && <View style={styles.buttons}>
+      {editingBookId === book.id ? <TouchableOpacity onPress={() => saveEdit(book.id)} style={styles.save}><Text>Save</Text></TouchableOpacity> 
+        : <TouchableOpacity onPress={() => startEditing(book)} style={[styles.edit, !canUpload && styles.disabled]} disabled={!canUpload}><Text>Edit</Text></TouchableOpacity>}
+      <TouchableOpacity onPress={() => handleDeletePress(book.id, book.hardcoded, book.title)} style={[styles.delete, !canUpload && styles.disabled]} disabled={!canUpload}><Text>Delete</Text></TouchableOpacity>
+    </View>}
+  </View>
+);
 
   return (
     <ImageBackground source={require("../../../assets/MontroseMansion.jpg")} style={styles.bg}>

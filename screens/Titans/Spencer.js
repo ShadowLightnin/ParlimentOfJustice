@@ -22,6 +22,7 @@ const Spencer = () => {
 
   const armors = [
     { name: "Annihilator", image: require("../../assets/Armor/Spencer3.jpg"), clickable: true },
+    { name: "Annihilator", image: require("../../assets/Armor/SpencerPlaceHolder.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (
