@@ -66,53 +66,36 @@ const TannerBb = () => {
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
-          Spencer McNeil, known as Annihilus, is the eldest of the McNeil siblings and the oldest among the nine oldest cousins, making him a foundational figure in the Titans and the Parliament of Justice. His imposing presence is a mix of authority, nostalgia, and vulnerability, a fallen leader who once united his extended family but now struggles with uncertainty. He’s deeply committed to helping others, especially his siblings Jared and Jennifer, his cousins Ben and Azure (Briggs), Will and Emma (Cummings), and the other oldest cousins like Josh S and Garden. Spencer prefers the simplicity and morality of a bygone era, reminiscent of Christ’s time, where faith, community, and honor guided actions. Despite losing his way, his inherent goodness and love for his family—spanning the McNeil’s, Briggs, Cummings, Jensen’s, Bolander’s, and Stillman families—make him a cherished, if conflicted, patriarch.
-          </Text>
+          Tanner - Wolff is a primal and ferocious warrior, a vital force within the Thunder Born, reborn from the ashes of the Bludbruhs in Zion City’s tumultuous world. His presence is wild and intimidating, a blend of animalistic strength and unyielding tenacity that makes him a fearsome ally. Behind his wolf-themed armor, Tanner is gruff, instinctive, and fiercely loyal to his Thunder Born comrades—Sam “Striker,” Cole “Cruiser,” Joseph “Techoman,” and James “Shadowmind”—seeing their unit as a pack he’d defend to the death. He thrives on raw power, drawing from his inner beast and the rugged spirit of survival. Off the battlefield, he’s a loner and a hunter, often prowling the wilds or sharpening his skills, but his savage nature can sometimes strain his bonds with the more tactical members of the group.          </Text>
           <Text style={styles.aboutText}>
           Backstory
           </Text>
           <Text style={styles.aboutText}>
-          Raised in a remote village on the edge of Zion City’s Terrestrial sector, Spencer was the firstborn of the McNeil siblings, with Jared and Jennifer following closely. His family, part of a larger network of cousins from the Cummings, Jensen’s, Briggs, Bolander’s, and Stillman clans, shared a deep-rooted tradition of faith, strength, and unity. As the oldest cousin, Spencer took it upon himself to lead, mentoring not only his siblings but also cousins like Ben and Azure (Briggs), Will and Emma (Cummings), and the Stillman cousins Josh S and Garden, who were among the nine oldest.
-          </Text>
+          Tanner grew up on the fringes of Zion City’s Terrestrial sector, in a rugged community where survival meant embracing the wild. Raised among hunters and storytellers, he idolized wolves—symbols of strength, loyalty, and ferocity—and honed his physical prowess from a young age. His life took a drastic turn when he joined Sam, Will (later “Night Hawk”), Cole, Joseph, James, Zeke, Elijah, Tom, and others on the pre-Parliament adventure to Melcornia. In that dark mansion, Tanner witnessed Sam’s corruption by Erevos and the loss of Sam’s family, an event that awakened his own primal instincts as he fought to protect the group.          </Text>
           <Text style={styles.aboutText}>
-          When Zion City’s sectors fractured, Spencer’s village faced raids from the lawless Outer Darkness sector. During one such attack, his super strength emerged, saving his siblings and cousins and solidifying his role as the Titans’ leader. The burning goat skull relic he later discovered—tied to myths of destruction and renewal—became his symbol, but as modern corruption and technological overreach grew, Spencer began to withdraw, longing for the simplicity of the past.          
-          </Text>
+          Believing Sam dead after Melcornia, Tanner returned to Zion City hardened, living on the edge of society and refining his combat skills. When Sam resurfaced—alive and wielding dark powers—Tanner rejoined him, Cole, Joseph, and James to form the Bludbruhs, bringing his raw strength to their fight against Zion City’s chaos. His wolf-like ferocity complemented Sam’s lightning, Cole’s combat, and Joseph’s tech, but Sam’s growing darkness tested their unity. When the Bludbruhs fractured, some split for the Monkie Alliance, but Tanner stayed, his loyalty to the pack outweighing his unease with Sam’s powers. He embraced the Thunder Born rebranding, seeing it as a howl of renewal, aligning his savage spirit with their electric resolve.          </Text>
           <Text style={styles.aboutText}>
-          His leadership waned as he saw the younger cousins, like Jared, adapt to the new world with speed and innovation, while he clung to outdated ideals. Among the nine oldest cousins, only seven—Spencer, Jared, Jennifer, Ben, Azure, Will, and Emma—formed the core Titans, with Josh S and Garden occasionally stepping in. Spencer now sees Jared as his potential successor, a realization that both inspires and haunts him, as he fears losing the values he holds dear.          
-          </Text>
+          Abilities          </Text>
           <Text style={styles.aboutText}>
-          Abilities          
-          </Text>
+          Tanner’s armor and primal nature grant him a range of powers focused on strength, ferocity, and survival, reflecting his wolf theme and Thunder Born identity:          </Text>
           <Text style={styles.aboutText}>
-          Spencer’s powers are a reflection of his role as a fallen leader and protector of his vast family          
-          </Text>
+          Beast Strength: Possesses enhanced physical power, capable of tearing through obstacles or foes with claw-like strikes, a trait born from his wolf-inspired instincts.          </Text>
           <Text style={styles.aboutText}>
-          Super Strength: The cornerstone of his identity, now tempered by doubt but still formidable when inspired by his family’s faith.          
-          </Text>
+          Feral Agility: Moves with lupine speed and reflexes, dodging attacks or lunging at targets, making him a relentless hunter in combat.          </Text>
           <Text style={styles.aboutText}>
-          Endurance: A testament to his lifelong commitment to his cousins and siblings, though he sometimes overextends himself.          
-          </Text>
+          Thunder Howl: Emits a sonic roar infused with electrical energy, stunning enemies or rallying allies, a nod to his Thunder Born synergy with Sam’s lightning.          </Text>
           <Text style={styles.aboutText}>
-          Fire Aura: The flickering flames of his helmet symbolize his inner struggle, burning brightly when he draws strength from family bonds.          
-          </Text>
+          Predator Senses: Tracks targets with heightened smell, hearing, and night vision, honed by his wild upbringing and Melcornia’s harsh lessons.          </Text>
           <Text style={styles.aboutText}>
-          Primal Instinct: Rooted in his shared heritage with the Briggs and Cummings cousins, this instinct helps him protect and anticipate threats.          
-          </Text>
+          Pack Bond: Boosts his strength and resilience when fighting alongside his team, reflecting his loyalty to Sam, Cole, Joseph, and James as his pack.          </Text>
           <Text style={styles.aboutText}>
-          Earthshaking Impact: A power to disrupt and defend, often used to shield his family from Zion City’s chaos.          
-          </Text>
+          Personality and Role in the Team          </Text>
           <Text style={styles.aboutText}>
-          Inspirational Presence: His ability to uplift his siblings and cousins, especially Jared, whom he mentors as his successor, remains his greatest asset.          
-          </Text>
+          Tanner is the muscle and ferocity of the Thunder Born, complementing Sam’s volatility with his raw power, Cole’s discipline with his wildness, and Joseph’s tech with his brute force. He’s gruff, protective, and deeply loyal to his pack, seeing their unit as a family worth fighting for. His relationship with Sam is one of primal respect—he admires Sam’s strength but growls at his darkness—while with Cole, it’s a soldierly bond, syncing his fury with Cole’s precision. With Joseph, he’s gruffly appreciative, relying on tech upgrades, and with James “Shadowmind,” he shares a hunter’s kinship, blending stealth with savagery.          </Text>
           <Text style={styles.aboutText}>
-          Personality and Role in the Team          
-          </Text>
+          In the Thunder Born, Tanner stood firm during the Bludbruhs’ rift, choosing to stay with Sam, Cole, Joseph, and James over splitting to the Monkie Alliance, driven by pack loyalty. His Melcornia past forged his resilience, and his presence bolsters the team when the Titans face “Evil Sam.” In Zion City, he connects with the Titans’ fighters like Ben Briggs and Jared, sharing their combat drive, but his squad focuses on survival over heroics. His ultimate goal is to protect Zion City as part of his pack, proving that primal strength and loyalty can thunder through any storm.          </Text>
           <Text style={styles.aboutText}>
-          As the oldest Titan and cousin, Spencer is the unofficial patriarch of the nine oldest, but his fall from leadership has left him searching for purpose. He’s deeply connected to his siblings (Jared and Jennifer) and cousins (Ben and Azure, Will and Emma, Josh S and Garden), often acting as their advisor and protector. His preference for the past clashes with the modern approaches of younger cousins like Lee (Jensen) and Mason (Stillman), but his goodness ensures he remains a stabilizing force.          
-          </Text>
-          <Text style={styles.aboutText}>
-          Spencer sees Jared as his successor, a role that both pressures and inspires him. His relationships with the other Titans—Jennifer’s compassion, Ben and Azure’s teamwork, Will and Emma’s innovation—are rooted in shared history, while his interactions with the broader family (like Todd’s leadership from Cummings or Samantha’s strength from Jensen’s) remind him of his broader responsibility. His goal is to reclaim his leadership by guiding Jared and the Titans to balance tradition and progress, ensuring Zion City’s safety for all their families.          
-          </Text>
+          Tanner stayed with Sam when the Bludbruhs dissolved, rejecting the Monkie Alliance split over Sam’s dark powers. He embraced the Thunder Born name as a howl of renewal, shedding the “Bludbruhs” blood-taint for a title that echoes his thunder howl and the group’s electric rebirth, reinforcing his bond with Sam, Cole, Joseph, and James.          </Text>
         </View>
       </ScrollView>
     </View>

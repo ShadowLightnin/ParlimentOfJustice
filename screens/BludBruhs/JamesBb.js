@@ -66,53 +66,37 @@ const JameBb = () => {
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
-          Spencer McNeil, known as Annihilus, is the eldest of the McNeil siblings and the oldest among the nine oldest cousins, making him a foundational figure in the Titans and the Parliament of Justice. His imposing presence is a mix of authority, nostalgia, and vulnerability, a fallen leader who once united his extended family but now struggles with uncertainty. He’s deeply committed to helping others, especially his siblings Jared and Jennifer, his cousins Ben and Azure (Briggs), Will and Emma (Cummings), and the other oldest cousins like Josh S and Garden. Spencer prefers the simplicity and morality of a bygone era, reminiscent of Christ’s time, where faith, community, and honor guided actions. Despite losing his way, his inherent goodness and love for his family—spanning the McNeil’s, Briggs, Cummings, Jensen’s, Bolander’s, and Stillman families—make him a cherished, if conflicted, patriarch.
-          </Text>
+          James, known as Shadowmind, is a silent and enigmatic operative, the elusive shadow of the Thunder Born, reborn from the fractured Bludbruhs within Zion City’s chaotic realm. His presence is subtle yet unnerving, a blend of stealth and perception that makes him a ghostly asset to his team. Behind his shadowy armor, James is reserved, insightful, and fiercely loyal to his Thunder Born comrades—Sam “Striker,” Cole “Cruiser,” Joseph “Techoman,” and Tanner - Wolff—seeing their unit as a refuge where his dark gifts can serve a purpose. He thrives in the unseen, drawing power from shadows and his keen senses. Off the battlefield, he’s a watcher and a planner, often lurking on the edges or analyzing threats, but his reclusive nature can make him a mystery even to his closest allies.          </Text>
           <Text style={styles.aboutText}>
           Backstory
           </Text>
           <Text style={styles.aboutText}>
-          Raised in a remote village on the edge of Zion City’s Terrestrial sector, Spencer was the firstborn of the McNeil siblings, with Jared and Jennifer following closely. His family, part of a larger network of cousins from the Cummings, Jensen’s, Briggs, Bolander’s, and Stillman clans, shared a deep-rooted tradition of faith, strength, and unity. As the oldest cousin, Spencer took it upon himself to lead, mentoring not only his siblings but also cousins like Ben and Azure (Briggs), Will and Emma (Cummings), and the Stillman cousins Josh S and Garden, who were among the nine oldest.
-          </Text>
+          James grew up in Zion City’s Telestial sector, in a shadowed corner where survival meant staying unnoticed. Raised among outcasts and observers, he learned to blend into the dark, honing a natural talent for perception and evasion. His life shifted when he joined Sam, Will (later “Night Hawk”), Cole, Joseph, Tanner, Zeke, Elijah, Tom, and others on the pre-Parliament adventure to Melcornia. In that dark mansion, James was touched by the same corrupting force as Sam—Erevos’s influence awakened his shadow powers as he hid from the chaos that claimed Sam’s family. Unlike Sam, James embraced the darkness quietly, using it to protect rather than destroy.          </Text>
           <Text style={styles.aboutText}>
-          When Zion City’s sectors fractured, Spencer’s village faced raids from the lawless Outer Darkness sector. During one such attack, his super strength emerged, saving his siblings and cousins and solidifying his role as the Titans’ leader. The burning goat skull relic he later discovered—tied to myths of destruction and renewal—became his symbol, but as modern corruption and technological overreach grew, Spencer began to withdraw, longing for the simplicity of the past.          
-          </Text>
-          <Text style={styles.aboutText}>
-          His leadership waned as he saw the younger cousins, like Jared, adapt to the new world with speed and innovation, while he clung to outdated ideals. Among the nine oldest cousins, only seven—Spencer, Jared, Jennifer, Ben, Azure, Will, and Emma—formed the core Titans, with Josh S and Garden occasionally stepping in. Spencer now sees Jared as his potential successor, a realization that both inspires and haunts him, as he fears losing the values he holds dear.          
-          </Text>
+          Believing Sam dead after Melcornia, James returned to Zion City, fading into its underbelly and refining his abilities. When Sam resurfaced—alive and corrupted—James rejoined him, Cole, Joseph, and Tanner to form the Bludbruhs, bringing his stealth to their fight against Zion City’s threats. His shadow manipulation synced with Sam’s lightning, Cole’s combat, Joseph’s tech, and Tanner’s ferocity, but Sam’s growing darkness mirrored James’s own, creating a silent bond. When the Bludbruhs fractured over Sam’s dark surge, some split for the Monkie Alliance, but James stayed, his loyalty rooted in understanding Sam’s struggle. He embraced the Thunder Born rebranding, seeing it as a chance to channel his shadows into a new, electric purpose alongside his pack.          </Text>
           <Text style={styles.aboutText}>
           Abilities          
           </Text>
           <Text style={styles.aboutText}>
-          Spencer’s powers are a reflection of his role as a fallen leader and protector of his vast family          
-          </Text>
+          James’s innate gifts and shadowy nature grant him a range of powers focused on stealth, mobility, and awareness, reflecting his Shadowmind persona:          </Text>
           <Text style={styles.aboutText}>
-          Super Strength: The cornerstone of his identity, now tempered by doubt but still formidable when inspired by his family’s faith.          
-          </Text>
+          Shadow Manipulation: Controls and shapes shadows, creating tendrils to strike, barriers to shield, or cloaks to obscure, a power born from Melcornia’s dark influence.          </Text>
           <Text style={styles.aboutText}>
-          Endurance: A testament to his lifelong commitment to his cousins and siblings, though he sometimes overextends himself.          
-          </Text>
+          Teleportation: Moves instantly between shadows within a limited range, vanishing and reappearing to flank or escape, a skill honed by his elusive instincts.          </Text>
           <Text style={styles.aboutText}>
-          Fire Aura: The flickering flames of his helmet symbolize his inner struggle, burning brightly when he draws strength from family bonds.          
-          </Text>
+          Invisibility: Fades into near-perfect invisibility when shrouded in darkness, making him a ghost in combat or reconnaissance, enhanced by his armor’s design.          </Text>
           <Text style={styles.aboutText}>
-          Primal Instinct: Rooted in his shared heritage with the Briggs and Cummings cousins, this instinct helps him protect and anticipate threats.          
-          </Text>
+          Enhanced Perception: Sees, hears, and senses beyond normal limits, detecting hidden threats or weak points, a trait sharpened by his watchful nature and Melcornia’s lessons.          </Text>
           <Text style={styles.aboutText}>
-          Earthshaking Impact: A power to disrupt and defend, often used to shield his family from Zion City’s chaos.          
-          </Text>
+          Shadow Strike: Infuses his attacks with shadow energy, boosting their impact or disorienting foes, a subtle nod to Thunder Born’s electric theme through dark synergy.          </Text>
           <Text style={styles.aboutText}>
-          Inspirational Presence: His ability to uplift his siblings and cousins, especially Jared, whom he mentors as his successor, remains his greatest asset.          
-          </Text>
+          Personality and Role in the Team          </Text>
           <Text style={styles.aboutText}>
-          Personality and Role in the Team          
-          </Text>
+          James is the stealth and perception of the Thunder Born, complementing Sam’s volatility with his subtlety, Cole’s discipline with his evasion, and Tanner’s ferocity with his precision. He’s quiet, perceptive, and deeply loyal to his pack, seeing their unit as a shadow where he thrives. His relationship with Sam is one of silent understanding—he shares Sam’s dark past but tempers it with control—while with Cole, it’s a tactical alliance, syncing stealth with combat. With Joseph, he’s a shadow to tech, using gadgets to enhance his moves, and with Tanner, he’s a kindred hunter, blending shadow with beast.          </Text>
           <Text style={styles.aboutText}>
-          As the oldest Titan and cousin, Spencer is the unofficial patriarch of the nine oldest, but his fall from leadership has left him searching for purpose. He’s deeply connected to his siblings (Jared and Jennifer) and cousins (Ben and Azure, Will and Emma, Josh S and Garden), often acting as their advisor and protector. His preference for the past clashes with the modern approaches of younger cousins like Lee (Jensen) and Mason (Stillman), but his goodness ensures he remains a stabilizing force.          
-          </Text>
+          In the Thunder Born, James stayed through the Bludbruhs’ rift, choosing loyalty to Sam, Cole, Joseph, and Tanner over the Monkie Alliance split, drawn by their shared Melcornia scars. His shadow powers proved crucial when the Titans faced “Evil Sam,” revealing his survival alongside the team. In Zion City, he connects with the Titans’ stealth experts like William and Ben Briggs, sharing their subtle approach, but his squad focuses on survival over grand heroics. His ultimate goal is to guard Zion City from the shadows with Thunder Born, proving that darkness can serve light, while keeping his pack intact.          </Text>
           <Text style={styles.aboutText}>
-          Spencer sees Jared as his successor, a role that both pressures and inspires him. His relationships with the other Titans—Jennifer’s compassion, Ben and Azure’s teamwork, Will and Emma’s innovation—are rooted in shared history, while his interactions with the broader family (like Todd’s leadership from Cummings or Samantha’s strength from Jensen’s) remind him of his broader responsibility. His goal is to reclaim his leadership by guiding Jared and the Titans to balance tradition and progress, ensuring Zion City’s safety for all their families.          
-          </Text>
+          James stood with Sam during the Bludbruhs’ dissolution, rejecting the Monkie Alliance split over Sam’s dark powers. He embraced the Thunder Born name as a fusion of his shadow roots and their electric renewal, shedding the “Bludbruhs” blood-taint for a title that reflects his subtle synergy with Sam’s lightning, Cole’s charges, Joseph’s tech, and Tanner’s howl, reinforcing their pack’s resilience.          </Text>
         </View>
       </ScrollView>
     </View>

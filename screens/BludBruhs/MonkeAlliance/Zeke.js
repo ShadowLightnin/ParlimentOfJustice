@@ -66,53 +66,39 @@ const Zeke = () => {
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
-          Spencer McNeil, known as Annihilus, is the eldest of the McNeil siblings and the oldest among the nine oldest cousins, making him a foundational figure in the Titans and the Parliament of Justice. His imposing presence is a mix of authority, nostalgia, and vulnerability, a fallen leader who once united his extended family but now struggles with uncertainty. He’s deeply committed to helping others, especially his siblings Jared and Jennifer, his cousins Ben and Azure (Briggs), Will and Emma (Cummings), and the other oldest cousins like Josh S and Garden. Spencer prefers the simplicity and morality of a bygone era, reminiscent of Christ’s time, where faith, community, and honor guided actions. Despite losing his way, his inherent goodness and love for his family—spanning the McNeil’s, Briggs, Cummings, Jensen’s, Bolander’s, and Stillman families—make him a cherished, if conflicted, patriarch.
-          </Text>
+          Zeke Workman, known as Enderstrike, is a cunning and resolute leader, the driving force behind The Monkie Alliance, a faction born from the ashes of the Bludbruhs’ schism in Zion City’s fractured world. His presence is sharp and unpredictable, a mix of strategic brilliance and otherworldly power that makes him a formidable commander. Behind his yet-to-be-detailed armor, Zeke is determined, principled, and fiercely loyal to his Monkie Alliance team—Ammon “Quick Wit,” Alex M “Swiftmind,” Eli “Shadow Hunter,” Tom “Thunder Whisperer,” Damon “Pixel Maverick,” Elijah “Chaos Wither,” and Ethan “Bolt Watcher”—seeing them as a brotherhood forged in defiance of Sam’s dark path. He wields Ender-inspired abilities with precision, a legacy of his Melcornia past. Off the battlefield, he’s a tactician and a mediator, often rallying his team or brooding over past rifts, but his rivalry with Sam “Striker” keeps tensions simmering beneath his cool exterior.          </Text>
           <Text style={styles.aboutText}>
           Backstory
           </Text>
           <Text style={styles.aboutText}>
-          Raised in a remote village on the edge of Zion City’s Terrestrial sector, Spencer was the firstborn of the McNeil siblings, with Jared and Jennifer following closely. His family, part of a larger network of cousins from the Cummings, Jensen’s, Briggs, Bolander’s, and Stillman clans, shared a deep-rooted tradition of faith, strength, and unity. As the oldest cousin, Spencer took it upon himself to lead, mentoring not only his siblings but also cousins like Ben and Azure (Briggs), Will and Emma (Cummings), and the Stillman cousins Josh S and Garden, who were among the nine oldest.
-          </Text>
+          Zeke grew up in Zion City’s Terrestrial sector, raised in a family that valued resilience and ingenuity. As a young man, he was drawn to strategy and survival, traits that shone when he joined Sam, Will (later “Night Hawk”), Cole, Joseph, James, Tanner, Elijah, Tom, and others on the pre-Parliament adventure to Melcornia. In that dark mansion, Zeke encountered an Ender-like entity—a shadowy, teleporting force—that imbued him with strange powers as Sam fell to Erevos’s corruption. Witnessing Sam’s family die and his descent into darkness, Zeke vowed to protect the group, using his newfound abilities to escape.          </Text>
           <Text style={styles.aboutText}>
-          When Zion City’s sectors fractured, Spencer’s village faced raids from the lawless Outer Darkness sector. During one such attack, his super strength emerged, saving his siblings and cousins and solidifying his role as the Titans’ leader. The burning goat skull relic he later discovered—tied to myths of destruction and renewal—became his symbol, but as modern corruption and technological overreach grew, Spencer began to withdraw, longing for the simplicity of the past.          
-          </Text>
+          Believing Sam dead, Zeke returned to Zion City, honing his Ender powers in isolation. When Sam resurfaced—alive and corrupted—Zeke joined the Bludbruhs with Cole, Joseph, James, and Tanner, hoping to guide Sam back to light. But Sam’s reliance on dark powers clashed with Zeke’s principles, igniting a rift akin to Captain America: Civil War. Sam’s dark surge fractured the Bludbruhs, and Zeke led a splinter group—himself, Ammon, Alex, Eli, Tom, Damon, Elijah, and Ethan—to form The Monkie Alliance, rejecting Sam’s shadow for a path of agility and defiance (the “Monkie” name a playful jab at their nimble, rebellious spirit). Cole, Joseph, James, and Tanner stayed with Sam, birthing Thunder Born, and a bitter rivalry ensued.          </Text>
           <Text style={styles.aboutText}>
-          His leadership waned as he saw the younger cousins, like Jared, adapt to the new world with speed and innovation, while he clung to outdated ideals. Among the nine oldest cousins, only seven—Spencer, Jared, Jennifer, Ben, Azure, Will, and Emma—formed the core Titans, with Josh S and Garden occasionally stepping in. Spencer now sees Jared as his potential successor, a realization that both inspires and haunts him, as he fears losing the values he holds dear.          
-          </Text>
+          Over time, Zeke and Sam mended their rift through uneasy truces with the Parliament of Justice, but trust remains shaky. Zeke’s Monkie Alliance stands as a counterpoint to Thunder Born, their Civil War-style feud simmering beneath a fragile alliance, with Zeke ever-watchful of Sam’s darkness.          </Text>
           <Text style={styles.aboutText}>
           Abilities          
           </Text>
           <Text style={styles.aboutText}>
-          Spencer’s powers are a reflection of his role as a fallen leader and protector of his vast family          
-          </Text>
+          Zeke’s armor and Ender-inspired powers grant him a range of abilities focused on mobility, deception, and leadership, reflecting his Monkie Alliance role:          </Text>
           <Text style={styles.aboutText}>
-          Super Strength: The cornerstone of his identity, now tempered by doubt but still formidable when inspired by his family’s faith.          
-          </Text>
+          Ender Teleportation: Teleports short distances in a blink, leaving a faint purple shimmer, ideal for evasion or surprise attacks, a skill born from Melcornia’s entity.          </Text>
           <Text style={styles.aboutText}>
-          Endurance: A testament to his lifelong commitment to his cousins and siblings, though he sometimes overextends himself.          
-          </Text>
+          Ender Mimicry: Mimics traits of foes or allies temporarily (e.g., speed, strength), adapting to threats, a tactical edge honed by his strategic mind.          </Text>
           <Text style={styles.aboutText}>
-          Fire Aura: The flickering flames of his helmet symbolize his inner struggle, burning brightly when he draws strength from family bonds.          
-          </Text>
+          Ender Summoning: Calls forth shadowy, Ender-like duplicates to distract or fight, controllable minions that echo his leadership over Monkie Alliance.          </Text>
           <Text style={styles.aboutText}>
-          Primal Instinct: Rooted in his shared heritage with the Briggs and Cummings cousins, this instinct helps him protect and anticipate threats.          
-          </Text>
+          Ender Blast: Unleashes a concentrated burst of dark energy, damaging foes or disrupting tech, a powerful strike tying his powers to his past.          </Text>
           <Text style={styles.aboutText}>
-          Earthshaking Impact: A power to disrupt and defend, often used to shield his family from Zion City’s chaos.          
-          </Text>
+          Alliance Command: Boosts his team’s coordination and morale with a leader’s aura, reflecting his role as Monkie Alliance’s captain and his defiance of Sam.          </Text>
           <Text style={styles.aboutText}>
-          Inspirational Presence: His ability to uplift his siblings and cousins, especially Jared, whom he mentors as his successor, remains his greatest asset.          
-          </Text>
+          Personality and Role in the Team          </Text>
           <Text style={styles.aboutText}>
-          Personality and Role in the Team          
-          </Text>
+          Zeke is the agility and vision of The Monkie Alliance, countering Sam’s volatility with his precision and leadership. He’s calculating, resolute, and deeply loyal to his team, seeing them as a family he’ll protect at all costs. His rivalry with Sam is intense but layered—once brothers-in-arms, now wary allies, their Civil War-style feud mended but shaky. With Ammon “Quick Wit,” he shares a bond of charm and strategy; with Alex “Swiftmind,” a synergy of speed and intellect; and with Eli, Tom, Damon, Elijah, and Ethan, a leader’s trust in their diverse strengths.          </Text>
           <Text style={styles.aboutText}>
-          As the oldest Titan and cousin, Spencer is the unofficial patriarch of the nine oldest, but his fall from leadership has left him searching for purpose. He’s deeply connected to his siblings (Jared and Jennifer) and cousins (Ben and Azure, Will and Emma, Josh S and Garden), often acting as their advisor and protector. His preference for the past clashes with the modern approaches of younger cousins like Lee (Jensen) and Mason (Stillman), but his goodness ensures he remains a stabilizing force.          
-          </Text>
+          In The Monkie Alliance, Zeke led the split from the Bludbruhs over Sam’s dark powers, forming a faction that values agility and defiance over shadow. His Melcornia past forged his resolve, and his clash with Thunder Born (when Titans face “Evil Sam”) tests his leadership. In Zion City, he connects with the Titans’ tacticians like Jared and William, sharing their strategic bent, but his team prioritizes independence over grand unity. His ultimate goal is to lead Monkie Alliance to secure Zion City’s future, proving that agility and principle can outshine darkness, while keeping his shaky truce with Sam intact.          </Text>
           <Text style={styles.aboutText}>
-          Spencer sees Jared as his successor, a role that both pressures and inspires him. His relationships with the other Titans—Jennifer’s compassion, Ben and Azure’s teamwork, Will and Emma’s innovation—are rooted in shared history, while his interactions with the broader family (like Todd’s leadership from Cummings or Samantha’s strength from Jensen’s) remind him of his broader responsibility. His goal is to reclaim his leadership by guiding Jared and the Titans to balance tradition and progress, ensuring Zion City’s safety for all their families.          
-          </Text>
+          Zeke’s rift with Sam split the Bludbruhs when Sam’s dark surge—rooted in Erevos’s corruption—clashed with Zeke’s rejection of shadow. Leading Ammon, Alex, Eli, Tom, Damon, Elijah, and Ethan away, Zeke formed The Monkie Alliance as a defiant stand against Sam’s path, while Sam, Cole, Joseph, James, and Tanner became Thunder Born. Their Captain America: Civil War-style rivalry erupted in skirmishes, only mending through Parliament mediation, but tensions linger, with Zeke ever-vigilant of Sam’s potential relapse.          </Text>
         </View>
       </ScrollView>
     </View>

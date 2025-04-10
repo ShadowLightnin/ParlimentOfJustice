@@ -71,7 +71,7 @@ export const LegionairesScreen = () => {
       />
       <View style={styles.transparentOverlay} />
       <Text style={styles.cardName}>
-        © {member.name || 'Unknown'}; William Cummings
+        © {member.codename || 'Unknown'}; William Cummings
       </Text>
     </TouchableOpacity>
   );
