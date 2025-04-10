@@ -15,23 +15,23 @@ const Landing = () => {
     // 🚀 Animate zoom-in effect with angle and position
     Animated.parallel([
       Animated.timing(scaleAnim, {
-        toValue: 4, // Reduced zoom to prevent going off-screen (adjust as needed)
-        duration: 4000, // Slightly shorter duration to transition earlier
+        toValue: 20, // Reduced zoom to prevent going off-screen (adjust as needed)
+        duration: 5000, // Slightly shorter duration to transition earlier
         useNativeDriver: true,
       }),
       Animated.timing(translateXAnim, {
-        toValue: -SCREEN_WIDTH * 0.2, // Move right towards bottom left (corrected)
-        duration: 4000,
+        toValue: -SCREEN_WIDTH * 0.1, // Move right towards bottom left (corrected)
+        duration: 3000,
         useNativeDriver: true,
       }),
       Animated.timing(translateYAnim, {
         toValue: SCREEN_HEIGHT * 0.2, // Move down towards bottom
-        duration: 4000,
+        duration: 3000,
         useNativeDriver: true,
       }),
       Animated.timing(rotateAnim, {
-        toValue: 45, // Rotate 45 degrees for angle
-        duration: 4000,
+        toValue: 40, // Rotate 45 degrees for angle
+        duration: 3000,
         useNativeDriver: true,
       }),
     ]).start(({ finished }) => {
