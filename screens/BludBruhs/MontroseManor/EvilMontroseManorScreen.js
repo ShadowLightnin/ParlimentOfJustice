@@ -28,7 +28,7 @@ const MontroseManorScreen = () => {
         <View style={styles.container}>
             {/* Planet Image as Background */}
             <Image 
-                source={require("../../../assets/Space/Melcornia2.jpg")}
+                source={require("../../../assets/Space/Melcornia3.jpg")}
                 style={styles.backgroundImage}
             />
 

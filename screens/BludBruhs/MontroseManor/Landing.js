@@ -20,12 +20,12 @@ const Landing = () => {
         useNativeDriver: true,
       }),
       Animated.timing(translateXAnim, {
-        toValue: SCREEN_WIDTH * 0.4, // Move right towards bottom left (corrected)
+        toValue: -SCREEN_WIDTH * 0.2, // Move right towards bottom left (corrected)
         duration: 4000,
         useNativeDriver: true,
       }),
       Animated.timing(translateYAnim, {
-        toValue: SCREEN_HEIGHT * 0.4, // Move down towards bottom
+        toValue: SCREEN_HEIGHT * 0.2, // Move down towards bottom
         duration: 4000,
         useNativeDriver: true,
       }),
@@ -45,7 +45,7 @@ const Landing = () => {
     <View style={styles.container}>
       {/* Full Screen Background Image (Only Melcornia3) */}
       <Animated.Image
-        source={require("../../../assets/Space/Melcornia3.jpg")}
+        source={require("../../../assets/Space/Melcornia2.jpg")}
         style={[
           styles.backgroundImage,
           {
