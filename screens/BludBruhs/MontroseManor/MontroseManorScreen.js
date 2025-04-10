@@ -18,7 +18,7 @@ const MontroseManorScreen = () => {
         })
     ).current;
 
-    const [textPosition, setTextPosition] = React.useState({ x: SCREEN_WIDTH / 2 - 100, y: SCREEN_HEIGHT / 2 - 150 });
+    const [textPosition, setTextPosition] = React.useState({ x: SCREEN_WIDTH / 2 - 100, y: SCREEN_HEIGHT / 2 - 350 });
 
     const handleTitleClick = () => {
         navigation.navigate("Landing");
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
         fontSize: 30,
         fontWeight: "900",
         textTransform: "uppercase",
-        textShadowColor: "#FF4500",
+        textShadowColor: "#49ab2eb5",
         textShadowOffset: { width: 2, height: 2 },
         textShadowRadius: 2.5,
     },
