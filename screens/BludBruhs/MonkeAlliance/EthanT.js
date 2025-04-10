@@ -66,9 +66,49 @@ const EthanT = () => {
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
-            Ethan is a warrior clad in the legendary armor, designed for both agility and
-            resilience. His armor is a fusion of advanced technology and ancient craftsmanship,
-            making him a formidable force on the battlefield.
+          Ethan Tuffs, known as Bolt Watcher, is a swift and electrifying sentinel, a dynamic spark in The Monkie Alliance under Zeke “Enderstrike’s” command within Zion City’s volatile expanse. His presence is charged and alert, a blend of lightning-fast agility and keen awareness that makes him a vital scout and striker for his team. Behind his electric-blue armor, Ethan is vigilant, energetic, and fiercely loyal to his Monkie Alliance comrades—Zeke, Ammon “Quick Wit,” Alex M “Swiftmind,” Eli “Shadow Hunter,” Tom “Thunder Whisperer,” Damon “Pixel Maverick,” and Elijah “Chaos Wither”—seeing their agility as a current he can ride. He wields lightning with precision, turning energy into action. Off the battlefield, he’s a restless observer and a tinkerer, often scanning the horizon or tweaking his gear, but his high-voltage nature can sometimes make him impulsive.
+          </Text>
+          <Text style={styles.aboutText}>
+          Backstory
+          </Text>
+          <Text style={styles.aboutText}>
+          Ethan grew up in Zion City’s Terrestrial sector, in a family of runners and watchers who thrived on speed and vigilance. From a young age, he was drawn to storms and energy, a fascination that ignited when he joined Sam, Will (later “Night Hawk”), Cole, Joseph, James, Tanner, Zeke, Elijah, Ammon, Tom, and others on the pre-Parliament adventure to Melcornia. In that dark mansion, Ethan’s agility caught a stray bolt of energy from Sam’s corruption by Erevos, awakening his lightning control as he darted to safety. His enhanced perception guided the group through the chaos, dodging threats as Sam fell.
+          </Text>
+          <Text style={styles.aboutText}>
+          Believing Sam dead, Ethan returned to Zion City, channeling his powers into a life of scouting and survival. When Sam resurfaced—corrupted and alive—Ethan joined the Bludbruhs with Cole, Joseph, James, Tanner, and Zeke, using his lightning to complement their fight. His speed synced with Sam’s electricity and Zeke’s teleportation, but Sam’s dark surge clashed with Ethan’s instinct for freedom. When the Bludbruhs split, Ethan sided with Zeke, rejecting Sam’s shadow for a path of agility and energy, forming The Monkie Alliance with Ammon, Alex, Eli, Tom, Damon, and Elijah. The rivalry with Thunder Born—Sam, Cole, Joseph, James, and Tanner—erupted into a Civil War-style feud, later mended through Parliament ties, but Ethan remains cautious of Thunder Born’s electric echoes, favoring his own controlled bolts.
+          </Text>
+          <Text style={styles.aboutText}>
+          Abilities          
+          </Text>
+          <Text style={styles.aboutText}>
+          Ethan’s armor and electric affinity grant him a range of powers focused on speed, energy, and awareness, reflecting his Bolt Watcher persona:
+          </Text>
+          <Text style={styles.aboutText}>
+          Enhanced Perception: Sees and reacts to threats with heightened senses, spotting dangers or opportunities others miss, a skill honed by Melcornia’s chaos.
+          </Text>
+          <Text style={styles.aboutText}>
+          Lightning Control: Generates and directs bolts of electricity, striking foes or powering allies’ gear, a power born from that stray energy and refined with agility.
+          </Text>
+          <Text style={styles.aboutText}>
+          Superhuman Agility: Moves with lightning-fast reflexes and speed, darting across battlefields or evading attacks, making him a blur of blue energy.
+          </Text>
+          <Text style={styles.aboutText}>
+          Bolt Surge: Channels a concentrated lightning burst, stunning or damaging enemies, a precise strike that ties his powers to his Thunder Born rivals yet stands apart.
+          </Text>
+          <Text style={styles.aboutText}>
+          Energy Relay: Conducts his lightning to boost teammates’ actions (e.g., Zeke’s teleport, Tom’s sound), reflecting his role as a team enhancer and his Monkie synergy.
+          </Text>
+          <Text style={styles.aboutText}>
+          Personality and Role in the Team
+          </Text>
+          <Text style={styles.aboutText}>
+          Ethan is the speed and energy of The Monkie Alliance, complementing Zeke’s precision with his agility and Tom’s resonance with his lightning. He’s alert, spirited, and deeply loyal to his team, seeing them as a circuit he keeps charged. His relationship with Zeke is one of trust—he follows Zeke’s lead with electric zeal—while with Ammon, he pairs energy with healing, and with Tom “Thunder Whisperer,” he syncs lightning with sound for devastating combos.
+          </Text>
+          <Text style={styles.aboutText}>
+          In The Monkie Alliance, Ethan followed Zeke in the Bludbruhs split, rejecting Sam’s dark path for a freer, energetic one. His lightning clashed with Thunder Born’s in their Civil War-style feud, and when the Parliament intervened, he stood by Ammon’s side, sharing a cautious view of Thunder Born and the Titans after Will’s neutrality muddied trust. His Melcornia past forged his powers, and his role energizes the team against their rivals. In Zion City, he connects with the Titans’ speedsters like Jared and Emma, sharing their pace, but his team prioritizes independence. His ultimate goal is to electrify Zion City’s future with Monkie Alliance, proving speed and energy can outpace chaos, while maintaining their shaky truce with Thunder Born.
+          </Text>
+          <Text style={styles.aboutText}>
+          Ethan sided with Zeke when Sam’s dark surge split the Bludbruhs, joining The Monkie Alliance to counter Thunder Born’s shadow with agility and lightning. His bolts rivaled Sam’s electricity in their Civil War-style feud, easing when the Parliament stepped in. Wary of Thunder Born’s electric resonance but committed to Zeke’s vision, keeping tensions alive yet tempered.
           </Text>
         </View>
       </ScrollView>

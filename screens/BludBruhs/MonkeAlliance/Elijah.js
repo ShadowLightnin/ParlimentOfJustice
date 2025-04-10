@@ -66,53 +66,37 @@ const Elijah = () => {
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
-          Spencer McNeil, known as Annihilus, is the eldest of the McNeil siblings and the oldest among the nine oldest cousins, making him a foundational figure in the Titans and the Parliament of Justice. His imposing presence is a mix of authority, nostalgia, and vulnerability, a fallen leader who once united his extended family but now struggles with uncertainty. He’s deeply committed to helping others, especially his siblings Jared and Jennifer, his cousins Ben and Azure (Briggs), Will and Emma (Cummings), and the other oldest cousins like Josh S and Garden. Spencer prefers the simplicity and morality of a bygone era, reminiscent of Christ’s time, where faith, community, and honor guided actions. Despite losing his way, his inherent goodness and love for his family—spanning the McNeil’s, Briggs, Cummings, Jensen’s, Bolander’s, and Stillman families—make him a cherished, if conflicted, patriarch.
-          </Text>
+          Elijah Potter, known as Chaos Wither, is an unpredictable and shadowy dynamo, a vital wildcard in The Monkie Alliance under Zeke “Enderstrike’s” command within Zion City’s turbulent expanse. His presence is fluid and unsettling, a mix of chaotic energy and stealthy finesse that makes him a disruptive force on the battlefield. Behind his shifting, dark armor, Elijah is enigmatic, adaptable, and fiercely loyal to his Monkie Alliance kin—Zeke, Ammon “Quick Wit,” Alex M “Swiftmind,” Eli “Shadow Hunter,” Tom “Thunder Whisperer,” Damon “Pixel Maverick,” and Ethan “Bolt Watcher”—seeing their agility as a perfect stage for his chaos. He thrives on disorder, wielding his Wither-inspired powers to unravel foes. Off the battlefield, he’s a trickster and a loner, often experimenting with his forms or brooding over his past, but his chaotic nature can sometimes clash with Zeke’s structured leadership.          </Text>
           <Text style={styles.aboutText}>
           Backstory
           </Text>
           <Text style={styles.aboutText}>
-          Raised in a remote village on the edge of Zion City’s Terrestrial sector, Spencer was the firstborn of the McNeil siblings, with Jared and Jennifer following closely. His family, part of a larger network of cousins from the Cummings, Jensen’s, Briggs, Bolander’s, and Stillman clans, shared a deep-rooted tradition of faith, strength, and unity. As the oldest cousin, Spencer took it upon himself to lead, mentoring not only his siblings but also cousins like Ben and Azure (Briggs), Will and Emma (Cummings), and the Stillman cousins Josh S and Garden, who were among the nine oldest.
-          </Text>
+          Elijah grew up in Zion City’s Telestial sector, in a rough neighborhood where adaptability meant survival. Raised among misfits and rebels, he learned to shift and bend with the world, a trait that crystallized when he joined Sam, Will (later “Night Hawk”), Cole, Joseph, James, Tanner, Zeke, Tom, and others on the pre-Parliament adventure to Melcornia. In that dark mansion, Elijah encountered a Wither-like essence—a decaying, chaotic force—that fused with him as Sam fell to Erevos. The entity’s touch awakened his shapeshifting and chaos powers, and he used them to sow confusion, aiding their escape from the nightmare.          </Text>
           <Text style={styles.aboutText}>
-          When Zion City’s sectors fractured, Spencer’s village faced raids from the lawless Outer Darkness sector. During one such attack, his super strength emerged, saving his siblings and cousins and solidifying his role as the Titans’ leader. The burning goat skull relic he later discovered—tied to myths of destruction and renewal—became his symbol, but as modern corruption and technological overreach grew, Spencer began to withdraw, longing for the simplicity of the past.          
-          </Text>
-          <Text style={styles.aboutText}>
-          His leadership waned as he saw the younger cousins, like Jared, adapt to the new world with speed and innovation, while he clung to outdated ideals. Among the nine oldest cousins, only seven—Spencer, Jared, Jennifer, Ben, Azure, Will, and Emma—formed the core Titans, with Josh S and Garden occasionally stepping in. Spencer now sees Jared as his potential successor, a realization that both inspires and haunts him, as he fears losing the values he holds dear.          
-          </Text>
+          Believing Sam dead, Elijah returned to Zion City, embracing his chaotic gifts in the shadows. When Sam resurfaced—corrupted and alive—Elijah joined the Bludbruhs with Cole, Joseph, James, Tanner, and Zeke, hoping to harness his chaos for good. His Wither form unnerved some, but he synced it with Sam’s lightning and Zeke’s teleportation. When Sam’s dark surge fractured the Bludbruhs, Elijah sided with Zeke, rejecting Sam’s shadow for a freer path. With Ammon, Alex, Eli, Tom, Damon, and Ethan, he formed The Monkie Alliance, amplifying their defiance with his chaos. The rivalry with Thunder Born—Sam, Cole, Joseph, James, and Tanner—flared into a Civil War-style feud, later mended through Parliament ties, but Elijah’s distrust of Sam lingers, fueling a shaky truce.          </Text>
           <Text style={styles.aboutText}>
           Abilities          
           </Text>
           <Text style={styles.aboutText}>
-          Spencer’s powers are a reflection of his role as a fallen leader and protector of his vast family          
-          </Text>
+          Elijah’s armor and Wither-inspired powers grant him a range of abilities focused on chaos, transformation, and stealth, reflecting his Monkie Alliance role:          </Text>
           <Text style={styles.aboutText}>
-          Super Strength: The cornerstone of his identity, now tempered by doubt but still formidable when inspired by his family’s faith.          
-          </Text>
+          Wither Form: Transforms into a dark, decaying state, boosting his strength and resilience while exuding a corrosive aura that weakens foes, a power born from Melcornia’s essence.          </Text>
           <Text style={styles.aboutText}>
-          Endurance: A testament to his lifelong commitment to his cousins and siblings, though he sometimes overextends himself.          
-          </Text>
+          Chaos Manipulation: Disrupts order with chaotic energy, scrambling enemy tech, senses, or formations, a skill that thrives in the Monkie Alliance’s agile chaos.          </Text>
           <Text style={styles.aboutText}>
-          Fire Aura: The flickering flames of his helmet symbolize his inner struggle, burning brightly when he draws strength from family bonds.          
-          </Text>
+          Stealth: Blends into shadows or environments with near-invisibility, enhanced by his armor, making him a silent predator in combat or recon.          </Text>
           <Text style={styles.aboutText}>
-          Primal Instinct: Rooted in his shared heritage with the Briggs and Cummings cousins, this instinct helps him protect and anticipate threats.          
-          </Text>
+          Shapeshifting: Alters his form (e.g., humanoid, beastly, amorphous), adapting to threats or tactics, a versatile trait honed by his chaotic nature.          </Text>
           <Text style={styles.aboutText}>
-          Earthshaking Impact: A power to disrupt and defend, often used to shield his family from Zion City’s chaos.          
-          </Text>
+          Wither Burst: Releases a concentrated wave of chaotic energy, damaging and disorienting foes, tying his powers to his Wither roots and Monkie defiance.          </Text>
           <Text style={styles.aboutText}>
-          Inspirational Presence: His ability to uplift his siblings and cousins, especially Jared, whom he mentors as his successor, remains his greatest asset.          
-          </Text>
+          Personality and Role in the Team          </Text>
           <Text style={styles.aboutText}>
-          Personality and Role in the Team          
-          </Text>
+          Elijah is the chaos and adaptability of The Monkie Alliance, complementing Zeke’s precision with his disorder and Ammon’s charm with his unpredictability. He’s elusive, cunning, and deeply loyal to his team, seeing them as a chaotic family he’ll disrupt the world to protect. His relationship with Zeke is one of mutual respect tinged with friction—Zeke’s order tempers Elijah’s chaos—while with Alex “Swiftmind,” he syncs speed with shapeshifting, and with Eli “Shadow Hunter,” he shares a stealthy bond.          </Text>
           <Text style={styles.aboutText}>
-          As the oldest Titan and cousin, Spencer is the unofficial patriarch of the nine oldest, but his fall from leadership has left him searching for purpose. He’s deeply connected to his siblings (Jared and Jennifer) and cousins (Ben and Azure, Will and Emma, Josh S and Garden), often acting as their advisor and protector. His preference for the past clashes with the modern approaches of younger cousins like Lee (Jensen) and Mason (Stillman), but his goodness ensures he remains a stabilizing force.          
-          </Text>
+          In The Monkie Alliance, Elijah followed Zeke in the Bludbruhs split, rejecting Sam’s dark path for a freer, chaotic one. His Melcornia past forged his powers, and his rivalry with Thunder Born tests his loyalty when the Titans face “Evil Sam.” In Zion City, he connects with the Titans’ wildcards like Emma and Jared, sharing their flair, but his team prioritizes defiance over unity. His ultimate goal is to unleash chaos on Zion City’s threats with Monkie Alliance, proving that disorder can triumph, while navigating his shaky truce with Sam.          </Text>
           <Text style={styles.aboutText}>
-          Spencer sees Jared as his successor, a role that both pressures and inspires him. His relationships with the other Titans—Jennifer’s compassion, Ben and Azure’s teamwork, Will and Emma’s innovation—are rooted in shared history, while his interactions with the broader family (like Todd’s leadership from Cummings or Samantha’s strength from Jensen’s) remind him of his broader responsibility. His goal is to reclaim his leadership by guiding Jared and the Titans to balance tradition and progress, ensuring Zion City’s safety for all their families.          
-          </Text>
+          Elijah sided with Zeke when Sam’s dark surge split the Bludbruhs, choosing The Monkie Alliance’s agile defiance over Thunder Born’s shadow-tinged strength. His chaos fueled their Civil War-style feud with Sam, Cole, Joseph, James, and Tanner, a rivalry that eased through Parliament ties but remains tense, with Elijah wary of Sam’s lingering darkness.          </Text>
         </View>
       </ScrollView>
     </View>

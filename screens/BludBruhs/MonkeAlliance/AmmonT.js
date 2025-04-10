@@ -66,10 +66,40 @@ const AmmonT = () => {
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
-            Ammon is a warrior clad in the legendary armor, designed for both agility and
-            resilience. His armor is a fusion of advanced technology and ancient craftsmanship,
-            making him a formidable force on the battlefield.
+          Ammon Thomson, known as Quick Wit, is a suave and resourceful healer, a vital pillar of The Monkie Alliance under Zeke “Enderstrike’s” command within Zion City’s chaotic sprawl. His presence is warm yet elusive, a blend of charm and stealth that makes him a soothing yet slippery ally. Behind his yet-to-be-detailed armor, Ammon is empathetic, clever, and deeply loyal to his Monkie Alliance team—Zeke, Alex M “Swiftmind,” Eli “Shadow Hunter,” Tom “Thunder Whisperer,” Damon “Pixel Maverick,” Elijah “Chaos Wither,” and Ethan “Bolt Watcher”—and his spouse, whose support anchors him. He thrives on witty banter and healing, lifting spirits amidst strife. Off the battlefield, he’s a nurturer and a strategist, often tending to his team or plotting with a smile, but his falling out with Will “Night Hawk” over the Titans’ role lingers as a sore spot.          </Text>
+          <Text style={styles.aboutText}>
+          Backstory
           </Text>
+          <Text style={styles.aboutText}>
+          Ammon grew up in Zion City’s Terrestrial sector, raised in a family that valued compassion and cunning. His natural empathy and quick tongue made him a peacemaker, traits that shone when he joined Sam, Will, Cole, Joseph, James, Tanner, Zeke, Elijah, Tom, and others on the pre-Parliament adventure to Melcornia. In that dark mansion, Ammon’s healing touch emerged as he soothed the group’s wounds after Sam’s family died and Erevos corrupted Sam, while his stealth kept him out of the fray. The experience bonded him to his crew, especially Will, his early confidant.          </Text>
+          <Text style={styles.aboutText}>
+          Believing Sam dead, Ammon returned to Zion City, marrying his spouse and honing his skills in quiet service. When Sam resurfaced—corrupted and alive—Ammon joined the Bludbruhs with Cole, Joseph, James, Tanner, and Zeke, using his charm and healing to bolster their fight. But Sam’s dark surge clashed with Ammon’s ideals, and he sided with Zeke in the rift, forming The Monkie Alliance with Alex, Eli, Tom, Damon, Elijah, and Ethan. The split ignited a Civil War-style feud with Thunder Born (Sam, Cole, Joseph, James, and Tanner), escalating until the Parliament intervened. During this clash, Ammon misunderstood the Titans’ neutrality—led by Will—as support for Sam, leading to a bitter falling out with his old friend. Though the rivalry mended over time, Ammon’s trust in Will and the Titans remains shaky, strained by that betrayal.          </Text>
+          <Text style={styles.aboutText}>
+          Abilities          
+          </Text>
+          <Text style={styles.aboutText}>
+          Ammon’s innate gifts and subtle armor grant him a range of abilities focused on support, stealth, and influence, reflecting his Quick Wit persona:          </Text>
+          <Text style={styles.aboutText}>
+          Empathy: Senses and soothes emotions, calming allies or reading foes, a skill that strengthens his team’s resolve and informs his strategies.          </Text>
+          <Text style={styles.aboutText}>
+          Charm: Wields a magnetic charisma, persuading or disarming others with ease, often paired with witty banter to lighten tense moments.          </Text>
+          <Text style={styles.aboutText}>
+          Husbandry: Nurtures and bonds with animals or allies, boosting their morale or coordination, a trait tied to his caring nature and married life.          </Text>
+          <Text style={styles.aboutText}>
+          Stealth: Moves silently and unseen, slipping through danger or aiding allies covertly, enhanced by his armor’s design.          </Text>
+          <Text style={styles.aboutText}>
+          Healing Touch: Mends wounds and restores energy with a gentle touch, a power born from Melcornia and vital to Monkie Alliance’s endurance.          </Text>
+          <Text style={styles.aboutText}>
+          Witty Banter: Distracts or taunts foes with sharp quips, throwing them off balance, a playful yet effective combat tool.          </Text>
+          <Text style={styles.aboutText}>
+          Personality and Role in the Team          
+          </Text>
+          <Text style={styles.aboutText}>
+          Ammon is the heart and guile of The Monkie Alliance, complementing Zeke’s precision with his charm and Elijah’s chaos with his healing. He’s witty, compassionate, and deeply loyal to his team and spouse, seeing them as a family he’ll mend and defend. His relationship with Zeke is one of trust—he supports Zeke’s leadership with empathy—while with Alex “Swiftmind,” he pairs charm with intellect, and with Elijah, he tempers chaos with calm.          </Text>
+          <Text style={styles.aboutText}>
+          In The Monkie Alliance, Ammon followed Zeke in the Bludbruhs split, rejecting Sam’s dark path for a lighter, agile one. His falling out with Will came when the Parliament stopped the Thunder Born-Monkie feud—Ammon saw Will’s Titan neutrality as siding with Sam, shattering their bond. Though mended, the rift leaves Ammon wary of Titans like Will, Jared, and Spencer. His Melcornia past forged his resilience, and his role bolsters the team against Thunder Born. In Zion City, he connects with the Titans’ healers like Jennifer, sharing their compassion, but his team prioritizes independence. His ultimate goal is to heal Zion City with Monkie Alliance, proving charm and stealth can triumph, while navigating his shaky truce with Will and Sam.          </Text>
+          <Text style={styles.aboutText}>
+          Ammon sided with Zeke when Sam’s dark surge split the Bludbruhs, joining The Monkie Alliance to defy Thunder Born’s shadow. During their Civil War-style feud, the Parliament’s intervention halted the fighting, but Ammon misread the Titans’ neutrality—led by Will—as support for Sam, sparking a heated falling out. Their bond mended over time, but Ammon’s trust remains fragile, coloring his view of Thunder Born and the Titans.          </Text>
         </View>
       </ScrollView>
     </View>
