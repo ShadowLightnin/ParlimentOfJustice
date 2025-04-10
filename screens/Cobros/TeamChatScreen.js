@@ -17,7 +17,7 @@ const TeamChatScreen = () => {
       <View style={styles.container}>
         {/* 🟢 Header as a Back Button */}
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.header}>Cobros Chat</Text>
+          <Text style={styles.header}>Cobros 314 Chat</Text>
         </TouchableOpacity>
       <ChatRoom chatId="CobrosTeamChat" />
       </View>
