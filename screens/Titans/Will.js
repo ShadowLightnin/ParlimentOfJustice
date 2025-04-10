@@ -74,10 +74,43 @@ const Will = () => {
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
-            Will is a warrior clad in the legendary NightHawk armor, designed for both agility and
-            resilience. His armor is a fusion of advanced technology and ancient craftsmanship,
-            making him a formidable force on the battlefield.
+          William Cummings, known as Night Hawk, is a master of shadows and strategy, the older Cummings sibling and a cornerstone of the Titans within the Parliament of Justice. At 6'1", his lean, agile frame hides a mind as sharp as his claws and a heart loyal to his family. Behind his sleek, ever-changing helmets, William is a tech genius and stealth expert, always two steps ahead of his enemies and ready to adapt to any situation. He’s in a relationship with Aileen, whose strength complements his tactical mind, and he shares an unbreakable bond with his sister Emma. As one of the oldest cousins, William bridges the gap between tradition (like Spencer’s ideals) and innovation, using his suits to protect his cousins—Spencer, Jared, Jennifer (McNeil), Ben, Azure (Briggs), and the rest. Off the battlefield, he’s a problem-solver, often tinkering with gadgets or strategizing with his family, but his drive to stay invisible and untouchable sometimes isolates him.          </Text>
+          <Text style={styles.aboutText}>
+          Backstory
           </Text>
+          <Text style={styles.aboutText}>
+          William grew up in a tech-savvy household on the edge of Zion City’s Terrestrial sector, alongside his younger sister Emma. The Cummings family valued both physical prowess and intellectual innovation, and William inherited a knack for mechanics from his parents. While Emma gravitated toward mechanical flight and flair, William focused on stealth and precision, inspired by heroes like Batman and Nightwing, whose shadows and symbols spoke to him.          </Text>
+          <Text style={styles.aboutText}>
+          When Zion City’s sectors began to fracture, William’s village faced threats from the Telestial and Outer Darkness sectors. During a nighttime raid, he discovered his ability to blend into shadows, using scavenged tech to create his first suit. This moment birthed Night Hawk, and he soon joined the Titans, working closely with the McNeil siblings (Spencer, Jared, Jennifer) and Briggs cousins (Ben, Azure). His suits evolved over time, each reflecting a new challenge: the Defender suits for raw power, the Night Hawk for stealth, and the Celestial and Sentinel for versatility.          </Text>
+          <Text style={styles.aboutText}>
+          As the oldest Cummings sibling, William took on a protective role for Emma and the broader family, but he also felt the pressure of Spencer’s fallen leadership and Jared’s rising ambition. His relationship with Spencer is one of mutual respect but subtle tension—Spencer admires William’s adaptability but fears his reliance on technology, while William sees Spencer’s nostalgia as a weakness. With Jared, he’s a rival and ally, matching speed with strategy, and with Jennifer, he shares a deep trust, often relying on her healing to recover from his stealth missions.          </Text>
+          <Text style={styles.aboutText}>
+          In a relationship with Aileen, William finds balance, her cultural strength grounding his high-tech approach. Together, they face Zion City’s chaos, but William’s fear of failure—especially toward his sister and cousins—drives him to push his suits and abilities to their limits.          
+          </Text>
+          <Text style={styles.aboutText}>
+          Abilities          
+          </Text>
+          <Text style={styles.aboutText}>
+          William’s suits and innate skills make him a versatile operative, with a focus on stealth, technology, and combat:          </Text>
+          <Text style={styles.aboutText}>
+          Stealth Mastery: Can turn invisible using his Night Hawk, Celestial, and Sentinel suits, blending into shadows or environments for reconnaissance or ambushes. His infrared, radar, and sonar capabilities (via helmet spikes) make him a perfect scout.          </Text>
+          <Text style={styles.aboutText}>
+          Technological Adaptability: Each suit is equipped with advanced systems—flight (Defender 2.0, Shadow Storm), color-changing camouflage, and weaponized features (gauntlet spikes, claws). He can switch modes mid-battle, adapting to any threat.          </Text>
+          <Text style={styles.aboutText}>
+          Combat Prowess: Armed with Batman-inspired gauntlet spikes and Wolverine-like claws, William excels in close-quarters combat, striking fast and retreating before enemies can react.          </Text>
+          <Text style={styles.aboutText}>
+          Tactical Intelligence: His suits’ HUDs and data analysis allow him to strategize in real time, coordinating with the Titans and extended family for maximum efficiency.          </Text>
+          <Text style={styles.aboutText}>
+          Energy Projection (Via Suits): Certain suits (Celestial, Sentinel, Wrath) can emit energy blasts or create force fields, drawing on their glowing visors and design motifs.          </Text>
+          <Text style={styles.aboutText}>
+          Personality and Role in the Team          
+          </Text>
+          <Text style={styles.aboutText}>
+          William is the tactician and shadow of the Titans, balancing Spencer’s power, Jared’s speed, and Jennifer’s healing with his own stealth and tech. He’s pragmatic but carries a fear of failure, especially toward his sister Emma and the family. His relationship with Spencer is respectful but tense—William sees Spencer’s fall as a cautionary tale, while Spencer worries William’s tech obsession distances him from their roots. With Jared, he’s a rival in strategy, often outsmarting his speed with preparation, and with Jennifer, he’s protective, relying on her to heal his physical and emotional scars.          </Text>
+          <Text style={styles.aboutText}>
+          As Emma’s older brother, William is her guardian and mentor, pushing her to refine her mechanical wings while learning from her creativity. His cousins—Ben and Azure (Briggs), the McNeil siblings—rely on his adaptability, while he draws inspiration from their strengths. In a relationship with Aileen, he finds a partner who challenges his isolation, and her cultural strength helps him connect with the family’s traditions.          </Text>
+          <Text style={styles.aboutText}>
+          In the Parliament of Justice, William coordinates with tech-savvy cousins like Myran (Jennifer’s husband) and strategists like Todd (Cummings) and Lee (Jensen’s). His ultimate goal is to protect Zion City’s future, proving that technology and tradition can coexist, while ensuring his family—especially Emma—thrives.          </Text>
         </View>
       </ScrollView>
     </View>

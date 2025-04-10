@@ -68,10 +68,43 @@ const Jared = () => {
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
-            Jared is a warrior clad in the legendary Spector armor, designed for both agility and
-            resilience. His armor is a fusion of advanced technology and ancient craftsmanship,
-            making him a formidable force on the battlefield.
+          Jared McNeil, known as Spector, is a whirlwind of energy and determination, the middle McNeil sibling and a key member of the Titans within the Parliament of Justice. Standing at 6'2" with a lean, athletic build, Jared is the embodiment of speed and precision, a stark contrast to his older brother Spencer’s raw power and nostalgia. Behind his sleek, Red Hood-inspired helmet, Jared is sharp-witted, confident, and fiercely loyal to his family, especially his siblings Spencer and Jennifer, and his cousins Ben, Azure, Will, and Emma. While he respects Spencer’s leadership, he feels the weight of his brother’s fall and sees himself as the one to carry their legacy forward. Jared is married to Kelsie, and their partnership fuels his drive to protect Zion City and prove he can lead when the time comes. Off the battlefield, he’s a strategist and a motivator, always pushing his family to adapt to the modern world while honoring their roots.          </Text>
+          <Text style={styles.aboutText}>
+          Backstory
           </Text>
+          <Text style={styles.aboutText}>
+          Jared grew up in the shadow of his older brother Spencer, in the same remote village on Zion City’s Terrestrial sector edge. As the middle McNeil sibling, he was always the quicker, more agile counterpart to Spencer’s brute strength and Jennifer’s compassion. While Spencer taught him the value of honor and tradition, Jared was fascinated by the heroes of modern myth—figures like Batman and Captain America, whose speed, strategy, and shields inspired his own path.          </Text>
+          <Text style={styles.aboutText}>
+          When the sectors of Zion City began to crumble, Jared’s super speed emerged during a desperate escape from raiders, allowing him to outrun danger and save his younger sister Jennifer. This moment cemented his role as a protector, but also highlighted his differences from Spencer, whose methods were more rooted in destruction than evasion. As the Titans formed, Jared became Spencer’s right hand, using his speed to scout, strike, and coordinate, but he always felt the pressure of living up to his brother’s legacy.          </Text>
+          <Text style={styles.aboutText}>
+          The turning point came when Spencer’s confidence waned, and Jared began to see himself as a potential successor. Their bond, while strong, is now strained by this unspoken rivalry—Spencer sees Jared’s modernity as a threat to tradition, while Jared believes progress is the only way to save Zion City. Married to Kelsie, who shares his vision of a balanced future, Jared draws strength from her support and their shared goal of protecting their family and city. His armor, a fusion of Arkham Knight stealth and Captain America heroism, reflects his dual nature: a guardian who moves faster than anyone can react.          </Text>
+          <Text style={styles.aboutText}>
+          Abilities          
+          </Text>
+          <Text style={styles.aboutText}>
+          Jared’s suit and innate agility grant him the following powers, tailored to his role as a swift leader and protector:          </Text>
+          <Text style={styles.aboutText}>
+          Super Speed: Can move, react, and think at incredible velocities, allowing him to outpace any threat, deliver rapid strikes, and cover vast distances in seconds. His speed is both a weapon and a shield, letting him evade attacks and protect his family.          </Text>
+          <Text style={styles.aboutText}>
+          Enhanced Reflexes: His mind and body are perfectly synchronized for high-speed combat, enabling him to dodge, parry, and counter with surgical precision.          </Text>
+          <Text style={styles.aboutText}>
+          Tactical Acumen: Years of working alongside Spencer and the Titans have honed his ability to analyze battlefields and devise strategies on the fly, making him a natural leader in chaotic situations.          </Text>
+          <Text style={styles.aboutText}>
+          Shield Mastery: His Captain America-like shield is not just defensive—it can be thrown with pinpoint accuracy at high speeds, ricochet off multiple targets, and return to his hand, thanks to his speed-enhanced control.          </Text>
+          <Text style={styles.aboutText}>
+          Energy Burst (Via Armor): The armor’s crusader visor can emit short-range energy pulses, disorienting enemies and creating openings for his attacks.          </Text>
+          <Text style={styles.aboutText}>
+          Inspirational Presence: His ability to uplift his siblings and cousins, especially Jared, whom he mentors as his successor, remains his greatest asset.          
+          </Text>
+          <Text style={styles.aboutText}>
+          Personality and Role in the Team          
+          </Text>
+          <Text style={styles.aboutText}>
+          Jared is the speed and strategy of the Titans, a counterbalance to Spencer’s power and Jennifer’s healing. He’s confident, sometimes to a fault, but his loyalty to his family is unshakable. As Spencer’s brother, he feels a mix of admiration and frustration—admiring his brother’s strength but frustrated by his refusal to adapt. Jared sees himself as the bridge between tradition and progress, a role he believes will make him the next leader of the Titans.          </Text>
+          <Text style={styles.aboutText}>
+          His relationship with Spencer is complex: he respects his brother’s past leadership but believes he’s lost his way, a belief that both motivates and burdens him. With Jennifer, he shares a protective bond, often shielding her with his speed during battles. His cousins—Ben and Azure (Briggs), Will and Emma (Cummings)—look to him for tactical guidance, while he draws inspiration from their unique strengths. Married to Kelsie, Jared finds a partner who shares his vision, and her influence pushes him to balance his ambition with compassion.          </Text>
+          <Text style={styles.aboutText}>
+          In the broader Parliament of Justice, Jared works closely with the extended family—coordinating with Todd (Cummings) on leadership, sparring with Samantha (Jensen’s) for strength training, and strategizing with Lee (Jensen’s) on marksmanship. His ultimate goal is to prove he can lead the Titans and Zion City into a new era, honoring Spencer’s legacy while forging his own path.          </Text>
         </View>
       </ScrollView>
     </View>
