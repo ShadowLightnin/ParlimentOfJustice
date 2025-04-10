@@ -256,18 +256,40 @@ const Sam = () => {
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
-            Early life: Once a young naive teenager that eventually 
-            embarked on an adventure to another world in a dark mansion 
-            realized his true potential and destiny.
+          Sam Woodwell, known as Striker, is a tempest of power and turmoil, the conflicted leader of the Thunder Born, a faction born from the ashes of the Bludbruhs within Zion City’s evolving landscape. His presence is electric and commanding, a volatile mix of dark mastery and raw energy that makes him both a force and a liability. Behind his metallic Jedi robes and floating skull helmet, Sam is intense, driven, and torn between his past corruption and present redemption, his heart anchored by a lingering love for Chroma, a figure still shrouded in evil. He’s tied to his former Bludbruhs—Cole “Cruiser,” Joseph “Techoman,” James “Shadowmind,” and Tanner - Wolff—but his rift with them marks a new chapter. Off the battlefield, he’s a brooding strategist, wrestling with his demons, but his dark powers often alienate those he seeks to protect.           </Text>
+           <Text style={styles.aboutText}>
+           Backstory           </Text>
+           <Text style={styles.aboutText}>
+           Sam’s journey began as a naive teenager in Zion City’s Terrestrial sector, a dreamer who stumbled into a life-altering adventure. Alongside Will (later “Night Hawk”), Joseph, James, Cole, Tanner, Zeke, Elijah, Tom, and others, he ventured to the planet Melcornia, a pre-Parliament expedition that tested their mettle. In a dark mansion on that alien world, Sam’s family was killed by an unknown figure, shattering his innocence. A sinister entity, Erevos, promised justice and revenge, corrupting Sam’s mind with strange powers over darkness and electricity. The mansion amplified his grief into a weapon, and he embraced Erevos’s teachings, unaware of their evil.           </Text>
+           <Text style={styles.aboutText}>
+           The Melcornia crew returned fractured, believing Sam dead, but he survived, twisted by Erevos and the Enlightened faction. Years later, after seeing Erevos’s ideals as malevolent, Sam broke free, retaining his dark powers and a love for Chroma, a corrupted ally he met under Erevos’s sway. Seeking redemption, he joined the nascent Parliament of Justice and formed the Bludbruhs with Cole, Joseph, James, and Tanner, a brotherhood forged to fight Zion City’s chaos. But Sam’s inner conflict—his reliance on dark powers versus his desire for good—caused a rift. Many, including Tanner, left for the Monkie Alliance, rejecting his methods. With a bounty from the Enlightened on his head, Sam rebranded the remnants as Thunder Born, a name reflecting his electrical might and a fresh start from the Bludbruhs’ tainted legacy.           </Text>
+          <Text style={styles.aboutText}>
+          When the Titans formed, Will and his team were the first to face “Evil Sam,” unaware of his survival until that clash, setting the stage for a reckoning between his past and present.          </Text>
+          <Text style={styles.aboutText}>
+          Abilities          
           </Text>
           <Text style={styles.aboutText}>
-            Recent Past: The mansion corrupted his mind and gave him 
-            strange powers over darkness and electricity. Later after 
-            seeing his master's ideals as evil, he joined the Parliament of Justice 
-            and created the BludBruhs faction. While forgoing his dark past, he still 
-            held on to the powers he was taught — and a love for Chroma, whom he met when
-            he was still a follower of Erevos.
-          </Text>
+          Sam’s armor and corrupted powers grant him a range of abilities blending electricity, telekinesis, and influence, shaped by his Melcornia ordeal:          </Text>
+          <Text style={styles.aboutText}>
+          Electrical Manipulation: Controls and generates lightning-like energy, striking foes or powering his surroundings, a gift from the mansion’s corruption amplified by his will.          </Text>
+          <Text style={styles.aboutText}>
+          Telekinesis: Lifts and moves objects or people with his mind, a dark skill honed by Erevos, used for both combat and utility, reflecting his mental strength.          </Text>
+          <Text style={styles.aboutText}>
+          Mind Influence: Subtly sways thoughts or emotions, a lingering taint from the Enlightened, effective for persuasion or control, though he resists its full potential.          </Text>
+          <Text style={styles.aboutText}>
+          Dark Surge: Combines electricity and shadow into a devastating burst, a remnant of his dark past, capable of overwhelming enemies but taxing his resolve.          </Text>
+          <Text style={styles.aboutText}>
+          Storm Presence: Projects an aura of crackling energy, intimidating foes and inspiring allies, a natural extension of his Thunder Born identity.          </Text>
+          <Text style={styles.aboutText}>
+          Personality and Role in the Team          </Text>
+          <Text style={styles.aboutText}>
+          Sam is the storm and soul of the Thunder Born, a leader whose electrical might and dark past define his fractured path. He’s brooding, determined, and deeply conflicted, torn between the powers Erevos gave him and the redemption he seeks with the Parliament. His love for Chroma fuels his hope, but her corruption mirrors his own struggle.          </Text>
+          <Text style={styles.aboutText}>
+          In the Thunder Born (formerly Bludbruhs), Sam’s rift with Zeke, Elijah, Tom, and Ammon marks a turning point—his dark surge clashed with their ideals, birthing the Monkie Alliance as they split. With Cole, he shared combat trust; with Joseph, tech synergy; with James, shadow tactics; and with Tanner, primal strength. Now, as Thunder Born, he leads a smaller, loyal remnant, redefining their purpose. His clash with Will and the Titans reveals his survival, setting up a redemption arc or rivalry.          </Text>
+          <Text style={styles.aboutText}>
+          In Zion City, Sam’s bounty from the Enlightened makes him a target, but his Thunder Born faction aims to harness his powers for good. His ultimate goal is to avenge his family, free Chroma, and prove his dark legacy can thunder into something heroic.          </Text>
+          <Text style={styles.aboutText}>
+          The Bludbruhs ended when Sam’s reliance on his dark powers—taught by Erevos and the Enlightened—fractured the group. After joining the Parliament of Justice, Sam tried to suppress his past, but a mission gone wrong unleashed his dark surge, alienating his team. Zeke, Elijah, and others left for the Monkie Alliance, seeking a path free of shadow. Sam, left with a loyal few, embraced his electrical core over his dark roots, renaming the faction Thunder Born—a rebirth symbolizing his lightning might and a break from the blood-soaked “Bludbruhs” name tied to his corrupted past.          </Text>
         </View>
       </ScrollView>
 

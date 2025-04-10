@@ -66,10 +66,37 @@ const BenP = () => {
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
-            Ben is a warrior clad in the legendary armor, designed for both agility and
-            resilience. His armor is a fusion of advanced technology and ancient craftsmanship,
-            making him a formidable force on the battlefield.
+          Ben Preston, known as Chemoshock, is a brilliant and inventive force, the engineering mind of The Advanced Spartan 3 Corp, a trio of elite warriors operating in Zion City’s chaotic sectors. His presence is both cerebral and formidable, a blend of scientific ingenuity and battlefield creativity that makes him a vital asset to his team. Behind his hybrid Halo-Monster Hunter armor, Ben is analytical, resourceful, and fiercely loyal to his squadmates Cam Paul “Court Chief” and Alex Croft “Huntsman,” viewing their leadership and marksmanship as the perfect complement to his constructs. He draws inspiration from his love of Halo and Monster Hunter, merging their high-tech and rugged aesthetics into his work. Off the battlefield, he’s a chemical scientist, tinkering with formulas and gadgets, but his obsession with perfection can sometimes slow his adaptability.          </Text>
+          <Text style={styles.aboutText}>
+          Backstory
           </Text>
+          <Text style={styles.aboutText}>
+          Ben grew up in Zion City’s Terrestrial sector, in a family of academics and tinkerers who valued knowledge and innovation. As a kid, he was hooked on Halo, mastering its tech-heavy gameplay, and Monster Hunter, where he admired the crafting of weapons and armor from raw materials. His dual passions led him to a career as a chemical scientist, experimenting with energy and compounds in a lab by day. But it was Zion City’s descent into chaos that pushed his skills beyond theory.          </Text>
+          <Text style={styles.aboutText}>
+          During a Telestial sector incident, Ben was caught in a chemical explosion while analyzing a volatile substance. Instead of harm, the blast awakened his ability to create and manipulate solid energy constructs, a power he refined with his scientific mind. Recruited into The Advanced Spartan 3 Corp, he crafted his Halo 5 armor with a heavy Monster Hunter influence—60% of its design rugged and beastly—to wield his constructs in battle. Teaming up with Cam, whose leadership kept them focused, and Alex, whose hunting skills paired with his defenses, Ben found a purpose in protecting Zion City.          </Text>
+          <Text style={styles.aboutText}>
+          His bond with Cam and Alex grew strong, with Ben acting as the squad’s shield and innovator, turning energy into walls, weapons, or tools on the fly. His Monster Hunter love shaped his rugged approach, while Halo fueled his precision, but his scientist’s need for control sometimes clashes with the unpredictability of their missions.          </Text>
+          <Text style={styles.aboutText}>
+          Abilities          
+          </Text>
+          <Text style={styles.aboutText}>
+          Ben’s armor and scientific genius grant him a range of powers focused on creation, defense, and versatility, reflecting his Halo and Monster Hunter passions:          </Text>
+          <Text style={styles.aboutText}>
+          Solid Energy Constructs: Can generate and shape solid energy into objects—shields, blades, barriers, or platforms—controlled by his mind and enhanced by his armor’s tech, drawing on Halo’s sci-fi edge and Monster Hunter’s crafting vibe.          </Text>
+          <Text style={styles.aboutText}>
+          Chemical Manipulation: Uses his scientist background to alter the properties of his constructs (e.g., hardening them, making them explosive), adding tactical flexibility inspired by lab experiments.          </Text>
+          <Text style={styles.aboutText}>
+          Energy Pulse: Releases a shockwave of energy from his constructs, repelling enemies or clearing space, a nod to Halo’s plasma tech and Monster Hunter’s elemental bursts.          </Text>
+          <Text style={styles.aboutText}>
+          Engineering Intuition: Analyzes and adapts to battlefield conditions with near-instant problem-solving, repairing gear or countering threats with his constructs, a skill honed by his dual gaming loves.          </Text>
+          <Text style={styles.aboutText}>
+          Defensive Synergy: His constructs amplify Cam’s slams and Alex’s arrows when used together, reflecting his role as the team’s backbone and his trust in their coordination.          </Text>
+          <Text style={styles.aboutText}>
+          Personality and Role in the Team          </Text>
+          <Text style={styles.aboutText}>
+          Ben is the ingenuity and defense of The Advanced Spartan 3 Corp, supporting Cam’s leadership with his constructs and Alex’s marksmanship with his shields. He’s meticulous, creative, and deeply loyal to his squad, seeing their trio as a perfect blend of strategy and action. His relationship with Cam is one of respect, providing the tools for Cam’s plans, while with Alex, it’s a practical partnership, syncing his defenses with Alex’s offense.          </Text>
+          <Text style={styles.aboutText}>
+          In Zion City, Ben connects with the Titans’ tech-savvy members like William and Myran, sharing their love for innovation, but his smaller team focuses on precision strikes. His Halo fandom drives his precision, while Monster Hunter fuels his rugged resilience, and his scientist mindset pushes him to “experiment” on the battlefield. His ultimate goal is to fortify Zion City with his constructs, proving that science and teamwork can hold back the chaos, while keeping his squad safe.          </Text>
         </View>
       </ScrollView>
     </View>

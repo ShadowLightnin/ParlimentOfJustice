@@ -69,10 +69,40 @@ const Emma = () => {
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
-            Emma is a warrior clad in the legendary Kintsunera armor, designed for both agility and
-            resilience. Her armor is a fusion of advanced technology and ancient craftsmanship,
-            making her a formidable force on the battlefield.
+          Emma Cummings, known as Kinsunera, is a radiant force of hope and innovation, the younger Cummings sibling and a vital member of the Titans within the Parliament of Justice. Her presence is both inspiring and dynamic, a blend of angelic grace and mechanical precision that sets her apart among her cousins. Behind her vibrant armor, Emma is creative, empathetic, and fiercely protective of her family, especially her brother William. She sees herself as a beacon for the Titans, bringing light to the darkness of Zion City, and her mechanical angel wings symbolize her desire to rise above the chaos. Off the battlefield, she’s a dreamer and a tinkerer, often working with William on new tech or sketching designs that blend beauty with function, but her optimism hides a fear of failing those she loves.          </Text>
+          <Text style={styles.aboutText}>
+          Backstory
           </Text>
+          <Text style={styles.aboutText}>
+          Emma grew up alongside her older brother William in a tech-savvy household on the edge of Zion City’s Terrestrial sector, where innovation and resilience were family traits. While William gravitated toward stealth and strategy, Emma was drawn to flight and flair, inspired by stories of angels and futuristic heroes like The Paradigm. Her childhood was marked by curiosity and creativity, but also by the growing threats from the Telestial and Outer Darkness sectors.          </Text>
+          <Text style={styles.aboutText}>
+          During a critical moment in their village’s defense, Emma’s mechanical ingenuity shone through when she rigged a set of scavenged parts into makeshift wings, allowing her to evade attackers and scout from above. This moment birthed Kinsunera, and her armor evolved to reflect her vision of hope and protection. Joining the Titans, she stood with William, the McNeil siblings (Spencer, Jared, Jennifer), and the Briggs cousins (Ben, Azure), using her wings and energy to support their missions.          </Text>
+          <Text style={styles.aboutText}>
+          As one of the oldest cousins, Emma felt the weight of Spencer’s fallen leadership and Jared’s rising ambition, but she also saw an opportunity to bridge their divides. Her Paradigm-inspired armor, with its fading colors and flamingo accents, became a symbol of resilience, but her fear of not living up to her family’s expectations sometimes clouds her confidence. Her connection to the broader family—nurturers like Jennifer, strategists like Todd (Cummings), and healers like Emily (Jensen’s)—strengthens her, but she worries about the future of Zion City and her role in it.          </Text>
+          <Text style={styles.aboutText}>
+          Abilities          
+          </Text>
+          <Text style={styles.aboutText}>
+          Emma’s suit and innate creativity grant her a range of powers focused on mobility, support, and inspiration, reflecting her Paradigm inspiration:          </Text>
+          <Text style={styles.aboutText}>
+          Mechanical Flight: Her mechanical angel wings allow for agile flight, reconnaissance, and rapid repositioning in battle. They can also emit energy pulses to distract or disorient enemies.          </Text>
+          <Text style={styles.aboutText}>
+          Energy Manipulation: Can project bursts of blue, white, and pink energy, drawing from her armor’s color scheme, to shield allies or damage foes. These bursts are both offensive and defensive, symbolizing her dual role as protector and warrior.          </Text>
+          <Text style={styles.aboutText}>
+          Empathic Boost: Can inspire and uplift her family and teammates, enhancing their morale and coordination, much like her flamingo accents suggest joy and unity.          </Text>
+          <Text style={styles.aboutText}>
+          Adaptive Technology: Her armor and wings are equipped with modular tech that can adapt to different situations, such as reinforcing shields or boosting speed, a trait she shares with William but applies with more flair.          </Text>
+          <Text style={styles.aboutText}>
+          Light Display: Can create dazzling light shows or illusions using her armor’s fading colors, confusing enemies or signaling allies, a nod to The Paradigm’s creative energy.          </Text>
+          <Text style={styles.aboutText}>
+          Personality and Role in the Team          
+          </Text>
+          <Text style={styles.aboutText}>
+          Emma is the light and innovation of the Titans, a counterbalance to William’s shadows, Spencer’s power, and Jared’s speed. She’s optimistic, creative, and deeply loyal, but her fear of failure—especially toward her brother and cousins—drives her to push her limits. Her relationship with William is protective and collaborative—he’s her mentor and shield, while she inspires him with her vision. With the McNeil siblings, she admires Jennifer’s healing but worries about Spencer’s fall and Jared’s pressure, often trying to lift their spirits.          </Text>
+          <Text style={styles.aboutText}>
+          As Emma’s younger sister, she looks up to William but also challenges him to embrace hope over caution. Her cousins—Ben and Azure (Briggs), the McNeil siblings—rely on her for aerial support and morale, while she draws strength from their diversity. In a broader sense, Emma connects with creatives like Ava (McNeil) and strategists like Lee (Jensen’s), using her wings to scout and her energy to inspire.          </Text>
+          <Text style={styles.aboutText}>
+          In the Parliament of Justice, Emma works to bridge the gap between tradition and progress, often mediating between Spencer’s nostalgia and Jared’s modernity. Her ultimate goal is to ensure Zion City’s future is bright, proving that hope and technology can heal even the deepest wounds.          </Text>
         </View>
       </ScrollView>
     </View>

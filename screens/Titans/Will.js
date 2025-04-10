@@ -74,7 +74,7 @@ const Will = () => {
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
-          William Cummings, known as Night Hawk, is a master of shadows and strategy, the older Cummings sibling and a cornerstone of the Titans within the Parliament of Justice. At 6'1", his lean, agile frame hides a mind as sharp as his claws and a heart loyal to his family. Behind his sleek, ever-changing helmets, William is a tech genius and stealth expert, always two steps ahead of his enemies and ready to adapt to any situation. He’s in a relationship with Aileen, whose strength complements his tactical mind, and he shares an unbreakable bond with his sister Emma. As one of the oldest cousins, William bridges the gap between tradition (like Spencer’s ideals) and innovation, using his suits to protect his cousins—Spencer, Jared, Jennifer (McNeil), Ben, Azure (Briggs), and the rest. Off the battlefield, he’s a problem-solver, often tinkering with gadgets or strategizing with his family, but his drive to stay invisible and untouchable sometimes isolates him.          </Text>
+          William Cummings, known as Night Hawk, is a master of shadows and strategy, the older Cummings sibling and a cornerstone of the Titans within the Parliament of Justice. His lean, agile frame hides a mind as sharp as his claws and a heart loyal to his family. Behind his sleek, ever-changing helmets, William is a tech genius and stealth expert, always two steps ahead of his enemies and ready to adapt to any situation. He’s in a relationship with Aileen, whose strength complements his tactical mind, and he shares an unbreakable bond with his sister Emma. As one of the oldest cousins, William bridges the gap between tradition (like Spencer’s ideals) and innovation, using his suits to protect his cousins—Spencer, Jared, Jennifer (McNeil), Ben, Azure (Briggs), and the rest. Off the battlefield, he’s a problem-solver, often tinkering with gadgets or strategizing with his family, but his drive to stay invisible and untouchable sometimes isolates him.          </Text>
           <Text style={styles.aboutText}>
           Backstory
           </Text>
@@ -102,6 +102,42 @@ const Will = () => {
           Tactical Intelligence: His suits’ HUDs and data analysis allow him to strategize in real time, coordinating with the Titans and extended family for maximum efficiency.          </Text>
           <Text style={styles.aboutText}>
           Energy Projection (Via Suits): Certain suits (Celestial, Sentinel, Wrath) can emit energy blasts or create force fields, drawing on their glowing visors and design motifs.          </Text>
+          <Text style={styles.aboutText}>
+          Armor Description          </Text>
+          <Text style={styles.aboutText}>
+          William’s armor is a showcase of versatility and style, with each suit tailored to a specific role. Here’s a detailed breakdown:          </Text>
+          <Text style={styles.aboutText}>
+          Night Hawk Suit:          </Text>
+          <Text style={styles.aboutText}>
+          Helmet: A refined version of Defender 2.0, splitting from a V visor to a Y/T visor for better visibility and intimidation. Two spikes on the helmet have three light rings (radar, sonar, infrared) that pulse in sync with his stealth mode. Colors shift from gunmetal grey and dark green to white and blue, with a Hawk symbol (Nightwing-inspired) on the chest.          </Text>
+          <Text style={styles.aboutText}>
+          Body Armor: Sleek and lightweight, prioritizing agility over bulk. Includes Batman’s gauntlet spikes and Wolverine’s claws for combat, and a stealth coating that turns it invisible.          </Text>
+          <Text style={styles.aboutText}>
+          Additional Features: A compact power core in the chest fuels color changes and invisibility.         </Text>
+          <Text style={styles.aboutText}>
+          Defender Suit 1.0:          </Text>
+          <Text style={styles.aboutText}>
+          Body styled after Iron Man Mark 85, gunmetal grey instead of red, dark green instead of gold. Helmet styled after Arkham Knight and Final Stage Omega from Fortnite, with true omega spikes. Armor gaps held by carbon fiber chainmail, making it rugged yet flexible.          </Text>
+          <Text style={styles.aboutText}>
+          Defender Suit 2.0:          </Text>
+          <Text style={styles.aboutText}>
+          Like 1.0 but with a Mark 46 body and Mark 85 texture, fully filled for flight like Iron Man. Blends Mark 45, 46, and 85 styles, with enhanced durability and speed. Used for aerial assaults and heavy combat.          </Text>
+          <Text style={styles.aboutText}>
+          Shadow Storm Suit:          </Text>
+          <Text style={styles.aboutText}>
+          Like Defender 2.0 but with a bat symbol instead of an arc reactor and a retractable bat cape for gliding or intimidation. Black with dark grey accents, ideal for stealth and psychological warfare.          </Text>
+          <Text style={styles.aboutText}>
+          Celestial Suit:          </Text>
+          <Text style={styles.aboutText}>
+          Like Night Hawk but all white with golden swirls, symbolizing purity and power. Visor glows gold, enhancing night vision and energy projection. Lighter and more ceremonial, used for leadership or morale-boosting missions.          </Text>
+          <Text style={styles.aboutText}>
+          Sentinel Suit:          </Text>
+          <Text style={styles.aboutText}>
+          Like Night Hawk but all white with dark green as dark grey and gold accents, visor indented and glowing blue. Designed for defense, with reinforced plating and a shield generator for protecting allies.          </Text>
+          <Text style={styles.aboutText}>
+          Wrath Suit:          </Text>
+          <Text style={styles.aboutText}>
+          Like Defender 2.0 but bigger, bulkier, black, broken-looking, and war-weathered, glowing fire red. Used for overwhelming force, reflecting William’s darker moments or desperate battles.          </Text>          
           <Text style={styles.aboutText}>
           Personality and Role in the Team          
           </Text>

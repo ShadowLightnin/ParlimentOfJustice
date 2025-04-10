@@ -67,10 +67,39 @@ const Kelsie = () => {
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
-            Kelsie is a warrior clad in the legendary armor, designed for both agility and
-            resilience. His armor is a fusion of advanced technology and ancient craftsmanship,
-            making him a formidable force on the battlefield.
+          Kelsie Tidwell, known as Shutter Dancer, is a luminous blend of grace and power, the wife of Jared McNeil “Spector” and a vital member of The Eclipse within the Parliament of Justice. Her presence is both captivating and elusive, a dance of light and shadow that dazzles allies and confounds enemies. Behind her shimmering armor, Kelsie is artistic, quick-witted, and fiercely supportive of Jared, her speed-loving husband, seeing their partnership as a perfect rhythm of motion and light. She extends this loyalty to the Titans—Spencer, Jennifer, William, Emma, Ben, and Azure—and their partners in The Eclipse, using her photokinetic abilities to illuminate their path. Off the battlefield, she’s a performer and a memory-keeper, often choreographing light displays or recalling details to aid her family, but her flair for the dramatic can sometimes overshadow practical needs.          </Text>
+          <Text style={styles.aboutText}>
+          Backstory
           </Text>
+          <Text style={styles.aboutText}>
+          Kelsie grew up in Zion City’s Terrestrial sector, in a family of artists and performers who thrived on creativity and expression. From a young age, she was drawn to dance and light, inspired by the interplay of shadows and colors in the city’s fractured skyline. Her natural agility and photographic memory set her apart, but it was her encounter with Jared McNeil that ignited her true potential.          </Text>
+          <Text style={styles.aboutText}>
+          Kelsie met Jared during a scouting mission gone wrong, where his super speed saved her from an ambush in the Telestial sector. His rapid movements sparked her imagination, and she countered with a burst of light that blinded their attackers, revealing her latent photokinetic powers. Their connection grew into love, and Kelsie crafted her Shutter Dancer suit to complement Jared’s speed, using light to enhance his strikes and cover his retreats. Their marriage became a partnership of agility and artistry, with Kelsie’s grace balancing Jared’s intensity.          </Text>
+          <Text style={styles.aboutText}>
+          Joining The Eclipse, Kelsie aligned with the significant others of the Titans—Myran (Jennifer’s husband), James (Azure’s husband), and Aileen (William’s girlfriend)—to support their mission. She felt the strain of Spencer’s fallen leadership and Jared’s burden as a potential successor, but saw an opportunity to lift their spirits with her light. Her connection to the broader Parliament of Justice—strategists like William and healers like Jennifer—strengthens her, but she struggles with the darker realities of Zion City’s lower sectors, relying on her brightness to push back the shadows.          </Text>
+          <Text style={styles.aboutText}>
+          Abilities          
+          </Text>
+          <Text style={styles.aboutText}>
+          Kelsie’s suit and innate artistry grant her a range of powers focused on light, agility, and deception, reflecting her dancer’s grace:          </Text>
+          <Text style={styles.aboutText}>
+          Photokinetic Dance: Can manipulate light with her movements, creating beams, flashes, or patterns to blind enemies, illuminate allies, or shape the battlefield. Her dance is both a weapon and a shield, flowing seamlessly with Jared’s speed.          </Text>
+          <Text style={styles.aboutText}>
+          Flash Photography: Generates intense bursts of light to disorient or stun opponents, drawing on her suit’s wings and visor to amplify the effect, perfect for quick escapes or ambushes.          </Text>
+          <Text style={styles.aboutText}>
+          Photographic Memory: Recalls every detail she’s ever seen with perfect clarity, allowing her to memorize enemy tactics, map layouts, or family plans, making her a living archive for the Titans.          </Text>
+          <Text style={styles.aboutText}>
+          Illusory Dancing: Creates light-based illusions to deceive enemies or inspire allies, projecting decoys, mirages, or dazzling displays that shift perceptions in combat.          </Text>
+          <Text style={styles.aboutText}>
+          Graceful Acrobatics: Moves with exceptional agility and precision, flipping, spinning, and leaping with ease, enhancing her combat and evasion alongside Jared’s speed.          </Text>
+          <Text style={styles.aboutText}>
+          Personality and Role in the Team          </Text>
+          <Text style={styles.aboutText}>
+          Kelsie is the light and agility of The Eclipse, complementing Jared’s speed with her dynamic grace and illumination. She’s creative, spirited, and deeply in love with Jared, seeing their partnership as a dance of light and motion that keeps them in sync. Her relationship with Jared is one of mutual enhancement—he accelerates her light, while she guides his path with brilliance.          </Text>
+          <Text style={styles.aboutText}>
+          Among The Eclipse, Kelsie collaborates with Myran’s tech, James’s calm, and Aileen’s strength, forming a vibrant support unit for the Titans. She admires Spencer’s strength but shares Jared’s focus on progress, often using her illusions to ease tensions within the group. Her cousins-in-law—Jennifer, William, Emma, Ben, and Azure—rely on her light for morale and cover, while she draws inspiration from their resilience.          </Text>
+          <Text style={styles.aboutText}>
+          In the Parliament of Justice, Kelsie connects with creatives like Emma and strategists like William, using her photographic memory to support their plans. Her ultimate goal is to illuminate Zion City’s future alongside Jared, proving that beauty and agility can overcome darkness, while ensuring her husband and his family shine.          </Text>
         </View>
       </ScrollView>
     </View>

@@ -66,9 +66,52 @@ const Zeke = () => {
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
-            Zeke is a warrior clad in the legendary armor, designed for both agility and
-            resilience. His armor is a fusion of advanced technology and ancient craftsmanship,
-            making him a formidable force on the battlefield.
+          Spencer McNeil, known as Annihilus, is the eldest of the McNeil siblings and the oldest among the nine oldest cousins, making him a foundational figure in the Titans and the Parliament of Justice. His imposing presence is a mix of authority, nostalgia, and vulnerability, a fallen leader who once united his extended family but now struggles with uncertainty. He’s deeply committed to helping others, especially his siblings Jared and Jennifer, his cousins Ben and Azure (Briggs), Will and Emma (Cummings), and the other oldest cousins like Josh S and Garden. Spencer prefers the simplicity and morality of a bygone era, reminiscent of Christ’s time, where faith, community, and honor guided actions. Despite losing his way, his inherent goodness and love for his family—spanning the McNeil’s, Briggs, Cummings, Jensen’s, Bolander’s, and Stillman families—make him a cherished, if conflicted, patriarch.
+          </Text>
+          <Text style={styles.aboutText}>
+          Backstory
+          </Text>
+          <Text style={styles.aboutText}>
+          Raised in a remote village on the edge of Zion City’s Terrestrial sector, Spencer was the firstborn of the McNeil siblings, with Jared and Jennifer following closely. His family, part of a larger network of cousins from the Cummings, Jensen’s, Briggs, Bolander’s, and Stillman clans, shared a deep-rooted tradition of faith, strength, and unity. As the oldest cousin, Spencer took it upon himself to lead, mentoring not only his siblings but also cousins like Ben and Azure (Briggs), Will and Emma (Cummings), and the Stillman cousins Josh S and Garden, who were among the nine oldest.
+          </Text>
+          <Text style={styles.aboutText}>
+          When Zion City’s sectors fractured, Spencer’s village faced raids from the lawless Outer Darkness sector. During one such attack, his super strength emerged, saving his siblings and cousins and solidifying his role as the Titans’ leader. The burning goat skull relic he later discovered—tied to myths of destruction and renewal—became his symbol, but as modern corruption and technological overreach grew, Spencer began to withdraw, longing for the simplicity of the past.          
+          </Text>
+          <Text style={styles.aboutText}>
+          His leadership waned as he saw the younger cousins, like Jared, adapt to the new world with speed and innovation, while he clung to outdated ideals. Among the nine oldest cousins, only seven—Spencer, Jared, Jennifer, Ben, Azure, Will, and Emma—formed the core Titans, with Josh S and Garden occasionally stepping in. Spencer now sees Jared as his potential successor, a realization that both inspires and haunts him, as he fears losing the values he holds dear.          
+          </Text>
+          <Text style={styles.aboutText}>
+          Abilities          
+          </Text>
+          <Text style={styles.aboutText}>
+          Spencer’s powers are a reflection of his role as a fallen leader and protector of his vast family          
+          </Text>
+          <Text style={styles.aboutText}>
+          Super Strength: The cornerstone of his identity, now tempered by doubt but still formidable when inspired by his family’s faith.          
+          </Text>
+          <Text style={styles.aboutText}>
+          Endurance: A testament to his lifelong commitment to his cousins and siblings, though he sometimes overextends himself.          
+          </Text>
+          <Text style={styles.aboutText}>
+          Fire Aura: The flickering flames of his helmet symbolize his inner struggle, burning brightly when he draws strength from family bonds.          
+          </Text>
+          <Text style={styles.aboutText}>
+          Primal Instinct: Rooted in his shared heritage with the Briggs and Cummings cousins, this instinct helps him protect and anticipate threats.          
+          </Text>
+          <Text style={styles.aboutText}>
+          Earthshaking Impact: A power to disrupt and defend, often used to shield his family from Zion City’s chaos.          
+          </Text>
+          <Text style={styles.aboutText}>
+          Inspirational Presence: His ability to uplift his siblings and cousins, especially Jared, whom he mentors as his successor, remains his greatest asset.          
+          </Text>
+          <Text style={styles.aboutText}>
+          Personality and Role in the Team          
+          </Text>
+          <Text style={styles.aboutText}>
+          As the oldest Titan and cousin, Spencer is the unofficial patriarch of the nine oldest, but his fall from leadership has left him searching for purpose. He’s deeply connected to his siblings (Jared and Jennifer) and cousins (Ben and Azure, Will and Emma, Josh S and Garden), often acting as their advisor and protector. His preference for the past clashes with the modern approaches of younger cousins like Lee (Jensen) and Mason (Stillman), but his goodness ensures he remains a stabilizing force.          
+          </Text>
+          <Text style={styles.aboutText}>
+          Spencer sees Jared as his successor, a role that both pressures and inspires him. His relationships with the other Titans—Jennifer’s compassion, Ben and Azure’s teamwork, Will and Emma’s innovation—are rooted in shared history, while his interactions with the broader family (like Todd’s leadership from Cummings or Samantha’s strength from Jensen’s) remind him of his broader responsibility. His goal is to reclaim his leadership by guiding Jared and the Titans to balance tradition and progress, ensuring Zion City’s safety for all their families.          
           </Text>
         </View>
       </ScrollView>
