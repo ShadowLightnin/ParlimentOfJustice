@@ -138,6 +138,44 @@ const EvilSam = () => {
            Motives: Wants to use dark powers he learned from the Enlightened 
            but the Monke Alliance is against it.          
            </Text>
+           <Text style={styles.aboutText}>
+          ____________________________________________________________________
+           </Text>
+
+                     <Text style={styles.aboutText}>
+                     Sam Woodwell, shrouded as “Evil Sam” during this dark chapter, is a vengeful and electrifying terror, a mysterious figure stalking Zion City’s factions before his reveal to Will “Night Hawk” and the Titans. His presence is a storm of malice and power, a corrupted blend of darkness and lightning that leaves death in its wake. Behind his metallic Jedi robes and floating skull helmet, Sam is tormented, ruthless, and driven by a fractured love for Chroma and a thirst for revenge against an unknown killer from Melcornia. He operates alone, a shadow of his former self, targeting The Advanced Spartan 3 Corp, Cobros 314, Olympians, Legionaires, and Constellation, his kills a prelude to his Thunder Born era. Off the battlefield, he’s a ghost, haunted by his past and plotting his next strike, his mind a battlefield of conflict and rage.                     </Text>
+                     <Text style={styles.aboutText}>
+                     Backstory
+                     </Text>
+                     <Text style={styles.aboutText}>
+                     Sam’s journey began as a naive teenager in Zion City’s Terrestrial sector, a dreamer who joined Will, Cole, Joseph, James, Tanner, Zeke, Elijah, Ammon, Tom, Ethan, Eli, Damon, and others on the pre-Parliament adventure to Melcornia. In that dark mansion, his family was slaughtered by an unknown figure, and Erevos, a sinister entity, promised justice and revenge, corrupting Sam’s mind with powers over darkness and electricity. The mansion twisted him, and he emerged as a disciple of the Enlightened, embracing their evil ideals. His love for Chroma, a fellow corrupted soul met under Erevos’s sway, became his anchor amidst the chaos.                     </Text>
+                     <Text style={styles.aboutText}>
+                     Rather than dying as his crew believed, Sam survived Melcornia, vanishing into Zion City’s shadows. Consumed by grief and Erevos’s influence, he became “Evil Sam,” a mysterious figure wielding his powers to hunt those he blamed for his pain. Before revealing himself to Will and the Titans, he unleashed a killing spree, targeting The Advanced Spartan 3 Corp—slaughtering Cam “Court Chief,” Ben “Chemoshock,” and Alex “Huntsman”—for their disciplined strength; Cobros 314—Tanner Despain, Ethan Workman, Jonah Gray, Nick Larsen, Alex Wood, and Kyle P—Will’s childhood Scout troop, for their ties to his past; Olympians—Gary Jr., Jackson, Garden, Josh, Sean, Heather C., Little Brett, Jake, Ailey, Aubrey, James, Kid Ryan, Ryan, Maren, Sasha, Ian, Riker, Dakota, Wayne, Christopher, Elizabeth, Tom—Will’s extended family, for their unity; and select Legionaires and Constellation members, widening his wrath. Each kill fueled his revenge, a dark prelude to his redemption arc.                     </Text>
+                     <Text style={styles.aboutText}>
+                     When the Parliament of Justice formed, Sam broke from the Enlightened, their bounty on his head a mark of his betrayal. Joining the Parliament, he formed the Bludbruhs, but this “Evil Sam” phase came first, his identity hidden until Will and the Titans faced him, shocked to find their lost friend alive and twisted. His shift to Thunder Born with Cole, Joseph, James, and Tanner marked his attempt at redemption, but this earlier reign of terror remains a grim legend.                     </Text>
+                     <Text style={styles.aboutText}>
+                     Abilities          
+                     </Text>
+                     <Text style={styles.aboutText}>
+                     Sam’s corrupted powers and armor grant him a range of devastating abilities during his “Evil Sam” phase, blending his original skills with a darker edge:                     </Text>
+                     <Text style={styles.aboutText}>
+                     Electrical Manipulation: Commands lightning with lethal precision, striking foes with bolts or chaining electricity through groups, a power amplified by his rage.                     </Text>
+                     <Text style={styles.aboutText}>
+                     Telekinesis: Lifts and crushes objects or people with his mind, a dark tool of vengeance honed by Erevos, used to dismantle his targets.                     </Text>
+                     <Text style={styles.aboutText}>
+                     Mind Influence: Bends thoughts and wills with sinister force, sowing fear or obedience, a corrupted gift from the Enlightened he wields ruthlessly.                     </Text>
+                     <Text style={styles.aboutText}>
+                     Dark Surge: Unleashes a wave of shadow and electricity, obliterating enemies in a storm of corruption, a signature move of his killing spree.                     </Text>
+                     <Text style={styles.aboutText}>
+                     Shadow Cloak: Wraps himself in darkness, becoming near-invisible to stalk and strike, a stealth tactic that masked his identity as the mysterious figure.                     </Text>
+                     <Text style={styles.aboutText}>
+                     Personality and Role in the Narrative                     </Text>
+                     <Text style={styles.aboutText}>
+                     As “Evil Sam,” he is the storm and vengeance of his own dark tale, a solitary force of destruction before his Thunder Born redemption. He’s cold, conflicted, and driven by a twisted love for Chroma and revenge for Melcornia, his loyalty to his past crew buried under rage. His killing spree targeted those tied to Will—Spartans for their strength, Cobros for their bonds, Olympians for their family, and others for their resistance—each death a strike against the world that failed him.                     </Text>
+                     <Text style={styles.aboutText}>
+                     In this phase, Sam operated alone, his identity as the mysterious figure unknown until Will and the Titans confronted him, revealing the friend they thought lost. His shift to Thunder Born with Cole, Joseph, James, and Tanner, and the rift with Monkie Alliance, followed this terror, marking his struggle to reclaim his humanity. In Zion City, his spree left scars—families mourning, factions weakened—setting the stage for his redemption arc and the Parliament’s uneasy truce. His ultimate goal as “Evil Sam” was to punish the unknown killer through proxies, a dark prelude to his conflicted present.                     </Text>
+                     <Text style={styles.aboutText}>
+                     Before revealing himself, “Evil Sam” emerged as a mysterious figure post-Melcornia, his survival hidden as he hunted Zion City’s factions. He struck The Advanced Spartan 3 Corp, Cobros 314, Olympians, Legionaires, and Constellation, killing key members in a calculated rampage—retribution for his family’s death and a test of his corrupted power. His defeat of these groups preceded his Parliament entry, ending when Will and the Titans faced him, shocked by his survival and darkness, paving the way for his Thunder Born phase and Monkie rivalry.                     </Text>
           </View>
         </ScrollView>
       </View>
