@@ -14,7 +14,7 @@ const PLACEHOLDER_URL = "placeholder";
 // Hardcoded characters for each book (example for bookId)
 const HARDCODED_CHARACTERS = {
   "hardcoded-1": [
-    { id: "Lumiel", name: "Lumiel", description: "", image: require("../../../assets/Armor/LumielPhantom.jpg"), hardcoded: true },
+    { id: "Lumiel", name: "Lumiel", description: "", image: require("../../../assets/Armor/LumielPhantom.jpg"), screen: "LumielScreen", hardcoded: true },
     { id: "Clayvoria", name: "Clayvoria", description: "", image: require("../../../assets/Montrose/Clayvoria.jpg"), hardcoded: true },
     { id: "Shivers", name: "Shivers", description: "", image: require("../../../assets/Montrose/Shivers.jpg"), hardcoded: true },
   ],
@@ -147,9 +147,21 @@ const BookDetails = () => {
     Alert.alert("Success", "Updated!");
   };
 
+  const handleCharPress = (char) => {
+    if (char.hardcoded && char.screen) {
+      navigation.navigate(char.screen); // Navigate to the character's screen if defined
+    } else {
+      setSelChar(char); // Show modal for characters without a screen
+    }
+  };
+
   const renderChar = (char) => (
     <View key={char.id} style={styles.charCont}>
-      <TouchableOpacity style={styles.charCard} onPress={() => setSelChar(char)} disabled={false}> {/* Always clickable */}
+      <TouchableOpacity 
+        style={styles.charCard} 
+        onPress={() => handleCharPress(char)} 
+        disabled={false} // Always clickable
+      >
         {char.imageUrl === null ? <View style={styles.noImg} /> : <Image source={char.imageUrl && char.imageUrl !== PLACEHOLDER_URL ? { uri: char.imageUrl } : char.image || PLACEHOLDER_IMAGE} style={styles.charImg} defaultSource={PLACEHOLDER_IMAGE} />}
         <View style={styles.overlay} /><Text style={styles.charName}>{char.name}</Text>
       </TouchableOpacity>

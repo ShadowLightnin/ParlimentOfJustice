@@ -42,6 +42,16 @@ export const ConstollationScreen = () => {
     navigation.navigate('TeamChat');
   };
 
+  const handleMemberPress = (member) => {
+    if (member.clickable) {
+      if (member.screen && member.screen !== '') {
+        navigation.navigate(member.screen); // Navigate to the defined screen if it exists and isn’t empty
+      } else {
+        setPreviewMember(member); // Show modal if no screen or screen is empty
+      }
+    }
+  };
+
   const renderMemberCard = (member) => (
     <TouchableOpacity
       key={member.name}
@@ -54,7 +64,7 @@ export const ConstollationScreen = () => {
           ...(member.clickable ? {} : styles.disabledCard),
         },
       ]}
-      onPress={() => member.clickable && setPreviewMember(member)}
+      onPress={() => handleMemberPress(member)}
       disabled={!member.clickable}
     >
       {member.image && (
@@ -63,8 +73,8 @@ export const ConstollationScreen = () => {
           <View style={styles.transparentOverlay} />
         </>
       )}
-      {member.category && <Text style={styles.category}>{member.category}</Text>}
-      {member.name && <Text style={styles.name}>{member.name}</Text>}
+      <Text style={styles.codename}>{member.codename || ''}</Text>
+      <Text style={styles.name}>{member.name}</Text>
     </TouchableOpacity>
   );
 
@@ -72,7 +82,7 @@ export const ConstollationScreen = () => {
     <TouchableOpacity
       key={member.name}
       style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
-      onPress={() => setPreviewMember(null)}
+      onPress={() => setPreviewMember(null)} // Close modal on card press
     >
       <Image
         source={member.image || require('../../assets/Armor/PlaceHolder.jpg')}
@@ -81,7 +91,7 @@ export const ConstollationScreen = () => {
       />
       <View style={styles.transparentOverlay} />
       <Text style={styles.cardName}>
-        © {member.name || 'Unknown'}; William Cummings
+        © {member.codename || 'Unknown'}; William Cummings
       </Text>
     </TouchableOpacity>
   );
@@ -129,6 +139,7 @@ export const ConstollationScreen = () => {
                               name: memberObj.name,
                               codename: memberObj.codename,
                               category: categoryData.category,
+                              screen: memberObj.screen || '',
                               image: constollationImages[memberObj.name]?.image || require('../../assets/Armor/PlaceHolder.jpg'),
                               clickable: constollationImages[memberObj.name]?.clickable || false,
                             };
@@ -157,24 +168,23 @@ export const ConstollationScreen = () => {
               activeOpacity={1}
               onPress={() => setPreviewMember(null)}
             >
-              <View style={styles.previewContent}>
-                <View style={styles.imagePreviewContainer}>
-                  <ScrollView
-                    horizontal
-                    contentContainerStyle={styles.imageScrollContainer}
-                    showsHorizontalScrollIndicator={false}
-                    snapToAlignment="center"
-                    snapToInterval={SCREEN_WIDTH * 0.7 + 20}
-                    decelerationRate="fast"
-                  >
-                    {previewMember && renderPreviewCard(previewMember)}
-                  </ScrollView>
-                </View>
-                <View style={styles.previewDetails}>
-                  <Text style={styles.previewCodename}>{previewMember?.codename || 'N/A'}</Text>
-                  <Text style={styles.previewCategory}> {previewMember?.category || 'Unknown'}</Text>
-                  <Text style={styles.previewName}> {previewMember?.name || 'Unknown'}</Text>
-                </View>
+              <View style={styles.imageContainer}>
+                <ScrollView
+                  horizontal
+                  contentContainerStyle={styles.imageScrollContainer}
+                  showsHorizontalScrollIndicator={false}
+                  snapToAlignment="center"
+                  snapToInterval={SCREEN_WIDTH * 0.7 + 20}
+                  decelerationRate="fast"
+                  centerContent={true}
+                >
+                  {previewMember && renderPreviewCard(previewMember)}
+                </ScrollView>
+              </View>
+              <View style={styles.previewAboutSection}>
+                <Text style={styles.previewCodename}>{previewMember?.codename || 'N/A'}</Text>
+                <Text style={styles.previewName}>{previewMember?.name || 'Unknown'}</Text>
+                <Text style={styles.previewCategory}>{previewMember?.category || 'Unknown'}</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -261,7 +271,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     flexWrap: 'wrap',
-    gap: horizontalSpacing,
   },
   card: {
     backgroundColor: '#1c1c1c',
@@ -290,7 +299,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
   },
-  category: {
+  codename: {
     fontSize: 12,
     fontWeight: 'bold',
     color: '#fff',
@@ -315,21 +324,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  previewContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  imagePreviewContainer: {
+  imageContainer: {
     width: '100%',
     paddingVertical: 20,
     backgroundColor: '#111',
-    paddingLeft: 15,
+    alignItems: 'center',
+    paddingLeft: 20,
   },
   imageScrollContainer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     paddingHorizontal: 10,
-    alignItems: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   previewCard: (isDesktop, windowWidth) => ({
     width: isDesktop ? windowWidth * 0.6 : SCREEN_WIDTH * 0.9,
@@ -357,7 +363,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
-  previewDetails: {
+  previewAboutSection: {
     marginTop: 20,
     padding: 10,
     backgroundColor: '#222',

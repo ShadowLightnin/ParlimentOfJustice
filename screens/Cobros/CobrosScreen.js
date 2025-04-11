@@ -54,6 +54,16 @@ export const CobrosScreen = () => {
     navigation.navigate('TeamChat');
   };
 
+  const handleMemberPress = (member) => {
+    if (member.clickable) {
+      if (member.screen) {
+        navigation.navigate(member.screen); // Navigate to the defined screen if it exists
+      } else {
+        setPreviewMember(member); // Show modal if no screen is defined
+      }
+    }
+  };
+
   const renderMemberCard = (member) => (
     <TouchableOpacity 
       key={member.name} 
@@ -62,7 +72,7 @@ export const CobrosScreen = () => {
         { width: cardSize, height: cardSize * cardHeightMultiplier },
         !member.clickable && styles.disabledCard
       ]}
-      onPress={() => member.clickable && setPreviewMember(member)}
+      onPress={() => handleMemberPress(member)}
       disabled={!member.clickable}
     >
       {member?.image && (
