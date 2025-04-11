@@ -100,7 +100,7 @@ const Jennifer = () => {
           <Text style={styles.aboutText}>
           As the middle sibling, Jennifer feels a responsibility to her cousins—Ben and Azure (Briggs), Will and Emma (Cummings)—and the broader family, often acting as their emotional anchor. Her marriage to Myran strengthens her, as he helps her see the beauty in her flaws, but her fallen state leaves her questioning whether she can truly lead or heal as she once did.          </Text>
           <Text style={styles.aboutText}>
-          In the Parliament of Justice, Jennifer works closely with healers like Angela (Cummings) and Emily (Jensen’s), drawing on their shared nurturing instincts, while her Kintsugi armor inspires hope in allies like Todd (Cummings) and Mary (McNeil). Her ultimate goal is to restore balance to Zion City and her family, proving that even the most broken can shine with gold.          </Text>
+          In the Parliament of Justice, Jennifer works closely with healers like Angela (Cummings) and Emily (Jensen), drawing on their shared nurturing instincts, while her Kintsugi armor inspires hope in allies like Todd (Cummings) and Mary (McNeil). Her ultimate goal is to restore balance to Zion City and her family, proving that even the most broken can shine with gold.          </Text>
         </View>
       </ScrollView>
     </View>

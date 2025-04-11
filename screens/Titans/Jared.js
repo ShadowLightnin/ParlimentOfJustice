@@ -104,7 +104,7 @@ const Jared = () => {
           <Text style={styles.aboutText}>
           His relationship with Spencer is complex: he respects his brother’s past leadership but believes he’s lost his way, a belief that both motivates and burdens him. With Jennifer, he shares a protective bond, often shielding her with his speed during battles. His cousins—Ben and Azure (Briggs), Will and Emma (Cummings)—look to him for tactical guidance, while he draws inspiration from their unique strengths. Married to Kelsie, Jared finds a partner who shares his vision, and her influence pushes him to balance his ambition with compassion.          </Text>
           <Text style={styles.aboutText}>
-          In the broader Parliament of Justice, Jared works closely with the extended family—coordinating with Todd (Cummings) on leadership, sparring with Samantha (Jensen’s) for strength training, and strategizing with Lee (Jensen’s) on marksmanship. His ultimate goal is to prove he can lead the Titans and Zion City into a new era, honoring Spencer’s legacy while forging his own path.          </Text>
+          In the broader Parliament of Justice, Jared works closely with the extended family—coordinating with Todd (Cummings) on leadership, sparring with Samantha (Jensen) for strength training, and strategizing with Lee (Jensen) on marksmanship. His ultimate goal is to prove he can lead the Titans and Zion City into a new era, honoring Spencer’s legacy while forging his own path.          </Text>
         </View>
       </ScrollView>
     </View>

@@ -17,7 +17,7 @@ const familyData = [
     members: [
       { name: 'Savannah', codename: '' },
       { name: 'Lee', codename: '' },
-      { name: 'Emily', codename: '' },
+      { name: 'Emilee', codename: '' },
       { name: 'Samantha', codename: '' },
       { name: 'Ella', codename: '' },
     ],
@@ -191,7 +191,7 @@ const characterImages = {
   Todd: require('../../assets/Armor/ToddPlaceHolder.jpg'),
   Savannah: require('../../assets/Armor/SavannaPlaceHolder.jpg'),
   Lee: require('../../assets/Armor/LeePlaceHolder.jpg'),
-  Emily: require('../../assets/Armor/EmilyPlaceHolder.jpg'),
+  Emilee: require('../../assets/Armor/EmilyPlaceHolder.jpg'),
   Samantha: require('../../assets/Armor/SamanthaPlaceHolder.jpg'),
   Ella: require('../../assets/Armor/EllaPlaceHolder.jpg'),
   Mary: require('../../assets/Armor/MaryPlaceHolder.jpg'),

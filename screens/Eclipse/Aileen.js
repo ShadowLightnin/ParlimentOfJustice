@@ -172,7 +172,7 @@ const Aileen = () => {
           <Text style={styles.aboutText}>
           Among The Eclipse, Aileen collaborates with Myran’s tech, Kelsie’s agility, and James’s calm, forming a dynamic support unit for the Titans. She respects Spencer’s power but shares William’s focus on adaptability, often using her warrior’s call to rally the group. Her cousins-in-law—Jennifer, Jared, Emma, Ben, and Azure—rely on her combat skills and inspiration, while she draws strength from their unity.          </Text>
           <Text style={styles.aboutText}>
-          In the Parliament of Justice, Aileen connects with fighters like Samantha (Jensen’s) and protectors like Ben, using her heritage to bolster their resolve. Her ultimate goal is to defend Zion City’s future alongside William, proving that cultural strength and teamwork can overcome chaos, while ensuring her partner and his family stand tall.          </Text>
+          In the Parliament of Justice, Aileen connects with fighters like Samantha (Jensen) and protectors like Ben, using her heritage to bolster their resolve. Her ultimate goal is to defend Zion City’s future alongside William, proving that cultural strength and teamwork can overcome chaos, while ensuring her partner and his family stand tall.          </Text>
         </View>
       </ScrollView>
 
