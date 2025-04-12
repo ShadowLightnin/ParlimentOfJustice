@@ -7,7 +7,7 @@ import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebas
 import * as ImagePicker from "expo-image-picker";
 
 const ALLOWED_EMAILS = ["samuelp.woodwell@gmail.com", "cummingsnialla@gmail.com", "will@test.com", "c1wcummings@gmail.com", "aileen@test.com"];
-const RESTRICT_ACCESS = true; // Set to true to restrict to ALLOWED_EMAILS, false to allow anyone
+const RESTRICT_ACCESS = false; // Set to true to restrict to ALLOWED_EMAILS, false to allow anyone
 const PLACEHOLDER_IMAGE = require("../../../assets/Armor/PlaceHolder.jpg");
 const PLACEHOLDER_URL = "placeholder";
 
