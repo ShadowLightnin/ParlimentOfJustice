@@ -15,7 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const armor = [
-  { name: "Ariata", image: require("../../assets/Armor/AileenPlaceHolder2.jpg"), clickable: false },
+  { name: "Ariata", image: require("../../assets/Armor/AileenPlaceHolder2.jpg"), clickable: true },
   { name: "Baybayin", image: require("../../assets/Armor/AileenPlaceHolder.jpg"), clickable: true },
   { name: "Luminara", image: require("../../assets/Armor/AileenPlaceHolder3.jpg"), clickable: true },
   { name: "Aileara", image: require("../../assets/Armor/AileenPlaceHolder5.jpg"), clickable: true },
