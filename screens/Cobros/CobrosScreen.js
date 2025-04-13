@@ -35,7 +35,7 @@ const members = [
   { name: 'Trent Cook', codename: 'Captain', screen: '', clickable: true, image: require('../../assets/Armor/TrentPlaceHolder.jpg') },
   { name: 'Robbie Petersen', codename: 'Quickstike', screen: '', clickable: true, image: require('../../assets/Armor/RobbiePlaceHolder.jpg') },
   { name: 'Micheal', codename: 'Guardian Sentinel', screen: '', clickable: true, image: require('../../assets/Armor/MichealPlaceHolder.jpg') },
-  { name: 'Kyle', codename: 'Juggnot', screen: '', clickable: true, image: require('../../assets/Armor/KylePPlaceHolder.jpg') },
+  { name: 'Kyle', codename: 'Jugridge', screen: '', clickable: true, image: require('../../assets/Armor/KylePPlaceHolder.jpg') },
 ];
 
 const isDesktop = SCREEN_WIDTH > 600;
