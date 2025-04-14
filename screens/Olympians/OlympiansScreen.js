@@ -254,14 +254,14 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 8,
   },
   codename: {
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
     marginTop: 5,
   },
   name: {
-    fontSize: 10,
+    fontSize: 8,
     fontStyle: 'italic',
     color: '#aaa',
     textAlign: 'center',
