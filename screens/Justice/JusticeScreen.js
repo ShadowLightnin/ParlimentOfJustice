@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
   },
   notClickable: {
-    opacity: 0.6,
+    opacity: 0.7,
   },
   image: {
     width: '100%',

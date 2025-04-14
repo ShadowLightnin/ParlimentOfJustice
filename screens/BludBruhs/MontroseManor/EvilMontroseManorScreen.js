@@ -18,7 +18,7 @@ const MontroseManorScreen = () => {
         })
     ).current;
 
-    const [textPosition, setTextPosition] = React.useState({ x: SCREEN_WIDTH / 2 - 150, y: SCREEN_HEIGHT / 2 - 300 });
+    const [textPosition, setTextPosition] = React.useState({ x: SCREEN_WIDTH / 2 - 100, y: SCREEN_HEIGHT / 2 - 150 });
 
     const handleTitleClick = () => {
         navigation.navigate("Landing");
