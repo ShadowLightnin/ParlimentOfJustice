@@ -16,6 +16,7 @@ const armors = [
   { name: "Celestial", image: require("../../assets/Armor/CelestialPlaceHolder.jpg"), clickable: true },
   { name: "Sentinel", image: require("../../assets/Armor/SentinelPlaceHolder.jpg"), clickable: true },
   { name: "Wrath", image: require("../../assets/Armor/WrathPlaceHolder.jpg"), clickable: true },
+  { name: "Night Hawk Helmet", image: require("../../assets/Armor/MyHelmets2.jpg"), clickable: true },
 ];
 
 const Will = () => {
