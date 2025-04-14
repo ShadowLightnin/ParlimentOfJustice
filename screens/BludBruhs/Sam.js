@@ -296,7 +296,7 @@ const Sam = () => {
       {/* Warp Popup */}
       {isPopupVisible && (
         <Animated.View style={[styles.popup, { transform: [{ translateY: popupAnim }] }]}>
-          <Text style={styles.popupText}>Would you like to warp to Montrose?</Text>
+          <Text style={styles.popupText}>Would you like to warp to Melcornia?</Text>
           <View style={styles.popupButtons}>
             <TouchableOpacity style={styles.popupButton} onPress={confirmWarp}>
               <Text style={styles.popupButtonText}>Yes</Text>
