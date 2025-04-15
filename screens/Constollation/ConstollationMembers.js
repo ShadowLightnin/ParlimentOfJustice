@@ -117,13 +117,18 @@ export const memberCategories = [
     ],
   },
   {
-    category: "College",
+    category: "IT",
     members: [
       { name: 'Carey Anson', codename: 'IT', screen: '' },
       { name: 'Sean Fears', codename: 'IT', screen: '' },
       { name: 'John Bitter', codename: 'IT', screen: '' },
       { name: 'Nathan Meyer', codename: 'IT', screen: '' },
       { name: 'Sarina Sinatra', codename: 'IT', screen: '' },
+    ],
+  },
+  {
+    category: "Software",
+    members: [
       { name: 'George Ray', codename: 'Software', screen: '' },
       { name: 'Brent', codename: 'Software', screen: '' },
       { name: 'Claudine', codename: 'Software', screen: '' },
