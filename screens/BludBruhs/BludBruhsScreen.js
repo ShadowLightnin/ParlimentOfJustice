@@ -21,7 +21,7 @@ const members = [
   { name: 'James', codename: 'Shadowmind', screen: 'JamesBb', clickable: true, position: [1, 1], image: require('../../assets/Armor/JamesBbPlaceHolder.jpg') },
   { name: 'Tanner', codename: 'Wolff', screen: 'TannerBb', clickable: true, position: [1, 2], image: require('../../assets/Armor/TannerBbPlaceHolder.jpg') },
   { name: '', codename: 'Ranger Squad', screen: 'RangerSquad', clickable: true, position: [2, 0], image: require('../../assets/BackGround/RangerSquad.jpg') },
-  { name: ' ', codename: '', screen: 'MontroseManorTab', clickable: true, position: [2, 1] }, // Subtle button
+  { name: ' ', codename: '', screen: 'MontroseManorTab', clickable: true, position: [2, 1], image: require('../../assets/MontroseManorPlaceHolder.jpg') }, // Subtle button
   { name: '', codename: 'MonkeAlliance', screen: 'MonkeAllianceScreen', clickable: true, position: [2, 2], image: require('../../assets/BackGround/Monke.jpg') },
 ];
 
@@ -178,6 +178,7 @@ const styles = StyleSheet.create({
     shadowColor: '#444',
     shadowOpacity: 0.1,
     elevation: 2,
+    opacity: 0.2,
   },
   characterImage: {
     width: '100%',
