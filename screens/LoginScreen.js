@@ -170,34 +170,34 @@ const LoginScreen = () => {
                 <View style={styles.separator} />
     
                 <View style={styles.signup}>
-                    <Text style={styles.title}>Create an Account</Text>
-                    {/* <TouchableOpacity onPress={handleAvatar}> */}
-                        <Image
-                            source={{ uri: avatar.url || "https://example.com/default-avatar.png" }}
-                            style={styles.avatar}
-                        />
-                        <Text style={styles.text}>Upload Image (Optional)</Text>
-                    {/* </TouchableOpacity> */}
-    
-                    <TextInput 
-                        style={styles.input} 
-                        placeholder='First and Last name' 
-                        onChangeText={setUsername} 
-                    />
-                    <TextInput 
-                        style={styles.input} 
-                        placeholder='Email' 
-                        autoCapitalize='none' 
-                        onChangeText={setEmail} 
-                    />
-                    <TextInput 
-                        style={styles.input} 
-                        placeholder='Password' 
-                        secureTextEntry 
-                        onChangeText={setPassword} 
-                    />
-                    <Button title={loading ? "Loading..." : "Sign Up"} onPress={handleRegister} disabled={loading} />
-                </View>
+    <Text style={styles.title}>Create an Account</Text>
+    {/* <TouchableOpacity onPress={handleAvatar}> */}
+        <Image
+            source={avatar.url ? { uri: avatar.url } : require('../assets/coolApple.jpeg')}
+            style={styles.avatar}
+        />
+        <Text style={styles.text}>Upload Image (Optional)</Text>
+    {/* </TouchableOpacity> */}
+
+    <TextInput 
+        style={styles.input} 
+        placeholder='First and Last name' 
+        onChangeText={setUsername} 
+    />
+    <TextInput 
+        style={styles.input} 
+        placeholder='Email' 
+        autoCapitalize='none' 
+        onChangeText={setEmail} 
+    />
+    <TextInput 
+        style={styles.input} 
+        placeholder='Password' 
+        secureTextEntry 
+        onChangeText={setPassword} 
+    />
+    <Button title={loading ? "Loading..." : "Sign Up"} onPress={handleRegister} disabled={loading} />
+</View>
     
                 {loading && <ActivityIndicator size="large" color="#fff" />}
             </View>
