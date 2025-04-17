@@ -129,7 +129,7 @@ export const memberCategories = [
   {
     category: "Software",
     members: [
-      { name: 'George Ray', codename: 'Software', screen: '' },
+      { name: 'George Ray', codename: 'Pillar', screen: '' },
       { name: 'Brent', codename: 'Foundation', screen: '' },
       { name: 'Claudine', codename: 'Architect', screen: '' },
       { name: 'Braiden', codename: 'Compiler', screen: '' },
