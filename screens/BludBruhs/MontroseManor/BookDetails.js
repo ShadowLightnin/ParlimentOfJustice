@@ -2,20 +2,23 @@ import React, { useState, useEffect } from "react";
 import { View, ImageBackground, StyleSheet, Dimensions, TouchableOpacity, Text, ScrollView, TextInput, Image, Alert, Modal } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { db, storage, auth } from "../../../lib/firebase";
-import { collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, getDoc } from "firebase/firestore";
+import { collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, getDoc, getDocs } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
 
 const ALLOWED_EMAILS = ["samuelp.woodwell@gmail.com", "cummingsnialla@gmail.com", "will@test.com", "c1wcummings@gmail.com", "aileen@test.com"];
-const RESTRICT_ACCESS = false;
+const RESTRICT_ACCESS = false; // Allow anyone to add characters
+const RESTRICT_IMAGE_UPLOAD = true; // Restrict image uploads to ALLOWED_EMAILS
 const PLACEHOLDER_IMAGE = require("../../../assets/Armor/PlaceHolder.jpg");
 const PLACEHOLDER_URL = "placeholder";
 
 const HARDCODED_CHARACTERS = {
   "hardcoded-1": [
     { id: "Lumiel", name: "Lumiel", description: "", image: require("../../../assets/Armor/LumielPhantom.jpg"), screen: "LumielScreen", hardcoded: true },
-    { id: "Clayvoria", name: "Clayvoria", description: "", image: require("../../../assets/Montrose/Clayvoria.jpg"), hardcoded: true },
-    { id: "Shivers", name: "Shivers", description: "", image: require("../../../assets/Montrose/Shivers.jpg"), hardcoded: true },
+    { id: "Clayvoria", name: "Clayvoria", description: "A ghostly fortune teller", image: require("../../../assets/Montrose/Clayvoria.jpg"), hardcoded: true },
+    { id: "Shivers", name: "Shivers", 
+      description: "The butler that roams the halls. You might see him peaking around corners, and if we sees you he'll go on all fours and start running at you like a wild dog.", 
+      image: require("../../../assets/Montrose/Shivers.jpg"), hardcoded: true },
   ],
   "hardcoded-2": [],
 };
@@ -32,98 +35,210 @@ const BookDetails = () => {
   const [editTitle, setEditTitle] = useState("");
   const [editDesc, setEditDesc] = useState("");
   const [selChar, setSelChar] = useState(null);
-  const [canMod, setCanMod] = useState(!RESTRICT_ACCESS);
+  const [canMod, setCanMod] = useState(true); // Default to true for RESTRICT_ACCESS = false
+  const [canUploadImage, setCanUploadImage] = useState(!RESTRICT_IMAGE_UPLOAD);
   const [deleteModal, setDeleteModal] = useState({ visible: false, char: null });
 
   const alert = (title, msg) => Alert.alert(title, msg);
 
   useEffect(() => {
-    const checkAuth = () => setCanMod(!RESTRICT_ACCESS || (auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email)));
-    const unsub = onSnapshot(collection(db, "books", bookId, "characters"), snap => {
-      const hardcoded = HARDCODED_CHARACTERS[bookId] || [];
-      setChars([...hardcoded, ...snap.docs.map(d => ({ id: d.id, ...d.data(), hardcoded: false }))]);
-    }, () => alert("Error", "Failed to fetch characters"));
+    const checkAuth = () => {
+      const user = auth.currentUser;
+      console.log("Auth check, user:", user ? user.email : "none", "RESTRICT_ACCESS:", RESTRICT_ACCESS);
+      setCanMod(RESTRICT_ACCESS ? (user && ALLOWED_EMAILS.includes(user.email)) : true);
+      setCanUploadImage(!RESTRICT_IMAGE_UPLOAD || (user && ALLOWED_EMAILS.includes(user.email)));
+    };
+    const unsub = onSnapshot(
+      collection(db, "books", bookId, "characters"),
+      (snap) => {
+        console.log("Characters snapshot for book", bookId, ":", snap.docs.map(d => ({ id: d.id, ...d.data() })));
+        const hardcoded = HARDCODED_CHARACTERS[bookId] || [];
+        setChars([...hardcoded, ...snap.docs.map(d => ({ id: d.id, ...d.data(), hardcoded: false }))]);
+      },
+      (e) => {
+        console.error("Snapshot error:", e.message);
+        alert("Error", "Failed to fetch characters: " + e.message);
+      }
+    );
     checkAuth();
     const authUnsub = auth.onAuthStateChanged(checkAuth);
-    return () => { unsub(); authUnsub(); };
+    return () => {
+      unsub();
+      authUnsub();
+    };
   }, [bookId]);
 
-  const uploadImg = async uri => {
-    if (!canMod) throw new Error("Unauthorized");
-    const blob = await (await fetch(uri)).blob();
-    const path = `characters/${Date.now()}_${Math.random().toString(36).slice(7)}`;
-    return getDownloadURL((await uploadBytesResumable(ref(storage, path), blob)).ref);
+  const uploadImg = async (uri) => {
+    if (!canUploadImage) {
+      console.log("Image upload blocked: user not authorized");
+      throw new Error("Unauthorized to upload images");
+    }
+    console.log("Starting image upload for URI:", uri);
+    try {
+      const blob = await (await fetch(uri)).blob();
+      const path = `characters/${Date.now()}_${Math.random().toString(36).slice(7)}`;
+      console.log("Uploading to storage path:", path);
+      const storageRef = ref(storage, path);
+      const uploadTask = await uploadBytesResumable(storageRef, blob);
+      const url = await getDownloadURL(uploadTask.ref);
+      console.log("Image uploaded, URL:", url);
+      return url;
+    } catch (e) {
+      console.error("Upload error:", e.message);
+      throw e;
+    }
   };
 
   const pickImg = async () => {
-    if (!canMod) return;
+    if (!canUploadImage) {
+      console.log("Pick image blocked: user not authorized");
+      alert("Access Denied", "Only authorized users can upload images.");
+      return;
+    }
+    console.log("Opening image picker");
     const r = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images, allowsEditing: true, aspect: [1, 1], quality: 0.5
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.5,
     });
-    if (!r.canceled) { setImage(r.assets[0].uri); setUseImg(true); }
+    if (!r.canceled) {
+      console.log("Image selected:", r.assets[0].uri);
+      setImage(r.assets[0].uri);
+      setUseImg(true);
+    } else {
+      console.log("Image picker canceled");
+    }
   };
 
   const addChar = async (useImage = true) => {
-    if (!title || !desc || !canMod) return alert("Error", !title || !desc ? "Enter name and description" : "Access Denied");
+    if (!title || !desc) {
+      console.log("Add character blocked: missing title or description");
+      return alert("Error", "Enter name and description");
+    }
+    console.log("Adding character, name:", title, "description:", desc, "image:", useImage && image ? "yes" : "no", "user:", auth.currentUser ? auth.currentUser.email : "none");
     try {
       const imgUrl = useImage && image ? await uploadImg(image) : useImage ? PLACEHOLDER_URL : "";
-      await addDoc(collection(db, "books", bookId, "characters"), { name: title, description: desc, imageUrl: imgUrl });
-      setTitle(""); setDesc(""); setImage(null); setUseImg(null);
+      const charData = { name: title, description: desc, imageUrl: imgUrl };
+      console.log("Writing to Firestore:", charData);
+      const docRef = await addDoc(collection(db, "books", bookId, "characters"), charData);
+      console.log("Character added, ID:", docRef.id);
+      setTitle("");
+      setDesc("");
+      setImage(null);
+      setUseImg(null);
       alert("Success", "Character added!");
-    } catch (e) { alert("Error", e.message); }
+    } catch (e) {
+      console.error("Add character error:", e.message, e.stack);
+      alert("Error", `Failed to add character: ${e.message}`);
+    }
   };
 
-  const confirmDeleteChar = async id => {
+  const confirmDeleteChar = async (id) => {
+    console.log("Deleting character, ID:", id);
     try {
       const char = chars.find(c => c.id === id);
-      if (char.hardcoded) return alert("Error", "Cannot delete hardcoded characters!");
+      if (char.hardcoded) {
+        console.log("Delete blocked: character is hardcoded");
+        return alert("Error", "Cannot delete hardcoded characters!");
+      }
       const charRef = doc(db, "books", bookId, "characters", id);
       const snap = await getDoc(charRef);
-      if (!snap.exists()) return alert("Error", "Character not found");
+      if (!snap.exists()) {
+        console.log("Character not found:", id);
+        return alert("Error", "Character not found");
+      }
       const { imageUrl } = snap.data();
       await deleteDoc(charRef);
       if (imageUrl && imageUrl !== PLACEHOLDER_URL) {
+        console.log("Deleting image:", imageUrl);
         const path = imageUrl.split('/o/')[1]?.split('?')[0];
-        path && await deleteObject(ref(storage, path)).catch(e => { if (e.code !== "storage/object-not-found") throw e; });
+        if (path) {
+          await deleteObject(ref(storage, path)).catch(e => {
+            if (e.code !== "storage/object-not-found") console.error("Delete image error:", e);
+          });
+        }
       }
-      setSelChar(null); setDeleteModal({ visible: false, char: null });
+      setSelChar(null);
+      setDeleteModal({ visible: false, char: null });
       alert("Success", "Character deleted!");
-    } catch (e) { alert("Error", "Failed to delete: " + e.message); }
+    } catch (e) {
+      console.error("Delete character error:", e.message);
+      alert("Error", "Failed to delete: " + e.message);
+    }
   };
 
-  const startEdit = char => {
-    if (char.hardcoded || !canMod) return;
-    setEditingCharId(char.id); setEditTitle(char.name); setEditDesc(char.description); setSelChar(char);
+  const startEdit = (char) => {
+    if (char.hardcoded || !canMod) {
+      console.log("Edit blocked: character is hardcoded or user not authorized");
+      return;
+    }
+    console.log("Starting edit for character:", char.id);
+    setEditingCharId(char.id);
+    setEditTitle(char.name);
+    setEditDesc(char.description);
+    setSelChar(char);
   };
 
-  const saveEdit = async id => {
-    if (!canMod || !editTitle || !editDesc) return alert("Error", !canMod ? "Access Denied" : "Enter name and description");
+  const saveEdit = async (id) => {
+    if (!editTitle || !editDesc) {
+      console.log("Save edit blocked: missing title or description");
+      return alert("Error", "Enter name and description");
+    }
+    console.log("Saving edit for character:", id, "new name:", editTitle);
     try {
       await updateDoc(doc(db, "books", bookId, "characters", id), { name: editTitle, description: editDesc });
-      setEditingCharId(null); setEditTitle(""); setEditDesc(""); setSelChar(null);
+      console.log("Character updated, ID:", id);
+      setEditingCharId(null);
+      setEditTitle("");
+      setEditDesc("");
+      setSelChar(null);
       alert("Success", "Character updated!");
-    } catch (e) { alert("Error", "Failed to update: " + e.message); }
+    } catch (e) {
+      console.error("Save edit error:", e.message);
+      alert("Error", "Failed to update: " + e.message);
+    }
   };
 
-  const handleCharPress = char => char.hardcoded && char.screen ? navigation.navigate(char.screen) : setSelChar(char);
+  const handleCharPress = (char) => {
+    console.log("Character pressed:", char.id, char.name);
+    if (char.hardcoded && char.screen) {
+      console.log("Navigating to screen:", char.screen);
+      navigation.navigate(char.screen);
+    } else {
+      setSelChar(char);
+    }
+  };
 
-  const renderChar = char => (
+  const renderChar = (char) => (
     <View key={char.id} style={styles.charCont}>
       <TouchableOpacity style={styles.charCard} onPress={() => handleCharPress(char)}>
-        {char.imageUrl === null ? <View style={styles.noImg} /> : (
-          <Image source={char.imageUrl && char.imageUrl !== PLACEHOLDER_URL ? { uri: char.imageUrl } : char.image || PLACEHOLDER_IMAGE}
-            style={styles.charImg} defaultSource={PLACEHOLDER_IMAGE} />
+        {char.imageUrl === null ? (
+          <View style={styles.noImg} />
+        ) : (
+          <Image
+            source={char.imageUrl && char.imageUrl !== PLACEHOLDER_URL ? { uri: char.imageUrl } : char.image || PLACEHOLDER_IMAGE}
+            style={styles.charImg}
+            defaultSource={PLACEHOLDER_IMAGE}
+          />
         )}
         <View style={styles.overlay} />
         <Text style={styles.charName}>{char.name}</Text>
       </TouchableOpacity>
       {!char.hardcoded && (
         <View style={styles.buttons}>
-          <TouchableOpacity onPress={() => startEdit(char)} style={[styles.edit, !canMod && styles.disabled]} disabled={!canMod}>
+          <TouchableOpacity
+            onPress={() => startEdit(char)}
+            style={[styles.edit, !canMod && styles.disabled]}
+            disabled={!canMod}
+          >
             <Text>Edit</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => canMod && !char.hardcoded && setDeleteModal({ visible: true, char: { id: char.id, name: char.name } })}
-            style={[styles.delete, !canMod && styles.disabled]} disabled={!canMod}>
+          <TouchableOpacity
+            onPress={() => setDeleteModal({ visible: true, char: { id: char.id, name: char.name } })}
+            style={[styles.delete, !canMod && styles.disabled]}
+            disabled={!canMod}
+          >
             <Text>Delete</Text>
           </TouchableOpacity>
         </View>
@@ -132,40 +247,103 @@ const BookDetails = () => {
   );
 
   return (
-    <ImageBackground source={typeof bookImageUrl === "string" ? { uri: bookImageUrl } : bookImageUrl || PLACEHOLDER_IMAGE} style={styles.bg}>
+    <ImageBackground
+      source={typeof bookImageUrl === "string" ? { uri: bookImageUrl } : bookImageUrl || PLACEHOLDER_IMAGE}
+      style={styles.bg}
+    >
       <View style={[styles.overlay, !bookImageUrl && styles.darkerOverlay]}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.back}><Text>Back</Text></TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            console.log("Navigating back");
+            navigation.goBack();
+          }}
+          style={styles.back}
+        >
+          <Text>Back</Text>
+        </TouchableOpacity>
         <ScrollView contentContainerStyle={styles.scroll}>
           <Text style={styles.title}>{bookTitle} - Characters</Text>
           <View style={styles.form}>
-            <TextInput style={styles.input} placeholder="Name" value={title} onChangeText={setTitle} editable={canMod} />
-            <TextInput style={[styles.input, styles.descInput]} placeholder="Description" value={desc} onChangeText={setDesc} multiline editable={canMod} />
+            <TextInput
+              style={styles.input}
+              placeholder="Name"
+              value={title}
+              onChangeText={setTitle}
+              editable={true}
+            />
+            <TextInput
+              style={[styles.input, styles.descInput]}
+              placeholder="Description"
+              value={desc}
+              onChangeText={setDesc}
+              multiline
+              editable={true}
+            />
             <View style={styles.imgOpts}>
-              <TouchableOpacity onPress={pickImg} style={[styles.upload, !canMod && styles.disabled]} disabled={!canMod}>
-                <Text>{canMod ? (image ? "Selected" : "Upload") : "Restricted"}</Text>
+              <TouchableOpacity
+                onPress={pickImg}
+                style={[styles.upload, !canUploadImage && styles.disabled]}
+                disabled={!canUploadImage}
+              >
+                <Text>{canUploadImage ? (image ? "Selected" : "Upload") : "Restricted"}</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => addChar(false)} style={[styles.noImgBtn, !canMod && styles.disabled]} disabled={!canMod}>
+              <TouchableOpacity
+                onPress={() => addChar(false)}
+                style={[styles.noImgBtn]}
+                disabled={false}
+              >
                 <Text>No Image</Text>
               </TouchableOpacity>
             </View>
             {image && <Image source={{ uri: image }} style={styles.preview} />}
-            <TouchableOpacity onPress={() => addChar()} style={[styles.add, !canMod && styles.disabled]} disabled={!canMod}>
+            <TouchableOpacity
+              onPress={() => addChar()}
+              style={[styles.add]}
+              disabled={false}
+            >
               <Text>Add</Text>
             </TouchableOpacity>
-            {!canMod && <Text style={styles.denied}>Only authorized users can modify.</Text>}
+            {(!canMod || !canUploadImage) && (
+              <Text style={styles.denied}>Only authorized users can upload images.</Text>
+            )}
           </View>
           <ScrollView horizontal contentContainerStyle={styles.hScroll} showsHorizontalScrollIndicator={false}>
             {chars.map(renderChar)}
           </ScrollView>
         </ScrollView>
-        <Modal visible={!!selChar} transparent animationType="slide" onRequestClose={() => { setSelChar(null); setEditingCharId(null); }}>
+        <Modal
+          visible={!!selChar}
+          transparent
+          animationType="slide"
+          onRequestClose={() => {
+            console.log("Closing character preview modal");
+            setSelChar(null);
+            setEditingCharId(null);
+          }}
+        >
           <View style={styles.modal}>
             <ScrollView style={styles.preview}>
               {selChar && (editingCharId === selChar.id ? (
                 <>
-                  <TextInput style={styles.editName} value={editTitle} onChangeText={setEditTitle} autoFocus editable={canMod && !selChar.hardcoded} />
-                  <TextInput style={styles.editDesc} value={editDesc} onChangeText={setEditDesc} multiline editable={canMod && !selChar.hardcoded} />
-                  <TouchableOpacity onPress={() => saveEdit(selChar.id)} style={[styles.save, !canMod && styles.disabled]} disabled={!canMod || selChar.hardcoded}>
+                  <TextInput
+                    style={styles.editName}
+                    value={editTitle}
+                    onChangeText={setEditTitle}
+                    autoFocus
+                    editable={canMod && !selChar.hardcoded}
+                  />
+                  <TextInput
+                    style={styles.editDesc}
+                    value={editDesc}
+                    onChangeText={setEditDesc}
+                    multiline
+                    editable={canMod && !selChar.hardcoded}
+                  />
+                  <TouchableOpacity
+                    onPress={() => saveEdit(selChar.id)}
+                    style={[styles.save, !canMod && styles.disabled]}
+                    disabled={!canMod || selChar.hardcoded}
+                  >
                     <Text>Save</Text>
                   </TouchableOpacity>
                 </>
@@ -175,7 +353,14 @@ const BookDetails = () => {
                   <Text style={styles.previewDesc}>{selChar.description}</Text>
                 </>
               ))}
-              <TouchableOpacity onPress={() => { setSelChar(null); setEditingCharId(null); }} style={styles.close}>
+              <TouchableOpacity
+                onPress={() => {
+                  console.log("Closing character preview modal");
+                  setSelChar(null);
+                  setEditingCharId(null);
+                }}
+                style={styles.close}
+              >
                 <Text>Close</Text>
               </TouchableOpacity>
             </ScrollView>
@@ -186,10 +371,19 @@ const BookDetails = () => {
             <View style={styles.modalContent}>
               <Text style={styles.modalText}>{`Delete "${deleteModal.char?.name || ''}" and its image?`}</Text>
               <View style={styles.modalButtons}>
-                <TouchableOpacity style={styles.modalCancel} onPress={() => setDeleteModal({ visible: false, char: null })}>
+                <TouchableOpacity
+                  style={styles.modalCancel}
+                  onPress={() => {
+                    console.log("Delete canceled");
+                    setDeleteModal({ visible: false, char: null });
+                  }}
+                >
                   <Text style={styles.modalCancelText}>Cancel</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.modalDelete} onPress={() => deleteModal.char && confirmDeleteChar(deleteModal.char.id)}>
+                <TouchableOpacity
+                  style={styles.modalDelete}
+                  onPress={() => deleteModal.char && confirmDeleteChar(deleteModal.char.id)}
+                >
                   <Text style={styles.modalDeleteText}>Delete</Text>
                 </TouchableOpacity>
               </View>
@@ -243,7 +437,7 @@ const styles = StyleSheet.create({
   modalCancel: { backgroundColor: "#2196F3", padding: 10, borderRadius: 5, flex: 1, marginRight: 10 },
   modalCancelText: { color: "#FFF", fontWeight: "bold", textAlign: "center" },
   modalDelete: { backgroundColor: "#F44336", padding: 10, borderRadius: 5, flex: 1, marginLeft: 10 },
-  modalDeleteText: { color: "#FFF", fontWeight: "bold", textAlign: "center" }
+  modalDeleteText: { color: "#FFF", fontWeight: "bold", textAlign: "center" },
 });
 
 export default BookDetails;
