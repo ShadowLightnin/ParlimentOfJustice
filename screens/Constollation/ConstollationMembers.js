@@ -130,9 +130,9 @@ export const memberCategories = [
     category: "Software",
     members: [
       { name: 'George Ray', codename: 'Software', screen: '' },
-      { name: 'Brent', codename: 'Software', screen: '' },
-      { name: 'Claudine', codename: 'Software', screen: '' },
-      { name: 'Braiden', codename: 'Software', screen: '' },
+      { name: 'Brent', codename: 'Foundation', screen: '' },
+      { name: 'Claudine', codename: 'Architect', screen: '' },
+      { name: 'Braiden', codename: 'Compiler', screen: '' },
     ],
   },
   // {
