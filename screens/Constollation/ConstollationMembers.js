@@ -119,7 +119,7 @@ export const memberCategories = [
   {
     category: "IT",
     members: [
-      { name: 'Carey Anson', codename: 'IT', screen: '' },
+      { name: 'Carey Anson', codename: 'Core Node', screen: '' },
       { name: 'Sean Fears', codename: 'IT', screen: '' },
       { name: 'John Bitter', codename: 'IT', screen: '' },
       { name: 'Nathan Meyer', codename: 'IT', screen: '' },
