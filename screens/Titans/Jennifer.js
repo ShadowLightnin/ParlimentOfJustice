@@ -21,7 +21,10 @@ const Jennifer = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
+    { name: "Kintsugi", image: require("../../assets/Armor/JenniferPlaceHolder2.jpg"), clickable: true },
     { name: "Kintsugi", image: require("../../assets/Armor/JenniferPlaceHolder.jpg"), clickable: true },
+    { name: "Kintsugi", image: require("../../assets/Armor/JenniferPlaceHolder3.jpg"), clickable: true },
+    { name: "Kintsugi", image: require("../../assets/Armor/JenniferPlaceHolder4.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (
