@@ -84,7 +84,7 @@ export const memberCategories = [
     members: [
       { name: 'Marc Allen', codename: 'Chemistry', screen: '' },
       { name: 'Chad Lythgoe', codename: 'Drivers Ed', screen: '' },
-      { name: 'Mrs. Short', codename: '', screen: '' },
+      { name: 'Mrs. Short', codename: 'Finance', screen: '' },
       { name: 'Lisa McLaws', codename: 'English', screen: '' },
       { name: 'Sharee Paxton', codename: 'Math', screen: '' },
       { name: 'Todd Ballif', codename: 'History', screen: '' },

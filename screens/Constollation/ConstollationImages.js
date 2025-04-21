@@ -12,6 +12,7 @@ const constollationImages = {
   'John Bitter': { image: require('../../assets/Armor/JohnITPlaceHolder.jpg'), clickable: true },
   'Nathan Meyer': { image: require('../../assets/Armor/NateITPlaceHolder.jpg'), clickable: true },
   'Sarina Sinatra': { image: require('../../assets/Armor/SarinaITPlaceHolder.jpg'), clickable: true },
+  'Marc Allen': { image: require('../../assets/Armor/AllenPlaceHolder.jpg'), clickable: true },
 
 };
 
