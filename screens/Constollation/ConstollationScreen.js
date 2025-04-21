@@ -27,8 +27,8 @@ const verticalSpacing = isDesktop ? 50 : 20;
 const categoryGroups = [
   { title: "Doctors", categories: ["Doctors"] },
   { title: "College", categories: ["IT", "Software"] },
-  { title: "High School (10th-12th)", categories: ["High School 10th", "BoM Seminary 10th", "High School 11th", "D&C Seminary 11th", "High School 12th", "OT Seminary 12th"] },
-  { title: "Jr High (7th-9th)", categories: ["Jr. High 7th", "Jr. High 8th", "Jr. High 9th", "NT Seminary 9th"] },
+  { title: "High School", categories: ["High School 10th", "BoM Seminary 10th", "High School 11th", "D&C Seminary 11th", "High School 12th", "OT Seminary 12th"] },
+  { title: "Jr High", categories: ["Jr. High 7th", "Jr. High 8th", "Jr. High 9th", "NT Seminary 9th"] },
   { title: "Elementary", categories: ["Elementary"] },
   { title: "Influencers", categories: ["Influencers"] },
   { title: "Acquaintances", categories: ["Acquaintances"] },

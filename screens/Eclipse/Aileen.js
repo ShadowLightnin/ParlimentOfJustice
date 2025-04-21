@@ -28,14 +28,14 @@ const armor = [
 ];
 
 // Ariata's new story for the popup
-const ARIATA_STORY = `
-   Aileen is an amazing, wonderful and caring person. Always looking out for those and helping whenever she can.
-   She is very patient and understanding. She has a deep love for her family and loved ones, and for me.
-   She is always there for me and everyone else, and tries her best to help and make things easier for others.
-   She is a loving and patient woman, and I am proud of her. She is always there for me and I feel safe 
-   and loved in return. She is my best friend and someone who I love so much and so deeply and want to always be with 
-   and spend the rest of my life with her.
-`;
+// const ARIATA_STORY = `
+//    Aileen is an amazing, wonderful and caring person. Always looking out for those and helping whenever she can.
+//    She is very patient and understanding. She has a deep love for her family and loved ones, and for me.
+//    She is always there for me and everyone else, and tries her best to help and make things easier for others.
+//    She is a loving and patient woman, and I am proud of her. She is always there for me and I feel safe 
+//    and loved in return. She is my best friend and someone who I love so much and so deeply and want to always be with 
+//    and spend the rest of my life with her.
+// `;
 
 const Aileen = () => {
   const navigation = useNavigation();
@@ -178,7 +178,7 @@ const Aileen = () => {
       </ScrollView>
 
       {/* Popup Modal for Ariata */}
-      <Modal
+      {/* <Modal
         visible={!!selectedCharacter && selectedCharacter.name === "Ariata"}
         transparent
         animationType="slide"
@@ -195,7 +195,7 @@ const Aileen = () => {
             </TouchableOpacity>
           </View>
         </View>
-      </Modal>
+      </Modal> */}
     </View>
   );
 };

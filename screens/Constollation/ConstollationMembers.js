@@ -11,14 +11,95 @@ export const memberCategories = [
     ],
   },
   {
-    category: "Elementary",
+    category: "Software",
     members: [
-      { name: 'Mrs. Gilbert', codename: '2nd Grade Teacher', screen: '' },
-      { name: 'Ms. Clawson', codename: '3rd Grade Teacher', screen: '' },
-      { name: 'Mrs. MarryWeither', codename: '4th Grade Teacher', screen: '' },
-      { name: 'Mrs. Brown', codename: 'Music Teacher', screen: '' },
-      { name: 'Mrs. Anderson', codename: '6th Grade Teacher', screen: '' },
-      { name: 'Ms. ', codename: '6th Grade Teacher', screen: '' },
+      { name: 'George Ray', codename: 'Pillar', screen: '' },
+      { name: 'Brent Guymon', codename: 'Foundation', screen: '' },
+      { name: 'Claudine Simonsen', codename: 'Architect', screen: '' },
+      { name: 'Braiden Pedersen', codename: 'Compiler', screen: '' },
+    ],
+  },
+  {
+    category: "IT",
+    members: [
+      { name: 'Carey Anson', codename: 'Core Node', screen: '' },
+      { name: 'Sean Fears', codename: 'Pathwalker', screen: '' },
+      { name: 'John Bitter', codename: 'Flamebearer', screen: '' },
+      { name: 'Nathan Meyer', codename: 'Geniusus', screen: '' },
+      { name: 'Sarina Sinatra', codename: 'Sparkmind', screen: '' },
+    ],
+  },
+  {
+    category: "High School 12th",
+    members: [
+      { name: 'David Pilkington', codename: 'Digital Design', screen: '' },
+      { name: 'Sennet Fraughton', codename: 'Government', screen: '' },
+      { name: 'Mr. Feller', codename: 'Digital Art', screen: '' },
+      { name: 'Nate Hillyard', codename: 'Art', screen: '' },
+      { name: 'Kori Schriver', codename: 'English', screen: '' },
+      { name: 'Jack Hattaway', codename: 'Art', screen: '' },
+    ],
+  },
+  {
+    category: "OT Seminary 12th",
+    members: [
+      { name: 'Bro. Mason', codename: 'OT', screen: '' },
+      { name: 'Bro. Combs', codename: '', screen: '' },
+    ],
+  },
+  {
+    category: "High School 11th",
+    members: [
+      { name: 'Marc Allen', codename: 'Chemistry', screen: '' },
+      { name: 'Chad Lythgoe', codename: 'Drivers Ed', screen: '' },
+      { name: 'Weston Kidder', codename: 'Wood Work/Welding', screen: '' },
+      { name: 'Mrs. Short', codename: 'Finance', screen: '' },
+      { name: 'Lisa McLaws', codename: 'English', screen: '' },
+      { name: 'Sharee Paxton', codename: 'Math', screen: '' },
+      { name: 'Todd Ballif', codename: 'History', screen: '' },
+      { name: 'Zachary Hansen', codename: 'Track', screen: '' },
+    ],
+  },
+  {
+    category: "D&C Seminary 11th",
+    members: [
+      { name: 'Bro. DeYoung', codename: 'DC', screen: '' },
+      { name: 'Bro. Jenks', codename: 'DC', screen: '' },
+    ],
+  },
+  {
+    category: "High School 10th",
+    members: [
+      { name: 'Zak Erickson', codename: 'History', screen: '' },
+      { name: 'Tood Campbell', codename: 'Band', screen: '' },
+      { name: 'Roxey Caternzaro', codename: 'English', screen: '' },
+      { name: 'Tana Johnson', codename: 'Math', screen: '' },
+      { name: 'Mrs Perry', codename: 'Advisor', screen: '' },
+      { name: 'Coach Fresques', codename: 'Coach', screen: '' },
+      { name: 'Mr. Lauscher', codename: 'Biology', screen: '' },
+      { name: 'Coach Simon', codename: 'Coach', screen: '' },
+      { name: 'Mrs. Morfin', codename: 'Welding', screen: '' },
+    ],
+  },
+  {
+    category: "BoM Seminary 10th",
+    members: [
+      { name: 'Bro. Brodrick', codename: 'BoM', screen: '' },
+      { name: 'Bro. Hedlund', codename: 'BoM', screen: '' },
+    ],
+  },
+  {
+    category: "Jr. High 9th",
+    members: [
+      { name: 'Mrs. Elysia Butler', codename: 'English', screen: '' },
+      { name: 'Mr. Jackson', codename: 'Principal', screen: '' },
+    ],
+  },
+  {
+    category: "NT Seminary 9th",
+    members: [
+      { name: 'Bro. Valor', codename: 'NT', screen: '' },
+      { name: 'Bro. Perston', codename: 'NT', screen: '' },
     ],
   },
   {
@@ -45,94 +126,14 @@ export const memberCategories = [
     ],
   },
   {
-    category: "Jr. High 9th",
+    category: "Elementary",
     members: [
-      { name: 'Mrs. Elysia Butler', codename: 'English', screen: '' },
-      { name: 'Mr. Jackson', codename: 'Principal', screen: '' },
-    ],
-  },
-  {
-    category: "NT Seminary 9th",
-    members: [
-      { name: 'Bro. Valor', codename: '', screen: '' },
-      { name: 'Bro. Perston', codename: '', screen: '' },
-    ],
-  },
-  {
-    category: "High School 10th",
-    members: [
-      { name: 'Tood Campbell', codename: 'Band', screen: '' },
-      { name: 'Roxey Caternzaro', codename: 'English', screen: '' },
-      { name: 'Zak Erickson', codename: 'History', screen: '' },
-      { name: 'Tana Johnson', codename: 'Math', screen: '' },
-      { name: 'Mrs Perry', codename: 'Advisor', screen: '' },
-      { name: 'Coach Fresques', codename: 'Coach', screen: '' },
-      { name: 'Mr. Lauscher', codename: 'Biology', screen: '' },
-      { name: 'Coach Simon', codename: 'Coach', screen: '' },
-      { name: 'Mrs. Morfin', codename: 'Welding', screen: '' },
-    ],
-  },
-  {
-    category: "BoM Seminary 10th",
-    members: [
-      { name: 'Bro. Brodrick', codename: '', screen: '' },
-      { name: 'Bro. Hedlund', codename: '', screen: '' },
-    ],
-  },
-  {
-    category: "High School 11th",
-    members: [
-      { name: 'Marc Allen', codename: 'Chemistry', screen: '' },
-      { name: 'Chad Lythgoe', codename: 'Drivers Ed', screen: '' },
-      { name: 'Mrs. Short', codename: 'Finance', screen: '' },
-      { name: 'Lisa McLaws', codename: 'English', screen: '' },
-      { name: 'Sharee Paxton', codename: 'Math', screen: '' },
-      { name: 'Todd Ballif', codename: 'History', screen: '' },
-      { name: 'Weston Kidder', codename: 'Wood Work/Welding', screen: '' },
-      { name: 'Zachary Hansen', codename: 'Track', screen: '' },
-    ],
-  },
-  {
-    category: "D&C Seminary 11th",
-    members: [
-      { name: 'Bro. DeYoung', codename: '', screen: '' },
-      { name: 'Bro. Jenks', codename: '', screen: '' },
-    ],
-  },
-  {
-    category: "High School 12th",
-    members: [
-      { name: 'David Pilkington', codename: 'Digital Design', screen: '' },
-      { name: 'Mr. Feller', codename: 'Digital Art', screen: '' },
-      { name: 'Nate Hillyard', codename: 'Art', screen: '' },
-      { name: 'Kori Schriver', codename: 'English', screen: '' },
-      { name: 'Jack Hattaway', codename: 'Art', screen: '' },
-      { name: 'Sennet Fraughton', codename: 'Government', screen: '' },
-    ],
-  },
-  {
-    category: "OT Seminary 12th",
-    members: [
-      { name: 'Bro. Mason', codename: '', screen: '' },
-    ],
-  },
-  {
-    category: "IT",
-    members: [
-      { name: 'Carey Anson', codename: 'Core Node', screen: '' },
-      { name: 'Sean Fears', codename: 'Pathwalker', screen: '' },
-      { name: 'John Bitter', codename: 'Flamebearer', screen: '' },
-      { name: 'Nathan Meyer', codename: 'Genisus', screen: '' },
-      { name: 'Sarina Sinatra', codename: 'Sparkmind', screen: '' },
-    ],
-  },
-  {
-    category: "Software",
-    members: [
-      { name: 'George Ray', codename: 'Pillar', screen: '' },
-      { name: 'Brent', codename: 'Foundation', screen: '' },
-      { name: 'Claudine', codename: 'Architect', screen: '' },
-      { name: 'Braiden', codename: 'Compiler', screen: '' },
+      { name: 'Mrs. Gilbert', codename: '2nd Grade Teacher', screen: '' },
+      { name: 'Ms. Clawson', codename: '3rd Grade Teacher', screen: '' },
+      { name: 'Mrs. MarryWeither', codename: '4th Grade Teacher', screen: '' },
+      { name: 'Mrs. Brown', codename: 'Music Teacher', screen: '' },
+      { name: 'Mrs. Anderson', codename: '6th Grade Teacher', screen: '' },
+      { name: 'Ms. ', codename: '6th Grade Teacher', screen: '' },
     ],
   },
   // {

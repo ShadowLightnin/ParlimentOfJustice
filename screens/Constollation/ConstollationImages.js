@@ -4,15 +4,20 @@ const constollationImages = {
   'Huffaker': { image: require('../../assets/Armor/HuffakerPlaceHolder.jpg'), clickable: true },
   'Misty': { image: require('../../assets/Armor/MistyPlaceHolder.jpg'), clickable: true },
   'George Ray': { image: require('../../assets/Armor/GeorgePlaceHolder.jpg'), clickable: true },
-  'Brent': { image: require('../../assets/Armor/BrentPlaceHolder.jpg'), clickable: true },
-  'Claudine': { image: require('../../assets/Armor/ClaudinePlaceHolder.jpg'), clickable: true },
-  'Braiden': { image: require('../../assets/Armor/BraidenPlaceHolder2.jpg'), clickable: true },
+  'Brent Guymon': { image: require('../../assets/Armor/BrentPlaceHolder.jpg'), clickable: true },
+  'Claudine Simonsen': { image: require('../../assets/Armor/ClaudinePlaceHolder.jpg'), clickable: true },
+  'Braiden Pedersen': { image: require('../../assets/Armor/BraidenPlaceHolder2.jpg'), clickable: true },
   'Carey Anson': { image: require('../../assets/Armor/CareyPlaceHolder.jpg'), clickable: true },
   'Sean Fears': { image: require('../../assets/Armor/SeanITPlaceHolder.jpg'), clickable: true },
   'John Bitter': { image: require('../../assets/Armor/JohnITPlaceHolder.jpg'), clickable: true },
   'Nathan Meyer': { image: require('../../assets/Armor/NateITPlaceHolder.jpg'), clickable: true },
   'Sarina Sinatra': { image: require('../../assets/Armor/SarinaITPlaceHolder.jpg'), clickable: true },
   'Marc Allen': { image: require('../../assets/Armor/AllenPlaceHolder.jpg'), clickable: true },
+  'Chad Lythgoe': { image: require('../../assets/Armor/LythgoePlaceHolder.jpg'), clickable: true },
+  'Zak Erickson': { image: require('../../assets/Armor/EricksonPlaceHolder.jpg'), clickable: true },
+  'David Pilkington': { image: require('../../assets/Armor/PilkingtonPlaceHolder.jpg'), clickable: true },
+  'Sennet Fraughton': { image: require('../../assets/Armor/FraughtonPlaceHolder.jpg'), clickable: true },
+  'Weston Kidder': { image: require('../../assets/Armor/KidderPlaceHolder.jpg'), clickable: true },
 
 };
 
