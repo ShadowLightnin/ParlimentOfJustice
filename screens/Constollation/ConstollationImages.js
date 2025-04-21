@@ -18,6 +18,8 @@ const constollationImages = {
   'David Pilkington': { image: require('../../assets/Armor/PilkingtonPlaceHolder.jpg'), clickable: true },
   'Sennet Fraughton': { image: require('../../assets/Armor/FraughtonPlaceHolder.jpg'), clickable: true },
   'Weston Kidder': { image: require('../../assets/Armor/KidderPlaceHolder.jpg'), clickable: true },
+  'Bro. Valor': { image: require('../../assets/Armor/ValorPlaceHolder.jpg'), clickable: true },
+  'Bro. Perston': { image: require('../../assets/Armor/PerstonPlaceHolder.jpg'), clickable: true },
 
 };
 
