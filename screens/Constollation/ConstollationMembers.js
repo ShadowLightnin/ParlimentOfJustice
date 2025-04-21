@@ -120,10 +120,10 @@ export const memberCategories = [
     category: "IT",
     members: [
       { name: 'Carey Anson', codename: 'Core Node', screen: '' },
-      { name: 'Sean Fears', codename: 'IT', screen: '' },
-      { name: 'John Bitter', codename: 'IT', screen: '' },
-      { name: 'Nathan Meyer', codename: 'IT', screen: '' },
-      { name: 'Sarina Sinatra', codename: 'IT', screen: '' },
+      { name: 'Sean Fears', codename: 'Pathwalker', screen: '' },
+      { name: 'John Bitter', codename: 'Vanguard Node', screen: '' },
+      { name: 'Nathan Meyer', codename: 'Flamebearer', screen: '' },
+      { name: 'Sarina Sinatra', codename: 'Sparkmind', screen: '' },
     ],
   },
   {
