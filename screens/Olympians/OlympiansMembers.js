@@ -168,7 +168,7 @@ const familyData = [
     members: [
       { name: 'Sharrel', codename: 'Airrow', screen: '' },
       { name: 'Dorthy', codename: 'Star Keeper', screen: '' },
-      { name: 'GMA Parker', codename: 'Great Grand', screen: '' },
+      { name: 'GMA Parker', codename: 'Eternal Archon', screen: '' },
     ],
   },
   {

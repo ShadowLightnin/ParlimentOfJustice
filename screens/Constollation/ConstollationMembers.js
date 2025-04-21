@@ -121,8 +121,8 @@ export const memberCategories = [
     members: [
       { name: 'Carey Anson', codename: 'Core Node', screen: '' },
       { name: 'Sean Fears', codename: 'Pathwalker', screen: '' },
-      { name: 'John Bitter', codename: 'Vanguard Node', screen: '' },
-      { name: 'Nathan Meyer', codename: 'Flamebearer', screen: '' },
+      { name: 'John Bitter', codename: 'Flamebearer', screen: '' },
+      { name: 'Nathan Meyer', codename: 'Genisus', screen: '' },
       { name: 'Sarina Sinatra', codename: 'Sparkmind', screen: '' },
     ],
   },
