@@ -45,7 +45,7 @@ export const memberCategories = [
     members: [
       { name: 'Bro. Mason', codename: 'Testament Bearer', screen: '' },
       { name: 'Sister. __', codename: 'Unwritten Light', screen: '' },
-      { name: 'Bro. Combs', codename: '', screen: '' },
+      { name: 'Bro. Combs', codename: 'Testament Echo', screen: '' },
     ],
   },
   {

@@ -25,6 +25,8 @@ const constollationImages = {
   'Bro. DeYoung': { image: require('../../assets/Armor/DeYoungPlaceHolder.jpg'), clickable: true },
   'Bro. Jenks': { image: require('../../assets/Armor/JenksPlaceHolder.jpg'), clickable: true },
   'Bro. Mason': { image: require('../../assets/Armor/BroMasonPlaceHolder.jpg'), clickable: true },
+  'Sister. __': { image: require('../../assets/Armor/SisterPlaceHolder.jpg'), clickable: true },
+  'Bro. Combs': { image: require('../../assets/Armor/CombsPlaceHolder.jpg'), clickable: true },
 
 };
 
