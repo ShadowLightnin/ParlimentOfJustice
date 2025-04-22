@@ -63,7 +63,7 @@ export const memberCategories = [
   {
     category: "D&C Seminary 11th",
     members: [
-      { name: 'Bro. DeYoung', codename: 'DC', screen: '' },
+      { name: 'Bro. DeYoung', codename: 'The Revelator’s Spark', screen: '' },
       { name: 'Bro. Jenks', codename: 'DC', screen: '' },
     ],
   },
@@ -84,8 +84,8 @@ export const memberCategories = [
   {
     category: "BoM Seminary 10th",
     members: [
-      { name: 'Bro. Brodrick', codename: 'BoM', screen: '' },
-      { name: 'Bro. Hedlund', codename: 'BoM', screen: '' },
+      { name: 'Bro. Brodrick', codename: 'The Witness', screen: '' },
+      { name: 'Bro. Hedlund', codename: 'The Scriptorian Spark', screen: '' },
     ],
   },
   {
@@ -98,8 +98,8 @@ export const memberCategories = [
   {
     category: "NT Seminary 9th",
     members: [
-      { name: 'Bro. Valor', codename: 'NT', screen: '' },
-      { name: 'Bro. Perston', codename: 'NT', screen: '' },
+      { name: 'Bro. Valor', codename: 'The Lightkeeper', screen: '' },
+      { name: 'Bro. Perston', codename: 'The Covenant Champion', screen: '' },
     ],
   },
   {
