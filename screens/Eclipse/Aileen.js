@@ -67,17 +67,17 @@ const Aileen = () => {
     navigation.navigate("WarpScreen");
   };
 
-  const handleCardPress = (item) => {
-    if (item.clickable) {
-      if (item.name === "Ariata") {
-        setSelectedCharacter(item); // Show popup for Ariata
-      } else if (item.name === "Seraphina") {
-        navigation.navigate("Aileenchat");
-      } else {
-        console.log(`${item.name} clicked`);
-      }
-    }
-  };
+  // const handleCardPress = (item) => {
+  //   if (item.clickable) {
+  //     if (item.name === "Ariata") {
+  //       setSelectedCharacter(item); // Show popup for Ariata
+  //     } else if (item.name === "Seraphina") {
+  //       navigation.navigate("Aileenchat");
+  //     } else {
+  //       console.log(`${item.name} clicked`);
+  //     }
+  //   }
+  // };
 
   const closePopup = () => {
     setSelectedCharacter(null); // Close the popup
@@ -117,12 +117,12 @@ const Aileen = () => {
             <Text style={styles.backButtonText}>←</Text>
           </TouchableOpacity>
           <Text style={styles.title}>Ariata</Text>
-          <TouchableOpacity onPress={handlePlanetPress} style={styles.planetContainer}>
+          {/* <TouchableOpacity onPress={handlePlanetPress} style={styles.planetContainer}> */}
             <Animated.Image
               source={require("../../assets/Space/Earth_hero.jpg")}
               style={[styles.planetImage, { opacity: flashAnim }]}
             />
-          </TouchableOpacity>
+          {/* </TouchableOpacity> */}
         </View>
 
         <View style={styles.imageContainer}>
@@ -140,15 +140,15 @@ const Aileen = () => {
 
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
-          <Text style={styles.aboutText}>
-          Aileen Eduria, known as Ariata, is a fierce and resilient warrior, the girlfriend of William Cummings “Night Hawk” and a vital member of The Eclipse within the Parliament of Justice. Her presence is both powerful and graceful, a fusion of Filipino cultural strength and unyielding determination that makes her a formidable ally. Behind her intricately designed armor, Aileen is bold, protective, and deeply connected to her heritage, seeing her bond with William as a dance of shadow and steel. She extends this loyalty to the Titans—Spencer, Jared, Jennifer, Emma, Ben, and Azure—and their partners in The Eclipse, using her martial prowess to defend them. Off the battlefield, she’s a storyteller and a fighter, often sharing tales of her ancestors or sparring with William, but her intensity can sometimes make her stubborn.          </Text>
+          {/* <Text style={styles.aboutText}>
+          Aileen Eduria, known as Ariata, is a fierce and resilient warrior, the girlfriend of William Cummings “Night Hawk” and a vital member of The Eclipse within the Parliament of Justice. Her presence is both powerful and graceful, a fusion of Filipino cultural strength and unyielding determination that makes her a formidable ally. Behind her intricately designed armor, Aileen is bold, protective, and deeply connected to her heritage, seeing her bond with William as a dance of shadow and steel. She extends this loyalty to the Titans—Spencer, Jared, Jennifer, Emma, Ben, and Azure—and their partners in The Eclipse, using her martial prowess to defend them. Off the battlefield, she’s a storyteller and a fighter, often sharing tales of her ancestors or sparring with William, but her intensity can sometimes make her stubborn.          </Text> */}
           <Text style={styles.aboutText}>
           Backstory
           </Text>
           <Text style={styles.aboutText}>
           Aileen grew up in Zion City’s Terrestrial sector, in a tight-knit Filipino community that cherished resilience, family, and tradition. From a young age, she was trained in Arnis (Filipino martial arts) and inspired by tales of warriors like Lapu-Lapu, whose defiance against invaders shaped her identity. Her strength and cultural pride set her apart, but it was her encounter with William Cummings that forged her path.          </Text>
-          <Text style={styles.aboutText}>
-          Aileen met William during a stealth mission in the Telestial sector, where his invisibility faltered under enemy fire. She intervened with a flurry of strikes, revealing her skill with a Kampilan blade she’d crafted herself. William’s tech-savvy nature intrigued her, and she saw in him a partner who could blend shadows with her steel. Their relationship grew into a powerful alliance, with Aileen designing her Ariata armor to complement his Night Hawk suits, infusing it with Filipino motifs to honor her roots. Her love for William deepened her resolve to protect his family, the Titans.          </Text>
+          {/* <Text style={styles.aboutText}>
+          Aileen met William during a stealth mission in the Telestial sector, where his invisibility faltered under enemy fire. She intervened with a flurry of strikes, revealing her skill with a Kampilan blade she’d crafted herself. William’s tech-savvy nature intrigued her, and she saw in him a partner who could blend shadows with her steel. Their relationship grew into a powerful alliance, with Aileen designing her Ariata armor to complement his Night Hawk suits, infusing it with Filipino motifs to honor her roots. Her love for William deepened her resolve to protect his family, the Titans.          </Text> */}
           <Text style={styles.aboutText}>
           Joining The Eclipse, Aileen aligned with Myran (Jennifer’s husband), Kelsie (Jared’s wife), and James (Azure’s husband) to support the Titans’ mission. She felt the weight of Spencer’s fall and William’s fear of failure, but saw an opportunity to strengthen them with her warrior spirit. Her connection to the broader Parliament of Justice—fighters like Ben and strategists like Todd (Cummings)—empowers her, but she struggles with the lawlessness of Zion City’s Outer Darkness, relying on her heritage to stand firm.          </Text>
           <Text style={styles.aboutText}>
@@ -168,8 +168,8 @@ const Aileen = () => {
           Warrior’s Call: Inspires allies with a rallying cry rooted in her heritage, boosting their courage and focus, a skill drawn from the communal strength of her people.          </Text>
           <Text style={styles.aboutText}>
           Personality and Role in the Team          </Text>
-          <Text style={styles.aboutText}>
-          Aileen is the strength and spirit of The Eclipse, complementing William’s stealth with her martial prowess and resilience. She’s bold, proud, and deeply committed to William, seeing their partnership as a balance of shadow and light. Her relationship with William is one of mutual respect—he shields her with tech, while she guards him with steel.          </Text>
+          {/* <Text style={styles.aboutText}>
+          Aileen is the strength and spirit of The Eclipse, complementing William’s stealth with her martial prowess and resilience. She’s bold, proud, and deeply committed to William, seeing their partnership as a balance of shadow and light. Her relationship with William is one of mutual respect—he shields her with tech, while she guards him with steel.          </Text> */}
           <Text style={styles.aboutText}>
           Among The Eclipse, Aileen collaborates with Myran’s tech, Kelsie’s agility, and James’s calm, forming a dynamic support unit for the Titans. She respects Spencer’s power but shares William’s focus on adaptability, often using her warrior’s call to rally the group. Her cousins-in-law—Jennifer, Jared, Emma, Ben, and Azure—rely on her combat skills and inspiration, while she draws strength from their unity.          </Text>
           <Text style={styles.aboutText}>
