@@ -22,15 +22,17 @@ const NateScreen = () => {
   }, []);
 
   // Sizes for Nate (full size)
-  const nateImageSize = isDesktop ? windowWidth * 0.8 : SCREEN_WIDTH * 0.8; // Larger for single image
+  const nateImageSize = isDesktop ? windowWidth * 0.8 : SCREEN_WIDTH * 0.8; // Larger for Nate
   const nateImageHeight = isDesktop ? SCREEN_HEIGHT * 0.6 : SCREEN_HEIGHT * 0.5;
 
   // Sizes for Spawn (half the size of Nate)
-  const spawnImageSize = isDesktop ? windowWidth * 0.2 : SCREEN_WIDTH * 0.5; // Half of Nate's width
-  const spawnImageHeight = isDesktop ? SCREEN_HEIGHT * 0.3 : SCREEN_HEIGHT * 0.5; // Half of Nate's height
+  const spawnImageSize = isDesktop ? windowWidth * 0.2 : SCREEN_WIDTH * 0.5; // Smaller for Spawn
+  const spawnImageHeight = isDesktop ? SCREEN_HEIGHT * 0.3 : SCREEN_HEIGHT * 0.5;
 
   const nateCharacters = [
     { name: "Demon Lord Nate", image: require('../../../assets/Villains/Nate.jpg'), clickable: true },
+    { name: "Skinwalker Nate", image: require('../../../assets/Villains/Nate2.jpg'), clickable: true },
+    { name: "Nate", image: require('../../../assets/Villains/Nate3.jpg'), clickable: true },
   ];
 
   const spawnCharacters = [
@@ -41,7 +43,6 @@ const NateScreen = () => {
     { name: "Skullroot", image: require('../../../assets/Villains/Spawn4.jpg'), clickable: true },
     { name: "Wooddrift", image: require('../../../assets/Villains/Spawn5.jpg'), clickable: true },
     { name: "Creeking", image: require('../../../assets/Villains/Spawn6.jpg'), clickable: true },
-    // Add more spawn as needed
   ];
 
   const renderCharacterCard = (character, isSpawn = false) => (
@@ -78,18 +79,30 @@ const NateScreen = () => {
             🔥 Demon Lord Nate 🔥
           </Text>
 
-          {/* Nate's Image (Single, Non-Scrolling Container) */}
-          <View style={styles.nateImageContainer}>
+          {/* Nate's Image (Horizontal Scroll Container) */}
+          <Text style={styles.nateTitle}>Nate Variants</Text>
+          <ScrollView
+            horizontal={true}
+            style={styles.horizontalImageContainer}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.horizontalScrollContent}
+            snapToAlignment="center"
+            snapToInterval={nateImageSize + 20} // Snap to larger Nate cards
+            decelerationRate="fast"
+          >
             {nateCharacters.map((character) => renderCharacterCard(character, false))}
-          </View>
+          </ScrollView>
 
           {/* Spawn's Image (Horizontal Scroll Container) */}
           <Text style={styles.spawnTitle}>Nate's Spawn</Text>
           <ScrollView
             horizontal={true}
             style={styles.horizontalImageContainer}
-            showsHorizontalScrollIndicator={false} // Hide scrollbar to reduce distraction
+            showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.horizontalScrollContent}
+            snapToAlignment="center"
+            snapToInterval={spawnImageSize + 20} // Snap to smaller Spawn cards
+            decelerationRate="fast"
           >
             {spawnCharacters.map((character) => renderCharacterCard(character, true))}
           </ScrollView>
@@ -125,7 +138,7 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
     resizeMode: 'cover',
-    paddingHorizontal: 100, // Extra width space for desktop
+    paddingHorizontal: 100,
   },
 
   // 🔥 Overlay
@@ -140,47 +153,34 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
 
-  // 🔥 Title
+  // 🔥 Titles
   mobileTitle: {
     fontSize: 40,
     color: '#ff4500',
     textAlign: 'center',
-    marginBottom: 20,
+    marginVertical: 20,
     fontWeight: 'bold',
     textShadowColor: '#8B0000',
     textShadowRadius: 25,
   },
   desktopTitle: {
-    fontSize: 60, // Larger text for desktop presence
+    fontSize: 60,
     color: '#ff4500',
     textAlign: 'center',
-    marginBottom: 40,
+    marginVertical: 40,
     fontWeight: 'bold',
     textShadowColor: '#8B0000',
     textShadowRadius: 35,
   },
-
-  // 🔥 Image Containers
-  nateImageContainer: {
+  nateTitle: {
+    fontSize: 24,
+    color: '#ff4500',
+    textAlign: 'center',
     marginTop: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-    backgroundColor: '#111',
-    paddingVertical: 30,
-    borderRadius: isDesktop ? 20 : 15,
-    borderColor: '#8B0000',
-    borderWidth: isDesktop ? 6 : 4,
-  },
-  horizontalImageContainer: {
-    marginTop: 20,
-    paddingHorizontal: 10,
-    width: '100%', // Ensure it takes full width
-  },
-  horizontalScrollContent: {
-    flexDirection: 'row', // Ensure items are laid out horizontally
-    alignItems: 'center',
-    paddingVertical: 10,
+    marginBottom: 10,
+    fontWeight: 'bold',
+    textShadowColor: '#8B0000',
+    textShadowRadius: 15,
   },
   spawnTitle: {
     fontSize: 24,
@@ -193,6 +193,23 @@ const styles = StyleSheet.create({
     textShadowRadius: 15,
   },
 
+  // 🔥 Image Containers
+  horizontalImageContainer: {
+    marginTop: 10,
+    paddingHorizontal: 10,
+    width: '100%',
+    backgroundColor: '#111',
+    paddingVertical: 20,
+    borderRadius: isDesktop ? 20 : 15,
+    borderColor: '#8B0000',
+    borderWidth: isDesktop ? 6 : 4,
+  },
+  horizontalScrollContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+  },
+
   // 🔥 Images
   armorImage: {
     resizeMode: "contain",
@@ -203,7 +220,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "rgba(255, 255, 255, 0.1)",
     borderRadius: isDesktop ? 20 : 15,
-    marginHorizontal: 10, // Space between cards in horizontal scroll
+    marginHorizontal: 10,
   },
   notClickable: {
     opacity: 0.8,
@@ -231,14 +248,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#fff',
     textAlign: 'center',
-    marginBottom: 20,
+    marginVertical: 20,
     paddingHorizontal: 20,
   },
   desktopDescription: {
     fontSize: 22,
     color: '#fff',
     textAlign: 'center',
-    marginBottom: 40,
+    marginVertical: 40,
     paddingHorizontal: 60,
   },
 
