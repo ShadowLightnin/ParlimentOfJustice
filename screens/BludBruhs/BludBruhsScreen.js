@@ -8,26 +8,32 @@ import {
   StyleSheet,
   SafeAreaView,
   Dimensions,
+  ScrollView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
-const members = [
-  { name: 'Sam', codename: 'Void Walker', screen: 'Sam', clickable: true, position: [0, 0], image: require('../../assets/Armor/SamPlaceHolder.jpg') },
-  { name: 'Taylor', codename: '', screen: '', clickable: false, position: [0, 1], image: require('../../assets/Armor/PlaceHolder.jpg') },
-  { name: 'Cole', codename: 'Cruiser', screen: 'Cole', clickable: true, position: [0, 2], image: require('../../assets/Armor/ColePlaceHolder.jpg') },
-  { name: 'Joseph', codename: 'Technoman', screen: 'JosephD', clickable: true, position: [1, 0], image: require('../../assets/Armor/JosephDPlaceHolder.jpg') },
-  { name: 'James', codename: 'Shadowmind', screen: 'JamesBb', clickable: true, position: [1, 1], image: require('../../assets/Armor/JamesBbPlaceHolder.jpg') },
-  { name: 'Tanner', codename: 'Wolff', screen: 'TannerBb', clickable: true, position: [1, 2], image: require('../../assets/Armor/TannerBbPlaceHolder.jpg') },
-  { name: '', codename: 'Ranger Squad', screen: 'RangerSquad', clickable: true, position: [2, 0], image: require('../../assets/BackGround/RangerSquad.jpg') },
-  { name: ' ', codename: '', screen: 'MontroseManorTab', clickable: true, position: [2, 1], image: require('../../assets/MontroseManorPlaceHolder.jpg') }, // Subtle button
-  { name: '', codename: 'MonkeAlliance', screen: 'MonkeAllianceScreen', clickable: true, position: [2, 2], image: require('../../assets/BackGround/Monke.jpg') },
+// Scrollable characters (no position needed)
+const scrollableMembers = [
+  { name: 'Sam', codename: 'Void Walker', screen: 'Sam', clickable: true, image: require('../../assets/Armor/SamPlaceHolder.jpg') },
+  { name: 'Taylor', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/PlaceHolder.jpg') },
+  { name: 'Cole', codename: 'Cruiser', screen: 'Cole', clickable: true, image: require('../../assets/Armor/ColePlaceHolder.jpg') },
+  // { name: 'Joseph', codename: 'Technoman', screen: 'JosephD', clickable: true, image: require('../../assets/Armor/JosephDPlaceHolder.jpg') },
+  { name: 'James', codename: 'Shadowmind', screen: 'JamesBb', clickable: true, image: require('../../assets/Armor/JamesBbPlaceHolder.jpg') },
+  { name: 'Tanner', codename: 'Wolff', screen: 'TannerBb', clickable: true, image: require('../../assets/Armor/TannerBbPlaceHolder.jpg') },
+  // Add more characters here
+  { name: 'Aaron', codename: 'Aotearoa', screen: 'Aaron', clickable: true, image: require('../../assets/Armor/AaronPlaceHolder.jpg') },
+  { name: 'New Member 2', codename: '', screen: 'NewMember2', clickable: true, image: require('../../assets/Armor/PlaceHolder.jpg') },
+  { name: 'New Member 3', codename: '', screen: 'NewMember3', clickable: true, image: require('../../assets/Armor/PlaceHolder.jpg') },
 ];
 
-const isEmpty = (row, col) => false; // No empty spots now
-const getMemberAtPosition = (row, col) =>
-  members.find((member) => member.position[0] === row && member.position[1] === col);
+// Fixed factions for bottom row
+const fixedMembers = [
+  { name: '', codename: 'Ranger Squad', screen: 'RangerSquad', clickable: true, image: require('../../assets/BackGround/RangerSquad.jpg') },
+  { name: ' ', codename: '', screen: 'MontroseManorTab', clickable: true, image: require('../../assets/MontroseManorPlaceHolder.jpg') },
+  { name: '', codename: 'MonkeAlliance', screen: 'MonkeAllianceScreen', clickable: true, image: require('../../assets/BackGround/Monke.jpg') },
+];
 
 const BludBruhsScreen = () => {
   const navigation = useNavigation();
@@ -44,6 +50,25 @@ const BludBruhsScreen = () => {
   const isDesktop = SCREEN_WIDTH > 600;
   const cardSize = isDesktop ? 160 : 100;
   const cardSpacing = isDesktop ? 25 : 10;
+
+  // Prepare grid rows
+  const rows = [];
+  const initialScrollable = scrollableMembers.slice(0, 6); // First 6 for top 2 rows
+  const additionalScrollable = scrollableMembers.slice(6); // Remaining for scrolling
+
+  // Build initial scrollable rows (2 rows of 3)
+  for (let i = 0; i < 2; i++) {
+    const row = initialScrollable.slice(i * 3, (i + 1) * 3);
+    while (row.length < 3) row.push(null); // Fill empty slots
+    rows.push(row);
+  }
+
+  // Build additional scrollable rows
+  for (let i = 0; i < additionalScrollable.length; i += 3) {
+    const row = additionalScrollable.slice(i, i + 3);
+    while (row.length < 3) row.push(null); // Fill empty slots
+    rows.push(row);
+  }
 
   return (
     <ImageBackground 
@@ -62,20 +87,20 @@ const BludBruhsScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Grid Layout */}
-        <View style={[styles.grid, { gap: cardSpacing }]}>
-          {[0, 1, 2].map((row) => (
-            <View key={row} style={[styles.row, { gap: cardSpacing }]}>
-              {[0, 1, 2].map((col) => {
-                const member = getMemberAtPosition(row, col);
-                return (
+        {/* Scrollable Grid */}
+        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+          <View style={[styles.grid, { gap: cardSpacing }]}>
+            {rows.map((row, rowIndex) => (
+              <View key={rowIndex} style={[styles.row, { gap: cardSpacing }]}>
+                {row.map((member, colIndex) => (
                   <TouchableOpacity
-                    key={col}
+                    key={colIndex}
                     style={[
                       styles.card,
                       { width: cardSize, height: cardSize * 1.6 },
                       !member?.clickable && styles.disabledCard,
                       member?.name === ' ' && styles.subtleButton,
+                      !member && styles.emptyCard,
                     ]}
                     onPress={() => member?.clickable && navigation.navigate(member.screen, { from: 'BludBruhsHome' })}
                     disabled={!member?.clickable}
@@ -89,9 +114,35 @@ const BludBruhsScreen = () => {
                     <Text style={styles.codename}>{member?.codename || ''}</Text>
                     <Text style={styles.name}>{member?.name || ''}</Text>
                   </TouchableOpacity>
-                );
-              })}
-            </View>
+                ))}
+              </View>
+            ))}
+          </View>
+        </ScrollView>
+
+        {/* Fixed Bottom Row */}
+        <View style={[styles.fixedRow, { gap: cardSpacing }]}>
+          {fixedMembers.map((member, colIndex) => (
+            <TouchableOpacity
+              key={colIndex}
+              style={[
+                styles.card,
+                { width: cardSize, height: cardSize * 1.6 },
+                !member.clickable && styles.disabledCard,
+                member.name === ' ' && styles.subtleButton,
+              ]}
+              onPress={() => member.clickable && navigation.navigate(member.screen, { from: 'BludBruhsHome' })}
+              disabled={!member.clickable}
+            >
+              {member.image && (
+                <>
+                  <Image source={member.image} style={styles.characterImage} />
+                  <View style={styles.transparentOverlay} />
+                </>
+              )}
+              <Text style={styles.codename}>{member.codename || ''}</Text>
+              <Text style={styles.name}>{member.name || ''}</Text>
+            </TouchableOpacity>
           ))}
         </View>
       </SafeAreaView>
@@ -107,7 +158,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)', 
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     paddingHorizontal: 20,
     alignItems: 'center',
   },
@@ -140,9 +191,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#00FFFF',
     textAlign: 'center',
-    textShadowColor: '#fffb00', // Electric cyan glow
-    textShadowOffset: { width: 1, height: 2 }, // Centered glow
-    textShadowRadius: 20, // Stronger glow effect
+    textShadowColor: '#fffb00',
+    textShadowOffset: { width: 1, height: 2 },
+    textShadowRadius: 20,
     flex: 1,
   },
   chatButton: {
@@ -154,13 +205,24 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#00b3ff',
   },
-  grid: {
+  scrollView: {
     flex: 1,
+    width: '100%',
+  },
+  scrollContent: {
+    paddingBottom: 20,
+    alignItems: 'center',
+  },
+  grid: {
     justifyContent: 'center',
     alignItems: 'center',
   },
   row: {
     flexDirection: 'row',
+  },
+  fixedRow: {
+    flexDirection: 'row',
+    paddingVertical: 10,
   },
   card: {
     backgroundColor: '#1c1c1c',
@@ -174,11 +236,15 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   subtleButton: {
-    backgroundColor: '#2a2a2a00', // Transparent subtle button
+    backgroundColor: '#2a2a2a00',
     shadowColor: '#444',
     shadowOpacity: 0.1,
     elevation: 2,
     opacity: 0.2,
+  },
+  emptyCard: {
+    backgroundColor: 'transparent',
+    shadowColor: 'transparent',
   },
   characterImage: {
     width: '100%',

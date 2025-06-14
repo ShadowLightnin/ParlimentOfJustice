@@ -8,6 +8,7 @@ export const memberCategories = [
       { name: 'Beckstead', codename: 'Doctor', screen: '' },
       { name: 'Huffaker', codename: 'Dentist', screen: '' },
       { name: 'Misty', codename: 'Counselor', screen: '' },
+      { name: 'Mark', codename: 'Apple Tech', screen: '' },
     ],
   },
   {

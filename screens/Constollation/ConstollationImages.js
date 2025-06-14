@@ -3,6 +3,7 @@ const constollationImages = {
   'Beckstead': { image: require('../../assets/Armor/DocBecksteadPlaceHolder2.jpg'), clickable: true },
   'Huffaker': { image: require('../../assets/Armor/HuffakerPlaceHolder.jpg'), clickable: true },
   'Misty': { image: require('../../assets/Armor/MistyPlaceHolder.jpg'), clickable: true },
+  'Mark': { image: require('../../assets/Armor/MarkApple.jpg'), clickable: true },
   'George Ray': { image: require('../../assets/Armor/GeorgePlaceHolder.jpg'), clickable: true },
   'Brent Guymon': { image: require('../../assets/Armor/BrentPlaceHolder.jpg'), clickable: true },
   'Claudine Simonsen': { image: require('../../assets/Armor/ClaudinePlaceHolder.jpg'), clickable: true },

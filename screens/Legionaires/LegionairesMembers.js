@@ -70,6 +70,7 @@ export const memberCategories = [
       { name: 'Cienna', codename: '', screen: '' },
       { name: 'Clayton', codename: '', screen: '' },
       { name: 'Bridget', codename: '', screen: '' },
+      { name: 'Ryan', codename: '', screen: '' },
       { name: 'Carson', codename: '', screen: '' },
       { name: 'Sydney', codename: '', screen: '' },
       { name: 'Natalia', codename: '', screen: '' },
