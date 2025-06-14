@@ -51,6 +51,10 @@ const heroes = [
   { name: '', screen: '', image: require('../../assets/Armor/Flash.jpg'), clickable: false },
   { name: '', screen: '', image: require('../../assets/Armor/Ironman.jpg'), clickable: false },
   { name: '', screen: '', image: require('../../assets/Armor/Superman6.jpg'), clickable: false },
+  { name: '', screen: '', image: require('../../assets/Armor/JosephDPlaceHolder.jpg'), clickable: false },
+  { name: '', screen: '', image: require('../../assets/Armor/Rogue.jpg'), clickable: false },
+  { name: '', screen: '', image: require('../../assets/Armor/Ronan.jpg'), clickable: false },
+  { name: '', screen: '', image: require('../../assets/Armor/Apocolie.jpg'), clickable: false },
 ];
 
 const JusticeScreen = () => {
