@@ -15,6 +15,9 @@ export const memberCategories = [
       { name: 'Sheryl', codename: 'Sage', screen: '' },
       { name: 'Krystel', codename: 'Prism', screen: '' },
       { name: 'Deb', codename: 'Oracle', screen: '' },
+      { name: 'Emma', codename: '', screen: '' },
+      { name: 'Jessica', codename: '', screen: '' },
+      { name: 'Victoria', codename: '', screen: '' },
     ],
   },
   {

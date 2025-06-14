@@ -17,15 +17,15 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 // Scrollable characters (no position needed)
 const scrollableMembers = [
   { name: 'Sam', codename: 'Void Walker', screen: 'Sam', clickable: true, image: require('../../assets/Armor/SamPlaceHolder.jpg') },
-  { name: 'Taylor', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/PlaceHolder.jpg') },
   { name: 'Cole', codename: 'Cruiser', screen: 'Cole', clickable: true, image: require('../../assets/Armor/ColePlaceHolder.jpg') },
+  { name: 'Taylor', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/PlaceHolder.jpg') },
   // { name: 'Joseph', codename: 'Technoman', screen: 'JosephD', clickable: true, image: require('../../assets/Armor/JosephDPlaceHolder.jpg') },
   { name: 'James', codename: 'Shadowmind', screen: 'JamesBb', clickable: true, image: require('../../assets/Armor/JamesBbPlaceHolder.jpg') },
   { name: 'Tanner', codename: 'Wolff', screen: 'TannerBb', clickable: true, image: require('../../assets/Armor/TannerBbPlaceHolder.jpg') },
   // Add more characters here
-  { name: 'Aaron', codename: 'Aotearoa', screen: 'Aaron', clickable: true, image: require('../../assets/Armor/AaronPlaceHolder.jpg') },
-  { name: 'New Member 2', codename: '', screen: 'NewMember2', clickable: true, image: require('../../assets/Armor/PlaceHolder.jpg') },
-  { name: 'New Member 3', codename: '', screen: 'NewMember3', clickable: true, image: require('../../assets/Armor/PlaceHolder.jpg') },
+  { name: 'Adin', codename: 'Aotearoa', screen: '', clickable: true, image: require('../../assets/Armor/AdinPlaceHolder.jpg') },
+  { name: 'Justin Platt', codename: 'Echo Wood', screen: '', clickable: true, image: require('../../assets/Armor/JustinPlaceHolder2.jpg') },
+  { name: 'Zack Dustin', codename: 'Carved Echo', screen: '', clickable: true, image: require('../../assets/Armor/ZackPlaceHolder2_cleanup.jpg') },
 ];
 
 // Fixed factions for bottom row
