@@ -20,104 +20,80 @@ const isDesktop = SCREEN_WIDTH > 600;
 
 // Card dimensions for desktop and mobile
 const cardSizes = {
-  desktop: { width: 400, height: 600 },
-  mobile: { width: 350, height: 500 },
+  desktop: { width: 800, height: 600 },
+  mobile: { width: 700, height: 500 },
 };
 const horizontalSpacing = isDesktop ? 40 : 20;
 const verticalSpacing = isDesktop ? 50 : 20;
 
-// Heroes data with images & respective screens
-const heroes = [
-  { name: 'Ranger', screen: '', image: require('../../assets/Armor/LoneRanger.jpg'), clickable: true },
-  { name: 'Lloyd', screen: '', image: require('../../assets/Armor/Lloyd.jpg'), clickable: true },
-  { name: 'Kai', screen: '', image: require('../../assets/Armor/Kai.jpg'), clickable: true },
-  { name: 'Cole', screen: '', image: require('../../assets/Armor/Cole.jpg'), clickable: true },
-  { name: 'Jay', screen: '', image: require('../../assets/Armor/Jay.jpg'), clickable: true },
-  { name: 'Nya', screen: '', image: require('../../assets/Armor/Nya.jpg'), clickable: true },
-  { name: 'Zane', screen: '', image: require('../../assets/Armor/Zane.jpg'), clickable: true },
-  { name: 'Pixal', screen: '', image: require('../../assets/Armor/Pixal.jpg'), clickable: true },
-  { name: 'Superman', screen: '', image: require('../../assets/Armor/Superman7.jpg'), clickable: true },
-  { name: 'Batman', screen: '', image: require('../../assets/Armor/Batman.jpg'), clickable: true },
-  { name: 'Flash', screen: '', image: require('../../assets/Armor/Flash2.jpg'), clickable: true },
-  { name: 'Green Lantern', screen: '', image: require('../../assets/Armor/GreenLantern.jpg'), clickable: true },
-  { name: 'Green Ninja', screen: '', image: require('../../assets/Armor/GreenNinja.jpg'), clickable: true },
-  { name: 'Red Ninja', screen: '', image: require('../../assets/Armor/RedNinja.jpg'), clickable: true },
-  { name: 'Blue Ninja', screen: '', image: require('../../assets/Armor/BlueNinja.jpg'), clickable: true },
-  { name: 'Water Ninja', screen: '', image: require('../../assets/Armor/WaterNinja.jpg'), clickable: true },
-  { name: 'Black Ninja', screen: '', image: require('../../assets/Armor/BlackNinja.jpg'), clickable: true },
-  { name: 'White Ninja', screen: '', image: require('../../assets/Armor/WhiteNinja.jpg'), clickable: true },
-  { name: 'Green Lantern 2', screen: '', image: require('../../assets/Armor/GreenLantern2.jpg'), clickable: true },
-  { name: '', screen: '', image: require('../../assets/Armor/Batman2.jpg'), clickable: true },
-  { name: '', screen: '', image: require('../../assets/Armor/Superman5.jpg'), clickable: true },
-  { name: '', screen: '', image: require('../../assets/Armor/Flash.jpg'), clickable: true },
-  { name: 'Ironman', screen: '', image: require('../../assets/Armor/Ironman.jpg'), clickable: true },
-  { name: '', screen: '', image: require('../../assets/Armor/Superman6.jpg'), clickable: true },
-  { name: '', screen: '', image: require('../../assets/Armor/JosephDPlaceHolder.jpg'), clickable: true },
-  { name: 'Rogue', screen: '', image: require('../../assets/Armor/Rogue.jpg'), clickable: true },
-  { name: 'Ronan', screen: '', image: require('../../assets/Armor/Ronan.jpg'), clickable: true },
-  { name: 'Apocolie', screen: '', image: require('../../assets/Armor/Apocolie.jpg'), clickable: true },
+// Ships data with images & respective screens
+const ship = [
+  { name: 'USS Coalescene', screen: '', image: require('../../assets/USSCoalescence.jpg'), clickable: true },
+  { name: 'Auroren', screen: '', image: require('../../assets/Auroren.jpg'), clickable: true },
+  // Add more ships here, e.g.:
+  // { name: 'New Ship', screen: 'NewShipScreen', image: require('../../assets/NewShip.jpg'), clickable: true },
 ];
 
-const JusticeScreen = () => {
+const ShipYardScreen = () => {
   const navigation = useNavigation();
-  const [previewHero, setPreviewHero] = useState(null);
+  const [previewShip, setPreviewShip] = useState(null);
 
-  const handleHeroPress = (hero) => {
-    if (hero.clickable) {
-      if (hero.screen) {
-        navigation.navigate(hero.screen); // Navigate if screen exists
+  const handleShipPress = (ship) => {
+    if (ship.clickable) {
+      if (ship.screen) {
+        navigation.navigate(ship.screen); // Navigate if screen exists
       } else {
-        setPreviewHero(hero); // Show modal if no screen
+        setPreviewShip(ship); // Show modal if no screen
       }
     }
   };
 
-  // Render Each Hero Card
-  const renderHeroCard = (hero) => (
+  // Render Each Ship Card
+  const renderShipCard = (ship) => (
     <TouchableOpacity
-      key={hero.name || hero.image.toString()} // Use image as fallback for unnamed heroes
+      key={ship.name}
       style={[
         styles.card,
         {
           width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
           height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
         },
-        hero.clickable ? styles.clickable : styles.notClickable,
+        ship.clickable ? styles.clickable : styles.notClickable,
       ]}
-      onPress={() => handleHeroPress(hero)}
-      disabled={!hero.clickable}
+      onPress={() => handleShipPress(ship)}
+      disabled={!ship.clickable}
     >
-      {hero?.image && (
+      {ship?.image && (
         <>
-          <Image source={hero.image} style={styles.image} />
+          <Image source={ship.image} style={styles.image} />
           <View style={styles.transparentOverlay} />
         </>
       )}
-      <Text style={styles.name}>{hero.name || 'Unknown'}</Text>
-      {!hero.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+      <Text style={styles.name}>{ship.name}</Text>
+      {!ship.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );
 
-  const renderPreviewCard = (hero) => (
+  const renderPreviewCard = (ship) => (
     <TouchableOpacity
       style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
-      onPress={() => setPreviewHero(null)} // Close modal on card press
+      onPress={() => setPreviewShip(null)} // Close modal on card press
     >
       <Image
-        source={hero.image || require('../../assets/Armor/LoneRanger.jpg')}
+        source={ship.image || require('../../assets/USSCoalescence.jpg')}
         style={styles.previewImage}
         resizeMode="cover"
       />
       <View style={styles.transparentOverlay} />
       <Text style={styles.cardName}>
-        © {hero.name || 'Unknown'}; William Cummings
+        © {ship.name || 'Unknown'}; William Cummings
       </Text>
     </TouchableOpacity>
   );
 
   return (
     <ImageBackground
-      source={require('../../assets/BackGround/Justice.jpg')}
+      source={require('../../assets/ShipYard.jpg')}
       style={styles.background}
     >
       <View style={styles.container}>
@@ -130,31 +106,31 @@ const JusticeScreen = () => {
         </TouchableOpacity>
 
         {/* Title */}
-        <Text style={styles.header}>Guardians of Justice</Text>
+        <Text style={styles.header}>Ship Yard</Text>
 
-        {/* Horizontal Scrollable Heroes Grid */}
+        {/* Horizontal Scrollable Ships Grid */}
         <View style={styles.scrollWrapper}>
           <ScrollView
             horizontal
             contentContainerStyle={styles.scrollContainer}
             showsHorizontalScrollIndicator={true}
           >
-            {heroes.map(renderHeroCard)}
+            {ship.map(renderShipCard)}
           </ScrollView>
         </View>
 
         {/* Preview Modal */}
         <Modal
-          visible={!!previewHero}
+          visible={!!previewShip}
           transparent={true}
           animationType="fade"
-          onRequestClose={() => setPreviewHero(null)}
+          onRequestClose={() => setPreviewShip(null)}
         >
           <View style={styles.modalBackground}>
             <TouchableOpacity
               style={styles.modalOuterContainer}
               activeOpacity={1}
-              onPress={() => setPreviewHero(null)}
+              onPress={() => setPreviewShip(null)}
             >
               <View style={styles.imageContainer}>
                 <ScrollView
@@ -166,11 +142,11 @@ const JusticeScreen = () => {
                   decelerationRate="fast"
                   centerContent={true}
                 >
-                  {previewHero && renderPreviewCard(previewHero)}
+                  {previewShip && renderPreviewCard(previewShip)}
                 </ScrollView>
               </View>
               <View style={styles.previewAboutSection}>
-                <Text style={styles.previewName}>{previewHero?.name || 'Unknown'}</Text>
+                <Text style={styles.previewName}>{previewShip?.name || 'Unknown'}</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -227,8 +203,6 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexDirection: 'row',
-    flexGrow: 1,
-    width: 'auto',
     paddingVertical: verticalSpacing,
     alignItems: 'center',
   },
@@ -290,7 +264,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   previewCard: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.2 : SCREEN_WIDTH * 0.8,
+    width: isDesktop ? windowWidth * 0.8 : SCREEN_WIDTH * 1.5,
     height: isDesktop ? SCREEN_HEIGHT * 0.7 : SCREEN_HEIGHT * 0.6,
     borderRadius: 15,
     overflow: 'hidden',
@@ -330,4 +304,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default JusticeScreen;
+export default ShipYardScreen;
