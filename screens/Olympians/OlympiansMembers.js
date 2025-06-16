@@ -10,16 +10,7 @@ const familyData = [
     members: [
       { name: 'Angela', codename: 'Celestial Angel', screen: '' },
       { name: 'Todd', codename: 'Stellar', screen: '' },
-    ],
-  },
-  {
-    family: 'Jensen',
-    members: [
-      { name: 'Savannah', codename: 'Vivid Spark', screen: '' },
-      { name: 'Lee', codename: 'Codeforge', screen: '' },
-      { name: 'Emilee', codename: 'Luminous Aria', screen: '' },
-      { name: 'Samantha', codename: 'Velocity Vibe', screen: '' },
-      { name: 'Ella', codename: 'Aerial Serenade', screen: '' },
+      { name: 'Molly', codename: 'Teddy Bear', screen: '' },
     ],
   },
   {
@@ -29,6 +20,7 @@ const familyData = [
       { name: 'Chance', codename: 'Crimson Crown', screen: '' },
       { name: 'Ava', codename: 'Prismatic Pulse', screen: '' },
       { name: 'Charlie', codename: 'Iron Olympian', screen: '' },
+      { name: 'Lumi', codename: 'Fade Shade', screen: '' },
     ],
   },
   {
@@ -38,6 +30,17 @@ const familyData = [
       { name: 'Bobby', codename: 'Crown Medic', screen: '' },
       { name: 'Ammon', codename: 'Valoron', screen: '' },
       { name: 'Piper', codename: 'Jetstrike', screen: '' },
+      { name: 'Gemma', codename: 'Slendowg', screen: '' },
+    ],
+  },
+    {
+    family: 'Jensen',
+    members: [
+      { name: 'Savannah', codename: 'Vivid Spark', screen: '' },
+      { name: 'Lee', codename: 'Codeforge', screen: '' },
+      { name: 'Emilee', codename: 'Luminous Aria', screen: '' },
+      { name: 'Samantha', codename: 'Velocity Vibe', screen: '' },
+      { name: 'Ella', codename: 'Aerial Serenade', screen: '' },
     ],
   },
   {
