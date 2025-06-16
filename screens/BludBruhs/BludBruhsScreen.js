@@ -19,7 +19,7 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 const scrollableMembers = [
   { name: 'Sam', codename: 'Void Walker', screen: 'Sam', clickable: true, image: require('../../assets/Armor/SamPlaceHolder.jpg') },
   { name: 'Cole', codename: 'Cruiser', screen: 'Cole', clickable: true, image: require('../../assets/Armor/ColePlaceHolder.jpg') },
-  { name: 'Taylor', codename: '', screen: '', clickable: false, image: require('../../assets/Armor/PlaceHolder.jpg') },
+  { name: 'Taylor', codename: 'Stellar', screen: '', clickable: false, image: require('../../assets/Armor/TaylorPlaceHolder.jpg') },
   { name: 'James', codename: 'Shadowmind', screen: 'JamesBb', clickable: true, image: require('../../assets/Armor/JamesBbPlaceHolder.jpg') },
   { name: 'Tanner', codename: 'Wolff', screen: 'TannerBb', clickable: true, image: require('../../assets/Armor/TannerBbPlaceHolder.jpg') },
   { name: 'Adin', codename: 'Aotearoa', screen: '', clickable: true, image: require('../../assets/Armor/AdinPlaceHolder.jpg') },
