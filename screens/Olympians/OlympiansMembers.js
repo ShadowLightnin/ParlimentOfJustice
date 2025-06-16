@@ -126,6 +126,7 @@ const familyData = [
       { name: 'Bryce', codename: 'Moesek', screen: '' },
       { name: 'Lillie', codename: 'Slick Blade', screen: '' },
       { name: 'Addie', codename: 'Prism Voyager', screen: '' },
+      { name: 'Purdie', codename: 'Old Faithful', screen: '' },
     ],
   },
   {
@@ -139,6 +140,7 @@ const familyData = [
       { name: 'Mikie', codename: 'Steelth', screen: '' },
       { name: 'Prairie', codename: 'Flowertwister', screen: '' },
       { name: 'Ryan kid', codename: 'Ven-noir', screen: '' },
+      { name: 'Shadrak', codename: 'r', screen: '' },
     ],
   },
   {
