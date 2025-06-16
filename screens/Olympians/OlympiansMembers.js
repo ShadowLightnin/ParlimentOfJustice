@@ -140,7 +140,7 @@ const familyData = [
       { name: 'Mikie', codename: 'Steelth', screen: '' },
       { name: 'Prairie', codename: 'Flowertwister', screen: '' },
       { name: 'Ryan kid', codename: 'Ven-noir', screen: '' },
-      { name: 'Shadrak', codename: 'r', screen: '' },
+      { name: 'Shadrak', codename: 'Veteran', screen: '' },
     ],
   },
   {
