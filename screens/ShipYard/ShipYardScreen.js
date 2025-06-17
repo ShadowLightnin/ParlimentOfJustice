@@ -83,11 +83,11 @@ const ShipYardScreen = () => {
       <Image
         source={ship.image || require('../../assets/USSCoalescence.jpg')}
         style={styles.previewImage}
-        resizeMode="cover"
+        resizeMode="contain"
       />
       <View style={styles.transparentOverlay} />
       <Text style={styles.cardName}>
-        © {ship.name || 'Unknown'}; William Cummings
+        © {ship.name || 'Unknown'}; Ship Yard
       </Text>
     </TouchableOpacity>
   );
@@ -139,7 +139,7 @@ const ShipYardScreen = () => {
                   contentContainerStyle={styles.imageScrollContainer}
                   showsHorizontalScrollIndicator={false}
                   snapToAlignment="center"
-                  snapToInterval={SCREEN_WIDTH * 0.7 + 20}
+                  snapToInterval={SCREEN_WIDTH * 0.8 + 20}
                   decelerationRate="fast"
                   centerContent={true}
                 >
@@ -253,10 +253,9 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     width: '100%',
-    paddingVertical: 20,
+    paddingVertical: 10,
     backgroundColor: '#111',
     alignItems: 'center',
-    paddingLeft: 20,
   },
   imageScrollContainer: {
     flexDirection: 'row',
@@ -265,8 +264,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   previewCard: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.8 : SCREEN_WIDTH * 1.5,
-    height: isDesktop ? SCREEN_HEIGHT * 0.7 : SCREEN_HEIGHT * 0.6,
+    width: isDesktop ? windowWidth * 0.5 : SCREEN_WIDTH * 0.8,
+    height: isDesktop ? SCREEN_HEIGHT * 0.6 : SCREEN_HEIGHT * 0.5,
     borderRadius: 15,
     overflow: 'hidden',
     elevation: 5,
@@ -280,7 +279,7 @@ const styles = StyleSheet.create({
   previewImage: {
     width: '100%',
     height: '100%',
-    resizeMode: 'cover',
+    resizeMode: 'contain',
   },
   cardName: {
     position: 'absolute',
@@ -291,17 +290,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   previewAboutSection: {
-    marginTop: 20,
+    marginTop: 10,
     padding: 10,
     backgroundColor: '#222',
     borderRadius: 10,
-    width: '100%',
+    width: '90%',
   },
   previewName: {
     fontSize: 16,
     color: '#fff',
     textAlign: 'center',
-    marginTop: 5,
   },
 });
 
