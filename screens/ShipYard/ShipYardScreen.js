@@ -29,6 +29,7 @@ const verticalSpacing = isDesktop ? 50 : 20;
 // Ships data with images & respective screens
 const ship = [
   { name: 'USS Coalescene', screen: '', image: require('../../assets/USSCoalescence.jpg'), clickable: true },
+  { name: 'USS Angel-A', screen: '', image: require('../../assets/USSAngel-A.jpg'), clickable: true },
   { name: 'Auroren', screen: '', image: require('../../assets/Auroren.jpg'), clickable: true },
   // Add more ships here, e.g.:
   // { name: 'New Ship', screen: 'NewShipScreen', image: require('../../assets/NewShip.jpg'), clickable: true },
