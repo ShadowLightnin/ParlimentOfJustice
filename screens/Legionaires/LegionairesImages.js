@@ -82,7 +82,9 @@ const legionImages = {
   Sheryl: { image: require('../../assets/Armor/ShePlaceHolder.jpg'), clickable: true },
   Krystel: { image: require('../../assets/Armor/KrystelPlaceHolder.jpg'), clickable: true },
   Deb: { image: require('../../assets/Armor/DebPlaceHolder.jpg'), clickable: true },
+  'Emma BYU': { image: require('../../assets/Armor/EmmaBYUPlaceHolder.jpg'), clickable: true },
   'Jessica BYU': { image: require('../../assets/Armor/JessicaBYUPlaceHolder.jpg'), clickable: true },
+  'Victoria': { image: require('../../assets/Armor/VictoriaPlaceHolder.jpg'), clickable: true },
   };
   
   export default legionImages;
