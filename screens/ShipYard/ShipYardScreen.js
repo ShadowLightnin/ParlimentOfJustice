@@ -87,7 +87,7 @@ const ShipYardScreen = () => {
       />
       <View style={styles.transparentOverlay} />
       <Text style={styles.cardName}>
-        © {ship.name || 'Unknown'}; Ship Yard
+        © {ship.name || 'Unknown'}; William Cummings
       </Text>
     </TouchableOpacity>
   );
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
   },
   previewCard: (isDesktop, windowWidth) => ({
     width: isDesktop ? windowWidth * 0.5 : SCREEN_WIDTH * 0.8,
-    height: isDesktop ? SCREEN_HEIGHT * 0.6 : SCREEN_HEIGHT * 0.5,
+    height: isDesktop ? SCREEN_HEIGHT * 0.6 : SCREEN_HEIGHT * 0.3,
     borderRadius: 15,
     overflow: 'hidden',
     elevation: 5,
