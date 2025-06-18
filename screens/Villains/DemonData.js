@@ -17,25 +17,18 @@ export const demonLords = [
     showSummonPopup: true // ✅ Popup enabled
   },
   { 
-    name: 'Obelisk', 
-    screen: 'ObeliskScreen', 
-    image: require('../../assets/Villains/Obelisk.jpg'), 
-    clickable: true,
-    showSummonPopup: false // ❌ Popup disabled
+    name: 'Skin Stalker', 
+    screen: '', 
+    image: require('../../assets/Villains/SkinStalker.jpg'), 
+    audio: require('../../assets/audio/SkinStalker.mp4'),
+    clickable: true, 
+    showSummonPopup: true // ✅ Popup enabled
   },
   { 
     name: 'Thorax', 
     screen: '', 
     image: require('../../assets/Villains/Thorax.jpg'), 
     clickable: false,
-    showSummonPopup: true // ✅ Popup enabled
-  },
-    { 
-    name: 'Skin Stalker', 
-    screen: '', 
-    image: require('../../assets/Villains/SkinStalker.jpg'), 
-    audio: require('../../assets/audio/SkinStalker.mp4'),
-    clickable: true, 
     showSummonPopup: true // ✅ Popup enabled
   },
 

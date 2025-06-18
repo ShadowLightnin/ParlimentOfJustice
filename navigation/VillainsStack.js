@@ -11,7 +11,6 @@ import BigBadsTab from '../screens/Villains/BigBadsTab';
 // Demons Section
 import DemonsSection from '../screens/Villains/DemonsSection';
 import NateScreen from '../screens/Villains/DemonMembers/NateScreen';
-import ObeliskScreen from '../screens/Villains/DemonMembers/ObeliskScreen';
 
 // import Screen from '../screens/Villains/DemonMembers/Screen';
 
@@ -60,6 +59,7 @@ import FangstrikeScreen from '../screens/Villains/VillainsMembers/FangstrikeScre
 import VoidPhantomScreen from '../screens/Villains/VillainsMembers/VoidPhantomScreen';
 import ChronaScreen from '../screens/Villains/VillainsMembers/ChronaScreen';
 import NocturaScreen from '../screens/Villains/VillainsMembers/NocturaScreen';
+import ObeliskScreen from '../screens/Villains/VillainsMembers/ObeliskScreen';
 import RedMercuryScreen from '../screens/Villains/VillainsMembers/RedMercuryScreen';
 import TitanusScreen from '../screens/Villains/VillainsMembers/TitanusScreen';
 
@@ -88,7 +88,6 @@ const VillainsStack = () => {
       <Stack.Screen name="BigBadsTab" component={BigBadsTab} />
       <Stack.Screen name="DemonsSection" component={DemonsSection} />
       <Stack.Screen name="NateScreen" component={NateScreen} />
-      <Stack.Screen name="ObeliskScreen" component={ObeliskScreen} />
 
       {/* Villain Screens */}
       <Stack.Screen name="FjordScreen" component={FjordScreen} />
@@ -135,6 +134,7 @@ const VillainsStack = () => {
       <Stack.Screen name="VoidPhantomScreen" component={VoidPhantomScreen} />
       <Stack.Screen name="ChronaScreen" component={ChronaScreen} />
       <Stack.Screen name="NocturaScreen" component={NocturaScreen} />
+      <Stack.Screen name="ObeliskScreen" component={ObeliskScreen} />
       <Stack.Screen name="RedMercuryScreen" component={RedMercuryScreen} />
       <Stack.Screen name="TitanusScreen" component={TitanusScreen} />
 

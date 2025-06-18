@@ -61,6 +61,7 @@ const villains = [
   { name: 'Evil Void Walker', screen: 'EvilSam', image: require('../../assets/Armor/SamPlaceHolder2.jpg'), clickable: true },
   { name: 'Sable', screen: 'SableScreen', image: require('../../assets/Villains/Sable.jpg'), clickable: true },
   { name: 'Noctura', screen: 'NocturaScreen', image: require('../../assets/Villains/Noctura.jpg'), clickable: true },
+  { name: 'Obelisk', screen: 'ObeliskScreen', image: require('../../assets/Villains/Obelisk.jpg'), clickable: true },
   { name: 'Red Murcury', screen: 'RedMercuryScreen', image: require('../../assets/Villains/RedMercury.jpg'), clickable: true },
   { name: 'Titanus', screen: 'TitanusScreen', image: require('../../assets/Villains/Titanus.jpg'), clickable: true },
   { name: 'The Blind Witch', screen: '', image: require('../../assets/Villains/IMG_4325.webp'), clickable: false },
