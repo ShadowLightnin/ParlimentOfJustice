@@ -126,7 +126,7 @@ const familyData = [
       { name: 'Bryce', codename: 'Moesek', screen: '' },
       { name: 'Lillie', codename: 'Slick Blade', screen: '' },
       { name: 'Addie', codename: 'Prism Voyager', screen: '' },
-      { name: 'Purdie', codename: 'Old Faithful', screen: '' },
+      { name: 'Purdy', codename: 'Old Faithful', screen: '' },
     ],
   },
   {
@@ -280,6 +280,8 @@ const characterImages = {
   'Molly': require('../../assets/Armor/MollyPlaceHolder.jpg'),
   'Lumi': require('../../assets/Armor/LumiPlaceHolder2.jpg'),
   'Gemma': require('../../assets/Armor/GemmaPlaceHolder.jpg'),
+  'Purdy': require('../../assets/Armor/PurdyPlaceHolder.jpg'),
+  'Shadrak': require('../../assets/Armor/ShadrakPlaceHolder.jpg'),
 };
 
 // 🎯 Generate additional members with family names and superhero codenames

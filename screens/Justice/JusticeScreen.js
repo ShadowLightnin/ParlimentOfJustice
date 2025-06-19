@@ -58,6 +58,7 @@ const heroes = [
   { name: 'Apocolie', screen: '', image: require('../../assets/Armor/Apocolie.jpg'), clickable: true },
   { name: 'Socialation', screen: '', image: require('../../assets/Armor/JadenPlaceHolder.jpg'), clickable: true },
   { name: 'Spiltz', screen: '', image: require('../../assets/Armor/JonasPlaceHolder.jpg'), clickable: true },
+  { name: '', codename: 'Voice Fry', screen: '', clickable: true, image: require('../../assets/Armor/JohnathonPlaceHolder_cleanup.jpg') },
 ];
 
 const JusticeScreen = () => {

@@ -22,6 +22,7 @@ const Jared = () => {
 
   const armors = [
     { name: "Spector", copyright: "William Cummings", image: require("../../assets/Armor/JaredPlaceHolder.jpg"), clickable: true },
+    { name: "Spector", copyright: "William Cummings", image: require("../../assets/Armor/JaredPlaceHolder2.jpg"), clickable: true },
     { name: "", image: require("../../assets/Armor/JaredsSymbol.jpg"), clickable: true },
   ];
 

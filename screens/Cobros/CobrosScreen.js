@@ -26,7 +26,7 @@ const members = [
   { name: 'Jonas Boyer', codename: 'Sports Master', screen: '', clickable: true, image: require('../../assets/Armor/JonasPlaceHolder2.jpg') },
   { name: 'Andrew DeDen', codename: 'Loneman', screen: '', clickable: true, image: require('../../assets/Armor/AndrewDPlaceHolder.jpg') },
   { name: 'Jimmy Larson', codename: 'Renaissance', screen: '', clickable: true, image: require('../../assets/Armor/JimmyPlaceHolder.jpg') },
-  { name: 'Johnathon Gray', codename: 'Voice Fry', screen: '', clickable: true, image: require('../../assets/Armor/JohnathonPlaceHolder_cleanup.jpg') },
+  { name: 'Johnathon Gray', codename: 'Vocalnought', screen: '', clickable: true, image: require('../../assets/Armor/JohnathonPlaceHolder2.jpg') },
   { name: 'Nick Larsen', codename: 'Iron Guard', screen: '', clickable: true, image: require('../../assets/Armor/NickPlaceHolder2.jpg') },
   { name: 'Vanner Johnson', codename: 'Viral', screen: '', clickable: true, image: require('../../assets/Armor/VannerPlaceHolder.jpg') },
   { name: 'Tommy Holbrook', codename: 'Swift Shadow', screen: '', clickable: true, image: require('../../assets/Armor/TommyHPlaceHolder.jpg') },
