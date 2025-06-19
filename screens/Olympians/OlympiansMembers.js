@@ -278,7 +278,8 @@ const characterImages = {
   Carlo: require('../../assets/Armor/CarloPlaceHolder.jpg'),
   'Cham Cham Kaleigha': require('../../assets/Armor/ChamPlaceHolder.jpg'),
   'Molly': require('../../assets/Armor/MollyPlaceHolder.jpg'),
-  'Lumi': require('../../assets/Armor/LumiPlaceHolder.jpg'),
+  'Lumi': require('../../assets/Armor/LumiPlaceHolder2.jpg'),
+  'Gemma': require('../../assets/Armor/GemmaPlaceHolder.jpg'),
 };
 
 // 🎯 Generate additional members with family names and superhero codenames
