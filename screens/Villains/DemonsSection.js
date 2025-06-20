@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   ImageBackground
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Audio } from 'expo-av';
 
 // Screen dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -31,6 +32,44 @@ const demonFactions = [
 
 const DemonsSection = () => {
   const navigation = useNavigation();
+  const [currentSound, setCurrentSound] = useState(null);
+
+  // Play song when the tab loads
+  useEffect(() => {
+    const playTabSong = async () => {
+      if (currentSound) {
+        await currentSound.stopAsync();
+        await currentSound.unloadAsync();
+      }
+
+      const { sound } = await Audio.Sound.createAsync(
+        require('../../assets/audio/HelldiverForEarth.mp4'),
+        { shouldPlay: true, isLooping: false, volume: 1.0 }
+      );
+      setCurrentSound(sound);
+      await sound.playAsync();
+    };
+
+    playTabSong();
+
+    // Cleanup sound on component unmount
+    return () => {
+      if (currentSound) {
+        currentSound.stopAsync();
+        currentSound.unloadAsync();
+      }
+    };
+  }, []);
+
+  // Stop audio before navigating back
+  const handleBackPress = async () => {
+    if (currentSound) {
+      await currentSound.stopAsync();
+      await currentSound.unloadAsync();
+      setCurrentSound(null);
+    }
+    navigation.goBack();
+  };
 
   // Render each faction card
   const renderFactionCard = (faction) => (
@@ -67,7 +106,7 @@ const DemonsSection = () => {
       <View style={styles.container}>
         {/* Back Button */}
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={handleBackPress}
           style={styles.backButton}
         >
           <Text style={styles.backButtonText}>⬅️</Text>

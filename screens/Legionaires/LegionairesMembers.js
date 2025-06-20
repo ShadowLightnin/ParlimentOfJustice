@@ -7,7 +7,7 @@ export const memberCategories = [
     members: [
       { name: 'Mason Erickson', codename: 'Might', screen: '' },
       { name: 'Davis Clark', codename: 'Cyberman', screen: '' },
-      { name: 'Bailey', codename: 'Vowline', screen: '' },
+      { name: 'Mckain Bailey', codename: 'Vowline', screen: '' },
     ],
   },
   {
