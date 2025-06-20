@@ -10,6 +10,13 @@ import BigBadsTab from '../screens/Villains/BigBadsTab';
 
 // Demons Section
 import DemonsSection from '../screens/Villains/DemonsSection';
+import SkinwalkerScreen from '../screens/Villains/DemonMembers/Skinwalkers';
+// import StatuesScreen from '../screens/Villains/DemonMembers/Statues';
+// import OniScreen from '../screens/Villains/DemonMembers/Oni';
+// import AliensScreen from '../screens/Villains/DemonMembers/Aliens';
+// import RobotsScreen from '../screens/Villains/DemonMembers/Robots';
+// import GhostsScreen from '../screens/Villains/DemonMembers/Ghosts';
+// import BugsScreen from '../screens/Villains/DemonMembers/Bugs';
 import NateScreen from '../screens/Villains/DemonMembers/NateScreen';
 
 // import Screen from '../screens/Villains/DemonMembers/Screen';
@@ -87,6 +94,8 @@ const VillainsStack = () => {
       <Stack.Screen name="VillainsTab" component={VillainsTab} />
       <Stack.Screen name="BigBadsTab" component={BigBadsTab} />
       <Stack.Screen name="DemonsSection" component={DemonsSection} />
+      {/*Demon Screens*/}
+      <Stack.Screen name="SkinwalkerScreen" component={SkinwalkerScreen} />
       <Stack.Screen name="NateScreen" component={NateScreen} />
 
       {/* Villain Screens */}

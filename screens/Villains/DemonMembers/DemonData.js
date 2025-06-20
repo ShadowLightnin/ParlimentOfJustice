@@ -3,31 +3,31 @@ export const demonLords = [
   { 
     name: 'Demon Lord Nate', 
     screen: 'NateScreen', 
-    image: require('../../assets/Villains/Nate.jpg'), 
-    audio: require('../../assets/audio/NateSound.mp4'),
+    image: require('../../../assets/Villains/Nate.jpg'), 
+    audio: require('../../../assets/audio/NateSound.mp4'),
     clickable: true,
     showSummonPopup: true // ✅ Popup enabled
   },
   { 
     name: 'Francis', 
     screen: '', 
-    image: require('../../assets/Villains/Francis.jpg'), 
-    audio: require('../../assets/audio/Francis.mp4'),
+    image: require('../../../assets/Villains/Francis.jpg'), 
+    audio: require('../../../assets/audio/Francis.mp4'),
     clickable: true,
     showSummonPopup: true // ✅ Popup enabled
   },
   { 
     name: 'Skin Stalker', 
     screen: '', 
-    image: require('../../assets/Villains/SkinStalker.jpg'), 
-    audio: require('../../assets/audio/SkinStalker.mp4'),
+    image: require('../../../assets/Villains/SkinStalker.jpg'), 
+    audio: require('../../../assets/audio/SkinStalker.mp4'),
     clickable: true, 
     showSummonPopup: true // ✅ Popup enabled
   },
   { 
     name: 'Thorax', 
     screen: '', 
-    image: require('../../assets/Villains/Thorax.jpg'), 
+    image: require('../../../assets/Villains/Thorax.jpg'), 
     clickable: false,
     showSummonPopup: true // ✅ Popup enabled
   },

@@ -107,7 +107,7 @@ const ShipYardScreen = () => {
 
   return (
     <ImageBackground
-      source={require('../../assets/ShipYard.jpg')}
+      source={require('../../assets/BackGround/ShipYard.jpg')}
       style={styles.background}
     >
       <View style={styles.container}>

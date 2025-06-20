@@ -8,6 +8,7 @@ import {
   StyleSheet,
   SafeAreaView,
   Dimensions,
+  ScrollView,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
@@ -16,13 +17,13 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // Member Data
 const members = [
-  { name: 'TBA', codename: '', screen: '', clickable: false, position: [0, 0], image: require('../../assets/Armor/PlaceHolder.jpg') },
+  { name: 'TBA', codename: 'TBA', screen: '', clickable: false, position: [0, 0], image: require('../../assets/Armor/PlaceHolder.jpg') },
   { name: 'James', codename: 'Gentle Hand', screen: 'James', clickable: true, position: [0, 2], image: require('../../assets/Armor/JamesPlaceHolder.jpg') },
   { name: 'Kelsie', codename: 'Eliptic-Dancer', screen: 'Kelsie', clickable: true, position: [1, 0], image: require('../../assets/Armor/KelsiePlaceHolder2.jpg') },
   { name: 'Aileen', codename: 'Ariata', screen: 'Aileen', clickable: true, position: [1, 1], image: require('../../assets/Armor/AileenPlaceHolder2.jpg') },
-  { name: 'TBA', codename: '', screen: '', clickable: false, position: [1, 2], image: require('../../assets/Armor/PlaceHolder.jpg') },
+  { name: 'Ginna', codename: 'TBA', screen: '', clickable: false, position: [1, 2], image: require('../../assets/Armor/PlaceHolder.jpg') },
   { name: 'Myran', codename: 'Techno Guard', screen: 'Myran', clickable: true, position: [2, 0], image: require('../../assets/Armor/MyranPlaceHolder.jpg') },
-  { name: 'TBA', codename: '', screen: '', clickable: false, position: [2, 2], image: require('../../assets/Armor/PlaceHolder.jpg') },
+  { name: 'Tim', codename: 'TBA', screen: '', clickable: false, position: [2, 2], image: require('../../assets/Armor/PlaceHolder.jpg') },
 ];
 
 // Empty cell checker
@@ -38,8 +39,8 @@ const EclipseScreen = () => {
   };
 
   const isDesktop = SCREEN_WIDTH > 600;
-  const cardSize = isDesktop ? 160 : 100;
-  const cardSpacing = isDesktop ? 25 : 10;
+  const cardSize = isDesktop ? 200 : 100; // Larger cards on desktop
+  const cardSpacing = isDesktop ? 30 : 10; // More spacing on desktop
 
   return (
     <ImageBackground
@@ -58,46 +59,77 @@ const EclipseScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Grid Layout */}
-        <View style={[styles.grid, { gap: cardSpacing }]}>
-          {[0, 1, 2].map((row) => (
-            <View key={row} style={[styles.row, { gap: cardSpacing }]}>
-              {[0, 1, 2].map((col) => {
-                if (isEmpty(row, col)) {
-                  return <View key={col} style={{ width: cardSize, height: cardSize * 1.4 }} />;
-                }
+        {/* Layout based on device */}
+        {isDesktop ? (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={[styles.horizontalScroll, { gap: cardSpacing }]}
+          >
+            {members.map((member, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.card,
+                  { width: cardSize, height: cardSize * 1.6 },
+                  !member.clickable && styles.disabledCard,
+                ]}
+                onPress={() => member.clickable && navigation.navigate(member.screen)}
+                disabled={!member.clickable}
+              >
+                {member.image && (
+                  <>
+                    <Image
+                      source={member.image}
+                      style={[styles.characterImage, { width: '100%', height: cardSize * 1.2 }]}
+                    />
+                    <View style={styles.transparentOverlay} />
+                  </>
+                )}
+                <Text style={styles.codename}>{member.codename}</Text>
+                <Text style={styles.name}>{member.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        ) : (
+          <View style={[styles.grid, { gap: cardSpacing }]}>
+            {[0, 1, 2].map((row) => (
+              <View key={row} style={[styles.row, { gap: cardSpacing }]}>
+                {[0, 1, 2].map((col) => {
+                  if (isEmpty(row, col)) {
+                    return <View key={col} style={{ width: cardSize, height: cardSize * 1.4 }} />;
+                  }
 
-                const member = getMemberAtPosition(row, col);
-                return (
-                  <TouchableOpacity
-                    key={col}
-                    style={[
-                      styles.card,
-                      { width: cardSize, height: cardSize * 1.6 },
-                      !member?.clickable && styles.disabledCard,
-                    ]}
-                    onPress={() => member?.clickable && navigation.navigate(member.screen)}
-                    disabled={!member?.clickable}
-                  >
-                    {member?.image && (
-                      <>
-                        {/* Image */}
-                        <Image
-                          source={member.image}
-                          style={[styles.characterImage, { width: '100%', height: cardSize * 1.2 }]}
-                        />
-                        {/* Transparent Overlay to Prevent Image Save */}
-                        <View style={styles.transparentOverlay} />
-                      </>
-                    )}
-                    <Text style={styles.codename}>{member?.codename || ''}</Text>
-                    <Text style={styles.name}>{member?.name || ''}</Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          ))}
-        </View>
+                  const member = getMemberAtPosition(row, col);
+                  return (
+                    <TouchableOpacity
+                      key={col}
+                      style={[
+                        styles.card,
+                        { width: cardSize, height: cardSize * 1.6 },
+                        !member?.clickable && styles.disabledCard,
+                      ]}
+                      onPress={() => member?.clickable && navigation.navigate(member.screen)}
+                      disabled={!member?.clickable}
+                    >
+                      {member?.image && (
+                        <>
+                          <Image
+                            source={member.image}
+                            style={[styles.characterImage, { width: '100%', height: cardSize * 1.2 }]}
+                          />
+                          <View style={styles.transparentOverlay} />
+                        </>
+                      )}
+                      <Text style={styles.codename}>{member?.codename || ''}</Text>
+                      <Text style={styles.name}>{member?.name || ''}</Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            ))}
+          </View>
+        )}
       </SafeAreaView>
     </ImageBackground>
   );
@@ -118,7 +150,7 @@ const styles = StyleSheet.create({
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1, // Ensures overlay blocks saving but not button clicks
+    zIndex: 1,
   },
   headerWrapper: {
     flexDirection: 'row',
@@ -162,6 +194,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  horizontalScroll: {
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+    alignItems: 'center',
+  },
   row: {
     flexDirection: 'row',
   },
@@ -197,12 +234,6 @@ const styles = StyleSheet.create({
   disabledCard: {
     backgroundColor: '#444',
     shadowColor: 'transparent',
-  },
-  disabledText: {
-    fontSize: 10,
-    color: '#ff4444',
-    textAlign: 'center',
-    marginTop: 5,
   },
 });
 

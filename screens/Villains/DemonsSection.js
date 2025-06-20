@@ -1,82 +1,61 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   Image,
   TouchableOpacity,
   ScrollView,
-  Modal,
-  TouchableWithoutFeedback,
+  StyleSheet,
   Dimensions,
   ImageBackground
 } from 'react-native';
-import { Audio } from 'expo-av';
 import { useNavigation } from '@react-navigation/native';
-import { demonLords } from './DemonData'; // Import data dynamically
 
 // Screen dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 // Grid layout settings
 const isDesktop = SCREEN_WIDTH > 600;
-const cardSize = isDesktop ? 450 : 300;
-const imageSize = isDesktop ? 400 : 280;
+const cardSize = isDesktop ? 400 : 300;
+
+// Demon factions data
+const demonFactions = [
+  { name: 'Skinwalkers', screen: 'SkinwalkerScreen', image: require('../../assets/BackGround/Skinwalkers.jpg'), clickable: true },
+  { name: 'Weeping Angels', screen: 'WeepingAngelsScreen', image: require('../../assets/BackGround/Statue.jpg'), clickable: false },
+  { name: 'Oni', screen: 'DemonsOniScreen', image: require('../../assets/BackGround/Oni.jpg'), clickable: false },
+  { name: 'Aliens', screen: 'AliensScreen', image: require('../../assets/BackGround/Aliens.jpg'), clickable: false },
+  { name: 'Metalmen', screen: 'MetalmenScreen', image: require('../../assets/BackGround/Robots.jpg'), clickable: false },
+  { name: 'Ghosts', screen: 'GhostsScreen', image: require('../../assets/BackGround/Ghosts2.jpg'), clickable: false },
+  { name: 'Bugs', screen: 'BugScreen', image: require('../../assets/BackGround/Bugs.jpg'), clickable: false },
+];
 
 const DemonsSection = () => {
   const navigation = useNavigation();
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedDemon, setSelectedDemon] = useState(null);
-  const [currentSound, setCurrentSound] = useState(null);
 
-  // Dynamic Sound Handler with Cleanup
-  const playDemonSound = async (audio, screen) => {
-    if (currentSound) {
-      await currentSound.stopAsync();
-      await currentSound.unloadAsync();
-    }
-
-    const { sound } = await Audio.Sound.createAsync(audio);
-    setCurrentSound(sound);
-    await sound.playAsync();
-
-    if (screen) {
-      setTimeout(() => {
-        navigation.navigate(screen);
-      }, 3000);
-    }
-  };
-
-  const handlePress = async (demon) => {
-    if (demon.audio) {
-      await playDemonSound(demon.audio, demon.screen); // 🔊 For demons with audio
-    } else if (demon.screen) {
-      navigation.navigate(demon.screen); // 🚀 For demons with only a screen
-    }
-
-    if (demon.showSummonPopup) { // ✅ Show popup only if enabled
-      setSelectedDemon(demon.name);
-      setModalVisible(true);
-    }
-  };
-
-  const renderDemonLord = (demon) => (
+  // Render each faction card
+  const renderFactionCard = (faction) => (
     <TouchableOpacity
-      key={demon.name}
+      key={faction.name}
       style={[
-        styles.demonCard,
-        { width: cardSize, height: cardSize * 1.2 },
-        demon.clickable ? styles.clickable : styles.notClickable
+        styles.factionCard,
+        { width: cardSize, height: cardSize * 1.2 + 60 }, // Extra height for text
+        faction.clickable ? styles.clickable : styles.notClickable
       ]}
-      onPress={() => demon.clickable && handlePress(demon)}
-      disabled={!demon.clickable}
+      onPress={() => faction.clickable && navigation.navigate(faction.screen)}
+      disabled={!faction.clickable}
     >
-      <Image source={demon.image} style={[styles.demonImage, { width: imageSize, height: imageSize }]} />
-
+      <Image
+        source={faction.image}
+        style={[styles.factionImage, { width: cardSize, height: cardSize * 1.2 }]}
+      />
+      
       {/* Transparent Overlay for Image Protection */}
       <View style={styles.transparentOverlay} />
 
-      <Text style={styles.demonName}>{demon.name}</Text>
+      <View style={styles.textContainer}>
+        <Text style={styles.factionName}>{faction.name}</Text>
+        {!faction.clickable && <Text style={styles.disabledText}> </Text>}
+      </View>
     </TouchableOpacity>
   );
 
@@ -86,42 +65,33 @@ const DemonsSection = () => {
       style={styles.background}
     >
       <View style={styles.container}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        {/* Back Button */}
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
           <Text style={styles.backButtonText}>⬅️</Text>
         </TouchableOpacity>
 
+        {/* Title */}
         <Text style={styles.header}>⚡️ Demon Lords ⚡️</Text>
 
+        {/* Horizontal Scrollable Cards */}
         <View style={styles.scrollWrapper}>
           <ScrollView
             horizontal
-            contentContainerStyle={styles.scrollContainer}
             showsHorizontalScrollIndicator={true}
+            contentContainerStyle={[styles.scrollContainer, { gap: isDesktop ? 40 : 20 }]}
           >
-            {demonLords.map(renderDemonLord)}
+            {demonFactions.map(renderFactionCard)}
           </ScrollView>
         </View>
-
-        {/* Modal for Demon Info */}
-        <Modal
-          transparent={true}
-          visible={modalVisible}
-          animationType="fade"
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-            <View style={styles.modalContainer}>
-              <View style={styles.modalContent}>
-                <Text style={styles.modalText}>🔥 You have summoned: {selectedDemon} 🔥</Text>
-              </View>
-            </View>
-          </TouchableWithoutFeedback>
-        </Modal>
       </View>
     </ImageBackground>
   );
 };
 
+// Styles
 const styles = StyleSheet.create({
   background: {
     width: SCREEN_WIDTH,
@@ -137,10 +107,10 @@ const styles = StyleSheet.create({
   backButton: {
     position: 'absolute',
     top: 40,
-    left: 0,
+    left: 20,
     backgroundColor: '#750000',
     paddingVertical: 8,
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     borderRadius: 8,
     elevation: 5,
   },
@@ -169,56 +139,43 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     alignItems: 'center',
   },
-  demonCard: {
-    alignItems: 'center',
-    backgroundColor: '#660000dc',
-    padding: 20,
+  factionCard: {
     borderRadius: 15,
+    overflow: 'hidden',
+    elevation: 5,
+    backgroundColor: 'rgba(0, 0, 0, 0)', // Transparent to remove red background
+    alignItems: 'center',
     marginRight: 20,
   },
   clickable: {
-    borderColor: '#e25822',
+    borderColor: 'transparent',
     borderWidth: 4,
   },
   notClickable: {
-    opacity: 0.5,
+    opacity: 0.7,
   },
-  demonImage: {
-    borderRadius: 10,
+  factionImage: {
+    borderRadius: 15, // Match card border radius
+    resizeMode: 'cover',
   },
   transparentOverlay: {
-    ...StyleSheet.absoluteFillObject, 
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1, // Ensures overlay is on top without blocking buttons
+    zIndex: 1,
   },
-  demonName: {
-    marginTop: 15,
+  textContainer: {
+    alignItems: 'center',
+    paddingTop: 10,
+  },
+  factionName: {
     color: 'white',
     fontSize: 20,
+    fontWeight: 'bold',
   },
   disabledText: {
-    marginTop: 10,
+    marginTop: 5,
     color: '#ff4444',
     fontSize: 14,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-  },
-  modalContent: {
-    backgroundColor: 'black',
-    padding: 20,
-    borderRadius: 10,
-    width: '80%',
-  },
-  modalText: {
-    fontSize: 24,
-    color: 'white',
-    textAlign: 'center',
-    textShadowColor: '#e25822',
-    textShadowRadius: 15,
   },
 });
 
