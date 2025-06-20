@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Dimensions,
+  ScrollView,
   Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -28,51 +29,70 @@ const VillainsScreen = () => {
       style={styles.background}
     >
       <View style={styles.container}>
-        {/* Header */}
-        <Text style={[styles.header, { marginTop: HEADER_MARGIN_TOP }]}>
-          The Enlightened
-        </Text>
-
-        {/* Back Button */}
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Home')}
-          style={[styles.backButton, { top: BACK_BUTTON_TOP }]}
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={true}
         >
-          <Text style={styles.backButtonText}>⬅️ Back</Text>
-        </TouchableOpacity>
+          {/* Header */}
+          <Text style={[styles.header, { marginTop: HEADER_MARGIN_TOP }]}>
+            The Enlightened
+          </Text>
 
-        {/* Pyramid Layout */}
-        <View style={styles.cardContainer}>
-          <View style={styles.topRow}>
-            <Card
-              image={require('../../assets/BackGround/Villains.jpg')}
-              onPress={() => navigation.navigate('VillainsTab')}
-              mobileWidth={140} mobileHeight={160}
-              desktopWidth={290} desktopHeight={300}
-            />
-            <Card
-              image={require('../../assets/BackGround/VillainShipYard.jpg')}
-              onPress={() => navigation.navigate('Villain Fleet')}
-              mobileWidth={140} mobileHeight={160}
-              desktopWidth={290} desktopHeight={300}
-            />
-            <Card
-              image={require('../../assets/BackGround/BigBad.jpg')}
-              onPress={() => navigation.navigate('BigBadsTab')}
-              mobileWidth={140} mobileHeight={160}
-              desktopWidth={290} desktopHeight={300}
-            />
-          </View>
+          {/* Back Button */}
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Home')}
+            style={[styles.backButton, { top: BACK_BUTTON_TOP }]}
+          >
+            <Text style={styles.backButtonText}>⬅️ Back</Text>
+          </TouchableOpacity>
 
-          <View style={styles.bottomRow}>
-            <Card
-              image={require('../../assets/BackGround/NateEmblem.jpg')}
-              onPress={() => navigation.navigate('DemonsSection')}
-              mobileWidth={180} mobileHeight={160}
-              desktopWidth={340} desktopHeight={400}
-            />
+          {/* Three-Row Layout */}
+          <View style={styles.cardContainer}>
+            {/* Top Row: Villains and Big Bads */}
+            <View style={styles.topRow}>
+              <Card
+                image={require('../../assets/BackGround/Villains.jpg')}
+                onPress={() => navigation.navigate('VillainsTab')}
+                mobileWidth={140}
+                mobileHeight={160}
+                desktopWidth={290}
+                desktopHeight={300}
+              />
+              <Card
+                image={require('../../assets/BackGround/BigBad.jpg')}
+                onPress={() => navigation.navigate('BigBadsTab')}
+                mobileWidth={140}
+                mobileHeight={160}
+                desktopWidth={290}
+                desktopHeight={300}
+              />
+            </View>
+
+            {/* Middle Row: Ships */}
+            <View style={styles.middleRow}>
+              <Card
+                image={require('../../assets/BackGround/VillainShipYard.jpg')}
+                onPress={() => navigation.navigate('Villain Fleet')}
+                mobileWidth={105}
+                mobileHeight={120}
+                desktopWidth={218}
+                desktopHeight={225}
+              />
+            </View>
+
+            {/* Bottom Row: Demons */}
+            <View style={styles.bottomRow}>
+              <Card
+                image={require('../../assets/BackGround/NateEmblem.jpg')}
+                onPress={() => navigation.navigate('DemonsSection')}
+                mobileWidth={180}
+                mobileHeight={160}
+                desktopWidth={340}
+                desktopHeight={400}
+              />
+            </View>
           </View>
-        </View>
+        </ScrollView>
       </View>
     </ImageBackground>
   );
@@ -113,8 +133,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
     alignItems: 'center',
-    justifyContent: 'center',
     paddingTop: 40,
+  },
+  scrollContent: {
+    paddingBottom: 20,
+    alignItems: 'center',
   },
   backButton: {
     position: 'absolute',
@@ -147,6 +170,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     gap: 20,
+  },
+  middleRow: {
+    alignItems: 'center',
+    marginTop: 5,
   },
   bottomRow: {
     alignItems: 'center',
