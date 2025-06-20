@@ -17,8 +17,7 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 const IS_DESKTOP = SCREEN_WIDTH > 600; // Desktop width breakpoint
 
 // Dynamic spacing for mobile and larger screens
-const HEADER_MARGIN_TOP = IS_DESKTOP ? 30 : 50;
-const BACK_BUTTON_TOP = IS_DESKTOP ? 20 : 40;
+const HEADER_MARGIN_TOP = IS_DESKTOP ? 20 : 30;
 
 const VillainsScreen = () => {
   const navigation = useNavigation();
@@ -33,18 +32,19 @@ const VillainsScreen = () => {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={true}
         >
-          {/* Header */}
-          <Text style={[styles.header, { marginTop: HEADER_MARGIN_TOP }]}>
-            The Enlightened
-          </Text>
-
-          {/* Back Button */}
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Home')}
-            style={[styles.backButton, { top: BACK_BUTTON_TOP }]}
-          >
-            <Text style={styles.backButtonText}>⬅️ Back</Text>
-          </TouchableOpacity>
+          {/* Header and Back Button Row */}
+          <View style={styles.headerRow}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Home')}
+              style={styles.backButton}
+            >
+              <Text style={styles.backButtonText}>⬅️ Back</Text>
+            </TouchableOpacity>
+            <Text style={styles.header}>
+              The Enlightened
+            </Text>
+            <View style={styles.headerSpacer} />
+          </View>
 
           {/* Three-Row Layout */}
           <View style={styles.cardContainer}>
@@ -73,10 +73,10 @@ const VillainsScreen = () => {
               <Card
                 image={require('../../assets/BackGround/VillainShipYard.jpg')}
                 onPress={() => navigation.navigate('Villain Fleet')}
-                mobileWidth={105}
-                mobileHeight={120}
-                desktopWidth={218}
-                desktopHeight={225}
+                mobileWidth={140}
+                mobileHeight={160}
+                desktopWidth={290}
+                desktopHeight={300}
               />
             </View>
 
@@ -133,18 +133,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
     alignItems: 'center',
-    paddingTop: 40,
+    paddingTop: IS_DESKTOP ? 20 : 30,
   },
   scrollContent: {
     paddingBottom: 20,
     alignItems: 'center',
   },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+    paddingHorizontal: 20,
+    marginTop: HEADER_MARGIN_TOP,
+  },
   backButton: {
-    position: 'absolute',
-    left: 20,
     backgroundColor: '#750000',
     paddingVertical: 8,
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     borderRadius: 8,
     elevation: 5,
   },
@@ -154,6 +160,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   header: {
+    flex: 1,
     fontSize: 32,
     fontWeight: 'bold',
     color: '#630404',
@@ -161,10 +168,14 @@ const styles = StyleSheet.create({
     textShadowColor: '#ff1c1c',
     textShadowRadius: 30,
   },
+  headerSpacer: {
+    width: 60, // Matches back button width for symmetry
+  },
   cardContainer: {
     width: '100%',
     alignItems: 'center',
     gap: 20,
+    marginTop: 20,
   },
   topRow: {
     flexDirection: 'row',
