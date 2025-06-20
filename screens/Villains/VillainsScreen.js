@@ -50,7 +50,12 @@ const VillainsScreen = () => {
               mobileWidth={140} mobileHeight={160}
               desktopWidth={290} desktopHeight={300}
             />
-
+            <Card
+              image={require('../../assets/BackGround/VillainShipYard.jpg')}
+              onPress={() => navigation.navigate('Villain Fleet')}
+              mobileWidth={140} mobileHeight={160}
+              desktopWidth={290} desktopHeight={300}
+            />
             <Card
               image={require('../../assets/BackGround/BigBad.jpg')}
               onPress={() => navigation.navigate('BigBadsTab')}
