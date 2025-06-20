@@ -29,9 +29,9 @@ const armor = [
 
 // Data for kids' images
 const kids = [
-  { name: "Nialla", image: require("../../assets/Armor/PlaceHolder.jpg"), clickable: false },
-  { name: "Oliver", image: require("../../assets/Armor/PlaceHolder.jpg"), clickable: false },
-  { name: "Cassidy", image: require("../../assets/Armor/PlaceHolder.jpg"), clickable: false },
+  { name: "Niella Terra", image: require("../../assets/Armor/NiellaPlaceHolder.jpg"), clickable: true },
+  { name: "Oliver Robertodd", image: require("../../assets/Armor/OliverPlaceHolder.jpg"), clickable: true },
+  { name: "Cassidy Zayn", image: require("../../assets/Armor/CassidyZaynPlaceHolder.jpg"), clickable: true },
 ];
 
 // Ariata's new story for the popup
