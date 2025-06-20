@@ -70,7 +70,7 @@ const Myran = () => {
   ];
 
   const kids = [
-    { name: "Lucas", image: require("../../assets/Armor/LucasPlaceHolder.jpg"), clickable: true },
+    { name: "Lucas", image: require("../../assets/Armor/LucasPlaceHolder2.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (
@@ -99,7 +99,7 @@ const Myran = () => {
       <Image source={kid.image} style={styles.kidImage} />
       <View style={styles.transparentOverlay} />
       <Text style={styles.kidCardName}>
-        © {kid.name || 'Unknown'}; In Loving Memory
+        © {kid.name || 'Unknown'}; William Cummings
       </Text>
       {!kid.clickable && <Text style={styles.kidDisabledText}> </Text>}
     </TouchableOpacity>
@@ -158,12 +158,6 @@ const Myran = () => {
           </Text>
           <Text style={styles.aboutText}>
             Joining The Eclipse, Myran aligned with the significant others of the Titans—Kelsie (Jared’s wife), James (Azure’s husband), and Aileen (William’s girlfriend)—to support their mission. He felt the weight of Jennifer’s fallen state and Spencer’s lost leadership, but saw an opportunity to bolster the Titans with his innovations. His connection to the broader Parliament of Justice—strategists like William and defenders like Ben—strengthens him, but he struggles with the chaos of Zion City’s lower sectors, relying on his tech to impose order.
-          </Text>
-          <Text style={styles.aboutText}>
-            Our Precious Ones
-          </Text>
-          <Text style={styles.aboutText}>
-            Myran’s heart holds the eternal memory of his daughter Lila, lost at birth, and the radiant hope of his soon-to-be-born second child, Hope. Lila’s brief presence left an indelible mark, her love powering Myran’s resolve to protect his family, much like the circuits in his armor. Hope, still to come, represents a new spark of possibility, a future Myran and Jennifer cherish. Together, Lila and Hope fuel Myran’s innovations, reminding him that even in loss, love and hope create a legacy that endures.
           </Text>
           <Text style={styles.aboutText}>
             Abilities

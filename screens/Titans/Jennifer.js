@@ -73,7 +73,7 @@ const Jennifer = () => {
   ];
 
   const kids = [
-    { name: "Lucas", image: require("../../assets/Armor/LucasPlaceHolder.jpg"), clickable: true },
+    { name: "Lucas", image: require("../../assets/Armor/LucasPlaceHolder2.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (
@@ -162,12 +162,6 @@ const Jennifer = () => {
           </Text>
           <Text style={styles.aboutText}>
             As a Titan, Jennifer stood alongside Spencer and Jared, using her healing to protect their family, including the Briggs (Ben and Azure), Cummings (Will and Emma), and other oldest cousins. But as Zion City’s corruption grew, so did her sense of failure. She felt responsible for not preventing Spencer’s fall or easing Jared’s burden, and her own confidence wavered. Married to Myran, a techno-savvy ally, Jennifer found a partner who helped her see the beauty in her brokenness, but her fallen state—mirrored by Spencer’s—continues to haunt her. Her Kintsugi armor became a symbol of hope, but also a reminder of how far she’s fallen from the healer she once was.
-          </Text>
-          <Text style={styles.aboutText}>
-            Our Precious Ones
-          </Text>
-          <Text style={styles.aboutText}>
-            Jennifer’s heart carries the eternal light of her daughter Lila, lost at birth, and the radiant hope of her soon-to-be-born second child, Hope. Lila, though only briefly with us, touched Jennifer’s soul with a love that endures, her memory woven into every golden seam of Jennifer’s Kintsugi armor. Hope, still to come, represents a new dawn, a promise of joy and healing that Jennifer and Myran hold dear. Together, Lila and Hope are Jennifer’s guiding stars, reminding her that even in loss, love creates beauty that never fades.
           </Text>
           <Text style={styles.aboutText}>
             Abilities
