@@ -20,6 +20,7 @@ import { CobrosStack } from './navigation/CobrosStack';
 import { SpartansStack } from './navigation/SpartansStack';
 import { BludBruhsStack } from './navigation/BludBruhsStack';
 import { LegionairesStack } from './navigation/LegionairesStack';
+import { ForgeStack } from './navigation/ForgeStack';
 import { ConstollationStack } from './navigation/ConstollationStack';
 import { DesignsStack } from './navigation/DesignsStack';
 import { AdminStack } from "./navigation/AdminStack";
@@ -67,6 +68,7 @@ function AuthenticatedStack() {
       <Stack.Screen name="ASTC" component={SpartansStack} />
       <Stack.Screen name="BludBruhs" component={BludBruhsStack} />
       <Stack.Screen name="Legionaires" component={LegionairesStack} />
+      <Stack.Screen name="ForgeScreen" component={ForgeStack} />
       <Stack.Screen name="Constollation" component={ConstollationStack} />
       <Stack.Screen name="JusticeScreen" component={JusticeStack} />
       <Stack.Screen name="ShipYardScreen" component={ShipYardStack} />
