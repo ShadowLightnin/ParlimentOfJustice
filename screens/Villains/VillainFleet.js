@@ -40,7 +40,7 @@ const ship = [
   { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip9.jpg'), clickable: true },
   { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip10.jpg'), clickable: true },
   { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip11.jpg'), clickable: true },
-  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip13.jpg'), clickable: true },
+  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip12.jpg'), clickable: true },
 
   // Add more ships here, e.g.:
   // { name: 'New Ship', screen: 'NewShipScreen', image: require('../../assets/NewShip.jpg'), clickable: true },
