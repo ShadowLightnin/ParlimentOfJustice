@@ -28,27 +28,25 @@ const verticalSpacing = isDesktop ? 50 : 20;
 
 // Ships data with images & respective screens
 const ship = [
-  { name: 'USS Coalescene', screen: '', image: require('../../assets/ShipYard/USSCoalescence.jpg'), clickable: true },
-  { name: 'USS Angel-A', screen: '', image: require('../../assets/ShipYard/USSAngel-A.jpg'), clickable: true },
-  { name: 'Auroren', screen: '', image: require('../../assets/ShipYard/Auroren.jpg'), clickable: true },
-  { name: 'Whale', screen: '', image: require('../../assets/ShipYard/Starship1.jpg'), clickable: true },
-  { name: 'Ecquisitor', screen: '', image: require('../../assets/ShipYard/Starship2.jpg'), clickable: true },
-  { name: 'Avenger', screen: '', image: require('../../assets/ShipYard/Starship3.jpg'), clickable: true },
-  { name: 'Sky Tear', screen: '', image: require('../../assets/ShipYard/Starship4.jpg'), clickable: true },
-  { name: 'Gaullion', screen: '', image: require('../../assets/ShipYard/Starship5.jpg'), clickable: true },
-  { name: 'Sovreign', screen: '', image: require('../../assets/ShipYard/Starship6.jpg'), clickable: true },
-  { name: 'Reaper', screen: '', image: require('../../assets/ShipYard/Starship7.jpg'), clickable: true },
-  { name: 'Ambassador', screen: '', image: require('../../assets/ShipYard/Starship8.jpg'), clickable: true },
-  { name: 'Star Hunter', screen: '', image: require('../../assets/ShipYard/Starship9.jpg'), clickable: true },
-  { name: 'Solar Ray', screen: '', image: require('../../assets/ShipYard/Starship10.jpg'), clickable: true },
-  { name: 'USS Stritan', screen: '', image: require('../../assets/ShipYard/Starship11.jpg'), clickable: true },
-  { name: 'USS Elegance', screen: '', image: require('../../assets/ShipYard/Starship12.jpg'), clickable: true },
-  { name: 'Basktion', screen: '', image: require('../../assets/ShipYard/Starship13.jpg'), clickable: true },
+  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip1.jpg'), clickable: true },
+  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip2.jpg'), clickable: true },
+  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip3.jpg'), clickable: true },
+  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip4.jpg'), clickable: true },
+  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip13.jpg'), clickable: true },
+  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip5.jpg'), clickable: true },
+  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip6.jpg'), clickable: true },
+  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip7.jpg'), clickable: true },
+  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip8.jpg'), clickable: true },
+  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip9.jpg'), clickable: true },
+  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip10.jpg'), clickable: true },
+  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip11.jpg'), clickable: true },
+  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip13.jpg'), clickable: true },
+
   // Add more ships here, e.g.:
   // { name: 'New Ship', screen: 'NewShipScreen', image: require('../../assets/NewShip.jpg'), clickable: true },
 ];
 
-const ShipYardScreen = () => {
+const VillainFleet = () => {
   const navigation = useNavigation();
   const [previewShip, setPreviewShip] = useState(null);
 
@@ -94,7 +92,7 @@ const ShipYardScreen = () => {
       onPress={() => setPreviewShip(null)} // Close modal on card press
     >
       <Image
-        source={ship.image || require('../../assets/ShipYard/USSCoalescence.jpg')}
+        source={ship.image || require('../../assets/Armor/PlaceHolder.jpg')}
         style={styles.previewImage}
         resizeMode="contain"
       />
@@ -107,7 +105,7 @@ const ShipYardScreen = () => {
 
   return (
     <ImageBackground
-      source={require('../../assets/BackGround/ShipYard.jpg')}
+      source={require('../../assets/BackGround/VillainShipYard2.jpg')}
       style={styles.background}
     >
       <View style={styles.container}>
@@ -120,7 +118,7 @@ const ShipYardScreen = () => {
         </TouchableOpacity>
 
         {/* Title */}
-        <Text style={styles.header}>Ship Yard</Text>
+        <Text style={styles.header}>Villains Fleet</Text>
 
         {/* Horizontal Scrollable Ships Grid */}
         <View style={styles.scrollWrapper}>
@@ -207,7 +205,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFF',
     textAlign: 'center',
-    textShadowColor: 'yellow',
+    textShadowColor: 'orange',
     textShadowRadius: 15,
     marginBottom: 20,
   },
@@ -316,4 +314,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ShipYardScreen;
+export default VillainFleet;

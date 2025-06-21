@@ -11,15 +11,19 @@ import BigBadsTab from '../screens/Villains/BigBadsTab';
 // Demons Section
 import DemonsSection from '../screens/Villains/DemonsSection';
 import SkinwalkerScreen from '../screens/Villains/DemonMembers/Skinwalkers';
-// import StatuesScreen from '../screens/Villains/DemonMembers/Statues';
-// import OniScreen from '../screens/Villains/DemonMembers/Oni';
-// import AliensScreen from '../screens/Villains/DemonMembers/Aliens';
-// import RobotsScreen from '../screens/Villains/DemonMembers/Robots';
-// import GhostsScreen from '../screens/Villains/DemonMembers/Ghosts';
-// import BugsScreen from '../screens/Villains/DemonMembers/Bugs';
+import StatuesScreen from '../screens/Villains/DemonMembers/Statues';
+import OniScreen from '../screens/Villains/DemonMembers/Oni';
+import AliensScreen from '../screens/Villains/DemonMembers/Aliens';
+import RobotsScreen from '../screens/Villains/DemonMembers/Robots';
+import GhostsScreen from '../screens/Villains/DemonMembers/Ghosts';
+import BugsScreen from '../screens/Villains/DemonMembers/Bugs';
+import PiratesScreen from '../screens/Villains/DemonMembers/Pirates';
 import NateScreen from '../screens/Villains/DemonMembers/NateScreen';
 
 // import Screen from '../screens/Villains/DemonMembers/Screen';
+
+// Villain Fleet
+import VillainFleet from '../screens/Villains/VillainFleet';
 
 // Villain Imports
 import FjordScreen from '../screens/Villains/VillainsMembers/FjordScreen';
@@ -96,6 +100,13 @@ const VillainsStack = () => {
       <Stack.Screen name="DemonsSection" component={DemonsSection} />
       {/*Demon Screens*/}
       <Stack.Screen name="SkinwalkerScreen" component={SkinwalkerScreen} />
+      <Stack.Screen name="RobotsScreen" component={RobotsScreen} />
+      <Stack.Screen name="StatuesScreen" component={StatuesScreen} />
+      <Stack.Screen name="OniScreen" component={OniScreen} />
+      <Stack.Screen name="AliensScreen" component={AliensScreen} />
+      <Stack.Screen name="GhostsScreen" component={GhostsScreen} />
+      <Stack.Screen name="BugsScreen" component={BugsScreen} />
+      <Stack.Screen name="PiratesScreen" component={PiratesScreen} />
       <Stack.Screen name="NateScreen" component={NateScreen} />
 
       {/* Villain Screens */}
@@ -147,7 +158,8 @@ const VillainsStack = () => {
       <Stack.Screen name="RedMercuryScreen" component={RedMercuryScreen} />
       <Stack.Screen name="TitanusScreen" component={TitanusScreen} />
 
-
+      {/* Villain Fleet */}
+      <Stack.Screen name="VillainFleet" component={VillainFleet} />
 
       {/* Big Bads Screens */}
       <Stack.Screen name="ObsidianScreen" component={ObsidianScreen} />

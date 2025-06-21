@@ -36,6 +36,7 @@ const coworkers = [
   { name: 'Karrie', codename: '', screen: '', clickable: false, },
   { name: 'Gary', codename: '', screen: '', clickable: false, },
   { name: 'Trevor', codename: '', screen: '', clickable: false, },
+  { name: 'Kristin', codename: '', screen: '', clickable: false, },
   
 ];
 

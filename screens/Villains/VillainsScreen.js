@@ -72,7 +72,7 @@ const VillainsScreen = () => {
             <View style={styles.middleRow}>
               <Card
                 image={require('../../assets/BackGround/VillainShipYard.jpg')}
-                onPress={() => navigation.navigate('Villain Fleet')}
+                onPress={() => navigation.navigate('VillainFleet')}
                 mobileWidth={140}
                 mobileHeight={160}
                 desktopWidth={290}

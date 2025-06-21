@@ -17,9 +17,9 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 // Grid layout settings
 const isDesktop = SCREEN_WIDTH > 600;
 
-// Ghosts data with images & respective screens
-const ghosts = [
-  { name: 'Ghosts', screen: 'GhostsScreen', image: require('../../../assets/BackGround/Ghosts2.jpg'), clickable: false },
+// Bugs data with images & respective screens
+const bugs = [
+  { name: 'Bugs', screen: 'BugsScreen', image: require('../../../assets/BackGround/Bugs.jpg'), clickable: false },
   // { name: '', screen: '', image: require('../../../assets/BackGround/.jpg'), clickable: false },
 ];
 
@@ -29,37 +29,37 @@ const cardSizes = {
   mobile: { width: 350, height: 500 },
 };
 
-const GhostsScreen = () => {
+const BugsScreen = () => {
   const navigation = useNavigation();
 
-  // Render Each Ghost Card
-  const renderGhostCard = (ghost) => (
+  // Render Each Bug Card
+  const renderBugCard = (bug) => (
     <TouchableOpacity
-      key={ghost.name}
+      key={bug.name}
       style={[
         styles.card,
         {
           width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
           height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height
         },
-        ghost.clickable ? styles.clickable : styles.notClickable
+        bug.clickable ? styles.clickable : styles.notClickable
       ]}
-      onPress={() => ghost.clickable && navigation.navigate(ghost.screen)}
-      disabled={!ghost.clickable}
+      onPress={() => bug.clickable && navigation.navigate(bug.screen)}
+      disabled={!bug.clickable}
     >
-      <Image source={ghost.image} style={styles.image} />
+      <Image source={bug.image} style={styles.image} />
       
       {/* Transparent Overlay for Image Protection */}
       <View style={styles.transparentOverlay} />
 
-      <Text style={styles.name}>{ghost.name}</Text>
-      {!ghost.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+      <Text style={styles.name}>{bug.name}</Text>
+      {!bug.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );
 
   return (
     <ImageBackground
-      source={require('../../../assets/BackGround/Ghosts2.jpg')}
+      source={require('../../../assets/BackGround/Bugs.jpg')}
       style={styles.background}
     >
       <View style={styles.container}>
@@ -72,7 +72,7 @@ const GhostsScreen = () => {
         </TouchableOpacity>
 
         {/* Title */}
-        <Text style={styles.header}>Ghosts</Text>
+        <Text style={styles.header}>Bugs</Text>
 
         {/* Horizontal Scrollable Cards */}
         <View style={styles.scrollWrapper}>
@@ -81,7 +81,7 @@ const GhostsScreen = () => {
             showsHorizontalScrollIndicator={true}
             contentContainerStyle={[styles.scrollContainer, { gap: isDesktop ? 40 : 20 }]}
           >
-            {ghosts.map(renderGhostCard)}
+            {bugs.map(renderBugCard)}
           </ScrollView>
         </View>
       </View>
@@ -175,4 +175,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GhostsScreen;
+export default BugsScreen;

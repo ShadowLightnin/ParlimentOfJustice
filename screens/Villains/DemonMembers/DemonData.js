@@ -24,13 +24,6 @@ export const demonLords = [
     clickable: true, 
     showSummonPopup: true // ✅ Popup enabled
   },
-  { 
-    name: 'Thorax', 
-    screen: '', 
-    image: require('../../../assets/Villains/Thorax.jpg'), 
-    clickable: false,
-    showSummonPopup: true // ✅ Popup enabled
-  },
 
     // { 
     //   name: 'Lucifer', 

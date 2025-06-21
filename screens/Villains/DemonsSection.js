@@ -22,12 +22,13 @@ const cardSize = isDesktop ? 400 : 300;
 // Demon factions data
 const demonFactions = [
   { name: 'Skinwalkers', screen: 'SkinwalkerScreen', image: require('../../assets/BackGround/Skinwalkers.jpg'), clickable: true },
-  { name: 'Weeping Angels', screen: 'WeepingAngelsScreen', image: require('../../assets/BackGround/Statue.jpg'), clickable: false },
-  { name: 'Oni', screen: 'DemonsOniScreen', image: require('../../assets/BackGround/Oni.jpg'), clickable: false },
-  { name: 'Aliens', screen: 'AliensScreen', image: require('../../assets/BackGround/Aliens.jpg'), clickable: false },
-  { name: 'Metalmen', screen: 'MetalmenScreen', image: require('../../assets/BackGround/Robots.jpg'), clickable: false },
-  { name: 'Ghosts', screen: 'GhostsScreen', image: require('../../assets/BackGround/Ghosts2.jpg'), clickable: false },
-  { name: 'Bugs', screen: 'BugScreen', image: require('../../assets/BackGround/Bugs.jpg'), clickable: false },
+  { name: 'Weeping Angels', screen: 'StatuesScreen', image: require('../../assets/BackGround/Statue.jpg'), clickable: true },
+  { name: 'Oni', screen: 'OniScreen', image: require('../../assets/BackGround/Oni.jpg'), clickable: true },
+  { name: 'Aliens', screen: 'AliensScreen', image: require('../../assets/BackGround/Aliens.jpg'), clickable: true },
+  { name: 'Metalmen', screen: 'RobotsScreen', image: require('../../assets/BackGround/Robots.jpg'), clickable: true },
+  { name: 'Ghosts', screen: 'GhostsScreen', image: require('../../assets/BackGround/Ghosts2.jpg'), clickable: true },
+  { name: 'Bugs', screen: 'BugsScreen', image: require('../../assets/BackGround/Bugs.jpg'), clickable: true },
+  { name: 'Pirates', screen: 'PiratesScreen', image: require('../../assets/BackGround/Pirates.jpg'), clickable: true },
 ];
 
 const DemonsSection = () => {
