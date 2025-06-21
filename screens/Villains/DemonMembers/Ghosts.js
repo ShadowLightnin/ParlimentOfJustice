@@ -68,7 +68,7 @@ const GhostsScreen = () => {
           onPress={() => navigation.goBack()}
           style={styles.backButton}
         >
-          <Text style={styles.backButtonText}>⬅️ Back</Text>
+          <Text style={styles.backButtonText}>⬅️</Text>
         </TouchableOpacity>
 
         {/* Title */}
@@ -103,12 +103,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   backButton: {
-    position: 'absolute',
+     position: 'absolute',
     top: 40,
-    left: 20,
+    left: 0,
     backgroundColor: '#750000',
     paddingVertical: 8,
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
     borderRadius: 8,
     elevation: 5,
   },
