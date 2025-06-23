@@ -30,6 +30,7 @@ import PublicChatScreen from "./screens/PublicChatScreen";
 import VillainsStack from './navigation/VillainsStack';
 import JusticeStack from './navigation/JusticeStack';
 import ShipYardStack from './navigation/ShipYardStack';
+import InfantryStack from './navigation/InfantryStack';
 
 const Stack = createNativeStackNavigator();
 
@@ -72,6 +73,7 @@ function AuthenticatedStack() {
       <Stack.Screen name="Constollation" component={ConstollationStack} />
       <Stack.Screen name="JusticeScreen" component={JusticeStack} />
       <Stack.Screen name="ShipYardScreen" component={ShipYardStack} />
+      <Stack.Screen name="Infantry" component={InfantryStack} />
       <Stack.Screen name="VillainsScreen" component={VillainsStack} />
       <Stack.Screen name="Designs" component={DesignsStack} /> 
     </Stack.Navigator>

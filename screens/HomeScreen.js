@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useContext } from 'react';
 import { 
   View, Text, ImageBackground, TouchableOpacity, StyleSheet, FlatList, 
-  Animated, Alert, Dimensions 
+  Animated, Alert, Dimensions, ScrollView 
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { signOut } from 'firebase/auth';
@@ -15,7 +15,7 @@ const cardWidth = isDesktop ? 300 : 180;
 const cardHeight = isDesktop ? 240 : 140; 
 const cardSpacing = isDesktop ? 30 : 5;
 
-const factions = [
+const homageFactions = [
   { name: 'Titans', screen: 'Titans', clickable: true, image: require('../assets/BackGround/TitansPlaceHolder.jpg') },
   { name: 'Eclipse', screen: 'Eclipse', clickable: true, image: require('../assets/BackGround/EclipsePlaceHolder.jpg') },
   { name: 'Olympians', screen: 'Olympians', clickable: true, image: require('../assets/BackGround/Olympians.jpg') },
@@ -25,11 +25,17 @@ const factions = [
   { name: 'Legionaires', screen: 'Legionaires', clickable: true, image: require('../assets/BackGround/League.jpg') },
   { name: 'The Forge', screen: 'ForgeScreen', clickable: true, image: require('../assets/BackGround/Forge.jpg') },
   { name: 'Constollation', screen: 'Constollation', clickable: true, image: require('../assets/BackGround/Constollation.jpg') },
+];
+
+const worldBuildingFactions = [
   { name: 'Guardians of Justice', screen: 'JusticeScreen', clickable: true, image: require('../assets/BackGround/Justice.jpg') },
+  { name: 'Infantry', screen: 'Infantry', clickable: true, image: require('../assets/BackGround/Soldiers.jpg') },
   { name: 'Ship Yard', screen: 'ShipYardScreen', clickable: true, image: require('../assets/BackGround/ShipYard.jpg') },
   { name: 'Villains', screen: 'VillainsScreen', clickable: true, image: require('../assets/BackGround/VillainsHub.jpg') },
+];
+
+const otherFactions = [
   { name: 'Designs', screen: 'Designs', clickable: true, image: require('../assets/BackGround/donut_hologram.png') },
-  // { name: 'Admin', screen: 'Admin', clickable: true, image: require('../assets/BackGround/donut_hologram.png') },
 ];
 
 export const HomeScreen = () => {
@@ -102,14 +108,56 @@ export const HomeScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Factions List */}
-        <FlatList
-          data={factions}
-          keyExtractor={(item) => item.name}
-          renderItem={renderFaction}
-          numColumns={numColumns}
-          contentContainerStyle={styles.listContainer}
-        />
+        {/* Scrollable Content */}
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          {/* Homage Section */}
+          <View style={styles.sectionContainer}>
+            <View style={styles.headerContainer}>
+              {/* <Text style={styles.sectionHeader}>Homage</Text>
+              <View style={styles.separatorLine} /> */}
+            </View>
+            <FlatList
+              data={homageFactions}
+              keyExtractor={(item) => item.name}
+              renderItem={renderFaction}
+              numColumns={numColumns}
+              contentContainerStyle={styles.listContainer}
+              scrollEnabled={false}
+            />
+          </View>
+
+          {/* World Building Section */}
+          <View style={styles.sectionContainer}>
+            <View style={styles.headerContainer}>
+              <Text style={styles.sectionHeader}>World Building</Text>
+              <View style={styles.separatorLine} />
+            </View>
+            <FlatList
+              data={worldBuildingFactions}
+              keyExtractor={(item) => item.name}
+              renderItem={renderFaction}
+              numColumns={numColumns}
+              contentContainerStyle={styles.listContainer}
+              scrollEnabled={false}
+            />
+          </View>
+
+          {/* Others Section */}
+          <View style={styles.sectionContainer}>
+            <View style={styles.headerContainer}>
+              <Text style={styles.sectionHeader}>Others</Text>
+              <View style={styles.separatorLine} />
+            </View>
+            <FlatList
+              data={otherFactions}
+              keyExtractor={(item) => item.name}
+              renderItem={renderFaction}
+              numColumns={numColumns}
+              contentContainerStyle={styles.listContainer}
+              scrollEnabled={false}
+            />
+          </View>
+        </ScrollView>
       </View>
     </ImageBackground>
   );
@@ -126,8 +174,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: SCREEN_WIDTH,
-    padding: 20,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
+  },
+  scrollContainer: {
+    padding: 20,
+    paddingBottom: 40,
   },
   topBar: {
     width: "100%",
@@ -136,6 +187,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
     paddingHorizontal: 10,
+    paddingTop: 20,
   },
   header: {
     fontSize: isDesktop ? 28 : 18,
@@ -146,10 +198,30 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     flexShrink: 1,
   },
+  sectionContainer: {
+    marginBottom: 30,
+  },
+  headerContainer: {
+    alignItems: 'center',
+  },
+  sectionHeader: {
+    fontSize: isDesktop ? 24 : 18,
+    fontWeight: 'bold',
+    color: '#fff',
+    textShadowColor: '#00b3ff',
+    textShadowRadius: 10,
+    textAlign: 'center',
+    marginBottom: 5,
+  },
+  separatorLine: {
+    width: SCREEN_WIDTH - 40, // Match scrollContainer padding (20 * 2)
+    borderBottomWidth: 2,
+    borderBottomColor: '#79cbee77',
+    marginBottom: 10,
+  },
   listContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    paddingBottom: 20,
   },
   card: {
     borderRadius: 10,
@@ -168,8 +240,8 @@ const styles = StyleSheet.create({
   },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0)',  // Fully transparent
-    zIndex: 1,  // Ensures it blocks long-press but doesn’t interfere with buttons
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    zIndex: 1,
   },
   factionTitle: {
     fontSize: isDesktop ? 20 : 14,
