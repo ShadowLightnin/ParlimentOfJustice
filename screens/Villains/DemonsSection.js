@@ -55,6 +55,8 @@ const DemonsSectionScreen = () => {
         currentSound.stopAsync();
         currentSound.unloadAsync();
         setCurrentSound(null);
+        setPausedPosition(0);
+        setIsPaused(false);
       }
     };
   }, []);
@@ -64,20 +66,28 @@ const DemonsSectionScreen = () => {
     useCallback(() => {
       const resumeSound = async () => {
         if (currentSound && isPaused && pausedPosition >= 0) {
-          await currentSound.setPositionAsync(pausedPosition);
-          await currentSound.playAsync();
-          setIsPaused(false);
+          try {
+            await currentSound.setPositionAsync(pausedPosition);
+            await currentSound.playAsync();
+            setIsPaused(false);
+          } catch (error) {
+            console.log('Error resuming sound:', error);
+          }
         }
       };
 
       resumeSound();
 
       return () => {
-        if (currentSound) {
+        if (currentSound && !isPaused) {
           currentSound.pauseAsync().then(async () => {
-            const status = await currentSound.getStatusAsync();
-            setPausedPosition(status.positionMillis || 0);
-            setIsPaused(true);
+            try {
+              const status = await currentSound.getStatusAsync();
+              setPausedPosition(status.positionMillis || 0);
+              setIsPaused(true);
+            } catch (error) {
+              console.log('Error pausing sound:', error);
+            }
           });
         }
       };
@@ -87,24 +97,33 @@ const DemonsSectionScreen = () => {
   // Pause audio and save position before navigating to faction screen
   const handleFactionPress = async (faction) => {
     if (faction.clickable && currentSound) {
-      const status = await currentSound.getStatusAsync();
-      if (status.isPlaying) {
-        await currentSound.pauseAsync();
-        setPausedPosition(status.positionMillis || 0);
-        setIsPaused(true);
+      try {
+        const status = await currentSound.getStatusAsync();
+        if (status.isPlaying) {
+          await currentSound.pauseAsync();
+          setPausedPosition(status.positionMillis || 0);
+          setIsPaused(true);
+        }
+        navigation.navigate(faction.screen);
+      } catch (error) {
+        console.log('Error in handleFactionPress:', error);
       }
-      navigation.navigate(faction.screen);
     }
   };
 
-  // Stop audio before navigating back
+  // Pause audio before navigating back
   const handleBackPress = async () => {
     if (currentSound) {
-      await currentSound.stopAsync();
-      await currentSound.unloadAsync();
-      setCurrentSound(null);
-      setPausedPosition(0);
-      setIsPaused(false);
+      try {
+        const status = await currentSound.getStatusAsync();
+        if (status.isPlaying) {
+          await currentSound.pauseAsync();
+          setPausedPosition(status.positionMillis || 0);
+          setIsPaused(true);
+        }
+      } catch (error) {
+        console.log('Error in handleBackPress:', error);
+      }
     }
     navigation.goBack();
   };
