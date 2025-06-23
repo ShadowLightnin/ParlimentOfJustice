@@ -29,9 +29,9 @@ const homageFactions = [
 
 const worldBuildingFactions = [
   { name: 'Guardians of Justice', screen: 'JusticeScreen', clickable: true, image: require('../assets/BackGround/Justice.jpg') },
-  { name: 'Infantry', screen: 'Infantry', clickable: true, image: require('../assets/BackGround/Soldiers.jpg') },
-  { name: 'Ship Yard', screen: 'ShipYardScreen', clickable: true, image: require('../assets/BackGround/ShipYard.jpg') },
-  { name: 'Villains', screen: 'VillainsScreen', clickable: true, image: require('../assets/BackGround/VillainsHub.jpg') },
+  { name: 'Infantry', screen: 'InfantryScreen', clickable: true, image: require('../assets/BackGround/Soldiers.jpg') },
+  { name: 'Ship Yard', screen: 'VillainsFleetScreen', clickable: true, image: require('../assets/BackGround/ShipYard.jpg') },
+  { name: 'Villains', screen: 'DemonsSectionScreen', clickable: true, image: require('../assets/BackGround/VillainsHub.jpg') },
 ];
 
 const otherFactions = [
@@ -122,7 +122,6 @@ export const HomeScreen = () => {
               renderItem={renderFaction}
               numColumns={numColumns}
               contentContainerStyle={styles.listContainer}
-              scrollEnabled={false}
             />
           </View>
 
@@ -138,7 +137,6 @@ export const HomeScreen = () => {
               renderItem={renderFaction}
               numColumns={numColumns}
               contentContainerStyle={styles.listContainer}
-              scrollEnabled={false}
             />
           </View>
 
@@ -154,7 +152,6 @@ export const HomeScreen = () => {
               renderItem={renderFaction}
               numColumns={numColumns}
               contentContainerStyle={styles.listContainer}
-              scrollEnabled={false}
             />
           </View>
         </ScrollView>
