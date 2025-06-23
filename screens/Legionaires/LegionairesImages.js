@@ -11,11 +11,11 @@ const legionImages = {
   'Kanani': { image: require('../../assets/Armor/KananiPlaceHolder.jpg'), clickable: true },
 
 
-  // 'Kenndedy Carman': { image: require('../../assets/Armor/KennedyPlaceHolder.jpg'), clickable: true },
-  // 'Jack Clark': { image: require('../../assets/Armor/JackCPlaceHolder.jpg'), clickable: true },
-  // 'Emma Bronson': { image: require('../../assets/Armor/EmmaBPlaceHolder.jpg'), clickable: true },
-  // 'Ella Duce': { image: require('../../assets/Armor/EllaPlaceHolder.jpg '), clickable: true },
-  // 'Addison Morris': { image: require('../../assets/Armor/AddisonPlaceHolder.jpg'), clickable: true },
+  'Kenndedy Carman': { image: require('../../assets/Armor/KennedyPlaceHolder.jpg'), clickable: true },
+  'Jack Clark': { image: require('../../assets/Armor/JackClarkPlaceHolder.jpg'), clickable: true },
+  'Emma Bronson': { image: require('../../assets/Armor/EmmaBronPlaceHolder.jpg'), clickable: true },
+  'Ella Duce': { image: require('../../assets/Armor/EllaDucePlaceHolder.jpg'), clickable: true },
+  'Addison Morris': { image: require('../../assets/Armor/AddisonMorrisPlaceHolder.jpg'), clickable: true },
   // 'Alyssa': { image: require('../../assets/Armor/AlyssaPlaceHolder.jpg'), clickable: true },
   // 'Josh Clark': { image: require('../../assets/Armor/ClarkPlaceHolder.jpg'), clickable: true },
   // 'Miles Robinson': { image: require('../../assets/Armor/MilesPlaceHolder.jpg'), clickable: true },
