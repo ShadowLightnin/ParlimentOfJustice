@@ -20,8 +20,8 @@ const isDesktop = SCREEN_WIDTH > 600;
 
 // Card dimensions for desktop and mobile
 const cardSizes = {
-  desktop: { width: 800, height: 600 },
-  mobile: { width: 700, height: 500 },
+  desktop: { width: 400, height: 600 },
+  mobile: { width: 300, height: 500 },
 };
 const horizontalSpacing = isDesktop ? 40 : 20;
 const verticalSpacing = isDesktop ? 50 : 20;
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   previewCard: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.5 : SCREEN_WIDTH * 0.8,
+    width: isDesktop ? windowWidth * 0.5 : SCREEN_WIDTH * 0.6,
     height: isDesktop ? SCREEN_HEIGHT * 0.6 : SCREEN_HEIGHT * 0.3,
     borderRadius: 15,
     overflow: 'hidden',
