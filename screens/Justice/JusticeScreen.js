@@ -52,7 +52,6 @@ const heroes = [
   { name: '', screen: '', image: require('../../assets/Armor/Flash.jpg'), clickable: true },
   { name: 'Ironman', screen: '', image: require('../../assets/Armor/Ironman.jpg'), clickable: true },
   { name: '', screen: '', image: require('../../assets/Armor/Superman6.jpg'), clickable: true },
-  { name: 'Star Pilot', screen: '', image: require('../../assets/Armor/JosephDPlaceHolder.jpg'), clickable: true },
   { name: 'Rogue', screen: '', image: require('../../assets/Armor/Rogue.jpg'), clickable: true },
   { name: 'Ronan', screen: '', image: require('../../assets/Armor/Ronan.jpg'), clickable: true },
   { name: 'Apocolie', screen: '', image: require('../../assets/Armor/Apocolie.jpg'), clickable: true },

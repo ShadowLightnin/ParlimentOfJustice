@@ -27,6 +27,7 @@ import JamesBb from '../screens/BludBruhs/JamesBb';
 import TannerBb from '../screens/BludBruhs/TannerBb';
 import RangerSquad from '../screens/BludBruhs/Ranger_Squad17/RangerSquad';
 import MonkeAllianceScreen from '../screens/BludBruhs/MonkeAlliance/MonkeAllianceScreen';
+import RollingThunderScreen from '../screens/BludBruhs/RollingThunderScreen';
 import LumielScreen from '../screens/BludBruhs/MonkeAlliance/LumielScreen';
 import Zeke from '../screens/BludBruhs/MonkeAlliance/Zeke';
 import Elijah from '../screens/BludBruhs/MonkeAlliance/Elijah';
@@ -68,6 +69,7 @@ export function BludBruhsStack() {
       <Stack.Screen name="TannerBb" component={TannerBb} />
       <Stack.Screen name="RangerSquad" component={RangerSquad} />
       <Stack.Screen name="MonkeAllianceScreen" component={MonkeAllianceScreen} />
+      <Stack.Screen name="RollingThunderScreen" component={RollingThunderScreen} />
       <Stack.Screen name="Zeke" component={Zeke} />
       <Stack.Screen name="Elijah" component={Elijah} />
       <Stack.Screen name="AmmonT" component={AmmonT} />

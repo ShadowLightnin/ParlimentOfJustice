@@ -25,6 +25,8 @@ const scrollableMembers = [
   { name: 'Adin', codename: 'Aotearoa', screen: '', clickable: true, image: require('../../assets/Armor/AdinPlaceHolder.jpg') },
   { name: 'Justin Platt', codename: 'Echo Wood', screen: '', clickable: true, image: require('../../assets/Armor/JustinPlaceHolder2.jpg') },
   { name: 'Zack Dustin', codename: 'Carved Echo', screen: '', clickable: true, image: require('../../assets/Armor/ZackPlaceHolder2_cleanup.jpg') },
+  { name: 'Joseph', codename: 'Technoman', screen: 'JosephD', clickable: false, image: require('../../assets/Armor/JosephDPlaceHolder.jpg') },
+  { name: 'Others', codename: 'Rolling Thunder', screen: 'RollingThunderScreen', clickable: true, image: require('../../assets/BackGround/Bludbruh4.jpg') },
 ];
 
 // Fixed factions for bottom row

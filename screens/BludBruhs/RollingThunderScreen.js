@@ -27,20 +27,7 @@ try {
 
 // Member Data with Unique Image Paths
 const members = [
-  { name: 'Zeke', codename: 'Enderstrike', screen: 'Zeke', clickable: true, image: require('../../../assets/Armor/ZekePlaceHolder.jpg') },
-  { name: 'Elijah Potter', codename: 'Chaos Wither', screen: 'Elijah', clickable: true, image: require('../../../assets/Armor/ElijahPlaceHolder.jpg') },
-  { name: 'Tom C', codename: 'Thunder Whisperer', screen: 'TomBb', clickable: true, image: require('../../../assets/Armor/TomCPlaceHolder3_cleanup.jpg') },
-  { name: 'Ammon T', codename: 'Quick Wit', screen: 'AmmonT', clickable: true, image: require('../../../assets/Armor/AmmonTPlaceHolder.jpg') },
-  { name: 'Eli C', codename: 'Shawdow Hunter', screen: 'Eli', clickable: true, image: require('../../../assets/Armor/EliPlaceHolder.jpg') },
-  { name: 'Ethan T', codename: 'Bolt Watcher', screen: 'EthanT', clickable: true, image: require('../../../assets/Armor/EthanPlaceHolder.jpg') },
-  { name: 'Alex M', codename: 'Swiftmind', screen: 'AlexM', clickable: true, image: require('../../../assets/Armor/AlexMPlaceHolder.jpg') },
-  { name: 'Damon', codename: 'Pixel Maverick', screen: 'Damon', clickable: true, image: require('../../../assets/Armor/DamonPlaceHolder_cleanup.jpg') },
-  { name: 'Lauren', codename: '', screen: '', clickable: true, image: require('../../../assets/Armor/LaurenPlaceHolder.jpg') },
-  { name: 'Lizzie', codename: '', screen: '', clickable: true, image: require('../../../assets/Armor/LizzieTBPlaceHolder.jpg') },
-  { name: 'Rachel', codename: '', screen: '', clickable: true, image: require('../../../assets/Armor/RachelTBPlaceHolder.jpg') },
-  { name: 'Keith', codename: '', screen: '', clickable: true, image: require('../../../assets/Armor/KeithPlaceHolder.jpg') },
-  { name: 'Sandra', codename: '', screen: '', clickable: true, image: require('../../../assets/Armor/SandraPlaceHolder.jpg') },
-  { name: 'MIA', codename: '', screen: '', clickable: false },
+  { name: 'MIA', codename: '', screen: '', clickable: true, image: require('../../assets/Armor/PlaceHolder.jpg') },
 ];
 
 // Grid layout settings
@@ -52,7 +39,7 @@ const cardHeightMultiplier = 1.6;
 const horizontalSpacing = isDesktop ? 40 : 10;
 const verticalSpacing = isDesktop ? 50 : 20;
 
-export const MonkeAllianceScreen = () => {
+export const RollingThunderScreen = () => {
   const navigation = useNavigation();
   const [previewMember, setPreviewMember] = useState(null);
 
@@ -66,7 +53,10 @@ export const MonkeAllianceScreen = () => {
   };
 
   const handleMemberPress = (member) => {
-    if (!member?.clickable) return;
+    if (!member?.clickable) {
+      console.log('Card not clickable:', member?.name);
+      return;
+    }
     console.log('Card pressed:', member.name, 'Screen:', member.screen);
     if (member.screen) {
       try {
@@ -79,61 +69,85 @@ export const MonkeAllianceScreen = () => {
     }
   };
 
-  const renderMemberCard = (member) => (
-    <TouchableOpacity
-      key={member.name}
-      style={[
-        styles.card,
-        { width: cardSize, height: cardSize * cardHeightMultiplier },
-        !member.clickable && styles.disabledCard,
-      ]}
-      onPress={() => handleMemberPress(member)}
-      disabled={!member.clickable}
-    >
-      {member?.image && (
-        <>
+  const renderMemberCard = (member) => {
+    try {
+      return (
+        <TouchableOpacity
+          key={member.name}
+          style={[
+            styles.card,
+            { width: cardSize, height: cardSize * cardHeightMultiplier },
+            !member.clickable && styles.disabledCard,
+          ]}
+          onPress={() => handleMemberPress(member)}
+          disabled={!member.clickable}
+        >
+          {member?.image && (
+            <>
+              <Image
+                source={member.image || require('../../assets/Armor/PlaceHolder.jpg')}
+                style={styles.characterImage}
+                resizeMode="cover"
+                onError={(e) => console.error('Image load error:', member.name, e.nativeEvent.error)}
+              />
+              <View style={styles.transparentOverlay} />
+            </>
+          )}
+          <Text style={styles.codename}>{member.codename || ''}</Text>
+          <Text style={styles.name}>{member.name}</Text>
+        </TouchableOpacity>
+      );
+    } catch (error) {
+      console.error('Error rendering card:', member.name, error);
+      return null;
+    }
+  };
+
+  const renderPreviewCard = (member) => {
+    try {
+      return (
+        <TouchableOpacity
+          key={member.name}
+          style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
+          onPress={() => setPreviewMember(null)}
+        >
           <Image
-            source={member.image || require('../../../assets/Armor/PlaceHolder.jpg')}
-            style={styles.characterImage}
+            source={member.image || require('../../assets/Armor/PlaceHolder.jpg')}
+            style={styles.previewImage}
+            resizeMode="cover"
+            onError={(e) => console.error('Preview image load error:', member.name, e.nativeEvent.error)}
           />
           <View style={styles.transparentOverlay} />
-        </>
-      )}
-      <Text style={styles.codename}>{member.codename || ''}</Text>
-      <Text style={styles.name}>{member.name}</Text>
-    </TouchableOpacity>
-  );
-
-  const renderPreviewCard = (member) => (
-    <TouchableOpacity
-      key={member.name}
-      style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
-      onPress={() => setPreviewMember(null)}
-    >
-      <Image
-        source={member.image || require('../../../assets/Armor/PlaceHolder.jpg')}
-        style={styles.previewImage}
-        resizeMode="cover"
-      />
-      <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>
-        © {member.codename || 'No Codename'}; William Cummings
-      </Text>
-    </TouchableOpacity>
-  );
+          <Text style={styles.cardName}>
+            © {member.codename || 'No Codename'}; William Cummings
+          </Text>
+        </TouchableOpacity>
+      );
+    } catch (error) {
+      console.error('Error rendering preview card:', member.name, error);
+      return null;
+    }
+  };
 
   return (
-    <ImageBackground source={require('../../../assets/BackGround/Monke.jpg')} style={styles.background}>
+    <ImageBackground
+      source={require('../../assets/BackGround/Bludbruh4.jpg')}
+      style={styles.background}
+      onError={(e) => console.error('Background image load error:', e.nativeEvent.error)}
+    >
       <SafeAreaView style={styles.container}>
         {/* Header & Back Button */}
         <View style={styles.headerWrapper}>
-          <TouchableOpacity style={styles.backButton} onPress={() => {
-            console.log('Back button pressed:', new Date().toISOString());
-            navigation.goBack();
-          }}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => {
+              console.log('Back button pressed:', new Date().toISOString());
+              navigation.goBack();
+            }}
+          >
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
-          <Text style={styles.header}>Monke Alliance</Text>
+          <Text style={styles.header}>Rolling Thunder</Text>
           <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
             <Text style={styles.chatText}>🛡️</Text>
           </TouchableOpacity>
@@ -164,38 +178,40 @@ export const MonkeAllianceScreen = () => {
         </ScrollView>
 
         {/* Preview Modal */}
-        <Modal
-          visible={!!previewMember}
-          transparent={true}
-          animationType="fade"
-          onRequestClose={() => setPreviewMember(null)}
-        >
-          <View style={styles.modalBackground}>
-            <TouchableOpacity
-              style={styles.modalOuterContainer}
-              activeOpacity={1}
-              onPress={() => setPreviewMember(null)}
-            >
-              <View style={styles.imageContainer}>
-                <ScrollView
-                  horizontal
-                  contentContainerStyle={styles.imageScrollContainer}
-                  showsHorizontalScrollIndicator={false}
-                  snapToAlignment="center"
-                  snapToInterval={isDesktop ? SCREEN_WIDTH * 0.15 : SCREEN_WIDTH * 0.6}
-                  decelerationRate="fast"
-                  centerContent={true}
-                >
-                  {previewMember && renderPreviewCard(previewMember)}
-                </ScrollView>
-              </View>
-              <View style={styles.previewAboutSection}>
-                <Text style={styles.previewCodename}>{previewMember?.codename || 'No Codename'}</Text>
-                <Text style={styles.previewName}>{previewMember?.name || 'Unknown'}</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </Modal>
+        {previewMember && (
+          <Modal
+            visible={!!previewMember}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={() => setPreviewMember(null)}
+          >
+            <View style={styles.modalBackground}>
+              <TouchableOpacity
+                style={styles.modalOuterContainer}
+                activeOpacity={1}
+                onPress={() => setPreviewMember(null)}
+              >
+                <View style={styles.imageContainer}>
+                  <ScrollView
+                    horizontal
+                    contentContainerStyle={styles.imageScrollContainer}
+                    showsHorizontalScrollIndicator={false}
+                    snapToAlignment="center"
+                    snapToInterval={isDesktop ? SCREEN_WIDTH * 0.15 : SCREEN_WIDTH * 0.6}
+                    decelerationRate="fast"
+                    centerContent={true}
+                  >
+                    {renderPreviewCard(previewMember)}
+                  </ScrollView>
+                </View>
+                <View style={styles.previewAboutSection}>
+                  <Text style={styles.previewCodename}>{previewMember?.codename || 'No Codename'}</Text>
+                  <Text style={styles.previewName}>{previewMember?.name || 'Unknown'}</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </Modal>
+        )}
       </SafeAreaView>
     </ImageBackground>
   );
@@ -240,11 +256,11 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: 'brown',
+    color: '#fffb00',
     textAlign: 'center',
-    textShadowColor: 'gold',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 30,
+    textShadowColor: '#00FFFF',
+    textShadowOffset: { width: 1, height: 2 },
+    textShadowRadius: 20,
     flex: 1,
   },
   chatButton: {
@@ -254,7 +270,7 @@ const styles = StyleSheet.create({
   },
   chatText: {
     fontSize: 24,
-    color: '#fff',
+    color: '#00FFFF',
   },
   scrollContainer: {
     paddingBottom: 20,
@@ -272,7 +288,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 8,
     padding: 5,
-    shadowColor: 'brown',
+    shadowColor: '#fffb00',
     shadowOpacity: 1.5,
     shadowRadius: 20,
     elevation: 5,
@@ -347,7 +363,7 @@ const styles = StyleSheet.create({
     bottom: 10,
     left: 10,
     fontSize: 14,
-    color: 'white',
+    color: '#fff',
     fontWeight: 'bold',
   },
   previewAboutSection: {
@@ -360,7 +376,7 @@ const styles = StyleSheet.create({
   previewCodename: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#00FFFF',
     textAlign: 'center',
   },
   previewName: {
@@ -371,4 +387,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MonkeAllianceScreen;
+export default RollingThunderScreen;
