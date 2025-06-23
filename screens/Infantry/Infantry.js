@@ -28,7 +28,7 @@ const verticalSpacing = isDesktop ? 50 : 20;
 
 // Infantry data with images & respective screens
 const infantry = [
-  // { name: 'USS Coalescene', screen: '', image: require('../../assets/InfantryYard/USSCoalescence.jpg'), clickable: true },
+  { name: 'ARC Commander', screen: '', image: require('../../assets/Armor/Infantry/ArcCommander.jpg'), clickable: true },
 
   // Add more infantry here, e.g.:
   // { name: 'New Infantry', screen: 'NewInfantryScreen', image: require('../../assets/NewInfantry.jpg'), clickable: true },
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: '100%',
-    resizeMode: 'cover',
+    resizeMode: 'contain',
   },
   name: {
     position: 'absolute',

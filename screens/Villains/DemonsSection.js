@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,7 @@ import {
   Dimensions,
   ImageBackground
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Audio } from 'expo-av';
 
 // Screen dimensions
@@ -31,36 +31,71 @@ const demonFactions = [
   { name: 'Pirates', screen: 'PiratesScreen', image: require('../../assets/BackGround/Pirates.jpg'), clickable: true },
 ];
 
-const DemonsSection = () => {
+const DemonsSectionScreen = () => {
   const navigation = useNavigation();
   const [currentSound, setCurrentSound] = useState(null);
+  const [pausedPosition, setPausedPosition] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
-  // Play song when the tab loads
+  // Initialize sound on first mount
   useEffect(() => {
-    const playTabSong = async () => {
-      if (currentSound) {
-        await currentSound.stopAsync();
-        await currentSound.unloadAsync();
-      }
-
+    const loadSound = async () => {
       const { sound } = await Audio.Sound.createAsync(
         require('../../assets/audio/HelldiverForEarth.mp4'),
         { shouldPlay: true, isLooping: false, volume: 1.0 }
       );
       setCurrentSound(sound);
-      await sound.playAsync();
     };
 
-    playTabSong();
+    loadSound();
 
-    // Cleanup sound on component unmount
+    // Cleanup sound on unmount
     return () => {
       if (currentSound) {
         currentSound.stopAsync();
         currentSound.unloadAsync();
+        setCurrentSound(null);
       }
     };
   }, []);
+
+  // Handle screen focus to resume audio
+  useFocusEffect(
+    useCallback(() => {
+      const resumeSound = async () => {
+        if (currentSound && isPaused && pausedPosition >= 0) {
+          await currentSound.setPositionAsync(pausedPosition);
+          await currentSound.playAsync();
+          setIsPaused(false);
+        }
+      };
+
+      resumeSound();
+
+      return () => {
+        if (currentSound) {
+          currentSound.pauseAsync().then(async () => {
+            const status = await currentSound.getStatusAsync();
+            setPausedPosition(status.positionMillis || 0);
+            setIsPaused(true);
+          });
+        }
+      };
+    }, [currentSound, isPaused, pausedPosition])
+  );
+
+  // Pause audio and save position before navigating to faction screen
+  const handleFactionPress = async (faction) => {
+    if (faction.clickable && currentSound) {
+      const status = await currentSound.getStatusAsync();
+      if (status.isPlaying) {
+        await currentSound.pauseAsync();
+        setPausedPosition(status.positionMillis || 0);
+        setIsPaused(true);
+      }
+      navigation.navigate(faction.screen);
+    }
+  };
 
   // Stop audio before navigating back
   const handleBackPress = async () => {
@@ -68,6 +103,8 @@ const DemonsSection = () => {
       await currentSound.stopAsync();
       await currentSound.unloadAsync();
       setCurrentSound(null);
+      setPausedPosition(0);
+      setIsPaused(false);
     }
     navigation.goBack();
   };
@@ -81,7 +118,7 @@ const DemonsSection = () => {
         { width: cardSize, height: cardSize * 1.2 + 60 }, // Extra height for text
         faction.clickable ? styles.clickable : styles.notClickable
       ]}
-      onPress={() => faction.clickable && navigation.navigate(faction.screen)}
+      onPress={() => handleFactionPress(faction)}
       disabled={!faction.clickable}
     >
       <Image
@@ -196,7 +233,7 @@ const styles = StyleSheet.create({
   },
   factionImage: {
     borderRadius: 15, // Match card border radius
-    resizeMode: 'cover',
+    resizeMode: 'contain',
   },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -219,4 +256,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DemonsSection;
+export default DemonsSectionScreen;

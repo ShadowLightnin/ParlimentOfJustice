@@ -27,26 +27,26 @@ const horizontalSpacing = isDesktop ? 40 : 20;
 const verticalSpacing = isDesktop ? 50 : 20;
 
 // Ships data with images & respective screens
-const ship = [
-  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip1.jpg'), clickable: true },
-  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip2.jpg'), clickable: true },
-  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip3.jpg'), clickable: true },
-  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip4.jpg'), clickable: true },
-  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip13.jpg'), clickable: true },
-  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip5.jpg'), clickable: true },
-  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip6.jpg'), clickable: true },
-  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip7.jpg'), clickable: true },
-  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip8.jpg'), clickable: true },
-  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip9.jpg'), clickable: true },
-  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip10.jpg'), clickable: true },
-  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip11.jpg'), clickable: true },
-  { name: '', screen: '', image: require('../../assets/VillainFleet/VillainShip12.jpg'), clickable: true },
+const ships = [
+  { name: 'Villain Ship 1', screen: '', image: require('../../assets/VillainFleet/VillainShip1.jpg'), clickable: true },
+  { name: 'Villain Ship 2', screen: '', image: require('../../assets/VillainFleet/VillainShip2.jpg'), clickable: true },
+  { name: 'Villain Ship 3', screen: '', image: require('../../assets/VillainFleet/VillainShip3.jpg'), clickable: true },
+  { name: 'Villain Ship 4', screen: '', image: require('../../assets/VillainFleet/VillainShip4.jpg'), clickable: true },
+  { name: 'Villain Ship 13', screen: '', image: require('../../assets/VillainFleet/VillainShip13.jpg'), clickable: true },
+  { name: 'Villain Ship 5', screen: '', image: require('../../assets/VillainFleet/VillainShip5.jpg'), clickable: true },
+  { name: 'Villain Ship 6', screen: '', image: require('../../assets/VillainFleet/VillainShip6.jpg'), clickable: true },
+  { name: 'Villain Ship 7', screen: '', image: require('../../assets/VillainFleet/VillainShip7.jpg'), clickable: true },
+  { name: 'Villain Ship 8', screen: '', image: require('../../assets/VillainFleet/VillainShip8.jpg'), clickable: true },
+  { name: 'Villain Ship 9', screen: '', image: require('../../assets/VillainFleet/VillainShip9.jpg'), clickable: true },
+  { name: 'Villain Ship 10', screen: '', image: require('../../assets/VillainFleet/VillainShip10.jpg'), clickable: true },
+  { name: 'Villain Ship 11', screen: '', image: require('../../assets/VillainFleet/VillainShip11.jpg'), clickable: true },
+  { name: 'Villain Ship 12', screen: '', image: require('../../assets/VillainFleet/VillainShip12.jpg'), clickable: true },
 
   // Add more ships here, e.g.:
   // { name: 'New Ship', screen: 'NewShipScreen', image: require('../../assets/NewShip.jpg'), clickable: true },
 ];
 
-const VillainFleet = () => {
+const VillainsFleetScreen = () => {
   const navigation = useNavigation();
   const [previewShip, setPreviewShip] = useState(null);
 
@@ -127,7 +127,7 @@ const VillainFleet = () => {
             contentContainerStyle={styles.scrollContainer}
             showsHorizontalScrollIndicator={true}
           >
-            {ship.map(renderShipCard)}
+            {ships.map(renderShipCard)}
           </ScrollView>
         </View>
 
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFF',
     textAlign: 'center',
-    textShadowColor: 'orange',
+    textShadowColor: '#00b3ff',
     textShadowRadius: 15,
     marginBottom: 20,
   },
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: '100%',
-    resizeMode: 'cover',
+    resizeMode: 'contain',
   },
   name: {
     position: 'absolute',
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
   }),
   clickable: {
     borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(255, 255, 0, 0.1)',
   },
   previewImage: {
     width: '100%',
@@ -314,4 +314,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VillainFleet;
+export default VillainsFleetScreen;
