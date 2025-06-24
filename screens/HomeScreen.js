@@ -16,8 +16,8 @@ const cardHeight = isDesktop ? 240 : 140;
 const cardSpacing = isDesktop ? 30 : 5;
 
 const homageFactions = [
-  { name: 'Titans', screen: 'Titans', clickable: true, image: require('../assets/BackGround/TitansPlaceHolder.jpg') },
-  { name: 'Eclipse', screen: 'Eclipse', clickable: true, image: require('../assets/BackGround/EclipsePlaceHolder.jpg') },
+  { name: 'Titans', screen: 'Titans', clickable: true, image: require('../assets/BackGround/Titans.jpg') },
+  { name: 'Eclipse', screen: 'Eclipse', clickable: true, image: require('../assets/BackGround/Eclipse.jpg') },
   { name: 'Olympians', screen: 'Olympians', clickable: true, image: require('../assets/BackGround/Olympians.jpg') },
   { name: 'Cobros', screen: 'Cobros', clickable: true, image: require('../assets/BackGround/Cobros.jpg') },
   { name: 'ASTC (Spartans)', screen: 'ASTC', clickable: true, image: require('../assets/BackGround/26.jpg') },

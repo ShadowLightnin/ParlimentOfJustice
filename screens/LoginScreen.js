@@ -21,8 +21,8 @@ import { AuthContext } from '../context/auth-context';
 
 const backgroundImages = [
     require('../assets/BackGround/Parliment.png'),
-    require('../assets/BackGround/TitansPlaceHolder.jpg'),
-    require('../assets/BackGround/EclipsePlaceHolder.jpg'),
+    require('../assets/BackGround/Titans.jpg'),
+    require('../assets/BackGround/Eclipse.jpg'),
     require('../assets/BackGround/Olympians.jpg'),
     require('../assets/BackGround/Cobros.jpg'),
     require('../assets/BackGround/Bludbruh2.jpg'),
