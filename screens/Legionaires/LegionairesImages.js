@@ -50,10 +50,12 @@ const legionImages = {
   'Cienna': { image: require('../../assets/Armor/Cienna.jpg'), clickable: true },
   'Clayton': { image: require('../../assets/Armor/Clayton.jpg'), clickable: true },
   'Bridget': { image: require('../../assets/Armor/Bridget.jpg'), clickable: true },
-  // 'Ryan': { image: require('../../assets/Armor/Ryan.jpg'), clickable: true },
-  // 'Carson': { image: require('../../assets/Armor/Carson.jpg'), clickable: true },
-  // 'Sydney': { image: require('../../assets/Armor/Sydney.jpg'), clickable: true },
-  // 'Natalia': { image: require('../../assets/Armor/Natalia.jpg'), clickable: true }, 
+  'Ryan': { image: require('../../assets/Armor/RyanMC.jpg'), clickable: true },
+  'Carson': { image: require('../../assets/Armor/Carson.jpg'), clickable: true },
+  'Sydney': { image: require('../../assets/Armor/Sydney.jpg'), clickable: true },
+  'Natalia': { image: require('../../assets/Armor/Natalia.jpg'), clickable: true }, 
+  'Natalie': { image: require('../../assets/Armor/Natalie.jpg'), clickable: true }, 
+  'Kanyon': { image: require('../../assets/Armor/Kanyon.jpg'), clickable: true }, 
   
   
   'Josh Noble': { image: require('../../assets/Armor/JoshNoble.jpg'), clickable: true },
