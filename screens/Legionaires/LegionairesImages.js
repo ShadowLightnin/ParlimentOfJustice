@@ -49,7 +49,7 @@ const legionImages = {
   'Hayden Perks': { image: require('../../assets/Armor/Hayden.jpg'), clickable: true },
   'Cienna': { image: require('../../assets/Armor/Cienna.jpg'), clickable: true },
   'Clayton': { image: require('../../assets/Armor/Clayton.jpg'), clickable: true },
-  // 'Bridget': { image: require('../../assets/Armor/Bridget.jpg'), clickable: true },
+  'Bridget': { image: require('../../assets/Armor/Bridget.jpg'), clickable: true },
   // 'Ryan': { image: require('../../assets/Armor/Ryan.jpg'), clickable: true },
   // 'Carson': { image: require('../../assets/Armor/Carson.jpg'), clickable: true },
   // 'Sydney': { image: require('../../assets/Armor/Sydney.jpg'), clickable: true },

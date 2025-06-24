@@ -29,9 +29,9 @@ const armor = [
 
 // Data for kids' images
 const kids = [
-  { name: "Niella Terra", image: require("../../assets/Armor/Niella.jpg"), clickable: true },
-  { name: "Oliver Robertodd", image: require("../../assets/Armor/Oliver.jpg"), clickable: true },
-  { name: "Cassidy Zayn", image: require("../../assets/Armor/CassidyZayn.jpg"), clickable: true },
+  // { name: "Niella Terra", image: require("../../assets/Armor/Niella.jpg"), clickable: true },
+  // { name: "Oliver Robertodd", image: require("../../assets/Armor/Oliver.jpg"), clickable: true },
+  // { name: "Cassidy Zayn", image: require("../../assets/Armor/CassidyZayn.jpg"), clickable: true },
 ];
 
 // Ariata's new story for the popup
@@ -161,7 +161,7 @@ const Aileen = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.kidsContainer}>
+        {/* <View style={styles.kidsContainer}>
           <Text style={styles.kidsHeader}>Our Future Family</Text>
           <ScrollView
             horizontal
@@ -173,7 +173,7 @@ const Aileen = () => {
           >
             {kids.map(renderKidCard)}
           </ScrollView>
-        </View>
+        </View> */}
 
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>

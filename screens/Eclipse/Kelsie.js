@@ -91,7 +91,7 @@ const Kelsie = () => {
         </View>
 
         <View style={styles.kidsContainer}>
-          <Text style={styles.kidsHeader}>Our Precious One</Text>
+          <Text style={styles.kidsHeader}>Children</Text>
           <ScrollView
             horizontal
             contentContainerStyle={styles.imageScrollContainer}
