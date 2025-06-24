@@ -66,14 +66,14 @@ const Jennifer = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Kintsugi", image: require("../../assets/Armor/JenniferPlaceHolder2.jpg"), clickable: true },
-    { name: "Kintsugi", image: require("../../assets/Armor/JenniferPlaceHolder.jpg"), clickable: true },
-    { name: "Kintsugi", image: require("../../assets/Armor/JenniferPlaceHolder3.jpg"), clickable: true },
-    { name: "Kintsugi", image: require("../../assets/Armor/JenniferPlaceHolder4.jpg"), clickable: true },
+    { name: "Kintsugi", image: require("../../assets/Armor/Jennifer2.jpg"), clickable: true },
+    { name: "Kintsugi", image: require("../../assets/Armor/Jennifer.jpg"), clickable: true },
+    { name: "Kintsugi", image: require("../../assets/Armor/Jennifer3.jpg"), clickable: true },
+    { name: "Kintsugi", image: require("../../assets/Armor/Jennifer4.jpg"), clickable: true },
   ];
 
   const kids = [
-    { name: "Lucas", image: require("../../assets/Armor/LucasPlaceHolder2.jpg"), clickable: true },
+    { name: "Lucas", image: require("../../assets/Armor/Lucas2.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (

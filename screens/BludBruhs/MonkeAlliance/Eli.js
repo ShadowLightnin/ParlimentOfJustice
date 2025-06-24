@@ -21,7 +21,7 @@ const Eli = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Shadow Hunter", image: require("../../../assets/Armor/EliPlaceHolder.jpg"), clickable: true },
+    { name: "Shadow Hunter", image: require("../../../assets/Armor/Eli.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (

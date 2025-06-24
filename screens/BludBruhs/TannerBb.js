@@ -21,7 +21,7 @@ const TannerBb = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Wolff", image: require("../../assets/Armor/TannerBbPlaceHolder.jpg"), clickable: true },
+    { name: "Wolff", image: require("../../assets/Armor/TannerBb.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (

@@ -21,8 +21,8 @@ const Emma = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Kintsunera", copyright: "William Cummings", image: require("../../assets/Armor/EmmaPlaceHolder.jpg"), clickable: true },
-    { name: "Kintsunera", copyright: "William Cummings", image: require("../../assets/Armor/EmmaPlaceHolder2.jpg"), clickable: true },
+    { name: "Kintsunera", copyright: "William Cummings", image: require("../../assets/Armor/Emma.jpg"), clickable: true },
+    { name: "Kintsunera", copyright: "William Cummings", image: require("../../assets/Armor/Emma2.jpg"), clickable: true },
     { name: "", image: require("../../assets/Armor/EmmasSymbol.jpg"), clickable: true },
   ];
 

@@ -21,7 +21,7 @@ const AmmonT = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Quick Wit", image: require("../../../assets/Armor/AmmonTPlaceHolder.jpg"), clickable: true },
+    { name: "Quick Wit", image: require("../../../assets/Armor/AmmonT.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (

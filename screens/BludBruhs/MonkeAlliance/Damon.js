@@ -21,7 +21,7 @@ const Damon = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Pixel Maverick", image: require("../../../assets/Armor/DamonPlaceHolder_cleanup.jpg"), clickable: true },
+    { name: "Pixel Maverick", image: require("../../../assets/Armor/Damon_cleanup.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (

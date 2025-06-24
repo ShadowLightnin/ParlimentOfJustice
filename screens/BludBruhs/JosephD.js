@@ -21,7 +21,7 @@ const JoesphD = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Technoman", image: require("../../assets/Armor/JosephDPlaceHolder.jpg"), clickable: true },
+    { name: "Technoman", image: require("../../assets/Armor/JosephD.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (

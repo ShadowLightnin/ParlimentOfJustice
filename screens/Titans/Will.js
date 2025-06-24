@@ -8,14 +8,14 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const armors = [
   { name: "True Night Hawk", image: require("../../assets/NightHawkWillBeBorn.jpg"), clickable: true },
-  { name: "Night Hawk", image: require("../../assets/Armor/NightHawkPlaceHolder.jpg"), clickable: true },
-  { name: "Lightning Leopard", image: require("../../assets/Armor/WillPlaceHolder.jpg"), clickable: true },
-  { name: "Defender 1", image: require("../../assets/Armor/Defender1PlaceHolder.jpg"), clickable: true },
-  { name: "Defender 2", image: require("../../assets/Armor/Defender2PlaceHolder.jpg"), clickable: true },
-  { name: "Shadow Storm", image: require("../../assets/Armor/ShadowStormPlaceHolder.jpg"), clickable: true },
-  { name: "Celestial", image: require("../../assets/Armor/CelestialPlaceHolder.jpg"), clickable: true },
-  { name: "Sentinel", image: require("../../assets/Armor/SentinelPlaceHolder.jpg"), clickable: true },
-  { name: "Wrath", image: require("../../assets/Armor/WrathPlaceHolder.jpg"), clickable: true },
+  { name: "Night Hawk", image: require("../../assets/Armor/NightHawk.jpg"), clickable: true },
+  { name: "Lightning Leopard", image: require("../../assets/Armor/Will.jpg"), clickable: true },
+  { name: "Defender 1", image: require("../../assets/Armor/Defender1.jpg"), clickable: true },
+  { name: "Defender 2", image: require("../../assets/Armor/Defender2.jpg"), clickable: true },
+  { name: "Shadow Storm", image: require("../../assets/Armor/ShadowStorm.jpg"), clickable: true },
+  { name: "Celestial", image: require("../../assets/Armor/Celestial.jpg"), clickable: true },
+  { name: "Sentinel", image: require("../../assets/Armor/Sentinel.jpg"), clickable: true },
+  { name: "Wrath", image: require("../../assets/Armor/Wrath.jpg"), clickable: true },
   { name: "Night Hawk Helmet", image: require("../../assets/Armor/MyHelmets2.jpg"), clickable: true },
 ];
 

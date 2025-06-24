@@ -21,7 +21,7 @@ const Cole = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Cruiser", image: require("../../assets/Armor/ColePlaceHolder.jpg"), clickable: true },
+    { name: "Cruiser", image: require("../../assets/Armor/Cole.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (

@@ -21,8 +21,8 @@ const Alex = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "", image: require("../../../assets/Armor/AlexPlaceHolder.jpg"), clickable: true },
-    { name: "Huntsman", copyright: "William Cummings", image: require("../../../assets/Armor/AlexPlaceHolder2.jpg"), clickable: true },
+    { name: "", image: require("../../../assets/Armor/Alex.jpg"), clickable: true },
+    { name: "Huntsman", copyright: "William Cummings", image: require("../../../assets/Armor/Alex2.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor, index) => (

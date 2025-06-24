@@ -27,19 +27,19 @@ try {
 
 // Member Data with Unique Image Paths
 const members = [
-  { name: 'Zeke', codename: 'Enderstrike', screen: 'Zeke', clickable: true, image: require('../../../assets/Armor/ZekePlaceHolder.jpg') },
-  { name: 'Elijah Potter', codename: 'Chaos Wither', screen: 'Elijah', clickable: true, image: require('../../../assets/Armor/ElijahPlaceHolder.jpg') },
-  { name: 'Tom C', codename: 'Thunder Whisperer', screen: 'TomBb', clickable: true, image: require('../../../assets/Armor/TomCPlaceHolder3_cleanup.jpg') },
-  { name: 'Ammon T', codename: 'Quick Wit', screen: 'AmmonT', clickable: true, image: require('../../../assets/Armor/AmmonTPlaceHolder.jpg') },
-  { name: 'Eli C', codename: 'Shawdow Hunter', screen: 'Eli', clickable: true, image: require('../../../assets/Armor/EliPlaceHolder.jpg') },
-  { name: 'Ethan T', codename: 'Bolt Watcher', screen: 'EthanT', clickable: true, image: require('../../../assets/Armor/EthanPlaceHolder.jpg') },
-  { name: 'Alex M', codename: 'Swiftmind', screen: 'AlexM', clickable: true, image: require('../../../assets/Armor/AlexMPlaceHolder.jpg') },
-  { name: 'Damon', codename: 'Pixel Maverick', screen: 'Damon', clickable: true, image: require('../../../assets/Armor/DamonPlaceHolder_cleanup.jpg') },
-  { name: 'Lauren', codename: '', screen: '', clickable: true, image: require('../../../assets/Armor/LaurenPlaceHolder.jpg') },
-  { name: 'Lizzie', codename: '', screen: '', clickable: true, image: require('../../../assets/Armor/LizzieTBPlaceHolder.jpg') },
-  { name: 'Rachel', codename: '', screen: '', clickable: true, image: require('../../../assets/Armor/RachelTBPlaceHolder.jpg') },
-  { name: 'Keith', codename: '', screen: '', clickable: true, image: require('../../../assets/Armor/KeithPlaceHolder.jpg') },
-  { name: 'Sandra', codename: '', screen: '', clickable: true, image: require('../../../assets/Armor/SandraPlaceHolder.jpg') },
+  { name: 'Zeke', codename: 'Enderstrike', screen: 'Zeke', clickable: true, image: require('../../../assets/Armor/Zeke.jpg') },
+  { name: 'Elijah Potter', codename: 'Chaos Wither', screen: 'Elijah', clickable: true, image: require('../../../assets/Armor/Elijah.jpg') },
+  { name: 'Tom C', codename: 'Thunder Whisperer', screen: 'TomBb', clickable: true, image: require('../../../assets/Armor/TomC3_cleanup.jpg') },
+  { name: 'Ammon T', codename: 'Quick Wit', screen: 'AmmonT', clickable: true, image: require('../../../assets/Armor/AmmonT.jpg') },
+  { name: 'Eli C', codename: 'Shawdow Hunter', screen: 'Eli', clickable: true, image: require('../../../assets/Armor/Eli.jpg') },
+  { name: 'Ethan T', codename: 'Bolt Watcher', screen: 'EthanT', clickable: true, image: require('../../../assets/Armor/Ethan.jpg') },
+  { name: 'Alex M', codename: 'Swiftmind', screen: 'AlexM', clickable: true, image: require('../../../assets/Armor/AlexM.jpg') },
+  { name: 'Damon', codename: 'Pixel Maverick', screen: 'Damon', clickable: true, image: require('../../../assets/Armor/Damon_cleanup.jpg') },
+  { name: 'Lauren', codename: '', screen: '', clickable: true, image: require('../../../assets/Armor/Lauren.jpg') },
+  { name: 'Lizzie', codename: '', screen: '', clickable: true, image: require('../../../assets/Armor/LizzieTB.jpg') },
+  { name: 'Rachel', codename: '', screen: '', clickable: true, image: require('../../../assets/Armor/RachelTB.jpg') },
+  { name: 'Keith', codename: '', screen: '', clickable: true, image: require('../../../assets/Armor/Keith.jpg') },
+  { name: 'Sandra', codename: '', screen: '', clickable: true, image: require('../../../assets/Armor/Sandra.jpg') },
   { name: 'MIA', codename: '', screen: '', clickable: false },
 ];
 

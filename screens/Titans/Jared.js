@@ -27,13 +27,13 @@ const Jared = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Spector", copyright: "William Cummings", image: require("../../assets/Armor/JaredPlaceHolder.jpg"), clickable: true },
-    { name: "Spector", copyright: "William Cummings", image: require("../../assets/Armor/JaredPlaceHolder2.jpg"), clickable: true },
+    { name: "Spector", copyright: "William Cummings", image: require("../../assets/Armor/Jared.jpg"), clickable: true },
+    { name: "Spector", copyright: "William Cummings", image: require("../../assets/Armor/Jared2.jpg"), clickable: true },
     { name: "", image: require("../../assets/Armor/JaredsSymbol.jpg"), clickable: true },
   ];
 
   const kids = [
-    { name: "Gracie", image: require("../../assets/Armor/GraciePlaceHolder.jpg"), clickable: true },
+    { name: "Gracie", image: require("../../assets/Armor/Gracie.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor, index) => (

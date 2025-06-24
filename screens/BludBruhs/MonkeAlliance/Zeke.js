@@ -21,7 +21,7 @@ const Zeke = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Enderstrike", image: require("../../../assets/Armor/ZekePlaceHolder.jpg"), clickable: true },
+    { name: "Enderstrike", image: require("../../../assets/Armor/Zeke.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (

@@ -55,9 +55,9 @@ const heroes = [
   { name: 'Rogue', screen: '', image: require('../../assets/Armor/Rogue.jpg'), clickable: true },
   { name: 'Ronan', screen: '', image: require('../../assets/Armor/Ronan.jpg'), clickable: true },
   { name: 'Apocolie', screen: '', image: require('../../assets/Armor/Apocolie.jpg'), clickable: true },
-  { name: 'Socialation', screen: '', image: require('../../assets/Armor/JadenPlaceHolder.jpg'), clickable: true },
-  { name: 'Spiltz', screen: '', image: require('../../assets/Armor/JonasPlaceHolder.jpg'), clickable: true },
-  { name: '', codename: 'Voice Fry', screen: '', clickable: true, image: require('../../assets/Armor/JohnathonPlaceHolder_cleanup.jpg') },
+  { name: 'Socialation', screen: '', image: require('../../assets/Armor/Jaden.jpg'), clickable: true },
+  { name: 'Spiltz', screen: '', image: require('../../assets/Armor/Jonas.jpg'), clickable: true },
+  { name: '', codename: 'Voice Fry', screen: '', clickable: true, image: require('../../assets/Armor/Johnathon_cleanup.jpg') },
 ];
 
 const JusticeScreen = () => {

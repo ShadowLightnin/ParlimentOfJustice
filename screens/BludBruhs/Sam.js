@@ -195,11 +195,11 @@ const Sam = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Void Walker", copyright: "William Cummings", image: require("../../assets/Armor/SamPlaceHolder.jpg"), clickable: true },
-    { name: "Void Walker", copyright: "Samuel Woodwell", image: require("../../assets/Armor/SamPlaceHolder4.jpg"), clickable: true },
-    { name: "Void Walker", copyright: "Samuel Woodwell", image: require("../../assets/Armor/SamPlaceHolder7.jpg"), clickable: true },
-    { name: "Void Walker", copyright: "Samuel Woodwell", image: require("../../assets/Armor/SamPlaceHolder3.jpg"), clickable: true },
-    { name: "Void Walker", copyright: "Samuel Woodwell", image: require("../../assets/Armor/SamPlaceHolder5.jpg"), clickable: true },
+    { name: "Void Walker", copyright: "William Cummings", image: require("../../assets/Armor/Sam.jpg"), clickable: true },
+    { name: "Void Walker", copyright: "Samuel Woodwell", image: require("../../assets/Armor/Sam4.jpg"), clickable: true },
+    { name: "Void Walker", copyright: "Samuel Woodwell", image: require("../../assets/Armor/Sam7.jpg"), clickable: true },
+    { name: "Void Walker", copyright: "Samuel Woodwell", image: require("../../assets/Armor/Sam3.jpg"), clickable: true },
+    { name: "Void Walker", copyright: "Samuel Woodwell", image: require("../../assets/Armor/Sam5.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (

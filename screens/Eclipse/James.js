@@ -21,7 +21,7 @@ const James = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Gentle Hand", image: require("../../assets/Armor/JamesPlaceHolder.jpg"), clickable: true },
+    { name: "Gentle Hand", image: require("../../assets/Armor/James.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (

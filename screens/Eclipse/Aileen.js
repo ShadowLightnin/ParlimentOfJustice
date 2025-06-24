@@ -15,23 +15,23 @@ import { useNavigation } from "@react-navigation/native";
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const armor = [
-  { name: "Ariata", image: require("../../assets/Armor/AileenPlaceHolder2.jpg"), clickable: true },
-  { name: "Baybayin", image: require("../../assets/Armor/AileenPlaceHolder.jpg"), clickable: true },
-  { name: "Luminara", image: require("../../assets/Armor/AileenPlaceHolder3.jpg"), clickable: true },
-  { name: "Aileara", image: require("../../assets/Armor/AileenPlaceHolder5.jpg"), clickable: true },
-  { name: "Nialla", image: require("../../assets/Armor/AileenPlaceHolder6.jpg"), clickable: true },
-  { name: "Ailethra", image: require("../../assets/Armor/AileenPlaceHolder9.jpg"), clickable: true },
-  { name: "Aishal", image: require("../../assets/Armor/AileenPlaceHolder8.jpg"), clickable: true },
-  { name: "Seraphina", image: require("../../assets/Armor/AileenPlaceHolder7.jpg"), clickable: true, screen: "Aileenchat" },
-  { name: "Aikarea", image: require("../../assets/Armor/AileenPlaceHolder4.jpg"), clickable: true },
+  { name: "Ariata", image: require("../../assets/Armor/Aileen2.jpg"), clickable: true },
+  { name: "Baybayin", image: require("../../assets/Armor/Aileen.jpg"), clickable: true },
+  { name: "Luminara", image: require("../../assets/Armor/Aileen3.jpg"), clickable: true },
+  { name: "Aileara", image: require("../../assets/Armor/Aileen5.jpg"), clickable: true },
+  { name: "Nialla", image: require("../../assets/Armor/Aileen6.jpg"), clickable: true },
+  { name: "Ailethra", image: require("../../assets/Armor/Aileen9.jpg"), clickable: true },
+  { name: "Aishal", image: require("../../assets/Armor/Aileen8.jpg"), clickable: true },
+  { name: "Seraphina", image: require("../../assets/Armor/Aileen7.jpg"), clickable: true, screen: "Aileenchat" },
+  { name: "Aikarea", image: require("../../assets/Armor/Aileen4.jpg"), clickable: true },
   { name: "Philippines Crusader", image: require("../../assets/Armor/AileensSymbol.jpg"), clickable: true },
 ];
 
 // Data for kids' images
 const kids = [
-  { name: "Niella Terra", image: require("../../assets/Armor/NiellaPlaceHolder.jpg"), clickable: true },
-  { name: "Oliver Robertodd", image: require("../../assets/Armor/OliverPlaceHolder.jpg"), clickable: true },
-  { name: "Cassidy Zayn", image: require("../../assets/Armor/CassidyZaynPlaceHolder.jpg"), clickable: true },
+  { name: "Niella Terra", image: require("../../assets/Armor/Niella.jpg"), clickable: true },
+  { name: "Oliver Robertodd", image: require("../../assets/Armor/Oliver.jpg"), clickable: true },
+  { name: "Cassidy Zayn", image: require("../../assets/Armor/CassidyZayn.jpg"), clickable: true },
 ];
 
 // Ariata's new story for the popup

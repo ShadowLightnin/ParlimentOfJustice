@@ -21,7 +21,7 @@ const AlexM = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Swiftmind", image: require("../../../assets/Armor/AlexMPlaceHolder.jpg"), clickable: true },
+    { name: "Swiftmind", image: require("../../../assets/Armor/AlexM.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (

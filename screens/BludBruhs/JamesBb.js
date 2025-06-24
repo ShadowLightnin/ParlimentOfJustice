@@ -21,7 +21,7 @@ const JameBb = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Shadowmind", image: require("../../assets/Armor/JamesBbPlaceHolder.jpg"), clickable: true },
+    { name: "Shadowmind", image: require("../../assets/Armor/JamesBb.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (

@@ -21,7 +21,7 @@ const Elijah = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Chaos Wither", image: require("../../../assets/Armor/ElijahPlaceHolder.jpg"), clickable: true },
+    { name: "Chaos Wither", image: require("../../../assets/Armor/Elijah.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (

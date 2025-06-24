@@ -66,11 +66,11 @@ const Myran = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Techno Guard", image: require("../../assets/Armor/MyranPlaceHolder.jpg"), clickable: true },
+    { name: "Techno Guard", image: require("../../assets/Armor/Myran.jpg"), clickable: true },
   ];
 
   const kids = [
-    { name: "Lucas", image: require("../../assets/Armor/LucasPlaceHolder2.jpg"), clickable: true },
+    { name: "Lucas", image: require("../../assets/Armor/Lucas2.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (

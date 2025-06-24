@@ -17,15 +17,15 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // Scrollable characters (no position needed)
 const scrollableMembers = [
-  { name: 'Sam', codename: 'Void Walker', screen: 'Sam', clickable: true, image: require('../../assets/Armor/SamPlaceHolder.jpg') },
-  { name: 'Cole', codename: 'Cruiser', screen: 'Cole', clickable: true, image: require('../../assets/Armor/ColePlaceHolder.jpg') },
-  { name: 'Taylor', codename: 'Stellar', screen: '', clickable: true, image: require('../../assets/Armor/TaylorPlaceHolder.jpg') },
-  { name: 'James', codename: 'Shadowmind', screen: 'JamesBb', clickable: true, image: require('../../assets/Armor/JamesBbPlaceHolder.jpg') },
-  { name: 'Tanner', codename: 'Wolff', screen: 'TannerBb', clickable: true, image: require('../../assets/Armor/TannerBbPlaceHolder.jpg') },
-  { name: 'Adin', codename: 'Aotearoa', screen: '', clickable: true, image: require('../../assets/Armor/AdinPlaceHolder.jpg') },
-  { name: 'Justin Platt', codename: 'Echo Wood', screen: '', clickable: true, image: require('../../assets/Armor/JustinPlaceHolder2.jpg') },
-  { name: 'Zack Dustin', codename: 'Carved Echo', screen: '', clickable: true, image: require('../../assets/Armor/ZackPlaceHolder2_cleanup.jpg') },
-  { name: 'Joseph', codename: 'Technoman', screen: 'JosephD', clickable: false, image: require('../../assets/Armor/JosephDPlaceHolder.jpg') },
+  { name: 'Sam', codename: 'Void Walker', screen: 'Sam', clickable: true, image: require('../../assets/Armor/Sam.jpg') },
+  { name: 'Cole', codename: 'Cruiser', screen: 'Cole', clickable: true, image: require('../../assets/Armor/Cole.jpg') },
+  { name: 'Taylor', codename: 'Stellar', screen: '', clickable: true, image: require('../../assets/Armor/Taylor.jpg') },
+  { name: 'James', codename: 'Shadowmind', screen: 'JamesBb', clickable: true, image: require('../../assets/Armor/JamesBb.jpg') },
+  { name: 'Tanner', codename: 'Wolff', screen: 'TannerBb', clickable: true, image: require('../../assets/Armor/TannerBb.jpg') },
+  { name: 'Adin', codename: 'Aotearoa', screen: '', clickable: true, image: require('../../assets/Armor/Adin.jpg') },
+  { name: 'Justin Platt', codename: 'Echo Wood', screen: '', clickable: true, image: require('../../assets/Armor/Justin2.jpg') },
+  { name: 'Zack Dustin', codename: 'Carved Echo', screen: '', clickable: true, image: require('../../assets/Armor/Zack2_cleanup.jpg') },
+  { name: 'Joseph', codename: 'Technoman', screen: 'JosephD', clickable: false, image: require('../../assets/Armor/JosephD.jpg') },
   { name: 'Others', codename: 'Rolling Thunder', screen: 'RollingThunderScreen', clickable: true, image: require('../../assets/BackGround/Bludbruh4.jpg') },
 ];
 

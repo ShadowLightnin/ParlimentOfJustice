@@ -48,8 +48,8 @@ const EvilSam = () => {
   };
 
   const characters = [
-    { name: "Void Walker", image: require("../../../assets/Armor/SamPlaceHolder2.jpg"), copyright: "William Cummings", clickable: true },
-    { name: "Void Walker", image: require("../../../assets/Armor/SamPlaceHolder6.jpg"), copyright: "Samuel Woodwell", clickable: true },
+    { name: "Void Walker", image: require("../../../assets/Armor/Sam2.jpg"), copyright: "William Cummings", clickable: true },
+    { name: "Void Walker", image: require("../../../assets/Armor/Sam6.jpg"), copyright: "Samuel Woodwell", clickable: true },
   ];
 
   const renderCharacterCard = (character) => (

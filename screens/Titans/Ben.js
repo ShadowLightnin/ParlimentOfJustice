@@ -21,9 +21,9 @@ const Ben = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Nuscis", copyright: "William Cummings", image: require("../../assets/Armor/BenPlaceHolder3.jpg"), clickable: true },
-    { name: "Nuscus", copyright: "William Cummings", image: require("../../assets/Armor/BenPlaceHolder.jpg"), clickable: true },
-    { name: "Nuscus", copyright: "William Cummings", image: require("../../assets/Armor/BenPlaceHolder2.jpg"), clickable: true },
+    { name: "Nuscis", copyright: "William Cummings", image: require("../../assets/Armor/Ben3.jpg"), clickable: true },
+    { name: "Nuscus", copyright: "William Cummings", image: require("../../assets/Armor/Ben.jpg"), clickable: true },
+    { name: "Nuscus", copyright: "William Cummings", image: require("../../assets/Armor/Ben2.jpg"), clickable: true },
     { name: "", image: require("../../assets/Armor/BensSymbol.jpg"), clickable: true },
   ];
 

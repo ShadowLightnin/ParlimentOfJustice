@@ -21,8 +21,8 @@ const BenP = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "", image: require("../../../assets/Armor/BenpPlaceHolder.jpg"), clickable: true },
-    { name: "Chemoshock", copyright: "William Cummings", image: require("../../../assets/Armor/BenpPlaceHolder2.jpg"), clickable: true },
+    { name: "", image: require("../../../assets/Armor/Benp.jpg"), clickable: true },
+    { name: "Chemoshock", copyright: "William Cummings", image: require("../../../assets/Armor/Benp2.jpg"), clickable: true },
   ];
   const renderArmorCard = (armor, index) => (
     <TouchableOpacity

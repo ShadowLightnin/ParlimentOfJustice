@@ -27,12 +27,12 @@ const Kelsie = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Shutter Dancer", image: require("../../assets/Armor/KelsiePlaceHolder.jpg"), clickable: true },
-    { name: "Eliptic Dancer", image: require("../../assets/Armor/KelsiePlaceHolder2.jpg"), clickable: true },
+    { name: "Shutter Dancer", image: require("../../assets/Armor/Kelsie.jpg"), clickable: true },
+    { name: "Eliptic Dancer", image: require("../../assets/Armor/Kelsie2.jpg"), clickable: true },
   ];
 
   const kids = [
-    { name: "Gracie", image: require("../../assets/Armor/GraciePlaceHolder.jpg"), clickable: true },
+    { name: "Gracie", image: require("../../assets/Armor/Gracie.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (
