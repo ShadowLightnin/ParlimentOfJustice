@@ -51,7 +51,7 @@ export const memberCategories = [
       { name: 'Spencer', codename: '', screen: '' },
       { name: 'Dylan', codename: 'Guardinous Rex', screen: '' },
       { name: 'Kinnley Cline', codename: 'Harmony', screen: '' },
-      { name: 'Sanfor Duncan', codename: 'Thunderbolt', screen: '' },
+      { name: 'Sanford Duncan', codename: 'Thunderbolt', screen: '' },
       { name: 'Magic Matt', codename: 'Illusionist', screen: '' },
       { name: 'John', codename: '', screen: '' },
       //fallen members by Sams hand
