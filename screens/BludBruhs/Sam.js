@@ -200,6 +200,7 @@ const Sam = () => {
     { name: "Void Walker", copyright: "Samuel Woodwell", image: require("../../assets/Armor/Sam7.jpg"), clickable: true },
     { name: "Void Walker", copyright: "Samuel Woodwell", image: require("../../assets/Armor/Sam3.jpg"), clickable: true },
     { name: "Void Walker", copyright: "Samuel Woodwell", image: require("../../assets/Armor/Sam5.jpg"), clickable: true },
+    { name: "Legacy", copyright: "William Cummings", image: require("../../assets/Armor/SamLegacy.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (
