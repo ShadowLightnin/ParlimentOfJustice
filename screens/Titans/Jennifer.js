@@ -67,6 +67,7 @@ const Jennifer = () => {
 
   const armors = [
     { name: "Kintsugi", image: require("../../assets/Armor/Jennifer2.jpg"), clickable: true },
+    { name: "Legacy", image: require("../../assets/Armor/JenniferLegacy.jpg"), clickable: true },
     { name: "Kintsugi", image: require("../../assets/Armor/Jennifer.jpg"), clickable: true },
     { name: "Kintsugi", image: require("../../assets/Armor/Jennifer3.jpg"), clickable: true },
     { name: "Kintsugi", image: require("../../assets/Armor/Jennifer4.jpg"), clickable: true },

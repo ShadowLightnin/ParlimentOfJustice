@@ -9,6 +9,7 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 const armors = [
   { name: "True Night Hawk", image: require("../../assets/NightHawkWillBeBorn.jpg"), clickable: true },
   { name: "Night Hawk", image: require("../../assets/Armor/NightHawk.jpg"), clickable: true },
+  { name: "Legacy", image: require("../../assets/Armor/WillLegacy.jpg"), clickable: true },
   { name: "Lightning Leopard", image: require("../../assets/Armor/Will.jpg"), clickable: true },
   { name: "Defender 1", image: require("../../assets/Armor/Defender1.jpg"), clickable: true },
   { name: "Defender 2", image: require("../../assets/Armor/Defender2.jpg"), clickable: true },
@@ -16,7 +17,6 @@ const armors = [
   { name: "Celestial", image: require("../../assets/Armor/Celestial.jpg"), clickable: true },
   { name: "Sentinel", image: require("../../assets/Armor/Sentinel.jpg"), clickable: true },
   { name: "Wrath", image: require("../../assets/Armor/Wrath.jpg"), clickable: true },
-  { name: "Legacy", image: require("../../assets/Armor/WillLegacy.jpg"), clickable: true },
   { name: "Night Hawk Helmet", image: require("../../assets/Armor/MyHelmets2.jpg"), clickable: true },
 ];
 
