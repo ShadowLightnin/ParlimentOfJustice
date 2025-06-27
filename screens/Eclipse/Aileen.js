@@ -162,7 +162,7 @@ const Aileen = () => {
           </ScrollView>
         </View>
 
-        {/* <View style={styles.kidsContainer}>
+        <View style={styles.kidsContainer}>
           <Text style={styles.kidsHeader}>Our Future Family</Text>
           <ScrollView
             horizontal
@@ -174,7 +174,7 @@ const Aileen = () => {
           >
             {kids.map(renderKidCard)}
           </ScrollView>
-        </View> */}
+        </View>
 
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
