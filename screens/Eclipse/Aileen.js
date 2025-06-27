@@ -24,6 +24,7 @@ const armor = [
   { name: "Aishal", image: require("../../assets/Armor/Aileen8.jpg"), clickable: true },
   { name: "Seraphina", image: require("../../assets/Armor/Aileen7.jpg"), clickable: true, screen: "Aileenchat" },
   { name: "Aikarea", image: require("../../assets/Armor/Aileen4.jpg"), clickable: true },
+  { name: "Legacy", image: require("../../assets/Armor/AileenLegacy.jpg"), clickable: true },
   { name: "Philippines Crusader", image: require("../../assets/Armor/AileensSymbol.jpg"), clickable: true },
 ];
 

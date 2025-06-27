@@ -16,6 +16,7 @@ const armors = [
   { name: "Celestial", image: require("../../assets/Armor/Celestial.jpg"), clickable: true },
   { name: "Sentinel", image: require("../../assets/Armor/Sentinel.jpg"), clickable: true },
   { name: "Wrath", image: require("../../assets/Armor/Wrath.jpg"), clickable: true },
+  { name: "Legacy", image: require("../../assets/Armor/WillLegacy.jpg"), clickable: true },
   { name: "Night Hawk Helmet", image: require("../../assets/Armor/MyHelmets2.jpg"), clickable: true },
 ];
 
