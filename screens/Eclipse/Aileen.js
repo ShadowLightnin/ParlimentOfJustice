@@ -33,6 +33,11 @@ const kids = [
   { name: "Niella Terra", image: require("../../assets/Armor/Niella.jpg"), clickable: true },
   { name: "Oliver Robertodd", image: require("../../assets/Armor/Oliver.jpg"), clickable: true },
   { name: "Cassidy Zayn", image: require("../../assets/Armor/CassidyZayn.jpg"), clickable: true },
+  { name: "", image: require("../../assets/Armor/family4.jpg"), clickable: true },
+  { name: "", image: require("../../assets/Armor/family5.jpg"), clickable: true },
+  { name: "", image: require("../../assets/Armor/family1.jpg"), clickable: true },
+  { name: "", image: require("../../assets/Armor/family2.jpg"), clickable: true },
+  { name: "", image: require("../../assets/Armor/family3.jpg"), clickable: true },
 ];
 
 // Ariata's new story for the popup
