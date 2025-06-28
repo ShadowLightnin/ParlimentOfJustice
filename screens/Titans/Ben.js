@@ -22,6 +22,7 @@ const Ben = () => {
 
   const armors = [
     { name: "Nuscis", copyright: "William Cummings", image: require("../../assets/Armor/Ben3.jpg"), clickable: true },
+    { name: "Legacy", copyright: "William Cummings", image: require("../../assets/Armor/BenLegacy.jpg"), clickable: true },
     { name: "Nuscus", copyright: "William Cummings", image: require("../../assets/Armor/Ben.jpg"), clickable: true },
     { name: "Nuscus", copyright: "William Cummings", image: require("../../assets/Armor/Ben2.jpg"), clickable: true },
     { name: "", image: require("../../assets/Armor/BensSymbol.jpg"), clickable: true },
