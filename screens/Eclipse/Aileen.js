@@ -11,6 +11,7 @@ import {
   Modal,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { Audio } from "expo-av";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -55,6 +56,37 @@ const Aileen = () => {
   const flashAnim = useRef(new Animated.Value(1)).current;
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
   const [selectedCharacter, setSelectedCharacter] = useState(null); // State for popup
+
+  // Music setup
+  useEffect(() => {
+    let sound = null;
+    async function loadSound() {
+      try {
+        const { sound: audioSound } = await Audio.Sound.createAsync(
+          require("../../assets/audio/SourceOfStrength.mp4"),
+          { shouldPlay: true, isLooping: true, volume: 1.0 }
+        );
+        sound = audioSound;
+        await sound.playAsync();
+        console.log("Music started playing at:", new Date().toISOString());
+      } catch (error) {
+        console.error("Error loading or playing audio:", error);
+      }
+    }
+    loadSound();
+
+    // Cleanup on unmount
+    return () => {
+      if (sound) {
+        sound.stopAsync().then(() => {
+          sound.unloadAsync();
+          console.log("Audio stopped and released at:", new Date().toISOString());
+        }).catch((error) => {
+          console.error("Error stopping audio:", error);
+        });
+      }
+    };
+  }, []);
 
   // Dynamic window sizing
   useEffect(() => {
