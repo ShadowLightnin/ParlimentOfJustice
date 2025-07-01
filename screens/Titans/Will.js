@@ -21,6 +21,17 @@ const armors = [
   { name: "Night Hawk Helmet", image: require("../../assets/Armor/MyHelmets2.jpg"), clickable: true },
 ];
 
+const kids = [
+  { name: "Niella Terra", image: require("../../assets/Armor/Niella.jpg"), clickable: true },
+  { name: "Oliver Robertodd", image: require("../../assets/Armor/Oliver.jpg"), clickable: true },
+  { name: "Cassidy Zayn", image: require("../../assets/Armor/CassidyZayn.jpg"), clickable: true },
+  { name: "", image: require("../../assets/Armor/family4.jpg"), clickable: true },
+  { name: "", image: require("../../assets/Armor/family5.jpg"), clickable: true },
+  { name: "", image: require("../../assets/Armor/family1.jpg"), clickable: true },
+  { name: "", image: require("../../assets/Armor/family2.jpg"), clickable: true },
+  { name: "", image: require("../../assets/Armor/family3.jpg"), clickable: true },
+];
+
 const Will = () => {
   const navigation = useNavigation();
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
@@ -85,6 +96,23 @@ const Will = () => {
     </TouchableOpacity>
   );
 
+  // Render each kid card
+  const renderKidCard = (item) => (
+    <TouchableOpacity
+      key={item.name}
+      style={[styles.kidCard(isDesktop, windowWidth), item.clickable ? styles.clickableKid : styles.notClickable]}
+      onPress={() => item.clickable && console.log(`${item.name} clicked`)}
+      disabled={!item.clickable}
+    >
+      <Image source={item.image} style={styles.kidImage} />
+      <View style={styles.transparentOverlay} />
+      <Text style={styles.kidCardName}>
+        © {item.name || 'Unknown'}; William Cummings
+      </Text>
+      {!item.clickable && <Text style={styles.kidDisabledText}> </Text>}
+    </TouchableOpacity>
+  );
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -102,6 +130,35 @@ const Will = () => {
             showsHorizontalScrollIndicator={true}
           >
             {armors.map(renderArmorCard)}
+          </ScrollView>
+        </View>
+
+        <View style={styles.partnerContainer}>
+          <Text style={styles.partnerHeader}>My Partner</Text>
+          <TouchableOpacity
+            style={[styles.partnerImageContainer(isDesktop, windowWidth), styles.clickableKid]}
+            onPress={() => navigation.navigate("Aileen")}
+          >
+            <Image
+              source={require("../../assets/Armor/Aileen2.jpg")}
+              style={styles.partnerImage(isDesktop, windowWidth)}
+            />
+            <View style={styles.transparentOverlay} />
+            <Text style={styles.partnerName}></Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.kidsContainer}>
+          <Text style={styles.kidsHeader}>Our Future Family</Text>
+          <ScrollView
+            horizontal
+            contentContainerStyle={styles.imageScrollContainer}
+            showsHorizontalScrollIndicator={false}
+            snapToAlignment="center"
+            snapToInterval={windowWidth * 0.35 + 20}
+            decelerationRate="fast"
+          >
+            {kids.map(renderKidCard)}
           </ScrollView>
         </View>
 
@@ -258,6 +315,57 @@ const styles = StyleSheet.create({
     backgroundColor: "#111",
     paddingLeft: 15,
   },
+  partnerContainer: {
+    width: "100%",
+    paddingVertical: 20,
+    backgroundColor: "#111",
+    alignItems: "center",
+  },
+  partnerHeader: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#000000",
+    textAlign: "center",
+    marginBottom: 10,
+    textShadowColor: "gold",
+    textShadowRadius: 25,
+  },
+  partnerImageContainer: (isDesktop, windowWidth) => ({
+    width: isDesktop ? windowWidth * 0.15 : SCREEN_WIDTH * 0.3,
+    height: isDesktop ? windowWidth * 0.15 : SCREEN_WIDTH * 0.3,
+    borderRadius: isDesktop ? windowWidth * 0.15 / 2 : SCREEN_WIDTH * 0.3 / 2,
+    overflow: "hidden",
+    elevation: 5,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+  }),
+  partnerImage: (isDesktop, windowWidth) => ({
+    width: isDesktop ? windowWidth * 0.15 : SCREEN_WIDTH * 0.3,
+    height: isDesktop ? windowWidth * 0.15 : SCREEN_WIDTH * 0.3,
+    borderRadius: isDesktop ? windowWidth * 0.15 / 2 : SCREEN_WIDTH * 0.3 / 2,
+    resizeMode: "cover",
+  }),
+  partnerName: {
+    position: "absolute",
+    bottom: 5,
+    left: 5,
+    fontSize: 12,
+    color: "white",
+    fontWeight: "bold",
+  },
+  kidsContainer: {
+    width: "100%",
+    paddingVertical: 20,
+    backgroundColor: "#111",
+  },
+  kidsHeader: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#000000",
+    textAlign: "center",
+    marginBottom: 10,
+    textShadowColor: "gold",
+    textShadowRadius: 25,
+  },
   imageScrollContainer: {
     flexDirection: "row",
     paddingHorizontal: 10,
@@ -272,6 +380,15 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.7)",
     marginRight: 20,
   }),
+  kidCard: (isDesktop, windowWidth) => ({
+    width: isDesktop ? windowWidth * 0.15 : SCREEN_WIDTH * 0.45,
+    height: isDesktop ? SCREEN_HEIGHT * 0.4 : SCREEN_HEIGHT * 0.35,
+    borderRadius: 15,
+    overflow: "hidden",
+    elevation: 5,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    marginRight: 20,
+  }),
   clickable: {
     borderWidth: 2,
     borderColor: "#2a6d5d",
@@ -280,10 +397,23 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOpacity: 0.7,
   },
+  clickableKid: {
+    borderWidth: 2,
+    borderColor: "gold",
+    shadowColor: "gold",
+    shadowOffset: { width: 0, height: 5 },
+    shadowRadius: 8,
+    shadowOpacity: 0.7,
+  },
   notClickable: {
     opacity: 0.8,
   },
   armorImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+  },
+  kidImage: {
     width: "100%",
     height: "100%",
     resizeMode: "cover",
@@ -301,12 +431,27 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
   },
+  kidCardName: {
+    position: "absolute",
+    bottom: 5,
+    left: 5,
+    fontSize: 12,
+    color: "white",
+    fontWeight: "bold",
+  },
   disabledText: {
     fontSize: 12,
     color: "#2a6d5d",
     position: "absolute",
     bottom: 30,
     left: 10,
+  },
+  kidDisabledText: {
+    fontSize: 10,
+    color: "#ff4444",
+    position: "absolute",
+    bottom: 15,
+    left: 5,
   },
   aboutSection: {
     marginTop: 40,

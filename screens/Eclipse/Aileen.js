@@ -199,6 +199,21 @@ const Aileen = () => {
           </ScrollView>
         </View>
 
+        <View style={styles.partnerContainer}>
+          <Text style={styles.partnerHeader}>My Partner</Text>
+          <TouchableOpacity
+            style={[styles.partnerImageContainer(isDesktop, windowWidth), styles.clickable]}
+            onPress={() => navigation.navigate("Will")}
+          >
+            <Image
+              source={require("../../assets/Armor/Celestial.jpg")}
+              style={styles.partnerImage(isDesktop, windowWidth)}
+            />
+            <View style={styles.transparentOverlay} />
+            <Text style={styles.partnerName}></Text>
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.kidsContainer}>
           <Text style={styles.kidsHeader}>Our Future Family</Text>
           <ScrollView
@@ -206,7 +221,7 @@ const Aileen = () => {
             contentContainerStyle={styles.imageScrollContainer}
             showsHorizontalScrollIndicator={false}
             snapToAlignment="center"
-            snapToInterval={windowWidth * 0.35 + 20} // Adjusted for smaller kid cards
+            snapToInterval={windowWidth * 0.35 + 20}
             decelerationRate="fast"
           >
             {kids.map(renderKidCard)}
@@ -335,6 +350,43 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     backgroundColor: "#111",
   },
+  partnerContainer: {
+    width: "100%",
+    paddingVertical: 20,
+    backgroundColor: "#111",
+    alignItems: "center",
+  },
+  partnerHeader: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#000000",
+    textAlign: "center",
+    marginBottom: 10,
+    textShadowColor: "gold",
+    textShadowRadius: 25,
+  },
+  partnerImageContainer: (isDesktop, windowWidth) => ({
+    width: isDesktop ? windowWidth * 0.15 : SCREEN_WIDTH * 0.3,
+    height: isDesktop ? windowWidth * 0.15 : SCREEN_WIDTH * 0.3,
+    borderRadius: isDesktop ? windowWidth * 0.15 / 2 : SCREEN_WIDTH * 0.3 / 2,
+    overflow: "hidden",
+    elevation: 5,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+  }),
+  partnerImage: (isDesktop, windowWidth) => ({
+    width: isDesktop ? windowWidth * 0.15 : SCREEN_WIDTH * 0.3,
+    height: isDesktop ? windowWidth * 0.15 : SCREEN_WIDTH * 0.3,
+    borderRadius: isDesktop ? windowWidth * 0.15 / 2 : SCREEN_WIDTH * 0.3 / 2,
+    resizeMode: "cover",
+  }),
+  partnerName: {
+    position: "absolute",
+    bottom: 5,
+    left: 5,
+    fontSize: 12,
+    color: "white",
+    fontWeight: "bold",
+  },
   kidsContainer: {
     width: "100%",
     paddingVertical: 20,
@@ -365,8 +417,8 @@ const styles = StyleSheet.create({
     marginRight: 20,
   }),
   kidCard: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.15 : SCREEN_WIDTH * 0.45, // Half the width of armor card
-    height: isDesktop ? SCREEN_HEIGHT * 0.4 : SCREEN_HEIGHT * 0.35, // Half the height of armor card
+    width: isDesktop ? windowWidth * 0.15 : SCREEN_WIDTH * 0.45,
+    height: isDesktop ? SCREEN_HEIGHT * 0.4 : SCREEN_HEIGHT * 0.35,
     borderRadius: 15,
     overflow: "hidden",
     elevation: 5,
@@ -411,7 +463,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 5,
     left: 5,
-    fontSize: 12, // Smaller font for smaller cards
+    fontSize: 12,
     color: "white",
     fontWeight: "bold",
   },
@@ -423,7 +475,7 @@ const styles = StyleSheet.create({
     left: 10,
   },
   kidDisabledText: {
-    fontSize: 10, // Smaller font for smaller cards
+    fontSize: 10,
     color: "#ff4444",
     position: "absolute",
     bottom: 15,

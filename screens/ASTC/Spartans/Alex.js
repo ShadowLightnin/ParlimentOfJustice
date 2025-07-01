@@ -21,6 +21,7 @@ const Alex = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
+    { name: "Huntsman", copyright: "William Cummings", image: require("../../../assets/Armor/Alex3.jpg"), clickable: true },
     { name: "", image: require("../../../assets/Armor/Alex.jpg"), clickable: true },
     { name: "Huntsman", copyright: "William Cummings", image: require("../../../assets/Armor/Alex2.jpg"), clickable: true },
   ];

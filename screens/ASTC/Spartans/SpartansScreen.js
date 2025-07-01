@@ -56,9 +56,9 @@ const backgroundImages = [
 
 // Member Data
 const members = [
-  { name: 'Cam', codename: 'Court Chief', screen: 'Cam', clickable: true, position: [1, 0], image: require('../../../assets/Armor/Cam2.jpg') },
-  { name: 'Ben', codename: 'Chemoshock', screen: 'BenP', clickable: true, position: [1, 1], image: require('../../../assets/Armor/Benp2.jpg') },
-  { name: 'Alex', codename: 'Huntsman', screen: 'Alex', clickable: true, position: [1, 2], image: require('../../../assets/Armor/Alex2.jpg') },
+  { name: 'Cam', codename: 'Court Chief', screen: 'Cam', clickable: true, position: [1, 0], image: require('../../../assets/Armor/Cam3.jpg') },
+  { name: 'Ben', codename: 'Chemoshock', screen: 'BenP', clickable: true, position: [1, 1], image: require('../../../assets/Armor/Benp3.jpg') },
+  { name: 'Alex', codename: 'Huntsman', screen: 'Alex', clickable: true, position: [1, 2], image: require('../../../assets/Armor/Alex3.jpg') },
 ];
 
 // Empty cell checker
