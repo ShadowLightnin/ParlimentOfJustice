@@ -17,33 +17,31 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 // Grid layout settings
 const isDesktop = SCREEN_WIDTH > 600;
 
-// Big Bads data with images & respective screens
+// Big Bads data with images, respective screens, and border colors
 const bigBads = [
-  { name: 'Obsian', screen: 'ObsidianScreen', image: require('../../assets/Villains/Obsidian.jpg'), clickable: true },
-  { name: 'Umbra Nex', screen: 'UmbraNexScreen', image: require('../../assets/Villains/UmbraNex.jpg'), clickable: true },
-  { name: 'Kaidan Vyros', screen: 'KaidanVyrosScreen', image: require('../../assets/Villains/KaidanVyros.jpg'), clickable: true },
-  { name: 'Stormshade', screen: 'StormshadeScreen', image: require('../../assets/Villains/Stormshade.jpg'), clickable: true },
-  { name: 'Void Conqueror', screen: 'VoidConquerorScreen', image: require('../../assets/Villains/Kharon.jpg'), clickable: true },
-  { name: 'Erevos', screen: 'ErevosScreen', image: require('../../assets/Villains/Erevos.jpg'), clickable: true },
-  { name: 'Almarra', screen: 'AlmarraScreen', image: require('../../assets/Villains/Almarra.jpg'), clickable: true },
-  { name: 'Vortigar', screen: 'VortigarScreen', image: require('../../assets/Villains/Vortigar.jpg'), clickable: true },
-  { name: 'Torath', screen: '', image: require('../../assets/Villains/Torath.jpg'), clickable: false },
-  { name: 'Lord Dravak', screen: '', image: require('../../assets/Villains/Dravak.jpg'), clickable: false },
-  { name: 'Arcane Devos', screen: 'VortigarScreen', image: require('../../assets/Villains/Devos.jpg'), clickable: false },
-  { name: 'Archon Ultivax', screen: '', image: require('../../assets/Villains/Ultivax.jpg'), clickable: false }, // use for different after getting ultron
-  { name: 'Sovereign Xal-Zor', screen: '', image: require('../../assets/Villains/XalZor.jpg'), clickable: false },
-  { name: 'Emperor Obsidian', screen: '', image: require('../../assets/Villains/EmperorObsidian.jpg'), clickable: false }, // use for sauron after getting darkseid
-  { name: 'Admiral Scyphos', screen: '', image: require('../../assets/Villains/Scyphos.jpg'), clickable: false }, //use for different after gettign thrawn
-  { name: 'Admiral', screen: '', image: require('../../assets/Villains/Admiral.jpg'), clickable: false },
-  { name: "Zein'roe", screen: '', image: require('../../assets/Villains/Zeinroe.jpg'), clickable: false },
-  { name: 'Devoes', screen: '', image: require('../../assets/Villains/Devoes.jpg'), clickable: false },
-  { name: 'Cronos', screen: '', image: require('../../assets/Villains/Cronos.jpg'), clickable: false },
-  { name: "Cor'vas", screen: '', image: require('../../assets/Villains/Corvas.jpg'), clickable: false },
+  { name: 'Obsian', screen: 'ObsidianScreen', image: require('../../assets/Villains/Obsidian.jpg'), clickable: true, borderColor: 'purple' },
+  { name: 'Umbra Nex', screen: 'UmbraNexScreen', image: require('../../assets/Villains/UmbraNex.jpg'), clickable: true, borderColor: 'purple' },
+  { name: 'Kaidan Vyros', screen: 'KaidanVyrosScreen', image: require('../../assets/Villains/KaidanVyros.jpg'), clickable: true, borderColor: 'purple' },
+  { name: 'Stormshade', screen: 'StormshadeScreen', image: require('../../assets/Villains/Stormshade.jpg'), clickable: true, borderColor: 'purple' },
+  { name: 'Void Conqueror', screen: 'VoidConquerorScreen', image: require('../../assets/Villains/Kharon.jpg'), clickable: true, borderColor: 'purple' },
+  { name: 'Erevos', screen: 'ErevosScreen', image: require('../../assets/Villains/Erevos.jpg'), clickable: true, borderColor: 'gold' },
+  { name: 'Almarra', screen: 'AlmarraScreen', image: require('../../assets/Villains/Almarra.jpg'), clickable: true, borderColor: 'purple' },
+  { name: 'Vortigar', screen: 'VortigarScreen', image: require('../../assets/Villains/Vortigar.jpg'), clickable: true, borderColor: 'purple' },
+  { name: 'Torath', screen: '', image: require('../../assets/Villains/Torath.jpg'), clickable: false, borderColor: null },
+  { name: 'Lord Dravak', screen: '', image: require('../../assets/Villains/Dravak.jpg'), clickable: false, borderColor: null },
+  { name: 'Arcane Devos', screen: 'VortigarScreen', image: require('../../assets/Villains/Devos.jpg'), clickable: false, borderColor: null },
+  { name: 'Archon Ultivax', screen: '', image: require('../../assets/Villains/Ultivax.jpg'), clickable: false, borderColor: null },
+  { name: 'Sovereign Xal-Zor', screen: '', image: require('../../assets/Villains/XalZor.jpg'), clickable: false, borderColor: null },
+  { name: 'Emperor Obsidian', screen: '', image: require('../../assets/Villains/EmperorObsidian.jpg'), clickable: false, borderColor: null },
+  { name: 'Admiral Scyphos', screen: '', image: require('../../assets/Villains/Scyphos.jpg'), clickable: false, borderColor: null },
+  { name: 'Admiral', screen: '', image: require('../../assets/Villains/Admiral.jpg'), clickable: false, borderColor: null },
+  { name: "Zein'roe", screen: '', image: require('../../assets/Villains/Zeinroe.jpg'), clickable: false, borderColor: null },
+  { name: 'Devoes', screen: '', image: require('../../assets/Villains/Devoes.jpg'), clickable: false, borderColor: null },
+  { name: 'Cronos', screen: '', image: require('../../assets/Villains/Cronos.jpg'), clickable: false, borderColor: null },
+  { name: "Cor'vas", screen: '', image: require('../../assets/Villains/Corvas.jpg'), clickable: false, borderColor: null },
+
   
-
-
-    // { name: '', screen: '', image: require('../../assets/Villains/.jpg'), clickable: false },
-
+  // { name: '', screen: '', image: require('../../assets/Villains/.jpg'), clickable: false },
 ];
 
 // Card dimensions for desktop and mobile
@@ -65,7 +63,7 @@ const BigBadsTab = () => {
           width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
           height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height
         },
-        bigBad.clickable ? styles.clickable : styles.notClickable
+        bigBad.clickable && bigBad.borderColor ? styles.clickable(bigBad.borderColor) : styles.notClickable
       ]}
       onPress={() => bigBad.clickable && navigation.navigate(bigBad.screen)}
       disabled={!bigBad.clickable}
@@ -166,10 +164,10 @@ const styles = StyleSheet.create({
     elevation: 5,
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
-  clickable: {
-    borderColor: 'purple',
+  clickable: (borderColor) => ({
+    borderColor: borderColor || 'purple',
     borderWidth: 2,
-  },
+  }),
   notClickable: {
     opacity: 0.5,
   },
@@ -181,7 +179,7 @@ const styles = StyleSheet.create({
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject, 
     backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1, // Ensures overlay is on top without blocking buttons
+    zIndex: 1,
   },
   name: {
     position: 'absolute',

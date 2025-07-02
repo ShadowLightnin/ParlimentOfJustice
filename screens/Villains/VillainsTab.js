@@ -25,51 +25,49 @@ const cardSizes = {
 const horizontalSpacing = isDesktop ? 40 : 20; 
 const verticalSpacing = isDesktop ? 50 : 20;
 
-
-// Villains data with images & respective screens
+// Villains data with images, respective screens, and border colors
 const villains = [
-  { name: 'Fjord', screen: 'FjordScreen', image: require('../../assets/Villains/Fjord.jpg'), clickable: true },
-  { name: 'Judge Hex', screen: 'JudgeHexScreen', image: require('../../assets/Villains/JudgeHex.jpg'), clickable: true },
-  { name: 'Wraithblade', screen: 'WraithbladeScreen', image: require('../../assets/Villains/Wraithblade.jpg'), clickable: true },
-  { name: 'Harbinger', screen: 'HarbingerScreen', image: require('../../assets/Villains/Harbinger.jpg'), clickable: true },
-  { name: 'Venom Fang', screen: 'VenomFangScreen', image: require('../../assets/Villains/VenomFang.jpg'), clickable: true },
-  { name: 'Shatterbloom', screen: 'ShatterbloomScreen', image: require('../../assets/Villains/Shatterbloom.jpg'), clickable: true },
-  { name: 'Harbinger Dove', screen: 'HarbingerDoveScreen', image: require('../../assets/Villains/HarbingerDove.jpg'), clickable: true },
-  { name: 'Byte Ruin', screen: 'ByteRuinScreen', image: require('../../assets/Villains/ByteRuin.jpg'), clickable: true },
-  { name: 'Shade Weaver', screen: 'ShadeWeaverScreen', image: require('../../assets/Villains/ShadeWeaver.jpg'), clickable: true },
-  { name: 'Rage Vortex', screen: 'RageVortexScreen', image: require('../../assets/Villains/RageVortex.jpg'), clickable: true },
-  { name: "Mal'likhan", screen: 'MallikhanScreen', image: require('../../assets/Villains/Mallikhan.jpg'), clickable: true },
-  { name: 'Elder Pyrrhus', screen: 'ElderPyrrhusScreen', image: require('../../assets/Villains/ElderPyrrhus.jpg'), clickable: true },
-  { name: 'Dark Envoy', screen: 'DarkEnvoyScreen', image: require('../../assets/Villains/DarkEnvoy.jpg'), clickable: true },
-  { name: 'Spectral Wraith', screen: 'SpectralWraithScreen', image: require('../../assets/Villains/SpectralWraith.jpg'), clickable: true },
-  { name: 'Harrier', screen: 'HarrierScreen', image: require('../../assets/Villains/Harrier.jpg'), clickable: true },
-  { name: 'Shade Widow', screen: 'ShadeWidowScreen', image: require('../../assets/Villains/ShadeWidow.jpg'), clickable: true },
-  { name: 'Gilded Shard', screen: 'GildedShardScreen', image: require('../../assets/Villains/GildedShard.jpg'), clickable: true },
-  { name: 'Chrome Phoenix', screen: 'ChromePhoenixScreen', image: require('../../assets/Villains/ChromePhoenix.jpg'), clickable: true },
-  { name: 'Hades Ravage', screen: 'HadesRavageScreen', image: require('../../assets/Villains/HadesRavage.jpg'), clickable: true },
-  { name: 'Spectral Warlord', screen: 'SpectralWarlordScreen', image: require('../../assets/Villains/SpectralWarlord.jpg'), clickable: true },
-  { name: 'Virus Vortex', screen: 'VirusVortexScreen', image: require('../../assets/Villains/VirusVortex2.jpg'), clickable: true },
-  { name: 'Shade Stalker', screen: 'ShadeStalkerScreen', image: require('../../assets/Villains/ShadeStalker.jpg'), clickable: true },
-  { name: 'Volt Shade', screen: 'VoltShadeScreen', image: require('../../assets/Villains/VoltShade.jpg'), clickable: true },
-  { name: 'Steel Juggernaut', screen: 'SteelJuggernautScreen', image: require('../../assets/Villains/SteelJuggernaut.jpg'), clickable: true },
-  { name: 'Warhound', screen: 'WarhoundScreen', image: require('../../assets/Villains/Warhound.jpg'), clickable: true },
-  { name: 'Overmind', screen: 'OvermindScreen', image: require('../../assets/Villains/Overmind.jpg'), clickable: true },
-  { name: 'Obsidian Shroud', screen: 'ObsidianShroudScreen', image: require('../../assets/Villains/ObsidianShroud.jpg'), clickable: true },
-  { name: 'Fangstrike', screen: 'FangstrikeScreen', image: require('../../assets/Villains/Fangstrike.jpg'), clickable: true },
-  { name: 'Void Phantom', screen: 'VoidPhantomScreen', image: require('../../assets/Villains/VoidPhantom.jpg'), clickable: true },
-  { name: 'Chrona', screen: 'ChronaScreen', image: require('../../assets/Villains/Chrona.jpg'), clickable: true },
-  { name: 'Evil Void Walker', screen: 'EvilSam', image: require('../../assets/Armor/Sam2.jpg'), clickable: true },
-  { name: 'Sable', screen: 'SableScreen', image: require('../../assets/Villains/Sable.jpg'), clickable: true },
-  { name: 'Noctura', screen: 'NocturaScreen', image: require('../../assets/Villains/Noctura.jpg'), clickable: true },
-  { name: 'Obelisk', screen: 'ObeliskScreen', image: require('../../assets/Villains/Obelisk.jpg'), clickable: true },
-  { name: 'Red Murcury', screen: 'RedMercuryScreen', image: require('../../assets/Villains/RedMercury.jpg'), clickable: true },
-  { name: 'Titanus', screen: 'TitanusScreen', image: require('../../assets/Villains/Titanus.jpg'), clickable: true },
-  { name: 'The Blind Witch', screen: '', image: require('../../assets/Villains/IMG_4325.webp'), clickable: false },
-  { name: 'Elick', screen: '', image: require('../../assets/Villains/IMG_4343.webp'), clickable: false },
+  { name: 'Fjord', screen: 'FjordScreen', image: require('../../assets/Villains/Fjord.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Judge Hex', screen: 'JudgeHexScreen', image: require('../../assets/Villains/JudgeHex.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Wraithblade', screen: 'WraithbladeScreen', image: require('../../assets/Villains/Wraithblade.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Harbinger', screen: 'HarbingerScreen', image: require('../../assets/Villains/Harbinger.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Venom Fang', screen: 'VenomFangScreen', image: require('../../assets/Villains/VenomFang.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Shatterbloom', screen: 'ShatterbloomScreen', image: require('../../assets/Villains/Shatterbloom.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Harbinger Dove', screen: 'HarbingerDoveScreen', image: require('../../assets/Villains/HarbingerDove.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Byte Ruin', screen: 'ByteRuinScreen', image: require('../../assets/Villains/ByteRuin.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Shade Weaver', screen: 'ShadeWeaverScreen', image: require('../../assets/Villains/ShadeWeaver.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Rage Vortex', screen: 'RageVortexScreen', image: require('../../assets/Villains/RageVortex.jpg'), clickable: true, borderColor: 'red' },
+  { name: "Mal'likhan", screen: 'MallikhanScreen', image: require('../../assets/Villains/Mallikhan.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Elder Pyrrhus', screen: 'ElderPyrrhusScreen', image: require('../../assets/Villains/ElderPyrrhus.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Dark Envoy', screen: 'DarkEnvoyScreen', image: require('../../assets/Villains/DarkEnvoy.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Spectral Wraith', screen: 'SpectralWraithScreen', image: require('../../assets/Villains/SpectralWraith.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Harrier', screen: 'HarrierScreen', image: require('../../assets/Villains/Harrier.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Shade Widow', screen: 'ShadeWidowScreen', image: require('../../assets/Villains/ShadeWidow.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Gilded Shard', screen: 'GildedShardScreen', image: require('../../assets/Villains/GildedShard.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Chrome Phoenix', screen: 'ChromePhoenixScreen', image: require('../../assets/Villains/ChromePhoenix.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Hades Ravage', screen: 'HadesRavageScreen', image: require('../../assets/Villains/HadesRavage.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Spectral Warlord', screen: 'SpectralWarlordScreen', image: require('../../assets/Villains/SpectralWarlord.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Virus Vortex', screen: 'VirusVortexScreen', image: require('../../assets/Villains/VirusVortex2.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Shade Stalker', screen: 'ShadeStalkerScreen', image: require('../../assets/Villains/ShadeStalker.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Volt Shade', screen: 'VoltShadeScreen', image: require('../../assets/Villains/VoltShade.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Steel Juggernaut', screen: 'SteelJuggernautScreen', image: require('../../assets/Villains/SteelJuggernaut.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Warhound', screen: 'WarhoundScreen', image: require('../../assets/Villains/Warhound.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Overmind', screen: 'OvermindScreen', image: require('../../assets/Villains/Overmind.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Obsidian Shroud', screen: 'ObsidianShroudScreen', image: require('../../assets/Villains/ObsidianShroud.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Fangstrike', screen: 'FangstrikeScreen', image: require('../../assets/Villains/Fangstrike.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Void Phantom', screen: 'VoidPhantomScreen', image: require('../../assets/Villains/VoidPhantom.jpg'), clickable: true, borderColor: 'red' },
+  { name: 'Chrona', screen: 'ChronaScreen', image: require('../../assets/Villains/Chrona.jpg'), clickable: true, borderColor: 'gold' },
+  { name: 'Evil Void Walker', screen: 'EvilSam', image: require('../../assets/Armor/Sam2.jpg'), clickable: true, borderColor: 'blue' },
+  { name: 'Sable', screen: 'SableScreen', image: require('../../assets/Villains/Sable.jpg'), clickable: true, borderColor: 'gold' },
+  { name: 'Noctura', screen: 'NocturaScreen', image: require('../../assets/Villains/Noctura.jpg'), clickable: true, borderColor: 'gold' },
+  { name: 'Obelisk', screen: 'ObeliskScreen', image: require('../../assets/Villains/Obelisk.jpg'), clickable: true, borderColor: 'gold' },
+  { name: 'Red Murcury', screen: 'RedMercuryScreen', image: require('../../assets/Villains/RedMercury.jpg'), clickable: true, borderColor: 'gold' },
+  { name: 'Titanus', screen: 'TitanusScreen', image: require('../../assets/Villains/Titanus.jpg'), clickable: true, borderColor: 'gold' },
+  { name: 'The Blind Witch', screen: '', image: require('../../assets/Villains/IMG_4325.webp'), clickable: false, borderColor: null },
+  { name: 'Elick', screen: '', image: require('../../assets/Villains/IMG_4343.webp'), clickable: false, borderColor: null },
 
   
-
-
+  
   // { name: 'Soulless Soul', screen: 'SoullessSoulScreen', image: require('../../assets/Villains/SoullessSoul.jpg'), clickable: true },
   // { name: 'The Void', screen: 'TheVoidScreen', image: require('../../assets/Villains/TheVoid.jpg'), clickable: true },
   // { name: 'Shadow Scribe', screen: 'ShadowScribeScreen', image: require('../../assets/Villains/ShadowScribe.jpg'), clickable: true },
@@ -93,7 +91,7 @@ const VillainsTab = () => {
           width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
           height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height
         },
-        villain.clickable ? styles.clickable : styles.notClickable
+        villain.clickable && villain.borderColor ? styles.clickable(villain.borderColor) : styles.notClickable
       ]}
       onPress={() => villain.clickable && navigation.navigate(villain.screen)}
       disabled={!villain.clickable}
@@ -197,10 +195,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
     marginRight: horizontalSpacing,
   },
-  clickable: {
-    borderColor: 'red',
+  clickable: (borderColor) => ({
+    borderColor: borderColor || 'red',
     borderWidth: 2,
-  },
+  }),
   notClickable: {
     opacity: 0.8,
   },
@@ -212,7 +210,7 @@ const styles = StyleSheet.create({
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject, 
     backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1, // Ensures overlay is on top but still allows interaction
+    zIndex: 1,
   },
   name: {
     position: 'absolute',
