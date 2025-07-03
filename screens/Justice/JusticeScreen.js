@@ -67,8 +67,10 @@ const JusticeScreen = () => {
   const handleHeroPress = (hero) => {
     if (hero.clickable) {
       if (hero.screen) {
+        console.log('Navigating to screen:', hero.screen);
         navigation.navigate(hero.screen); // Navigate if screen exists
       } else {
+        console.log('Showing preview for hero:', hero.name || hero.codename || 'Unknown');
         setPreviewHero(hero); // Show modal if no screen
       }
     }
@@ -77,7 +79,7 @@ const JusticeScreen = () => {
   // Render Each Hero Card
   const renderHeroCard = (hero) => (
     <TouchableOpacity
-      key={hero.name || hero.image.toString()} // Use image as fallback for unnamed heroes
+      key={hero.name || hero.codename || hero.image.toString()} // Use name, codename, or image as key
       style={[
         styles.card,
         {
@@ -91,19 +93,23 @@ const JusticeScreen = () => {
     >
       {hero?.image && (
         <>
-          <Image source={hero.image} style={styles.image} />
+          <Image source={hero.image} style={styles.image} resizeMode="cover" />
           <View style={styles.transparentOverlay} />
         </>
       )}
-      <Text style={styles.name}>{hero.name || 'Unknown'}</Text>
+      <Text style={styles.name}>{hero.name || hero.codename || 'Unknown'}</Text>
       {!hero.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );
 
+  // Render Preview Card
   const renderPreviewCard = (hero) => (
     <TouchableOpacity
       style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
-      onPress={() => setPreviewHero(null)} // Close modal on card press
+      onPress={() => {
+        console.log('Closing preview modal');
+        setPreviewHero(null);
+      }}
     >
       <Image
         source={hero.image || require('../../assets/Armor/LoneRanger.jpg')}
@@ -112,7 +118,7 @@ const JusticeScreen = () => {
       />
       <View style={styles.transparentOverlay} />
       <Text style={styles.cardName}>
-        © {hero.name || 'Unknown'}; William Cummings
+        © {hero.name || hero.codename || 'Unknown'}; William Cummings
       </Text>
     </TouchableOpacity>
   );
@@ -125,14 +131,24 @@ const JusticeScreen = () => {
       <View style={styles.container}>
         {/* Back Button */}
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => {
+            console.log('Navigating to Home');
+            navigation.navigate('Home');
+          }}
           style={styles.backButton}
         >
           <Text style={styles.backButtonText}>⬅️</Text>
         </TouchableOpacity>
 
-        {/* Title */}
-        <Text style={styles.header}>Guardians of Justice</Text>
+        {/* Clickable Title */}
+        <TouchableOpacity
+          onPress={() => {
+            console.log('Navigating to Heroes screen');
+            navigation.navigate('Heroes');
+          }}
+        >
+          <Text style={styles.header}>Guardians of Justice</Text>
+        </TouchableOpacity>
 
         {/* Horizontal Scrollable Heroes Grid */}
         <View style={styles.scrollWrapper}>
@@ -150,13 +166,19 @@ const JusticeScreen = () => {
           visible={!!previewHero}
           transparent={true}
           animationType="fade"
-          onRequestClose={() => setPreviewHero(null)}
+          onRequestClose={() => {
+            console.log('Closing preview modal');
+            setPreviewHero(null);
+          }}
         >
           <View style={styles.modalBackground}>
             <TouchableOpacity
               style={styles.modalOuterContainer}
               activeOpacity={1}
-              onPress={() => setPreviewHero(null)}
+              onPress={() => {
+                console.log('Closing preview modal');
+                setPreviewHero(null);
+              }}
             >
               <View style={styles.imageContainer}>
                 <ScrollView
@@ -172,7 +194,7 @@ const JusticeScreen = () => {
                 </ScrollView>
               </View>
               <View style={styles.previewAboutSection}>
-                <Text style={styles.previewName}>{previewHero?.name || 'Unknown'}</Text>
+                <Text style={styles.previewName}>{previewHero?.name || previewHero?.codename || 'Unknown'}</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -300,10 +322,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
     marginRight: 20,
   }),
-  clickable: {
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-  },
   previewImage: {
     width: '100%',
     height: '100%',

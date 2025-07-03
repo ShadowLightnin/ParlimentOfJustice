@@ -50,7 +50,13 @@ const TitansScreen = () => {
       <SafeAreaView style={styles.container}>
         {/* Header Section */}
         <View style={styles.headerWrapper}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => {
+              console.log('Navigating to Home');
+              navigation.navigate('Home');
+            }}
+          >
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
           <Text style={styles.header}>Titans</Text>
