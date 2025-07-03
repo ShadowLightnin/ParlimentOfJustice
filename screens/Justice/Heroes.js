@@ -49,7 +49,7 @@ const HeroesScreen = () => {
 
   // Fetch dynamic heroes from Firestore
   useEffect(() => {
-    const unsub = onSnapshot(collection(db, 'heroes'), (snap) => {
+    const unsub = onSnapshot(collection(db, 'hero'), (snap) => {
       const dynamicHeroes = snap.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
@@ -89,7 +89,7 @@ const HeroesScreen = () => {
         Alert.alert('Error', 'Cannot delete hardcoded heroes!');
         return;
       }
-      const heroRef = doc(db, 'heroes', id);
+      const heroRef = doc(db, 'hero', id);
       const snap = await getDoc(heroRef);
       if (!snap.exists()) {
         Alert.alert('Error', 'Hero not found');
@@ -220,13 +220,13 @@ const HeroesScreen = () => {
             </ScrollView>
           </View>
           <LeagueMembers
-            collectionPath="heroes"
+            collectionPath="hero"
             placeholderImage={require('../../assets/Armor/LoneRanger.jpg')}
-            infantry={heroes}
-            setInfantry={setHeroes}
-            hardcodedInfantry={hardcodedHeroes}
-            editingInfantry={previewHero?.isEditing ? previewHero : null}
-            setEditingInfantry={setPreviewHero}
+            hero={heroes}
+            setHero={setHeroes}
+            hardcodedHero={hardcodedHeroes}
+            editingHero={previewHero?.isEditing ? previewHero : null}
+            setEditingHero={setPreviewHero}
           />
           <Modal
             visible={!!previewHero && !previewHero.isEditing}
