@@ -1,280 +1,289 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-  Dimensions,
-  Alert,
-} from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image, Alert } from 'react-native';
 import { db, storage, auth } from '../../lib/firebase';
-import { doc, setDoc, addDoc, collection } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const isDesktop = SCREEN_WIDTH > 600;
+import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import * as ImagePicker from 'expo-image-picker';
 
 const ALLOWED_EMAILS = ["will@test.com", "c1wcummings@gmail.com"];
-const RESTRICT_ACCESS = true;
+const RESTRICT_ACCESS = false; // Allow anyone to add/edit heroes
+const RESTRICT_IMAGE_UPLOAD = true; // Restrict image uploads to ALLOWED_EMAILS
+const PLACEHOLDER_URL = 'placeholder';
 
-const LeagueMembers = ({
-  collectionPath,
-  placeholderImage,
-  infantry,
-  setInfantry,
-  hardcodedInfantry,
-  editingInfantry,
-  setEditingInfantry,
-}) => {
+const LeagueMembers = ({ collectionPath = 'hero', placeholderImage, infantry = [], setInfantry, hardcodedInfantry = [], editingInfantry, setEditingInfantry }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [imageUri, setImageUri] = useState(null);
-  const [uploading, setUploading] = useState(false);
-  const canSubmit = RESTRICT_ACCESS ? auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
+  const [image, setImage] = useState(null);
+  const [useImg, setUseImg] = useState(null);
+  const canMod = RESTRICT_ACCESS ? auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
+  const canUploadImage = !RESTRICT_IMAGE_UPLOAD || (auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email));
 
   useEffect(() => {
     if (editingInfantry) {
-      setName(editingInfantry.name || editingInfantry.codename || '');
+      setName(editingInfantry.name || '');
       setDescription(editingInfantry.description || '');
-      setImageUri(editingInfantry.imageUrl || null);
+      setImage(editingInfantry.imageUrl && editingInfantry.imageUrl !== 'placeholder' ? editingInfantry.imageUrl : null);
+      setUseImg(editingInfantry.imageUrl && editingInfantry.imageUrl !== 'placeholder' ? true : false);
     } else {
       setName('');
       setDescription('');
-      setImageUri(null);
+      setImage(null);
+      setUseImg(null);
     }
   }, [editingInfantry]);
 
-  const pickImage = async () => {
-    if (!canSubmit) {
-      Alert.alert('Access Denied', 'Only authorized users can upload images.');
-      return;
+  const alert = (title, msg) => Alert.alert(title, msg);
+
+  const uploadImg = async (uri) => {
+    if (!canUploadImage) {
+      console.log('Image upload blocked: user not authorized');
+      throw new Error('Unauthorized to upload images');
     }
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission Denied', 'Sorry, we need camera roll permissions to make this work!');
+    try {
+      const blob = await (await fetch(uri)).blob();
+      const path = `${collectionPath}/${Date.now()}_${Math.random().toString(36).slice(7)}`;
+      const storageRef = ref(storage, path);
+      const uploadTask = await uploadBytesResumable(storageRef, blob);
+      const url = await getDownloadURL(uploadTask.ref);
+      console.log('Image uploaded:', url);
+      return url;
+    } catch (e) {
+      console.error('Upload error:', e.message);
+      throw e;
+    }
+  };
+
+  const pickImg = async () => {
+    if (!canUploadImage) {
+      alert('Access Denied', 'Only authorized users can upload images.');
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [4, 3],
+      aspect: [1, 1],
       quality: 0.5,
     });
-    if (!result.canceled && result.assets) {
-      setImageUri(result.assets[0].uri);
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+      setUseImg(true);
+      console.log('Image picked:', result.assets[0].uri);
+    } else {
+      console.log('Image picker canceled');
     }
   };
 
-  const uploadImage = async (uri) => {
-    if (!uri) return 'placeholder';
-    try {
-      const response = await fetch(uri);
-      const blob = await response.blob();
-      const timestamp = Date.now();
-      const random = Math.random().toString(36).substring(2, 15);
-      const imageRef = ref(storage, `heroes/${timestamp}_${random}.jpg`);
-      await uploadBytes(imageRef, blob);
-      const downloadURL = await getDownloadURL(imageRef);
-      console.log('Image uploaded:', downloadURL);
-      return downloadURL;
-    } catch (e) {
-      console.error('Image upload error:', e.message);
-      throw e;
-    }
-  };
-
-  const handleSubmit = async () => {
-    if (!canSubmit) {
-      Alert.alert('Access Denied', 'Only authorized users can submit heroes.');
+  const addHero = async (useImage = true) => {
+    if (!canMod) {
+      alert('Access Denied', 'Only authorized users can add heroes.');
       return;
     }
-    if (!name.trim() && !description.trim()) {
-      Alert.alert('Error', 'Please provide a name or description.');
+    if (!name || !description) {
+      alert('Error', 'Enter name and description');
       return;
     }
-    setUploading(true);
     try {
-      let imageUrl = 'placeholder';
-      if (imageUri) {
-        imageUrl = await uploadImage(imageUri);
-      }
+      const imgUrl = useImage && image ? await uploadImg(image) : useImage ? PLACEHOLDER_URL : '';
       const heroData = {
-        name: name.trim(),
-        description: description.trim(),
-        imageUrl,
+        name,
+        description,
+        imageUrl: imgUrl,
         clickable: true,
-        borderColor: '#FFFFFF',
+        borderColor: '#FFFFFF', // White for dynamic heroes
         hardcoded: false,
       };
-      if (editingInfantry) {
-        const heroRef = doc(db, collectionPath, editingInfantry.id);
-        await setDoc(heroRef, heroData, { merge: true });
-        console.log('Hero updated:', editingInfantry.id);
-        setInfantry(infantry.map(item => (item.id === editingInfantry.id ? { ...item, ...heroData } : item)));
-        Alert.alert('Success', 'Hero updated successfully!');
-      } else {
-        const heroRef = await addDoc(collection(db, collectionPath), heroData);
-        console.log('Hero added:', heroRef.id);
-        setInfantry([...hardcodedInfantry, ...infantry.filter(item => !item.hardcoded), { id: heroRef.id, ...heroData }]);
-        Alert.alert('Success', 'Hero added successfully!');
+      const docRef = await addDoc(collection(db, collectionPath), heroData);
+      console.log('Hero added to Firestore:', { id: docRef.id, ...heroData });
+      if (setInfantry) {
+        const updatedInfantry = [...hardcodedInfantry, ...infantry.filter(item => !item.hardcoded), { id: docRef.id, ...heroData }];
+        setInfantry(updatedInfantry);
+        console.log('Updated heroes state:', updatedInfantry);
       }
       setName('');
       setDescription('');
-      setImageUri(null);
-      setEditingInfantry(null);
+      setImage(null);
+      setUseImg(null);
+      alert('Success', 'Hero added!');
     } catch (e) {
-      console.error('Submit error:', e.message);
-      Alert.alert('Error', `Failed to ${editingInfantry ? 'update' : 'add'} hero: ${e.message}`);
-    } finally {
-      setUploading(false);
+      console.error('Add hero error:', e.message);
+      alert('Error', `Failed to add hero: ${e.message}`);
     }
   };
 
-  const handleCancel = () => {
-    setName('');
-    setDescription('');
-    setImageUri(null);
-    setEditingInfantry(null);
+  const saveEdit = async () => {
+    if (!canMod) {
+      alert('Access Denied', 'Only authorized users can edit heroes.');
+      return;
+    }
+    if (!name || !description) {
+      alert('Error', 'Enter name and description');
+      return;
+    }
+    try {
+      const imgUrl = useImg && image ? await uploadImg(image) : useImg ? PLACEHOLDER_URL : '';
+      const heroData = {
+        name,
+        description,
+        imageUrl: imgUrl,
+        clickable: true,
+        borderColor: '#FFFFFF', // White for dynamic heroes
+        hardcoded: false,
+      };
+      await updateDoc(doc(db, collectionPath, editingInfantry.id), heroData);
+      console.log('Hero updated in Firestore:', { id: editingInfantry.id, ...heroData });
+      if (setInfantry) {
+        const updatedInfantry = infantry.map(i => (i.id === editingInfantry.id ? { ...i, ...heroData } : i));
+        setInfantry(updatedInfantry);
+        console.log('Updated heroes state:', updatedInfantry);
+      }
+      setEditingInfantry(null);
+      setName('');
+      setDescription('');
+      setImage(null);
+      setUseImg(null);
+      alert('Success', 'Hero updated!');
+    } catch (e) {
+      console.error('Update hero error:', e.message);
+      alert('Error', `Failed to update hero: ${e.message}`);
+    }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>{editingInfantry ? 'Edit Hero' : 'Add New Hero'}</Text>
+    <View style={styles.form}>
       <TextInput
         style={styles.input}
-        placeholder="Hero Name or Codename"
-        placeholderTextColor="#888"
+        placeholder="Hero Name"
         value={name}
         onChangeText={setName}
-        editable={canSubmit}
+        editable={canMod}
       />
       <TextInput
-        style={[styles.input, styles.textArea]}
+        style={[styles.input, styles.descInput]}
         placeholder="Description"
-        placeholderTextColor="#888"
         value={description}
         onChangeText={setDescription}
         multiline
-        numberOfLines={4}
-        editable={canSubmit}
+        editable={canMod}
       />
-      <TouchableOpacity
-        style={[styles.imagePicker, !canSubmit && styles.disabled]}
-        onPress={pickImage}
-        disabled={!canSubmit}
-      >
-        <Text style={styles.imagePickerText}>{imageUri ? 'Change Image' : 'Pick an Image'}</Text>
-      </TouchableOpacity>
-      {imageUri && (
-        <Image
-          source={{ uri: imageUri }}
-          style={styles.previewImage}
-          resizeMode="contain"
-        />
-      )}
-      {!imageUri && editingInfantry && editingInfantry.imageUrl && editingInfantry.imageUrl !== 'placeholder' && (
-        <Image
-          source={{ uri: editingInfantry.imageUrl }}
-          style={styles.previewImage}
-          resizeMode="contain"
-        />
-      )}
-      <View style={styles.buttonContainer}>
+      <View style={styles.imgOpts}>
         <TouchableOpacity
-          style={[styles.submitButton, !canSubmit && styles.disabled]}
-          onPress={handleSubmit}
-          disabled={!canSubmit || uploading}
+          onPress={pickImg}
+          style={[styles.upload, !canUploadImage && styles.disabled]}
+          disabled={!canUploadImage}
         >
-          <Text style={styles.buttonText}>{uploading ? 'Submitting...' : editingInfantry ? 'Update' : 'Submit'}</Text>
+          <Text style={styles.buttonText}>{canUploadImage ? (image ? 'Image Selected' : 'Upload Image') : 'Restricted'}</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.cancelButton}
-          onPress={handleCancel}
+          onPress={() => editingInfantry ? (setImage(null), setUseImg(false)) : addHero(false)}
+          style={[styles.noImgBtn, !canMod && styles.disabled]}
+          disabled={!canMod}
+        >
+          <Text style={styles.buttonText}>{editingInfantry ? 'Remove Image' : 'No Image'}</Text>
+        </TouchableOpacity>
+      </View>
+      {image && <Image source={{ uri: image }} style={styles.preview} />}
+      <TouchableOpacity
+        onPress={editingInfantry ? saveEdit : addHero}
+        style={[styles.add, !canMod && styles.disabled]}
+        disabled={!canMod}
+      >
+        <Text style={styles.buttonText}>{editingInfantry ? 'Save' : 'Add Hero'}</Text>
+      </TouchableOpacity>
+      {editingInfantry && (
+        <TouchableOpacity
+          onPress={() => {
+            setEditingInfantry(null);
+            setName('');
+            setDescription('');
+            setImage(null);
+            setUseImg(null);
+          }}
+          style={styles.close}
         >
           <Text style={styles.buttonText}>Cancel</Text>
         </TouchableOpacity>
-      </View>
+      )}
+      {(!canMod || !canUploadImage) && (
+        <Text style={styles.denied}>Only authorized users can add, edit, or upload images.</Text>
+      )}
     </View>
   );
 };
 
+// Styles
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#222',
+  form: {
     padding: 20,
-    borderRadius: 10,
-    margin: 20,
-    width: isDesktop ? SCREEN_WIDTH * 0.6 : SCREEN_WIDTH * 0.9,
-    alignSelf: 'center',
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FFF',
-    textAlign: 'center',
-    marginBottom: 20,
+    alignItems: 'center',
+    width: '100%',
   },
   input: {
-    backgroundColor: '#333',
-    color: '#FFF',
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    width: '90%',
     padding: 10,
     borderRadius: 5,
-    marginBottom: 15,
-    fontSize: 16,
+    marginBottom: 10,
   },
-  textArea: {
-    height: 100,
+  descInput: {
+    height: 80,
     textAlignVertical: 'top',
   },
-  imagePicker: {
-    backgroundColor: '#555',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  imagePickerText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  previewImage: {
-    width: '100%',
-    height: 200,
-    borderRadius: 10,
-    marginBottom: 15,
-  },
-  buttonContainer: {
+  imgOpts: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    width: '90%',
+    marginBottom: 10,
   },
-  submitButton: {
-    backgroundColor: '#FFC107',
+  upload: {
+    backgroundColor: '#4CAF50',
     padding: 10,
     borderRadius: 5,
     flex: 1,
-    marginRight: 10,
+    marginRight: 5,
     alignItems: 'center',
   },
-  cancelButton: {
+  noImgBtn: {
     backgroundColor: '#F44336',
     padding: 10,
     borderRadius: 5,
     flex: 1,
-    marginLeft: 10,
+    marginLeft: 5,
     alignItems: 'center',
   },
-  buttonText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: 'bold',
+  preview: {
+    width: 100,
+    height: 100,
+    borderRadius: 5,
+    marginBottom: 10,
+    resizeMode: 'cover',
+  },
+  add: {
+    backgroundColor: '#2196F3',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  close: {
+    backgroundColor: '#2196F3',
+    padding: 10,
+    borderRadius: 5,
+    alignSelf: 'center',
+    marginTop: 10,
   },
   disabled: {
     backgroundColor: '#ccc',
     opacity: 0.6,
+  },
+  denied: {
+    color: '#ff4444',
+    textAlign: 'center',
+    marginTop: 10,
+    fontSize: 14,
+  },
+  buttonText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    fontSize: 14,
   },
 });
 
