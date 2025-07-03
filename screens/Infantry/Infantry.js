@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,8 +9,13 @@ import {
   Dimensions,
   ImageBackground,
   Modal,
+  Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { db, auth, storage } from '../../lib/firebase';
+import { collection, onSnapshot, deleteDoc, doc, getDoc } from 'firebase/firestore';
+import { ref, deleteObject } from 'firebase/storage';
+import RecruitForm from './RecruitForm';
 
 // Screen dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -18,75 +23,169 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 // Grid layout settings
 const isDesktop = SCREEN_WIDTH > 600;
 
-// Card dimensions for desktop and mobile
+// Card dimensions for desktop and mobile (matched with ShipYardScreen.js)
 const cardSizes = {
-  desktop: { width: 400, height: 600 },
-  mobile: { width: 300, height: 500 },
+  desktop: { width: 300, height: 450 },
+  mobile: { width: 200, height: 300 },
 };
-const horizontalSpacing = isDesktop ? 40 : 20;
-const verticalSpacing = isDesktop ? 50 : 20;
+const horizontalSpacing = isDesktop ? 20 : 10;
+const verticalSpacing = isDesktop ? 20 : 10;
 
-// Infantry data with images & respective screens
-const infantry = [
-  { name: 'ARC Commander', screen: '', image: require('../../assets/Armor/Infantry/ArcCommander.jpg'), clickable: true },
-
-  // Add more infantry here, e.g.:
-  // { name: 'New Infantry', screen: 'NewInfantryScreen', image: require('../../assets/NewInfantry.jpg'), clickable: true },
+// Hardcoded infantry data with images, gold border color, and descriptions
+const hardcodedInfantry = [
+  {
+    id: 'infantry-1',
+    name: 'ARC Commander',
+    screen: '',
+    image: require('../../assets/Armor/Infantry/ArcCommander.jpg'),
+    clickable: true,
+    borderColor: '#FFD700', // Gold for hardcoded
+    hardcoded: true,
+    description: '',
+  },
 ];
+
+const ALLOWED_EMAILS = ["will@test.com", "c1wcummings@gmail.com"];
+const RESTRICT_ACCESS = false; // Allow anyone to add/edit/delete infantry
 
 const InfantryScreen = () => {
   const navigation = useNavigation();
   const [previewInfantry, setPreviewInfantry] = useState(null);
+  const [infantry, setInfantry] = useState(hardcodedInfantry);
+  const [deleteModal, setDeleteModal] = useState({ visible: false, infantry: null });
+  const canMod = RESTRICT_ACCESS ? auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
 
-  const handleInfantryPress = (infantry) => {
-    if (infantry.clickable) {
-      if (infantry.screen) {
-        navigation.navigate(infantry.screen); // Navigate if screen exists
+  // Fetch dynamic infantry from Firestore
+  useEffect(() => {
+    const unsub = onSnapshot(collection(db, 'infantry'), (snap) => {
+      const dynamicInfantry = snap.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        clickable: true,
+        borderColor: doc.data().borderColor || '#FFFFFF', // White for dynamic
+        hardcoded: false,
+      }));
+      console.log('Fetched dynamic infantry:', dynamicInfantry);
+      setInfantry([...hardcodedInfantry, ...dynamicInfantry]);
+    }, (e) => {
+      console.error('Firestore error:', e.message);
+      Alert.alert('Error', 'Failed to fetch infantry: ' + e.message);
+    });
+    return () => unsub();
+  }, []);
+
+  const handleInfantryPress = (infantryItem) => {
+    if (infantryItem.clickable) {
+      if (infantryItem.screen) {
+        console.log('Navigating to screen:', infantryItem.screen);
+        navigation.navigate(infantryItem.screen);
       } else {
-        setPreviewInfantry(infantry); // Show modal if no screen
+        setPreviewInfantry(infantryItem);
+        console.log('Preview infantry:', infantryItem);
       }
     }
   };
 
+  const confirmDelete = async (id) => {
+    if (!canMod) {
+      Alert.alert('Access Denied', 'Only authorized users can delete infantry.');
+      return;
+    }
+    try {
+      const infantryItem = infantry.find(i => i.id === id);
+      if (infantryItem.hardcoded) {
+        Alert.alert('Error', 'Cannot delete hardcoded infantry!');
+        return;
+      }
+      const infantryRef = doc(db, 'infantry', id);
+      const snap = await getDoc(infantryRef);
+      if (!snap.exists()) {
+        Alert.alert('Error', 'Infantry not found');
+        return;
+      }
+      const { imageUrl } = snap.data();
+      await deleteDoc(infantryRef);
+      if (imageUrl && imageUrl !== 'placeholder') {
+        const path = imageUrl.split('/o/')[1]?.split('?')[0];
+        if (path) {
+          await deleteObject(ref(storage, path)).catch(e => {
+            if (e.code !== 'storage/object-not-found') {
+              console.error('Delete image error:', e.message);
+            }
+          });
+        }
+      }
+      setInfantry(infantry.filter(i => i.id !== id));
+      setDeleteModal({ visible: false, infantry: null });
+      Alert.alert('Success', 'Infantry deleted!');
+    } catch (e) {
+      console.error('Delete infantry error:', e.message);
+      Alert.alert('Error', `Failed to delete infantry: ${e.message}`);
+    }
+  };
+
   // Render Each Infantry Card
-  const renderInfantryCard = (infantry) => (
-    <TouchableOpacity
-      key={infantry.name}
-      style={[
-        styles.card,
-        {
-          width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
-          height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
-        },
-        infantry.clickable ? styles.clickable : styles.notClickable,
-      ]}
-      onPress={() => handleInfantryPress(infantry)}
-      disabled={!infantry.clickable}
-    >
-      {infantry?.image && (
-        <>
-          <Image source={infantry.image} style={styles.image} />
-          <View style={styles.transparentOverlay} />
-        </>
+  const renderInfantryCard = (infantryItem) => (
+    <View key={infantryItem.id || infantryItem.name} style={styles.infantryCont}>
+      <TouchableOpacity
+        style={[
+          styles.infantryCard,
+          {
+            width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
+            height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
+          },
+          infantryItem.clickable && infantryItem.borderColor ? styles.clickable(infantryItem.borderColor) : styles.notClickable,
+        ]}
+        onPress={() => handleInfantryPress(infantryItem)}
+        disabled={!infantryItem.clickable}
+      >
+        <Image
+          source={infantryItem.image || (infantryItem.imageUrl && infantryItem.imageUrl !== 'placeholder' ? { uri: infantryItem.imageUrl } : require('../../assets/Armor/PlaceHolder.jpg'))}
+          style={styles.infantryImg}
+          resizeMode="cover"
+        />
+        <View style={styles.overlay} />
+        <Text style={styles.infantryName}>{infantryItem.name}</Text>
+        {!infantryItem.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+      </TouchableOpacity>
+      {!infantryItem.hardcoded && (
+        <View style={styles.buttons}>
+          <TouchableOpacity
+            onPress={() => setPreviewInfantry({ ...infantryItem, isEditing: true })}
+            style={[styles.edit, !canMod && styles.disabled]}
+            disabled={!canMod}
+          >
+            <Text style={styles.buttonText}>Edit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setDeleteModal({ visible: true, infantry: { id: infantryItem.id, name: infantryItem.name } })}
+            style={[styles.delete, !canMod && styles.disabled]}
+            disabled={!canMod}
+          >
+            <Text style={styles.buttonText}>Delete</Text>
+          </TouchableOpacity>
+        </View>
       )}
-      <Text style={styles.name}>{infantry.name}</Text>
-      {!infantry.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
-    </TouchableOpacity>
+    </View>
   );
 
-  const renderPreviewCard = (infantry) => (
+  // Render Preview Card
+  const renderPreviewCard = (infantryItem) => (
     <TouchableOpacity
-      style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
-      onPress={() => setPreviewInfantry(null)} // Close modal on card press
+      style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable(infantryItem.borderColor)]}
+      onPress={() => {
+        console.log('Closing preview modal');
+        setPreviewInfantry(null);
+      }}
     >
       <Image
-        source={infantry.image || require('../../assets/BackGround/Soldiers.jpg')}
+        source={infantryItem.image || (infantryItem.imageUrl && infantryItem.imageUrl !== 'placeholder' ? { uri: infantryItem.imageUrl } : require('../../assets/Armor/PlaceHolder.jpg'))}
         style={styles.previewImage}
         resizeMode="contain"
       />
       <View style={styles.transparentOverlay} />
       <Text style={styles.cardName}>
-        © {infantry.name || 'Unknown'}; William Cummings
+        © {infantryItem.name || 'Unknown'}; William Cummings
       </Text>
     </TouchableOpacity>
   );
@@ -94,63 +193,116 @@ const InfantryScreen = () => {
   return (
     <ImageBackground
       source={require('../../assets/BackGround/Soldiers.jpg')}
-      style={styles.background}
+      style={styles.bg}
     >
-      <View style={styles.container}>
-        {/* Back Button */}
+      <View style={styles.overlay}>
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
+          onPress={() => {
+            console.log('Navigating back');
+            navigation.goBack();
+          }}
+          style={styles.back}
         >
-          <Text style={styles.backButtonText}>⬅️</Text>
+          <Text style={styles.backText}>⬅️</Text>
         </TouchableOpacity>
-
-        {/* Title */}
-        <Text style={styles.header}>Infantry Yard</Text>
-
-        {/* Horizontal Scrollable Infantry Grid */}
-        <View style={styles.scrollWrapper}>
-          <ScrollView
-            horizontal
-            contentContainerStyle={styles.scrollContainer}
-            showsHorizontalScrollIndicator={true}
-          >
-            {infantry.map(renderInfantryCard)}
-          </ScrollView>
-        </View>
-
-        {/* Preview Modal */}
-        <Modal
-          visible={!!previewInfantry}
-          transparent={true}
-          animationType="fade"
-          onRequestClose={() => setPreviewInfantry(null)}
-        >
-          <View style={styles.modalBackground}>
-            <TouchableOpacity
-              style={styles.modalOuterContainer}
-              activeOpacity={1}
-              onPress={() => setPreviewInfantry(null)}
+        <ScrollView contentContainerStyle={styles.scroll}>
+          <Text style={styles.header}>Infantry Yard</Text>
+          <View style={styles.scrollWrapper}>
+            <ScrollView
+              horizontal
+              contentContainerStyle={styles.hScroll}
+              showsHorizontalScrollIndicator={false}
             >
-              <View style={styles.imageContainer}>
-                <ScrollView
-                  horizontal
-                  contentContainerStyle={styles.imageScrollContainer}
-                  showsHorizontalScrollIndicator={false}
-                  snapToAlignment="center"
-                  snapToInterval={SCREEN_WIDTH * 0.8 + 20}
-                  decelerationRate="fast"
-                  centerContent={true}
-                >
-                  {previewInfantry && renderPreviewCard(previewInfantry)}
-                </ScrollView>
-              </View>
-              <View style={styles.previewAboutSection}>
-                <Text style={styles.previewName}>{previewInfantry?.name || 'Unknown'}</Text>
-              </View>
-            </TouchableOpacity>
+              {infantry.length > 0 ? (
+                infantry.map(renderInfantryCard)
+              ) : (
+                <Text style={styles.noInfantryText}>No infantry available</Text>
+              )}
+            </ScrollView>
           </View>
-        </Modal>
+          <RecruitForm
+            collectionPath="infantry"
+            placeholderImage={require('../../assets/Armor/PlaceHolder.jpg')}
+            infantry={infantry}
+            setInfantry={setInfantry}
+            hardcodedInfantry={hardcodedInfantry}
+            editingInfantry={previewInfantry?.isEditing ? previewInfantry : null}
+            setEditingInfantry={setPreviewInfantry}
+          />
+          <Modal
+            visible={!!previewInfantry && !previewInfantry.isEditing}
+            transparent
+            animationType="fade"
+            onRequestClose={() => {
+              console.log('Closing preview modal');
+              setPreviewInfantry(null);
+            }}
+          >
+            <View style={styles.modalBackground}>
+              <TouchableOpacity
+                style={styles.modalOuterContainer}
+                activeOpacity={1}
+                onPress={() => {
+                  console.log('Closing preview modal');
+                  setPreviewInfantry(null);
+                }}
+              >
+                <View style={styles.imageContainer}>
+                  <ScrollView
+                    horizontal
+                    contentContainerStyle={styles.imageScrollContainer}
+                    showsHorizontalScrollIndicator={false}
+                    snapToAlignment="center"
+                    snapToInterval={SCREEN_WIDTH * 0.8 + 20}
+                    decelerationRate="fast"
+                    centerContent={true}
+                  >
+                    {previewInfantry && renderPreviewCard(previewInfantry)}
+                  </ScrollView>
+                </View>
+                <View style={styles.previewAboutSection}>
+                  <Text style={styles.previewName}>{previewInfantry?.name || 'Unknown'}</Text>
+                  <Text style={styles.previewDesc}>{previewInfantry?.description || 'No description available'}</Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      console.log('Closing preview modal');
+                      setPreviewInfantry(null);
+                    }}
+                    style={styles.close}
+                  >
+                    <Text style={styles.buttonText}>Close</Text>
+                  </TouchableOpacity>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </Modal>
+          <Modal
+            visible={deleteModal.visible}
+            transparent
+            animationType="slide"
+            onRequestClose={() => setDeleteModal({ visible: false, infantry: null })}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalText}>{`Delete "${deleteModal.infantry?.name || ''}" and its image?`}</Text>
+                <View style={styles.modalButtons}>
+                  <TouchableOpacity
+                    style={styles.modalCancel}
+                    onPress={() => setDeleteModal({ visible: false, infantry: null })}
+                  >
+                    <Text style={styles.modalCancelText}>Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.modalDelete}
+                    onPress={() => deleteModal.infantry && confirmDelete(deleteModal.infantry.id)}
+                  >
+                    <Text style={styles.modalDeleteText}>Delete</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </Modal>
+        </ScrollView>
       </View>
     </ImageBackground>
   );
@@ -158,74 +310,83 @@ const InfantryScreen = () => {
 
 // Styles
 const styles = StyleSheet.create({
-  background: {
+  bg: {
+    flex: 1,
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
     resizeMode: 'cover',
   },
-  container: {
+  overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    paddingTop: 40,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    paddingTop: 50,
+  },
+  scroll: {
+    paddingBottom: 20,
+  },
+  back: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    backgroundColor: 'rgba(17,25,40,0.6)',
+    padding: 10,
+    borderRadius: 8,
+    zIndex: 10,
+  },
+  backText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  header: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#FFF',
+    textAlign: 'center',
+    marginVertical: 20,
+    textShadowColor: '#FFD700', // Gold to match hardcoded border
+    textShadowRadius: 15,
+  },
+  scrollWrapper: {
+    width: SCREEN_WIDTH,
+  },
+  hScroll: {
+    paddingHorizontal: horizontalSpacing,
+    paddingVertical: verticalSpacing,
+  },
+  infantryCont: {
+    marginHorizontal: 10,
     alignItems: 'center',
+  },
+  infantryCard: {
+    borderRadius: 15,
+    overflow: 'hidden',
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    elevation: 5,
+  },
+  clickable: (borderColor) => ({
+    borderColor: borderColor || '#FFD700', // Default to gold
+    borderWidth: 2,
+  }),
+  notClickable: {
+    opacity: 0.7,
+  },
+  infantryImg: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'transparent',
+    zIndex: 1,
   },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0)',
     zIndex: 1,
   },
-  backButton: {
-    position: 'absolute',
-    top: 40,
-    left: 20,
-    backgroundColor: 'rgba(17, 25, 40, 0.6)',
-    paddingVertical: 15,
-    borderRadius: 8,
-    elevation: 5,
-  },
-  backButtonText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  header: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#FFF',
-    textAlign: 'center',
-    textShadowColor: 'yellow',
-    textShadowRadius: 15,
-    marginBottom: 20,
-  },
-  scrollWrapper: {
-    width: SCREEN_WIDTH,
-    flex: 1,
-  },
-  scrollContainer: {
-    flexDirection: 'row',
-    paddingVertical: verticalSpacing,
-    alignItems: 'center',
-  },
-  card: {
-    borderRadius: 15,
-    overflow: 'hidden',
-    elevation: 5,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    marginRight: horizontalSpacing,
-  },
-  clickable: {
-    borderColor: 'yellow',
-    borderWidth: 2,
-  },
-  notClickable: {
-    opacity: 0.7,
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'contain',
-  },
-  name: {
+  infantryName: {
     position: 'absolute',
     bottom: 10,
     left: 10,
@@ -235,8 +396,46 @@ const styles = StyleSheet.create({
   },
   disabledText: {
     fontSize: 12,
-    color: 'yellow',
+    color: '#FFD700', // Gold to match hardcoded border
     marginTop: 5,
+    textAlign: 'center',
+  },
+  noInfantryText: {
+    fontSize: 16,
+    color: '#FFF',
+    textAlign: 'center',
+    padding: 20,
+  },
+  buttons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
+    marginTop: 10,
+  },
+  edit: {
+    backgroundColor: '#FFC107',
+    padding: 5,
+    borderRadius: 5,
+    flex: 1,
+    marginRight: 5,
+    alignItems: 'center',
+  },
+  delete: {
+    backgroundColor: '#F44336',
+    padding: 5,
+    borderRadius: 5,
+    flex: 1,
+    marginLeft: 5,
+    alignItems: 'center',
+  },
+  disabled: {
+    backgroundColor: '#ccc',
+    opacity: 0.6,
+  },
+  buttonText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    fontSize: 14,
   },
   modalBackground: {
     flex: 1,
@@ -263,7 +462,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   previewCard: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.5 : SCREEN_WIDTH * 0.6,
+    width: isDesktop ? windowWidth * 0.5 : SCREEN_WIDTH * 0.8,
     height: isDesktop ? SCREEN_HEIGHT * 0.6 : SCREEN_HEIGHT * 0.3,
     borderRadius: 15,
     overflow: 'hidden',
@@ -271,10 +470,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
     marginRight: 20,
   }),
-  clickable: {
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-  },
   previewImage: {
     width: '100%',
     height: '100%',
@@ -287,6 +482,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: 'white',
     fontWeight: 'bold',
+    zIndex: 2,
   },
   previewAboutSection: {
     marginTop: 10,
@@ -298,6 +494,65 @@ const styles = StyleSheet.create({
   previewName: {
     fontSize: 16,
     color: '#fff',
+    textAlign: 'center',
+  },
+  previewDesc: {
+    fontSize: 16,
+    color: '#fff7f7',
+    textAlign: 'center',
+    marginVertical: 10,
+  },
+  close: {
+    backgroundColor: '#2196F3',
+    padding: 10,
+    borderRadius: 5,
+    alignSelf: 'center',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    color: '#000',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+  },
+  modalCancel: {
+    backgroundColor: '#2196F3',
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginRight: 10,
+  },
+  modalCancelText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalDelete: {
+    backgroundColor: '#F44336',
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginLeft: 10,
+  },
+  modalDeleteText: {
+    color: '#FFF',
+    fontWeight: 'bold',
     textAlign: 'center',
   },
 });

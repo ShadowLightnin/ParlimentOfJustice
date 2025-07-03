@@ -23,29 +23,29 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 // Grid layout settings
 const isDesktop = SCREEN_WIDTH > 600;
 
-// Card dimensions for desktop and mobile
+// Card dimensions for desktop and mobile (matched with ShipYardScreen.js)
 const cardSizes = {
-  desktop: { width: 800, height: 600 },
-  mobile: { width: 700, height: 500 },
+  desktop: { width: 300, height: 450 },
+  mobile: { width: 200, height: 300 },
 };
-const horizontalSpacing = isDesktop ? 40 : 20;
-const verticalSpacing = isDesktop ? 50 : 20;
+const horizontalSpacing = isDesktop ? 20 : 10;
+const verticalSpacing = isDesktop ? 20 : 10;
 
-// Hardcoded ships data with images, border colors, and descriptions
+// Hardcoded ships data with images, purple border color, and descriptions
 const hardcodedShips = [
-  { id: 'villain-ship-1', name: 'Villain Ship 1', screen: '', image: require('../../assets/VillainFleet/VillainShip1.jpg'), clickable: true, borderColor: 'yellow', hardcoded: true, description: '' },
-  { id: 'villain-ship-2', name: 'Villain Ship 2', screen: '', image: require('../../assets/VillainFleet/VillainShip2.jpg'), clickable: true, borderColor: 'yellow', hardcoded: true, description: '' },
-  { id: 'villain-ship-3', name: 'Villain Ship 3', screen: '', image: require('../../assets/VillainFleet/VillainShip3.jpg'), clickable: true, borderColor: 'yellow', hardcoded: true, description: '' },
-  { id: 'villain-ship-4', name: 'Villain Ship 4', screen: '', image: require('../../assets/VillainFleet/VillainShip4.jpg'), clickable: true, borderColor: 'yellow', hardcoded: true, description: '' },
-  { id: 'villain-ship-13', name: 'Villain Ship 13', screen: '', image: require('../../assets/VillainFleet/VillainShip13.jpg'), clickable: true, borderColor: 'yellow', hardcoded: true, description: '' },
-  { id: 'villain-ship-5', name: 'Villain Ship 5', screen: '', image: require('../../assets/VillainFleet/VillainShip5.jpg'), clickable: true, borderColor: 'yellow', hardcoded: true, description: '' },
-  { id: 'villain-ship-6', name: 'Villain Ship 6', screen: '', image: require('../../assets/VillainFleet/VillainShip6.jpg'), clickable: true, borderColor: 'yellow', hardcoded: true, description: '' },
-  { id: 'villain-ship-7', name: 'Villain Ship 7', screen: '', image: require('../../assets/VillainFleet/VillainShip7.jpg'), clickable: true, borderColor: 'yellow', hardcoded: true, description: '' },
-  { id: 'villain-ship-8', name: 'Villain Ship 8', screen: '', image: require('../../assets/VillainFleet/VillainShip8.jpg'), clickable: true, borderColor: 'yellow', hardcoded: true, description: '' },
-  { id: 'villain-ship-9', name: 'Villain Ship 9', screen: '', image: require('../../assets/VillainFleet/VillainShip9.jpg'), clickable: true, borderColor: 'yellow', hardcoded: true, description: '' },
-  { id: 'villain-ship-10', name: 'Villain Ship 10', screen: '', image: require('../../assets/VillainFleet/VillainShip10.jpg'), clickable: true, borderColor: 'yellow', hardcoded: true, description: '' },
-  { id: 'villain-ship-11', name: 'Villain Ship 11', screen: '', image: require('../../assets/VillainFleet/VillainShip11.jpg'), clickable: true, borderColor: 'yellow', hardcoded: true, description: '' },
-  { id: 'villain-ship-12', name: 'Villain Ship 12', screen: '', image: require('../../assets/VillainFleet/VillainShip12.jpg'), clickable: true, borderColor: 'yellow', hardcoded: true, description: '' },
+  { id: 'villain-ship-1', name: 'Villain Ship 1', screen: '', image: require('../../assets/VillainFleet/VillainShip1.jpg'), clickable: true, borderColor: '#800080', hardcoded: true, description: '' },
+  { id: 'villain-ship-2', name: 'Villain Ship 2', screen: '', image: require('../../assets/VillainFleet/VillainShip2.jpg'), clickable: true, borderColor: '#800080', hardcoded: true, description: '' },
+  { id: 'villain-ship-3', name: 'Villain Ship 3', screen: '', image: require('../../assets/VillainFleet/VillainShip3.jpg'), clickable: true, borderColor: '#800080', hardcoded: true, description: '' },
+  { id: 'villain-ship-4', name: 'Villain Ship 4', screen: '', image: require('../../assets/VillainFleet/VillainShip4.jpg'), clickable: true, borderColor: '#800080', hardcoded: true, description: '' },
+  { id: 'villain-ship-13', name: 'Villain Ship 13', screen: '', image: require('../../assets/VillainFleet/VillainShip13.jpg'), clickable: true, borderColor: '#800080', hardcoded: true, description: '' },
+  { id: 'villain-ship-5', name: 'Villain Ship 5', screen: '', image: require('../../assets/VillainFleet/VillainShip5.jpg'), clickable: true, borderColor: '#800080', hardcoded: true, description: '' },
+  { id: 'villain-ship-6', name: 'Villain Ship 6', screen: '', image: require('../../assets/VillainFleet/VillainShip6.jpg'), clickable: true, borderColor: '#800080', hardcoded: true, description: '' },
+  { id: 'villain-ship-7', name: 'Villain Ship 7', screen: '', image: require('../../assets/VillainFleet/VillainShip7.jpg'), clickable: true, borderColor: '#800080', hardcoded: true, description: '' },
+  { id: 'villain-ship-8', name: 'Villain Ship 8', screen: '', image: require('../../assets/VillainFleet/VillainShip8.jpg'), clickable: true, borderColor: '#800080', hardcoded: true, description: '' },
+  { id: 'villain-ship-9', name: 'Villain Ship 9', screen: '', image: require('../../assets/VillainFleet/VillainShip9.jpg'), clickable: true, borderColor: '#800080', hardcoded: true, description: '' },
+  { id: 'villain-ship-10', name: 'Villain Ship 10', screen: '', image: require('../../assets/VillainFleet/VillainShip10.jpg'), clickable: true, borderColor: '#800080', hardcoded: true, description: '' },
+  { id: 'villain-ship-11', name: 'Villain Ship 11', screen: '', image: require('../../assets/VillainFleet/VillainShip11.jpg'), clickable: true, borderColor: '#800080', hardcoded: true, description: '' },
+  { id: 'villain-ship-12', name: 'Villain Ship 12', screen: '', image: require('../../assets/VillainFleet/VillainShip12.jpg'), clickable: true, borderColor: '#800080', hardcoded: true, description: '' },
 ];
 
 const ALLOWED_EMAILS = ["will@test.com", "c1wcummings@gmail.com"];
@@ -61,13 +61,18 @@ const VillainsFleetScreen = () => {
   // Fetch dynamic ships from Firestore
   useEffect(() => {
     const unsub = onSnapshot(collection(db, 'villainShips'), (snap) => {
-      const dynamicShips = snap.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        clickable: true,
-        borderColor: doc.data().borderColor || 'blue',
-        hardcoded: false,
-      }));
+      const dynamicShips = snap.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          name: data.name || 'Unknown',
+          description: data.description || '',
+          imageUrl: data.imageUrl || 'placeholder',
+          clickable: true,
+          borderColor: '#8B0000', // Ominous red for dynamic ships
+          hardcoded: false,
+        };
+      });
       console.log('Fetched dynamic villain ships:', dynamicShips);
       setShips([...hardcodedShips, ...dynamicShips]);
     }, (e) => {
@@ -101,7 +106,7 @@ const VillainsFleetScreen = () => {
         return;
       }
       const shipRef = doc(db, 'villainShips', id);
-      const snap = await getDoc(doc(db, 'villainShips', id));
+      const snap = await getDoc(shipRef);
       if (!snap.exists()) {
         Alert.alert('Error', 'Ship not found');
         return;
@@ -112,7 +117,9 @@ const VillainsFleetScreen = () => {
         const path = imageUrl.split('/o/')[1]?.split('?')[0];
         if (path) {
           await deleteObject(ref(storage, path)).catch(e => {
-            if (e.code !== 'storage/object-not-found') console.error('Delete image error:', e);
+            if (e.code !== 'storage/object-not-found') {
+              console.error('Delete image error:', e.message);
+            }
           });
         }
       }
@@ -129,19 +136,17 @@ const VillainsFleetScreen = () => {
   const renderShipCard = (ship) => (
     <View key={ship.id || ship.name} style={styles.shipCont}>
       <TouchableOpacity
-        style={[
-          styles.card,
-          {
-            width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
-            height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
-          },
-          ship.clickable && ship.borderColor ? styles.clickable(ship.borderColor) : styles.notClickable,
-        ]}
+        style={{
+          ...styles.card,
+          width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
+          height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
+          ...(ship.clickable && ship.borderColor ? styles.clickable(ship.borderColor) : styles.notClickable),
+        }}
         onPress={() => handleShipPress(ship)}
         disabled={!ship.clickable}
       >
         <Image
-          source={ship.image || (ship.imageUrl && ship.imageUrl !== 'placeholder' ? { uri: ship.imageUrl } : require('../../assets/ShipYard/PlaceHolder.jpg'))}
+          source={ship.image || (ship.imageUrl && ship.imageUrl !== 'placeholder' ? { uri: ship.imageUrl } : require('../../assets/VillainFleet/PlaceHolder.jpg'))}
           style={styles.image}
           resizeMode="contain"
         />
@@ -170,6 +175,27 @@ const VillainsFleetScreen = () => {
     </View>
   );
 
+  // Render Preview Card
+  const renderPreviewCard = (ship) => (
+    <TouchableOpacity
+      style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable(ship.borderColor)]}
+      onPress={() => {
+        console.log('Closing preview modal');
+        setPreviewShip(null);
+      }}
+    >
+      <Image
+        source={ship.image || (ship.imageUrl && ship.imageUrl !== 'placeholder' ? { uri: ship.imageUrl } : require('../../assets/VillainFleet/PlaceHolder.jpg'))}
+        style={styles.previewImage}
+        resizeMode="contain"
+      />
+      <View style={styles.transparentOverlay} />
+      <Text style={styles.cardName}>
+        © {ship.name || 'Unknown'}; William Cummings
+      </Text>
+    </TouchableOpacity>
+  );
+
   return (
     <ImageBackground
       source={require('../../assets/BackGround/VillainShipYard2.jpg')}
@@ -191,7 +217,7 @@ const VillainsFleetScreen = () => {
             <ScrollView
               horizontal
               contentContainerStyle={styles.scrollContainer}
-              showsHorizontalScrollIndicator={true}
+              showsHorizontalScrollIndicator={false}
             >
               {ships.length > 0 ? (
                 ships.map(renderShipCard)
@@ -202,7 +228,7 @@ const VillainsFleetScreen = () => {
           </View>
           <VillainFleetForm
             collectionPath="villainShips"
-            placeholderImage={require('../../assets/ShipYard/PlaceHolder.jpg')}
+            placeholderImage={require('../../assets/VillainFleet/PlaceHolder.jpg')}
             ships={ships}
             setShips={setShips}
             hardcodedShips={hardcodedShips}
@@ -219,28 +245,41 @@ const VillainsFleetScreen = () => {
             }}
           >
             <View style={styles.modalBackground}>
-              <ScrollView style={styles.preview}>
-                {previewShip && (
-                  <>
-                    <Image
-                      source={previewShip.image || (previewShip.imageUrl && previewShip.imageUrl !== 'placeholder' ? { uri: previewShip.imageUrl } : require('../../assets/ShipYard/PlaceHolder.jpg'))}
-                      style={styles.previewImage}
-                      resizeMode="contain"
-                    />
-                    <Text style={styles.previewName}>{previewShip.name || 'Unknown'}</Text>
-                    <Text style={styles.previewDesc}>{previewShip.description || 'No description available'}</Text>
-                    <TouchableOpacity
-                      onPress={() => {
-                        console.log('Closing preview modal');
-                        setPreviewShip(null);
-                      }}
-                      style={styles.close}
-                    >
-                      <Text style={styles.buttonText}>Close</Text>
-                    </TouchableOpacity>
-                  </>
-                )}
-              </ScrollView>
+              <TouchableOpacity
+                style={styles.modalOuterContainer}
+                activeOpacity={1}
+                onPress={() => {
+                  console.log('Closing preview modal');
+                  setPreviewShip(null);
+                }}
+              >
+                <View style={styles.imageContainer}>
+                  <ScrollView
+                    horizontal
+                    contentContainerStyle={styles.imageScrollContainer}
+                    showsHorizontalScrollIndicator={false}
+                    snapToAlignment="center"
+                    snapToInterval={SCREEN_WIDTH * 0.8 + 20}
+                    decelerationRate="fast"
+                    centerContent={true}
+                  >
+                    {previewShip && renderPreviewCard(previewShip)}
+                  </ScrollView>
+                </View>
+                <View style={styles.previewAboutSection}>
+                  <Text style={styles.previewName}>{previewShip?.name || 'Unknown'}</Text>
+                  <Text style={styles.previewDesc}>{previewShip?.description || 'No description available'}</Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      console.log('Closing preview modal');
+                      setPreviewShip(null);
+                    }}
+                    style={styles.close}
+                  >
+                    <Text style={styles.buttonText}>Close</Text>
+                  </TouchableOpacity>
+                </View>
+              </TouchableOpacity>
             </View>
           </Modal>
           <Modal
@@ -311,14 +350,14 @@ const styles = StyleSheet.create({
     color: '#FFF',
     textAlign: 'center',
     marginVertical: 20,
-    textShadowColor: '#00b3ff',
+    textShadowColor: '#611ab9',
     textShadowRadius: 15,
   },
   scrollWrapper: {
     width: SCREEN_WIDTH,
   },
   scrollContainer: {
-    paddingHorizontal: 20,
+    paddingHorizontal: horizontalSpacing,
     paddingVertical: verticalSpacing,
   },
   shipCont: {
@@ -332,7 +371,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   clickable: (borderColor) => ({
-    borderColor: borderColor || 'yellow',
+    borderColor: borderColor || '#800080', // Default to purple
     borderWidth: 2,
   }),
   notClickable: {
@@ -358,7 +397,7 @@ const styles = StyleSheet.create({
   },
   disabledText: {
     fontSize: 12,
-    color: 'yellow',
+    color: 'red',
     marginTop: 5,
     textAlign: 'center',
   },
@@ -375,7 +414,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   edit: {
-    backgroundColor: '#FFC107',
+    backgroundColor: '#161567',
     padding: 5,
     borderRadius: 5,
     flex: 1,
@@ -401,35 +440,68 @@ const styles = StyleSheet.create({
   },
   modalBackground: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  preview: {
+  modalOuterContainer: {
     width: '90%',
-    maxHeight: SCREEN_HEIGHT * 0.7,
-    backgroundColor: 'rgba(72, 63, 63, 0.95)',
-    borderRadius: 15,
-    padding: 20,
+    height: '80%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
+  imageContainer: {
+    width: '100%',
+    paddingVertical: 10,
+    backgroundColor: '#111',
+    alignItems: 'center',
+  },
+  imageScrollContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  previewCard: (isDesktop, windowWidth) => ({
+    width: isDesktop ? windowWidth * 0.5 : SCREEN_WIDTH * 0.8,
+    height: isDesktop ? SCREEN_HEIGHT * 0.6 : SCREEN_HEIGHT * 0.3,
+    borderRadius: 15,
+    overflow: 'hidden',
+    elevation: 5,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    marginRight: 20,
+  }),
   previewImage: {
     width: '100%',
-    height: 300,
+    height: '100%',
+    resizeMode: 'contain',
+  },
+  cardName: {
+    position: 'absolute',
+    bottom: 10,
+    left: 10,
+    fontSize: 16,
+    color: 'white',
+    fontWeight: 'bold',
+    zIndex: 2,
+  },
+  previewAboutSection: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: '#222',
     borderRadius: 10,
-    marginBottom: 10,
+    width: '90%',
   },
   previewName: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: 'white',
+    fontSize: 16,
+    color: '#fff',
     textAlign: 'center',
-    marginBottom: 10,
   },
   previewDesc: {
     fontSize: 16,
     color: '#fff7f7',
     textAlign: 'center',
-    marginBottom: 20,
+    marginVertical: 10,
   },
   close: {
     backgroundColor: '#2196F3',

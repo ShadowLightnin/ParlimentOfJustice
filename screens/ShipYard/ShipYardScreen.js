@@ -173,6 +173,27 @@ const ShipYardScreen = () => {
     </View>
   );
 
+  // Render Preview Card
+  const renderPreviewCard = (ship) => (
+    <TouchableOpacity
+      style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
+      onPress={() => {
+        console.log('Closing preview modal');
+        setPreviewShip(null);
+      }}
+    >
+      <Image
+        source={ship.image || (ship.imageUrl && ship.imageUrl !== 'placeholder' ? { uri: ship.imageUrl } : require('../../assets/ShipYard/PlaceHolder.jpg'))}
+        style={styles.previewImage}
+        resizeMode="contain"
+      />
+      <View style={styles.transparentOverlay} />
+      <Text style={styles.cardName}>
+        © {ship.name || 'Unknown'}; William Cummings
+      </Text>
+    </TouchableOpacity>
+  );
+
   return (
     <ImageBackground
       source={require('../../assets/BackGround/ShipYard.jpg')}
@@ -215,35 +236,48 @@ const ShipYardScreen = () => {
           <Modal
             visible={!!previewShip && !previewShip.isEditing}
             transparent
-            animationType="slide"
+            animationType="fade"
             onRequestClose={() => {
               console.log('Closing preview modal');
               setPreviewShip(null);
             }}
           >
-            <View style={styles.modal}>
-              <ScrollView style={styles.preview}>
-                {previewShip && (
-                  <>
-                    <Image
-                      source={previewShip.image || (previewShip.imageUrl && previewShip.imageUrl !== 'placeholder' ? { uri: previewShip.imageUrl } : require('../../assets/ShipYard/PlaceHolder.jpg'))}
-                      style={styles.previewImage}
-                      resizeMode="contain"
-                    />
-                    <Text style={styles.previewName}>{previewShip.name || 'Unknown'}</Text>
-                    <Text style={styles.previewDesc}>{previewShip.description || 'No description available'}</Text>
-                    <TouchableOpacity
-                      onPress={() => {
-                        console.log('Closing preview modal');
-                        setPreviewShip(null);
-                      }}
-                      style={styles.close}
-                    >
-                      <Text style={styles.buttonText}>Close</Text>
-                    </TouchableOpacity>
-                  </>
-                )}
-              </ScrollView>
+            <View style={styles.modalBackground}>
+              <TouchableOpacity
+                style={styles.modalOuterContainer}
+                activeOpacity={1}
+                onPress={() => {
+                  console.log('Closing preview modal');
+                  setPreviewShip(null);
+                }}
+              >
+                <View style={styles.imageContainer}>
+                  <ScrollView
+                    horizontal
+                    contentContainerStyle={styles.imageScrollContainer}
+                    showsHorizontalScrollIndicator={false}
+                    snapToAlignment="center"
+                    snapToInterval={SCREEN_WIDTH * 0.8 + 20}
+                    decelerationRate="fast"
+                    centerContent={true}
+                  >
+                    {previewShip && renderPreviewCard(previewShip)}
+                  </ScrollView>
+                </View>
+                <View style={styles.previewAboutSection}>
+                  <Text style={styles.previewName}>{previewShip?.name || 'Unknown'}</Text>
+                  <Text style={styles.previewDesc}>{previewShip?.description || 'No description available'}</Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      console.log('Closing preview modal');
+                      setPreviewShip(null);
+                    }}
+                    style={styles.close}
+                  >
+                    <Text style={styles.buttonText}>Close</Text>
+                  </TouchableOpacity>
+                </View>
+              </TouchableOpacity>
             </View>
           </Modal>
           <Modal
@@ -351,6 +385,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     zIndex: 1,
   },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    zIndex: 1,
+  },
   shipName: {
     position: 'absolute',
     bottom: 10,
@@ -402,37 +441,70 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 14,
   },
-  modal: {
+  modalBackground: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.8)',
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  preview: {
+  modalOuterContainer: {
     width: '90%',
-    maxHeight: SCREEN_HEIGHT * 0.7,
-    backgroundColor: 'rgba(72,63,63,0.95)',
-    borderRadius: 15,
-    padding: 20,
+    height: '80%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
+  imageContainer: {
+    width: '100%',
+    paddingVertical: 10,
+    backgroundColor: '#111',
+    alignItems: 'center',
+  },
+  imageScrollContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  previewCard: (isDesktop, windowWidth) => ({
+    width: isDesktop ? windowWidth * 0.5 : SCREEN_WIDTH * 0.8,
+    height: isDesktop ? SCREEN_HEIGHT * 0.6 : SCREEN_HEIGHT * 0.3,
+    borderRadius: 15,
+    overflow: 'hidden',
+    elevation: 5,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    marginRight: 20,
+  }),
   previewImage: {
     width: '100%',
-    height: 300,
+    height: '100%',
+    resizeMode: 'contain',
+  },
+  cardName: {
+    position: 'absolute',
+    bottom: 10,
+    left: 10,
+    fontSize: 16,
+    color: 'white',
+    fontWeight: 'bold',
+    zIndex: 2,
+  },
+  previewAboutSection: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: '#222',
     borderRadius: 10,
-    marginBottom: 10,
+    width: '90%',
   },
   previewName: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: 'white',
+    fontSize: 16,
+    color: '#fff',
     textAlign: 'center',
-    marginBottom: 10,
   },
   previewDesc: {
     fontSize: 16,
     color: '#fff7f7',
     textAlign: 'center',
-    marginBottom: 20,
+    marginVertical: 10,
   },
   close: {
     backgroundColor: '#2196F3',

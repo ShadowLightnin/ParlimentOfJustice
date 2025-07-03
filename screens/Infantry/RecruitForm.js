@@ -1,22 +1,36 @@
-import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image, Alert, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image, Alert } from 'react-native';
 import { db, storage, auth } from '../../lib/firebase';
 import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
 
 const ALLOWED_EMAILS = ["will@test.com", "c1wcummings@gmail.com"];
-const RESTRICT_ACCESS = false; // Allow anyone to add/edit/delete ships
+const RESTRICT_ACCESS = false; // Allow anyone to add/edit infantry
 const RESTRICT_IMAGE_UPLOAD = true; // Restrict image uploads to ALLOWED_EMAILS
 const PLACEHOLDER_URL = 'placeholder';
 
-const VillainFleetForm = ({ collectionPath = 'villainShips', placeholderImage, ships = [], setShips, hardcodedShips = [], editingShip, setEditingShip }) => {
+const RecruitForm = ({ collectionPath = 'infantry', placeholderImage, infantry = [], setInfantry, hardcodedInfantry = [], editingInfantry, setEditingInfantry }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState(null);
   const [useImg, setUseImg] = useState(null);
   const canMod = RESTRICT_ACCESS ? auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
   const canUploadImage = !RESTRICT_IMAGE_UPLOAD || (auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email));
+
+  useEffect(() => {
+    if (editingInfantry) {
+      setName(editingInfantry.name || '');
+      setDescription(editingInfantry.description || '');
+      setImage(editingInfantry.imageUrl && editingInfantry.imageUrl !== 'placeholder' ? editingInfantry.imageUrl : null);
+      setUseImg(editingInfantry.imageUrl && editingInfantry.imageUrl !== 'placeholder' ? true : false);
+    } else {
+      setName('');
+      setDescription('');
+      setImage(null);
+      setUseImg(null);
+    }
+  }, [editingInfantry]);
 
   const alert = (title, msg) => Alert.alert(title, msg);
 
@@ -59,9 +73,9 @@ const VillainFleetForm = ({ collectionPath = 'villainShips', placeholderImage, s
     }
   };
 
-  const addShip = async (useImage = true) => {
+  const addInfantry = async (useImage = true) => {
     if (!canMod) {
-      alert('Access Denied', 'Only authorized users can add ships.');
+      alert('Access Denied', 'Only authorized users can add infantry.');
       return;
     }
     if (!name || !description) {
@@ -70,35 +84,35 @@ const VillainFleetForm = ({ collectionPath = 'villainShips', placeholderImage, s
     }
     try {
       const imgUrl = useImage && image ? await uploadImg(image) : useImage ? PLACEHOLDER_URL : '';
-      const shipData = { 
-        name, 
-        description, 
-        imageUrl: imgUrl, 
-        clickable: true, 
-        borderColor: 'blue', 
-        hardcoded: false 
+      const infantryData = {
+        name,
+        description,
+        imageUrl: imgUrl,
+        clickable: true,
+        borderColor: '#FFFFFF', // White for dynamic infantry
+        hardcoded: false,
       };
-      const docRef = await addDoc(collection(db, collectionPath), shipData);
-      console.log('Ship added to Firestore:', { id: docRef.id, ...shipData });
-      if (setShips) {
-        const updatedShips = [...ships, { id: docRef.id, ...shipData }];
-        setShips(updatedShips);
-        console.log('Updated ships state:', updatedShips);
+      const docRef = await addDoc(collection(db, collectionPath), infantryData);
+      console.log('Infantry added to Firestore:', { id: docRef.id, ...infantryData });
+      if (setInfantry) {
+        const updatedInfantry = [...infantry, { id: docRef.id, ...infantryData }];
+        setInfantry(updatedInfantry);
+        console.log('Updated infantry state:', updatedInfantry);
       }
       setName('');
       setDescription('');
       setImage(null);
       setUseImg(null);
-      alert('Success', 'Ship added!');
+      alert('Success', 'Infantry added!');
     } catch (e) {
-      console.error('Add ship error:', e.message);
-      alert('Error', `Failed to add ship: ${e.message}`);
+      console.error('Add infantry error:', e.message);
+      alert('Error', `Failed to add infantry: ${e.message}`);
     }
   };
 
   const saveEdit = async () => {
     if (!canMod) {
-      alert('Access Denied', 'Only authorized users can edit ships.');
+      alert('Access Denied', 'Only authorized users can edit infantry.');
       return;
     }
     if (!name || !description) {
@@ -107,30 +121,30 @@ const VillainFleetForm = ({ collectionPath = 'villainShips', placeholderImage, s
     }
     try {
       const imgUrl = useImg && image ? await uploadImg(image) : useImg ? PLACEHOLDER_URL : '';
-      const shipData = { 
-        name, 
-        description, 
-        imageUrl: imgUrl, 
-        clickable: true, 
-        borderColor: 'blue', 
-        hardcoded: false 
+      const infantryData = {
+        name,
+        description,
+        imageUrl: imgUrl,
+        clickable: true,
+        borderColor: '#FFFFFF', // White for dynamic infantry
+        hardcoded: false,
       };
-      await updateDoc(doc(db, collectionPath, editingShip.id), shipData);
-      console.log('Ship updated in Firestore:', { id: editingShip.id, ...shipData });
-      if (setShips) {
-        const updatedShips = ships.map(s => s.id === editingShip.id ? { ...s, ...shipData } : s);
-        setShips(updatedShips);
-        console.log('Updated ships state:', updatedShips);
+      await updateDoc(doc(db, collectionPath, editingInfantry.id), infantryData);
+      console.log('Infantry updated in Firestore:', { id: editingInfantry.id, ...infantryData });
+      if (setInfantry) {
+        const updatedInfantry = infantry.map(i => (i.id === editingInfantry.id ? { ...i, ...infantryData } : i));
+        setInfantry(updatedInfantry);
+        console.log('Updated infantry state:', updatedInfantry);
       }
-      setEditingShip(null);
+      setEditingInfantry(null);
       setName('');
       setDescription('');
       setImage(null);
       setUseImg(null);
-      alert('Success', 'Ship updated!');
+      alert('Success', 'Infantry updated!');
     } catch (e) {
-      console.error('Update ship error:', e.message);
-      alert('Error', `Failed to update ship: ${e.message}`);
+      console.error('Update infantry error:', e.message);
+      alert('Error', `Failed to update infantry: ${e.message}`);
     }
   };
 
@@ -138,7 +152,7 @@ const VillainFleetForm = ({ collectionPath = 'villainShips', placeholderImage, s
     <View style={styles.form}>
       <TextInput
         style={styles.input}
-        placeholder="Villain Ship Name"
+        placeholder="Infantry Name"
         value={name}
         onChangeText={setName}
         editable={canMod}
@@ -160,25 +174,25 @@ const VillainFleetForm = ({ collectionPath = 'villainShips', placeholderImage, s
           <Text style={styles.buttonText}>{canUploadImage ? (image ? 'Image Selected' : 'Upload Image') : 'Restricted'}</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => editingShip ? (setImage(null), setUseImg(false)) : addShip(false)}
+          onPress={() => editingInfantry ? (setImage(null), setUseImg(false)) : addInfantry(false)}
           style={[styles.noImgBtn, !canMod && styles.disabled]}
           disabled={!canMod}
         >
-          <Text style={styles.buttonText}>{editingShip ? 'Remove Image' : 'No Image'}</Text>
+          <Text style={styles.buttonText}>{editingInfantry ? 'Remove Image' : 'No Image'}</Text>
         </TouchableOpacity>
       </View>
       {image && <Image source={{ uri: image }} style={styles.preview} />}
       <TouchableOpacity
-        onPress={editingShip ? saveEdit : addShip}
+        onPress={editingInfantry ? saveEdit : addInfantry}
         style={[styles.add, !canMod && styles.disabled]}
         disabled={!canMod}
       >
-        <Text style={styles.buttonText}>{editingShip ? 'Save' : 'Add Ship'}</Text>
+        <Text style={styles.buttonText}>{editingInfantry ? 'Save' : 'Add Infantry'}</Text>
       </TouchableOpacity>
-      {editingShip && (
+      {editingInfantry && (
         <TouchableOpacity
           onPress={() => {
-            setEditingShip(null);
+            setEditingInfantry(null);
             setName('');
             setDescription('');
             setImage(null);
@@ -196,6 +210,7 @@ const VillainFleetForm = ({ collectionPath = 'villainShips', placeholderImage, s
   );
 };
 
+// Styles
 const styles = StyleSheet.create({
   form: {
     padding: 20,
@@ -203,7 +218,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   input: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    backgroundColor: 'rgba(255,255,255,0.9)',
     width: '90%',
     padding: 10,
     borderRadius: 5,
@@ -220,7 +235,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   upload: {
-    backgroundColor: '#400b60',
+    backgroundColor: '#4CAF50',
     padding: 10,
     borderRadius: 5,
     flex: 1,
@@ -272,4 +287,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VillainFleetForm;
+export default RecruitForm;
