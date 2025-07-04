@@ -4,9 +4,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // Villains Screens
 import VillainsScreen from '../screens/Villains/VillainsScreen';
 import VillainsTab from '../screens/Villains/VillainsTab';
+import Villainy from '../screens/Villains/Villainy';
 
 // Big Bads Screens
 import BigBadsTab from '../screens/Villains/BigBadsTab';
+import BigBoss from '../screens/Villains/BigBoss';
 
 // Demons Section
 import DemonsSection from '../screens/Villains/DemonsSection';
@@ -96,7 +98,11 @@ const VillainsStack = () => {
       {/* Base Screens */}
       <Stack.Screen name="Villains" component={VillainsScreen} />
       <Stack.Screen name="VillainsTab" component={VillainsTab} />
+        <Stack.Screen name="Villainy" component={Villainy} />
+
       <Stack.Screen name="BigBadsTab" component={BigBadsTab} />
+      <Stack.Screen name="BigBoss" component={BigBoss} />
+
       <Stack.Screen name="DemonsSection" component={DemonsSection} />
       {/*Demon Screens*/}
       <Stack.Screen name="SkinwalkerScreen" component={SkinwalkerScreen} />

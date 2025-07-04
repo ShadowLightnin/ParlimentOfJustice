@@ -86,14 +86,18 @@ const BigBadsTab = () => {
       <View style={styles.container}>
         {/* Back Button */}
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate('Villains')}
           style={styles.backButton}
         >
           <Text style={styles.backButtonText}>⬅️ Back</Text>
         </TouchableOpacity>
 
         {/* Title */}
-        <Text style={styles.header}>Big Bads</Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('BigBoss')}
+        >
+          <Text style={styles.header}>Big Bads</Text>
+        </TouchableOpacity>
 
         {/* Horizontal Scrollable Cards */}
         <View style={styles.scrollWrapper}>

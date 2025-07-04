@@ -116,14 +116,18 @@ const VillainsTab = () => {
       <View style={styles.container}>
         {/* Back Button */}
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate('Villains')}
           style={styles.backButton}
         >
           <Text style={styles.backButtonText}>⬅️ Back</Text>
         </TouchableOpacity>
 
         {/* Title */}
-        <Text style={styles.header}>Villains</Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Villainy')}
+        >
+          <Text style={styles.header}>Villains</Text>
+        </TouchableOpacity>
 
         {/* Scrollable Grid */}
         <View style={styles.scrollWrapper}>
