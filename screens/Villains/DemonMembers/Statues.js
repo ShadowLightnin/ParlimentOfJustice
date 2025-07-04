@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,9 +7,12 @@ import {
   ScrollView,
   StyleSheet,
   Dimensions,
-  ImageBackground
+  ImageBackground,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { db } from '../../../lib/firebase';
+import { collection, onSnapshot } from 'firebase/firestore';
+import EnlightedInvite from '../EnlightenedInvite';
 
 // Screen dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -18,9 +21,8 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const isDesktop = SCREEN_WIDTH > 600;
 
 // Statues data with images & respective screens
-const statues = [
-  { name: 'Weeping Angels', screen: 'StatueScreen', image: require('../../../assets/BackGround/Statue.jpg'), clickable: false },
-  // { name: '', screen: '', image: require('../../../assets/BackGround/.jpg'), clickable: false },
+const hardcodedStatues = [
+  { id: 'statue-1', name: 'Weeping Angel', screen: '', image: require('../../../assets/BackGround/Statue.jpg'), clickable: true, borderColor: '#c0c0c0', hardcoded: true, description: 'A quantum-locked statue that moves when unseen.' },
 ];
 
 // Card dimensions for desktop and mobile
@@ -31,28 +33,48 @@ const cardSizes = {
 
 const StatuesScreen = () => {
   const navigation = useNavigation();
+  const [statues, setStatues] = useState(hardcodedStatues);
+
+  // Fetch dynamic statues from Firestore
+  useEffect(() => {
+    const unsub = onSnapshot(collection(db, 'statues'), (snap) => {
+      const dynamicStatues = snap.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        clickable: true,
+        borderColor: doc.data().borderColor || '#c0c0c0',
+        hardcoded: false,
+      }));
+      console.log('Fetched dynamic statues:', dynamicStatues);
+      setStatues([...hardcodedStatues, ...dynamicStatues]);
+    }, (e) => {
+      console.error('Firestore error:', e.message);
+    });
+    return () => unsub();
+  }, []);
 
   // Render Each Statue Card
   const renderStatueCard = (statue) => (
     <TouchableOpacity
-      key={statue.name}
-      style={[
+      key={statue.id || statue.name}
+      style={[ // Fixed: Changed `style=[...]` to `style={[...]}`
         styles.card,
         {
           width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
-          height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height
+          height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
         },
-        statue.clickable ? styles.clickable : styles.notClickable
+        statue.clickable && statue.borderColor ? styles.clickable(statue.borderColor) : styles.notClickable,
       ]}
-      onPress={() => statue.clickable && navigation.navigate(statue.screen)}
+      onPress={() => statue.clickable && statue.screen && navigation.navigate(statue.screen)}
       disabled={!statue.clickable}
     >
-      <Image source={statue.image} style={styles.image} />
-      
-      {/* Transparent Overlay for Image Protection */}
+      <Image
+        source={statue.image || (statue.imageUrl && statue.imageUrl !== 'placeholder' ? { uri: statue.imageUrl } : require('../../../assets/BackGround/Statue.jpg'))}
+        style={styles.image}
+        resizeMode="cover"
+      />
       <View style={styles.transparentOverlay} />
-
-      <Text style={styles.name}>{statue.name}</Text>
+      <Text style={styles.name}>{statue.name || statue.codename || 'Unknown'}</Text>
       {!statue.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );
@@ -65,14 +87,24 @@ const StatuesScreen = () => {
       <View style={styles.container}>
         {/* Back Button */}
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => {
+            console.log('Navigating back');
+            navigation.goBack();
+          }}
           style={styles.backButton}
         >
           <Text style={styles.backButtonText}>⬅️</Text>
         </TouchableOpacity>
 
         {/* Title */}
-        <Text style={styles.header}>Weeping Angels</Text>
+        <TouchableOpacity
+          onPress={() => {
+            console.log('Navigating to StatuesTab');
+            navigation.navigate('StatuesTab');
+          }}
+        >
+          <Text style={styles.header}>Weeping Angels</Text>
+        </TouchableOpacity>
 
         {/* Horizontal Scrollable Cards */}
         <View style={styles.scrollWrapper}>
@@ -81,9 +113,24 @@ const StatuesScreen = () => {
             showsHorizontalScrollIndicator={true}
             contentContainerStyle={[styles.scrollContainer, { gap: isDesktop ? 40 : 20 }]}
           >
-            {statues.map(renderStatueCard)}
+            {statues.length > 0 ? (
+              statues.map(renderStatueCard)
+            ) : (
+              <Text style={styles.noStatuesText}>No statues available</Text>
+            )}
           </ScrollView>
         </View>
+
+        {/* Form for Adding Statues */}
+        <EnlightedInvite
+          collectionPath="statues"
+          placeholderImage={require('../../../assets/BackGround/Statue.jpg')}
+          villain={statues}
+          setVillain={setStatues}
+          hardcodedVillain={hardcodedStatues}
+          editingVillain={null}
+          setEditingVillain={() => {}}
+        />
       </View>
     </ImageBackground>
   );
@@ -143,10 +190,10 @@ const styles = StyleSheet.create({
     elevation: 5,
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
-  clickable: {
-    borderColor: '#c0c0c0',
+  clickable: (borderColor) => ({
+    borderColor: borderColor || '#c0c0c0',
     borderWidth: 2,
-  },
+  }),
   notClickable: {
     opacity: 0.5,
   },
@@ -156,7 +203,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   transparentOverlay: {
-    ...StyleSheet.absoluteFillObject, 
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0)',
     zIndex: 1,
   },
@@ -172,6 +219,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#ff4444',
     marginTop: 5,
+  },
+  noStatuesText: {
+    fontSize: 16,
+    color: '#FFF',
+    textAlign: 'center',
+    padding: 20,
   },
 });
 

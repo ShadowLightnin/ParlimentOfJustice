@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,9 +7,12 @@ import {
   ScrollView,
   StyleSheet,
   Dimensions,
-  ImageBackground
+  ImageBackground,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { db } from '../../../lib/firebase';
+import { collection, onSnapshot } from 'firebase/firestore';
+import EnlightedInvite from '../EnlightenedInvite';
 
 // Screen dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -18,9 +21,8 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const isDesktop = SCREEN_WIDTH > 600;
 
 // Bugs data with images & respective screens
-const bugs = [
-  { name: 'Bugs', screen: 'BugsScreen', image: require('../../../assets/BackGround/Bugs.jpg'), clickable: false },
-  // { name: '', screen: '', image: require('../../../assets/BackGround/.jpg'), clickable: false },
+const hardcodedBugs = [
+  { id: 'bug-1', name: 'Swarm', screen: '', image: require('../../../assets/BackGround/Bugs.jpg'), clickable: true, borderColor: '#c0c0c0', hardcoded: true, description: 'A hive-mind insectoid from a toxic planet.' },
 ];
 
 // Card dimensions for desktop and mobile
@@ -31,28 +33,48 @@ const cardSizes = {
 
 const BugsScreen = () => {
   const navigation = useNavigation();
+  const [bugs, setBugs] = useState(hardcodedBugs);
+
+  // Fetch dynamic bugs from Firestore
+  useEffect(() => {
+    const unsub = onSnapshot(collection(db, 'bugs'), (snap) => {
+      const dynamicBugs = snap.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        clickable: true,
+        borderColor: doc.data().borderColor || '#c0c0c0',
+        hardcoded: false,
+      }));
+      console.log('Fetched dynamic bugs:', dynamicBugs);
+      setBugs([...hardcodedBugs, ...dynamicBugs]);
+    }, (e) => {
+      console.error('Firestore error:', e.message);
+    });
+    return () => unsub();
+  }, []);
 
   // Render Each Bug Card
   const renderBugCard = (bug) => (
     <TouchableOpacity
-      key={bug.name}
+      key={bug.id || bug.name}
       style={[
         styles.card,
         {
           width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
-          height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height
+          height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
         },
-        bug.clickable ? styles.clickable : styles.notClickable
+        bug.clickable && bug.borderColor ? styles.clickable(bug.borderColor) : styles.notClickable,
       ]}
-      onPress={() => bug.clickable && navigation.navigate(bug.screen)}
+      onPress={() => bug.clickable && bug.screen && navigation.navigate(bug.screen)}
       disabled={!bug.clickable}
     >
-      <Image source={bug.image} style={styles.image} />
-      
-      {/* Transparent Overlay for Image Protection */}
+      <Image
+        source={bug.image || (bug.imageUrl && bug.imageUrl !== 'placeholder' ? { uri: bug.imageUrl } : require('../../../assets/BackGround/Bugs.jpg'))}
+        style={styles.image}
+        resizeMode="cover"
+      />
       <View style={styles.transparentOverlay} />
-
-      <Text style={styles.name}>{bug.name}</Text>
+      <Text style={styles.name}>{bug.name || bug.codename || 'Unknown'}</Text>
       {!bug.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );
@@ -65,14 +87,24 @@ const BugsScreen = () => {
       <View style={styles.container}>
         {/* Back Button */}
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => {
+            console.log('Navigating back');
+            navigation.goBack();
+          }}
           style={styles.backButton}
         >
           <Text style={styles.backButtonText}>⬅️</Text>
         </TouchableOpacity>
 
         {/* Title */}
-        <Text style={styles.header}>Bugs</Text>
+        <TouchableOpacity
+          onPress={() => {
+            console.log('Navigating to BugsTab');
+            navigation.navigate('BugsTab');
+          }}
+        >
+          <Text style={styles.header}>Bugs</Text>
+        </TouchableOpacity>
 
         {/* Horizontal Scrollable Cards */}
         <View style={styles.scrollWrapper}>
@@ -81,9 +113,24 @@ const BugsScreen = () => {
             showsHorizontalScrollIndicator={true}
             contentContainerStyle={[styles.scrollContainer, { gap: isDesktop ? 40 : 20 }]}
           >
-            {bugs.map(renderBugCard)}
+            {bugs.length > 0 ? (
+              bugs.map(renderBugCard)
+            ) : (
+              <Text style={styles.noBugsText}>No bugs available</Text>
+            )}
           </ScrollView>
         </View>
+
+        {/* Form for Adding Bugs */}
+        <EnlightedInvite
+          collectionPath="bugs"
+          placeholderImage={require('../../../assets/BackGround/Bugs.jpg')}
+          villain={bugs}
+          setVillain={setBugs}
+          hardcodedVillain={hardcodedBugs}
+          editingVillain={null}
+          setEditingVillain={() => {}}
+        />
       </View>
     </ImageBackground>
   );
@@ -143,10 +190,10 @@ const styles = StyleSheet.create({
     elevation: 5,
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
-  clickable: {
-    borderColor: '#c0c0c0',
+  clickable: (borderColor) => ({
+    borderColor: borderColor || '#c0c0c0',
     borderWidth: 2,
-  },
+  }),
   notClickable: {
     opacity: 0.5,
   },
@@ -156,7 +203,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   transparentOverlay: {
-    ...StyleSheet.absoluteFillObject, 
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0)',
     zIndex: 1,
   },
@@ -172,6 +219,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#ff4444',
     marginTop: 5,
+  },
+  noBugsText: {
+    fontSize: 16,
+    color: '#FFF',
+    textAlign: 'center',
+    padding: 20,
   },
 });
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,9 +7,12 @@ import {
   ScrollView,
   StyleSheet,
   Dimensions,
-  ImageBackground
+  ImageBackground,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { db } from '../../../lib/firebase';
+import { collection, onSnapshot } from 'firebase/firestore';
+import EnlightedInvite from '../EnlightenedInvite';
 
 // Screen dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -18,9 +21,8 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const isDesktop = SCREEN_WIDTH > 600;
 
 // Ghosts data with images & respective screens
-const ghosts = [
-  { name: 'Ghosts', screen: 'GhostsScreen', image: require('../../../assets/BackGround/Ghosts2.jpg'), clickable: false },
-  // { name: '', screen: '', image: require('../../../assets/BackGround/.jpg'), clickable: false },
+const hardcodedGhosts = [
+  { id: 'ghost-1', name: 'Wraith', screen: '', image: require('../../../assets/BackGround/Ghosts2.jpg'), clickable: true, borderColor: '#c0c0c0', hardcoded: true, description: 'A spectral entity haunting the mortal realm.' },
 ];
 
 // Card dimensions for desktop and mobile
@@ -31,28 +33,48 @@ const cardSizes = {
 
 const GhostsScreen = () => {
   const navigation = useNavigation();
+  const [ghosts, setGhosts] = useState(hardcodedGhosts);
+
+  // Fetch dynamic ghosts from Firestore
+  useEffect(() => {
+    const unsub = onSnapshot(collection(db, 'ghosts'), (snap) => {
+      const dynamicGhosts = snap.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        clickable: true,
+        borderColor: doc.data().borderColor || '#c0c0c0',
+        hardcoded: false,
+      }));
+      console.log('Fetched dynamic ghosts:', dynamicGhosts);
+      setGhosts([...hardcodedGhosts, ...dynamicGhosts]);
+    }, (e) => {
+      console.error('Firestore error:', e.message);
+    });
+    return () => unsub();
+  }, []);
 
   // Render Each Ghost Card
   const renderGhostCard = (ghost) => (
     <TouchableOpacity
-      key={ghost.name}
+      key={ghost.id || ghost.name}
       style={[
         styles.card,
         {
           width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
-          height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height
+          height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
         },
-        ghost.clickable ? styles.clickable : styles.notClickable
+        ghost.clickable && ghost.borderColor ? styles.clickable(ghost.borderColor) : styles.notClickable,
       ]}
-      onPress={() => ghost.clickable && navigation.navigate(ghost.screen)}
+      onPress={() => ghost.clickable && ghost.screen && navigation.navigate(ghost.screen)}
       disabled={!ghost.clickable}
     >
-      <Image source={ghost.image} style={styles.image} />
-      
-      {/* Transparent Overlay for Image Protection */}
+      <Image
+        source={ghost.image || (ghost.imageUrl && ghost.imageUrl !== 'placeholder' ? { uri: ghost.imageUrl } : require('../../../assets/BackGround/Ghosts2.jpg'))}
+        style={styles.image}
+        resizeMode="cover"
+      />
       <View style={styles.transparentOverlay} />
-
-      <Text style={styles.name}>{ghost.name}</Text>
+      <Text style={styles.name}>{ghost.name || ghost.codename || 'Unknown'}</Text>
       {!ghost.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );
@@ -65,14 +87,24 @@ const GhostsScreen = () => {
       <View style={styles.container}>
         {/* Back Button */}
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => {
+            console.log('Navigating back');
+            navigation.goBack();
+          }}
           style={styles.backButton}
         >
           <Text style={styles.backButtonText}>⬅️</Text>
         </TouchableOpacity>
 
         {/* Title */}
-        <Text style={styles.header}>Ghosts</Text>
+        <TouchableOpacity
+          onPress={() => {
+            console.log('Navigating to GhostsTab');
+            navigation.navigate('GhostsTab');
+          }}
+        >
+          <Text style={styles.header}>Ghosts</Text>
+        </TouchableOpacity>
 
         {/* Horizontal Scrollable Cards */}
         <View style={styles.scrollWrapper}>
@@ -81,9 +113,24 @@ const GhostsScreen = () => {
             showsHorizontalScrollIndicator={true}
             contentContainerStyle={[styles.scrollContainer, { gap: isDesktop ? 40 : 20 }]}
           >
-            {ghosts.map(renderGhostCard)}
+            {ghosts.length > 0 ? (
+              ghosts.map(renderGhostCard)
+            ) : (
+              <Text style={styles.noGhostsText}>No ghosts available</Text>
+            )}
           </ScrollView>
         </View>
+
+        {/* Form for Adding Ghosts */}
+        <EnlightedInvite
+          collectionPath="ghosts"
+          placeholderImage={require('../../../assets/BackGround/Ghosts2.jpg')}
+          villain={ghosts}
+          setVillain={setGhosts}
+          hardcodedVillain={hardcodedGhosts}
+          editingVillain={null}
+          setEditingVillain={() => {}}
+        />
       </View>
     </ImageBackground>
   );
@@ -103,7 +150,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   backButton: {
-     position: 'absolute',
+    position: 'absolute',
     top: 40,
     left: 0,
     backgroundColor: '#750000',
@@ -143,10 +190,10 @@ const styles = StyleSheet.create({
     elevation: 5,
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
-  clickable: {
-    borderColor: '#c0c0c0',
+  clickable: (borderColor) => ({
+    borderColor: borderColor || '#c0c0c0',
     borderWidth: 2,
-  },
+  }),
   notClickable: {
     opacity: 0.5,
   },
@@ -156,7 +203,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   transparentOverlay: {
-    ...StyleSheet.absoluteFillObject, 
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0)',
     zIndex: 1,
   },
@@ -172,6 +219,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#ff4444',
     marginTop: 5,
+  },
+  noGhostsText: {
+    fontSize: 16,
+    color: '#FFF',
+    textAlign: 'center',
+    padding: 20,
   },
 });
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,9 +7,12 @@ import {
   ScrollView,
   StyleSheet,
   Dimensions,
-  ImageBackground
+  ImageBackground,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { db } from '../../../lib/firebase';
+import { collection, onSnapshot } from 'firebase/firestore';
+import EnlightedInvite from '../EnlightenedInvite';
 
 // Screen dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -17,10 +20,9 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 // Grid layout settings
 const isDesktop = SCREEN_WIDTH > 600;
 
-// Evil Constructs data with images & respective screens
-const robots = [
-  { name: 'Thorax', screen: '', image: require('../../../assets/Villains/Thorax.jpg'), clickable: true },
-  // { name: '', screen: '', image: require('../../assets/Villains/.jpg'), clickable: false },
+// Robots data with images & respective screens
+const hardcodedRobots = [
+  { id: 'robot-1', name: 'Thorax', screen: '', image: require('../../../assets/Villains/Thorax.jpg'), clickable: true, borderColor: '#c0c0c0', hardcoded: true, description: 'A sentient machine with destructive ambitions.' },
 ];
 
 // Card dimensions for desktop and mobile
@@ -31,28 +33,48 @@ const cardSizes = {
 
 const RobotsScreen = () => {
   const navigation = useNavigation();
+  const [robots, setRobots] = useState(hardcodedRobots);
 
-  // Render Each Evil Construct Card
+  // Fetch dynamic robots from Firestore
+  useEffect(() => {
+    const unsub = onSnapshot(collection(db, 'robots'), (snap) => {
+      const dynamicRobots = snap.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        clickable: true,
+        borderColor: doc.data().borderColor || '#c0c0c0',
+        hardcoded: false,
+      }));
+      console.log('Fetched dynamic robots:', dynamicRobots);
+      setRobots([...hardcodedRobots, ...dynamicRobots]);
+    }, (e) => {
+      console.error('Firestore error:', e.message);
+    });
+    return () => unsub();
+  }, []);
+
+  // Render Each Robot Card
   const renderRobotCard = (robot) => (
     <TouchableOpacity
-      key={robot.name}
-      style={[
+      key={robot.id || robot.name}
+      style={[ // Fixed: Changed `style=[...]` to `style={[...]}`
         styles.card,
         {
           width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
-          height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height
+          height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
         },
-        robot.clickable ? styles.clickable : styles.notClickable
+        robot.clickable && robot.borderColor ? styles.clickable(robot.borderColor) : styles.notClickable,
       ]}
-      onPress={() => robot.clickable && navigation.navigate(robot.screen)}
+      onPress={() => robot.clickable && robot.screen && navigation.navigate(robot.screen)}
       disabled={!robot.clickable}
     >
-      <Image source={robot.image} style={styles.image} />
-      
-      {/* Transparent Overlay for Image Protection */}
+      <Image
+        source={robot.image || (robot.imageUrl && robot.imageUrl !== 'placeholder' ? { uri: robot.imageUrl } : require('../../../assets/Villains/Thorax.jpg'))}
+        style={styles.image}
+        resizeMode="cover"
+      />
       <View style={styles.transparentOverlay} />
-
-      <Text style={styles.name}>{robot.name}</Text>
+      <Text style={styles.name}>{robot.name || robot.codename || 'Unknown'}</Text>
       {!robot.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );
@@ -65,14 +87,24 @@ const RobotsScreen = () => {
       <View style={styles.container}>
         {/* Back Button */}
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => {
+            console.log('Navigating back');
+            navigation.goBack();
+          }}
           style={styles.backButton}
         >
           <Text style={styles.backButtonText}>⬅️</Text>
         </TouchableOpacity>
 
         {/* Title */}
-        <Text style={styles.header}>Metalmen</Text>
+        <TouchableOpacity
+          onPress={() => {
+            console.log('Navigating to RobotsTab');
+            navigation.navigate('RobotsTab');
+          }}
+        >
+          <Text style={styles.header}>Metalmen</Text>
+        </TouchableOpacity>
 
         {/* Horizontal Scrollable Cards */}
         <View style={styles.scrollWrapper}>
@@ -81,9 +113,24 @@ const RobotsScreen = () => {
             showsHorizontalScrollIndicator={true}
             contentContainerStyle={[styles.scrollContainer, { gap: isDesktop ? 40 : 20 }]}
           >
-            {robots.map(renderRobotCard)}
+            {robots.length > 0 ? (
+              robots.map(renderRobotCard)
+            ) : (
+              <Text style={styles.noRobotsText}>No robots available</Text>
+            )}
           </ScrollView>
         </View>
+
+        {/* Form for Adding Robots */}
+        <EnlightedInvite
+          collectionPath="robots"
+          placeholderImage={require('../../../assets/Villains/Thorax.jpg')}
+          villain={robots}
+          setVillain={setRobots}
+          hardcodedVillain={hardcodedRobots}
+          editingVillain={null}
+          setEditingVillain={() => {}}
+        />
       </View>
     </ImageBackground>
   );
@@ -143,10 +190,10 @@ const styles = StyleSheet.create({
     elevation: 5,
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
-  clickable: {
-    borderColor: '#c0c0c0',
+  clickable: (borderColor) => ({
+    borderColor: borderColor || '#c0c0c0',
     borderWidth: 2,
-  },
+  }),
   notClickable: {
     opacity: 0.5,
   },
@@ -156,7 +203,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   transparentOverlay: {
-    ...StyleSheet.absoluteFillObject, 
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0)',
     zIndex: 1,
   },
@@ -172,6 +219,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#ff4444',
     marginTop: 5,
+  },
+  noRobotsText: {
+    fontSize: 16,
+    color: '#FFF',
+    textAlign: 'center',
+    padding: 20,
   },
 });
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,9 +7,12 @@ import {
   ScrollView,
   StyleSheet,
   Dimensions,
-  ImageBackground
+  ImageBackground,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { db } from '../../../lib/firebase';
+import { collection, onSnapshot } from 'firebase/firestore';
+import EnlightedInvite from '../EnlightenedInvite';
 
 // Screen dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -18,9 +21,8 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const isDesktop = SCREEN_WIDTH > 600;
 
 // Oni data with images & respective screens
-const oni = [
-  { name: 'Oni', screen: 'OniScreen', image: require('../../../assets/BackGround/Oni.jpg'), clickable: false },
-  // { name: '', screen: '', image: require('../../../assets/BackGround/.jpg'), clickable: false },
+const hardcodedOni = [
+  { id: 'oni-1', name: 'Akuma', screen: '', image: require('../../../assets/BackGround/Oni.jpg'), clickable: true, borderColor: '#c0c0c0', hardcoded: true, description: 'A malevolent demon from ancient folklore.' },
 ];
 
 // Card dimensions for desktop and mobile
@@ -31,28 +33,48 @@ const cardSizes = {
 
 const OniScreen = () => {
   const navigation = useNavigation();
+  const [oni, setOni] = useState(hardcodedOni);
+
+  // Fetch dynamic oni from Firestore
+  useEffect(() => {
+    const unsub = onSnapshot(collection(db, 'oni'), (snap) => {
+      const dynamicOni = snap.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        clickable: true,
+        borderColor: doc.data().borderColor || '#c0c0c0',
+        hardcoded: false,
+      }));
+      console.log('Fetched dynamic oni:', dynamicOni);
+      setOni([...hardcodedOni, ...dynamicOni]);
+    }, (e) => {
+      console.error('Firestore error:', e.message);
+    });
+    return () => unsub();
+  }, []);
 
   // Render Each Oni Card
   const renderOniCard = (oni) => (
     <TouchableOpacity
-      key={oni.name}
+      key={oni.id || oni.name}
       style={[
         styles.card,
         {
           width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
-          height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height
+          height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
         },
-        oni.clickable ? styles.clickable : styles.notClickable
+        oni.clickable && oni.borderColor ? styles.clickable(oni.borderColor) : styles.notClickable,
       ]}
-      onPress={() => oni.clickable && navigation.navigate(oni.screen)}
+      onPress={() => oni.clickable && oni.screen && navigation.navigate(oni.screen)}
       disabled={!oni.clickable}
     >
-      <Image source={oni.image} style={styles.image} />
-      
-      {/* Transparent Overlay for Image Protection */}
+      <Image
+        source={oni.image || (oni.imageUrl && oni.imageUrl !== 'placeholder' ? { uri: oni.imageUrl } : require('../../../assets/BackGround/Oni.jpg'))}
+        style={styles.image}
+        resizeMode="cover"
+      />
       <View style={styles.transparentOverlay} />
-
-      <Text style={styles.name}>{oni.name}</Text>
+      <Text style={styles.name}>{oni.name || oni.codename || 'Unknown'}</Text>
       {!oni.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );
@@ -65,14 +87,24 @@ const OniScreen = () => {
       <View style={styles.container}>
         {/* Back Button */}
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
+          onPress={() => {
+            console.log('Navigating back');
+            navigation.goBack();
+          }}
           style={styles.backButton}
         >
           <Text style={styles.backButtonText}>⬅️</Text>
         </TouchableOpacity>
 
         {/* Title */}
-        <Text style={styles.header}>Oni</Text>
+        <TouchableOpacity
+          onPress={() => {
+            console.log('Navigating to OniTab');
+            navigation.navigate('OniTab');
+          }}
+        >
+          <Text style={styles.header}>Oni</Text>
+        </TouchableOpacity>
 
         {/* Horizontal Scrollable Cards */}
         <View style={styles.scrollWrapper}>
@@ -81,9 +113,24 @@ const OniScreen = () => {
             showsHorizontalScrollIndicator={true}
             contentContainerStyle={[styles.scrollContainer, { gap: isDesktop ? 40 : 20 }]}
           >
-            {oni.map(renderOniCard)}
+            {oni.length > 0 ? (
+              oni.map(renderOniCard)
+            ) : (
+              <Text style={styles.noOniText}>No oni available</Text>
+            )}
           </ScrollView>
         </View>
+
+        {/* Form for Adding Oni */}
+        <EnlightedInvite
+          collectionPath="oni"
+          placeholderImage={require('../../../assets/BackGround/Oni.jpg')}
+          villain={oni}
+          setVillain={setOni}
+          hardcodedVillain={hardcodedOni}
+          editingVillain={null}
+          setEditingVillain={() => {}}
+        />
       </View>
     </ImageBackground>
   );
@@ -143,10 +190,10 @@ const styles = StyleSheet.create({
     elevation: 5,
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
-  clickable: {
-    borderColor: '#c0c0c0',
+  clickable: (borderColor) => ({
+    borderColor: borderColor || '#c0c0c0',
     borderWidth: 2,
-  },
+  }),
   notClickable: {
     opacity: 0.5,
   },
@@ -156,7 +203,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   transparentOverlay: {
-    ...StyleSheet.absoluteFillObject, 
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0)',
     zIndex: 1,
   },
@@ -172,6 +219,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#ff4444',
     marginTop: 5,
+  },
+  noOniText: {
+    fontSize: 16,
+    color: '#FFF',
+    textAlign: 'center',
+    padding: 20,
   },
 });
 

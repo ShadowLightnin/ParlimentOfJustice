@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,11 +9,14 @@ import {
   Modal,
   TouchableWithoutFeedback,
   Dimensions,
-  ImageBackground
+  ImageBackground,
 } from 'react-native';
 import { Audio } from 'expo-av';
 import { useNavigation } from '@react-navigation/native';
+import { db } from '../../../lib/firebase';
+import { collection, onSnapshot } from 'firebase/firestore';
 import { demonLords } from './DemonData'; // Import data dynamically
+import EnlightedInvite from '../EnlightenedInvite';
 
 // Screen dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -28,55 +31,92 @@ const SkinwalkersScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDemon, setSelectedDemon] = useState(null);
   const [currentSound, setCurrentSound] = useState(null);
+  const [skinwalkers, setSkinwalkers] = useState(demonLords);
+
+  // Fetch dynamic skinwalkers from Firestore
+  useEffect(() => {
+    const unsub = onSnapshot(collection(db, 'skinwalkers'), (snap) => {
+      const dynamicSkinwalkers = snap.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+        clickable: true,
+        borderColor: doc.data().borderColor || '#e25822',
+        hardcoded: false,
+      }));
+      console.log('Fetched dynamic skinwalkers:', dynamicSkinwalkers);
+      setSkinwalkers([...demonLords, ...dynamicSkinwalkers]);
+    }, (e) => {
+      console.error('Firestore error:', e.message);
+    });
+    return () => unsub();
+  }, []);
 
   // Dynamic Sound Handler with Cleanup
   const playDemonSound = async (audio, screen) => {
-    if (currentSound) {
-      await currentSound.stopAsync();
-      await currentSound.unloadAsync();
-    }
+    try {
+      if (currentSound) {
+        await currentSound.stopAsync();
+        await currentSound.unloadAsync();
+      }
 
-    const { sound } = await Audio.Sound.createAsync(audio);
-    setCurrentSound(sound);
-    await sound.playAsync();
+      const { sound } = await Audio.Sound.createAsync(audio);
+      setCurrentSound(sound);
+      await sound.playAsync();
+      console.log(`Playing audio for ${screen || 'skinwalker'}`);
 
-    if (screen) {
-      setTimeout(() => {
-        navigation.navigate(screen);
-      }, 3000);
-    }
-  };
-
-  const handlePress = async (demon) => {
-    if (demon.audio) {
-      await playDemonSound(demon.audio, demon.screen); // 🔊 For demons with audio
-    } else if (demon.screen) {
-      navigation.navigate(demon.screen); // 🚀 For demons with only a screen
-    }
-
-    if (demon.showSummonPopup) { // ✅ Show popup only if enabled
-      setSelectedDemon(demon.name);
-      setModalVisible(true);
+      if (screen) {
+        setTimeout(() => {
+          console.log(`Navigating to ${screen}`);
+          navigation.navigate(screen);
+        }, 3000);
+      }
+    } catch (error) {
+      console.error('Audio error:', error.message);
     }
   };
 
-  const renderDemonLord = (demon) => (
+  const handlePress = async (skinwalker) => {
+    try {
+      if (skinwalker.audio) {
+        await playDemonSound(skinwalker.audio, skinwalker.screen); // 🔊 For skinwalkers with audio
+      } else if (skinwalker.screen) {
+        console.log(`Navigating to ${skinwalker.screen}`);
+        navigation.navigate(skinwalker.screen); // 🚀 For skinwalkers with only a screen
+      }
+
+      if (skinwalker.showSummonPopup) { // ✅ Show popup only if enabled
+        setSelectedDemon(skinwalker.name || 'Unknown');
+        setModalVisible(true);
+      }
+    } catch (error) {
+      console.error('Handle press error:', error.message);
+    }
+  };
+
+  const renderSkinwalkerCard = (skinwalker) => (
     <TouchableOpacity
-      key={demon.name}
+      key={skinwalker.name || skinwalker.id || Math.random().toString()}
       style={[
         styles.demonCard,
         { width: cardSize, height: cardSize * 1.2 },
-        demon.clickable ? styles.clickable : styles.notClickable
+        skinwalker.clickable ? styles.clickable(skinwalker.borderColor) : styles.notClickable,
       ]}
-      onPress={() => demon.clickable && handlePress(demon)}
-      disabled={!demon.clickable}
+      onPress={() => skinwalker.clickable && handlePress(skinwalker)}
+      disabled={!skinwalker.clickable}
     >
-      <Image source={demon.image} style={[styles.demonImage, { width: imageSize, height: imageSize }]} />
-
-      {/* Transparent Overlay for Image Protection */}
+      <Image
+        source={
+          skinwalker.image ||
+          (skinwalker.imageUrl && skinwalker.imageUrl !== 'placeholder'
+            ? { uri: skinwalker.imageUrl }
+            : require('../../../assets/BackGround/Skinwalkers.jpg'))
+        }
+        style={[styles.demonImage, { width: imageSize, height: imageSize }]}
+        resizeMode="cover"
+      />
       <View style={styles.transparentOverlay} />
-
-      <Text style={styles.demonName}>{demon.name}</Text>
+      <Text style={styles.demonName}>{skinwalker.name || skinwalker.codename || 'Unknown'}</Text>
+      {!skinwalker.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );
 
@@ -86,23 +126,43 @@ const SkinwalkersScreen = () => {
       style={styles.background}
     >
       <View style={styles.container}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        {/* Back Button */}
+        <TouchableOpacity
+          onPress={() => {
+            console.log('Navigating back');
+            navigation.goBack();
+          }}
+          style={styles.backButton}
+        >
           <Text style={styles.backButtonText}>⬅️</Text>
         </TouchableOpacity>
 
-        <Text style={styles.header}> Skinwalkers </Text>
+        {/* Title */}
+        <TouchableOpacity
+          onPress={() => {
+            console.log('Navigating to SkinwalkersTab');
+            navigation.navigate('SkinwalkersTab');
+          }}
+        >
+          <Text style={styles.header}>Skinwalkers</Text>
+        </TouchableOpacity>
 
+        {/* Horizontal Scrollable Cards */}
         <View style={styles.scrollWrapper}>
           <ScrollView
             horizontal
-            contentContainerStyle={styles.scrollContainer}
+            contentContainerStyle={[styles.scrollContainer, { gap: isDesktop ? 40 : 20 }]}
             showsHorizontalScrollIndicator={true}
           >
-            {demonLords.map(renderDemonLord)}
+            {skinwalkers.length > 0 ? (
+              skinwalkers.map(renderSkinwalkerCard)
+            ) : (
+              <Text style={styles.noSkinwalkersText}>No skinwalkers available</Text>
+            )}
           </ScrollView>
         </View>
 
-        {/* Modal for Demon Info */}
+        {/* Modal for Skinwalker Info */}
         <Modal
           transparent={true}
           visible={modalVisible}
@@ -112,11 +172,24 @@ const SkinwalkersScreen = () => {
           <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
             <View style={styles.modalContainer}>
               <View style={styles.modalContent}>
-                <Text style={styles.modalText}>🔥 You have summoned: {selectedDemon} 🔥</Text>
+                <Text style={styles.modalText}>
+                  🔥 You have summoned: {selectedDemon || 'Unknown'} 🔥
+                </Text>
               </View>
             </View>
           </TouchableWithoutFeedback>
         </Modal>
+
+        {/* Form for Adding Skinwalkers */}
+        <EnlightedInvite
+          collectionPath="skinwalkers"
+          placeholderImage={require('../../../assets/BackGround/Skinwalkers.jpg')}
+          villain={skinwalkers}
+          setVillain={setSkinwalkers}
+          hardcodedVillain={demonLords}
+          editingVillain={null}
+          setEditingVillain={() => {}}
+        />
       </View>
     </ImageBackground>
   );
@@ -176,10 +249,10 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     marginRight: 20,
   },
-  clickable: {
-    borderColor: '#e25822',
+  clickable: (borderColor) => ({
+    borderColor: borderColor || '#e25822',
     borderWidth: 4,
-  },
+  }),
   notClickable: {
     opacity: 0.5,
   },
@@ -187,9 +260,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   transparentOverlay: {
-    ...StyleSheet.absoluteFillObject, 
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1, // Ensures overlay is on top without blocking buttons
+    zIndex: 1,
   },
   demonName: {
     marginTop: 15,
@@ -219,6 +292,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     textShadowColor: '#e25822',
     textShadowRadius: 15,
+  },
+  noSkinwalkersText: {
+    fontSize: 16,
+    color: '#FFF',
+    textAlign: 'center',
+    padding: 20,
   },
 });
 
