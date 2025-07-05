@@ -33,7 +33,7 @@ const verticalSpacing = isDesktop ? 50 : 20;
 
 // Hardcoded big bads data with images, purple border color
 const hardcodedBigBads = [
-  { id: 'bigbad-1', name: 'BlackOut', screen: '', image: require('../../assets/Villains/BlackOut.jpg'), clickable: true, borderColor: 'purple', hardcoded: true, description: "Red Murcury's personal assassin." },
+  { id: 'bigbad-1', name: 'Hextator', screen: '', image: require('../../assets/Villains/Hextator.jpg'), clickable: true, borderColor: 'purple', hardcoded: true, description: "Ruler and beloved by his land and people. Wields Archaic magics." },
 ];
 
 const ALLOWED_EMAILS = ["will@test.com", "c1wcummings@gmail.com"];
