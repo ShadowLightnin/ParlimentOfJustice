@@ -16,7 +16,7 @@ import { useNavigation } from '@react-navigation/native';
 import { db, auth, storage } from '../../lib/firebase';
 import { collection, onSnapshot, deleteDoc, doc, getDoc } from 'firebase/firestore';
 import { ref, deleteObject } from 'firebase/storage';
-import LeagueMembers from '../Justice/LeagueMembers';
+import SamsArmory from './SamsArmory'; // Changed from LeagueMembers
 
 // Screen dimensions with error handling
 let SCREEN_WIDTH, SCREEN_HEIGHT;
@@ -53,7 +53,7 @@ const horizontalSpacing = isDesktop ? 40 : 10;
 const verticalSpacing = isDesktop ? 50 : 20;
 
 // Permissions
-const ALLOWED_EMAILS = ["will@test.com", "c1wcummings@gmail.com","samuelp.woodwell@gmail.com"];
+const ALLOWED_EMAILS = ["will@test.com", "c1wcummings@gmail.com", "samuelp.woodwell@gmail.com"];
 const RESTRICT_ACCESS = true;
 
 const RollingThunderScreen = () => {
@@ -314,7 +314,7 @@ const RollingThunderScreen = () => {
               })}
             </View>
           ))}
-          <LeagueMembers
+          <SamsArmory
             collectionPath="members"
             placeholderImage={require('../../assets/Armor/PlaceHolder.jpg')}
             hero={teamMembers}

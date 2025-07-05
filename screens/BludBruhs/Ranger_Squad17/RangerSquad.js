@@ -16,7 +16,7 @@ import { useNavigation } from '@react-navigation/native';
 import { db, auth, storage } from '../../../lib/firebase';
 import { collection, onSnapshot, deleteDoc, doc, getDoc } from 'firebase/firestore';
 import { ref, deleteObject } from 'firebase/storage';
-import LeagueMembers from '../../Justice/LeagueMembers';
+import SamsArmory from '../SamsArmory'; // Changed from LeagueMembers
 
 // Screen dimensions
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -314,7 +314,7 @@ const RangerSquad = () => {
           {/* Sam's Clones */}
           <Text style={styles.sectionTitle}>Sam's Clones</Text>
           {renderGrid(samsSquad, Math.ceil(samsSquad.length / columns), 'sams')}
-          <LeagueMembers
+          <SamsArmory
             collectionPath="rangerSquad"
             placeholderImage={require('../../../assets/Armor/PlaceHolder.jpg')}
             hero={samsSquad}

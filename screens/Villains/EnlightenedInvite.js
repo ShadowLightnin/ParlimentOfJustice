@@ -17,7 +17,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const isDesktop = SCREEN_WIDTH > 600;
 
-const ALLOWED_EMAILS = ["will@test.com", "c1wcummings@gmail.com", "samuelp.woodwell@gmail.com"];
+const ALLOWED_EMAILS = ["will@test.com", "c1wcummings@gmail.com"];
 const RESTRICT_ACCESS = true;
 
 const EnlightenedInvite = ({

@@ -17,7 +17,7 @@ import { useNavigation } from '@react-navigation/native';
 import { db, auth, storage } from '../../../lib/firebase';
 import { collection, onSnapshot, deleteDoc, doc, getDoc } from 'firebase/firestore';
 import { ref, deleteObject } from 'firebase/storage';
-import EnlightenedInvite from '../EnlightenedInvite';
+import DarkLords from './DarkLords';
 
 // Screen dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -308,7 +308,7 @@ const OniScreen = () => {
               )}
             </ScrollView>
           </View>
-          <EnlightenedInvite
+          <DarkLords
             collectionPath="oni"
             placeholderImage={require('../../../assets/BackGround/Oni.jpg')}
             villain={oni}

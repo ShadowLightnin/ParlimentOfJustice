@@ -12,6 +12,7 @@ import BigBoss from '../screens/Villains/BigBoss';
 
 // Demons Section
 import DemonsSection from '../screens/Villains/DemonsSection';
+import DarkLords from '../screens/Villains/DemonMembers/DarkLords';
 import SkinwalkerScreen from '../screens/Villains/DemonMembers/Skinwalkers';
 import StatuesScreen from '../screens/Villains/DemonMembers/Statues';
 import OniScreen from '../screens/Villains/DemonMembers/Oni';
@@ -104,6 +105,7 @@ const VillainsStack = () => {
       <Stack.Screen name="BigBoss" component={BigBoss} />
 
       <Stack.Screen name="DemonsSection" component={DemonsSection} />
+      <Stack.Screen name="DarkLords" component={DarkLords} />
       {/*Demon Screens*/}
       <Stack.Screen name="SkinwalkerScreen" component={SkinwalkerScreen} />
       <Stack.Screen name="RobotsScreen" component={RobotsScreen} />

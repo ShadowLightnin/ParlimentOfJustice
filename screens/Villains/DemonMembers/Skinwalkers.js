@@ -18,7 +18,7 @@ import { db, auth, storage } from '../../../lib/firebase';
 import { collection, onSnapshot, deleteDoc, doc, getDoc } from 'firebase/firestore';
 import { ref, deleteObject } from 'firebase/storage';
 import { demonLords } from './DemonData';
-import EnlightenedInvite from '../EnlightenedInvite';
+import DarkLords from './DarkLords';
 
 // Screen dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -327,7 +327,7 @@ const SkinwalkersScreen = () => {
               )}
             </ScrollView>
           </View>
-          <EnlightenedInvite
+          <DarkLords
             collectionPath="skinwalkers"
             placeholderImage={require('../../../assets/BackGround/Skinwalkers.jpg')}
             villain={skinwalkers}

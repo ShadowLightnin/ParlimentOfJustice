@@ -17,11 +17,11 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const isDesktop = SCREEN_WIDTH > 600;
 
-const ALLOWED_EMAILS = ["will@test.com", "c1wcummings@gmail.com"];
+const ALLOWED_EMAILS = ["will@test.com", "c1wcummings@gmail.com", "samuelp.woodwell@gmail.com"];
 const RESTRICT_ACCESS = true;
 
-const LeagueMembers = ({
-  collectionPath = 'hero',
+const SamsArmory = ({
+  collectionPath = 'samArmor',
   placeholderImage,
   hero,
   setHero,
@@ -40,10 +40,12 @@ const LeagueMembers = ({
       setName(editingHero.name || editingHero.codename || '');
       setDescription(editingHero.description || '');
       setImageUri(editingHero.imageUrl || null);
+      console.log('Editing hero loaded:', { id: editingHero.id, name: editingHero.name, codename: editingHero.codename });
     } else {
       setName('');
       setDescription('');
       setImageUri(null);
+      console.log('Form reset for new hero');
     }
   }, [editingHero]);
 
@@ -65,6 +67,7 @@ const LeagueMembers = ({
     });
     if (!result.canceled && result.assets) {
       setImageUri(result.assets[0].uri);
+      console.log('Image picked:', result.assets[0].uri);
     }
   };
 
@@ -91,8 +94,8 @@ const LeagueMembers = ({
       Alert.alert('Access Denied', 'Only authorized users can submit heroes.');
       return;
     }
-    if (!name.trim() && !description.trim()) {
-      Alert.alert('Error', 'Please provide a name or description.');
+    if (!name.trim()) {
+      Alert.alert('Error', 'Please provide a name or codename.');
       return;
     }
     setUploading(true);
@@ -106,18 +109,19 @@ const LeagueMembers = ({
         description: description.trim(),
         imageUrl,
         clickable: true,
-        borderColor: '#FFFFFF',
+        borderColor: '#00b3ff', // Match Sam.js default
         hardcoded: false,
+        copyright: 'Samuel Woodwell',
       };
       if (editingHero) {
         const heroRef = doc(db, collectionPath, editingHero.id);
         await setDoc(heroRef, heroData, { merge: true });
-        console.log('Hero updated:', editingHero.id);
+        console.log('Hero updated:', { id: editingHero.id, name: heroData.name });
         setHero(hero.map(item => (item.id === editingHero.id ? { ...item, ...heroData } : item)));
         Alert.alert('Success', 'Hero updated successfully!');
       } else {
         const heroRef = await addDoc(collection(db, collectionPath), heroData);
-        console.log('Hero added:', heroRef.id);
+        console.log('Hero added:', { id: heroRef.id, name: heroData.name });
         setHero([...hardcodedHero, ...hero.filter(item => !item.hardcoded), { id: heroRef.id, ...heroData }]);
         Alert.alert('Success', 'Hero added successfully!');
       }
@@ -138,6 +142,7 @@ const LeagueMembers = ({
     setDescription('');
     setImageUri(null);
     setEditingHero(null);
+    console.log('Form cancelled');
   };
 
   return (
@@ -278,4 +283,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LeagueMembers;
+export default SamsArmory;

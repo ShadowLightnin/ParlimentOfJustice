@@ -8,6 +8,7 @@ import UploadDesign from '../components/UploadDesign';
 
 // import {  } from '../screens/BludBruhs/';
 import Sam from '../screens/BludBruhs/Sam';
+import SamsArmory from '../screens/BludBruhs/SamsArmory';
 
 import WarpScreen from "../screens/BludBruhs/WarpScreen";
 import MontroseManorScreen from "../screens/BludBruhs/MontroseManor/MontroseManorScreen"; // Your new tab screen
@@ -50,6 +51,9 @@ export function BludBruhsStack() {
       <Stack.Screen name="UploadCharacter" component={UploadCharacter} />
       <Stack.Screen name="UploadDesign" component={UploadDesign} />
       <Stack.Screen name="Sam" component={Sam} />
+      <Stack.Screen name="SamsArmory" component={SamsArmory} />
+      
+      {/* Warp and Montrose Manor Screens */}
 
       <Stack.Screen name="WarpScreen" component={WarpScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Montrose" component={MontroseManorScreen} />

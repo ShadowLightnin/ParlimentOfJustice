@@ -16,7 +16,7 @@ import { Audio } from 'expo-av';
 import { db, auth, storage } from '../../lib/firebase';
 import { collection, onSnapshot, deleteDoc, doc, getDoc } from 'firebase/firestore';
 import { ref, deleteObject } from 'firebase/storage';
-import LeagueMembers from '../Justice/LeagueMembers';
+import SamsArmory from './SamsArmory'; // Fixed import
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -74,16 +74,16 @@ const stopBackgroundMusic = async () => {
   }
 };
 
-// Hardcoded Armor
+// Hardcoded Armor - Updated names for uniqueness
 const armors = [
-  { id: 'sam-1', name: 'Void Walker', codename: 'Void Walker', copyright: 'William Cummings', image: require('../../assets/Armor/Sam.jpg'), clickable: true, hardcoded: true },
-  { id: 'sam-2', name: 'Legacy', codename: 'Legacy', copyright: 'William Cummings', image: require('../../assets/Armor/SamLegacy.jpg'), clickable: true, hardcoded: true },
-  { id: 'sam-3', name: 'Void Walker', codename: 'Void Walker', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam8.jpg'), clickable: true, hardcoded: true },
-  { id: 'sam-4', name: 'Void Walker', codename: 'Void Walker', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam9.jpg'), clickable: true, hardcoded: true },
-  { id: 'sam-5', name: 'Void Walker', codename: 'Void Walker', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam4.jpg'), clickable: true, hardcoded: true },
-  { id: 'sam-6', name: 'Void Walker', codename: 'Void Walker', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam7.jpg'), clickable: true, hardcoded: true },
-  { id: 'sam-7', name: 'Void Walker', codename: 'Void Walker', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam3.jpg'), clickable: true, hardcoded: true },
-  { id: 'sam-8', name: 'Void Walker', codename: 'Void Walker', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam5.jpg'), clickable: true, hardcoded: true },
+  { id: 'sam-1', name: 'Void Walker Alpha', codename: 'Void Walker Alpha', copyright: 'William Cummings', image: require('../../assets/Armor/Sam.jpg'), clickable: true, hardcoded: true },
+  { id: 'sam-2', name: 'Legacy Prime', codename: 'Legacy Prime', copyright: 'William Cummings', image: require('../../assets/Armor/SamLegacy.jpg'), clickable: true, hardcoded: true },
+  { id: 'sam-3', name: 'Void Walker Beta', codename: 'Void Walker Beta', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam8.jpg'), clickable: true, hardcoded: true },
+  { id: 'sam-4', name: 'Void Walker Gamma', codename: 'Void Walker Gamma', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam9.jpg'), clickable: true, hardcoded: true },
+  { id: 'sam-5', name: 'Void Walker Delta', codename: 'Void Walker Delta', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam4.jpg'), clickable: true, hardcoded: true },
+  { id: 'sam-6', name: 'Void Walker Epsilon', codename: 'Void Walker Epsilon', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam7.jpg'), clickable: true, hardcoded: true },
+  { id: 'sam-7', name: 'Void Walker Zeta', codename: 'Void Walker Zeta', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam3.jpg'), clickable: true, hardcoded: true },
+  { id: 'sam-8', name: 'Void Walker Eta', codename: 'Void Walker Eta', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam5.jpg'), clickable: true, hardcoded: true },
   { id: 'sam-9', name: 'Celestial Walker', codename: 'Celestial Walker', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam10.jpg'), clickable: true, hardcoded: true },
 ];
 
@@ -206,7 +206,7 @@ const Sam = () => {
         clickable: true,
         borderColor: doc.data().borderColor || '#00b3ff',
         hardcoded: false,
-        copyright: 'Samuel Woodwell', // Always set to Samuel Woodwell for dynamic armors
+        copyright: 'Samuel Woodwell',
       }));
       console.log('Fetched dynamic armors:', dynamicArmors.map(a => ({ id: a.id, name: a.name || a.codename })));
 
@@ -428,8 +428,8 @@ const Sam = () => {
           </ScrollView>
         </View>
 
-        {/* LeagueMembers for Adding/Editing Armors */}
-        <LeagueMembers
+        {/* Form for Adding/Editing Armors */}
+        <SamsArmory
           collectionPath="samArmor"
           placeholderImage={require('../../assets/Armor/PlaceHolder.jpg')}
           hero={armorList}
