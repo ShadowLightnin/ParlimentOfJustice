@@ -16,11 +16,10 @@ import { Audio } from 'expo-av';
 import { db, auth, storage } from '../../lib/firebase';
 import { collection, onSnapshot, deleteDoc, doc, getDoc } from 'firebase/firestore';
 import { ref, deleteObject } from 'firebase/storage';
-import SamsArmory from './SamsArmory'; // Fixed import
+import SamsArmory from './SamsArmory';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
-// 🎵 Background Music from MP4 - Global management
 let backgroundSound = null;
 const MUSIC_LOOP = false;
 
@@ -74,7 +73,6 @@ const stopBackgroundMusic = async () => {
   }
 };
 
-// Hardcoded Armor - Updated names for uniqueness
 const armors = [
   { id: 'sam-1', name: 'Void Walker Alpha', codename: 'Void Walker Alpha', copyright: 'William Cummings', image: require('../../assets/Armor/Sam.jpg'), clickable: true, hardcoded: true },
   { id: 'sam-2', name: 'Legacy Prime', codename: 'Legacy Prime', copyright: 'William Cummings', image: require('../../assets/Armor/SamLegacy.jpg'), clickable: true, hardcoded: true },
@@ -87,7 +85,6 @@ const armors = [
   { id: 'sam-9', name: 'Celestial Walker', codename: 'Celestial Walker', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam10.jpg'), clickable: true, hardcoded: true },
 ];
 
-// Permissions
 const ALLOWED_EMAILS = ['will@test.com', 'c1wcummings@gmail.com', 'samuelp.woodwell@gmail.com'];
 const RESTRICT_ACCESS = true;
 
@@ -107,7 +104,6 @@ const Sam = () => {
   const canMod = RESTRICT_ACCESS ? auth.currentUser?.email && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
   const isDesktop = windowWidth >= 768;
 
-  // Check navigation params to determine source
   useEffect(() => {
     const params = route.params || {};
     console.log("Route params on mount:", params);
@@ -121,7 +117,6 @@ const Sam = () => {
     }
   }, [route.params]);
 
-  // ⚡ Flashing Animation Effect for Planet
   useEffect(() => {
     const interval = setInterval(() => {
       Animated.sequence([
@@ -132,7 +127,6 @@ const Sam = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // 🎵 Audio Control - Play on mount, no cleanup on focus loss
   useEffect(() => {
     if (isFocused) {
       playBackgroundMusic();
@@ -142,7 +136,6 @@ const Sam = () => {
     };
   }, [isFocused]);
 
-  // Popup Timing - Separate from audio
   useEffect(() => {
     console.log("Popup useEffect - isFocused:", isFocused, "fromBludBruhsHome:", fromBludBruhsHome, "hasShownPopup:", hasShownPopup);
     if (isFocused && fromBludBruhsHome && !hasShownPopup) {
@@ -174,7 +167,6 @@ const Sam = () => {
     }
   }, [isFocused, fromBludBruhsHome, hasShownPopup]);
 
-  // Responsive width handling
   useEffect(() => {
     const updateDimensions = () => {
       setWindowWidth(Dimensions.get("window").width);
@@ -183,7 +175,6 @@ const Sam = () => {
     return () => subscription?.remove();
   }, []);
 
-  // Fetch dynamic armor from Firestore
   useEffect(() => {
     const validatedArmors = armors.map((armor, index) => ({
       ...armor,
@@ -210,7 +201,6 @@ const Sam = () => {
       }));
       console.log('Fetched dynamic armors:', dynamicArmors.map(a => ({ id: a.id, name: a.name || a.codename })));
 
-      // Filter out dynamic armors that match hardcoded by id or name/codename
       const filteredDynamic = dynamicArmors.filter(
         (dynamic) => !validatedArmors.some(
           (armor) => armor.id === dynamic.id || armor.name === (dynamic.name || dynamic.codename) || armor.codename === (dynamic.name || dynamic.codename)
@@ -218,7 +208,6 @@ const Sam = () => {
       );
       console.log('Filtered dynamic armors:', filteredDynamic.map(a => ({ id: a.id, name: a.name || a.codename })));
 
-      // Combine and deduplicate by id
       const combinedMap = new Map();
       [...validatedArmors, ...filteredDynamic].forEach((armor) => {
         combinedMap.set(armor.id, armor);
@@ -233,13 +222,11 @@ const Sam = () => {
     return () => unsub();
   }, []);
 
-  // 🌌 Planet Click Handler → Leads to WarpScreen (No audio stop)
   const handlePlanetPress = () => {
     console.log("Navigating to WarpScreen without stopping music at:", new Date().toISOString());
     navigation.navigate("WarpScreen", { from: "Sam" });
   };
 
-  // ✅ Confirm Warp to WarpScreen (No audio stop)
   const confirmWarp = () => {
     Animated.timing(popupAnim, {
       toValue: -100,
@@ -252,7 +239,6 @@ const Sam = () => {
     });
   };
 
-  // ❌ Cancel Warp
   const cancelWarp = () => {
     Animated.timing(popupAnim, {
       toValue: -100,
@@ -263,14 +249,12 @@ const Sam = () => {
     });
   };
 
-  // 🔙 Back Button Handler - Explicitly stop music
   const handleBackPress = async () => {
     console.log("Back button pressed at:", new Date().toISOString());
     await stopBackgroundMusic();
     navigation.navigate("BludBruhsHome");
   };
 
-  // Handle Armor Press
   const handleArmorPress = (armor) => {
     if (!armor?.clickable) {
       console.log('Armor card not clickable:', armor?.name || armor?.codename);
@@ -280,7 +264,6 @@ const Sam = () => {
     setPreviewArmor(armor);
   };
 
-  // Delete Armor
   const confirmDelete = async (id) => {
     if (!canMod) {
       Alert.alert('Access Denied', 'Only authorized users can delete armors.');
@@ -302,12 +285,15 @@ const Sam = () => {
       await deleteDoc(armorRef);
       if (imageUrl && imageUrl !== 'placeholder') {
         const path = imageUrl.split('/o/')[1]?.split('?')[0];
-        if (path) {
+        if (path && path.startsWith('samArmory/')) {
+          console.log('Deleting image from Storage:', path);
           await deleteObject(ref(storage, path)).catch(e => {
             if (e.code !== 'storage/object-not-found') {
-              console.error('Delete image error:', e.message);
+              console.error('Delete image error:', e.code, e.message);
             }
           });
+        } else {
+          console.log('Skipping image deletion, path does not start with samArmory/:', path);
         }
       }
       setArmorList(armorList.filter(a => a.id !== id));
@@ -319,7 +305,6 @@ const Sam = () => {
     }
   };
 
-  // Compute card width for use in styles
   const cardWidth = isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9;
 
   const renderArmorCard = (armor) => (
@@ -397,7 +382,6 @@ const Sam = () => {
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {/* Header */}
         <View style={styles.headerContainer}>
           <TouchableOpacity
             style={styles.backButton}
@@ -414,7 +398,6 @@ const Sam = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Armor Cards */}
         <View style={styles.imageContainer}>
           <ScrollView
             horizontal
@@ -428,7 +411,6 @@ const Sam = () => {
           </ScrollView>
         </View>
 
-        {/* Form for Adding/Editing Armors */}
         <SamsArmory
           collectionPath="samArmor"
           placeholderImage={require('../../assets/Armor/PlaceHolder.jpg')}
@@ -439,7 +421,6 @@ const Sam = () => {
           setEditingHero={setPreviewArmor}
         />
 
-        {/* About Section */}
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
@@ -490,7 +471,6 @@ const Sam = () => {
         </View>
       </ScrollView>
 
-      {/* Warp Popup */}
       {isPopupVisible && (
         <Animated.View style={[styles.popup, { transform: [{ translateY: popupAnim }] }]}>
           <Text style={styles.popupText}>Would you like to warp to Melcornia?</Text>
@@ -505,7 +485,6 @@ const Sam = () => {
         </Animated.View>
       )}
 
-      {/* Preview Modal */}
       {previewArmor && !previewArmor.isEditing && (
         <Modal
           visible={!!previewArmor}
@@ -557,7 +536,6 @@ const Sam = () => {
         </Modal>
       )}
 
-      {/* Delete Confirmation Modal */}
       <Modal
         visible={deleteModal.visible}
         transparent

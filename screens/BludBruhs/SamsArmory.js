@@ -36,6 +36,7 @@ const SamsArmory = ({
   const canSubmit = RESTRICT_ACCESS ? auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
 
   useEffect(() => {
+    console.log('Current user:', auth.currentUser?.email, 'Can submit:', canSubmit);
     if (editingFriend) {
       setName(editingFriend.name || editingFriend.codename || '');
       setDescription(editingFriend.description || '');
@@ -54,37 +55,54 @@ const SamsArmory = ({
       Alert.alert('Access Denied', 'Only authorized users can upload images.');
       return;
     }
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission Denied', 'Sorry, we need camera roll permissions to make this work!');
-      return;
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 0.5,
-    });
-    if (!result.canceled && result.assets) {
-      setImageUri(result.assets[0].uri);
-      console.log('Image picked:', result.assets[0].uri);
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      console.log('Image picker permission status:', status);
+      if (status !== 'granted') {
+        Alert.alert('Permission Denied', 'Sorry, we need camera roll permissions to make this work!');
+        return;
+      }
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.5,
+      });
+      console.log('Image picker result:', result);
+      if (!result.canceled && result.assets) {
+        setImageUri(result.assets[0].uri);
+        console.log('Image picked:', result.assets[0].uri);
+      } else {
+        console.log('Image picker canceled or no assets');
+      }
+    } catch (e) {
+      console.error('Image picker error:', e.message);
+      Alert.alert('Error', 'Failed to pick image: ' + e.message);
     }
   };
 
   const uploadImage = async (uri) => {
-    if (!uri) return 'placeholder';
+    if (!uri) {
+      console.log('No image URI provided, returning placeholder');
+      return 'placeholder';
+    }
     try {
+      console.log('Starting image upload for URI:', uri);
       const response = await fetch(uri);
       const blob = await response.blob();
+      console.log('Blob created, size:', blob.size);
       const timestamp = Date.now();
       const random = Math.random().toString(36).substring(2, 15);
-      const imageRef = ref(storage, `hero/${timestamp}_${random}.jpg`);
+      const imagePath = `samArmory/${timestamp}_${random}.jpg`;
+      console.log('Uploading to path:', imagePath);
+      const imageRef = ref(storage, imagePath);
       await uploadBytes(imageRef, blob);
+      console.log('Upload completed, fetching download URL');
       const downloadURL = await getDownloadURL(imageRef);
-      console.log('Image uploaded:', downloadURL);
+      console.log('Image uploaded successfully:', downloadURL);
       return downloadURL;
     } catch (e) {
-      console.error('Image upload error:', e.message);
+      console.error('Image upload error:', e.code, e.message);
       throw e;
     }
   };
@@ -113,13 +131,16 @@ const SamsArmory = ({
         hardcoded: false,
         copyright: 'Samuel Woodwell',
       };
+      console.log('Submitting friend data:', friendData);
       if (editingFriend) {
         const friendRef = doc(db, collectionPath, editingFriend.id);
+        console.log('Updating Firestore document:', friendRef.path);
         await setDoc(friendRef, friendData, { merge: true });
         console.log('Friend updated:', { id: editingFriend.id, name: friendData.name });
         setFriend(friend.map(item => (item.id === editingFriend.id ? { ...item, ...friendData } : item)));
         Alert.alert('Success', 'Friend updated successfully!');
       } else {
+        console.log('Adding new Firestore document to:', collectionPath);
         const friendRef = await addDoc(collection(db, collectionPath), friendData);
         console.log('Friend added:', { id: friendRef.id, name: friendData.name });
         setFriend([...hardcodedFriend, ...friend.filter(item => !item.hardcoded), { id: friendRef.id, ...friendData }]);
@@ -130,7 +151,7 @@ const SamsArmory = ({
       setImageUri(null);
       setEditingFriend(null);
     } catch (e) {
-      console.error('Submit error:', e.message);
+      console.error('Submit error:', e.code, e.message);
       Alert.alert('Error', `Failed to ${editingFriend ? 'update' : 'add'} friend: ${e.message}`);
     } finally {
       setUploading(false);
