@@ -67,7 +67,7 @@ const horizontalSpacing = isDesktop ? 40 : 20;
 const verticalSpacing = isDesktop ? 50 : 30;
 
 // Permissions
-const ALLOWED_EMAILS = ['will@test.com', 'c1wcummings@gmail.com'];
+const ALLOWED_EMAILS = ['will@test.com', 'c1wcummings@gmail.com', 'samuelp.woodwell@gmail.com'];
 const RESTRICT_ACCESS = true;
 
 const RangerSquad = () => {

@@ -88,7 +88,7 @@ const armors = [
 ];
 
 // Permissions
-const ALLOWED_EMAILS = ['will@test.com', 'c1wcummings@gmail.com'];
+const ALLOWED_EMAILS = ['will@test.com', 'c1wcummings@gmail.com', 'samuelp.woodwell@gmail.com'];
 const RESTRICT_ACCESS = true;
 
 const Sam = () => {
