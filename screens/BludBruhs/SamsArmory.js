@@ -23,11 +23,11 @@ const RESTRICT_ACCESS = true;
 const SamsArmory = ({
   collectionPath = 'samArmor',
   placeholderImage,
-  hero,
-  setHero,
-  hardcodedHero,
-  editingHero,
-  setEditingHero,
+  friend,
+  setFriend,
+  hardcodedFriend,
+  editingFriend,
+  setEditingFriend,
 }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -36,18 +36,18 @@ const SamsArmory = ({
   const canSubmit = RESTRICT_ACCESS ? auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
 
   useEffect(() => {
-    if (editingHero) {
-      setName(editingHero.name || editingHero.codename || '');
-      setDescription(editingHero.description || '');
-      setImageUri(editingHero.imageUrl || null);
-      console.log('Editing hero loaded:', { id: editingHero.id, name: editingHero.name, codename: editingHero.codename });
+    if (editingFriend) {
+      setName(editingFriend.name || editingFriend.codename || '');
+      setDescription(editingFriend.description || '');
+      setImageUri(editingFriend.imageUrl || null);
+      console.log('Editing friend loaded:', { id: editingFriend.id, name: editingFriend.name, codename: editingFriend.codename });
     } else {
       setName('');
       setDescription('');
       setImageUri(null);
-      console.log('Form reset for new hero');
+      console.log('Form reset for new friend');
     }
-  }, [editingHero]);
+  }, [editingFriend]);
 
   const pickImage = async () => {
     if (!canSubmit) {
@@ -91,7 +91,7 @@ const SamsArmory = ({
 
   const handleSubmit = async () => {
     if (!canSubmit) {
-      Alert.alert('Access Denied', 'Only authorized users can submit heroes.');
+      Alert.alert('Access Denied', 'Only authorized users can submit friends.');
       return;
     }
     if (!name.trim()) {
@@ -104,34 +104,34 @@ const SamsArmory = ({
       if (imageUri) {
         imageUrl = await uploadImage(imageUri);
       }
-      const heroData = {
+      const friendData = {
         name: name.trim(),
         description: description.trim(),
         imageUrl,
         clickable: true,
-        borderColor: '#00b3ff', // Match Sam.js default
+        borderColor: '#00b3ff',
         hardcoded: false,
         copyright: 'Samuel Woodwell',
       };
-      if (editingHero) {
-        const heroRef = doc(db, collectionPath, editingHero.id);
-        await setDoc(heroRef, heroData, { merge: true });
-        console.log('Hero updated:', { id: editingHero.id, name: heroData.name });
-        setHero(hero.map(item => (item.id === editingHero.id ? { ...item, ...heroData } : item)));
-        Alert.alert('Success', 'Hero updated successfully!');
+      if (editingFriend) {
+        const friendRef = doc(db, collectionPath, editingFriend.id);
+        await setDoc(friendRef, friendData, { merge: true });
+        console.log('Friend updated:', { id: editingFriend.id, name: friendData.name });
+        setFriend(friend.map(item => (item.id === editingFriend.id ? { ...item, ...friendData } : item)));
+        Alert.alert('Success', 'Friend updated successfully!');
       } else {
-        const heroRef = await addDoc(collection(db, collectionPath), heroData);
-        console.log('Hero added:', { id: heroRef.id, name: heroData.name });
-        setHero([...hardcodedHero, ...hero.filter(item => !item.hardcoded), { id: heroRef.id, ...heroData }]);
-        Alert.alert('Success', 'Hero added successfully!');
+        const friendRef = await addDoc(collection(db, collectionPath), friendData);
+        console.log('Friend added:', { id: friendRef.id, name: friendData.name });
+        setFriend([...hardcodedFriend, ...friend.filter(item => !item.hardcoded), { id: friendRef.id, ...friendData }]);
+        Alert.alert('Success', 'Friend added successfully!');
       }
       setName('');
       setDescription('');
       setImageUri(null);
-      setEditingHero(null);
+      setEditingFriend(null);
     } catch (e) {
       console.error('Submit error:', e.message);
-      Alert.alert('Error', `Failed to ${editingHero ? 'update' : 'add'} hero: ${e.message}`);
+      Alert.alert('Error', `Failed to ${editingFriend ? 'update' : 'add'} friend: ${e.message}`);
     } finally {
       setUploading(false);
     }
@@ -141,16 +141,16 @@ const SamsArmory = ({
     setName('');
     setDescription('');
     setImageUri(null);
-    setEditingHero(null);
+    setEditingFriend(null);
     console.log('Form cancelled');
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>{editingHero ? 'Edit Hero' : 'Add New Hero'}</Text>
+      <Text style={styles.header}>{editingFriend ? 'Edit Friend' : 'Add New Friend'}</Text>
       <TextInput
         style={styles.input}
-        placeholder="Hero Name or Codename"
+        placeholder="Friend Name or Codename"
         placeholderTextColor="#888"
         value={name}
         onChangeText={setName}
@@ -180,9 +180,9 @@ const SamsArmory = ({
           resizeMode="contain"
         />
       )}
-      {!imageUri && editingHero && editingHero.imageUrl && editingHero.imageUrl !== 'placeholder' && (
+      {!imageUri && editingFriend && editingFriend.imageUrl && editingFriend.imageUrl !== 'placeholder' && (
         <Image
-          source={{ uri: editingHero.imageUrl }}
+          source={{ uri: editingFriend.imageUrl }}
           style={styles.previewImage}
           resizeMode="contain"
         />
@@ -193,7 +193,7 @@ const SamsArmory = ({
           onPress={handleSubmit}
           disabled={!canSubmit || uploading}
         >
-          <Text style={styles.buttonText}>{uploading ? 'Submitting...' : editingHero ? 'Update' : 'Submit'}</Text>
+          <Text style={styles.buttonText}>{uploading ? 'Submitting...' : editingFriend ? 'Update' : 'Submit'}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.cancelButton}

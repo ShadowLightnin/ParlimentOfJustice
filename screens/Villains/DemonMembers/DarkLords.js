@@ -21,13 +21,13 @@ const ALLOWED_EMAILS = ["will@test.com", "c1wcummings@gmail.com", "samuelp.woodw
 const RESTRICT_ACCESS = true;
 
 const DarkLords = ({
-  collectionPath = 'villain',
+  collectionPath = 'demons',
   placeholderImage,
-  villain,
-  setVillain,
-  hardcodedVillain,
-  editingVillain,
-  setEditingVillain,
+  demon,
+  setDemon,
+  hardcodedDemon,
+  editingDemon,
+  setEditingDemon,
 }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -36,16 +36,17 @@ const DarkLords = ({
   const canSubmit = RESTRICT_ACCESS ? auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
 
   useEffect(() => {
-    if (editingVillain) {
-      setName(editingVillain.name || editingVillain.codename || '');
-      setDescription(editingVillain.description || '');
-      setImageUri(editingVillain.imageUrl || null);
+    if (editingDemon) {
+      setName(editingDemon.name || editingDemon.codename || '');
+      setDescription(editingDemon.description || '');
+      setImageUri(editingDemon.imageUrl || null);
+      console.log('Editing demon loaded:', { id: editingDemon.id, name: editingDemon.name, codename: editingDemon.codename });
     } else {
       setName('');
       setDescription('');
       setImageUri(null);
     }
-  }, [editingVillain]);
+  }, [editingDemon]);
 
   const pickImage = async () => {
     if (!canSubmit) {
@@ -65,6 +66,7 @@ const DarkLords = ({
     });
     if (!result.canceled && result.assets) {
       setImageUri(result.assets[0].uri);
+      console.log('Image picked:', result.assets[0].uri);
     }
   };
 
@@ -75,7 +77,7 @@ const DarkLords = ({
       const blob = await response.blob();
       const timestamp = Date.now();
       const random = Math.random().toString(36).substring(2, 15);
-      const imageRef = ref(storage, `villain/${timestamp}_${random}.jpg`);
+      const imageRef = ref(storage, `demon/${timestamp}_${random}.jpg`);
       await uploadBytes(imageRef, blob);
       const downloadURL = await getDownloadURL(imageRef);
       console.log('Image uploaded:', downloadURL);
@@ -88,7 +90,7 @@ const DarkLords = ({
 
   const handleSubmit = async () => {
     if (!canSubmit) {
-      Alert.alert('Access Denied', 'Only authorized users can submit villains.');
+      Alert.alert('Access Denied', 'Only authorized users can submit demons.');
       return;
     }
     if (!name.trim() && !description.trim()) {
@@ -101,33 +103,33 @@ const DarkLords = ({
       if (imageUri) {
         imageUrl = await uploadImage(imageUri);
       }
-      const villainData = {
+      const demonData = {
         name: name.trim(),
         description: description.trim(),
         imageUrl,
         clickable: true,
-        borderColor: '#FFFFFF',
+        borderColor: '#FF0000',
         hardcoded: false,
       };
-      if (editingVillain) {
-        const villainRef = doc(db, collectionPath, editingVillain.id);
-        await setDoc(villainRef, villainData, { merge: true });
-        console.log('Villain updated:', editingVillain.id);
-        setVillain(villain.map(item => (item.id === editingVillain.id ? { ...item, ...villainData } : item)));
-        Alert.alert('Success', 'Villain updated successfully!');
+      if (editingDemon) {
+        const demonRef = doc(db, collectionPath, editingDemon.id);
+        await setDoc(demonRef, demonData, { merge: true });
+        console.log('Demon updated:', editingDemon.id);
+        setDemon(demon.map(item => (item.id === editingDemon.id ? { ...item, ...demonData } : item)));
+        Alert.alert('Success', 'Demon updated successfully!');
       } else {
-        const villainRef = await addDoc(collection(db, collectionPath), villainData);
-        console.log('Villain added:', villainRef.id);
-        setVillain([...hardcodedVillain, ...villain.filter(item => !item.hardcoded), { id: villainRef.id, ...villainData }]);
-        Alert.alert('Success', 'Villain added successfully!');
+        const demonRef = await addDoc(collection(db, collectionPath), demonData);
+        console.log('Demon added:', demonRef.id);
+        setDemon([...hardcodedDemon, ...demon.filter(item => !item.hardcoded), { id: demonRef.id, ...demonData }]);
+        Alert.alert('Success', 'Demon added successfully!');
       }
       setName('');
       setDescription('');
       setImageUri(null);
-      setEditingVillain(null);
+      setEditingDemon(null);
     } catch (e) {
       console.error('Submit error:', e.message);
-      Alert.alert('Error', `Failed to ${editingVillain ? 'update' : 'add'} villain: ${e.message}`);
+      Alert.alert('Error', `Failed to ${editingDemon ? 'update' : 'add'} demon: ${e.message}`);
     } finally {
       setUploading(false);
     }
@@ -137,15 +139,15 @@ const DarkLords = ({
     setName('');
     setDescription('');
     setImageUri(null);
-    setEditingVillain(null);
+    setEditingDemon(null);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>{editingVillain ? 'Edit Villain' : 'Add New Villain'}</Text>
+      <Text style={styles.header}>{editingDemon ? 'Edit Demon' : 'Add New Demon'}</Text>
       <TextInput
         style={styles.input}
-        placeholder="Villain Name or Codename"
+        placeholder="Demon Name or Codename"
         placeholderTextColor="#888"
         value={name}
         onChangeText={setName}
@@ -175,9 +177,9 @@ const DarkLords = ({
           resizeMode="contain"
         />
       )}
-      {!imageUri && editingVillain && editingVillain.imageUrl && editingVillain.imageUrl !== 'placeholder' && (
+      {!imageUri && editingDemon && editingDemon.imageUrl && editingDemon.imageUrl !== 'placeholder' && (
         <Image
-          source={{ uri: editingVillain.imageUrl }}
+          source={{ uri: editingDemon.imageUrl }}
           style={styles.previewImage}
           resizeMode="contain"
         />
@@ -188,7 +190,7 @@ const DarkLords = ({
           onPress={handleSubmit}
           disabled={!canSubmit || uploading}
         >
-          <Text style={styles.buttonText}>{uploading ? 'Submitting...' : editingVillain ? 'Update' : 'Submit'}</Text>
+          <Text style={styles.buttonText}>{uploading ? 'Submitting...' : editingDemon ? 'Update' : 'Submit'}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.cancelButton}
