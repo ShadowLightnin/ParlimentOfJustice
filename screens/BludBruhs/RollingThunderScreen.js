@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,8 +10,13 @@ import {
   ScrollView,
   Modal,
   Dimensions,
+  Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { db, auth, storage } from '../../lib/firebase';
+import { collection, onSnapshot, deleteDoc, doc, getDoc } from 'firebase/firestore';
+import { ref, deleteObject } from 'firebase/storage';
+import LeagueMembers from '../Justice/LeagueMembers';
 
 // Screen dimensions with error handling
 let SCREEN_WIDTH, SCREEN_HEIGHT;
@@ -27,7 +32,15 @@ try {
 
 // Member Data with Unique Image Paths
 const members = [
-  { name: 'MIA', codename: '', screen: '', clickable: true, image: require('../../assets/Armor/PlaceHolder.jpg') },
+  {
+    id: 'member-1',
+    name: 'MIA',
+    codename: '',
+    screen: '',
+    clickable: true,
+    image: require('../../assets/Armor/PlaceHolder.jpg'),
+    hardcoded: true,
+  },
 ];
 
 // Grid layout settings
@@ -39,9 +52,65 @@ const cardHeightMultiplier = 1.6;
 const horizontalSpacing = isDesktop ? 40 : 10;
 const verticalSpacing = isDesktop ? 50 : 20;
 
-export const RollingThunderScreen = () => {
+// Permissions
+const ALLOWED_EMAILS = ["will@test.com", "c1wcummings@gmail.com"];
+const RESTRICT_ACCESS = true;
+
+const RollingThunderScreen = () => {
   const navigation = useNavigation();
   const [previewMember, setPreviewMember] = useState(null);
+  const [teamMembers, setTeamMembers] = useState(members);
+  const [deleteModal, setDeleteModal] = useState({ visible: false, member: null });
+  const canMod = RESTRICT_ACCESS ? auth.currentUser?.email && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
+
+  // Fetch dynamic members from Firestore
+  useEffect(() => {
+    // Ensure hardcoded members have unique IDs and hardcoded flag
+    const validatedMembers = members.map((member, index) => ({
+      ...member,
+      id: member.id || `hardcoded-${index + 1}`,
+      hardcoded: true,
+    }));
+    console.log('Validated Members:', validatedMembers.map(m => ({ id: m.id, name: m.name })));
+    setTeamMembers(validatedMembers);
+
+    const unsub = onSnapshot(collection(db, 'members'), (snap) => {
+      if (snap.empty) {
+        console.log('No members found in Firestore');
+        setTeamMembers(validatedMembers);
+        return;
+      }
+      const dynamicMembers = snap.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        clickable: true,
+        borderColor: doc.data().borderColor || '#00FFFF',
+        hardcoded: false,
+      }));
+      console.log('Fetched dynamic members:', dynamicMembers.map(m => ({ id: m.id, name: m.name || m.codename })));
+
+      // Filter out dynamic members that match hardcoded by id or name
+      const filteredDynamic = dynamicMembers.filter(
+        (dynamic) => !validatedMembers.some(
+          (member) => member.id === dynamic.id || member.name === (dynamic.name || dynamic.codename)
+        )
+      );
+      console.log('Filtered dynamic members:', filteredDynamic.map(m => ({ id: m.id, name: m.name || m.codename })));
+
+      // Combine and deduplicate by id
+      const combinedMap = new Map();
+      [...validatedMembers, ...filteredDynamic].forEach((member) => {
+        combinedMap.set(member.id, member);
+      });
+      const combined = Array.from(combinedMap.values());
+      console.log('Combined members:', combined.map(m => ({ id: m.id, name: m.name || m.codename })));
+      setTeamMembers(combined);
+    }, (e) => {
+      console.error('Firestore error:', e.code, e.message);
+      Alert.alert('Error', `Failed to fetch members: ${e.message}`);
+    });
+    return () => unsub();
+  }, []);
 
   const goToChat = () => {
     console.log('Navigating to TeamChat:', new Date().toISOString());
@@ -58,7 +127,7 @@ export const RollingThunderScreen = () => {
       return;
     }
     console.log('Card pressed:', member.name, 'Screen:', member.screen);
-    if (member.screen) {
+    if (member.screen && member.hardcoded) {
       try {
         navigation.navigate(member.screen);
       } catch (error) {
@@ -69,33 +138,95 @@ export const RollingThunderScreen = () => {
     }
   };
 
+  const confirmDelete = async (id) => {
+    if (!canMod) {
+      Alert.alert('Access Denied', 'Only authorized users can delete members.');
+      return;
+    }
+    try {
+      const memberItem = teamMembers.find(m => m.id === id);
+      if (memberItem.hardcoded) {
+        Alert.alert('Error', 'Cannot delete hardcoded members!');
+        return;
+      }
+      const memberRef = doc(db, 'members', id);
+      const snap = await getDoc(memberRef);
+      if (!snap.exists()) {
+        Alert.alert('Error', 'Member not found');
+        return;
+      }
+      const { imageUrl } = snap.data();
+      await deleteDoc(memberRef);
+      if (imageUrl && imageUrl !== 'placeholder') {
+        const path = imageUrl.split('/o/')[1]?.split('?')[0];
+        if (path) {
+          await deleteObject(ref(storage, path)).catch(e => {
+            if (e.code !== 'storage/object-not-found') {
+              console.error('Delete image error:', e.message);
+            }
+          });
+        }
+      }
+      setTeamMembers(teamMembers.filter(m => m.id !== id));
+      setDeleteModal({ visible: false, member: null });
+      Alert.alert('Success', 'Member deleted!');
+    } catch (e) {
+      console.error('Delete member error:', e.code, e.message);
+      Alert.alert('Error', `Failed to delete member: ${e.message}`);
+    }
+  };
+
   const renderMemberCard = (member) => {
     try {
       return (
-        <TouchableOpacity
-          key={member.name}
-          style={[
-            styles.card,
-            { width: cardSize, height: cardSize * cardHeightMultiplier },
-            !member.clickable && styles.disabledCard,
-          ]}
-          onPress={() => handleMemberPress(member)}
-          disabled={!member.clickable}
-        >
-          {member?.image && (
-            <>
-              <Image
-                source={member.image || require('../../assets/Armor/PlaceHolder.jpg')}
-                style={styles.characterImage}
-                resizeMode="cover"
-                onError={(e) => console.error('Image load error:', member.name, e.nativeEvent.error)}
-              />
-              <View style={styles.transparentOverlay} />
-            </>
+        <View key={member.id || member.name} style={styles.memberCont}>
+          <TouchableOpacity
+            style={[
+              styles.card,
+              { width: cardSize, height: cardSize * cardHeightMultiplier },
+              member.clickable && member.borderColor ? styles.clickable(member.borderColor) : styles.disabledCard,
+            ]}
+            onPress={() => handleMemberPress(member)}
+            disabled={!member.clickable}
+          >
+            {member?.image && (
+              <>
+                <Image
+                  source={
+                    member.image ||
+                    (member.imageUrl && member.imageUrl !== 'placeholder'
+                      ? { uri: member.imageUrl }
+                      : require('../../assets/Armor/PlaceHolder.jpg'))
+                  }
+                  style={styles.characterImage}
+                  resizeMode="cover"
+                  onError={(e) => console.error('Image load error:', member.name, e.nativeEvent.error)}
+                />
+                <View style={styles.transparentOverlay} />
+              </>
+            )}
+            <Text style={styles.codename}>{member.codename || ''}</Text>
+            <Text style={styles.name}>{member.name}</Text>
+          </TouchableOpacity>
+          {!member.hardcoded && (
+            <View style={styles.buttons}>
+              <TouchableOpacity
+                onPress={() => setPreviewMember({ ...member, isEditing: true })}
+                style={[styles.edit, !canMod && styles.disabled]}
+                disabled={!canMod}
+              >
+                <Text style={styles.buttonText}>Edit</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setDeleteModal({ visible: true, member: { id: member.id, name: member.name || member.codename || 'Unknown' } })}
+                style={[styles.delete, !canMod && styles.disabled]}
+                disabled={!canMod}
+              >
+                <Text style={styles.buttonText}>Delete</Text>
+              </TouchableOpacity>
+            </View>
           )}
-          <Text style={styles.codename}>{member.codename || ''}</Text>
-          <Text style={styles.name}>{member.name}</Text>
-        </TouchableOpacity>
+        </View>
       );
     } catch (error) {
       console.error('Error rendering card:', member.name, error);
@@ -107,19 +238,27 @@ export const RollingThunderScreen = () => {
     try {
       return (
         <TouchableOpacity
-          key={member.name}
-          style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
-          onPress={() => setPreviewMember(null)}
+          key={member.id || member.name}
+          style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable(member.borderColor || '#00FFFF')]}
+          onPress={() => {
+            console.log('Closing preview modal');
+            setPreviewMember(null);
+          }}
         >
           <Image
-            source={member.image || require('../../assets/Armor/PlaceHolder.jpg')}
+            source={
+              member.image ||
+              (member.imageUrl && member.imageUrl !== 'placeholder'
+                ? { uri: member.imageUrl }
+                : require('../../assets/Armor/PlaceHolder.jpg'))
+            }
             style={styles.previewImage}
             resizeMode="cover"
             onError={(e) => console.error('Preview image load error:', member.name, e.nativeEvent.error)}
           />
           <View style={styles.transparentOverlay} />
           <Text style={styles.cardName}>
-            © {member.codename || 'No Codename'}; William Cummings
+            © {member.codename || member.name || 'Unknown'}; William Cummings
           </Text>
         </TouchableOpacity>
       );
@@ -155,14 +294,14 @@ export const RollingThunderScreen = () => {
 
         {/* Grid Layout */}
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          {Array.from({ length: rows }).map((_, rowIndex) => (
+          {Array.from({ length: Math.ceil(teamMembers.length / columns) }).map((_, rowIndex) => (
             <View
               key={rowIndex}
               style={[styles.row, { gap: horizontalSpacing, marginBottom: verticalSpacing }]}
             >
               {Array.from({ length: columns }).map((_, colIndex) => {
                 const memberIndex = rowIndex * columns + colIndex;
-                const member = members[memberIndex];
+                const member = teamMembers[memberIndex];
 
                 if (!member) return (
                   <View
@@ -175,21 +314,36 @@ export const RollingThunderScreen = () => {
               })}
             </View>
           ))}
+          <LeagueMembers
+            collectionPath="members"
+            placeholderImage={require('../../assets/Armor/PlaceHolder.jpg')}
+            hero={teamMembers}
+            setHero={setTeamMembers}
+            hardcodedHero={members}
+            editingHero={previewMember?.isEditing ? previewMember : null}
+            setEditingHero={setPreviewMember}
+          />
         </ScrollView>
 
         {/* Preview Modal */}
-        {previewMember && (
+        {previewMember && !previewMember.isEditing && (
           <Modal
             visible={!!previewMember}
             transparent={true}
             animationType="fade"
-            onRequestClose={() => setPreviewMember(null)}
+            onRequestClose={() => {
+              console.log('Closing preview modal');
+              setPreviewMember(null);
+            }}
           >
             <View style={styles.modalBackground}>
               <TouchableOpacity
                 style={styles.modalOuterContainer}
                 activeOpacity={1}
-                onPress={() => setPreviewMember(null)}
+                onPress={() => {
+                  console.log('Closing preview modal');
+                  setPreviewMember(null);
+                }}
               >
                 <View style={styles.imageContainer}>
                   <ScrollView
@@ -207,11 +361,49 @@ export const RollingThunderScreen = () => {
                 <View style={styles.previewAboutSection}>
                   <Text style={styles.previewCodename}>{previewMember?.codename || 'No Codename'}</Text>
                   <Text style={styles.previewName}>{previewMember?.name || 'Unknown'}</Text>
+                  <Text style={styles.previewDesc}>{previewMember?.description || 'No description available'}</Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      console.log('Closing preview modal');
+                      setPreviewMember(null);
+                    }}
+                    style={styles.close}
+                  >
+                    <Text style={styles.buttonText}>Close</Text>
+                  </TouchableOpacity>
                 </View>
               </TouchableOpacity>
             </View>
           </Modal>
         )}
+
+        {/* Delete Confirmation Modal */}
+        <Modal
+          visible={deleteModal.visible}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setDeleteModal({ visible: false, member: null })}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalText}>{`Delete "${deleteModal.member?.name || ''}" and its image?`}</Text>
+              <View style={styles.modalButtons}>
+                <TouchableOpacity
+                  style={styles.modalCancel}
+                  onPress={() => setDeleteModal({ visible: false, member: null })}
+                >
+                  <Text style={styles.modalCancelText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.modalDelete}
+                  onPress={() => deleteModal.member && confirmDelete(deleteModal.member.id)}
+                >
+                  <Text style={styles.modalDeleteText}>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </SafeAreaView>
     </ImageBackground>
   );
@@ -282,6 +474,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
   },
+  memberCont: {
+    marginHorizontal: 10,
+    alignItems: 'center',
+  },
   card: {
     backgroundColor: '#1c1c1c',
     justifyContent: 'center',
@@ -297,6 +493,10 @@ const styles = StyleSheet.create({
     shadowColor: 'transparent',
     backgroundColor: '#444',
   },
+  clickable: (borderColor) => ({
+    borderWidth: 2,
+    borderColor: borderColor || '#00FFFF',
+  }),
   characterImage: {
     width: '100%',
     height: '70%',
@@ -314,6 +514,37 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     color: '#aaa',
     textAlign: 'center',
+  },
+  buttons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: cardSize,
+    marginTop: 10,
+  },
+  edit: {
+    backgroundColor: '#FFC107',
+    padding: 5,
+    borderRadius: 5,
+    flex: 1,
+    marginRight: 5,
+    alignItems: 'center',
+  },
+  delete: {
+    backgroundColor: '#F44336',
+    padding: 5,
+    borderRadius: 5,
+    flex: 1,
+    marginLeft: 5,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    fontSize: 12,
+  },
+  disabled: {
+    backgroundColor: '#ccc',
+    opacity: 0.6,
   },
   modalBackground: {
     flex: 1,
@@ -349,10 +580,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
     marginRight: 20,
   }),
-  clickable: {
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-  },
   previewImage: {
     width: '100%',
     height: '100%',
@@ -384,6 +611,65 @@ const styles = StyleSheet.create({
     color: '#aaa',
     textAlign: 'center',
     marginTop: 5,
+  },
+  previewDesc: {
+    fontSize: 14,
+    color: '#fff7f7',
+    textAlign: 'center',
+    marginVertical: 10,
+  },
+  close: {
+    backgroundColor: '#2196F3',
+    padding: 10,
+    borderRadius: 5,
+    alignSelf: 'center',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    color: '#000',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+  },
+  modalCancel: {
+    backgroundColor: '#2196F3',
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginRight: 10,
+  },
+  modalCancelText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalDelete: {
+    backgroundColor: '#F44336',
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginLeft: 10,
+  },
+  modalDeleteText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 
