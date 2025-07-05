@@ -1,16 +1,22 @@
 import React, { useRef, useEffect, useState } from "react";
-import { 
-  View, 
-  Text, 
-  Image, 
-  ScrollView, 
-  StyleSheet, 
-  TouchableOpacity, 
-  Dimensions, 
-  Animated 
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+  Animated,
+  Modal,
+  Alert,
 } from "react-native";
 import { useNavigation, useIsFocused, useRoute } from "@react-navigation/native";
 import { Audio } from 'expo-av';
+import { db, auth, storage } from '../../lib/firebase';
+import { collection, onSnapshot, deleteDoc, doc, getDoc } from 'firebase/firestore';
+import { ref, deleteObject } from 'firebase/storage';
+import LeagueMembers from '../Justice/LeagueMembers';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -68,6 +74,23 @@ const stopBackgroundMusic = async () => {
   }
 };
 
+// Hardcoded Armor
+const armors = [
+  { id: 'sam-1', name: 'Void Walker', codename: 'Void Walker', copyright: 'William Cummings', image: require('../../assets/Armor/Sam.jpg'), clickable: true, hardcoded: true },
+  { id: 'sam-2', name: 'Legacy', codename: 'Legacy', copyright: 'William Cummings', image: require('../../assets/Armor/SamLegacy.jpg'), clickable: true, hardcoded: true },
+  { id: 'sam-3', name: 'Void Walker', codename: 'Void Walker', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam8.jpg'), clickable: true, hardcoded: true },
+  { id: 'sam-4', name: 'Void Walker', codename: 'Void Walker', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam9.jpg'), clickable: true, hardcoded: true },
+  { id: 'sam-5', name: 'Void Walker', codename: 'Void Walker', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam4.jpg'), clickable: true, hardcoded: true },
+  { id: 'sam-6', name: 'Void Walker', codename: 'Void Walker', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam7.jpg'), clickable: true, hardcoded: true },
+  { id: 'sam-7', name: 'Void Walker', codename: 'Void Walker', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam3.jpg'), clickable: true, hardcoded: true },
+  { id: 'sam-8', name: 'Void Walker', codename: 'Void Walker', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam5.jpg'), clickable: true, hardcoded: true },
+  { id: 'sam-9', name: 'Celestial Walker', codename: 'Celestial Walker', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam10.jpg'), clickable: true, hardcoded: true },
+];
+
+// Permissions
+const ALLOWED_EMAILS = ['will@test.com', 'c1wcummings@gmail.com'];
+const RESTRICT_ACCESS = true;
+
 const Sam = () => {
   const navigation = useNavigation();
   const route = useRoute();
@@ -78,6 +101,11 @@ const Sam = () => {
   const [hasShownPopup, setHasShownPopup] = useState(false);
   const [fromBludBruhsHome, setFromBludBruhsHome] = useState(false);
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
+  const [armorList, setArmorList] = useState(armors);
+  const [previewArmor, setPreviewArmor] = useState(null);
+  const [deleteModal, setDeleteModal] = useState({ visible: false, armor: null });
+  const canMod = RESTRICT_ACCESS ? auth.currentUser?.email && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
+  const isDesktop = windowWidth >= 768;
 
   // Check navigation params to determine source
   useEffect(() => {
@@ -155,6 +183,56 @@ const Sam = () => {
     return () => subscription?.remove();
   }, []);
 
+  // Fetch dynamic armor from Firestore
+  useEffect(() => {
+    const validatedArmors = armors.map((armor, index) => ({
+      ...armor,
+      id: armor.id || `sam-armor-${index + 1}`,
+      hardcoded: true,
+      clickable: true,
+    }));
+    console.log('Validated Armors:', validatedArmors.map(a => ({ id: a.id, name: a.name, codename: a.codename })));
+    setArmorList(validatedArmors);
+
+    const unsub = onSnapshot(collection(db, 'samArmor'), (snap) => {
+      if (snap.empty) {
+        console.log('No armor found in Firestore');
+        setArmorList(validatedArmors);
+        return;
+      }
+      const dynamicArmors = snap.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        clickable: true,
+        borderColor: doc.data().borderColor || '#00b3ff',
+        hardcoded: false,
+        copyright: 'Samuel Woodwell', // Always set to Samuel Woodwell for dynamic armors
+      }));
+      console.log('Fetched dynamic armors:', dynamicArmors.map(a => ({ id: a.id, name: a.name || a.codename })));
+
+      // Filter out dynamic armors that match hardcoded by id or name/codename
+      const filteredDynamic = dynamicArmors.filter(
+        (dynamic) => !validatedArmors.some(
+          (armor) => armor.id === dynamic.id || armor.name === (dynamic.name || dynamic.codename) || armor.codename === (dynamic.name || dynamic.codename)
+        )
+      );
+      console.log('Filtered dynamic armors:', filteredDynamic.map(a => ({ id: a.id, name: a.name || a.codename })));
+
+      // Combine and deduplicate by id
+      const combinedMap = new Map();
+      [...validatedArmors, ...filteredDynamic].forEach((armor) => {
+        combinedMap.set(armor.id, armor);
+      });
+      const combined = Array.from(combinedMap.values());
+      console.log('Combined armors:', combined.map(a => ({ id: a.id, name: a.name || a.codename })));
+      setArmorList(combined);
+    }, (e) => {
+      console.error('Firestore error:', e.code, e.message);
+      Alert.alert('Error', `Failed to fetch armors: ${e.message}`);
+    });
+    return () => unsub();
+  }, []);
+
   // 🌌 Planet Click Handler → Leads to WarpScreen (No audio stop)
   const handlePlanetPress = () => {
     console.log("Navigating to WarpScreen without stopping music at:", new Date().toISOString());
@@ -192,33 +270,127 @@ const Sam = () => {
     navigation.navigate("BludBruhsHome");
   };
 
-  const isDesktop = windowWidth >= 768;
+  // Handle Armor Press
+  const handleArmorPress = (armor) => {
+    if (!armor?.clickable) {
+      console.log('Armor card not clickable:', armor?.name || armor?.codename);
+      return;
+    }
+    console.log('Armor card pressed:', armor.name || armor.codename);
+    setPreviewArmor(armor);
+  };
 
-  const armors = [
-    { name: "Void Walker", copyright: "William Cummings", image: require("../../assets/Armor/Sam.jpg"), clickable: true },
-    { name: "Legacy", copyright: "William Cummings", image: require("../../assets/Armor/SamLegacy.jpg"), clickable: true },
-    { name: "Void Walker", copyright: "Samuel Woodwell", image: require("../../assets/Armor/Sam8.jpg"), clickable: true },
-    { name: "Void Walker", copyright: "Samuel Woodwell", image: require("../../assets/Armor/Sam9.jpg"), clickable: true },
-    { name: "Void Walker", copyright: "Samuel Woodwell", image: require("../../assets/Armor/Sam4.jpg"), clickable: true },
-    { name: "Void Walker", copyright: "Samuel Woodwell", image: require("../../assets/Armor/Sam7.jpg"), clickable: true },
-    { name: "Void Walker", copyright: "Samuel Woodwell", image: require("../../assets/Armor/Sam3.jpg"), clickable: true },
-    { name: "Void Walker", copyright: "Samuel Woodwell", image: require("../../assets/Armor/Sam5.jpg"), clickable: true },
-    { name: "Celestial Walker", copyright: "Samuel Woodwell", image: require("../../assets/Armor/Sam10.jpg"), clickable: true },
-  ];
+  // Delete Armor
+  const confirmDelete = async (id) => {
+    if (!canMod) {
+      Alert.alert('Access Denied', 'Only authorized users can delete armors.');
+      return;
+    }
+    try {
+      const armorItem = armorList.find(a => a.id === id);
+      if (armorItem.hardcoded) {
+        Alert.alert('Error', 'Cannot delete hardcoded armors!');
+        return;
+      }
+      const armorRef = doc(db, 'samArmor', id);
+      const snap = await getDoc(armorRef);
+      if (!snap.exists()) {
+        Alert.alert('Error', 'Armor not found');
+        return;
+      }
+      const { imageUrl } = snap.data();
+      await deleteDoc(armorRef);
+      if (imageUrl && imageUrl !== 'placeholder') {
+        const path = imageUrl.split('/o/')[1]?.split('?')[0];
+        if (path) {
+          await deleteObject(ref(storage, path)).catch(e => {
+            if (e.code !== 'storage/object-not-found') {
+              console.error('Delete image error:', e.message);
+            }
+          });
+        }
+      }
+      setArmorList(armorList.filter(a => a.id !== id));
+      setDeleteModal({ visible: false, armor: null });
+      Alert.alert('Success', 'Armor deleted!');
+    } catch (e) {
+      console.error('Delete armor error:', e.code, e.message);
+      Alert.alert('Error', `Failed to delete armor: ${e.message}`);
+    }
+  };
+
+  // Compute card width for use in styles
+  const cardWidth = isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9;
 
   const renderArmorCard = (armor) => (
+    <View key={armor.id || `${armor.name}-${armor.codename}`} style={styles.armorCont}>
+      <TouchableOpacity
+        style={[styles.card, armor.clickable ? styles.clickable(armor.borderColor || 'rgba(255, 255, 255, 0.1)') : styles.notClickable, { width: cardWidth }]}
+        onPress={() => handleArmorPress(armor)}
+        disabled={!armor.clickable}
+      >
+        <Image
+          source={
+            armor.image ||
+            (armor.imageUrl && armor.imageUrl !== 'placeholder'
+              ? { uri: armor.imageUrl }
+              : require('../../assets/Armor/PlaceHolder.jpg'))
+          }
+          style={styles.armorImage}
+          resizeMode="cover"
+          onError={(e) => console.error('Image load error:', armor.name || armor.codename, e.nativeEvent.error)}
+        />
+        <View style={styles.transparentOverlay} />
+        <Text style={styles.cardName}>
+          © {armor.name || armor.codename || 'Unknown'}; {armor.copyright}
+        </Text>
+        {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+      </TouchableOpacity>
+      {!armor.hardcoded && (
+        <View style={[styles.buttons, { width: cardWidth }]}>
+          <TouchableOpacity
+            onPress={() => setPreviewArmor({ ...armor, isEditing: true })}
+            style={[styles.editButton, !canMod && styles.disabled]}
+            disabled={!canMod}
+          >
+            <Text style={styles.buttonText}>Edit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setDeleteModal({ visible: true, armor: { id: armor.id, name: armor.name || armor.codename || 'Unknown' } })}
+            style={[styles.deleteButton, !canMod && styles.disabled]}
+            disabled={!canMod}
+          >
+            <Text style={styles.buttonText}>Delete</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+    </View>
+  );
+
+  const renderPreviewCard = (armor) => (
     <TouchableOpacity
-      key={`${armor.name}-${armor.copyright}`} // Unique key using name and copyright
-      style={[styles.card(isDesktop, windowWidth), armor.clickable ? styles.clickable : styles.notClickable]}
-      onPress={() => armor.clickable && console.log(`${armor.name} clicked`)}
-      disabled={!armor.clickable}
+      key={armor.id || `${armor.name}-${armor.codename}`}
+      style={[styles.card, styles.clickable(armor.borderColor || 'rgba(255, 255, 255, 0.1)'), { width: cardWidth }]}
+      onPress={() => {
+        console.log('Closing preview modal');
+        setPreviewArmor(null);
+      }}
     >
-      <Image source={armor.image} style={styles.armorImage} />
+      <Image
+        source={
+          armor.image ||
+          (armor.imageUrl && armor.imageUrl !== 'placeholder'
+            ? { uri: armor.imageUrl }
+            : require('../../assets/Armor/PlaceHolder.jpg'))
+        }
+        style={styles.armorImage}
+        resizeMode="cover"
+        onError={(e) => console.error('Preview image load error:', armor.name || armor.codename, e.nativeEvent.error)}
+      />
       <View style={styles.transparentOverlay} />
       <Text style={styles.cardName}>
-        © {armor.name || 'Unknown'}; {armor.copyright}
+        © {armor.name || armor.codename || 'Unknown'}; {armor.copyright}
       </Text>
-      {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );
 
@@ -235,7 +407,7 @@ const Sam = () => {
           </TouchableOpacity>
           <Text style={styles.title}>Void Walker</Text>
           <TouchableOpacity onPress={handlePlanetPress} style={styles.planetContainer}>
-            <Animated.Image 
+            <Animated.Image
               source={require("../../assets/Space/ExoPlanet2.jpg")}
               style={[styles.planetImage, { opacity: flashAnim }]}
             />
@@ -252,48 +424,69 @@ const Sam = () => {
             snapToInterval={windowWidth * 0.7 + 20}
             decelerationRate="fast"
           >
-            {armors.map(renderArmorCard)}
+            {armorList.map(renderArmorCard)}
           </ScrollView>
         </View>
+
+        {/* LeagueMembers for Adding/Editing Armors */}
+        <LeagueMembers
+          collectionPath="samArmor"
+          placeholderImage={require('../../assets/Armor/PlaceHolder.jpg')}
+          hero={armorList}
+          setHero={setArmorList}
+          hardcodedHero={armors}
+          editingHero={previewArmor?.isEditing ? previewArmor : null}
+          setEditingHero={setPreviewArmor}
+        />
 
         {/* About Section */}
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
-          Sam Woodwell, known as Striker, is a tempest of power and turmoil, the conflicted leader of the Thunder Born, a faction born from the ashes of the Bludbruhs within Zion City’s evolving landscape. His presence is electric and commanding, a volatile mix of dark mastery and raw energy that makes him both a force and a liability. Behind his metallic Jedi robes and floating skull helmet, Sam is intense, driven, and torn between his past corruption and present redemption, his heart anchored by a lingering love for Chroma, a figure still shrouded in evil. He’s tied to his former Bludbruhs—Cole “Cruiser,” Joseph “Techoman,” James “Shadowmind,” and Tanner - Wolff—but his rift with them marks a new chapter. Off the battlefield, he’s a brooding strategist, wrestling with his demons, but his dark powers often alienate those he seeks to protect.           </Text>
-           <Text style={styles.aboutText}>
-           Backstory           </Text>
-           <Text style={styles.aboutText}>
-           Sam’s journey began as a naive teenager in Zion City’s Terrestrial sector, a dreamer who stumbled into a life-altering adventure. Alongside Will (later “Night Hawk”), Joseph, James, Cole, Tanner, Zeke, Elijah, Tom, and others, he ventured to the planet Melcornia, a pre-Parliament expedition that tested their mettle. In a dark mansion on that alien world, Sam’s family was killed by an unknown figure, shattering his innocence. A sinister entity, Erevos, promised justice and revenge, corrupting Sam’s mind with strange powers over darkness and electricity. The mansion amplified his grief into a weapon, and he embraced Erevos’s teachings, unaware of their evil.           </Text>
-           <Text style={styles.aboutText}>
-           The Melcornia crew returned fractured, believing Sam dead, but he survived, twisted by Erevos and the Enlightened faction. Years later, after seeing Erevos’s ideals as malevolent, Sam broke free, retaining his dark powers and a love for Chroma, a corrupted ally he met under Erevos’s sway. Seeking redemption, he joined the nascent Parliament of Justice and formed the Bludbruhs with Cole, Joseph, James, and Tanner, a brotherhood forged to fight Zion City’s chaos. But Sam’s inner conflict—his reliance on dark powers versus his desire for good—caused a rift. Many, including Tanner, left for the Monkie Alliance, rejecting his methods. With a bounty from the Enlightened on his head, Sam rebranded the remnants as Thunder Born, a name reflecting his electrical might and a fresh start from the Bludbruhs’ tainted legacy.           </Text>
+            Sam Woodwell, known as Striker, is a tempest of power and turmoil, the conflicted leader of the Thunder Born, a faction born from the ashes of the Bludbruhs within Zion City’s evolving landscape. His presence is electric and commanding, a volatile mix of dark mastery and raw energy that makes him both a force and a liability. Behind his metallic Jedi robes and floating skull helmet, Sam is intense, driven, and torn between his past corruption and present redemption, his heart anchored by a lingering love for Chroma, a figure still shrouded in evil. He’s tied to his former Bludbruhs—Cole “Cruiser,” Joseph “Techoman,” James “Shadowmind,” and Tanner - Wolff—but his rift with them marks a new chapter. Off the battlefield, he’s a brooding strategist, wrestling with his demons, but his dark powers often alienate those he seeks to protect.
+          </Text>
+          <Text style={styles.aboutText}>Backstory</Text>
           <Text style={styles.aboutText}>
-          When the Titans formed, Will and his team were the first to face “Evil Sam,” unaware of his survival until that clash, setting the stage for a reckoning between his past and present.          </Text>
-          <Text style={styles.aboutText}>
-          Abilities          
+            Sam’s journey began as a naive teenager in Zion City’s Terrestrial sector, a dreamer who stumbled into a life-altering adventure. Alongside Will (later “Night Hawk”), Joseph, James, Cole, Tanner, Zeke, Elijah, Tom, and others, he ventured to the planet Melcornia, a pre-Parliament expedition that tested their mettle. In a dark mansion on that alien world, Sam’s family was killed by an unknown figure, shattering his innocence. A sinister entity, Erevos, promised justice and revenge, corrupting Sam’s mind with strange powers over darkness and electricity. The mansion amplified his grief into a weapon, and he embraced Erevos’s teachings, unaware of their evil.
           </Text>
           <Text style={styles.aboutText}>
-          Sam’s armor and corrupted powers grant him a range of abilities blending electricity, telekinesis, and influence, shaped by his Melcornia ordeal:          </Text>
+            The Melcornia crew returned fractured, believing Sam dead, but he survived, twisted by Erevos and the Enlightened faction. Years later, after seeing Erevos’s ideals as malevolent, Sam broke free, retaining his dark powers and a love for Chroma, a corrupted ally he met under Erevos’s sway. Seeking redemption, he joined the nascent Parliament of Justice and formed the Bludbruhs with Cole, Joseph, James, and Tanner, a brotherhood forged to fight Zion City’s chaos. But Sam’s inner conflict—his reliance on dark powers versus his desire for good—caused a rift. Many, including Tanner, left for the Monkie Alliance, rejecting his methods. With a bounty from the Enlightened on his head, Sam rebranded the remnants as Thunder Born, a name reflecting his electrical might and a fresh start from the Bludbruhs’ tainted legacy.
+          </Text>
           <Text style={styles.aboutText}>
-          Electrical Manipulation: Controls and generates lightning-like energy, striking foes or powering his surroundings, a gift from the mansion’s corruption amplified by his will.          </Text>
+            When the Titans formed, Will and his team were the first to face “Evil Sam,” unaware of his survival until that clash, setting the stage for a reckoning between his past and present.
+          </Text>
+          <Text style={styles.aboutText}>Abilities</Text>
           <Text style={styles.aboutText}>
-          Telekinesis: Lifts and moves objects or people with his mind, a dark skill honed by Erevos, used for both combat and utility, reflecting his mental strength.          </Text>
+            Sam’s armor and corrupted powers grant him a range of abilities blending electricity, telekinesis, and influence, shaped by his Melcornia ordeal:
+          </Text>
           <Text style={styles.aboutText}>
-          Mind Influence: Subtly sways thoughts or emotions, a lingering taint from the Enlightened, effective for persuasion or control, though he resists its full potential.          </Text>
+            Electrical Manipulation: Controls and generates lightning-like energy, striking foes or powering his surroundings, a gift from the mansion’s corruption amplified by his will.
+          </Text>
           <Text style={styles.aboutText}>
-          Dark Surge: Combines electricity and shadow into a devastating burst, a remnant of his dark past, capable of overwhelming enemies but taxing his resolve.          </Text>
+            Telekinesis: Lifts and moves objects or people with his mind, a dark skill honed by Erevos, used for both combat and utility, reflecting his mental strength.
+          </Text>
           <Text style={styles.aboutText}>
-          Storm Presence: Projects an aura of crackling energy, intimidating foes and inspiring allies, a natural extension of his Thunder Born identity.          </Text>
+            Mind Influence: Subtly sways thoughts or emotions, a lingering taint from the Enlightened, effective for persuasion or control, though he resists its full potential.
+          </Text>
           <Text style={styles.aboutText}>
-          Personality and Role in the Team          </Text>
+            Dark Surge: Combines electricity and shadow into a devastating burst, a remnant of his dark past, capable of overwhelming enemies but taxing his resolve.
+          </Text>
           <Text style={styles.aboutText}>
-          Sam is the storm and soul of the Thunder Born, a leader whose electrical might and dark past define his fractured path. He’s brooding, determined, and deeply conflicted, torn between the powers Erevos gave him and the redemption he seeks with the Parliament. His love for Chroma fuels his hope, but her corruption mirrors his own struggle.          </Text>
+            Storm Presence: Projects an aura of crackling energy, intimidating foes and inspiring allies, a natural extension of his Thunder Born identity.
+          </Text>
+          <Text style={styles.aboutText}>Personality and Role in the Team</Text>
           <Text style={styles.aboutText}>
-          In the Thunder Born (formerly Bludbruhs), Sam’s rift with Zeke, Elijah, Tom, and Ammon marks a turning point—his dark surge clashed with their ideals, birthing the Monkie Alliance as they split. With Cole, he shared combat trust; with Joseph, tech synergy; with James, shadow tactics; and with Tanner, primal strength. Now, as Thunder Born, he leads a smaller, loyal remnant, redefining their purpose. His clash with Will and the Titans reveals his survival, setting up a redemption arc or rivalry.          </Text>
+            Sam is the storm and soul of the Thunder Born, a leader whose electrical might and dark past define his fractured path. He’s brooding, determined, and deeply conflicted, torn between the powers Erevos gave him and the redemption he seeks with the Parliament. His love for Chroma fuels his hope, but her corruption mirrors his own struggle.
+          </Text>
           <Text style={styles.aboutText}>
-          In Zion City, Sam’s bounty from the Enlightened makes him a target, but his Thunder Born faction aims to harness his powers for good. His ultimate goal is to avenge his family, free Chroma, and prove his dark legacy can thunder into something heroic.          </Text>
+            In the Thunder Born (formerly Bludbruhs), Sam’s rift with Zeke, Elijah, Tom, and Ammon marks a turning point—his dark surge clashed with their ideals, birthing the Monkie Alliance as they split. With Cole, he shared combat trust; with Joseph, tech synergy; with James, shadow tactics; and with Tanner, primal strength. Now, as Thunder Born, he leads a smaller, loyal remnant, redefining their purpose. His clash with Will and the Titans reveals his survival, setting up a redemption arc or rivalry.
+          </Text>
           <Text style={styles.aboutText}>
-          The Bludbruhs ended when Sam’s reliance on his dark powers—taught by Erevos and the Enlightened—fractured the group. After joining the Parliament of Justice, Sam tried to suppress his past, but a mission gone wrong unleashed his dark surge, alienating his team. Zeke, Elijah, and others left for the Monkie Alliance, seeking a path free of shadow. Sam, left with a loyal few, embraced his electrical core over his dark roots, renaming the faction Thunder Born—a rebirth symbolizing his lightning might and a break from the blood-soaked “Bludbruhs” name tied to his corrupted past.          </Text>
+            In Zion City, Sam’s bounty from the Enlightened makes him a target, but his Thunder Born faction aims to harness his powers for good. His ultimate goal is to avenge his family, free Chroma, and prove his dark legacy can thunder into something heroic.
+          </Text>
+          <Text style={styles.aboutText}>
+            The Bludbruhs ended when Sam’s reliance on his dark powers—taught by Erevos and the Enlightened—fractured the group. After joining the Parliament of Justice, Sam tried to suppress his past, but a mission gone wrong unleashed his dark surge, alienating his team. Zeke, Elijah, and others left for the Monkie Alliance, seeking a path free of shadow. Sam, left with a loyal few, embraced his electrical core over his dark roots, renaming the faction Thunder Born—a rebirth symbolizing his lightning might and a break from the blood-soaked “Bludbruhs” name tied to his corrupted past.
+          </Text>
         </View>
       </ScrollView>
 
@@ -311,6 +504,86 @@ const Sam = () => {
           </View>
         </Animated.View>
       )}
+
+      {/* Preview Modal */}
+      {previewArmor && !previewArmor.isEditing && (
+        <Modal
+          visible={!!previewArmor}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => {
+            console.log('Closing preview modal');
+            setPreviewArmor(null);
+          }}
+        >
+          <View style={styles.modalBackground}>
+            <TouchableOpacity
+              style={styles.modalOuterContainer}
+              activeOpacity={1}
+              onPress={() => {
+                console.log('Closing preview modal');
+                setPreviewArmor(null);
+              }}
+            >
+              <View style={styles.imageContainer}>
+                <ScrollView
+                  horizontal
+                  contentContainerStyle={styles.imageScrollContainer}
+                  showsHorizontalScrollIndicator={false}
+                  snapToAlignment="center"
+                  snapToInterval={cardWidth}
+                  decelerationRate="fast"
+                  centerContent={true}
+                >
+                  {renderPreviewCard(previewArmor)}
+                </ScrollView>
+              </View>
+              <View style={styles.previewAboutSection}>
+                <Text style={styles.previewCodename}>{previewArmor?.codename || 'No Codename'}</Text>
+                <Text style={styles.previewName}>{previewArmor?.name || 'Unknown'}</Text>
+                <Text style={styles.previewDesc}>{previewArmor?.description || 'No description available'}</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    console.log('Closing preview modal');
+                    setPreviewArmor(null);
+                  }}
+                  style={styles.closeButton}
+                >
+                  <Text style={styles.buttonText}>Close</Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        visible={deleteModal.visible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setDeleteModal({ visible: false, armor: null })}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>{`Delete "${deleteModal.armor?.name || ''}" and its image?`}</Text>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={styles.modalCancel}
+                onPress={() => setDeleteModal({ visible: false, armor: null })}
+              >
+                <Text style={styles.modalCancelText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalDelete}
+                onPress={() => deleteModal.armor && confirmDelete(deleteModal.armor.id)}
+              >
+                <Text style={styles.modalDeleteText}>Delete</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -370,19 +643,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     alignItems: "center",
   },
-  card: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9,
-    height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7,
+  armorCont: {
+    marginRight: 20,
+    alignItems: 'center',
+  },
+  card: {
+    height: SCREEN_HEIGHT * 0.7,
     borderRadius: 15,
     overflow: "hidden",
     elevation: 5,
     backgroundColor: "rgba(0, 0, 0, 0.7)",
-    marginRight: 20,
-  }),
-  clickable: {
-    borderWidth: 2,
-    borderColor: "rgba(255, 255, 255, 0.1)",
   },
+  clickable: (borderColor) => ({
+    borderWidth: 2,
+    borderColor: borderColor || 'rgba(255, 255, 255, 0.1)',
+  }),
   notClickable: {
     opacity: 0.8,
   },
@@ -410,6 +685,36 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 30,
     left: 10,
+  },
+  buttons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+  },
+  editButton: {
+    backgroundColor: '#FFC107',
+    padding: 8,
+    borderRadius: 5,
+    flex: 1,
+    marginRight: 5,
+    alignItems: 'center',
+  },
+  deleteButton: {
+    backgroundColor: '#F44336',
+    padding: 8,
+    borderRadius: 5,
+    flex: 1,
+    marginLeft: 5,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    fontSize: 12,
+  },
+  disabled: {
+    backgroundColor: '#ccc',
+    opacity: 0.6,
   },
   aboutSection: {
     marginTop: 40,
@@ -464,6 +769,96 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#fff',
     fontWeight: 'bold',
+  },
+  modalBackground: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalOuterContainer: {
+    width: '80%',
+    height: '70%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  previewAboutSection: {
+    marginTop: 15,
+    padding: 10,
+    backgroundColor: '#222',
+    borderRadius: 10,
+    width: '100%',
+  },
+  previewCodename: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#00b3ff',
+    textAlign: 'center',
+  },
+  previewName: {
+    fontSize: 14,
+    color: '#aaa',
+    textAlign: 'center',
+    marginTop: 5,
+  },
+  previewDesc: {
+    fontSize: 14,
+    color: '#fff',
+    textAlign: 'center',
+    marginVertical: 10,
+  },
+  closeButton: {
+    backgroundColor: '#2196F3',
+    padding: 10,
+    borderRadius: 5,
+    alignSelf: 'center',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    color: '#000',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+  },
+  modalCancel: {
+    backgroundColor: '#2196F3',
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginRight: 10,
+  },
+  modalCancelText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalDelete: {
+    backgroundColor: '#F44336',
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginLeft: 10,
+  },
+  modalDeleteText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 
