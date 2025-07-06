@@ -180,7 +180,7 @@ const StatuesScreen = () => {
   };
 
   const confirmDelete = async (id) => {
-    if (!canMod) {
+    if (!auth.currentUser || !ALLOWED_EMAILS.includes(auth.currentUser.email)) {
       Alert.alert('Access Denied', 'Only authorized users can delete statues.');
       return;
     }
@@ -197,21 +197,38 @@ const StatuesScreen = () => {
         return;
       }
       const { imageUrl } = snap.data();
-      await deleteDoc(statueRef);
       if (imageUrl && imageUrl !== 'placeholder') {
-        const path = imageUrl.split('/o/')[1]?.split('?')[0];
-        if (path) {
-          await deleteObject(ref(storage, path)).catch(e => {
-            if (e.code !== 'storage/object-not-found') {
-              console.error('Delete image error:', e.message);
-            }
-          });
+        let path = '';
+        try {
+          console.log('Raw imageUrl:', imageUrl); // Debug raw URL
+          if (typeof imageUrl !== 'string' || !imageUrl.includes('/o/')) {
+            console.warn('Invalid imageUrl format:', imageUrl);
+          } else {
+            const urlParts = imageUrl.split('/o/');
+            path = decodeURIComponent(urlParts[1].split('?')[0]);
+            console.log('Attempting to delete image:', path);
+            await deleteObject(ref(storage, path)).catch(e => {
+              if (e.code !== 'storage/object-not-found') {
+                throw e; // Rethrow errors except "not found"
+              }
+              console.warn('Image not found in storage:', path);
+            });
+            console.log('Image deleted or not found:', path);
+          }
+        } catch (e) {
+          console.error('Delete image error:', e.message, 'Path:', path, 'URL:', imageUrl);
+          Alert.alert('Warning', `Failed to delete image from storage: ${e.message}. Statue will still be deleted.`);
         }
+      } else {
+        console.log('No image to delete or imageUrl is placeholder:', imageUrl);
       }
+      await deleteDoc(statueRef);
+      console.log('Statue deleted from Firestore:', id);
+      setFriend(friend.filter(s => s.id !== id));
       setDeleteModal({ visible: false, statue: null });
-      Alert.alert('Success', 'Statue deleted!');
+      Alert.alert('Success', 'Statue deleted successfully!');
     } catch (e) {
-      console.error('Delete statue error:', e.code, e.message);
+      console.error('Delete statue error:', e.message);
       Alert.alert('Error', `Failed to delete statue: ${e.message}`);
     }
   };

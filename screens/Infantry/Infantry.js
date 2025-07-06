@@ -39,7 +39,7 @@ const hardcodedInfantry = [
     screen: '',
     image: require('../../assets/Armor/Infantry/ArcCommander.jpg'),
     clickable: true,
-    borderColor: '#FFD700', // Gold for hardcoded
+    borderColor: '#a59434', // Gold for hardcoded
     hardcoded: true,
     description: '',
   },
@@ -87,7 +87,7 @@ const InfantryScreen = () => {
   };
 
   const confirmDelete = async (id) => {
-    if (!canMod) {
+    if (!auth.currentUser || !ALLOWED_EMAILS.includes(auth.currentUser.email)) {
       Alert.alert('Access Denied', 'Only authorized users can delete infantry.');
       return;
     }
@@ -104,20 +104,37 @@ const InfantryScreen = () => {
         return;
       }
       const { imageUrl } = snap.data();
-      await deleteDoc(infantryRef);
       if (imageUrl && imageUrl !== 'placeholder') {
-        const path = imageUrl.split('/o/')[1]?.split('?')[0];
-        if (path) {
-          await deleteObject(ref(storage, path)).catch(e => {
-            if (e.code !== 'storage/object-not-found') {
-              console.error('Delete image error:', e.message);
-            }
-          });
+        let path = '';
+        try {
+          console.log('Raw imageUrl:', imageUrl); // Debug raw URL
+          const urlParts = imageUrl.split('/o/');
+          if (urlParts.length > 1) {
+            path = decodeURIComponent(urlParts[1].split('?')[0]);
+          }
+          if (!path) {
+            console.warn('No valid path extracted from imageUrl:', imageUrl);
+          } else {
+            console.log('Attempting to delete image:', path);
+            await deleteObject(ref(storage, path)).catch(e => {
+              if (e.code !== 'storage/object-not-found') {
+                throw e; // Rethrow errors except "not found"
+              }
+              console.warn('Image not found in storage:', path);
+            });
+            console.log('Image deleted or not found:', path);
+          }
+        } catch (e) {
+          console.error('Delete image error:', e.message, 'Path:', path, 'URL:', imageUrl);
+          Alert.alert('Warning', `Failed to delete image from storage: ${e.message}. Infantry will still be deleted.`);
+          // Continue with Firestore deletion even if image deletion fails
         }
       }
+      await deleteDoc(infantryRef);
+      console.log('Infantry deleted from Firestore:', id);
       setInfantry(infantry.filter(i => i.id !== id));
       setDeleteModal({ visible: false, infantry: null });
-      Alert.alert('Success', 'Infantry deleted!');
+      Alert.alert('Success', 'Infantry deleted successfully!');
     } catch (e) {
       console.error('Delete infantry error:', e.message);
       Alert.alert('Error', `Failed to delete infantry: ${e.message}`);

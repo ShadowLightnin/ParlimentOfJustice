@@ -30,7 +30,7 @@ try {
 }
 
 const members = [
-  { id: 'member-1', name: 'MIA', codename: '', screen: '', clickable: true, image: require('../../assets/Armor/PlaceHolder.jpg'), hardcoded: true, },
+  { id: 'member-1', name: 'MIA', codename: '', screen: '', clickable: true, image: require('../../assets/Armor/PlaceHolder.jpg'), hardcoded: true },
 ];
 
 const isDesktop = SCREEN_WIDTH > 600;
@@ -73,7 +73,7 @@ const RollingThunderScreen = () => {
         clickable: true,
         borderColor: doc.data().borderColor || '#00FFFF',
         hardcoded: false,
-        collectionPath: 'members', // Add collectionPath for SamsArmory
+        collectionPath: 'members',
       }));
       console.log('Fetched dynamic members:', dynamicMembers.map(m => ({ id: m.id, name: m.name || m.codename, imageUrl: m.imageUrl })));
 
@@ -125,7 +125,7 @@ const RollingThunderScreen = () => {
   };
 
   const confirmDelete = async (memberId) => {
-    if (!canMod) {
+    if (!auth.currentUser || !ALLOWED_EMAILS.includes(auth.currentUser.email)) {
       Alert.alert('Access Denied', 'Only authorized users can delete members.');
       return;
     }
@@ -142,25 +142,38 @@ const RollingThunderScreen = () => {
         return;
       }
       const { imageUrl } = snap.data();
-      await deleteDoc(memberRef);
       if (imageUrl && imageUrl !== 'placeholder') {
-        const path = imageUrl.split('/o/')[1]?.split('?')[0];
-        if (path && path.startsWith('members/')) {
-          console.log('Deleting image from Storage:', path);
-          await deleteObject(ref(storage, path)).catch(e => {
-            if (e.code !== 'storage/object-not-found') {
-              console.error('Delete image error:', e.code, e.message);
-            }
-          });
-        } else {
-          console.log('Skipping image deletion, path does not start with members/:', path);
+        let path = '';
+        try {
+          console.log('Raw imageUrl:', imageUrl); // Debug raw URL
+          if (typeof imageUrl !== 'string' || !imageUrl.includes('/o/')) {
+            console.warn('Invalid imageUrl format:', imageUrl);
+          } else {
+            const urlParts = imageUrl.split('/o/');
+            path = decodeURIComponent(urlParts[1].split('?')[0]);
+            console.log('Attempting to delete image:', path);
+            await deleteObject(ref(storage, path)).catch(e => {
+              if (e.code !== 'storage/object-not-found') {
+                throw e; // Rethrow errors except "not found"
+              }
+              console.warn('Image not found in storage:', path);
+            });
+            console.log('Image deleted or not found:', path);
+          }
+        } catch (e) {
+          console.error('Delete image error:', e.message, 'Path:', path, 'URL:', imageUrl);
+          Alert.alert('Warning', `Failed to delete image from storage: ${e.message}. Member will still be deleted.`);
         }
+      } else {
+        console.log('No image to delete or imageUrl is placeholder:', imageUrl);
       }
+      await deleteDoc(memberRef);
+      console.log('Member deleted from Firestore:', memberId);
       setTeamMembers(teamMembers.filter(m => m.id !== memberId));
       setDeleteModal({ visible: false, member: null });
-      Alert.alert('Success', 'Member deleted!');
+      Alert.alert('Success', 'Member deleted successfully!');
     } catch (e) {
-      console.error('Delete member error:', e.code, e.message);
+      console.error('Delete member error:', e.message);
       Alert.alert('Error', `Failed to delete member: ${e.message}`);
     }
   };
@@ -300,6 +313,7 @@ const RollingThunderScreen = () => {
             </View>
           ))}
           <SamsArmory
+            collectionPath="members"
             placeholderImage={require('../../assets/Armor/PlaceHolder.jpg')}
             friend={teamMembers}
             setFriend={setTeamMembers}

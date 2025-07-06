@@ -180,7 +180,7 @@ const PiratesScreen = () => {
   };
 
   const confirmDelete = async (id) => {
-    if (!canMod) {
+    if (!auth.currentUser || !ALLOWED_EMAILS.includes(auth.currentUser.email)) {
       Alert.alert('Access Denied', 'Only authorized users can delete pirates.');
       return;
     }
@@ -197,21 +197,38 @@ const PiratesScreen = () => {
         return;
       }
       const { imageUrl } = snap.data();
-      await deleteDoc(pirateRef);
       if (imageUrl && imageUrl !== 'placeholder') {
-        const path = imageUrl.split('/o/')[1]?.split('?')[0];
-        if (path) {
-          await deleteObject(ref(storage, path)).catch(e => {
-            if (e.code !== 'storage/object-not-found') {
-              console.error('Delete image error:', e.message);
-            }
-          });
+        let path = '';
+        try {
+          console.log('Raw imageUrl:', imageUrl); // Debug raw URL
+          if (typeof imageUrl !== 'string' || !imageUrl.includes('/o/')) {
+            console.warn('Invalid imageUrl format:', imageUrl);
+          } else {
+            const urlParts = imageUrl.split('/o/');
+            path = decodeURIComponent(urlParts[1].split('?')[0]);
+            console.log('Attempting to delete image:', path);
+            await deleteObject(ref(storage, path)).catch(e => {
+              if (e.code !== 'storage/object-not-found') {
+                throw e; // Rethrow errors except "not found"
+              }
+              console.warn('Image not found in storage:', path);
+            });
+            console.log('Image deleted or not found:', path);
+          }
+        } catch (e) {
+          console.error('Delete image error:', e.message, 'Path:', path, 'URL:', imageUrl);
+          Alert.alert('Warning', `Failed to delete image from storage: ${e.message}. Pirate will still be deleted.`);
         }
+      } else {
+        console.log('No image to delete or imageUrl is placeholder:', imageUrl);
       }
+      await deleteDoc(pirateRef);
+      console.log('Pirate deleted from Firestore:', id);
+      setFriend(friend.filter(p => p.id !== id));
       setDeleteModal({ visible: false, pirate: null });
-      Alert.alert('Success', 'Pirate deleted!');
+      Alert.alert('Success', 'Pirate deleted successfully!');
     } catch (e) {
-      console.error('Delete pirate error:', e.code, e.message);
+      console.error('Delete pirate error:', e.message);
       Alert.alert('Error', `Failed to delete pirate: ${e.message}`);
     }
   };

@@ -15,7 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import { db, auth, storage } from '../../lib/firebase';
 import { collection, onSnapshot, deleteDoc, doc, getDoc } from 'firebase/firestore';
 import { ref, deleteObject } from 'firebase/storage';
-import EnlightedInvite from './EnlightenedInvite';
+import EnlightenedInvite from './EnlightenedInvite';
 
 // Screen dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -78,7 +78,7 @@ const BigBossScreen = () => {
   };
 
   const confirmDelete = async (id) => {
-    if (!canMod) {
+    if (!auth.currentUser || !ALLOWED_EMAILS.includes(auth.currentUser.email)) {
       Alert.alert('Access Denied', 'Only authorized users can delete big bads.');
       return;
     }
@@ -95,20 +95,37 @@ const BigBossScreen = () => {
         return;
       }
       const { imageUrl } = snap.data();
-      await deleteDoc(bigBadRef);
       if (imageUrl && imageUrl !== 'placeholder') {
-        const path = imageUrl.split('/o/')[1]?.split('?')[0];
-        if (path) {
-          await deleteObject(ref(storage, path)).catch(e => {
-            if (e.code !== 'storage/object-not-found') {
-              console.error('Delete image error:', e.message);
-            }
-          });
+        let path = '';
+        try {
+          console.log('Raw imageUrl:', imageUrl); // Debug raw URL
+          const urlParts = imageUrl.split('/o/');
+          if (urlParts.length > 1) {
+            path = decodeURIComponent(urlParts[1].split('?')[0]);
+          }
+          if (!path) {
+            console.warn('No valid path extracted from imageUrl:', imageUrl);
+          } else {
+            console.log('Attempting to delete image:', path);
+            await deleteObject(ref(storage, path)).catch(e => {
+              if (e.code !== 'storage/object-not-found') {
+                throw e; // Rethrow errors except "not found"
+              }
+              console.warn('Image not found in storage:', path);
+            });
+            console.log('Image deleted or not found:', path);
+          }
+        } catch (e) {
+          console.error('Delete image error:', e.message, 'Path:', path, 'URL:', imageUrl);
+          Alert.alert('Warning', `Failed to delete image from storage: ${e.message}. Big Bad will still be deleted.`);
+          // Continue with Firestore deletion even if image deletion fails
         }
       }
+      await deleteDoc(bigBadRef);
+      console.log('Big Bad deleted from Firestore:', id);
       setBigBads(bigBads.filter(b => b.id !== id));
       setDeleteModal({ visible: false, bigBad: null });
-      Alert.alert('Success', 'Big Bad deleted!');
+      Alert.alert('Success', 'Big Bad deleted successfully!');
     } catch (e) {
       console.error('Delete big bad error:', e.message);
       Alert.alert('Error', `Failed to delete big bad: ${e.message}`);
@@ -218,7 +235,7 @@ const BigBossScreen = () => {
               )}
             </ScrollView>
           </View>
-          <EnlightedInvite
+          <EnlightenedInvite
             collectionPath="bigbad"
             placeholderImage={require('../../assets/Armor/PlaceHolder.jpg')}
             villain={bigBads}

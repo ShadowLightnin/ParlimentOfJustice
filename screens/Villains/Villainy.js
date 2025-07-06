@@ -78,7 +78,7 @@ const VillainyScreen = () => {
   };
 
   const confirmDelete = async (id) => {
-    if (!canMod) {
+    if (!auth.currentUser || !ALLOWED_EMAILS.includes(auth.currentUser.email)) {
       Alert.alert('Access Denied', 'Only authorized users can delete villains.');
       return;
     }
@@ -95,20 +95,37 @@ const VillainyScreen = () => {
         return;
       }
       const { imageUrl } = snap.data();
-      await deleteDoc(villainRef);
       if (imageUrl && imageUrl !== 'placeholder') {
-        const path = imageUrl.split('/o/')[1]?.split('?')[0];
-        if (path) {
-          await deleteObject(ref(storage, path)).catch(e => {
-            if (e.code !== 'storage/object-not-found') {
-              console.error('Delete image error:', e.message);
-            }
-          });
+        let path = '';
+        try {
+          console.log('Raw imageUrl:', imageUrl); // Debug raw URL
+          const urlParts = imageUrl.split('/o/');
+          if (urlParts.length > 1) {
+            path = decodeURIComponent(urlParts[1].split('?')[0]);
+          }
+          if (!path) {
+            console.warn('No valid path extracted from imageUrl:', imageUrl);
+          } else {
+            console.log('Attempting to delete image:', path);
+            await deleteObject(ref(storage, path)).catch(e => {
+              if (e.code !== 'storage/object-not-found') {
+                throw e; // Rethrow errors except "not found"
+              }
+              console.warn('Image not found in storage:', path);
+            });
+            console.log('Image deleted or not found:', path);
+          }
+        } catch (e) {
+          console.error('Delete image error:', e.message, 'Path:', path, 'URL:', imageUrl);
+          Alert.alert('Warning', `Failed to delete image from storage: ${e.message}. Villain will still be deleted.`);
+          // Continue with Firestore deletion even if image deletion fails
         }
       }
+      await deleteDoc(villainRef);
+      console.log('Villain deleted from Firestore:', id);
       setVillains(villains.filter(v => v.id !== id));
       setDeleteModal({ visible: false, villain: null });
-      Alert.alert('Success', 'Villain deleted!');
+      Alert.alert('Success', 'Villain deleted successfully!');
     } catch (e) {
       console.error('Delete villain error:', e.message);
       Alert.alert('Error', `Failed to delete villain: ${e.message}`);

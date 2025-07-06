@@ -180,7 +180,7 @@ const OniScreen = () => {
   };
 
   const confirmDelete = async (id) => {
-    if (!canMod) {
+    if (!auth.currentUser || !ALLOWED_EMAILS.includes(auth.currentUser.email)) {
       Alert.alert('Access Denied', 'Only authorized users can delete oni.');
       return;
     }
@@ -197,76 +197,93 @@ const OniScreen = () => {
         return;
       }
       const { imageUrl } = snap.data();
-      await deleteDoc(oniRef);
       if (imageUrl && imageUrl !== 'placeholder') {
-        const path = imageUrl.split('/o/')[1]?.split('?')[0];
-        if (path) {
-          await deleteObject(ref(storage, path)).catch(e => {
-            if (e.code !== 'storage/object-not-found') {
-              console.error('Delete image error:', e.message);
-            }
-          });
+        let path = '';
+        try {
+          console.log('Raw imageUrl:', imageUrl); // Debug raw URL
+          if (typeof imageUrl !== 'string' || !imageUrl.includes('/o/')) {
+            console.warn('Invalid imageUrl format:', imageUrl);
+          } else {
+            const urlParts = imageUrl.split('/o/');
+            path = decodeURIComponent(urlParts[1].split('?')[0]);
+            console.log('Attempting to delete image:', path);
+            await deleteObject(ref(storage, path)).catch(e => {
+              if (e.code !== 'storage/object-not-found') {
+                throw e; // Rethrow errors except "not found"
+              }
+              console.warn('Image not found in storage:', path);
+            });
+            console.log('Image deleted or not found:', path);
+          }
+        } catch (e) {
+          console.error('Delete image error:', e.message, 'Path:', path, 'URL:', imageUrl);
+          Alert.alert('Warning', `Failed to delete image from storage: ${e.message}. Oni will still be deleted.`);
         }
+      } else {
+        console.log('No image to delete or imageUrl is placeholder:', imageUrl);
       }
+      await deleteDoc(oniRef);
+      console.log('Oni deleted from Firestore:', id);
+      setFriend(friend.filter(o => o.id !== id));
       setDeleteModal({ visible: false, oni: null });
-      Alert.alert('Success', 'Oni deleted!');
+      Alert.alert('Success', 'Oni deleted successfully!');
     } catch (e) {
-      console.error('Delete oni error:', e.code, e.message);
+      console.error('Delete oni error:', e.message);
       Alert.alert('Error', `Failed to delete oni: ${e.message}`);
     }
   };
 
-  const renderOniCard = (oni) => (
-    <View key={oni.id} style={styles.oniCont}>
-      <TouchableOpacity
-        style={[
-          styles.card,
-          {
-            width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
-            height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
-          },
-          oni.clickable ? styles.clickable(oni.borderColor) : styles.notClickable,
-        ]}
-        onPress={() => {
-          console.log('TouchableOpacity pressed for oni:', oni.id);
-          handlePress(oni);
-        }}
-        disabled={!oni.clickable}
-      >
-        <Image
-          source={
-            oni.image ||
-            (oni.imageUrl && oni.imageUrl !== 'placeholder'
-              ? { uri: oni.imageUrl }
-              : require('../../../assets/BackGround/Oni.jpg'))
-          }
-          style={styles.image}
-          resizeMode="cover"
-        />
-        <View style={styles.overlay} />
-        <Text style={styles.name}>{oni.name || oni.codename || 'Unknown'}</Text>
-        {!oni.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
-      </TouchableOpacity>
-      {oni.hardcoded === false && (
-        <View style={styles.buttons}>
-          <TouchableOpacity
-            onPress={() => setEditingFriend(oni)}
-            style={[styles.edit, !canMod && styles.disabled]}
-            disabled={!canMod}
-          >
-            <Text style={styles.buttonText}>Edit</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setDeleteModal({ visible: true, oni: { id: oni.id, name: oni.name || oni.codename || 'Unknown' } })}
-            style={[styles.delete, !canMod && styles.disabled]}
-            disabled={!canMod}
-          >
-            <Text style={styles.buttonText}>Delete</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-    </View>
-  );
+  const renderOniCard = (oni) => {
+    const imageSource = oni.image || (oni.imageUrl && oni.imageUrl !== 'placeholder' ? { uri: oni.imageUrl } : require('../../../assets/BackGround/Oni.jpg'));
+    console.log('Rendering oni card:', { id: oni.id, name: oni.name || oni.codename, imageSource: JSON.stringify(imageSource) });
+    return (
+      <View key={oni.id} style={styles.oniCont}>
+        <TouchableOpacity
+          style={[
+            styles.card,
+            {
+              width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
+              height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
+            },
+            oni.clickable ? styles.clickable(oni.borderColor) : styles.notClickable,
+          ]}
+          onPress={() => {
+            console.log('TouchableOpacity pressed for oni:', oni.id);
+            handlePress(oni);
+          }}
+          disabled={!oni.clickable}
+        >
+          <Image
+            source={imageSource}
+            style={styles.image}
+            resizeMode="cover"
+            onError={(e) => console.error('Image load error for oni:', oni.id, 'Error:', e.nativeEvent.error, 'Source:', JSON.stringify(imageSource))}
+          />
+          <View style={styles.overlay} />
+          <Text style={styles.name}>{oni.name || oni.codename || 'Unknown'}</Text>
+          {!oni.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+        </TouchableOpacity>
+        {oni.hardcoded === false && (
+          <View style={styles.buttons}>
+            <TouchableOpacity
+              onPress={() => setEditingFriend(oni)}
+              style={[styles.edit, !canMod && styles.disabled]}
+              disabled={!canMod}
+            >
+              <Text style={styles.buttonText}>Edit</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setDeleteModal({ visible: true, oni: { id: oni.id, name: oni.name || oni.codename || 'Unknown' } })}
+              style={[styles.delete, !canMod && styles.disabled]}
+              disabled={!canMod}
+            >
+              <Text style={styles.buttonText}>Delete</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+    );
+  };
 
   const renderPreviewCard = (oni) => (
     <TouchableOpacity

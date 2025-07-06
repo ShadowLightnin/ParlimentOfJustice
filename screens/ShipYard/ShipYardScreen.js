@@ -52,7 +52,7 @@ const hardcodedShips = [
 ];
 
 const ALLOWED_EMAILS = ["will@test.com", "c1wcummings@gmail.com"];
-const RESTRICT_ACCESS = false; // Allow anyone to add/edit/delete ships
+const RESTRICT_ACCESS = true; // Enforce authentication and email check
 
 const ShipYardScreen = () => {
   const navigation = useNavigation();
@@ -93,7 +93,7 @@ const ShipYardScreen = () => {
   };
 
   const confirmDelete = async (id) => {
-    if (!canMod) {
+    if (!auth.currentUser || !ALLOWED_EMAILS.includes(auth.currentUser.email)) {
       Alert.alert('Access Denied', 'Only authorized users can delete ships.');
       return;
     }
@@ -104,24 +104,43 @@ const ShipYardScreen = () => {
         return;
       }
       const shipRef = doc(db, 'ships', id);
-      const snap = await getDoc(doc(db, 'ships', id));
+      const snap = await getDoc(shipRef);
       if (!snap.exists()) {
         Alert.alert('Error', 'Ship not found');
         return;
       }
       const { imageUrl } = snap.data();
-      await deleteDoc(shipRef);
       if (imageUrl && imageUrl !== 'placeholder') {
-        const path = imageUrl.split('/o/')[1]?.split('?')[0];
-        if (path) {
-          await deleteObject(ref(storage, path)).catch(e => {
-            if (e.code !== 'storage/object-not-found') console.error('Delete image error:', e);
-          });
+        let path = '';
+        try {
+          console.log('Raw imageUrl:', imageUrl); // Debug raw URL
+          const urlParts = imageUrl.split('/o/');
+          if (urlParts.length > 1) {
+            path = decodeURIComponent(urlParts[1].split('?')[0]);
+          }
+          if (!path) {
+            console.warn('No valid path extracted from imageUrl:', imageUrl);
+          } else {
+            console.log('Attempting to delete image:', path);
+            await deleteObject(ref(storage, path)).catch(e => {
+              if (e.code !== 'storage/object-not-found') {
+                throw e; // Rethrow errors except "not found"
+              }
+              console.warn('Image not found in storage:', path);
+            });
+            console.log('Image deleted or not found:', path);
+          }
+        } catch (e) {
+          console.error('Delete image error:', e.message, 'Path:', path, 'URL:', imageUrl);
+          Alert.alert('Warning', `Failed to delete image from storage: ${e.message}. Ship will still be deleted.`);
+          // Continue with Firestore deletion even if image deletion fails
         }
       }
+      await deleteDoc(shipRef);
+      console.log('Ship deleted from Firestore:', id);
       setShips(ships.filter(s => s.id !== id));
       setDeleteModal({ visible: false, ship: null });
-      Alert.alert('Success', 'Ship deleted!');
+      Alert.alert('Success', 'Ship deleted successfully!');
     } catch (e) {
       console.error('Delete ship error:', e.message);
       Alert.alert('Error', `Failed to delete ship: ${e.message}`);
