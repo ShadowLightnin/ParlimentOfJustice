@@ -30,15 +30,7 @@ try {
 }
 
 const members = [
-  {
-    id: 'member-1',
-    name: 'MIA',
-    codename: '',
-    screen: '',
-    clickable: true,
-    image: require('../../assets/Armor/PlaceHolder.jpg'),
-    hardcoded: true,
-  },
+  { id: 'member-1', name: 'MIA', codename: '', screen: '', clickable: true, image: require('../../assets/Armor/PlaceHolder.jpg'), hardcoded: true, },
 ];
 
 const isDesktop = SCREEN_WIDTH > 600;
@@ -69,7 +61,7 @@ const RollingThunderScreen = () => {
     console.log('Validated Members:', validatedMembers.map(m => ({ id: m.id, name: m.name, image: m.image ? 'hardcoded' : m.imageUrl })));
     setTeamMembers(validatedMembers);
 
-    const unsub = onSnapshot(collection(db, 'samArmory'), (snap) => {
+    const unsub = onSnapshot(collection(db, 'members'), (snap) => {
       if (snap.empty) {
         console.log('No members found in Firestore');
         setTeamMembers(validatedMembers);
@@ -81,6 +73,7 @@ const RollingThunderScreen = () => {
         clickable: true,
         borderColor: doc.data().borderColor || '#00FFFF',
         hardcoded: false,
+        collectionPath: 'members', // Add collectionPath for SamsArmory
       }));
       console.log('Fetched dynamic members:', dynamicMembers.map(m => ({ id: m.id, name: m.name || m.codename, imageUrl: m.imageUrl })));
 
@@ -114,18 +107,35 @@ const RollingThunderScreen = () => {
     }
   };
 
-  const confirmDelete = async (samArmoryId) => {
+  const handleMemberPress = (member) => {
+    if (!member?.clickable) {
+      console.log('Card not clickable:', member?.name);
+      return;
+    }
+    console.log('Card pressed:', member.name, 'Screen:', member.screen, 'Image URL:', member.imageUrl);
+    if (member.screen && member.hardcoded) {
+      try {
+        navigation.navigate(member.screen);
+      } catch (error) {
+        console.error('Navigation error to', member.screen, ':', error);
+      }
+    } else {
+      setPreviewMember(member);
+    }
+  };
+
+  const confirmDelete = async (memberId) => {
     if (!canMod) {
       Alert.alert('Access Denied', 'Only authorized users can delete members.');
       return;
     }
     try {
-      const memberItem = teamMembers.find(m => m.id === samArmoryId);
+      const memberItem = teamMembers.find(m => m.id === memberId);
       if (memberItem.hardcoded) {
         Alert.alert('Error', 'Cannot delete hardcoded members!');
         return;
       }
-      const memberRef = doc(db, 'samArmory', samArmoryId);
+      const memberRef = doc(db, 'members', memberId);
       const snap = await getDoc(memberRef);
       if (!snap.exists()) {
         Alert.alert('Error', 'Member not found');
@@ -135,7 +145,7 @@ const RollingThunderScreen = () => {
       await deleteDoc(memberRef);
       if (imageUrl && imageUrl !== 'placeholder') {
         const path = imageUrl.split('/o/')[1]?.split('?')[0];
-        if (path && path.startsWith('samArmory/')) {
+        if (path && path.startsWith('members/')) {
           console.log('Deleting image from Storage:', path);
           await deleteObject(ref(storage, path)).catch(e => {
             if (e.code !== 'storage/object-not-found') {
@@ -143,10 +153,10 @@ const RollingThunderScreen = () => {
             }
           });
         } else {
-          console.log('Skipping image deletion, path does not start with samArmory/:', path);
+          console.log('Skipping image deletion, path does not start with members/:', path);
         }
       }
-      setTeamMembers(teamMembers.filter(m => m.id !== samArmoryId));
+      setTeamMembers(teamMembers.filter(m => m.id !== memberId));
       setDeleteModal({ visible: false, member: null });
       Alert.alert('Success', 'Member deleted!');
     } catch (e) {
@@ -290,13 +300,12 @@ const RollingThunderScreen = () => {
             </View>
           ))}
           <SamsArmory
-            collectionPath="samArmory"
             placeholderImage={require('../../assets/Armor/PlaceHolder.jpg')}
-            hero={teamMembers}
-            setHero={setTeamMembers}
-            hardcodedHero={members}
-            editingHero={previewMember?.isEditing ? previewMember : null}
-            setEditingHero={setPreviewMember}
+            friend={teamMembers}
+            setFriend={setTeamMembers}
+            hardcodedFriend={members}
+            editingFriend={previewMember?.isEditing ? previewMember : null}
+            setEditingFriend={setPreviewMember}
           />
         </ScrollView>
 
@@ -381,9 +390,6 @@ const RollingThunderScreen = () => {
     </ImageBackground>
   );
 };
-
-// Added for line count adjustment
-const APP_VERSION = '1.0.0'; // Application version constant (redundant but harmless)
 
 const styles = StyleSheet.create({
   background: {
@@ -646,7 +652,6 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontWeight: 'bold',
     textAlign: 'center',
-    fontFamily: 'System', // Redundant style for line count adjustment
   },
 });
 

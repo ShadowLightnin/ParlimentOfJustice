@@ -27,7 +27,18 @@ const isDesktop = SCREEN_WIDTH > 600;
 
 // Oni data with images & respective screens
 const hardcodedOni = [
-  { id: 'oni-1', name: 'Akuma', screen: '', image: require('../../../assets/BackGround/Oni.jpg'), clickable: true, borderColor: '#c0c0c0', hardcoded: true, description: 'A malevolent demon from ancient folklore.' },
+  {
+    id: 'oni-1',
+    name: 'Akuma',
+    screen: '',
+    image: require('../../../assets/BackGround/Oni.jpg'),
+    clickable: true,
+    borderColor: '#c0c0c0',
+    hardcoded: true,
+    showSummonPopup: true,
+    description: 'A malevolent demon from ancient folklore.',
+    collectionPath: 'oni',
+  },
 ];
 
 // Card dimensions for desktop and mobile
@@ -47,9 +58,10 @@ const OniScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedOni, setSelectedOni] = useState(null);
   const [currentSound, setCurrentSound] = useState(null);
-  const [oni, setOni] = useState(hardcodedOni);
+  const [friend, setFriend] = useState(hardcodedOni);
   const [deleteModal, setDeleteModal] = useState({ visible: false, oni: null });
   const [previewOni, setPreviewOni] = useState(null);
+  const [editingFriend, setEditingFriend] = useState(null);
   const canMod = RESTRICT_ACCESS ? auth.currentUser?.email && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
 
   // Cleanup audio on component unmount
@@ -67,7 +79,7 @@ const OniScreen = () => {
     const unsub = onSnapshot(collection(db, 'oni'), (snap) => {
       if (snap.empty) {
         console.log('No oni found in Firestore');
-        setOni(hardcodedOni);
+        setFriend(hardcodedOni);
         return;
       }
       // Check for duplicate IDs or names in Firestore
@@ -77,6 +89,8 @@ const OniScreen = () => {
         clickable: true,
         borderColor: doc.data().borderColor || '#c0c0c0',
         hardcoded: false,
+        showSummonPopup: doc.data().showSummonPopup || false,
+        collectionPath: 'oni',
       }));
       const idCounts = {};
       const nameCounts = {};
@@ -90,7 +104,7 @@ const OniScreen = () => {
       Object.entries(nameCounts).forEach(([name, count]) => {
         if (count > 1) console.warn(`Duplicate Firestore name: ${name}, count: ${count}`);
       });
-      console.log('Fetched dynamic oni:', dynamicOni.map(o => ({ id: o.id, name: o.name || o.codename })));
+      console.log('Fetched dynamic oni:', dynamicOni.map(o => ({ id: o.id, name: o.name || o.codename, showSummonPopup: o.showSummonPopup })));
 
       // Filter out dynamic oni that match hardcodedOni by id or name
       const filteredDynamic = dynamicOni.filter(
@@ -98,7 +112,7 @@ const OniScreen = () => {
           (oni) => oni.id === dynamic.id || oni.name === (dynamic.name || dynamic.codename)
         )
       );
-      console.log('Filtered dynamic oni:', filteredDynamic.map(o => ({ id: o.id, name: o.name || o.codename })));
+      console.log('Filtered dynamic oni:', filteredDynamic.map(o => ({ id: o.id, name: o.name || o.codename, showSummonPopup: o.showSummonPopup })));
 
       // Combine and deduplicate by id
       const combinedMap = new Map();
@@ -106,9 +120,9 @@ const OniScreen = () => {
         combinedMap.set(oni.id, oni);
       });
       const combined = Array.from(combinedMap.values());
-      console.log('Combined oni:', combined.map(o => ({ id: o.id, name: o.name || o.codename })));
-      setOni(combined);
-      console.log('Updated oni state:', combined.map(o => ({ id: o.id, name: o.name || o.codename })));
+      console.log('Combined oni:', combined.map(o => ({ id: o.id, name: o.name || o.codename, showSummonPopup: o.showSummonPopup })));
+      setFriend(combined);
+      console.log('Updated friend state:', combined.map(o => ({ id: o.id, name: o.name || o.codename, showSummonPopup: o.showSummonPopup })));
     }, (e) => {
       console.error('Firestore error:', e.code, e.message);
       Alert.alert('Error', `Failed to fetch oni: ${e.message}`);
@@ -140,19 +154,24 @@ const OniScreen = () => {
   };
 
   const handlePress = async (oni) => {
+    console.log('Card pressed:', { id: oni.id, name: oni.name || oni.codename, hardcoded: oni.hardcoded });
     try {
+      const oniName = oni.name || oni.codename || 'Unknown';
       if (oni.audio) {
+        console.log('Playing audio for:', oniName);
         await playDemonSound(oni.audio, oni.screen);
       } else if (oni.screen) {
         console.log(`Navigating to ${oni.screen}`);
         navigation.navigate(oni.screen);
       } else if (oni.showSummonPopup) {
-        console.log('Showing summon popup for:', oni.name || oni.codename || 'Unknown');
+        console.log('Showing summon popup for:', oniName);
         setSelectedOni(oni);
         setModalVisible(true);
+        console.log('Modal state set:', { modalVisible: true, selectedOni: oniName });
       } else {
-        console.log('Showing preview for oni:', oni.name || oni.codename || 'Unknown');
+        console.log('Opening preview for oni:', oniName);
         setPreviewOni(oni);
+        console.log('Preview modal opened for:', oniName);
       }
     } catch (error) {
       console.error('Handle press error:', error.message);
@@ -166,7 +185,7 @@ const OniScreen = () => {
       return;
     }
     try {
-      const oniItem = oni.find(o => o.id === id);
+      const oniItem = friend.find(o => o.id === id);
       if (oniItem.hardcoded) {
         Alert.alert('Error', 'Cannot delete hardcoded oni!');
         return;
@@ -208,7 +227,10 @@ const OniScreen = () => {
           },
           oni.clickable ? styles.clickable(oni.borderColor) : styles.notClickable,
         ]}
-        onPress={() => handlePress(oni)}
+        onPress={() => {
+          console.log('TouchableOpacity pressed for oni:', oni.id);
+          handlePress(oni);
+        }}
         disabled={!oni.clickable}
       >
         <Image
@@ -228,7 +250,7 @@ const OniScreen = () => {
       {oni.hardcoded === false && (
         <View style={styles.buttons}>
           <TouchableOpacity
-            onPress={() => setSelectedOni({ ...oni, isEditing: true })}
+            onPress={() => setEditingFriend(oni)}
             style={[styles.edit, !canMod && styles.disabled]}
             disabled={!canMod}
           >
@@ -301,8 +323,8 @@ const OniScreen = () => {
               contentContainerStyle={styles.scrollContainer}
               showsHorizontalScrollIndicator={true}
             >
-              {oni.length > 0 ? (
-                oni.map(renderOniCard)
+              {friend.length > 0 ? (
+                friend.map(renderOniCard)
               ) : (
                 <Text style={styles.noOniText}>No oni available</Text>
               )}
@@ -311,15 +333,15 @@ const OniScreen = () => {
           <DarkLords
             collectionPath="oni"
             placeholderImage={require('../../../assets/BackGround/Oni.jpg')}
-            villain={oni}
-            setVillain={setOni}
-            hardcodedVillain={hardcodedOni}
-            editingVillain={selectedOni?.isEditing ? selectedOni : null}
-            setEditingVillain={setSelectedOni}
+            friend={friend}
+            setFriend={setFriend}
+            hardcodedFriend={hardcodedOni}
+            editingFriend={editingFriend}
+            setEditingFriend={setEditingFriend}
           />
         </ScrollView>
         <Modal
-          visible={!!previewOni && !previewOni.isEditing}
+          visible={!!previewOni}
           transparent
           animationType="fade"
           onRequestClose={() => {
@@ -395,9 +417,17 @@ const OniScreen = () => {
           transparent={true}
           visible={modalVisible}
           animationType="fade"
-          onRequestClose={() => setModalVisible(false)}
+          onRequestClose={() => {
+            console.log('Closing summon modal');
+            setModalVisible(false);
+            setSelectedOni(null);
+          }}
         >
-          <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <TouchableWithoutFeedback onPress={() => {
+            console.log('Closing summon modal via background tap');
+            setModalVisible(false);
+            setSelectedOni(null);
+          }}>
             <View style={styles.summonModalContainer}>
               <View style={styles.summonModalContent}>
                 <Text style={styles.summonModalText}>

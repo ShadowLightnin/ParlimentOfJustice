@@ -27,7 +27,18 @@ const isDesktop = SCREEN_WIDTH > 600;
 
 // Statues data with images & respective screens
 const hardcodedStatues = [
-  { id: 'statue-1', name: 'Weeping Angel', screen: '', image: require('../../../assets/BackGround/Statue.jpg'), clickable: true, borderColor: '#c0c0c0', hardcoded: true, description: 'A quantum-locked statue that moves when unseen.' },
+  {
+    id: 'statue-1',
+    name: 'Weeping Angel',
+    screen: '',
+    image: require('../../../assets/BackGround/Statue.jpg'),
+    clickable: true,
+    borderColor: '#c0c0c0',
+    hardcoded: true,
+    showSummonPopup: true,
+    description: 'A quantum-locked statue that moves when unseen.',
+    collectionPath: 'statues',
+  },
 ];
 
 // Card dimensions for desktop and mobile
@@ -47,9 +58,10 @@ const StatuesScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedStatue, setSelectedStatue] = useState(null);
   const [currentSound, setCurrentSound] = useState(null);
-  const [statues, setStatues] = useState(hardcodedStatues);
+  const [friend, setFriend] = useState(hardcodedStatues);
   const [deleteModal, setDeleteModal] = useState({ visible: false, statue: null });
   const [previewStatue, setPreviewStatue] = useState(null);
+  const [editingFriend, setEditingFriend] = useState(null);
   const canMod = RESTRICT_ACCESS ? auth.currentUser?.email && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
 
   // Cleanup audio on component unmount
@@ -67,7 +79,7 @@ const StatuesScreen = () => {
     const unsub = onSnapshot(collection(db, 'statues'), (snap) => {
       if (snap.empty) {
         console.log('No statues found in Firestore');
-        setStatues(hardcodedStatues);
+        setFriend(hardcodedStatues);
         return;
       }
       // Check for duplicate IDs or names in Firestore
@@ -77,6 +89,8 @@ const StatuesScreen = () => {
         clickable: true,
         borderColor: doc.data().borderColor || '#c0c0c0',
         hardcoded: false,
+        showSummonPopup: doc.data().showSummonPopup || false,
+        collectionPath: 'statues',
       }));
       const idCounts = {};
       const nameCounts = {};
@@ -90,7 +104,7 @@ const StatuesScreen = () => {
       Object.entries(nameCounts).forEach(([name, count]) => {
         if (count > 1) console.warn(`Duplicate Firestore name: ${name}, count: ${count}`);
       });
-      console.log('Fetched dynamic statues:', dynamicStatues.map(s => ({ id: s.id, name: s.name || s.codename })));
+      console.log('Fetched dynamic statues:', dynamicStatues.map(s => ({ id: s.id, name: s.name || s.codename, showSummonPopup: s.showSummonPopup })));
 
       // Filter out dynamic statues that match hardcodedStatues by id or name
       const filteredDynamic = dynamicStatues.filter(
@@ -98,7 +112,7 @@ const StatuesScreen = () => {
           (statue) => statue.id === dynamic.id || statue.name === (dynamic.name || dynamic.codename)
         )
       );
-      console.log('Filtered dynamic statues:', filteredDynamic.map(s => ({ id: s.id, name: s.name || s.codename })));
+      console.log('Filtered dynamic statues:', filteredDynamic.map(s => ({ id: s.id, name: s.name || s.codename, showSummonPopup: s.showSummonPopup })));
 
       // Combine and deduplicate by id
       const combinedMap = new Map();
@@ -106,9 +120,9 @@ const StatuesScreen = () => {
         combinedMap.set(statue.id, statue);
       });
       const combined = Array.from(combinedMap.values());
-      console.log('Combined statues:', combined.map(s => ({ id: s.id, name: s.name || s.codename })));
-      setStatues(combined);
-      console.log('Updated statues state:', combined.map(s => ({ id: s.id, name: s.name || s.codename })));
+      console.log('Combined statues:', combined.map(s => ({ id: s.id, name: s.name || s.codename, showSummonPopup: s.showSummonPopup })));
+      setFriend(combined);
+      console.log('Updated friend state:', combined.map(s => ({ id: s.id, name: s.name || s.codename, showSummonPopup: s.showSummonPopup })));
     }, (e) => {
       console.error('Firestore error:', e.code, e.message);
       Alert.alert('Error', `Failed to fetch statues: ${e.message}`);
@@ -140,19 +154,24 @@ const StatuesScreen = () => {
   };
 
   const handlePress = async (statue) => {
+    console.log('Card pressed:', { id: statue.id, name: statue.name || statue.codename, hardcoded: statue.hardcoded });
     try {
+      const statueName = statue.name || statue.codename || 'Unknown';
       if (statue.audio) {
+        console.log('Playing audio for:', statueName);
         await playDemonSound(statue.audio, statue.screen);
       } else if (statue.screen) {
         console.log(`Navigating to ${statue.screen}`);
         navigation.navigate(statue.screen);
       } else if (statue.showSummonPopup) {
-        console.log('Showing summon popup for:', statue.name || statue.codename || 'Unknown');
+        console.log('Showing summon popup for:', statueName);
         setSelectedStatue(statue);
         setModalVisible(true);
+        console.log('Modal state set:', { modalVisible: true, selectedStatue: statueName });
       } else {
-        console.log('Showing preview for statue:', statue.name || statue.codename || 'Unknown');
+        console.log('Opening preview for statue:', statueName);
         setPreviewStatue(statue);
+        console.log('Preview modal opened for:', statueName);
       }
     } catch (error) {
       console.error('Handle press error:', error.message);
@@ -166,7 +185,7 @@ const StatuesScreen = () => {
       return;
     }
     try {
-      const statueItem = statues.find(s => s.id === id);
+      const statueItem = friend.find(s => s.id === id);
       if (statueItem.hardcoded) {
         Alert.alert('Error', 'Cannot delete hardcoded statues!');
         return;
@@ -208,7 +227,10 @@ const StatuesScreen = () => {
           },
           statue.clickable ? styles.clickable(statue.borderColor) : styles.notClickable,
         ]}
-        onPress={() => handlePress(statue)}
+        onPress={() => {
+          console.log('TouchableOpacity pressed for statue:', statue.id);
+          handlePress(statue);
+        }}
         disabled={!statue.clickable}
       >
         <Image
@@ -228,7 +250,7 @@ const StatuesScreen = () => {
       {statue.hardcoded === false && (
         <View style={styles.buttons}>
           <TouchableOpacity
-            onPress={() => setSelectedStatue({ ...statue, isEditing: true })}
+            onPress={() => setEditingFriend(statue)}
             style={[styles.edit, !canMod && styles.disabled]}
             disabled={!canMod}
           >
@@ -301,8 +323,8 @@ const StatuesScreen = () => {
               contentContainerStyle={styles.scrollContainer}
               showsHorizontalScrollIndicator={true}
             >
-              {statues.length > 0 ? (
-                statues.map(renderStatueCard)
+              {friend.length > 0 ? (
+                friend.map(renderStatueCard)
               ) : (
                 <Text style={styles.noStatuesText}>No statues available</Text>
               )}
@@ -311,15 +333,15 @@ const StatuesScreen = () => {
           <DarkLords
             collectionPath="statues"
             placeholderImage={require('../../../assets/BackGround/Statue.jpg')}
-            villain={statues}
-            setVillain={setStatues}
-            hardcodedVillain={hardcodedStatues}
-            editingVillain={selectedStatue?.isEditing ? selectedStatue : null}
-            setEditingVillain={setSelectedStatue}
+            friend={friend}
+            setFriend={setFriend}
+            hardcodedFriend={hardcodedStatues}
+            editingFriend={editingFriend}
+            setEditingFriend={setEditingFriend}
           />
         </ScrollView>
         <Modal
-          visible={!!previewStatue && !previewStatue.isEditing}
+          visible={!!previewStatue}
           transparent
           animationType="fade"
           onRequestClose={() => {
@@ -395,9 +417,17 @@ const StatuesScreen = () => {
           transparent={true}
           visible={modalVisible}
           animationType="fade"
-          onRequestClose={() => setModalVisible(false)}
+          onRequestClose={() => {
+            console.log('Closing summon modal');
+            setModalVisible(false);
+            setSelectedStatue(null);
+          }}
         >
-          <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <TouchableWithoutFeedback onPress={() => {
+            console.log('Closing summon modal via background tap');
+            setModalVisible(false);
+            setSelectedStatue(null);
+          }}>
             <View style={styles.summonModalContainer}>
               <View style={styles.summonModalContent}>
                 <Text style={styles.summonModalText}>

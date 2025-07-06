@@ -98,7 +98,7 @@ const RangerSquad = () => {
     }));
     setMySquad(validatedMyClones);
 
-    const unsub = onSnapshot(collection(db, 'samArmory'), (snap) => {
+    const unsub = onSnapshot(collection(db, 'rangerSquad'), (snap) => {
       if (snap.empty) {
         console.log('No clones found in Firestore');
         setSamsSquad(validatedSamsClones);
@@ -110,6 +110,7 @@ const RangerSquad = () => {
         clickable: true,
         borderColor: doc.data().borderColor || '#00b3ff',
         hardcoded: false,
+        collectionPath: 'rangerSquad', // Add collectionPath for SamsArmory
       }));
       console.log('Fetched dynamic clones:', dynamicClones.map(c => ({ id: c.id, name: c.name || c.codename })));
 
@@ -162,18 +163,18 @@ const RangerSquad = () => {
     }
   };
 
-  const confirmDelete = async (samArmoryId) => {
+  const confirmDelete = async (rangerSquadId) => {
     if (!canMod) {
       Alert.alert('Access Denied', 'Only authorized users can delete clones.');
       return;
     }
     try {
-      const cloneItem = samsSquad.find(c => c.id === samArmoryId);
+      const cloneItem = samsSquad.find(c => c.id === rangerSquadId);
       if (cloneItem.hardcoded) {
         Alert.alert('Error', 'Cannot delete hardcoded clones!');
         return;
       }
-      const cloneRef = doc(db, 'samArmory', samArmoryId);
+      const cloneRef = doc(db, 'rangerSquad', rangerSquadId);
       const snap = await getDoc(cloneRef);
       if (!snap.exists()) {
         Alert.alert('Error', 'Clone not found');
@@ -183,15 +184,18 @@ const RangerSquad = () => {
       await deleteDoc(cloneRef);
       if (imageUrl && imageUrl !== 'placeholder') {
         const path = imageUrl.split('/o/')[1]?.split('?')[0];
-        if (path) {
+        if (path && path.startsWith('rangerSquad/')) {
+          console.log('Deleting image from Storage:', path);
           await deleteObject(ref(storage, path)).catch(e => {
             if (e.code !== 'storage/object-not-found') {
-              console.error('Delete image error:', e.message);
+              console.error('Delete image error:', e.code, e.message);
             }
           });
+        } else {
+          console.log('Skipping image deletion, path does not start with rangerSquad/:', path);
         }
       }
-      setSamsSquad(samsSquad.filter(c => c.id !== samArmoryId));
+      setSamsSquad(samsSquad.filter(c => c.id !== rangerSquadId));
       setDeleteModal({ visible: false, clone: null });
       Alert.alert('Success', 'Clone deleted!');
     } catch (e) {
@@ -315,7 +319,6 @@ const RangerSquad = () => {
           <Text style={styles.sectionTitle}>Sam's Clones</Text>
           {renderGrid(samsSquad, Math.ceil(samsSquad.length / columns), 'sams')}
           <SamsArmory
-            collectionPath="samArmory"
             placeholderImage={require('../../../assets/Armor/PlaceHolder.jpg')}
             friend={samsSquad}
             setFriend={setSamsSquad}

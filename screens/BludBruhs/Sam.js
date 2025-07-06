@@ -74,14 +74,14 @@ const stopBackgroundMusic = async () => {
 };
 
 const armors = [
-  { id: 'sam-1', name: 'Void Walker Alpha', codename: 'Void Walker Alpha', copyright: 'William Cummings', image: require('../../assets/Armor/Sam.jpg'), clickable: true, hardcoded: true },
-  { id: 'sam-2', name: 'Legacy Prime', codename: 'Legacy Prime', copyright: 'William Cummings', image: require('../../assets/Armor/SamLegacy.jpg'), clickable: true, hardcoded: true },
-  { id: 'sam-3', name: 'Void Walker Beta', codename: 'Void Walker Beta', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam8.jpg'), clickable: true, hardcoded: true },
-  { id: 'sam-4', name: 'Void Walker Gamma', codename: 'Void Walker Gamma', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam9.jpg'), clickable: true, hardcoded: true },
-  { id: 'sam-5', name: 'Void Walker Delta', codename: 'Void Walker Delta', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam4.jpg'), clickable: true, hardcoded: true },
-  { id: 'sam-6', name: 'Void Walker Epsilon', codename: 'Void Walker Epsilon', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam7.jpg'), clickable: true, hardcoded: true },
-  { id: 'sam-7', name: 'Void Walker Zeta', codename: 'Void Walker Zeta', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam3.jpg'), clickable: true, hardcoded: true },
-  { id: 'sam-8', name: 'Void Walker Eta', codename: 'Void Walker Eta', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam5.jpg'), clickable: true, hardcoded: true },
+  { id: 'sam-1', name: 'Void Walker', codename: 'Void Walker', copyright: 'William Cummings', image: require('../../assets/Armor/Sam.jpg'), clickable: true, hardcoded: true },
+  { id: 'sam-2', name: 'Legacy', codename: 'Legacy', copyright: 'William Cummings', image: require('../../assets/Armor/SamLegacy.jpg'), clickable: true, hardcoded: true },
+  { id: 'sam-3', name: 'Void Walker', codename: 'Void Walker', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam8.jpg'), clickable: true, hardcoded: true },
+  { id: 'sam-4', name: 'Void Walker', codename: 'Void Walker', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam9.jpg'), clickable: true, hardcoded: true },
+  { id: 'sam-5', name: 'Void Walker', codename: 'Void Walker', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam4.jpg'), clickable: true, hardcoded: true },
+  { id: 'sam-6', name: 'Void Walker', codename: 'Void Walker', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam7.jpg'), clickable: true, hardcoded: true },
+  { id: 'sam-7', name: 'Void Walker', codename: 'Void Walker', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam3.jpg'), clickable: true, hardcoded: true },
+  { id: 'sam-8', name: 'Void Walker', codename: 'Void Walker', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam5.jpg'), clickable: true, hardcoded: true },
   { id: 'sam-9', name: 'Celestial Walker', codename: 'Celestial Walker', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam10.jpg'), clickable: true, hardcoded: true },
 ];
 

@@ -43,9 +43,10 @@ const SkinwalkersScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDemon, setSelectedDemon] = useState(null);
   const [currentSound, setCurrentSound] = useState(null);
-  const [skinwalkers, setSkinwalkers] = useState([]);
+  const [friend, setFriend] = useState([]);
   const [deleteModal, setDeleteModal] = useState({ visible: false, skinwalker: null });
   const [previewSkinwalker, setPreviewSkinwalker] = useState(null);
+  const [editingFriend, setEditingFriend] = useState(null);
   const canMod = RESTRICT_ACCESS ? auth.currentUser?.email && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
 
   // Cleanup audio on component unmount
@@ -66,14 +67,15 @@ const SkinwalkersScreen = () => {
       id: lord.id || `hardcoded-${index + 1}`,
       hardcoded: true,
       showSummonPopup: lord.showSummonPopup !== undefined ? lord.showSummonPopup : true,
+      collectionPath: 'skinwalkers',
     }));
     console.log('Validated DemonLords:', validatedDemonLords.map(l => ({ id: l.id, name: l.name, showSummonPopup: l.showSummonPopup })));
-    setSkinwalkers(validatedDemonLords);
+    setFriend(validatedDemonLords);
 
     const unsub = onSnapshot(collection(db, 'skinwalkers'), (snap) => {
       if (snap.empty) {
         console.log('No skinwalkers found in Firestore');
-        setSkinwalkers(validatedDemonLords);
+        setFriend(validatedDemonLords);
         return;
       }
       // Check for duplicate IDs or names in Firestore
@@ -84,6 +86,7 @@ const SkinwalkersScreen = () => {
         borderColor: doc.data().borderColor || '#e25822',
         hardcoded: false,
         showSummonPopup: doc.data().showSummonPopup || false,
+        collectionPath: 'skinwalkers',
       }));
       console.log('Fetched dynamic skinwalkers:', dynamicSkinwalkers.map(s => ({ id: s.id, name: s.name || s.codename, showSummonPopup: s.showSummonPopup })));
 
@@ -102,8 +105,8 @@ const SkinwalkersScreen = () => {
       });
       const combined = Array.from(combinedMap.values());
       console.log('Combined skinwalkers:', combined.map(s => ({ id: s.id, name: s.name || s.codename, showSummonPopup: s.showSummonPopup })));
-      setSkinwalkers(combined);
-      console.log('Updated skinwalkers state:', combined.map(s => ({ id: s.id, name: s.name || s.codename, showSummonPopup: s.showSummonPopup })));
+      setFriend(combined);
+      console.log('Updated friend state:', combined.map(s => ({ id: s.id, name: s.name || s.codename, showSummonPopup: s.showSummonPopup })));
     }, (e) => {
       console.error('Firestore error:', e.code, e.message);
       Alert.alert('Error', `Failed to fetch skinwalkers: ${e.message}`);
@@ -167,7 +170,7 @@ const SkinwalkersScreen = () => {
       return;
     }
     try {
-      const skinwalkerItem = skinwalkers.find(s => s.id === id);
+      const skinwalkerItem = friend.find(s => s.id === id);
       if (skinwalkerItem.hardcoded) {
         Alert.alert('Error', 'Cannot delete hardcoded skinwalkers!');
         return;
@@ -240,7 +243,7 @@ const SkinwalkersScreen = () => {
       {skinwalker.hardcoded === false && (
         <View style={styles.buttons}>
           <TouchableOpacity
-            onPress={() => setSelectedDemon({ ...skinwalker, isEditing: true })}
+            onPress={() => setEditingFriend(skinwalker)}
             style={[styles.edit, !canMod && styles.disabled]}
             disabled={!canMod}
           >
@@ -320,8 +323,8 @@ const SkinwalkersScreen = () => {
               contentContainerStyle={styles.scrollContainer}
               showsHorizontalScrollIndicator={true}
             >
-              {skinwalkers.length > 0 ? (
-                skinwalkers.map(renderSkinwalkerCard)
+              {friend.length > 0 ? (
+                friend.map(renderSkinwalkerCard)
               ) : (
                 <Text style={styles.noSkinwalkersText}>No skinwalkers available</Text>
               )}
@@ -330,15 +333,15 @@ const SkinwalkersScreen = () => {
           <DarkLords
             collectionPath="skinwalkers"
             placeholderImage={require('../../../assets/BackGround/Skinwalkers.jpg')}
-            villain={skinwalkers}
-            setVillain={setSkinwalkers}
-            hardcodedVillain={demonLords}
-            editingVillain={selectedDemon?.isEditing ? selectedDemon : null}
-            setEditingVillain={setSelectedDemon}
+            friend={friend}
+            setFriend={setFriend}
+            hardcodedFriend={demonLords}
+            editingFriend={editingFriend}
+            setEditingFriend={setEditingFriend}
           />
         </ScrollView>
         <Modal
-          visible={!!previewSkinwalker && !previewSkinwalker.isEditing}
+          visible={!!previewSkinwalker}
           transparent
           animationType="fade"
           onRequestClose={() => {

@@ -27,7 +27,18 @@ const isDesktop = SCREEN_WIDTH > 600;
 
 // Pirates data with images & respective screens
 const hardcodedPirates = [
-  { id: 'pirate-1', name: 'Blackfang', screen: '', image: require('../../../assets/BackGround/Pirates.jpg'), clickable: true, borderColor: '#c0c0c0', hardcoded: true, description: 'A ruthless pirate captain of the high seas.' },
+  {
+    id: 'pirate-1',
+    name: 'Blackfang',
+    screen: '',
+    image: require('../../../assets/BackGround/Pirates.jpg'),
+    clickable: true,
+    borderColor: '#c0c0c0',
+    hardcoded: true,
+    showSummonPopup: true,
+    description: 'A ruthless pirate captain of the high seas.',
+    collectionPath: 'pirates',
+  },
 ];
 
 // Card dimensions for desktop and mobile
@@ -47,9 +58,10 @@ const PiratesScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedPirate, setSelectedPirate] = useState(null);
   const [currentSound, setCurrentSound] = useState(null);
-  const [pirates, setPirates] = useState(hardcodedPirates);
+  const [friend, setFriend] = useState(hardcodedPirates);
   const [deleteModal, setDeleteModal] = useState({ visible: false, pirate: null });
   const [previewPirate, setPreviewPirate] = useState(null);
+  const [editingFriend, setEditingFriend] = useState(null);
   const canMod = RESTRICT_ACCESS ? auth.currentUser?.email && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
 
   // Cleanup audio on component unmount
@@ -67,7 +79,7 @@ const PiratesScreen = () => {
     const unsub = onSnapshot(collection(db, 'pirates'), (snap) => {
       if (snap.empty) {
         console.log('No pirates found in Firestore');
-        setPirates(hardcodedPirates);
+        setFriend(hardcodedPirates);
         return;
       }
       // Check for duplicate IDs or names in Firestore
@@ -77,6 +89,8 @@ const PiratesScreen = () => {
         clickable: true,
         borderColor: doc.data().borderColor || '#c0c0c0',
         hardcoded: false,
+        showSummonPopup: doc.data().showSummonPopup || false,
+        collectionPath: 'pirates',
       }));
       const idCounts = {};
       const nameCounts = {};
@@ -90,7 +104,7 @@ const PiratesScreen = () => {
       Object.entries(nameCounts).forEach(([name, count]) => {
         if (count > 1) console.warn(`Duplicate Firestore name: ${name}, count: ${count}`);
       });
-      console.log('Fetched dynamic pirates:', dynamicPirates.map(p => ({ id: p.id, name: p.name || p.codename })));
+      console.log('Fetched dynamic pirates:', dynamicPirates.map(p => ({ id: p.id, name: p.name || p.codename, showSummonPopup: p.showSummonPopup })));
 
       // Filter out dynamic pirates that match hardcodedPirates by id or name
       const filteredDynamic = dynamicPirates.filter(
@@ -98,7 +112,7 @@ const PiratesScreen = () => {
           (pirate) => pirate.id === dynamic.id || pirate.name === (dynamic.name || dynamic.codename)
         )
       );
-      console.log('Filtered dynamic pirates:', filteredDynamic.map(p => ({ id: p.id, name: p.name || p.codename })));
+      console.log('Filtered dynamic pirates:', filteredDynamic.map(p => ({ id: p.id, name: p.name || p.codename, showSummonPopup: p.showSummonPopup })));
 
       // Combine and deduplicate by id
       const combinedMap = new Map();
@@ -106,9 +120,9 @@ const PiratesScreen = () => {
         combinedMap.set(pirate.id, pirate);
       });
       const combined = Array.from(combinedMap.values());
-      console.log('Combined pirates:', combined.map(p => ({ id: p.id, name: p.name || p.codename })));
-      setPirates(combined);
-      console.log('Updated pirates state:', combined.map(p => ({ id: p.id, name: p.name || p.codename })));
+      console.log('Combined pirates:', combined.map(p => ({ id: p.id, name: p.name || p.codename, showSummonPopup: p.showSummonPopup })));
+      setFriend(combined);
+      console.log('Updated friend state:', combined.map(p => ({ id: p.id, name: p.name || p.codename, showSummonPopup: p.showSummonPopup })));
     }, (e) => {
       console.error('Firestore error:', e.code, e.message);
       Alert.alert('Error', `Failed to fetch pirates: ${e.message}`);
@@ -140,19 +154,24 @@ const PiratesScreen = () => {
   };
 
   const handlePress = async (pirate) => {
+    console.log('Card pressed:', { id: pirate.id, name: pirate.name || pirate.codename, hardcoded: pirate.hardcoded });
     try {
+      const pirateName = pirate.name || pirate.codename || 'Unknown';
       if (pirate.audio) {
+        console.log('Playing audio for:', pirateName);
         await playDemonSound(pirate.audio, pirate.screen);
       } else if (pirate.screen) {
         console.log(`Navigating to ${pirate.screen}`);
         navigation.navigate(pirate.screen);
       } else if (pirate.showSummonPopup) {
-        console.log('Showing summon popup for:', pirate.name || pirate.codename || 'Unknown');
+        console.log('Showing summon popup for:', pirateName);
         setSelectedPirate(pirate);
         setModalVisible(true);
+        console.log('Modal state set:', { modalVisible: true, selectedPirate: pirateName });
       } else {
-        console.log('Showing preview for pirate:', pirate.name || pirate.codename || 'Unknown');
+        console.log('Opening preview for pirate:', pirateName);
         setPreviewPirate(pirate);
+        console.log('Preview modal opened for:', pirateName);
       }
     } catch (error) {
       console.error('Handle press error:', error.message);
@@ -166,7 +185,7 @@ const PiratesScreen = () => {
       return;
     }
     try {
-      const pirateItem = pirates.find(p => p.id === id);
+      const pirateItem = friend.find(p => p.id === id);
       if (pirateItem.hardcoded) {
         Alert.alert('Error', 'Cannot delete hardcoded pirates!');
         return;
@@ -208,7 +227,10 @@ const PiratesScreen = () => {
           },
           pirate.clickable ? styles.clickable(pirate.borderColor) : styles.notClickable,
         ]}
-        onPress={() => handlePress(pirate)}
+        onPress={() => {
+          console.log('TouchableOpacity pressed for pirate:', pirate.id);
+          handlePress(pirate);
+        }}
         disabled={!pirate.clickable}
       >
         <Image
@@ -228,7 +250,7 @@ const PiratesScreen = () => {
       {pirate.hardcoded === false && (
         <View style={styles.buttons}>
           <TouchableOpacity
-            onPress={() => setSelectedPirate({ ...pirate, isEditing: true })}
+            onPress={() => setEditingFriend(pirate)}
             style={[styles.edit, !canMod && styles.disabled]}
             disabled={!canMod}
           >
@@ -301,8 +323,8 @@ const PiratesScreen = () => {
               contentContainerStyle={styles.scrollContainer}
               showsHorizontalScrollIndicator={true}
             >
-              {pirates.length > 0 ? (
-                pirates.map(renderPirateCard)
+              {friend.length > 0 ? (
+                friend.map(renderPirateCard)
               ) : (
                 <Text style={styles.noPiratesText}>No pirates available</Text>
               )}
@@ -311,15 +333,15 @@ const PiratesScreen = () => {
           <DarkLords
             collectionPath="pirates"
             placeholderImage={require('../../../assets/BackGround/Pirates.jpg')}
-            villain={pirates}
-            setVillain={setPirates}
-            hardcodedVillain={hardcodedPirates}
-            editingVillain={selectedPirate?.isEditing ? selectedPirate : null}
-            setEditingVillain={setSelectedPirate}
+            friend={friend}
+            setFriend={setFriend}
+            hardcodedFriend={hardcodedPirates}
+            editingFriend={editingFriend}
+            setEditingFriend={setEditingFriend}
           />
         </ScrollView>
         <Modal
-          visible={!!previewPirate && !previewPirate.isEditing}
+          visible={!!previewPirate}
           transparent
           animationType="fade"
           onRequestClose={() => {
@@ -395,9 +417,17 @@ const PiratesScreen = () => {
           transparent={true}
           visible={modalVisible}
           animationType="fade"
-          onRequestClose={() => setModalVisible(false)}
+          onRequestClose={() => {
+            console.log('Closing summon modal');
+            setModalVisible(false);
+            setSelectedPirate(null);
+          }}
         >
-          <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <TouchableWithoutFeedback onPress={() => {
+            console.log('Closing summon modal via background tap');
+            setModalVisible(false);
+            setSelectedPirate(null);
+          }}>
             <View style={styles.summonModalContainer}>
               <View style={styles.summonModalContent}>
                 <Text style={styles.summonModalText}>

@@ -27,7 +27,18 @@ const isDesktop = SCREEN_WIDTH > 600;
 
 // Bugs data with images & respective screens
 const hardcodedBugs = [
-  { id: 'bug-1', name: 'Swarm', screen: '', image: require('../../../assets/BackGround/Bugs.jpg'), clickable: true, borderColor: '#c0c0c0', hardcoded: true, description: 'A hive-mind insectoid from a toxic planet.' },
+  {
+    id: 'bug-1',
+    name: 'Swarm',
+    screen: '',
+    image: require('../../../assets/BackGround/Bugs.jpg'),
+    clickable: true,
+    borderColor: '#c0c0c0',
+    hardcoded: true,
+    showSummonPopup: true,
+    description: 'A hive-mind insectoid from a toxic planet.',
+    collectionPath: 'bugs',
+  },
 ];
 
 // Card dimensions for desktop and mobile
@@ -47,14 +58,30 @@ const BugsScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedBug, setSelectedBug] = useState(null);
   const [currentSound, setCurrentSound] = useState(null);
-  const [bugs, setBugs] = useState([]);
+  const [friend, setFriend] = useState(hardcodedBugs);
   const [deleteModal, setDeleteModal] = useState({ visible: false, bug: null });
   const [previewBug, setPreviewBug] = useState(null);
-  const canMod = RESTRICT_ACCESS ? auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
+  const [editingFriend, setEditingFriend] = useState(null);
+  const canMod = RESTRICT_ACCESS ? auth.currentUser?.email && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
+
+  // Cleanup audio on component unmount
+  useEffect(() => {
+    return () => {
+      if (currentSound) {
+        currentSound.stopAsync().catch(e => console.error('Audio stop error:', e.message));
+        currentSound.unloadAsync().catch(e => console.error('Audio unload error:', e.message));
+      }
+    };
+  }, [currentSound]);
 
   // Fetch dynamic bugs from Firestore
   useEffect(() => {
     const unsub = onSnapshot(collection(db, 'bugs'), (snap) => {
+      if (snap.empty) {
+        console.log('No bugs found in Firestore');
+        setFriend(hardcodedBugs);
+        return;
+      }
       // Check for duplicate IDs or names in Firestore
       const dynamicBugs = snap.docs.map((doc) => ({
         id: doc.id,
@@ -62,12 +89,14 @@ const BugsScreen = () => {
         clickable: true,
         borderColor: doc.data().borderColor || '#c0c0c0',
         hardcoded: false,
+        showSummonPopup: doc.data().showSummonPopup || false,
+        collectionPath: 'bugs',
       }));
       const idCounts = {};
       const nameCounts = {};
       dynamicBugs.forEach(b => {
         idCounts[b.id] = (idCounts[b.id] || 0) + 1;
-        nameCounts[b.name] = (nameCounts[b.name] || 0) + 1;
+        nameCounts[b.name || b.codename || 'Unknown'] = (nameCounts[b.name || b.codename || 'Unknown'] || 0) + 1;
       });
       Object.entries(idCounts).forEach(([id, count]) => {
         if (count > 1) console.warn(`Duplicate Firestore ID: ${id}, count: ${count}`);
@@ -75,28 +104,28 @@ const BugsScreen = () => {
       Object.entries(nameCounts).forEach(([name, count]) => {
         if (count > 1) console.warn(`Duplicate Firestore name: ${name}, count: ${count}`);
       });
-      console.log('Fetched dynamic bugs:', dynamicBugs.map(b => ({ id: b.id, name: b.name })));
+      console.log('Fetched dynamic bugs:', dynamicBugs.map(b => ({ id: b.id, name: b.name || b.codename, showSummonPopup: b.showSummonPopup })));
 
       // Filter out dynamic bugs that match hardcodedBugs by id or name
       const filteredDynamic = dynamicBugs.filter(
         (dynamic) => !hardcodedBugs.some(
-          (bug) => bug.id === dynamic.id || bug.name === dynamic.name
+          (bug) => bug.id === dynamic.id || bug.name === (dynamic.name || dynamic.codename)
         )
       );
-      console.log('Filtered dynamic bugs:', filteredDynamic.map(b => ({ id: b.id, name: b.name })));
+      console.log('Filtered dynamic bugs:', filteredDynamic.map(b => ({ id: b.id, name: b.name || b.codename, showSummonPopup: b.showSummonPopup })));
 
-      // Combine and deduplicate by id only
+      // Combine and deduplicate by id
       const combinedMap = new Map();
       [...hardcodedBugs, ...filteredDynamic].forEach((bug) => {
         combinedMap.set(bug.id, bug);
       });
       const combined = Array.from(combinedMap.values());
-      console.log('Combined bugs:', combined.map(b => ({ id: b.id, name: b.name })));
-      setBugs(combined);
-      console.log('Updated bugs state:', combined.map(b => ({ id: b.id, name: b.name })));
+      console.log('Combined bugs:', combined.map(b => ({ id: b.id, name: b.name || b.codename, showSummonPopup: b.showSummonPopup })));
+      setFriend(combined);
+      console.log('Updated friend state:', combined.map(b => ({ id: b.id, name: b.name || b.codename, showSummonPopup: b.showSummonPopup })));
     }, (e) => {
-      console.error('Firestore error:', e.message);
-      Alert.alert('Error', 'Failed to fetch bugs: ' + e.message);
+      console.error('Firestore error:', e.code, e.message);
+      Alert.alert('Error', `Failed to fetch bugs: ${e.message}`);
     });
     return () => unsub();
   }, []);
@@ -125,19 +154,24 @@ const BugsScreen = () => {
   };
 
   const handlePress = async (bug) => {
+    console.log('Card pressed:', { id: bug.id, name: bug.name || bug.codename, hardcoded: bug.hardcoded });
     try {
+      const bugName = bug.name || bug.codename || 'Unknown';
       if (bug.audio) {
+        console.log('Playing audio for:', bugName);
         await playDemonSound(bug.audio, bug.screen);
       } else if (bug.screen) {
         console.log(`Navigating to ${bug.screen}`);
         navigation.navigate(bug.screen);
       } else if (bug.showSummonPopup) {
-        console.log('Showing summon popup for:', bug.name || bug.codename || 'Unknown');
+        console.log('Showing summon popup for:', bugName);
         setSelectedBug(bug);
         setModalVisible(true);
+        console.log('Modal state set:', { modalVisible: true, selectedBug: bugName });
       } else {
-        console.log('Showing preview for bug:', bug.name || bug.codename || 'Unknown');
+        console.log('Opening preview for bug:', bugName);
         setPreviewBug(bug);
+        console.log('Preview modal opened for:', bugName);
       }
     } catch (error) {
       console.error('Handle press error:', error.message);
@@ -151,7 +185,7 @@ const BugsScreen = () => {
       return;
     }
     try {
-      const bugItem = bugs.find(b => b.id === id);
+      const bugItem = friend.find(b => b.id === id);
       if (bugItem.hardcoded) {
         Alert.alert('Error', 'Cannot delete hardcoded bugs!');
         return;
@@ -177,7 +211,7 @@ const BugsScreen = () => {
       setDeleteModal({ visible: false, bug: null });
       Alert.alert('Success', 'Bug deleted!');
     } catch (e) {
-      console.error('Delete bug error:', e.message);
+      console.error('Delete bug error:', e.code, e.message);
       Alert.alert('Error', `Failed to delete bug: ${e.message}`);
     }
   };
@@ -193,7 +227,10 @@ const BugsScreen = () => {
           },
           bug.clickable ? styles.clickable(bug.borderColor) : styles.notClickable,
         ]}
-        onPress={() => handlePress(bug)}
+        onPress={() => {
+          console.log('TouchableOpacity pressed for bug:', bug.id);
+          handlePress(bug);
+        }}
         disabled={!bug.clickable}
       >
         <Image
@@ -213,7 +250,7 @@ const BugsScreen = () => {
       {bug.hardcoded === false && (
         <View style={styles.buttons}>
           <TouchableOpacity
-            onPress={() => setSelectedBug({ ...bug, isEditing: true })}
+            onPress={() => setEditingFriend(bug)}
             style={[styles.edit, !canMod && styles.disabled]}
             disabled={!canMod}
           >
@@ -286,8 +323,8 @@ const BugsScreen = () => {
               contentContainerStyle={styles.scrollContainer}
               showsHorizontalScrollIndicator={true}
             >
-              {bugs.length > 0 ? (
-                bugs.map(renderBugCard)
+              {friend.length > 0 ? (
+                friend.map(renderBugCard)
               ) : (
                 <Text style={styles.noBugsText}>No bugs available</Text>
               )}
@@ -296,15 +333,15 @@ const BugsScreen = () => {
           <DarkLords
             collectionPath="bugs"
             placeholderImage={require('../../../assets/BackGround/Bugs.jpg')}
-            villain={bugs}
-            setVillain={setBugs}
-            hardcodedVillain={hardcodedBugs}
-            editingVillain={selectedBug?.isEditing ? selectedBug : null}
-            setEditingVillain={setSelectedBug}
+            friend={friend}
+            setFriend={setFriend}
+            hardcodedFriend={hardcodedBugs}
+            editingFriend={editingFriend}
+            setEditingFriend={setEditingFriend}
           />
         </ScrollView>
         <Modal
-          visible={!!previewBug && !previewBug.isEditing}
+          visible={!!previewBug}
           transparent
           animationType="fade"
           onRequestClose={() => {
@@ -380,9 +417,17 @@ const BugsScreen = () => {
           transparent={true}
           visible={modalVisible}
           animationType="fade"
-          onRequestClose={() => setModalVisible(false)}
+          onRequestClose={() => {
+            console.log('Closing summon modal');
+            setModalVisible(false);
+            setSelectedBug(null);
+          }}
         >
-          <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <TouchableWithoutFeedback onPress={() => {
+            console.log('Closing summon modal via background tap');
+            setModalVisible(false);
+            setSelectedBug(null);
+          }}>
             <View style={styles.summonModalContainer}>
               <View style={styles.summonModalContent}>
                 <Text style={styles.summonModalText}>

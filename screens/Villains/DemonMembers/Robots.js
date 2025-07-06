@@ -27,7 +27,18 @@ const isDesktop = SCREEN_WIDTH > 600;
 
 // Robots data with images & respective screens
 const hardcodedRobots = [
-  { id: 'robot-1', name: 'Thorax', screen: '', image: require('../../../assets/Villains/Thorax.jpg'), clickable: true, borderColor: '#c0c0c0', hardcoded: true, description: 'A sentient machine with destructive ambitions.' },
+  {
+    id: 'robot-1',
+    name: 'Thorax',
+    screen: '',
+    image: require('../../../assets/Villains/Thorax.jpg'),
+    clickable: true,
+    borderColor: '#c0c0c0',
+    hardcoded: true,
+    showSummonPopup: true,
+    description: 'A sentient machine with destructive ambitions.',
+    collectionPath: 'robots',
+  },
 ];
 
 // Card dimensions for desktop and mobile
@@ -47,9 +58,10 @@ const RobotsScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRobot, setSelectedRobot] = useState(null);
   const [currentSound, setCurrentSound] = useState(null);
-  const [robots, setRobots] = useState(hardcodedRobots);
+  const [friend, setFriend] = useState(hardcodedRobots);
   const [deleteModal, setDeleteModal] = useState({ visible: false, robot: null });
   const [previewRobot, setPreviewRobot] = useState(null);
+  const [editingFriend, setEditingFriend] = useState(null);
   const canMod = RESTRICT_ACCESS ? auth.currentUser?.email && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
 
   // Cleanup audio on component unmount
@@ -67,7 +79,7 @@ const RobotsScreen = () => {
     const unsub = onSnapshot(collection(db, 'robots'), (snap) => {
       if (snap.empty) {
         console.log('No robots found in Firestore');
-        setRobots(hardcodedRobots);
+        setFriend(hardcodedRobots);
         return;
       }
       // Check for duplicate IDs or names in Firestore
@@ -77,6 +89,8 @@ const RobotsScreen = () => {
         clickable: true,
         borderColor: doc.data().borderColor || '#c0c0c0',
         hardcoded: false,
+        showSummonPopup: doc.data().showSummonPopup || false,
+        collectionPath: 'robots',
       }));
       const idCounts = {};
       const nameCounts = {};
@@ -90,7 +104,7 @@ const RobotsScreen = () => {
       Object.entries(nameCounts).forEach(([name, count]) => {
         if (count > 1) console.warn(`Duplicate Firestore name: ${name}, count: ${count}`);
       });
-      console.log('Fetched dynamic robots:', dynamicRobots.map(r => ({ id: r.id, name: r.name || r.codename })));
+      console.log('Fetched dynamic robots:', dynamicRobots.map(r => ({ id: r.id, name: r.name || r.codename, showSummonPopup: r.showSummonPopup })));
 
       // Filter out dynamic robots that match hardcodedRobots by id or name
       const filteredDynamic = dynamicRobots.filter(
@@ -98,7 +112,7 @@ const RobotsScreen = () => {
           (robot) => robot.id === dynamic.id || robot.name === (dynamic.name || dynamic.codename)
         )
       );
-      console.log('Filtered dynamic robots:', filteredDynamic.map(r => ({ id: r.id, name: r.name || r.codename })));
+      console.log('Filtered dynamic robots:', filteredDynamic.map(r => ({ id: r.id, name: r.name || r.codename, showSummonPopup: r.showSummonPopup })));
 
       // Combine and deduplicate by id
       const combinedMap = new Map();
@@ -106,9 +120,9 @@ const RobotsScreen = () => {
         combinedMap.set(robot.id, robot);
       });
       const combined = Array.from(combinedMap.values());
-      console.log('Combined robots:', combined.map(r => ({ id: r.id, name: r.name || r.codename })));
-      setRobots(combined);
-      console.log('Updated robots state:', combined.map(r => ({ id: r.id, name: r.name || r.codename })));
+      console.log('Combined robots:', combined.map(r => ({ id: r.id, name: r.name || r.codename, showSummonPopup: r.showSummonPopup })));
+      setFriend(combined);
+      console.log('Updated friend state:', combined.map(r => ({ id: r.id, name: r.name || r.codename, showSummonPopup: r.showSummonPopup })));
     }, (e) => {
       console.error('Firestore error:', e.code, e.message);
       Alert.alert('Error', `Failed to fetch robots: ${e.message}`);
@@ -140,19 +154,24 @@ const RobotsScreen = () => {
   };
 
   const handlePress = async (robot) => {
+    console.log('Card pressed:', { id: robot.id, name: robot.name || robot.codename, hardcoded: robot.hardcoded });
     try {
+      const robotName = robot.name || robot.codename || 'Unknown';
       if (robot.audio) {
+        console.log('Playing audio for:', robotName);
         await playDemonSound(robot.audio, robot.screen);
       } else if (robot.screen) {
         console.log(`Navigating to ${robot.screen}`);
         navigation.navigate(robot.screen);
       } else if (robot.showSummonPopup) {
-        console.log('Showing summon popup for:', robot.name || robot.codename || 'Unknown');
+        console.log('Showing summon popup for:', robotName);
         setSelectedRobot(robot);
         setModalVisible(true);
+        console.log('Modal state set:', { modalVisible: true, selectedRobot: robotName });
       } else {
-        console.log('Showing preview for robot:', robot.name || robot.codename || 'Unknown');
+        console.log('Opening preview for robot:', robotName);
         setPreviewRobot(robot);
+        console.log('Preview modal opened for:', robotName);
       }
     } catch (error) {
       console.error('Handle press error:', error.message);
@@ -166,7 +185,7 @@ const RobotsScreen = () => {
       return;
     }
     try {
-      const robotItem = robots.find(r => r.id === id);
+      const robotItem = friend.find(r => r.id === id);
       if (robotItem.hardcoded) {
         Alert.alert('Error', 'Cannot delete hardcoded robots!');
         return;
@@ -208,7 +227,10 @@ const RobotsScreen = () => {
           },
           robot.clickable ? styles.clickable(robot.borderColor) : styles.notClickable,
         ]}
-        onPress={() => handlePress(robot)}
+        onPress={() => {
+          console.log('TouchableOpacity pressed for robot:', robot.id);
+          handlePress(robot);
+        }}
         disabled={!robot.clickable}
       >
         <Image
@@ -216,7 +238,7 @@ const RobotsScreen = () => {
             robot.image ||
             (robot.imageUrl && robot.imageUrl !== 'placeholder'
               ? { uri: robot.imageUrl }
-              : require('../../../assets/Villains/Thorax.jpg'))
+              : require('../../../assets/BackGround/Robots.jpg'))
           }
           style={styles.image}
           resizeMode="cover"
@@ -228,7 +250,7 @@ const RobotsScreen = () => {
       {robot.hardcoded === false && (
         <View style={styles.buttons}>
           <TouchableOpacity
-            onPress={() => setSelectedRobot({ ...robot, isEditing: true })}
+            onPress={() => setEditingFriend(robot)}
             style={[styles.edit, !canMod && styles.disabled]}
             disabled={!canMod}
           >
@@ -259,7 +281,7 @@ const RobotsScreen = () => {
           robot.image ||
           (robot.imageUrl && robot.imageUrl !== 'placeholder'
             ? { uri: robot.imageUrl }
-            : require('../../../assets/Villains/Thorax.jpg'))
+            : require('../../../assets/BackGround/Robots.jpg'))
         }
         style={styles.previewImage}
         resizeMode="cover"
@@ -301,8 +323,8 @@ const RobotsScreen = () => {
               contentContainerStyle={styles.scrollContainer}
               showsHorizontalScrollIndicator={true}
             >
-              {robots.length > 0 ? (
-                robots.map(renderRobotCard)
+              {friend.length > 0 ? (
+                friend.map(renderRobotCard)
               ) : (
                 <Text style={styles.noRobotsText}>No robots available</Text>
               )}
@@ -310,16 +332,16 @@ const RobotsScreen = () => {
           </View>
           <DarkLords
             collectionPath="robots"
-            placeholderImage={require('../../../assets/Villains/Thorax.jpg')}
-            villain={robots}
-            setVillain={setRobots}
-            hardcodedVillain={hardcodedRobots}
-            editingVillain={selectedRobot?.isEditing ? selectedRobot : null}
-            setEditingVillain={setSelectedRobot}
+            placeholderImage={require('../../../assets/BackGround/Robots.jpg')}
+            friend={friend}
+            setFriend={setFriend}
+            hardcodedFriend={hardcodedRobots}
+            editingFriend={editingFriend}
+            setEditingFriend={setEditingFriend}
           />
         </ScrollView>
         <Modal
-          visible={!!previewRobot && !previewRobot.isEditing}
+          visible={!!previewRobot}
           transparent
           animationType="fade"
           onRequestClose={() => {
@@ -395,9 +417,17 @@ const RobotsScreen = () => {
           transparent={true}
           visible={modalVisible}
           animationType="fade"
-          onRequestClose={() => setModalVisible(false)}
+          onRequestClose={() => {
+            console.log('Closing summon modal');
+            setModalVisible(false);
+            setSelectedRobot(null);
+          }}
         >
-          <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <TouchableWithoutFeedback onPress={() => {
+            console.log('Closing summon modal via background tap');
+            setModalVisible(false);
+            setSelectedRobot(null);
+          }}>
             <View style={styles.summonModalContainer}>
               <View style={styles.summonModalContent}>
                 <Text style={styles.summonModalText}>

@@ -27,7 +27,18 @@ const isDesktop = SCREEN_WIDTH > 600;
 
 // Aliens data with images & respective screens
 const hardcodedAliens = [
-  { id: 'alien-1', name: 'Zorath', screen: '', image: require('../../../assets/BackGround/Aliens.jpg'), clickable: true, borderColor: '#c0c0c0', hardcoded: true, description: 'An extraterrestrial warlord from a distant galaxy.' },
+  {
+    id: 'alien-1',
+    name: 'Zorath',
+    screen: '',
+    image: require('../../../assets/BackGround/Aliens.jpg'),
+    clickable: true,
+    borderColor: '#c0c0c0',
+    hardcoded: true,
+    showSummonPopup: true,
+    description: 'An extraterrestrial warlord from a distant galaxy.',
+    collectionPath: 'aliens',
+  },
 ];
 
 // Card dimensions for desktop and mobile
@@ -47,14 +58,30 @@ const AliensScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedAlien, setSelectedAlien] = useState(null);
   const [currentSound, setCurrentSound] = useState(null);
-  const [aliens, setAliens] = useState([]);
+  const [friend, setFriend] = useState(hardcodedAliens);
   const [deleteModal, setDeleteModal] = useState({ visible: false, alien: null });
   const [previewAlien, setPreviewAlien] = useState(null);
-  const canMod = RESTRICT_ACCESS ? auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
+  const [editingFriend, setEditingFriend] = useState(null);
+  const canMod = RESTRICT_ACCESS ? auth.currentUser?.email && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
+
+  // Cleanup audio on component unmount
+  useEffect(() => {
+    return () => {
+      if (currentSound) {
+        currentSound.stopAsync().catch(e => console.error('Audio stop error:', e.message));
+        currentSound.unloadAsync().catch(e => console.error('Audio unload error:', e.message));
+      }
+    };
+  }, [currentSound]);
 
   // Fetch dynamic aliens from Firestore
   useEffect(() => {
     const unsub = onSnapshot(collection(db, 'aliens'), (snap) => {
+      if (snap.empty) {
+        console.log('No aliens found in Firestore');
+        setFriend(hardcodedAliens);
+        return;
+      }
       // Check for duplicate IDs or names in Firestore
       const dynamicAliens = snap.docs.map((doc) => ({
         id: doc.id,
@@ -62,12 +89,14 @@ const AliensScreen = () => {
         clickable: true,
         borderColor: doc.data().borderColor || '#c0c0c0',
         hardcoded: false,
+        showSummonPopup: doc.data().showSummonPopup || false,
+        collectionPath: 'aliens',
       }));
       const idCounts = {};
       const nameCounts = {};
       dynamicAliens.forEach(a => {
         idCounts[a.id] = (idCounts[a.id] || 0) + 1;
-        nameCounts[a.name] = (nameCounts[a.name] || 0) + 1;
+        nameCounts[a.name || a.codename || 'Unknown'] = (nameCounts[a.name || a.codename || 'Unknown'] || 0) + 1;
       });
       Object.entries(idCounts).forEach(([id, count]) => {
         if (count > 1) console.warn(`Duplicate Firestore ID: ${id}, count: ${count}`);
@@ -75,28 +104,28 @@ const AliensScreen = () => {
       Object.entries(nameCounts).forEach(([name, count]) => {
         if (count > 1) console.warn(`Duplicate Firestore name: ${name}, count: ${count}`);
       });
-      console.log('Fetched dynamic aliens:', dynamicAliens.map(a => ({ id: a.id, name: a.name })));
+      console.log('Fetched dynamic aliens:', dynamicAliens.map(a => ({ id: a.id, name: a.name || a.codename, showSummonPopup: a.showSummonPopup })));
 
       // Filter out dynamic aliens that match hardcodedAliens by id or name
       const filteredDynamic = dynamicAliens.filter(
         (dynamic) => !hardcodedAliens.some(
-          (alien) => alien.id === dynamic.id || alien.name === dynamic.name
+          (alien) => alien.id === dynamic.id || alien.name === (dynamic.name || dynamic.codename)
         )
       );
-      console.log('Filtered dynamic aliens:', filteredDynamic.map(a => ({ id: a.id, name: a.name })));
+      console.log('Filtered dynamic aliens:', filteredDynamic.map(a => ({ id: a.id, name: a.name || a.codename, showSummonPopup: a.showSummonPopup })));
 
-      // Combine and deduplicate by id only
+      // Combine and deduplicate by id
       const combinedMap = new Map();
       [...hardcodedAliens, ...filteredDynamic].forEach((alien) => {
         combinedMap.set(alien.id, alien);
       });
       const combined = Array.from(combinedMap.values());
-      console.log('Combined aliens:', combined.map(a => ({ id: a.id, name: a.name })));
-      setAliens(combined);
-      console.log('Updated aliens state:', combined.map(a => ({ id: a.id, name: a.name })));
+      console.log('Combined aliens:', combined.map(a => ({ id: a.id, name: a.name || a.codename, showSummonPopup: a.showSummonPopup })));
+      setFriend(combined);
+      console.log('Updated friend state:', combined.map(a => ({ id: a.id, name: a.name || a.codename, showSummonPopup: a.showSummonPopup })));
     }, (e) => {
-      console.error('Firestore error:', e.message);
-      Alert.alert('Error', 'Failed to fetch aliens: ' + e.message);
+      console.error('Firestore error:', e.code, e.message);
+      Alert.alert('Error', `Failed to fetch aliens: ${e.message}`);
     });
     return () => unsub();
   }, []);
@@ -125,19 +154,24 @@ const AliensScreen = () => {
   };
 
   const handlePress = async (alien) => {
+    console.log('Card pressed:', { id: alien.id, name: alien.name || alien.codename, hardcoded: alien.hardcoded });
     try {
+      const alienName = alien.name || alien.codename || 'Unknown';
       if (alien.audio) {
+        console.log('Playing audio for:', alienName);
         await playDemonSound(alien.audio, alien.screen);
       } else if (alien.screen) {
         console.log(`Navigating to ${alien.screen}`);
         navigation.navigate(alien.screen);
       } else if (alien.showSummonPopup) {
-        console.log('Showing summon popup for:', alien.name || alien.codename || 'Unknown');
+        console.log('Showing summon popup for:', alienName);
         setSelectedAlien(alien);
         setModalVisible(true);
+        console.log('Modal state set:', { modalVisible: true, selectedAlien: alienName });
       } else {
-        console.log('Showing preview for alien:', alien.name || alien.codename || 'Unknown');
+        console.log('Opening preview for alien:', alienName);
         setPreviewAlien(alien);
+        console.log('Preview modal opened for:', alienName);
       }
     } catch (error) {
       console.error('Handle press error:', error.message);
@@ -151,7 +185,7 @@ const AliensScreen = () => {
       return;
     }
     try {
-      const alienItem = aliens.find(a => a.id === id);
+      const alienItem = friend.find(a => a.id === id);
       if (alienItem.hardcoded) {
         Alert.alert('Error', 'Cannot delete hardcoded aliens!');
         return;
@@ -177,7 +211,7 @@ const AliensScreen = () => {
       setDeleteModal({ visible: false, alien: null });
       Alert.alert('Success', 'Alien deleted!');
     } catch (e) {
-      console.error('Delete alien error:', e.message);
+      console.error('Delete alien error:', e.code, e.message);
       Alert.alert('Error', `Failed to delete alien: ${e.message}`);
     }
   };
@@ -193,7 +227,10 @@ const AliensScreen = () => {
           },
           alien.clickable ? styles.clickable(alien.borderColor) : styles.notClickable,
         ]}
-        onPress={() => handlePress(alien)}
+        onPress={() => {
+          console.log('TouchableOpacity pressed for alien:', alien.id);
+          handlePress(alien);
+        }}
         disabled={!alien.clickable}
       >
         <Image
@@ -213,7 +250,7 @@ const AliensScreen = () => {
       {alien.hardcoded === false && (
         <View style={styles.buttons}>
           <TouchableOpacity
-            onPress={() => setSelectedAlien({ ...alien, isEditing: true })}
+            onPress={() => setEditingFriend(alien)}
             style={[styles.edit, !canMod && styles.disabled]}
             disabled={!canMod}
           >
@@ -286,8 +323,8 @@ const AliensScreen = () => {
               contentContainerStyle={styles.scrollContainer}
               showsHorizontalScrollIndicator={true}
             >
-              {aliens.length > 0 ? (
-                aliens.map(renderAlienCard)
+              {friend.length > 0 ? (
+                friend.map(renderAlienCard)
               ) : (
                 <Text style={styles.noAliensText}>No aliens available</Text>
               )}
@@ -296,15 +333,15 @@ const AliensScreen = () => {
           <DarkLords
             collectionPath="aliens"
             placeholderImage={require('../../../assets/BackGround/Aliens.jpg')}
-            villain={aliens}
-            setVillain={setAliens}
-            hardcodedVillain={hardcodedAliens}
-            editingVillain={selectedAlien?.isEditing ? selectedAlien : null}
-            setEditingVillain={setSelectedAlien}
+            friend={friend}
+            setFriend={setFriend}
+            hardcodedFriend={hardcodedAliens}
+            editingFriend={editingFriend}
+            setEditingFriend={setEditingFriend}
           />
         </ScrollView>
         <Modal
-          visible={!!previewAlien && !previewAlien.isEditing}
+          visible={!!previewAlien}
           transparent
           animationType="fade"
           onRequestClose={() => {
@@ -380,9 +417,17 @@ const AliensScreen = () => {
           transparent={true}
           visible={modalVisible}
           animationType="fade"
-          onRequestClose={() => setModalVisible(false)}
+          onRequestClose={() => {
+            console.log('Closing summon modal');
+            setModalVisible(false);
+            setSelectedAlien(null);
+          }}
         >
-          <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <TouchableWithoutFeedback onPress={() => {
+            console.log('Closing summon modal via background tap');
+            setModalVisible(false);
+            setSelectedAlien(null);
+          }}>
             <View style={styles.summonModalContainer}>
               <View style={styles.summonModalContent}>
                 <Text style={styles.summonModalText}>

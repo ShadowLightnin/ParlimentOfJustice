@@ -27,7 +27,18 @@ const isDesktop = SCREEN_WIDTH > 600;
 
 // Ghosts data with images & respective screens
 const hardcodedGhosts = [
-  { id: 'ghost-1', name: 'Wraith', screen: '', image: require('../../../assets/BackGround/Ghosts2.jpg'), clickable: true, borderColor: '#c0c0c0', hardcoded: true, description: 'A spectral entity haunting the mortal realm.' },
+  {
+    id: 'ghost-1',
+    name: 'Wraith',
+    screen: '',
+    image: require('../../../assets/BackGround/Ghosts2.jpg'),
+    clickable: true,
+    borderColor: '#c0c0c0',
+    hardcoded: true,
+    showSummonPopup: true,
+    description: 'A spectral entity haunting the mortal realm.',
+    collectionPath: 'ghosts',
+  },
 ];
 
 // Card dimensions for desktop and mobile
@@ -47,14 +58,30 @@ const GhostsScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedGhost, setSelectedGhost] = useState(null);
   const [currentSound, setCurrentSound] = useState(null);
-  const [ghosts, setGhosts] = useState([]);
+  const [friend, setFriend] = useState(hardcodedGhosts);
   const [deleteModal, setDeleteModal] = useState({ visible: false, ghost: null });
   const [previewGhost, setPreviewGhost] = useState(null);
-  const canMod = RESTRICT_ACCESS ? auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
+  const [editingFriend, setEditingFriend] = useState(null);
+  const canMod = RESTRICT_ACCESS ? auth.currentUser?.email && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
+
+  // Cleanup audio on component unmount
+  useEffect(() => {
+    return () => {
+      if (currentSound) {
+        currentSound.stopAsync().catch(e => console.error('Audio stop error:', e.message));
+        currentSound.unloadAsync().catch(e => console.error('Audio unload error:', e.message));
+      }
+    };
+  }, [currentSound]);
 
   // Fetch dynamic ghosts from Firestore
   useEffect(() => {
     const unsub = onSnapshot(collection(db, 'ghosts'), (snap) => {
+      if (snap.empty) {
+        console.log('No ghosts found in Firestore');
+        setFriend(hardcodedGhosts);
+        return;
+      }
       // Check for duplicate IDs or names in Firestore
       const dynamicGhosts = snap.docs.map((doc) => ({
         id: doc.id,
@@ -62,12 +89,14 @@ const GhostsScreen = () => {
         clickable: true,
         borderColor: doc.data().borderColor || '#c0c0c0',
         hardcoded: false,
+        showSummonPopup: doc.data().showSummonPopup || false,
+        collectionPath: 'ghosts',
       }));
       const idCounts = {};
       const nameCounts = {};
       dynamicGhosts.forEach(g => {
         idCounts[g.id] = (idCounts[g.id] || 0) + 1;
-        nameCounts[g.name] = (nameCounts[g.name] || 0) + 1;
+        nameCounts[g.name || g.codename || 'Unknown'] = (nameCounts[g.name || g.codename || 'Unknown'] || 0) + 1;
       });
       Object.entries(idCounts).forEach(([id, count]) => {
         if (count > 1) console.warn(`Duplicate Firestore ID: ${id}, count: ${count}`);
@@ -75,28 +104,28 @@ const GhostsScreen = () => {
       Object.entries(nameCounts).forEach(([name, count]) => {
         if (count > 1) console.warn(`Duplicate Firestore name: ${name}, count: ${count}`);
       });
-      console.log('Fetched dynamic ghosts:', dynamicGhosts.map(g => ({ id: g.id, name: g.name })));
+      console.log('Fetched dynamic ghosts:', dynamicGhosts.map(g => ({ id: g.id, name: g.name || g.codename, showSummonPopup: g.showSummonPopup })));
 
       // Filter out dynamic ghosts that match hardcodedGhosts by id or name
       const filteredDynamic = dynamicGhosts.filter(
         (dynamic) => !hardcodedGhosts.some(
-          (ghost) => ghost.id === dynamic.id || ghost.name === dynamic.name
+          (ghost) => ghost.id === dynamic.id || ghost.name === (dynamic.name || dynamic.codename)
         )
       );
-      console.log('Filtered dynamic ghosts:', filteredDynamic.map(g => ({ id: g.id, name: g.name })));
+      console.log('Filtered dynamic ghosts:', filteredDynamic.map(g => ({ id: g.id, name: g.name || g.codename, showSummonPopup: g.showSummonPopup })));
 
-      // Combine and deduplicate by id only
+      // Combine and deduplicate by id
       const combinedMap = new Map();
       [...hardcodedGhosts, ...filteredDynamic].forEach((ghost) => {
         combinedMap.set(ghost.id, ghost);
       });
       const combined = Array.from(combinedMap.values());
-      console.log('Combined ghosts:', combined.map(g => ({ id: g.id, name: g.name })));
-      setGhosts(combined);
-      console.log('Updated ghosts state:', combined.map(g => ({ id: g.id, name: g.name })));
+      console.log('Combined ghosts:', combined.map(g => ({ id: g.id, name: g.name || g.codename, showSummonPopup: g.showSummonPopup })));
+      setFriend(combined);
+      console.log('Updated friend state:', combined.map(g => ({ id: g.id, name: g.name || g.codename, showSummonPopup: g.showSummonPopup })));
     }, (e) => {
-      console.error('Firestore error:', e.message);
-      Alert.alert('Error', 'Failed to fetch ghosts: ' + e.message);
+      console.error('Firestore error:', e.code, e.message);
+      Alert.alert('Error', `Failed to fetch ghosts: ${e.message}`);
     });
     return () => unsub();
   }, []);
@@ -125,19 +154,24 @@ const GhostsScreen = () => {
   };
 
   const handlePress = async (ghost) => {
+    console.log('Card pressed:', { id: ghost.id, name: ghost.name || ghost.codename, hardcoded: ghost.hardcoded });
     try {
+      const ghostName = ghost.name || ghost.codename || 'Unknown';
       if (ghost.audio) {
+        console.log('Playing audio for:', ghostName);
         await playDemonSound(ghost.audio, ghost.screen);
       } else if (ghost.screen) {
         console.log(`Navigating to ${ghost.screen}`);
         navigation.navigate(ghost.screen);
       } else if (ghost.showSummonPopup) {
-        console.log('Showing summon popup for:', ghost.name || ghost.codename || 'Unknown');
+        console.log('Showing summon popup for:', ghostName);
         setSelectedGhost(ghost);
         setModalVisible(true);
+        console.log('Modal state set:', { modalVisible: true, selectedGhost: ghostName });
       } else {
-        console.log('Showing preview for ghost:', ghost.name || ghost.codename || 'Unknown');
+        console.log('Opening preview for ghost:', ghostName);
         setPreviewGhost(ghost);
+        console.log('Preview modal opened for:', ghostName);
       }
     } catch (error) {
       console.error('Handle press error:', error.message);
@@ -151,7 +185,7 @@ const GhostsScreen = () => {
       return;
     }
     try {
-      const ghostItem = ghosts.find(g => g.id === id);
+      const ghostItem = friend.find(g => g.id === id);
       if (ghostItem.hardcoded) {
         Alert.alert('Error', 'Cannot delete hardcoded ghosts!');
         return;
@@ -177,7 +211,7 @@ const GhostsScreen = () => {
       setDeleteModal({ visible: false, ghost: null });
       Alert.alert('Success', 'Ghost deleted!');
     } catch (e) {
-      console.error('Delete ghost error:', e.message);
+      console.error('Delete ghost error:', e.code, e.message);
       Alert.alert('Error', `Failed to delete ghost: ${e.message}`);
     }
   };
@@ -193,7 +227,10 @@ const GhostsScreen = () => {
           },
           ghost.clickable ? styles.clickable(ghost.borderColor) : styles.notClickable,
         ]}
-        onPress={() => handlePress(ghost)}
+        onPress={() => {
+          console.log('TouchableOpacity pressed for ghost:', ghost.id);
+          handlePress(ghost);
+        }}
         disabled={!ghost.clickable}
       >
         <Image
@@ -213,7 +250,7 @@ const GhostsScreen = () => {
       {ghost.hardcoded === false && (
         <View style={styles.buttons}>
           <TouchableOpacity
-            onPress={() => setSelectedGhost({ ...ghost, isEditing: true })}
+            onPress={() => setEditingFriend(ghost)}
             style={[styles.edit, !canMod && styles.disabled]}
             disabled={!canMod}
           >
@@ -286,8 +323,8 @@ const GhostsScreen = () => {
               contentContainerStyle={styles.scrollContainer}
               showsHorizontalScrollIndicator={true}
             >
-              {ghosts.length > 0 ? (
-                ghosts.map(renderGhostCard)
+              {friend.length > 0 ? (
+                friend.map(renderGhostCard)
               ) : (
                 <Text style={styles.noGhostsText}>No ghosts available</Text>
               )}
@@ -296,15 +333,15 @@ const GhostsScreen = () => {
           <DarkLords
             collectionPath="ghosts"
             placeholderImage={require('../../../assets/BackGround/Ghosts2.jpg')}
-            villain={ghosts}
-            setVillain={setGhosts}
-            hardcodedVillain={hardcodedGhosts}
-            editingVillain={selectedGhost?.isEditing ? selectedGhost : null}
-            setEditingVillain={setSelectedGhost}
+            friend={friend}
+            setFriend={setFriend}
+            hardcodedFriend={hardcodedGhosts}
+            editingFriend={editingFriend}
+            setEditingFriend={setEditingFriend}
           />
         </ScrollView>
         <Modal
-          visible={!!previewGhost && !previewGhost.isEditing}
+          visible={!!previewGhost}
           transparent
           animationType="fade"
           onRequestClose={() => {
@@ -335,7 +372,7 @@ const GhostsScreen = () => {
                 </ScrollView>
               </View>
               <View style={styles.previewAboutSection}>
-                <Text style={styles.previewName}>{previewGhost?.name || previewGhost?.codlname || 'Unknown'}</Text>
+                <Text style={styles.previewName}>{previewGhost?.name || previewGhost?.codename || 'Unknown'}</Text>
                 <Text style={styles.previewDesc}>{previewGhost?.description || 'No description available'}</Text>
                 <TouchableOpacity
                   onPress={() => {
@@ -380,9 +417,17 @@ const GhostsScreen = () => {
           transparent={true}
           visible={modalVisible}
           animationType="fade"
-          onRequestClose={() => setModalVisible(false)}
+          onRequestClose={() => {
+            console.log('Closing summon modal');
+            setModalVisible(false);
+            setSelectedGhost(null);
+          }}
         >
-          <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <TouchableWithoutFeedback onPress={() => {
+            console.log('Closing summon modal via background tap');
+            setModalVisible(false);
+            setSelectedGhost(null);
+          }}>
             <View style={styles.summonModalContainer}>
               <View style={styles.summonModalContent}>
                 <Text style={styles.summonModalText}>
