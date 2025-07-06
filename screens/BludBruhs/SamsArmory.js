@@ -6,8 +6,9 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
-  Dimensions,
   Alert,
+  ScrollView,
+  Dimensions,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { db, storage, auth } from '../../lib/firebase';
@@ -21,7 +22,7 @@ const ALLOWED_EMAILS = ["will@test.com", "c1wcummings@gmail.com", "samuelp.woodw
 const RESTRICT_ACCESS = true;
 
 const SamsArmory = ({
-  collectionPath = 'samArmor',
+  collectionPath = 'samArmory', // Updated to use samArmory
   placeholderImage,
   friend,
   setFriend,
@@ -41,7 +42,13 @@ const SamsArmory = ({
       setName(editingFriend.name || editingFriend.codename || '');
       setDescription(editingFriend.description || '');
       setImageUri(editingFriend.imageUrl || null);
-      console.log('Editing friend loaded:', { id: editingFriend.id, name: editingFriend.name, codename: editingFriend.codename });
+      console.log('Editing friend loaded:', {
+        id: editingFriend.id,
+        name: editingFriend.name,
+        codename: editingFriend.codename,
+        imageUrl: editingFriend.imageUrl,
+        description: editingFriend.description
+      });
     } else {
       setName('');
       setDescription('');
@@ -118,12 +125,13 @@ const SamsArmory = ({
     }
     setUploading(true);
     try {
-      let imageUrl = 'placeholder';
-      if (imageUri) {
+      let imageUrl = editingFriend?.imageUrl || 'placeholder'; // Preserve existing imageUrl if no new image
+      if (imageUri && imageUri !== editingFriend?.imageUrl) {
         imageUrl = await uploadImage(imageUri);
       }
       const friendData = {
         name: name.trim(),
+        codename: name.trim(), // Ensure codename is consistent
         description: description.trim(),
         imageUrl,
         clickable: true,
@@ -136,13 +144,13 @@ const SamsArmory = ({
         const friendRef = doc(db, collectionPath, editingFriend.id);
         console.log('Updating Firestore document:', friendRef.path);
         await setDoc(friendRef, friendData, { merge: true });
-        console.log('Friend updated:', { id: editingFriend.id, name: friendData.name });
+        console.log('Friend updated:', { id: editingFriend.id, name: friendData.name, imageUrl: friendData.imageUrl });
         setFriend(friend.map(item => (item.id === editingFriend.id ? { ...item, ...friendData } : item)));
         Alert.alert('Success', 'Friend updated successfully!');
       } else {
         console.log('Adding new Firestore document to:', collectionPath);
         const friendRef = await addDoc(collection(db, collectionPath), friendData);
-        console.log('Friend added:', { id: friendRef.id, name: friendData.name });
+        console.log('Friend added:', { id: friendRef.id, name: friendData.name, imageUrl: friendData.imageUrl });
         setFriend([...hardcodedFriend, ...friend.filter(item => !item.hardcoded), { id: friendRef.id, ...friendData }]);
         Alert.alert('Success', 'Friend added successfully!');
       }

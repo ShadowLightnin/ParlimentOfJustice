@@ -16,7 +16,7 @@ import { useNavigation } from '@react-navigation/native';
 import { db, auth, storage } from '../../../lib/firebase';
 import { collection, onSnapshot, deleteDoc, doc, getDoc } from 'firebase/firestore';
 import { ref, deleteObject } from 'firebase/storage';
-import SamsArmory from '../SamsArmory'; // Changed from LeagueMembers
+import SamsArmory from '../SamsArmory';
 
 // Screen dimensions
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -98,7 +98,7 @@ const RangerSquad = () => {
     }));
     setMySquad(validatedMyClones);
 
-    const unsub = onSnapshot(collection(db, 'rangerSquad'), (snap) => {
+    const unsub = onSnapshot(collection(db, 'samArmory'), (snap) => {
       if (snap.empty) {
         console.log('No clones found in Firestore');
         setSamsSquad(validatedSamsClones);
@@ -162,18 +162,18 @@ const RangerSquad = () => {
     }
   };
 
-  const confirmDelete = async (id) => {
+  const confirmDelete = async (samArmoryId) => {
     if (!canMod) {
       Alert.alert('Access Denied', 'Only authorized users can delete clones.');
       return;
     }
     try {
-      const cloneItem = samsSquad.find(c => c.id === id);
+      const cloneItem = samsSquad.find(c => c.id === samArmoryId);
       if (cloneItem.hardcoded) {
         Alert.alert('Error', 'Cannot delete hardcoded clones!');
         return;
       }
-      const cloneRef = doc(db, 'rangerSquad', id);
+      const cloneRef = doc(db, 'samArmory', samArmoryId);
       const snap = await getDoc(cloneRef);
       if (!snap.exists()) {
         Alert.alert('Error', 'Clone not found');
@@ -191,7 +191,7 @@ const RangerSquad = () => {
           });
         }
       }
-      setSamsSquad(samsSquad.filter(c => c.id !== id));
+      setSamsSquad(samsSquad.filter(c => c.id !== samArmoryId));
       setDeleteModal({ visible: false, clone: null });
       Alert.alert('Success', 'Clone deleted!');
     } catch (e) {
@@ -315,13 +315,13 @@ const RangerSquad = () => {
           <Text style={styles.sectionTitle}>Sam's Clones</Text>
           {renderGrid(samsSquad, Math.ceil(samsSquad.length / columns), 'sams')}
           <SamsArmory
-            collectionPath="rangerSquad"
+            collectionPath="samArmory"
             placeholderImage={require('../../../assets/Armor/PlaceHolder.jpg')}
-            hero={samsSquad}
-            setHero={setSamsSquad}
-            hardcodedHero={samsClones}
-            editingHero={previewClone?.isEditing ? previewClone : null}
-            setEditingHero={setPreviewClone}
+            friend={samsSquad}
+            setFriend={setSamsSquad}
+            hardcodedFriend={samsClones}
+            editingFriend={previewClone?.isEditing ? previewClone : null}
+            setEditingFriend={setPreviewClone}
           />
 
           {/* Separator */}

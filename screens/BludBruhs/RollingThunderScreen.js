@@ -69,7 +69,7 @@ const RollingThunderScreen = () => {
     console.log('Validated Members:', validatedMembers.map(m => ({ id: m.id, name: m.name, image: m.image ? 'hardcoded' : m.imageUrl })));
     setTeamMembers(validatedMembers);
 
-    const unsub = onSnapshot(collection(db, 'members'), (snap) => {
+    const unsub = onSnapshot(collection(db, 'samArmory'), (snap) => {
       if (snap.empty) {
         console.log('No members found in Firestore');
         setTeamMembers(validatedMembers);
@@ -114,35 +114,18 @@ const RollingThunderScreen = () => {
     }
   };
 
-  const handleMemberPress = (member) => {
-    if (!member?.clickable) {
-      console.log('Card not clickable:', member?.name);
-      return;
-    }
-    console.log('Card pressed:', member.name, 'Screen:', member.screen, 'Image URL:', member.imageUrl);
-    if (member.screen && member.hardcoded) {
-      try {
-        navigation.navigate(member.screen);
-      } catch (error) {
-        console.error('Navigation error to', member.screen, ':', error);
-      }
-    } else {
-      setPreviewMember(member);
-    }
-  };
-
-  const confirmDelete = async (id) => {
+  const confirmDelete = async (samArmoryId) => {
     if (!canMod) {
       Alert.alert('Access Denied', 'Only authorized users can delete members.');
       return;
     }
     try {
-      const memberItem = teamMembers.find(m => m.id === id);
+      const memberItem = teamMembers.find(m => m.id === samArmoryId);
       if (memberItem.hardcoded) {
         Alert.alert('Error', 'Cannot delete hardcoded members!');
         return;
       }
-      const memberRef = doc(db, 'members', id);
+      const memberRef = doc(db, 'samArmory', samArmoryId);
       const snap = await getDoc(memberRef);
       if (!snap.exists()) {
         Alert.alert('Error', 'Member not found');
@@ -163,7 +146,7 @@ const RollingThunderScreen = () => {
           console.log('Skipping image deletion, path does not start with samArmory/:', path);
         }
       }
-      setTeamMembers(teamMembers.filter(m => m.id !== id));
+      setTeamMembers(teamMembers.filter(m => m.id !== samArmoryId));
       setDeleteModal({ visible: false, member: null });
       Alert.alert('Success', 'Member deleted!');
     } catch (e) {
@@ -307,7 +290,7 @@ const RollingThunderScreen = () => {
             </View>
           ))}
           <SamsArmory
-            collectionPath="members"
+            collectionPath="samArmory"
             placeholderImage={require('../../assets/Armor/PlaceHolder.jpg')}
             hero={teamMembers}
             setHero={setTeamMembers}

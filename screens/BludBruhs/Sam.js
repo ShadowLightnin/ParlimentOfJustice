@@ -185,7 +185,7 @@ const Sam = () => {
     console.log('Validated Armors:', validatedArmors.map(a => ({ id: a.id, name: a.name, codename: a.codename })));
     setArmorList(validatedArmors);
 
-    const unsub = onSnapshot(collection(db, 'samArmor'), (snap) => {
+    const unsub = onSnapshot(collection(db, 'samArmory'), (snap) => {
       if (snap.empty) {
         console.log('No armor found in Firestore');
         setArmorList(validatedArmors);
@@ -264,18 +264,18 @@ const Sam = () => {
     setPreviewArmor(armor);
   };
 
-  const confirmDelete = async (id) => {
+  const confirmDelete = async (samArmoryId) => {
     if (!canMod) {
       Alert.alert('Access Denied', 'Only authorized users can delete armors.');
       return;
     }
     try {
-      const armorItem = armorList.find(a => a.id === id);
+      const armorItem = armorList.find(a => a.id === samArmoryId);
       if (armorItem.hardcoded) {
         Alert.alert('Error', 'Cannot delete hardcoded armors!');
         return;
       }
-      const armorRef = doc(db, 'samArmor', id);
+      const armorRef = doc(db, 'samArmory', samArmoryId);
       const snap = await getDoc(armorRef);
       if (!snap.exists()) {
         Alert.alert('Error', 'Armor not found');
@@ -296,7 +296,7 @@ const Sam = () => {
           console.log('Skipping image deletion, path does not start with samArmory/:', path);
         }
       }
-      setArmorList(armorList.filter(a => a.id !== id));
+      setArmorList(armorList.filter(a => a.id !== samArmoryId));
       setDeleteModal({ visible: false, armor: null });
       Alert.alert('Success', 'Armor deleted!');
     } catch (e) {
@@ -412,13 +412,13 @@ const Sam = () => {
         </View>
 
         <SamsArmory
-          collectionPath="samArmor"
+          collectionPath="samArmory"
           placeholderImage={require('../../assets/Armor/PlaceHolder.jpg')}
-          hero={armorList}
-          setHero={setArmorList}
-          hardcodedHero={armors}
-          editingHero={previewArmor?.isEditing ? previewArmor : null}
-          setEditingHero={setPreviewArmor}
+          friend={armorList}
+          setFriend={setArmorList}
+          hardcodedFriend={armors}
+          editingFriend={previewArmor?.isEditing ? previewArmor : null}
+          setEditingFriend={setPreviewArmor}
         />
 
         <View style={styles.aboutSection}>
