@@ -1,274 +1,283 @@
-import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image, Alert, Dimensions } from 'react-native';
-import { db, storage, auth } from '../../lib/firebase';
-import { collection, addDoc, updateDoc, doc } from 'firebase/firestore';
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Dimensions,
+  Alert,
+} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { db, storage, auth } from '../../lib/firebase';
+import { doc, setDoc, addDoc, collection } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const isDesktop = SCREEN_WIDTH > 600;
 
 const ALLOWED_EMAILS = ["will@test.com", "c1wcummings@gmail.com"];
-const RESTRICT_ACCESS = false; // Allow anyone to add/edit/delete ships
-const RESTRICT_IMAGE_UPLOAD = true; // Restrict image uploads to ALLOWED_EMAILS
-const PLACEHOLDER_URL = 'placeholder';
+const RESTRICT_ACCESS = true;
 
-const VillainFleetForm = ({ collectionPath = 'villainShips', placeholderImage, ships = [], setShips, hardcodedShips = [], editingShip, setEditingShip }) => {
+const VillainFleetForm = ({
+  collectionPath = 'villainShips',
+  placeholderImage,
+  ships = [],
+  setShips,
+  hardcodedShips = [],
+  editingShip,
+  setEditingShip,
+}) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [image, setImage] = useState(null);
-  const [useImg, setUseImg] = useState(null);
-  const canMod = RESTRICT_ACCESS ? auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
-  const canUploadImage = !RESTRICT_IMAGE_UPLOAD || (auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email));
+  const [imageUri, setImageUri] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const canSubmit = RESTRICT_ACCESS ? auth.currentUser?.email && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
 
-  const alert = (title, msg) => Alert.alert(title, msg);
-
-  const uploadImg = async (uri) => {
-    if (!canUploadImage) {
-      console.log('Image upload blocked: user not authorized');
-      throw new Error('Unauthorized to upload images');
+  useEffect(() => {
+    if (editingShip) {
+      setName(editingShip.name || '');
+      setDescription(editingShip.description || '');
+      setImageUri(editingShip.imageUrl || null);
+    } else {
+      setName('');
+      setDescription('');
+      setImageUri(null);
     }
-    try {
-      const blob = await (await fetch(uri)).blob();
-      const path = `${collectionPath}/${Date.now()}_${Math.random().toString(36).slice(7)}`;
-      const storageRef = ref(storage, path);
-      const uploadTask = await uploadBytesResumable(storageRef, blob);
-      const url = await getDownloadURL(uploadTask.ref);
-      console.log('Image uploaded:', url);
-      return url;
-    } catch (e) {
-      console.error('Upload error:', e.message);
-      throw e;
-    }
-  };
+  }, [editingShip]);
 
-  const pickImg = async () => {
-    if (!canUploadImage) {
-      alert('Access Denied', 'Only authorized users can upload images.');
+  const pickImage = async () => {
+    if (!canSubmit) {
+      Alert.alert('Access Denied', 'Only authorized users can upload images.');
+      return;
+    }
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission Denied', 'Sorry, we need camera roll permissions to make this work!');
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [1, 1],
+      aspect: [2, 3], // Matches ShipYardScreen.js card aspect ratio
       quality: 0.5,
     });
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-      setUseImg(true);
+    if (!result.canceled && result.assets) {
+      setImageUri(result.assets[0].uri);
       console.log('Image picked:', result.assets[0].uri);
     } else {
       console.log('Image picker canceled');
     }
   };
 
-  const addShip = async (useImage = true) => {
-    if (!canMod) {
-      alert('Access Denied', 'Only authorized users can add ships.');
-      return;
-    }
-    if (!name || !description) {
-      alert('Error', 'Enter name and description');
-      return;
-    }
+  const uploadImage = async (uri) => {
+    if (!uri) return 'placeholder';
     try {
-      const imgUrl = useImage && image ? await uploadImg(image) : useImage ? PLACEHOLDER_URL : '';
-      const shipData = { 
-        name, 
-        description, 
-        imageUrl: imgUrl, 
-        clickable: true, 
-        borderColor: 'blue', 
-        hardcoded: false 
-      };
-      const docRef = await addDoc(collection(db, collectionPath), shipData);
-      console.log('Ship added to Firestore:', { id: docRef.id, ...shipData });
-      if (setShips) {
-        const updatedShips = [...ships, { id: docRef.id, ...shipData }];
-        setShips(updatedShips);
-        console.log('Updated ships state:', updatedShips);
-      }
-      setName('');
-      setDescription('');
-      setImage(null);
-      setUseImg(null);
-      alert('Success', 'Ship added!');
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      const timestamp = Date.now();
+      const random = Math.random().toString(36).substring(2, 15);
+      const imageRef = ref(storage, `villainShips/${timestamp}_${random}.jpg`);
+      await uploadBytes(imageRef, blob);
+      const downloadURL = await getDownloadURL(imageRef);
+      console.log('Image uploaded:', downloadURL);
+      return downloadURL;
     } catch (e) {
-      console.error('Add ship error:', e.message);
-      alert('Error', `Failed to add ship: ${e.message}`);
+      console.error('Image upload error:', e.message);
+      throw e;
     }
   };
 
-  const saveEdit = async () => {
-    if (!canMod) {
-      alert('Access Denied', 'Only authorized users can edit ships.');
+  const handleSubmit = async () => {
+    if (!canSubmit) {
+      Alert.alert('Access Denied', 'Only authorized users can submit villain ships.');
       return;
     }
-    if (!name || !description) {
-      alert('Error', 'Enter name and description');
+    if (!name.trim() && !description.trim()) {
+      Alert.alert('Error', 'Please provide a name or description.');
       return;
     }
+    setUploading(true);
     try {
-      const imgUrl = useImg && image ? await uploadImg(image) : useImg ? PLACEHOLDER_URL : '';
-      const shipData = { 
-        name, 
-        description, 
-        imageUrl: imgUrl, 
-        clickable: true, 
-        borderColor: 'blue', 
-        hardcoded: false 
-      };
-      await updateDoc(doc(db, collectionPath, editingShip.id), shipData);
-      console.log('Ship updated in Firestore:', { id: editingShip.id, ...shipData });
-      if (setShips) {
-        const updatedShips = ships.map(s => s.id === editingShip.id ? { ...s, ...shipData } : s);
-        setShips(updatedShips);
-        console.log('Updated ships state:', updatedShips);
+      let imageUrl = 'placeholder';
+      if (imageUri) {
+        imageUrl = await uploadImage(imageUri);
       }
-      setEditingShip(null);
+      const shipData = {
+        name: name.trim(),
+        description: description.trim(),
+        imageUrl,
+        clickable: true,
+        borderColor: 'blue', // Matches original VillainFleetForm.js
+        hardcoded: false,
+      };
+      if (editingShip) {
+        const shipRef = doc(db, collectionPath, editingShip.id);
+        await setDoc(shipRef, shipData, { merge: true });
+        console.log('Villain ship updated:', editingShip.id);
+        setShips(ships.map(item => (item.id === editingShip.id ? { ...item, ...shipData } : item)));
+        Alert.alert('Success', 'Villain ship updated successfully!');
+      } else {
+        const shipRef = await addDoc(collection(db, collectionPath), shipData);
+        console.log('Villain ship added:', shipRef.id);
+        setShips([...hardcodedShips, ...ships.filter(item => !item.hardcoded), { id: shipRef.id, ...shipData }]);
+        Alert.alert('Success', 'Villain ship added successfully!');
+      }
       setName('');
       setDescription('');
-      setImage(null);
-      setUseImg(null);
-      alert('Success', 'Ship updated!');
+      setImageUri(null);
+      setEditingShip(null);
     } catch (e) {
-      console.error('Update ship error:', e.message);
-      alert('Error', `Failed to update ship: ${e.message}`);
+      console.error('Submit error:', e.message);
+      Alert.alert('Error', `Failed to ${editingShip ? 'update' : 'add'} villain ship: ${e.message}`);
+    } finally {
+      setUploading(false);
     }
+  };
+
+  const handleCancel = () => {
+    setName('');
+    setDescription('');
+    setImageUri(null);
+    setEditingShip(null);
   };
 
   return (
-    <View style={styles.form}>
+    <View style={styles.container}>
+      <Text style={styles.header}>{editingShip ? 'Edit Villain Ship' : 'Add New Villain Ship'}</Text>
       <TextInput
         style={styles.input}
         placeholder="Villain Ship Name"
+        placeholderTextColor="#888"
         value={name}
         onChangeText={setName}
-        editable={canMod}
+        editable={canSubmit}
       />
       <TextInput
-        style={[styles.input, styles.descInput]}
+        style={[styles.input, styles.textArea]}
         placeholder="Description"
+        placeholderTextColor="#888"
         value={description}
         onChangeText={setDescription}
         multiline
-        editable={canMod}
+        numberOfLines={4}
+        editable={canSubmit}
       />
-      <View style={styles.imgOpts}>
-        <TouchableOpacity
-          onPress={pickImg}
-          style={[styles.upload, !canUploadImage && styles.disabled]}
-          disabled={!canUploadImage}
-        >
-          <Text style={styles.buttonText}>{canUploadImage ? (image ? 'Image Selected' : 'Upload Image') : 'Restricted'}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => editingShip ? (setImage(null), setUseImg(false)) : addShip(false)}
-          style={[styles.noImgBtn, !canMod && styles.disabled]}
-          disabled={!canMod}
-        >
-          <Text style={styles.buttonText}>{editingShip ? 'Remove Image' : 'No Image'}</Text>
-        </TouchableOpacity>
-      </View>
-      {image && <Image source={{ uri: image }} style={styles.preview} />}
       <TouchableOpacity
-        onPress={editingShip ? saveEdit : addShip}
-        style={[styles.add, !canMod && styles.disabled]}
-        disabled={!canMod}
+        style={[styles.imagePicker, !canSubmit && styles.disabled]}
+        onPress={pickImage}
+        disabled={!canSubmit}
       >
-        <Text style={styles.buttonText}>{editingShip ? 'Save' : 'Add Ship'}</Text>
+        <Text style={styles.imagePickerText}>{imageUri ? 'Change Image' : 'Pick an Image'}</Text>
       </TouchableOpacity>
-      {editingShip && (
+      {imageUri && (
+        <Image
+          source={{ uri: imageUri }}
+          style={styles.previewImage}
+          resizeMode="contain"
+        />
+      )}
+      {!imageUri && editingShip && editingShip.imageUrl && editingShip.imageUrl !== 'placeholder' && (
+        <Image
+          source={{ uri: editingShip.imageUrl }}
+          style={styles.previewImage}
+          resizeMode="contain"
+        />
+      )}
+      <View style={styles.buttonContainer}>
         <TouchableOpacity
-          onPress={() => {
-            setEditingShip(null);
-            setName('');
-            setDescription('');
-            setImage(null);
-            setUseImg(null);
-          }}
-          style={styles.close}
+          style={[styles.submitButton, !canSubmit && styles.disabled]}
+          onPress={handleSubmit}
+          disabled={!canSubmit || uploading}
+        >
+          <Text style={styles.buttonText}>{uploading ? 'Submitting...' : editingShip ? 'Update' : 'Submit'}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.cancelButton}
+          onPress={handleCancel}
         >
           <Text style={styles.buttonText}>Cancel</Text>
         </TouchableOpacity>
-      )}
-      {(!canMod || !canUploadImage) && (
-        <Text style={styles.denied}>Only authorized users can add, edit, or upload images.</Text>
-      )}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  form: {
+  container: {
+    backgroundColor: '#222',
     padding: 20,
-    alignItems: 'center',
-    width: '100%',
+    borderRadius: 10,
+    margin: 20,
+    width: isDesktop ? SCREEN_WIDTH * 0.6 : SCREEN_WIDTH * 0.9,
+    alignSelf: 'center',
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FFF',
+    textAlign: 'center',
+    marginBottom: 20,
   },
   input: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    width: '90%',
+    backgroundColor: '#333',
+    color: '#FFF',
     padding: 10,
     borderRadius: 5,
-    marginBottom: 10,
+    marginBottom: 15,
+    fontSize: 16,
   },
-  descInput: {
-    height: 80,
+  textArea: {
+    height: 100,
     textAlignVertical: 'top',
   },
-  imgOpts: {
+  imagePicker: {
+    backgroundColor: '#555',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  imagePickerText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  previewImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 15,
+  },
+  buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '90%',
-    marginBottom: 10,
   },
-  upload: {
-    backgroundColor: '#400b60',
+  submitButton: {
+    backgroundColor: '#FFC107',
     padding: 10,
     borderRadius: 5,
     flex: 1,
-    marginRight: 5,
+    marginRight: 10,
     alignItems: 'center',
   },
-  noImgBtn: {
+  cancelButton: {
     backgroundColor: '#F44336',
     padding: 10,
     borderRadius: 5,
     flex: 1,
-    marginLeft: 5,
+    marginLeft: 10,
     alignItems: 'center',
   },
-  preview: {
-    width: 100,
-    height: 100,
-    borderRadius: 5,
-    marginBottom: 10,
-    resizeMode: 'cover',
-  },
-  add: {
-    backgroundColor: '#2196F3',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  close: {
-    backgroundColor: '#2196F3',
-    padding: 10,
-    borderRadius: 5,
-    alignSelf: 'center',
-    marginTop: 10,
+  buttonText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   disabled: {
     backgroundColor: '#ccc',
     opacity: 0.6,
-  },
-  denied: {
-    color: '#ff4444',
-    textAlign: 'center',
-    marginTop: 10,
-    fontSize: 14,
-  },
-  buttonText: {
-    color: '#FFF',
-    fontWeight: 'bold',
-    fontSize: 14,
   },
 });
 
