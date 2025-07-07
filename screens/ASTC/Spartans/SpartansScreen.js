@@ -8,6 +8,7 @@ import {
   StyleSheet,
   SafeAreaView,
   Dimensions,
+  ScrollView,
 } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 
@@ -17,41 +18,29 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 // Background Images Array
 const backgroundImages = [
   require('../../../assets/Halo/26.jpg'),
-  require('../../../assets/Halo/26.jpg'),
-  require('../../../assets/Halo/5.jpg'),  // Add more images as needed
+  require('../../../assets/Halo/5.jpg'),
   require('../../../assets/Halo/9.jpg'),
   require('../../../assets/Halo/9.png'),
   require('../../../assets/Halo/10.jpg'),
-  require('../../../assets/Halo/26.jpg'),
   require('../../../assets/Halo/11.jpg'),
   require('../../../assets/Halo/13.jpg'),
-  require('../../../assets/Halo/26.jpg'),
   require('../../../assets/Halo/15.jpg'),
-  require('../../../assets/Halo/26.jpg'),
-  require('../../../assets/Halo/26.jpg'),
   require('../../../assets/Halo/16.jpg'),
   require('../../../assets/Halo/18.jpg'),
   require('../../../assets/Halo/19.jpg'),
   require('../../../assets/Halo/20.png'),
-  require('../../../assets/Halo/26.jpg'),
   require('../../../assets/Halo/21.jpg'),
   require('../../../assets/Halo/22.jpg'),
   require('../../../assets/Halo/23.jpg'),
   require('../../../assets/Halo/24.jpg'),
-  require('../../../assets/Halo/26.jpg'),
   require('../../../assets/Halo/25.jpg'),
-  require('../../../assets/Halo/26.jpg'),
-  require('../../../assets/Halo/26.jpg'),
   require('../../../assets/Halo/27.jpg'),
   require('../../../assets/Halo/28.jpg'),
   require('../../../assets/Halo/29.jpg'),
-  require('../../../assets/Halo/26.jpg'),
   require('../../../assets/Halo/30.jpg'),
   require('../../../assets/Halo/31.jpg'),
   require('../../../assets/Halo/32.png'),
   require('../../../assets/Halo/33.jpg'),
-
-  // Add additional background image paths here based on your assets
 ];
 
 // Member Data
@@ -61,13 +50,62 @@ const members = [
   { name: 'Alex', codename: 'Huntsman', screen: 'Alex', clickable: true, position: [1, 2], image: require('../../../assets/Armor/Alex3.jpg') },
 ];
 
+// Hardcoded Vehicles
+const HARDCODED_VEHICLES = [
+  {
+    id: 'vehicle-1',
+    name: 'Warthog',
+    description: 'All-terrain vehicle with a mounted turret, ideal for rapid deployment.',
+    image: require('../../../assets/ShipYard/Spartan1.jpg'),
+  },
+  {
+    id: 'vehicle-2',
+    name: 'Scorpion',
+    description: 'Heavy tank with a powerful cannon, designed for armored assaults.',
+    image: require('../../../assets/ShipYard/Spartan2.jpg'),
+  },
+  {
+    id: 'vehicle-3',
+    name: 'Pelican',
+    description: 'Dropship for troop and vehicle transport, equipped for atmospheric and space operations.',
+    image: require('../../../assets/ShipYard/Spartan3.jpg'),
+  },
+  {
+    id: 'vehicle-4',
+    name: 'Mantis',
+    description: 'Bipedal mech with missile launchers and a chaingun, built for heavy combat.',
+    image: require('../../../assets/ShipYard/Spartan4.jpg'),
+  },
+  {
+    id: 'vehicle-5',
+    name: 'Banshee',
+    description: 'Covenant-designed air vehicle with plasma cannons, used for aerial superiority.',
+    image: require('../../../assets/ShipYard/Spartan5.jpg'),
+  },
+  {
+    id: 'vehicle-6',
+    name: 'Ghost',
+    description: 'Light reconnaissance vehicle with high speed and twin plasma cannons.',
+    image: require('../../../assets/ShipYard/Spartan6.jpg'),
+  },
+  {
+    id: 'vehicle-7',
+    name: 'Wraith',
+    description: 'Covenant heavy mortar tank, delivering devastating plasma bombardments.',
+    image: require('../../../assets/ShipYard/Spartan7.jpg'),
+  },
+];
+
+// Placeholder Image
+const PLACEHOLDER_IMAGE = require('../../../assets/Armor/PlaceHolder.jpg');
+
 // Empty cell checker
 const isEmpty = (row, col) =>
-  (row === 0 && col === 0) || 
-  (row === 0 && col === 1) || 
-  (row === 0 && col === 2) || 
-  (row === 2 && col === 0) || 
-  (row === 2 && col === 1) || 
+  (row === 0 && col === 0) ||
+  (row === 0 && col === 1) ||
+  (row === 0 && col === 2) ||
+  (row === 2 && col === 0) ||
+  (row === 2 && col === 1) ||
   (row === 2 && col === 2);
 
 const getMemberAtPosition = (row, col) =>
@@ -79,75 +117,156 @@ const SpartansScreen = () => {
   const [backgroundImage, setBackgroundImage] = useState(
     backgroundImages[Math.floor(Math.random() * backgroundImages.length)]
   );
+  const [currentVehicleIndex, setCurrentVehicleIndex] = useState(0);
 
   useEffect(() => {
     if (isFocused) {
-      // Set new random background when screen is focused
+      console.log("Screen focused, setting random background");
       setBackgroundImage(backgroundImages[Math.floor(Math.random() * backgroundImages.length)]);
     }
   }, [isFocused]);
 
-  const isDesktop = SCREEN_WIDTH > 600; 
-  const cardSize = isDesktop ? 320 : 100; 
-  const cardSpacing = isDesktop ? 120 : 30; 
+  const isDesktop = SCREEN_WIDTH > 600;
+  const cardSize = isDesktop ? 320 : 100;
+  const cardSpacing = isDesktop ? 120 : 30;
+  const vehicleCardWidth = isDesktop ? Math.min(SCREEN_WIDTH, 600) : SCREEN_WIDTH;
 
   const goToChat = () => {
+    console.log("Navigating to TeamChat");
     navigation.navigate('TeamChat');
   };
 
+  const handleScroll = (event) => {
+    const contentOffsetX = event.nativeEvent.contentOffset.x;
+    const index = Math.round(contentOffsetX / vehicleCardWidth);
+    setCurrentVehicleIndex(index);
+    console.log("Scrolled to vehicle index:", index, "Offset:", contentOffsetX, "CardWidth:", vehicleCardWidth);
+  };
+
+  const renderVehicle = (vehicle, index) => {
+    const imageSource = vehicle.image || PLACEHOLDER_IMAGE;
+    console.log("Rendering vehicle:", { id: vehicle.id, name: vehicle.name, imageSource: JSON.stringify(imageSource) });
+    return (
+      <View key={vehicle.id} style={[styles.vehicleCard, { width: vehicleCardWidth }]}>
+        <Image
+          source={imageSource}
+          style={styles.vehicleImage}
+          resizeMode="cover"
+          defaultSource={PLACEHOLDER_IMAGE}
+          onError={(e) => console.error("Vehicle image load error:", vehicle.id, "Error:", e.nativeEvent.error, "Source:", JSON.stringify(imageSource))}
+        />
+        <View style={styles.vehicleOverlay} />
+        <Text style={styles.vehicleName}>{vehicle.name || 'Unnamed Vehicle'}</Text>
+        <Text style={styles.vehicleDescription}>{vehicle.description || 'No description available'}</Text>
+      </View>
+    );
+  };
+
   return (
-    <ImageBackground 
-      source={backgroundImage} 
+    <ImageBackground
+      source={backgroundImage}
       style={styles.background}
     >
       <SafeAreaView style={styles.container}>
-        {/* Header Section */}
-        <View style={styles.headerWrapper}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-            <Text style={styles.backText}>← Back</Text>
-          </TouchableOpacity>
-          <Text style={styles.header}>The Spartans</Text>
-          <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
-            <Text style={styles.chatText}>🛡️</Text>
-          </TouchableOpacity>
-        </View>
+        <ScrollView
+          style={styles.verticalScroll}
+          contentContainerStyle={styles.verticalScrollContent}
+        >
+          {/* Header Section */}
+          <View style={styles.headerWrapper}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => {
+                console.log("Navigating back");
+                navigation.goBack();
+              }}
+            >
+              <Text style={styles.backText}>← Back</Text>
+            </TouchableOpacity>
+            <Text style={styles.header}>The Spartans</Text>
+            <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
+              <Text style={styles.chatText}>🛡️</Text>
+            </TouchableOpacity>
+          </View>
 
-        {/* Grid Layout */}
-        <View style={[styles.grid, { gap: cardSpacing }]}>
-          {[0, 1, 2].map((row) => (
-            <View key={row} style={[styles.row, { gap: cardSpacing }]}>
-              {[0, 1, 2].map((col) => {
-                if (isEmpty(row, col)) {
-                  return <View key={col} style={{ width: cardSize, height: cardSize * 1.4 }} />;
-                }
+          {/* Grid Layout */}
+          <View style={[styles.grid, { gap: cardSpacing, minHeight: cardSize * 1.6 * 3 }]}>
+            {[0, 1, 2].map((row) => (
+              <View key={row} style={[styles.row, { gap: cardSpacing }]}>
+                {[0, 1, 2].map((col) => {
+                  if (isEmpty(row, col)) {
+                    return <View key={col} style={{ width: cardSize, height: cardSize * 1.6 }} />;
+                  }
 
-                const member = getMemberAtPosition(row, col);
-                return (
-                  <TouchableOpacity
-                    key={col}
-                    style={[
-                      styles.card,
-                      { width: cardSize, height: cardSize * 1.6 },
-                      !member?.clickable && styles.disabledCard,
-                    ]}
-                    onPress={() => member?.clickable && navigation.navigate(member.screen)}
-                    disabled={!member?.clickable}
-                  >
-                    {member?.image && (
-                      <>
-                        <Image source={member.image} style={styles.characterImage} />
-                        {/* Transparent Overlay for Image Protection */}
-                        <View style={styles.transparentOverlay} />
-                      </>
-                    )}
-                    <Text style={styles.codename}>{member?.codename || ''}</Text>
-                    <Text style={styles.name}>{member?.name || ''}</Text>
-                  </TouchableOpacity>
-                );
-              })}
+                  const member = getMemberAtPosition(row, col);
+                  return (
+                    <TouchableOpacity
+                      key={col}
+                      style={[
+                        styles.card,
+                        { width: cardSize, height: cardSize * 1.6 },
+                        !member?.clickable && styles.disabledCard,
+                      ]}
+                      onPress={() => {
+                        if (member?.clickable) {
+                          console.log("Navigating to member screen:", member.screen);
+                          navigation.navigate(member.screen);
+                        }
+                      }}
+                      disabled={!member?.clickable}
+                    >
+                      {member?.image && (
+                        <>
+                          <Image
+                            source={member.image}
+                            style={styles.characterImage}
+                            resizeMode="cover"
+                            onError={(e) => console.error("Member image load error:", member.name, "Error:", e.nativeEvent.error)}
+                          />
+                          <View style={styles.transparentOverlay} />
+                        </>
+                      )}
+                      <Text style={styles.codename}>{member?.codename || ''}</Text>
+                      <Text style={styles.name}>{member?.name || ''}</Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            ))}
+          </View>
+
+          {/* Vehicle Bay */}
+          <View style={styles.vehicleBay}>
+            <Text style={styles.vehicleHeader}>Vehicle Bay</Text>
+            <View style={styles.vehicleWindow}>
+              <ScrollView
+                horizontal
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                snapToInterval={vehicleCardWidth}
+                snapToAlignment="start"
+                decelerationRate="fast"
+                scrollEventThrottle={50}
+                nestedScrollEnabled={true}
+                onScroll={handleScroll}
+                contentContainerStyle={styles.vehicleScroll}
+              >
+                {HARDCODED_VEHICLES.map((vehicle, index) => renderVehicle(vehicle, index))}
+              </ScrollView>
             </View>
-          ))}
-        </View>
+            <View style={styles.dotContainer}>
+              {HARDCODED_VEHICLES.map((_, index) => (
+                <View
+                  key={index}
+                  style={[
+                    styles.dot,
+                    currentVehicleIndex === index ? styles.activeDot : styles.inactiveDot,
+                  ]}
+                />
+              ))}
+            </View>
+          </View>
+        </ScrollView>
       </SafeAreaView>
     </ImageBackground>
   );
@@ -161,8 +280,14 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)', 
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     paddingHorizontal: 20,
+  },
+  verticalScroll: {
+    flex: 1,
+  },
+  verticalScrollContent: {
+    paddingBottom: 40,
     alignItems: 'center',
   },
   headerWrapper: {
@@ -170,9 +295,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
-    marginTop: 50,
+    marginTop: 20,
     paddingHorizontal: 20,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   backButton: {
     padding: 10,
@@ -203,7 +328,6 @@ const styles = StyleSheet.create({
     color: '#00b3ff',
   },
   grid: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -211,20 +335,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   card: {
-    backgroundColor: '#1c1c1c',
+    backgroundColor: 'rgba(28, 28, 28, 0.9)', // Slightly transparent for better contrast
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 8,
     shadowColor: '#00b3ff',
-    shadowOpacity: 1.5,
+    shadowOpacity: 0.8,
     shadowRadius: 10,
     elevation: 5,
     padding: 5,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 179, 255, 0.3)', // Subtle border for definition
   },
   characterImage: {
     width: '100%',
     height: '70%',
-    resizeMode: 'cover',
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
   },
@@ -249,12 +374,74 @@ const styles = StyleSheet.create({
   disabledCard: {
     backgroundColor: '#444',
     shadowColor: 'transparent',
+    borderColor: 'transparent',
   },
-  disabledText: {
-    fontSize: 10,
-    color: '#ff4444',
+  vehicleBay: {
+    marginTop: 10,
+    marginBottom: 10,
+    width: '100%',
+    alignItems: 'center',
+  },
+  vehicleWindow: {
+    width: '100%',
+    overflow: 'hidden',
+  },
+  vehicleScroll: {
+    flexDirection: 'row',
+  },
+  vehicleCard: {
+    backgroundColor: 'rgba(28, 28, 28, 0.9)', // Match member card
+    borderRadius: 8,
+    shadowColor: '#00b3ff',
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
+    elevation: 5,
+    padding: 10,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(0, 179, 255, 0.3)',
+  },
+  vehicleImage: {
+    width: '100%',
+    height: 200,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+  },
+  vehicleOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    zIndex: 1,
+  },
+  vehicleName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+    textAlign: 'center',
+    marginTop: 10,
+  },
+  vehicleDescription: {
+    fontSize: 14,
+    color: '#aaa',
     textAlign: 'center',
     marginTop: 5,
+    paddingHorizontal: 10,
+  },
+  dotContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 10,
+  },
+  dot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    marginHorizontal: 5,
+  },
+  activeDot: {
+    backgroundColor: '#00b3ff',
+  },
+  inactiveDot: {
+    backgroundColor: '#666',
   },
 });
 
