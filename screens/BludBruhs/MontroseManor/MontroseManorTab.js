@@ -6,23 +6,25 @@ import { collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, getDoc, getD
 import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
 
+const { width: SCREEN_WIDTH } = Dimensions.get("window");
+const isDesktop = SCREEN_WIDTH > 600;
 const ALLOWED_EMAILS = ["samuelp.woodwell@gmail.com", "cummingsnialla@gmail.com", "will@test.com", "c1wcummings@gmail.com", "aileen@test.com"];
 const RESTRICT_ACCESS = false; // Allow anyone to add books
 const RESTRICT_IMAGE_UPLOAD = true; // Restrict image uploads to ALLOWED_EMAILS
 const PLACEHOLDER_IMAGE = require("../../../assets/Armor/PlaceHolder.jpg");
 const HARDCODED_BOOKS = [
   { id: "hardcoded-1", title: "Montrose Manor", coverImage: require("../../../assets/MontroseManor.jpg"), hardcoded: true },
-  // Add more hardcoded books here with their cover images
 ];
 
 const MontroseManorTab = () => {
   const navigation = useNavigation();
   const [books, setBooks] = useState([]);
   const [title, setTitle] = useState("");
-  const [image, setImage] = useState(null);
-  const [editingBookId, setEditingBookId] = useState(null);
-  const [editTitle, setEditTitle] = useState("");
-  const [canUpload, setCanUpload] = useState(true); // Always true when RESTRICT_ACCESS is false
+  const [description, setDescription] = useState("");
+  const [imageUri, setImageUri] = useState(null);
+  const [editingBook, setEditingBook] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [canSubmit, setCanSubmit] = useState(true);
   const [canUploadImage, setCanUploadImage] = useState(!RESTRICT_IMAGE_UPLOAD);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
@@ -30,8 +32,8 @@ const MontroseManorTab = () => {
   useEffect(() => {
     const checkAuth = () => {
       const user = auth.currentUser;
-      console.log("Auth check, user:", user ? user.email : "none", "RESTRICT_ACCESS:", RESTRICT_ACCESS);
-      setCanUpload(RESTRICT_ACCESS ? (user && ALLOWED_EMAILS.includes(user.email)) : true);
+      console.log("Auth check, user:", user ? user.email : "none", "RESTRICT_ACCESS:", RESTRICT_ACCESS, "RESTRICT_IMAGE_UPLOAD:", RESTRICT_IMAGE_UPLOAD);
+      setCanSubmit(RESTRICT_ACCESS ? (user && ALLOWED_EMAILS.includes(user.email)) : true);
       setCanUploadImage(!RESTRICT_IMAGE_UPLOAD || (user && ALLOWED_EMAILS.includes(user.email)));
     };
     const unsubscribe = onSnapshot(
@@ -53,104 +55,177 @@ const MontroseManorTab = () => {
     };
   }, []);
 
-  const uploadImage = async (uri) => {
-    if (!canUploadImage) {
-      console.log("Image upload blocked: user not authorized");
-      return Promise.reject(new Error("Unauthorized to upload images"));
+  useEffect(() => {
+    if (editingBook) {
+      setTitle(editingBook.title || "");
+      setDescription(editingBook.description || "");
+      setImageUri(editingBook.imageUrl || null);
+      console.log("Editing book loaded:", {
+        id: editingBook.id,
+        title: editingBook.title,
+        imageUrl: editingBook.imageUrl,
+        description: editingBook.description,
+      });
+    } else {
+      setTitle("");
+      setDescription("");
+      setImageUri(null);
+      console.log("Form reset for new book");
     }
-    console.log("Starting image upload for URI:", uri);
-    return new Promise((res, rej) => {
-      fetch(uri)
-        .then((r) => r.blob())
-        .then((blob) => {
-          const refPath = `books/${Date.now()}_${Math.random().toString(36).substring(7)}`;
-          console.log("Uploading to storage path:", refPath);
-          const storageRef = ref(storage, refPath);
-          uploadBytesResumable(storageRef, blob).on(
-            "state_changed",
-            (snapshot) => console.log("Upload progress:", snapshot.bytesTransferred, "/", snapshot.totalBytes),
-            (error) => {
-              console.error("Upload failed:", error.message);
-              rej(error);
-            },
-            () => {
-              getDownloadURL(storageRef).then((url) => {
-                console.log("Image uploaded, URL:", url);
-                res(url);
-              }).catch(rej);
-            }
-          );
-        })
-        .catch((error) => {
-          console.error("Fetch error:", error.message);
-          rej(error);
-        });
-    });
-  };
+  }, [editingBook]);
 
   const pickImage = async () => {
     if (!canUploadImage) {
-      console.log("Pick image blocked: user not authorized");
       Alert.alert("Access Denied", "Only authorized users can upload images.");
       return;
     }
-    console.log("Opening image picker");
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    console.log("Image picker permission status:", status);
+    if (status !== "granted") {
+      Alert.alert("Permission Denied", "Sorry, we need camera roll permissions to make this work!");
+      return;
+    }
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [1, 1],
+      aspect: [4, 3],
       quality: 0.5,
     });
-    if (!result.canceled) {
-      console.log("Image selected:", result.assets[0].uri);
-      setImage(result.assets[0].uri);
+    console.log("Image picker result:", result);
+    if (!result.canceled && result.assets) {
+      setImageUri(result.assets[0].uri);
+      console.log("Image picked:", result.assets[0].uri);
     } else {
-      console.log("Image picker canceled");
+      console.log("Image picker canceled or no assets");
     }
   };
 
-  const addBook = async () => {
-    if (!title) {
-      console.log("Add book blocked: no title provided");
-      Alert.alert("Error", "Enter title");
+  const uploadImage = async (uri) => {
+    if (!uri) {
+      console.log("No image URI provided, returning placeholder");
+      return "placeholder";
+    }
+    try {
+      console.log("Starting image upload for URI:", uri);
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      console.log("Blob created, size:", blob.size);
+      const timestamp = Date.now();
+      const random = Math.random().toString(36).substring(2, 15);
+      const imagePath = `books/${timestamp}_${random}.jpg`;
+      console.log("Uploading to path:", imagePath);
+      const imageRef = ref(storage, imagePath);
+      await uploadBytesResumable(imageRef, blob);
+      console.log("Upload completed, fetching download URL");
+      const downloadURL = await getDownloadURL(imageRef);
+      console.log("Image uploaded successfully:", downloadURL);
+      return downloadURL;
+    } catch (e) {
+      console.error("Image upload error:", e.message);
+      throw e;
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!canSubmit) {
+      Alert.alert("Access Denied", "Only authorized users can submit books.");
       return;
     }
-    console.log("Adding book, title:", title, "image:", image ? "yes" : "no", "user:", auth.currentUser ? auth.currentUser.email : "none");
+    if (!title.trim() && !description.trim()) {
+      Alert.alert("Error", "Please provide a title or description.");
+      return;
+    }
+    setUploading(true);
     try {
-      let imageUrl = "";
-      if (image) {
-        imageUrl = await uploadImage(image);
+      let imageUrl = editingBook?.imageUrl || "placeholder";
+      if (imageUri && imageUri !== editingBook?.imageUrl) {
+        imageUrl = await uploadImage(imageUri);
       }
-      const bookData = { title, imageUrl };
-      console.log("Writing to Firestore:", bookData);
-      const docRef = await addDoc(collection(db, "books"), bookData);
-      console.log("Book added, ID:", docRef.id);
+      const bookData = {
+        title: title.trim(),
+        description: description.trim(),
+        imageUrl,
+        clickable: true,
+        borderColor: "#FFFFFF",
+        hardcoded: false,
+      };
+      console.log("Submitting book data:", bookData);
+      if (editingBook) {
+        const bookRef = doc(db, "books", editingBook.id);
+        console.log("Updating Firestore document:", bookRef.path);
+        await updateDoc(bookRef, bookData);
+        console.log("Book updated:", editingBook.id);
+        setBooks(books.map(item => (item.id === editingBook.id ? { ...item, ...bookData } : item)));
+        Alert.alert("Success", "Book updated successfully!");
+      } else {
+        console.log("Adding new Firestore document");
+        const bookRef = await addDoc(collection(db, "books"), bookData);
+        console.log("Book added:", bookRef.id);
+        setBooks([...HARDCODED_BOOKS, ...books.filter(item => !item.hardcoded), { id: bookRef.id, ...bookData }]);
+        Alert.alert("Success", "Book added successfully!");
+      }
       setTitle("");
-      setImage(null);
-      Alert.alert("Success", "Book added!");
+      setDescription("");
+      setImageUri(null);
+      setEditingBook(null);
     } catch (e) {
-      console.error("Add book error:", e.message, e.stack);
-      Alert.alert("Error", `Failed to add book: ${e.message}`);
+      console.error("Submit error:", e.message);
+      Alert.alert("Error", `Failed to ${editingBook ? "update" : "add"} book: ${e.message}`);
+    } finally {
+      setUploading(false);
     }
   };
 
-  const skipImageAndAdd = async () => {
-    console.log("Skipping image, proceeding to add book");
-    setImage(null);
-    await addBook();
+  const handleCancel = () => {
+    setTitle("");
+    setDescription("");
+    setImageUri(null);
+    setEditingBook(null);
+    console.log("Form cancelled");
   };
 
   const confirmDeleteBook = async (id) => {
+    if (!canSubmit) {
+      console.log("Delete blocked: user not authorized");
+      Alert.alert("Access Denied", "Only authorized users can delete books!");
+      return;
+    }
     console.log("Deleting book, ID:", id);
     try {
       const bookRef = doc(db, "books", id);
       const bookSnap = await getDoc(bookRef);
       if (!bookSnap.exists()) {
         console.log("Book not found:", id);
-        return Alert.alert("Error", "Book not found");
+        Alert.alert("Error", "Book not found");
+        return;
       }
       const bookData = bookSnap.data();
-      const imageUrl = bookData.imageUrl;
+      const { imageUrl } = bookData;
+      if (imageUrl && imageUrl !== "placeholder") {
+        let path = "";
+        try {
+          console.log("Raw imageUrl:", imageUrl);
+          if (typeof imageUrl !== "string" || !imageUrl.includes("/o/")) {
+            console.warn("Invalid imageUrl format:", imageUrl);
+          } else {
+            const urlParts = imageUrl.split("/o/");
+            path = decodeURIComponent(urlParts[1].split("?")[0]);
+            console.log("Attempting to delete image:", path);
+            await deleteObject(ref(storage, path)).catch((e) => {
+              if (e.code !== "storage/object-not-found") {
+                throw e;
+              }
+              console.warn("Image not found in storage:", path);
+            });
+            console.log("Image deleted or not found:", path);
+          }
+        } catch (e) {
+          console.error("Delete image error:", e.message, "Path:", path, "URL:", imageUrl);
+          Alert.alert("Warning", `Failed to delete image: ${e.message}. Book will still be deleted.`);
+        }
+      } else {
+        console.log("No image to delete or imageUrl is placeholder:", imageUrl);
+      }
 
       const charactersRef = collection(db, "books", id, "characters");
       const charactersSnapshot = await getDocs(charactersRef);
@@ -158,24 +233,20 @@ const MontroseManorTab = () => {
       const deleteCharactersPromises = charactersSnapshot.docs.map((charDoc) =>
         deleteDoc(doc(db, "books", id, "characters", charDoc.id))
       );
-      await Promise.all(deleteCharactersPromises);
+      await Promise.all(deleteCharactersPromises).catch((e) => {
+        console.error("Delete characters error:", e.message);
+        Alert.alert("Warning", `Failed to delete some characters: ${e.message}. Book will still be deleted.`);
+      });
 
       await deleteDoc(bookRef);
-      if (imageUrl) {
-        console.log("Deleting image:", imageUrl);
-        const imageRef = ref(storage, imageUrl.split('/o/')[1].split('?')[0]);
-        await deleteObject(imageRef).catch((error) => {
-          if (error.code !== "storage/object-not-found") console.error("Delete image error:", error);
-        });
-      }
-
+      console.log("Book deleted from Firestore:", id);
       setBooks(books.filter((book) => book.id !== id));
       setDeleteModalVisible(false);
       setBookToDelete(null);
       Alert.alert("Success", "Book, characters, and image deleted successfully!");
     } catch (error) {
       console.error("Delete book error:", error.message);
-      Alert.alert("Error", "Failed to delete: " + error.message);
+      Alert.alert("Error", `Failed to delete book: ${error.message}`);
     }
   };
 
@@ -184,144 +255,146 @@ const MontroseManorTab = () => {
       console.log("Delete blocked: book is hardcoded");
       return Alert.alert("Error", "Cannot delete hardcoded books!");
     }
-    if (!canUpload) {
-      console.log("Delete blocked: user not authorized");
-      return Alert.alert("Access Denied", "You are not authorized to delete books!");
-    }
     console.log("Opening delete modal for book:", id, title);
     setBookToDelete({ id, hardcoded, title });
     setDeleteModalVisible(true);
   };
 
   const startEditing = (book) => {
-    if (canUpload) {
+    if (canSubmit) {
       console.log("Starting edit for book:", book.id);
-      setEditingBookId(book.id);
-      setEditTitle(book.title);
+      setEditingBook({ id: book.id, title: book.title, description: book.description, imageUrl: book.imageUrl });
     }
   };
 
-  const saveEdit = async (id) => {
-    if (canUpload) {
-      console.log("Saving edit for book:", id, "new title:", editTitle);
-      await updateDoc(doc(db, "books", id), { title: editTitle });
-      setEditingBookId(null);
-      setEditTitle("");
-      Alert.alert("Success", "Updated!");
-    }
-  };
-
-  const goHome = () => {
-    console.log("Navigating to BludBruhsHome");
-    navigation.navigate('BludBruhsHome');
-  };
-
-  const renderBook = (book) => (
-    <View key={book.id} style={styles.bookCont}>
-      <TouchableOpacity
-        style={[styles.bookTab, book.hardcoded && styles.hardcoded]}
-        onPress={() => {
-          console.log("Navigating to BookDetails, book:", book.id, book.title);
-          navigation.navigate("BookDetails", {
-            bookId: book.id,
-            bookTitle: book.title,
-            bookImageUrl: book.imageUrl || (book.coverImage ? book.coverImage : ""),
-          });
-        }}
-      >
-        {editingBookId === book.id ? (
-          <TextInput
-            style={styles.editInput}
-            value={editTitle}
-            onChangeText={setEditTitle}
-            onSubmitEditing={() => saveEdit(book.id)}
-            autoFocus
-          />
-        ) : (
+  const renderBook = (book) => {
+    const imageSource = book.imageUrl ? { uri: book.imageUrl } : book.coverImage || PLACEHOLDER_IMAGE;
+    console.log("Rendering book:", { id: book.id, title: book.title, imageSource: JSON.stringify(imageSource) });
+    return (
+      <View key={book.id} style={styles.bookCont}>
+        <TouchableOpacity
+          style={[styles.bookTab, book.hardcoded && styles.hardcoded]}
+          onPress={() => {
+            console.log("Navigating to BookDetails, book:", book.id, book.title);
+            navigation.navigate("BookDetails", {
+              bookId: book.id,
+              bookTitle: book.title,
+              bookImageUrl: book.imageUrl || (book.coverImage ? book.coverImage : ""),
+            });
+          }}
+        >
           <Text style={styles.bookTitle}>{book.title}</Text>
-        )}
-        <Image
-          source={book.imageUrl ? { uri: book.imageUrl } : book.coverImage || PLACEHOLDER_IMAGE}
-          style={styles.bookImg}
-          resizeMode="cover"
-          defaultSource={PLACEHOLDER_IMAGE}
-        />
-      </TouchableOpacity>
-      {!book.hardcoded && (
-        <View style={styles.buttons}>
-          {editingBookId === book.id ? (
-            <TouchableOpacity onPress={() => saveEdit(book.id)} style={styles.save}>
-              <Text>Save</Text>
-            </TouchableOpacity>
-          ) : (
+          <Image
+            source={imageSource}
+            style={styles.bookImg}
+            resizeMode="cover"
+            defaultSource={PLACEHOLDER_IMAGE}
+            onError={(e) => console.error("Image load error for book:", book.id, "Error:", e.nativeEvent.error, "Source:", JSON.stringify(imageSource))}
+          />
+        </TouchableOpacity>
+        {!book.hardcoded && (
+          <View style={styles.buttons}>
             <TouchableOpacity
               onPress={() => startEditing(book)}
-              style={[styles.edit, !canUpload && styles.disabled]}
-              disabled={!canUpload}
+              style={[styles.edit, !canSubmit && styles.disabled]}
+              disabled={!canSubmit}
             >
               <Text>Edit</Text>
             </TouchableOpacity>
-          )}
-          <TouchableOpacity
-            onPress={() => handleDeletePress(book.id, book.hardcoded, book.title)}
-            style={[styles.delete, !canUpload && styles.disabled]}
-            disabled={!canUpload}
-          >
-            <Text>Delete</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-    </View>
-  );
+            <TouchableOpacity
+              onPress={() => handleDeletePress(book.id, book.hardcoded, book.title)}
+              style={[styles.delete, !canSubmit && styles.disabled]}
+              disabled={!canSubmit}
+            >
+              <Text>Delete</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+    );
+  };
 
   return (
     <ImageBackground source={require("../../../assets/MontroseMansion.jpg")} style={styles.bg}>
-      <TouchableOpacity onPress={() => {
-        console.log("Navigating to EvilMontrose");
-        navigation.navigate("EvilMontrose");
-      }} style={styles.back}>
+      <TouchableOpacity
+        onPress={() => {
+          console.log("Navigating to EvilMontrose");
+          navigation.navigate("EvilMontrose");
+        }}
+        style={styles.back}
+      >
         <Text>Escape</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={goHome} style={styles.home}>
+      <TouchableOpacity
+        onPress={() => {
+          console.log("Navigating to BludBruhsHome");
+          navigation.navigate("BludBruhsHome");
+        }}
+        style={styles.home}
+      >
         <Text>📖</Text>
       </TouchableOpacity>
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.overlay}>
           <Text style={styles.header}>Montrose Manor</Text>
           <View style={styles.form}>
+            <Text style={styles.formHeader}>{editingBook ? "Edit Book" : "Add New Book"}</Text>
             <TextInput
               style={styles.input}
               placeholder="Book Title"
+              placeholderTextColor="#888"
               value={title}
               onChangeText={setTitle}
-              editable={true}
+              editable={canSubmit}
             />
-            <View style={styles.imgOpts}>
+            {/* <TextInput
+              style={[styles.input, styles.textArea]}
+              placeholder="Description"
+              placeholderTextColor="#888"
+              value={description}
+              onChangeText={setDescription}
+              multiline
+              numberOfLines={4}
+              editable={canSubmit}
+            /> */}
+            <TouchableOpacity
+              style={[styles.imagePicker, !canUploadImage && styles.disabled]}
+              onPress={pickImage}
+              disabled={!canUploadImage}
+            >
+              <Text style={styles.imagePickerText}>{imageUri ? "Change Image" : "Pick an Image"}</Text>
+            </TouchableOpacity>
+            {imageUri && (
+              <Image
+                source={{ uri: imageUri }}
+                style={styles.previewImage}
+                resizeMode="contain"
+              />
+            )}
+            {!imageUri && editingBook && editingBook.imageUrl && editingBook.imageUrl !== "placeholder" && (
+              <Image
+                source={{ uri: editingBook.imageUrl }}
+                style={styles.previewImage}
+                resizeMode="contain"
+              />
+            )}
+            <View style={styles.buttonContainer}>
               <TouchableOpacity
-                onPress={pickImage}
-                style={[styles.upload, !canUploadImage && styles.disabled]}
-                disabled={!canUploadImage}
+                style={[styles.submitButton, !canSubmit && styles.disabled]}
+                onPress={handleSubmit}
+                disabled={!canSubmit || uploading}
               >
-                <Text>{canUploadImage ? (image ? "Selected" : "Upload") : "Restricted"}</Text>
+                <Text style={styles.buttonText}>{uploading ? "Submitting..." : editingBook ? "Update" : "Submit"}</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={skipImageAndAdd}
-                style={[styles.noImgBtn]}
-                disabled={false}
+                style={styles.cancelButton}
+                onPress={handleCancel}
               >
-                <Text>No Image</Text>
+                <Text style={styles.buttonText}>Cancel</Text>
               </TouchableOpacity>
             </View>
-            {image && <Image source={{ uri: image }} style={styles.preview} />}
-            <TouchableOpacity
-              onPress={addBook}
-              style={[styles.add]}
-              disabled={false}
-            >
-              <Text>Add Book</Text>
-            </TouchableOpacity>
-            {(!canUpload || !canUploadImage) && (
-              <Text style={styles.denied}>Only authorized users can upload images.</Text>
+            {(!canSubmit || !canUploadImage) && (
+              <Text style={styles.denied}>Only authorized users can upload images or edit books.</Text>
             )}
           </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.hScroll}>
@@ -339,6 +412,7 @@ const MontroseManorTab = () => {
                 onPress={() => {
                   console.log("Delete canceled");
                   setDeleteModalVisible(false);
+                  setBookToDelete(null);
                 }}
               >
                 <Text style={styles.modalCancelText}>Cancel</Text>
@@ -361,33 +435,113 @@ const styles = StyleSheet.create({
   bg: { flex: 1, width: Dimensions.get("window").width, height: Dimensions.get("window").height, position: "absolute" },
   scroll: { paddingBottom: 20 },
   overlay: { backgroundColor: "rgba(0,0,0,0.3)", paddingTop: 80 },
-  disabled: { backgroundColor: "#ccc", opacity: 0.6 },
-  denied: { color: "#ff4444", textAlign: "center", marginTop: 10, fontSize: 14 },
   header: { fontSize: 28, fontWeight: "bold", color: "#FFF", textAlign: "center", marginVertical: 20 },
   back: { position: "absolute", top: 40, left: 20, backgroundColor: "rgba(118,11,11,0.6)", padding: 10, borderRadius: 8, zIndex: 10 },
   home: { position: "absolute", top: 40, right: 20, backgroundColor: "rgba(255,255,255,0.2)", padding: 10, borderRadius: 8, zIndex: 10 },
-  form: { padding: 20, alignItems: "center" },
-  input: { backgroundColor: "#FFF", width: "80%", padding: 10, borderRadius: 5, marginBottom: 10 },
-  imgOpts: { flexDirection: "row", justifyContent: "space-between", width: "80%", marginBottom: 10 },
-  upload: { backgroundColor: "#4CAF50", padding: 10, borderRadius: 5, flex: 1, marginRight: 5 },
-  noImgBtn: { backgroundColor: "#F44336", padding: 10, borderRadius: 5, flex: 1, marginLeft: 5 },
-  preview: { width: 100, height: 100, borderRadius: 5, marginBottom: 10, resizeMode: "cover" },
-  add: { backgroundColor: "#2196F3", padding: 10, borderRadius: 5 },
+  form: {
+    backgroundColor: "#222",
+    padding: 20,
+    borderRadius: 10,
+    margin: 20,
+    width: isDesktop ? SCREEN_WIDTH * 0.6 : SCREEN_WIDTH * 0.9,
+    alignSelf: "center",
+  },
+  formHeader: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#FFF",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  input: {
+    backgroundColor: "#333",
+    color: "#FFF",
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 15,
+    fontSize: 16,
+  },
+  textArea: {
+    height: 100,
+    textAlignVertical: "top",
+  },
+  imagePicker: {
+    backgroundColor: "#555",
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+    marginBottom: 15,
+  },
+  imagePickerText: {
+    color: "#FFF",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  previewImage: {
+    width: "100%",
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 15,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  submitButton: {
+    backgroundColor: "#FFC107",
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginRight: 10,
+    alignItems: "center",
+  },
+  cancelButton: {
+    backgroundColor: "#F44336",
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginLeft: 10,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#FFF",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  disabled: {
+    backgroundColor: "#ccc",
+    opacity: 0.6,
+  },
+  denied: { color: "#ff4444", textAlign: "center", marginTop: 10, fontSize: 14 },
   hScroll: { paddingHorizontal: 20, paddingVertical: 10 },
   bookCont: { marginHorizontal: 10, alignItems: "center" },
-  bookTab: { width: Dimensions.get("window").width > 600 ? 300 : 200, height: Dimensions.get("window").width > 600 ? 450 : 300, 
-    backgroundColor: "rgba(65,62,62,0.9)", borderRadius: 15, padding: 10, alignItems: "center", overflow: "hidden", elevation: 5, },
+  bookTab: {
+    width: Dimensions.get("window").width > 600 ? 300 : 200,
+    height: Dimensions.get("window").width > 600 ? 450 : 300,
+    backgroundColor: "rgba(65,62,62,0.9)",
+    borderRadius: 15,
+    padding: 10,
+    alignItems: "center",
+    overflow: "hidden",
+    elevation: 5,
+  },
   hardcoded: { borderColor: "#FFD700", borderWidth: 2 },
   bookTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10, textAlign: "center", color: "#FFF" },
-  editInput: { fontSize: 18, fontWeight: "bold", marginBottom: 10, textAlign: "center", color: "#FFF", backgroundColor: "rgba(255,255,255,0.2)", 
-    borderRadius: 5, padding: 5, width: "100%", },
-  bookImg: { width: "100%", height: Dimensions.get("window").width > 600 ? 400 : 250, borderRadius: 10, },
-  buttons: { flexDirection: "row", justifyContent: "space-between", width: Dimensions.get("window").width > 600 ? 300 : 200, marginTop: 10, },
+  bookImg: {
+    width: "100%",
+    height: Dimensions.get("window").width > 600 ? 400 : 250,
+    borderRadius: 10,
+  },
+  buttons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: Dimensions.get("window").width > 600 ? 300 : 200,
+    marginTop: 10,
+  },
   edit: { backgroundColor: "#FFC107", padding: 5, borderRadius: 5, flex: 1, marginRight: 5 },
-  save: { backgroundColor: "#4CAF50", padding: 5, borderRadius: 5, flex: 1, marginRight: 5 },
   delete: { backgroundColor: "#F44336", padding: 5, borderRadius: 5, flex: 1, marginLeft: 5 },
-  modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.7)", justifyContent: "center", alignItems: "center", },
-  modalContent: { backgroundColor: "rgba(255,255,255,0.9)", padding: 20, borderRadius: 10, alignItems: "center", },
+  modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.7)", justifyContent: "center", alignItems: "center" },
+  modalContent: { backgroundColor: "rgba(255,255,255,0.9)", padding: 20, borderRadius: 10, alignItems: "center" },
   modalText: { fontSize: 18, color: "#000", marginBottom: 20, textAlign: "center" },
   modalButtons: { flexDirection: "row", justifyContent: "space-between", width: "80%" },
   modalCancel: { backgroundColor: "#2196F3", padding: 10, borderRadius: 5, flex: 1, marginRight: 10 },

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, ImageBackground, StyleSheet, Dimensions, TouchableOpacity, Text, ScrollView, TextInput, Image, Alert, Modal } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { db, storage, auth } from "../../../lib/firebase";
-import { collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, getDoc, getDocs } from "firebase/firestore";
+import { collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, getDoc } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
 
@@ -27,25 +27,23 @@ const BookDetails = () => {
   const { bookId, bookTitle, bookImageUrl } = useRoute().params;
   const navigation = useNavigation();
   const [chars, setChars] = useState([]);
-  const [title, setTitle] = useState("");
-  const [desc, setDesc] = useState("");
-  const [image, setImage] = useState(null);
-  const [useImg, setUseImg] = useState(null);
-  const [editingCharId, setEditingCharId] = useState(null);
-  const [editTitle, setEditTitle] = useState("");
-  const [editDesc, setEditDesc] = useState("");
-  const [selChar, setSelChar] = useState(null);
-  const [canMod, setCanMod] = useState(true); // Default to true for RESTRICT_ACCESS = false
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [imageUri, setImageUri] = useState(null);
+  const [editingChar, setEditingChar] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [canSubmit, setCanSubmit] = useState(true);
   const [canUploadImage, setCanUploadImage] = useState(!RESTRICT_IMAGE_UPLOAD);
   const [deleteModal, setDeleteModal] = useState({ visible: false, char: null });
+  const [selChar, setSelChar] = useState(null);
 
   const alert = (title, msg) => Alert.alert(title, msg);
 
   useEffect(() => {
     const checkAuth = () => {
       const user = auth.currentUser;
-      console.log("Auth check, user:", user ? user.email : "none", "RESTRICT_ACCESS:", RESTRICT_ACCESS);
-      setCanMod(RESTRICT_ACCESS ? (user && ALLOWED_EMAILS.includes(user.email)) : true);
+      console.log("Auth check, user:", user ? user.email : "none", "RESTRICT_ACCESS:", RESTRICT_ACCESS, "RESTRICT_IMAGE_UPLOAD:", RESTRICT_IMAGE_UPLOAD);
+      setCanSubmit(RESTRICT_ACCESS ? (user && ALLOWED_EMAILS.includes(user.email)) : true);
       setCanUploadImage(!RESTRICT_IMAGE_UPLOAD || (user && ALLOWED_EMAILS.includes(user.email)));
     };
     const unsub = onSnapshot(
@@ -68,135 +66,221 @@ const BookDetails = () => {
     };
   }, [bookId]);
 
-  const uploadImg = async (uri) => {
-    if (!canUploadImage) {
-      console.log("Image upload blocked: user not authorized");
-      throw new Error("Unauthorized to upload images");
+  useEffect(() => {
+    if (editingChar) {
+      setName(editingChar.name || "");
+      setDescription(editingChar.description || "");
+      setImageUri(editingChar.imageUrl || null);
+      console.log("Editing character loaded:", {
+        id: editingChar.id,
+        name: editingChar.name,
+        imageUrl: editingChar.imageUrl,
+        description: editingChar.description,
+      });
+    } else {
+      setName("");
+      setDescription("");
+      setImageUri(null);
+      console.log("Form reset for new character");
     }
-    console.log("Starting image upload for URI:", uri);
-    try {
-      const blob = await (await fetch(uri)).blob();
-      const path = `characters/${Date.now()}_${Math.random().toString(36).slice(7)}`;
-      console.log("Uploading to storage path:", path);
-      const storageRef = ref(storage, path);
-      const uploadTask = await uploadBytesResumable(storageRef, blob);
-      const url = await getDownloadURL(uploadTask.ref);
-      console.log("Image uploaded, URL:", url);
-      return url;
-    } catch (e) {
-      console.error("Upload error:", e.message);
-      throw e;
-    }
-  };
+  }, [editingChar]);
 
-  const pickImg = async () => {
+  const pickImage = async () => {
     if (!canUploadImage) {
       console.log("Pick image blocked: user not authorized");
       alert("Access Denied", "Only authorized users can upload images.");
       return;
     }
     console.log("Opening image picker");
-    const r = await ImagePicker.launchImageLibraryAsync({
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    console.log("Image picker permission status:", status);
+    if (status !== "granted") {
+      alert("Permission Denied", "Sorry, we need camera roll permissions to make this work!");
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.5,
     });
-    if (!r.canceled) {
-      console.log("Image selected:", r.assets[0].uri);
-      setImage(r.assets[0].uri);
-      setUseImg(true);
+    console.log("Image picker result:", result);
+    if (!result.canceled && result.assets) {
+      setImageUri(result.assets[0].uri);
+      console.log("Image picked:", result.assets[0].uri);
     } else {
-      console.log("Image picker canceled");
+      console.log("Image picker canceled or no assets");
     }
   };
 
-  const addChar = async (useImage = true) => {
-    if (!title || !desc) {
-      console.log("Add character blocked: missing title or description");
-      return alert("Error", "Enter name and description");
+  const skipImage = () => {
+    console.log("Skipping image for character");
+    setImageUri(null);
+  };
+
+  const uploadImage = async (uri) => {
+    if (!uri) {
+      console.log("No image URI provided, returning placeholder");
+      return PLACEHOLDER_URL;
     }
-    console.log("Adding character, name:", title, "description:", desc, "image:", useImage && image ? "yes" : "no", "user:", auth.currentUser ? auth.currentUser.email : "none");
     try {
-      const imgUrl = useImage && image ? await uploadImg(image) : useImage ? PLACEHOLDER_URL : "";
-      const charData = { name: title, description: desc, imageUrl: imgUrl };
-      console.log("Writing to Firestore:", charData);
-      const docRef = await addDoc(collection(db, "books", bookId, "characters"), charData);
-      console.log("Character added, ID:", docRef.id);
-      setTitle("");
-      setDesc("");
-      setImage(null);
-      setUseImg(null);
-      alert("Success", "Character added!");
+      console.log("Starting image upload for URI:", uri);
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      console.log("Blob created, size:", blob.size);
+      const timestamp = Date.now();
+      const random = Math.random().toString(36).substring(2, 15);
+      const imagePath = `characters/${timestamp}_${random}.jpg`;
+      console.log("Uploading to path:", imagePath);
+      const imageRef = ref(storage, imagePath);
+      await uploadBytesResumable(imageRef, blob);
+      console.log("Upload completed, fetching download URL");
+      const downloadURL = await getDownloadURL(imageRef);
+      console.log("Image uploaded successfully:", downloadURL);
+      return downloadURL;
     } catch (e) {
-      console.error("Add character error:", e.message, e.stack);
-      alert("Error", `Failed to add character: ${e.message}`);
+      console.error("Image upload error:", e.message);
+      throw e;
     }
+  };
+
+  const handleSubmit = async () => {
+    if (!canSubmit) {
+      console.log("Submit blocked: user not authorized");
+      alert("Access Denied", "Only authorized users can submit characters.");
+      return;
+    }
+    if (!name.trim() && !description.trim()) {
+      console.log("Submit blocked: no name or description provided");
+      alert("Error", "Please provide a name or description.");
+      return;
+    }
+    setUploading(true);
+    try {
+      let imageUrl = editingChar?.imageUrl || PLACEHOLDER_URL;
+      if (imageUri && imageUri !== editingChar?.imageUrl) {
+        if (editingChar && editingChar.imageUrl && editingChar.imageUrl !== PLACEHOLDER_URL) {
+          let path = "";
+          try {
+            console.log("Deleting old image, URL:", editingChar.imageUrl);
+            if (typeof editingChar.imageUrl === "string" && editingChar.imageUrl.includes("/o/")) {
+              const urlParts = editingChar.imageUrl.split("/o/");
+              path = decodeURIComponent(urlParts[1].split("?")[0]);
+              await deleteObject(ref(storage, path)).catch((e) => {
+                if (e.code !== "storage/object-not-found") {
+                  throw e;
+                }
+                console.warn("Old image not found:", path);
+              });
+              console.log("Old image deleted or not found:", path);
+            }
+          } catch (e) {
+            console.error("Delete old image error:", e.message, "Path:", path);
+            alert("Warning", `Failed to delete old image: ${e.message}. Continuing with update.`);
+          }
+        }
+        imageUrl = await uploadImage(imageUri);
+      }
+      const charData = {
+        name: name.trim(),
+        description: description.trim(),
+        imageUrl,
+        clickable: true,
+        borderColor: "#FFFFFF",
+        hardcoded: false,
+      };
+      console.log("Submitting character data:", charData);
+      if (editingChar) {
+        const charRef = doc(db, "books", bookId, "characters", editingChar.id);
+        console.log("Updating Firestore document:", charRef.path);
+        await updateDoc(charRef, charData);
+        console.log("Character updated:", editingChar.id);
+        setChars(chars.map(item => (item.id === editingChar.id ? { id: editingChar.id, ...charData } : item)));
+        alert("Success", "Character updated successfully!");
+      } else {
+        console.log("Adding new Firestore document");
+        const charRef = await addDoc(collection(db, "books", bookId, "characters"), charData);
+        console.log("Character added:", charRef.id);
+        setChars([...(HARDCODED_CHARACTERS[bookId] || []), ...chars.filter(item => !item.hardcoded), { id: charRef.id, ...charData }]);
+        alert("Success", "Character added successfully!");
+      }
+      setName("");
+      setDescription("");
+      setImageUri(null);
+      setEditingChar(null);
+    } catch (e) {
+      console.error("Submit error:", e.message);
+      alert("Error", `Failed to ${editingChar ? "update" : "add"} character: ${e.message}`);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setName("");
+    setDescription("");
+    setImageUri(null);
+    setEditingChar(null);
+    console.log("Form cancelled");
   };
 
   const confirmDeleteChar = async (id) => {
+    if (!canSubmit) {
+      console.log("Delete blocked: user not authorized");
+      alert("Access Denied", "Only authorized users can delete characters!");
+      return;
+    }
     console.log("Deleting character, ID:", id);
     try {
       const char = chars.find(c => c.id === id);
       if (char.hardcoded) {
         console.log("Delete blocked: character is hardcoded");
-        return alert("Error", "Cannot delete hardcoded characters!");
+        alert("Error", "Cannot delete hardcoded characters!");
+        return;
       }
       const charRef = doc(db, "books", bookId, "characters", id);
       const snap = await getDoc(charRef);
       if (!snap.exists()) {
         console.log("Character not found:", id);
-        return alert("Error", "Character not found");
+        alert("Error", "Character not found");
+        return;
       }
       const { imageUrl } = snap.data();
-      await deleteDoc(charRef);
       if (imageUrl && imageUrl !== PLACEHOLDER_URL) {
-        console.log("Deleting image:", imageUrl);
-        const path = imageUrl.split('/o/')[1]?.split('?')[0];
-        if (path) {
-          await deleteObject(ref(storage, path)).catch(e => {
-            if (e.code !== "storage/object-not-found") console.error("Delete image error:", e);
-          });
+        let path = "";
+        try {
+          console.log("Raw imageUrl:", imageUrl);
+          if (typeof imageUrl !== "string" || !imageUrl.includes("/o/")) {
+            console.warn("Invalid imageUrl format:", imageUrl);
+          } else {
+            const urlParts = imageUrl.split("/o/");
+            path = decodeURIComponent(urlParts[1].split("?")[0]);
+            console.log("Attempting to delete image:", path);
+            await deleteObject(ref(storage, path)).catch((e) => {
+              if (e.code !== "storage/object-not-found") {
+                throw e;
+              }
+              console.warn("Image not found in storage:", path);
+            });
+            console.log("Image deleted or not found:", path);
+          }
+        } catch (e) {
+          console.error("Delete image error:", e.message, "Path:", path, "URL:", imageUrl);
+          alert("Warning", `Failed to delete image: ${e.message}. Character will still be deleted.`);
         }
+      } else {
+        console.log("No image to delete or imageUrl is placeholder:", imageUrl);
       }
+      await deleteDoc(charRef);
+      console.init
+      console.log("Character deleted from Firestore:", id);
+      setChars(chars.filter(c => c.id !== id));
       setSelChar(null);
       setDeleteModal({ visible: false, char: null });
       alert("Success", "Character deleted!");
     } catch (e) {
       console.error("Delete character error:", e.message);
-      alert("Error", "Failed to delete: " + e.message);
-    }
-  };
-
-  const startEdit = (char) => {
-    if (char.hardcoded || !canMod) {
-      console.log("Edit blocked: character is hardcoded or user not authorized");
-      return;
-    }
-    console.log("Starting edit for character:", char.id);
-    setEditingCharId(char.id);
-    setEditTitle(char.name);
-    setEditDesc(char.description);
-    setSelChar(char);
-  };
-
-  const saveEdit = async (id) => {
-    if (!editTitle || !editDesc) {
-      console.log("Save edit blocked: missing title or description");
-      return alert("Error", "Enter name and description");
-    }
-    console.log("Saving edit for character:", id, "new name:", editTitle);
-    try {
-      await updateDoc(doc(db, "books", bookId, "characters", id), { name: editTitle, description: editDesc });
-      console.log("Character updated, ID:", id);
-      setEditingCharId(null);
-      setEditTitle("");
-      setEditDesc("");
-      setSelChar(null);
-      alert("Success", "Character updated!");
-    } catch (e) {
-      console.error("Save edit error:", e.message);
-      alert("Error", "Failed to update: " + e.message);
+      alert("Error", `Failed to delete character: ${e.message}`);
     }
   };
 
@@ -210,41 +294,57 @@ const BookDetails = () => {
     }
   };
 
-  const renderChar = (char) => (
-    <View key={char.id} style={styles.charCont}>
-      <TouchableOpacity style={styles.charCard} onPress={() => handleCharPress(char)}>
-        {char.imageUrl === null ? (
-          <View style={styles.noImg} />
-        ) : (
-          <Image
-            source={char.imageUrl && char.imageUrl !== PLACEHOLDER_URL ? { uri: char.imageUrl } : char.image || PLACEHOLDER_IMAGE}
-            style={styles.charImg}
-            defaultSource={PLACEHOLDER_IMAGE}
-          />
+  const startEditing = (char) => {
+    if (char.hardcoded || !canSubmit) {
+      console.log("Edit blocked: character is hardcoded or user not authorized");
+      return;
+    }
+    console.log("Starting edit for character:", char.id);
+    setEditingChar({ id: char.id, name: char.name, description: char.description, imageUrl: char.imageUrl });
+    setSelChar(null);
+  };
+
+  const renderChar = (char) => {
+    const imageSource = char.imageUrl && char.imageUrl !== PLACEHOLDER_URL ? { uri: char.imageUrl } : char.image || PLACEHOLDER_IMAGE;
+    console.log("Rendering character:", { id: char.id, name: char.name, imageSource: JSON.stringify(imageSource) });
+    return (
+      <View key={char.id} style={styles.charCont}>
+        <TouchableOpacity style={[styles.charCard, { borderColor: char.borderColor || "red" }]} onPress={() => handleCharPress(char)}>
+          {char.imageUrl === null ? (
+            <View style={styles.noImg} />
+          ) : (
+            <Image
+              source={imageSource}
+              style={styles.charImg}
+              defaultSource={PLACEHOLDER_IMAGE}
+              resizeMode="cover"
+              onError={(e) => console.error("Image load error for character:", char.id, "Error:", e.nativeEvent.error, "Source:", JSON.stringify(imageSource))}
+            />
+          )}
+          <View style={styles.overlay} />
+          <Text style={styles.charName}>{char.name}</Text>
+        </TouchableOpacity>
+        {!char.hardcoded && (
+          <View style={styles.buttons}>
+            <TouchableOpacity
+              onPress={() => startEditing(char)}
+              style={[styles.edit, !canSubmit && styles.disabled]}
+              disabled={!canSubmit}
+            >
+              <Text>Edit</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setDeleteModal({ visible: true, char: { id: char.id, name: char.name } })}
+              style={[styles.delete, !canSubmit && styles.disabled]}
+              disabled={!canSubmit}
+            >
+              <Text>Delete</Text>
+            </TouchableOpacity>
+          </View>
         )}
-        <View style={styles.overlay} />
-        <Text style={styles.charName}>{char.name}</Text>
-      </TouchableOpacity>
-      {!char.hardcoded && (
-        <View style={styles.buttons}>
-          <TouchableOpacity
-            onPress={() => startEdit(char)}
-            style={[styles.edit, !canMod && styles.disabled]}
-            disabled={!canMod}
-          >
-            <Text>Edit</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setDeleteModal({ visible: true, char: { id: char.id, name: char.name } })}
-            style={[styles.delete, !canMod && styles.disabled]}
-            disabled={!canMod}
-          >
-            <Text>Delete</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-    </View>
-  );
+      </View>
+    );
+  };
 
   return (
     <ImageBackground
@@ -264,47 +364,72 @@ const BookDetails = () => {
         <ScrollView contentContainerStyle={styles.scroll}>
           <Text style={styles.title}>{bookTitle} - Characters</Text>
           <View style={styles.form}>
+            <Text style={styles.formHeader}>{editingChar ? "Edit Character" : "Add New Character"}</Text>
             <TextInput
               style={styles.input}
-              placeholder="Name"
-              value={title}
-              onChangeText={setTitle}
-              editable={true}
+              placeholder="Character Name"
+              placeholderTextColor="#888"
+              value={name}
+              onChangeText={setName}
+              editable={canSubmit}
             />
             <TextInput
-              style={[styles.input, styles.descInput]}
+              style={[styles.input, styles.textArea]}
               placeholder="Description"
-              value={desc}
-              onChangeText={setDesc}
+              placeholderTextColor="#888"
+              value={description}
+              onChangeText={setDescription}
               multiline
-              editable={true}
+              numberOfLines={4}
+              editable={canSubmit}
             />
             <View style={styles.imgOpts}>
               <TouchableOpacity
-                onPress={pickImg}
-                style={[styles.upload, !canUploadImage && styles.disabled]}
+                style={[styles.imagePicker, !canUploadImage && styles.disabled]}
+                onPress={pickImage}
                 disabled={!canUploadImage}
               >
-                <Text>{canUploadImage ? (image ? "Selected" : "Upload") : "Restricted"}</Text>
+                <Text style={styles.imagePickerText}>{imageUri ? "Change Image" : "Pick an Image"}</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => addChar(false)}
                 style={[styles.noImgBtn]}
-                disabled={false}
+                onPress={skipImage}
               >
-                <Text>No Image</Text>
+                <Text style={styles.buttonText}>No Image</Text>
               </TouchableOpacity>
             </View>
-            {image && <Image source={{ uri: image }} style={styles.preview} />}
-            <TouchableOpacity
-              onPress={() => addChar()}
-              style={[styles.add]}
-              disabled={false}
-            >
-              <Text>Add</Text>
-            </TouchableOpacity>
-            {(!canMod || !canUploadImage) && (
-              <Text style={styles.denied}>Only authorized users can upload images.</Text>
+            {imageUri ? (
+              <Image
+                source={{ uri: imageUri }}
+                style={styles.previewImage}
+                resizeMode="contain"
+                onError={(e) => console.error("Preview image load error:", e.nativeEvent.error, "URI:", imageUri)}
+              />
+            ) : editingChar && editingChar.imageUrl && editingChar.imageUrl !== PLACEHOLDER_URL ? (
+              <Image
+                source={{ uri: editingChar.imageUrl }}
+                style={styles.previewImage}
+                resizeMode="contain"
+                onError={(e) => console.error("Editing preview image load error:", e.nativeEvent.error, "URI:", editingChar.imageUrl)}
+              />
+            ) : null}
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={[styles.submitButton, !canSubmit && styles.disabled]}
+                onPress={handleSubmit}
+                disabled={!canSubmit || uploading}
+              >
+                <Text style={styles.buttonText}>{uploading ? "Submitting..." : editingChar ? "Update" : "Submit"}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={handleCancel}
+              >
+                <Text style={styles.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+            {(!canSubmit || !canUploadImage) && (
+              <Text style={styles.denied}>Only authorized users can upload images or edit characters.</Text>
             )}
           </View>
           <ScrollView horizontal contentContainerStyle={styles.hScroll} showsHorizontalScrollIndicator={false}>
@@ -318,50 +443,24 @@ const BookDetails = () => {
           onRequestClose={() => {
             console.log("Closing character preview modal");
             setSelChar(null);
-            setEditingCharId(null);
           }}
         >
           <View style={styles.modal}>
             <ScrollView style={styles.preview}>
-              {selChar && (editingCharId === selChar.id ? (
-                <>
-                  <TextInput
-                    style={styles.editName}
-                    value={editTitle}
-                    onChangeText={setEditTitle}
-                    autoFocus
-                    editable={canMod && !selChar.hardcoded}
-                  />
-                  <TextInput
-                    style={styles.editDesc}
-                    value={editDesc}
-                    onChangeText={setEditDesc}
-                    multiline
-                    editable={canMod && !selChar.hardcoded}
-                  />
-                  <TouchableOpacity
-                    onPress={() => saveEdit(selChar.id)}
-                    style={[styles.save, !canMod && styles.disabled]}
-                    disabled={!canMod || selChar.hardcoded}
-                  >
-                    <Text>Save</Text>
-                  </TouchableOpacity>
-                </>
-              ) : (
+              {selChar && (
                 <>
                   <Text style={styles.previewName}>{selChar.name}</Text>
                   <Text style={styles.previewDesc}>{selChar.description}</Text>
                 </>
-              ))}
+              )}
               <TouchableOpacity
                 onPress={() => {
                   console.log("Closing character preview modal");
                   setSelChar(null);
-                  setEditingCharId(null);
                 }}
                 style={styles.close}
               >
-                <Text>Close</Text>
+                <Text style={styles.buttonText}>Close</Text>
               </TouchableOpacity>
             </ScrollView>
           </View>
@@ -404,17 +503,93 @@ const styles = StyleSheet.create({
   back: { position: "absolute", top: 10, left: 10, backgroundColor: "rgba(118,11,11,0.8)", padding: 8, borderRadius: 8, zIndex: 10 },
   scroll: { paddingBottom: 20 },
   title: { fontSize: 24, fontWeight: "bold", color: "#FFF", textAlign: "center", marginBottom: 10 },
-  form: { padding: 20, alignItems: "center" },
-  input: { backgroundColor: "rgba(255,255,255,0.9)", width: "90%", padding: 10, borderRadius: 5, marginBottom: 10 },
-  descInput: { height: 80, textAlignVertical: "top" },
-  imgOpts: { flexDirection: "row", justifyContent: "space-between", width: "90%", marginBottom: 10 },
-  upload: { backgroundColor: "#4CAF50", padding: 10, borderRadius: 5, flex: 1, marginRight: 5 },
-  noImgBtn: { backgroundColor: "#F44336", padding: 10, borderRadius: 5, flex: 1, marginLeft: 5 },
-  preview: { width: 100, height: 100, borderRadius: 5, marginBottom: 10, resizeMode: "cover" },
-  add: { backgroundColor: "#2196F3", padding: 10, borderRadius: 5 },
+  form: {
+    backgroundColor: "#222",
+    padding: 20,
+    borderRadius: 10,
+    margin: 20,
+    width: Math.min(Dimensions.get("window").width * 0.9, 600),
+    alignSelf: "center",
+  },
+  formHeader: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#FFF",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  input: {
+    backgroundColor: "#333",
+    color: "#FFF",
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 15,
+    fontSize: 16,
+  },
+  textArea: {
+    height: 100,
+    textAlignVertical: "top",
+  },
+  imgOpts: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 15,
+  },
+  imagePicker: {
+    backgroundColor: "#555",
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginRight: 5,
+    alignItems: "center",
+  },
+  noImgBtn: {
+    backgroundColor: "#F44336",
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginLeft: 5,
+    alignItems: "center",
+  },
+  imagePickerText: {
+    color: "#FFF",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  previewImage: {
+    width: "100%",
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 15,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  submitButton: {
+    backgroundColor: "#FFC107",
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginRight: 10,
+    alignItems: "center",
+  },
+  cancelButton: {
+    backgroundColor: "#F44336",
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginLeft: 10,
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#FFF",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
   hScroll: { paddingHorizontal: 20, paddingVertical: 10 },
   charCont: { marginHorizontal: 10, alignItems: "center" },
-  charCard: { width: Math.min(350, Dimensions.get("window").width - 50), height: 450, borderRadius: 15, overflow: "hidden", backgroundColor: "rgba(0,0,0,0.7)", borderColor: "red", borderWidth: 2 },
+  charCard: { width: Math.min(350, Dimensions.get("window").width - 50), height: 450, borderRadius: 15, overflow: "hidden", backgroundColor: "rgba(0,0,0,0.7)", borderWidth: 2 },
   charImg: { width: "100%", height: "100%", resizeMode: "cover" },
   noImg: { width: "100%", height: "100%", backgroundColor: "rgba(0,0,0,0.9)" },
   overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "transparent", zIndex: 1 },
@@ -426,9 +601,6 @@ const styles = StyleSheet.create({
   preview: { width: "90%", maxHeight: Dimensions.get("window").height * 0.7, backgroundColor: "rgba(72,63,63,0.95)", borderRadius: 15, padding: 20 },
   previewName: { fontSize: 22, fontWeight: "bold", color: "white", textAlign: "center", marginBottom: 10 },
   previewDesc: { fontSize: 16, color: "#fff7f7", textAlign: "center", marginBottom: 20 },
-  editName: { fontSize: 22, fontWeight: "bold", color: "#ffffff", textAlign: "center", backgroundColor: "rgba(92,86,86,0.95)", padding: 10, borderRadius: 5, marginBottom: 10 },
-  editDesc: { fontSize: 16, color: "#ffffff", textAlign: "center", backgroundColor: "rgba(100,95,95,0.95)", padding: 10, borderRadius: 5, marginBottom: 20, minHeight: 100, textAlignVertical: "top" },
-  save: { backgroundColor: "#4CAF50", padding: 10, borderRadius: 5, alignSelf: "center", marginBottom: 10 },
   close: { backgroundColor: "#2196F3", padding: 10, borderRadius: 5, alignSelf: "center" },
   modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.7)", justifyContent: "center", alignItems: "center" },
   modalContent: { backgroundColor: "rgba(255,255,255,0.9)", padding: 20, borderRadius: 10, alignItems: "center" },
