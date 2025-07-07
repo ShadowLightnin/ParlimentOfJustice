@@ -33,11 +33,13 @@ const legionImages = {
   'Spencer': { image: require('../../assets/Armor/SpencerHen.jpg'), clickable: true },
   'Sanford Duncan': { image: require('../../assets/Armor/Sanford.jpg'), clickable: true },
   'Magic Matt': { image: require('../../assets/Armor/MagicMatt.jpg'), clickable: true },
-  // 'John': { image: require('../../assets/Armor/John.jpg'), clickable: true },  
-  // 'Emery': { image: require('../../assets/Armor/Emery.jpg'), clickable: true },
-  // 'Mason': { image: require('../../assets/Armor/Mason.jpg'), clickable: true },
-  // 'Xavier': { image: require('../../assets/Armor/Xavier.jpg'), clickable: true },
-  // 'Josh Davis': { image: require('../../assets/Armor/JoshD.jpg'), clickable: true },
+  'Kanyon': { image: require('../../assets/Armor/Kanyon.jpg'), clickable: true }, 
+  'John': { image: require('../../assets/Armor/JohnHS.jpg'), clickable: true },  
+  'Quinton': { image: require('../../assets/Armor/Quinton.jpg'), clickable: true },  
+  'Emery': { image: require('../../assets/Armor/Emery.jpg'), clickable: true },
+  'Mason': { image: require('../../assets/Armor/MasonHS.jpg'), clickable: true },
+  'Xavier': { image: require('../../assets/Armor/Xavier.jpg'), clickable: true },
+  'Josh Davis': { image: require('../../assets/Armor/JoshD.jpg'), clickable: true },
   
   
   'Will Knight': { image: require('../../assets/Armor/WillK.jpg'), clickable: true },
@@ -53,9 +55,7 @@ const legionImages = {
   'Ryan': { image: require('../../assets/Armor/RyanMC.jpg'), clickable: true },
   'Carson': { image: require('../../assets/Armor/Carson.jpg'), clickable: true },
   'Sydney': { image: require('../../assets/Armor/Sydney.jpg'), clickable: true },
-  'Natalia': { image: require('../../assets/Armor/Natalia.jpg'), clickable: true }, 
   'Natalie': { image: require('../../assets/Armor/Natalie.jpg'), clickable: true }, 
-  'Kanyon': { image: require('../../assets/Armor/Kanyon.jpg'), clickable: true }, 
   
   
   'Josh Noble': { image: require('../../assets/Armor/JoshNoble.jpg'), clickable: true },

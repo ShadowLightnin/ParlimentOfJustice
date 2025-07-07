@@ -53,7 +53,9 @@ export const memberCategories = [
       { name: 'Kinnley Cline', codename: 'Harmony', screen: '' },
       { name: 'Sanford Duncan', codename: 'Thunderbolt', screen: '' },
       { name: 'Magic Matt', codename: 'Illusionist', screen: '' },
+      { name: 'Kanyon', codename: '', screen: '' },
       { name: 'John', codename: '', screen: '' },
+      { name: 'Quinton', codename: '', screen: '' },
       //fallen members by Sams hand
       { name: 'Emery', codename: '', screen: '' },
       { name: 'Mason', codename: '', screen: '' },
@@ -77,9 +79,7 @@ export const memberCategories = [
       { name: 'Ryan', codename: '', screen: '' },
       { name: 'Carson', codename: '', screen: '' },
       { name: 'Sydney', codename: '', screen: '' },
-      { name: 'Natalia', codename: '', screen: '' },
       { name: 'Natalie', codename: '', screen: '' },
-      { name: 'Kanyon', codename: '', screen: '' },
       //fallen members by Sams hand
       // { name: 'Carter Olsen', codename: '', screen: '' },
       // { name: 'Steven', codename: '', screen: '' },

@@ -34,6 +34,7 @@ const verticalSpacing = isDesktop ? 50 : 20;
 // Hardcoded villains data with images, red border color
 const hardcodedVillains = [
   { id: 'villain-1', name: 'BlackOut', screen: '', image: require('../../assets/Villains/BlackOut.jpg'), clickable: true, borderColor: 'red', hardcoded: true, description: "Red Murcury's personal assassin." },
+  { id: 'villain-2', name: 'Void Consumer', screen: '', image: require('../../assets/Villains/VoidConsumer.jpg'), clickable: true, borderColor: 'red', hardcoded: true, description: "Her hunger is endless." },
 ];
 
 const ALLOWED_EMAILS = ["will@test.com", "c1wcummings@gmail.com"];
