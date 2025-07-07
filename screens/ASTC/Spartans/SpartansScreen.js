@@ -117,11 +117,9 @@ const SpartansScreen = () => {
   const [backgroundImage, setBackgroundImage] = useState(
     backgroundImages[Math.floor(Math.random() * backgroundImages.length)]
   );
-  const [currentVehicleIndex, setCurrentVehicleIndex] = useState(0);
 
   useEffect(() => {
     if (isFocused) {
-      console.log("Screen focused, setting random background");
       setBackgroundImage(backgroundImages[Math.floor(Math.random() * backgroundImages.length)]);
     }
   }, [isFocused]);
@@ -129,35 +127,41 @@ const SpartansScreen = () => {
   const isDesktop = SCREEN_WIDTH > 600;
   const cardSize = isDesktop ? 320 : 100;
   const cardSpacing = isDesktop ? 120 : 30;
-  const vehicleCardWidth = isDesktop ? Math.min(SCREEN_WIDTH, 600) : SCREEN_WIDTH;
+  const horizontalSpacing = isDesktop ? 40 : 20;
+  const verticalSpacing = isDesktop ? 50 : 20;
+  const vehicleCardSizes = {
+    desktop: { width: 400, height: 600 },
+    mobile: { width: SCREEN_WIDTH * 0.7, height: 400 },
+  };
 
   const goToChat = () => {
-    console.log("Navigating to TeamChat");
     navigation.navigate('TeamChat');
   };
 
-  const handleScroll = (event) => {
-    const contentOffsetX = event.nativeEvent.contentOffset.x;
-    const index = Math.round(contentOffsetX / vehicleCardWidth);
-    setCurrentVehicleIndex(index);
-    console.log("Scrolled to vehicle index:", index, "Offset:", contentOffsetX, "CardWidth:", vehicleCardWidth);
-  };
-
-  const renderVehicle = (vehicle, index) => {
+  const renderVehicle = (vehicle) => {
     const imageSource = vehicle.image || PLACEHOLDER_IMAGE;
-    console.log("Rendering vehicle:", { id: vehicle.id, name: vehicle.name, imageSource: JSON.stringify(imageSource) });
     return (
-      <View key={vehicle.id} style={[styles.vehicleCard, { width: vehicleCardWidth }]}>
+      <View
+        key={vehicle.id}
+        style={[
+          styles.vehicleCard,
+          {
+            width: isDesktop ? vehicleCardSizes.desktop.width : vehicleCardSizes.mobile.width,
+            height: isDesktop ? vehicleCardSizes.desktop.height : vehicleCardSizes.mobile.height,
+            marginRight: isDesktop ? 40 : 20,
+          },
+        ]}
+      >
         <Image
           source={imageSource}
           style={styles.vehicleImage}
           resizeMode="cover"
           defaultSource={PLACEHOLDER_IMAGE}
+          fadeDuration={0}
+          cache="force-cache"
           onError={(e) => console.error("Vehicle image load error:", vehicle.id, "Error:", e.nativeEvent.error, "Source:", JSON.stringify(imageSource))}
         />
         <View style={styles.vehicleOverlay} />
-        <Text style={styles.vehicleName}>{vehicle.name || 'Unnamed Vehicle'}</Text>
-        <Text style={styles.vehicleDescription}>{vehicle.description || 'No description available'}</Text>
       </View>
     );
   };
@@ -177,7 +181,6 @@ const SpartansScreen = () => {
             <TouchableOpacity
               style={styles.backButton}
               onPress={() => {
-                console.log("Navigating back");
                 navigation.goBack();
               }}
             >
@@ -190,7 +193,7 @@ const SpartansScreen = () => {
           </View>
 
           {/* Grid Layout */}
-          <View style={[styles.grid, { gap: cardSpacing, minHeight: cardSize * 1.6 * 3 }]}>
+          <View style={[styles.grid, { gap: cardSpacing, minHeight: cardSize * 1.6 * 2.5 }]}>
             {[0, 1, 2].map((row) => (
               <View key={row} style={[styles.row, { gap: cardSpacing }]}>
                 {[0, 1, 2].map((col) => {
@@ -209,7 +212,6 @@ const SpartansScreen = () => {
                       ]}
                       onPress={() => {
                         if (member?.clickable) {
-                          console.log("Navigating to member screen:", member.screen);
                           navigation.navigate(member.screen);
                         }
                       }}
@@ -221,6 +223,8 @@ const SpartansScreen = () => {
                             source={member.image}
                             style={styles.characterImage}
                             resizeMode="cover"
+                            fadeDuration={0}
+                            cache="force-cache"
                             onError={(e) => console.error("Member image load error:", member.name, "Error:", e.nativeEvent.error)}
                           />
                           <View style={styles.transparentOverlay} />
@@ -237,33 +241,17 @@ const SpartansScreen = () => {
 
           {/* Vehicle Bay */}
           <View style={styles.vehicleBay}>
-            <Text style={styles.vehicleHeader}>Vehicle Bay</Text>
+            <View style={styles.vehicleHeaderWrapper}>
+              <Text style={styles.vehicleHeader}>Vehicle Bay</Text>
+            </View>
             <View style={styles.vehicleWindow}>
               <ScrollView
                 horizontal
-                pagingEnabled
-                showsHorizontalScrollIndicator={false}
-                snapToInterval={vehicleCardWidth}
-                snapToAlignment="start"
-                decelerationRate="fast"
-                scrollEventThrottle={50}
-                nestedScrollEnabled={true}
-                onScroll={handleScroll}
-                contentContainerStyle={styles.vehicleScroll}
+                contentContainerStyle={[styles.vehicleScroll, { paddingVertical: isDesktop ? 50 : 20 }]}
+                showsHorizontalScrollIndicator={true}
               >
-                {HARDCODED_VEHICLES.map((vehicle, index) => renderVehicle(vehicle, index))}
+                {HARDCODED_VEHICLES.map((vehicle) => renderVehicle(vehicle))}
               </ScrollView>
-            </View>
-            <View style={styles.dotContainer}>
-              {HARDCODED_VEHICLES.map((_, index) => (
-                <View
-                  key={index}
-                  style={[
-                    styles.dot,
-                    currentVehicleIndex === index ? styles.activeDot : styles.inactiveDot,
-                  ]}
-                />
-              ))}
             </View>
           </View>
         </ScrollView>
@@ -310,13 +298,17 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   header: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#FFF',
     textAlign: 'center',
-    textShadowColor: '#00b3ff',
+    textShadowColor: 'yellow',
+    textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 15,
-    flex: 1,
+    textShadow: '0px 0px 15px yellow',
+    backgroundColor: 'transparent',
+    zIndex: 2,
+    padding: 10,
   },
   chatButton: {
     padding: 10,
@@ -335,17 +327,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   card: {
-    backgroundColor: 'rgba(28, 28, 28, 0.9)', // Slightly transparent for better contrast
+    backgroundColor: 'rgba(28, 28, 28, 0.9)',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 8,
-    shadowColor: '#00b3ff',
-    shadowOpacity: 0.8,
-    shadowRadius: 10,
-    elevation: 5,
     padding: 5,
     borderWidth: 1,
-    borderColor: 'rgba(0, 179, 255, 0.3)', // Subtle border for definition
+    borderColor: 'rgba(0, 179, 255, 0.3)',
   },
   characterImage: {
     width: '100%',
@@ -373,7 +361,6 @@ const styles = StyleSheet.create({
   },
   disabledCard: {
     backgroundColor: '#444',
-    shadowColor: 'transparent',
     borderColor: 'transparent',
   },
   vehicleBay: {
@@ -382,66 +369,52 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
   },
+  vehicleHeaderWrapper: {
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+    width: '100%',
+  },
+  vehicleHeader: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#FFF',
+    textAlign: 'center',
+    textShadowColor: 'yellow',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 15,
+    textShadow: '0px 0px 15px yellow',
+    backgroundColor: 'transparent',
+    zIndex: 2,
+    padding: 10,
+  },
   vehicleWindow: {
     width: '100%',
     overflow: 'hidden',
   },
   vehicleScroll: {
     flexDirection: 'row',
+    flexGrow: 1,
+    width: 'auto',
+    alignItems: 'center',
   },
   vehicleCard: {
-    backgroundColor: 'rgba(28, 28, 28, 0.9)', // Match member card
-    borderRadius: 8,
-    shadowColor: '#00b3ff',
-    shadowOpacity: 0.8,
-    shadowRadius: 10,
-    elevation: 5,
-    padding: 10,
+    backgroundColor: 'rgba(28, 28, 28, 0.7)',
+    borderRadius: 15,
+    padding: 15,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: 'rgba(0, 179, 255, 0.3)',
   },
   vehicleImage: {
     width: '100%',
-    height: 200,
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
+    height: '100%',
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
   },
   vehicleOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0)',
     zIndex: 1,
-  },
-  vehicleName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 10,
-  },
-  vehicleDescription: {
-    fontSize: 14,
-    color: '#aaa',
-    textAlign: 'center',
-    marginTop: 5,
-    paddingHorizontal: 10,
-  },
-  dotContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 10,
-  },
-  dot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    marginHorizontal: 5,
-  },
-  activeDot: {
-    backgroundColor: '#00b3ff',
-  },
-  inactiveDot: {
-    backgroundColor: '#666',
   },
 });
 
