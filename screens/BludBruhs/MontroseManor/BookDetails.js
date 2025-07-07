@@ -431,6 +431,13 @@ const BookDetails = () => {
             <ScrollView style={styles.preview}>
               {selChar && (
                 <>
+                  <Image
+                    source={selChar.imageUrl && selChar.imageUrl !== PLACEHOLDER_URL ? { uri: selChar.imageUrl } : selChar.image || PLACEHOLDER_IMAGE}
+                    style={styles.previewCharImage}
+                    resizeMode="contain"
+                    defaultSource={PLACEHOLDER_IMAGE}
+                    onError={(e) => console.error("Preview modal image load error:", e.nativeEvent.error, "Source:", selChar.imageUrl || JSON.stringify(selChar.image))}
+                  />
                   <Text style={styles.previewName}>{selChar.name}</Text>
                   <Text style={styles.previewDesc}>{selChar.description}</Text>
                 </>
@@ -580,7 +587,20 @@ const styles = StyleSheet.create({
   edit: { backgroundColor: "#FFC107", padding: 5, borderRadius: 5, flex: 1, marginRight: 5 },
   delete: { backgroundColor: "#F44336", padding: 5, borderRadius: 5, flex: 1, marginLeft: 5 },
   modal: { flex: 1, backgroundColor: "rgba(0,0,0,0.8)", justifyContent: "center", alignItems: "center" },
-  preview: { width: "90%", maxHeight: Dimensions.get("window").height * 0.7, backgroundColor: "rgba(72,63,63,0.95)", borderRadius: 15, padding: 20 },
+  preview: { 
+    width: "90%", 
+    maxHeight: Dimensions.get("window").height * 0.8, 
+    backgroundColor: "rgba(72,63,63,0.95)", 
+    borderRadius: 15, 
+    padding: 20 
+  },
+  previewCharImage: {
+    width: "100%",
+    height: 300,
+    borderRadius: 10,
+    marginBottom: 15,
+    resizeMode: "contain",
+  },
   previewName: { fontSize: 22, fontWeight: "bold", color: "white", textAlign: "center", marginBottom: 10 },
   previewDesc: { fontSize: 16, color: "#fff7f7", textAlign: "center", marginBottom: 20 },
   close: { backgroundColor: "#2196F3", padding: 10, borderRadius: 5, alignSelf: "center" },

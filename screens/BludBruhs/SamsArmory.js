@@ -24,6 +24,7 @@ const RESTRICT_ACCESS = true;
 
 const COLLECTIONS = [
   { label: 'Sam Armory', value: 'samArmory' },
+  { label: 'Evil Sam Armory', value: 'evilSamArmory' },
   { label: 'Ranger Squad', value: 'rangerSquad' },
   { label: 'Rolling Thunder', value: 'members' },
 ];
