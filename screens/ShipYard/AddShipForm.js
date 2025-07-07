@@ -12,7 +12,7 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import { db, storage, auth } from '../../lib/firebase';
 import { doc, setDoc, addDoc, collection } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const isDesktop = SCREEN_WIDTH > 600;
@@ -40,6 +40,7 @@ const AddShipForm = ({
       setName(editingShip.name || '');
       setDescription(editingShip.description || '');
       setImageUri(editingShip.imageUrl || null);
+      console.log('Editing ship loaded:', editingShip);
     } else {
       setName('');
       setDescription('');
@@ -52,22 +53,27 @@ const AddShipForm = ({
       Alert.alert('Access Denied', 'Only authorized users can upload images.');
       return;
     }
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission Denied', 'Sorry, we need camera roll permissions to make this work!');
-      return;
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [2, 3], // Matches ShipYardScreen.js card aspect ratio (300x450, 200x300)
-      quality: 0.5,
-    });
-    if (!result.canceled && result.assets) {
-      setImageUri(result.assets[0].uri);
-      console.log('Image picked:', result.assets[0].uri);
-    } else {
-      console.log('Image picker canceled');
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Denied', 'Sorry, we need camera roll permissions to make this work!');
+        return;
+      }
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [2, 3],
+        quality: 0.5,
+      });
+      if (!result.canceled && result.assets) {
+        setImageUri(result.assets[0].uri);
+        console.log('Image picked:', result.assets[0].uri);
+      } else {
+        console.log('Image picker canceled');
+      }
+    } catch (e) {
+      console.error('Pick image error:', e.message);
+      Alert.alert('Error', `Failed to pick image: ${e.message}`);
     }
   };
 
@@ -85,7 +91,21 @@ const AddShipForm = ({
       return downloadURL;
     } catch (e) {
       console.error('Image upload error:', e.message);
-      throw e;
+      throw new Error(`Image upload failed: ${e.message}`);
+    }
+  };
+
+  const deleteOldImage = async (imageUrl) => {
+    if (!imageUrl || imageUrl === 'placeholder') return;
+    try {
+      const path = decodeURIComponent(imageUrl.split('/o/')[1].split('?')[0]);
+      await deleteObject(ref(storage, path));
+      console.log('Old image deleted:', path);
+    } catch (e) {
+      if (e.code !== 'storage/object-not-found') {
+        console.error('Delete old image error:', e.message);
+        Alert.alert('Warning', `Failed to delete old image: ${e.message}. Continuing with update.`);
+      }
     }
   };
 
@@ -94,29 +114,34 @@ const AddShipForm = ({
       Alert.alert('Access Denied', 'Only authorized users can submit ships.');
       return;
     }
-    if (!name.trim() && !description.trim()) {
-      Alert.alert('Error', 'Please provide a name or description.');
+    if (!name.trim()) {
+      Alert.alert('Error', 'Please provide a ship name.');
       return;
     }
     setUploading(true);
     try {
-      let imageUrl = 'placeholder';
-      if (imageUri) {
+      let imageUrl = editingShip ? editingShip.imageUrl || 'placeholder' : 'placeholder';
+      let oldImageUrl = editingShip ? editingShip.imageUrl : null;
+      if (imageUri && imageUri !== oldImageUrl) {
         imageUrl = await uploadImage(imageUri);
+        if (oldImageUrl && oldImageUrl !== 'placeholder') {
+          await deleteOldImage(oldImageUrl);
+        }
       }
       const shipData = {
         name: name.trim(),
         description: description.trim(),
         imageUrl,
         clickable: true,
-        borderColor: 'yellow', // Matches ShipYardScreen.js
+        borderColor: 'yellow',
         hardcoded: false,
       };
+      console.log('Submitting ship data:', shipData);
       if (editingShip) {
         const shipRef = doc(db, collectionPath, editingShip.id);
         await setDoc(shipRef, shipData, { merge: true });
         console.log('Ship updated:', editingShip.id);
-        setShips(ships.map(item => (item.id === editingShip.id ? { ...item, ...shipData } : item)));
+        setShips(ships.map(item => (item.id === editingShip.id ? { id: item.id, ...shipData } : item)));
         Alert.alert('Success', 'Ship updated successfully!');
       } else {
         const shipRef = await addDoc(collection(db, collectionPath), shipData);
@@ -141,6 +166,7 @@ const AddShipForm = ({
     setDescription('');
     setImageUri(null);
     setEditingShip(null);
+    console.log('Form canceled');
   };
 
   return (

@@ -11,8 +11,8 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { db, storage, auth } from '../../lib/firebase';
-import { doc, setDoc, addDoc, collection } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { doc, setDoc, addDoc, collection, deleteObject } from 'firebase/firestore';
+import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const isDesktop = SCREEN_WIDTH > 600;
@@ -40,6 +40,7 @@ const RecruitForm = ({
       setName(editingInfantry.name || '');
       setDescription(editingInfantry.description || '');
       setImageUri(editingInfantry.imageUrl || null);
+      console.log('Editing infantry loaded:', editingInfantry);
     } else {
       setName('');
       setDescription('');
@@ -52,22 +53,27 @@ const RecruitForm = ({
       Alert.alert('Access Denied', 'Only authorized users can upload images.');
       return;
     }
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission Denied', 'Sorry, we need camera roll permissions to make this work!');
-      return;
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [2, 3], // Matches ShipYardScreen.js card aspect ratio
-      quality: 0.5,
-    });
-    if (!result.canceled && result.assets) {
-      setImageUri(result.assets[0].uri);
-      console.log('Image picked:', result.assets[0].uri);
-    } else {
-      console.log('Image picker canceled');
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Denied', 'Sorry, we need camera roll permissions to make this work!');
+        return;
+      }
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [2, 3],
+        quality: 0.5,
+      });
+      if (!result.canceled && result.assets) {
+        setImageUri(result.assets[0].uri);
+        console.log('Image picked:', result.assets[0].uri);
+      } else {
+        console.log('Image picker canceled');
+      }
+    } catch (e) {
+      console.error('Pick image error:', e.message);
+      Alert.alert('Error', `Failed to pick image: ${e.message}`);
     }
   };
 
@@ -78,14 +84,28 @@ const RecruitForm = ({
       const blob = await response.blob();
       const timestamp = Date.now();
       const random = Math.random().toString(36).substring(2, 15);
-      const imageRef = ref(storage, `infantry/${timestamp}_${random}.jpg`);
+      const imageRef = storageRef(storage, `infantry/${timestamp}_${random}.jpg`);
       await uploadBytes(imageRef, blob);
       const downloadURL = await getDownloadURL(imageRef);
       console.log('Image uploaded:', downloadURL);
       return downloadURL;
     } catch (e) {
       console.error('Image upload error:', e.message);
-      throw e;
+      throw new Error(`Image upload failed: ${e.message}`);
+    }
+  };
+
+  const deleteOldImage = async (imageUrl) => {
+    if (!imageUrl || imageUrl === 'placeholder') return;
+    try {
+      const path = decodeURIComponent(imageUrl.split('/o/')[1].split('?')[0]);
+      await deleteObject(storageRef(storage, path));
+      console.log('Old image deleted:', path);
+    } catch (e) {
+      if (e.code !== 'storage/object-not-found') {
+        console.error('Delete old image error:', e.message);
+        Alert.alert('Warning', `Failed to delete old image: ${e.message}. Continuing with update.`);
+      }
     }
   };
 
@@ -94,29 +114,34 @@ const RecruitForm = ({
       Alert.alert('Access Denied', 'Only authorized users can submit infantry.');
       return;
     }
-    if (!name.trim() && !description.trim()) {
-      Alert.alert('Error', 'Please provide a name or description.');
+    if (!name.trim()) {
+      Alert.alert('Error', 'Please provide an infantry name.');
       return;
     }
     setUploading(true);
     try {
-      let imageUrl = 'placeholder';
-      if (imageUri) {
+      let imageUrl = editingInfantry ? editingInfantry.imageUrl || 'placeholder' : 'placeholder';
+      let oldImageUrl = editingInfantry ? editingInfantry.imageUrl : null;
+      if (imageUri && imageUri !== oldImageUrl) {
         imageUrl = await uploadImage(imageUri);
+        if (oldImageUrl && oldImageUrl !== 'placeholder') {
+          await deleteOldImage(oldImageUrl);
+        }
       }
       const infantryData = {
         name: name.trim(),
         description: description.trim(),
         imageUrl,
         clickable: true,
-        borderColor: '#FFFFFF', // Matches original RecruitForm.js
+        borderColor: '#FFFFFF',
         hardcoded: false,
       };
+      console.log('Submitting infantry data:', infantryData);
       if (editingInfantry) {
         const infantryRef = doc(db, collectionPath, editingInfantry.id);
         await setDoc(infantryRef, infantryData, { merge: true });
         console.log('Infantry updated:', editingInfantry.id);
-        setInfantry(infantry.map(item => (item.id === editingInfantry.id ? { ...item, ...infantryData } : item)));
+        setInfantry(infantry.map(item => (item.id === editingInfantry.id ? { id: item.id, ...infantryData } : item)));
         Alert.alert('Success', 'Infantry updated successfully!');
       } else {
         const infantryRef = await addDoc(collection(db, collectionPath), infantryData);
@@ -141,6 +166,7 @@ const RecruitForm = ({
     setDescription('');
     setImageUri(null);
     setEditingInfantry(null);
+    console.log('Form canceled');
   };
 
   return (

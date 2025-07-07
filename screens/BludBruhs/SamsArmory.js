@@ -13,8 +13,8 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { db, storage, auth } from '../../lib/firebase';
-import { doc, setDoc, addDoc, collection } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { doc, setDoc, addDoc, collection, deleteObject } from 'firebase/firestore';
+import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const isDesktop = SCREEN_WIDTH > 600;
@@ -41,22 +41,35 @@ const SamsArmory = ({
   const [imageUri, setImageUri] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [selectedCollection, setSelectedCollection] = useState('samArmory');
-  const canSubmit = RESTRICT_ACCESS ? auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
+  const canSubmit = RESTRICT_ACCESS ? auth.currentUser?.email && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
 
   useEffect(() => {
     console.log('Current user:', auth.currentUser?.email, 'Can submit:', canSubmit);
+    console.log('Friend array:', friend.map(f => ({ id: f.id, name: f.name, collectionPath: f.collectionPath })));
     if (editingFriend) {
+      const collectionPath = editingFriend.collectionPath && COLLECTIONS.some(c => c.value === editingFriend.collectionPath) 
+        ? editingFriend.collectionPath 
+        : 'samArmory';
+      if (!editingFriend.collectionPath) {
+        console.warn('editingFriend missing collectionPath, defaulting to samArmory:', {
+          id: editingFriend.id,
+          name: editingFriend.name || editingFriend.codename,
+          imageUrl: editingFriend.imageUrl,
+          description: editingFriend.description,
+          collectionPath: editingFriend.collectionPath,
+        });
+      }
       setName(editingFriend.name || editingFriend.codename || '');
       setDescription(editingFriend.description || '');
       setImageUri(editingFriend.imageUrl || null);
-      setSelectedCollection(editingFriend.collectionPath || 'samArmory'); // Use collectionPath from editingFriend if available
+      setSelectedCollection(collectionPath);
       console.log('Editing friend loaded:', {
         id: editingFriend.id,
         name: editingFriend.name,
         codename: editingFriend.codename,
         imageUrl: editingFriend.imageUrl,
         description: editingFriend.description,
-        collectionPath: editingFriend.collectionPath,
+        collectionPath,
       });
     } else {
       setName('');
@@ -94,7 +107,7 @@ const SamsArmory = ({
       }
     } catch (e) {
       console.error('Image picker error:', e.message);
-      Alert.alert('Error', 'Failed to pick image: ' + e.message);
+      Alert.alert('Error', `Failed to pick image: ${e.message}`);
     }
   };
 
@@ -112,7 +125,7 @@ const SamsArmory = ({
       const random = Math.random().toString(36).substring(2, 15);
       const imagePath = `${selectedCollection}/${timestamp}_${random}.jpg`;
       console.log('Uploading to path:', imagePath);
-      const imageRef = ref(storage, imagePath);
+      const imageRef = storageRef(storage, imagePath);
       await uploadBytes(imageRef, blob);
       console.log('Upload completed, fetching download URL');
       const downloadURL = await getDownloadURL(imageRef);
@@ -120,7 +133,21 @@ const SamsArmory = ({
       return downloadURL;
     } catch (e) {
       console.error(`Image upload error for ${selectedCollection}:`, e.code, e.message);
-      throw e;
+      throw new Error(`Image upload failed: ${e.message}`);
+    }
+  };
+
+  const deleteOldImage = async (imageUrl) => {
+    if (!imageUrl || imageUrl === 'placeholder') return;
+    try {
+      const path = decodeURIComponent(imageUrl.split('/o/')[1].split('?')[0]);
+      await deleteObject(storageRef(storage, path));
+      console.log('Old image deleted:', path);
+    } catch (e) {
+      if (e.code !== 'storage/object-not-found') {
+        console.error('Delete old image error:', e.message);
+        Alert.alert('Warning', `Failed to delete old image: ${e.message}. Continuing with update.`);
+      }
     }
   };
 
@@ -135,9 +162,28 @@ const SamsArmory = ({
     }
     setUploading(true);
     try {
-      let imageUrl = editingFriend?.imageUrl || 'placeholder'; // Preserve existing imageUrl if no new image
-      if (imageUri && imageUri !== editingFriend?.imageUrl) {
+      const collectionPath = editingFriend && COLLECTIONS.some(c => c.value === editingFriend.collectionPath) 
+        ? editingFriend.collectionPath 
+        : selectedCollection;
+      if (!COLLECTIONS.some(c => c.value === collectionPath)) {
+        console.error('Invalid collection path:', collectionPath);
+        throw new Error(`Invalid collection path: ${collectionPath}`);
+      }
+      if (editingFriend && editingFriend.collectionPath && editingFriend.collectionPath !== selectedCollection) {
+        console.warn('Collection path mismatch:', {
+          editingFriendCollection: editingFriend.collectionPath,
+          selectedCollection,
+          chosenCollection: collectionPath,
+        });
+        Alert.alert('Warning', `You are updating an entry from ${editingFriend.collectionPath} in ${selectedCollection}. This may be unintended.`);
+      }
+      let imageUrl = editingFriend ? editingFriend.imageUrl || 'placeholder' : 'placeholder';
+      let oldImageUrl = editingFriend ? editingFriend.imageUrl : null;
+      if (imageUri && imageUri !== oldImageUrl) {
         imageUrl = await uploadImage(imageUri);
+        if (oldImageUrl && oldImageUrl !== 'placeholder') {
+          await deleteOldImage(oldImageUrl);
+        }
       }
       const friendData = {
         name: name.trim(),
@@ -148,20 +194,20 @@ const SamsArmory = ({
         borderColor: '#00b3ff',
         hardcoded: false,
         copyright: 'Samuel Woodwell',
-        collectionPath: selectedCollection, // Store collectionPath for editing
+        collectionPath,
       };
-      console.log(`Submitting friend data to ${selectedCollection}:`, friendData);
+      console.log(`Submitting friend data to ${collectionPath}:`, friendData);
       if (editingFriend) {
-        const friendRef = doc(db, selectedCollection, editingFriend.id);
-        console.log(`Updating Firestore document in ${selectedCollection}:`, friendRef.path);
+        const friendRef = doc(db, collectionPath, editingFriend.id);
+        console.log(`Updating Firestore document in ${collectionPath}:`, friendRef.path);
         await setDoc(friendRef, friendData, { merge: true });
-        console.log(`Friend updated in ${selectedCollection}:`, { id: editingFriend.id, name: friendData.name, imageUrl: friendData.imageUrl });
-        setFriend(friend.map(item => (item.id === editingFriend.id && item.collectionPath === selectedCollection ? { ...item, ...friendData } : item)));
+        console.log(`Friend updated in ${collectionPath}:`, { id: editingFriend.id, name: friendData.name, imageUrl: friendData.imageUrl });
+        setFriend(friend.map(item => (item.id === editingFriend.id && item.collectionPath === collectionPath ? { id: item.id, ...friendData } : item)));
         Alert.alert('Success', 'Entry updated successfully!');
       } else {
-        console.log(`Adding new Firestore document to ${selectedCollection}`);
-        const friendRef = await addDoc(collection(db, selectedCollection), friendData);
-        console.log(`Friend added to ${selectedCollection}:`, { id: friendRef.id, name: friendData.name, imageUrl: friendData.imageUrl });
+        console.log(`Adding new Firestore document to ${collectionPath}`);
+        const friendRef = await addDoc(collection(db, collectionPath), friendData);
+        console.log(`Friend added to ${collectionPath}:`, { id: friendRef.id, name: friendData.name, imageUrl: friendData.imageUrl });
         setFriend([...hardcodedFriend, ...friend.filter(item => !item.hardcoded), { id: friendRef.id, ...friendData }]);
         Alert.alert('Success', 'Entry added successfully!');
       }
@@ -194,7 +240,7 @@ const SamsArmory = ({
         selectedValue={selectedCollection}
         onValueChange={(value) => setSelectedCollection(value)}
         style={styles.picker}
-        enabled={canSubmit && !editingFriend} // Disable when editing to prevent changing collection
+        enabled={canSubmit && !editingFriend}
       >
         {COLLECTIONS.map((collection) => (
           <Picker.Item key={collection.value} label={collection.label} value={collection.value} />

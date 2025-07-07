@@ -11,8 +11,8 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { db, storage, auth } from '../../lib/firebase';
-import { doc, setDoc, addDoc, collection } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { doc, setDoc, addDoc, collection, deleteObject, ref } from 'firebase/firestore';
+import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const isDesktop = SCREEN_WIDTH > 600;
@@ -33,13 +33,14 @@ const LeagueMembers = ({
   const [description, setDescription] = useState('');
   const [imageUri, setImageUri] = useState(null);
   const [uploading, setUploading] = useState(false);
-  const canSubmit = RESTRICT_ACCESS ? auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
+  const canSubmit = RESTRICT_ACCESS ? auth.currentUser?.email && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
 
   useEffect(() => {
     if (editingHero) {
       setName(editingHero.name || editingHero.codename || '');
       setDescription(editingHero.description || '');
       setImageUri(editingHero.imageUrl || null);
+      console.log('Editing hero loaded:', editingHero);
     } else {
       setName('');
       setDescription('');
@@ -52,19 +53,27 @@ const LeagueMembers = ({
       Alert.alert('Access Denied', 'Only authorized users can upload images.');
       return;
     }
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission Denied', 'Sorry, we need camera roll permissions to make this work!');
-      return;
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 0.5,
-    });
-    if (!result.canceled && result.assets) {
-      setImageUri(result.assets[0].uri);
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Denied', 'Sorry, we need camera roll permissions to make this work!');
+        return;
+      }
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.5,
+      });
+      if (!result.canceled && result.assets) {
+        setImageUri(result.assets[0].uri);
+        console.log('Image picked:', result.assets[0].uri);
+      } else {
+        console.log('Image picker canceled');
+      }
+    } catch (e) {
+      console.error('Pick image error:', e.message);
+      Alert.alert('Error', `Failed to pick image: ${e.message}`);
     }
   };
 
@@ -75,14 +84,28 @@ const LeagueMembers = ({
       const blob = await response.blob();
       const timestamp = Date.now();
       const random = Math.random().toString(36).substring(2, 15);
-      const imageRef = ref(storage, `hero/${timestamp}_${random}.jpg`);
+      const imageRef = storageRef(storage, `hero/${timestamp}_${random}.jpg`);
       await uploadBytes(imageRef, blob);
       const downloadURL = await getDownloadURL(imageRef);
       console.log('Image uploaded:', downloadURL);
       return downloadURL;
     } catch (e) {
       console.error('Image upload error:', e.message);
-      throw e;
+      throw new Error(`Image upload failed: ${e.message}`);
+    }
+  };
+
+  const deleteOldImage = async (imageUrl) => {
+    if (!imageUrl || imageUrl === 'placeholder') return;
+    try {
+      const path = decodeURIComponent(imageUrl.split('/o/')[1].split('?')[0]);
+      await deleteObject(storageRef(storage, path));
+      console.log('Old image deleted:', path);
+    } catch (e) {
+      if (e.code !== 'storage/object-not-found') {
+        console.error('Delete old image error:', e.message);
+        Alert.alert('Warning', `Failed to delete old image: ${e.message}. Continuing with update.`);
+      }
     }
   };
 
@@ -91,15 +114,19 @@ const LeagueMembers = ({
       Alert.alert('Access Denied', 'Only authorized users can submit heroes.');
       return;
     }
-    if (!name.trim() && !description.trim()) {
-      Alert.alert('Error', 'Please provide a name or description.');
+    if (!name.trim()) {
+      Alert.alert('Error', 'Please provide a hero name.');
       return;
     }
     setUploading(true);
     try {
-      let imageUrl = 'placeholder';
-      if (imageUri) {
+      let imageUrl = editingHero ? editingHero.imageUrl || 'placeholder' : 'placeholder';
+      let oldImageUrl = editingHero ? editingHero.imageUrl : null;
+      if (imageUri && imageUri !== oldImageUrl) {
         imageUrl = await uploadImage(imageUri);
+        if (oldImageUrl && oldImageUrl !== 'placeholder') {
+          await deleteOldImage(oldImageUrl);
+        }
       }
       const heroData = {
         name: name.trim(),
@@ -109,11 +136,12 @@ const LeagueMembers = ({
         borderColor: '#FFFFFF',
         hardcoded: false,
       };
+      console.log('Submitting hero data:', heroData);
       if (editingHero) {
         const heroRef = doc(db, collectionPath, editingHero.id);
         await setDoc(heroRef, heroData, { merge: true });
         console.log('Hero updated:', editingHero.id);
-        setHero(hero.map(item => (item.id === editingHero.id ? { ...item, ...heroData } : item)));
+        setHero(hero.map(item => (item.id === editingHero.id ? { id: item.id, ...heroData } : item)));
         Alert.alert('Success', 'Hero updated successfully!');
       } else {
         const heroRef = await addDoc(collection(db, collectionPath), heroData);
@@ -138,6 +166,7 @@ const LeagueMembers = ({
     setDescription('');
     setImageUri(null);
     setEditingHero(null);
+    console.log('Form canceled');
   };
 
   return (

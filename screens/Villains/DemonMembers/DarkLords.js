@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { db, storage, auth } from '../../../lib/firebase';
-import { doc, setDoc, addDoc, collection } from 'firebase/firestore';
+import { doc, setDoc, addDoc, collection, deleteObject } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -50,39 +50,49 @@ const DarkLords = ({
   const canSubmit = RESTRICT_ACCESS ? auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
 
   useEffect(() => {
-    console.log('Current user:', auth.currentUser?.email, 'Can submit:', canSubmit);
+    console.log('Current user:', auth.currentUser?.email, 'Can submit:', canSubmit, 'Collection path prop:', collectionPath);
+    console.log('Friend array:', friend.map(f => ({ id: f.id, name: f.name, codename: f.codename, collectionPath: f.collectionPath })));
     if (editingFriend) {
+      const collectionPathToUse = collectionPath || (editingFriend.collectionPath && COLLECTIONS.some(c => c.value === editingFriend.collectionPath) ? editingFriend.collectionPath : 'oni');
+      if (editingFriend && !editingFriend.collectionPath) {
+        console.warn('editingFriend missing collectionPath, defaulting to oni:', {
+          id: editingFriend.id,
+          name: editingFriend.name,
+          codename: editingFriend.codename,
+          imageUrl: editingFriend.imageUrl,
+          description: editingFriend.description,
+          collectionPath: editingFriend.collectionPath,
+        });
+      }
       setName(editingFriend.name || editingFriend.codename || '');
       setDescription(editingFriend.description || '');
       setImageUri(editingFriend.imageUrl || null);
-      if (!collectionPath) {
-        setSelectedCollection(editingFriend.collectionPath || 'oni');
-      }
+      setSelectedCollection(collectionPathToUse);
       console.log('Editing villain loaded:', {
         id: editingFriend.id,
         name: editingFriend.name,
         codename: editingFriend.codename,
         imageUrl: editingFriend.imageUrl,
         description: editingFriend.description,
-        collectionPath: editingFriend.collectionPath,
+        collectionPath: collectionPathToUse,
       });
     } else {
       setName('');
       setDescription('');
       setImageUri(null);
-      if (!collectionPath) {
-        setSelectedCollection('oni');
-      }
+      setSelectedCollection(collectionPath || 'oni');
       console.log('Form reset for new villain');
     }
   }, [editingFriend, collectionPath]);
 
   const pickImage = async () => {
     if (!canSubmit) {
+      console.log('Pick image blocked: user not authorized');
       Alert.alert('Access Denied', 'Only authorized users can upload images.');
       return;
     }
     try {
+      console.log('Opening image picker');
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       console.log('Image picker permission status:', status);
       if (status !== 'granted') {
@@ -104,7 +114,7 @@ const DarkLords = ({
       }
     } catch (e) {
       console.error('Image picker error:', e.message);
-      Alert.alert('Error', 'Failed to pick image: ' + e.message);
+      Alert.alert('Error', `Failed to pick image: ${e.message}`);
     }
   };
 
@@ -130,24 +140,64 @@ const DarkLords = ({
       return downloadURL;
     } catch (e) {
       console.error(`Image upload error for ${selectedCollection}:`, e.code, e.message);
-      throw e;
+      throw new Error(`Image upload failed: ${e.message}`);
     }
+  };
+
+  const deleteOldImage = async (imageUrl) => {
+    if (!imageUrl || imageUrl === 'placeholder') return;
+    try {
+      const path = decodeURIComponent(imageUrl.split('/o/')[1].split('?')[0]);
+      await deleteObject(ref(storage, path));
+      console.log('Old image deleted:', path);
+    } catch (e) {
+      if (e.code !== 'storage/object-not-found') {
+        console.error('Delete old image error:', e.message);
+        Alert.alert('Warning', `Failed to delete old image: ${e.message}. Continuing with update.`);
+      }
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setImageUri(null);
+    console.log('Image removed from form');
   };
 
   const handleSubmit = async () => {
     if (!canSubmit) {
+      console.log('Submit blocked: user not authorized');
       Alert.alert('Access Denied', `Only authorized users can submit to ${selectedCollection}.`);
       return;
     }
     if (!name.trim()) {
-      Alert.alert('Error', 'Please provide a name or codename.');
+      console.log('Submit blocked: no name provided');
+      Alert.alert('Error', 'Please provide a villain name or codename.');
       return;
+    }
+    if (!COLLECTIONS.some(c => c.value === selectedCollection)) {
+      console.error('Invalid collection path:', selectedCollection);
+      Alert.alert('Error', `Invalid collection path: ${selectedCollection}`);
+      return;
+    }
+    if (editingFriend && editingFriend.collectionPath && editingFriend.collectionPath !== selectedCollection) {
+      console.warn('Collection path mismatch:', {
+        editingFriendCollection: editingFriend.collectionPath,
+        selectedCollection,
+      });
+      Alert.alert('Warning', `You are updating a villain from ${editingFriend.collectionPath} in ${selectedCollection}. This may be unintended.`);
     }
     setUploading(true);
     try {
-      let imageUrl = editingFriend?.imageUrl || 'placeholder';
-      if (imageUri && imageUri !== editingFriend?.imageUrl) {
+      let imageUrl = editingFriend ? editingFriend.imageUrl || 'placeholder' : 'placeholder';
+      let oldImageUrl = editingFriend ? editingFriend.imageUrl : null;
+      if (imageUri && imageUri !== oldImageUrl) {
         imageUrl = await uploadImage(imageUri);
+        if (oldImageUrl && oldImageUrl !== 'placeholder') {
+          await deleteOldImage(oldImageUrl);
+        }
+      } else if (!imageUri && oldImageUrl !== 'placeholder') {
+        imageUrl = 'placeholder';
+        await deleteOldImage(oldImageUrl);
       }
       const villainData = {
         name: name.trim(),
@@ -166,7 +216,7 @@ const DarkLords = ({
         console.log(`Updating Firestore document in ${selectedCollection}:`, villainRef.path);
         await setDoc(villainRef, villainData, { merge: true });
         console.log(`Villain updated in ${selectedCollection}:`, { id: editingFriend.id, name: villainData.name, imageUrl: villainData.imageUrl });
-        setFriend(friend.map(item => (item.id === editingFriend.id && item.collectionPath === selectedCollection ? { ...item, ...villainData } : item)));
+        setFriend(friend.map(item => (item.id === editingFriend.id && item.collectionPath === editingFriend.collectionPath ? { id: item.id, ...villainData } : item)));
         Alert.alert('Success', 'Villain updated successfully!');
       } else {
         console.log(`Adding new Firestore document to ${selectedCollection}`);
@@ -183,7 +233,7 @@ const DarkLords = ({
         setSelectedCollection('oni');
       }
     } catch (e) {
-      console.error(`Submit error for ${selectedCollection}:`, e.code, e.message);
+      console.error(`Submit error for ${selectedCollection}:`, e.message);
       Alert.alert('Error', `Failed to ${editingFriend ? 'update' : 'add'} villain in ${selectedCollection}: ${e.message}`);
     } finally {
       setUploading(false);
@@ -206,8 +256,8 @@ const DarkLords = ({
       <View style={styles.container}>
         <Text style={styles.header}>
           {editingFriend
-            ? `Edit Villain${collectionPath ? '' : ` in ${COLLECTIONS.find(c => c.value === selectedCollection)?.label}`}`
-            : `Add New Villain${collectionPath ? '' : ''}`}
+            ? `Edit Villain in ${COLLECTIONS.find(c => c.value === selectedCollection)?.label || selectedCollection}`
+            : `Add New Villain to ${COLLECTIONS.find(c => c.value === selectedCollection)?.label || selectedCollection}`}
         </Text>
         {!collectionPath && (
           <Picker
@@ -247,10 +297,20 @@ const DarkLords = ({
           <Text style={styles.imagePickerText}>{imageUri ? 'Change Image' : 'Pick an Image'}</Text>
         </TouchableOpacity>
         {imageUri && (
+          <TouchableOpacity
+            style={[styles.removeImageButton, !canSubmit && styles.disabled]}
+            onPress={handleRemoveImage}
+            disabled={!canSubmit}
+          >
+            <Text style={styles.buttonText}>Remove Image</Text>
+          </TouchableOpacity>
+        )}
+        {imageUri && (
           <Image
             source={{ uri: imageUri }}
             style={styles.previewImage}
             resizeMode="contain"
+            onError={(e) => console.error('Preview image load error:', e.nativeEvent.error, 'URI:', imageUri)}
           />
         )}
         {!imageUri && editingFriend && editingFriend.imageUrl && editingFriend.imageUrl !== 'placeholder' && (
@@ -258,6 +318,7 @@ const DarkLords = ({
             source={{ uri: editingFriend.imageUrl }}
             style={styles.previewImage}
             resizeMode="contain"
+            onError={(e) => console.error('Editing preview image load error:', e.nativeEvent.error, 'URI:', editingFriend.imageUrl)}
           />
         )}
         <View style={styles.buttonContainer}>
@@ -336,6 +397,13 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 200,
     borderRadius: 10,
+    marginBottom: 15,
+  },
+  removeImageButton: {
+    backgroundColor: '#F44336',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
     marginBottom: 15,
   },
   buttonContainer: {

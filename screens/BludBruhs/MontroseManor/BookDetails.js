@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { View, ImageBackground, StyleSheet, Dimensions, TouchableOpacity, Text, ScrollView, TextInput, Image, Alert, Modal } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { db, storage, auth } from "../../../lib/firebase";
-import { collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, getDoc } from "firebase/firestore";
-import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
+import { collection, addDoc, onSnapshot, deleteDoc, doc, setDoc, getDoc } from "firebase/firestore";
+import { ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
 
 const ALLOWED_EMAILS = ["samuelp.woodwell@gmail.com", "cummingsnialla@gmail.com", "will@test.com", "c1wcummings@gmail.com", "aileen@test.com"];
-const RESTRICT_ACCESS = false; // Allow anyone to add characters
-const RESTRICT_IMAGE_UPLOAD = true; // Restrict image uploads to ALLOWED_EMAILS
+const RESTRICT_ACCESS = false;
+const RESTRICT_IMAGE_UPLOAD = true;
 const PLACEHOLDER_IMAGE = require("../../../assets/Armor/PlaceHolder.jpg");
 const PLACEHOLDER_URL = "placeholder";
 
@@ -91,25 +91,30 @@ const BookDetails = () => {
       alert("Access Denied", "Only authorized users can upload images.");
       return;
     }
-    console.log("Opening image picker");
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    console.log("Image picker permission status:", status);
-    if (status !== "granted") {
-      alert("Permission Denied", "Sorry, we need camera roll permissions to make this work!");
-      return;
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.5,
-    });
-    console.log("Image picker result:", result);
-    if (!result.canceled && result.assets) {
-      setImageUri(result.assets[0].uri);
-      console.log("Image picked:", result.assets[0].uri);
-    } else {
-      console.log("Image picker canceled or no assets");
+    try {
+      console.log("Opening image picker");
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      console.log("Image picker permission status:", status);
+      if (status !== "granted") {
+        alert("Permission Denied", "Sorry, we need camera roll permissions to make this work!");
+        return;
+      }
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.5,
+      });
+      console.log("Image picker result:", result);
+      if (!result.canceled && result.assets) {
+        setImageUri(result.assets[0].uri);
+        console.log("Image picked:", result.assets[0].uri);
+      } else {
+        console.log("Image picker canceled or no assets");
+      }
+    } catch (e) {
+      console.error("Image picker error:", e.message);
+      alert("Error", `Failed to pick image: ${e.message}`);
     }
   };
 
@@ -132,7 +137,7 @@ const BookDetails = () => {
       const random = Math.random().toString(36).substring(2, 15);
       const imagePath = `characters/${timestamp}_${random}.jpg`;
       console.log("Uploading to path:", imagePath);
-      const imageRef = ref(storage, imagePath);
+      const imageRef = storageRef(storage, imagePath);
       await uploadBytesResumable(imageRef, blob);
       console.log("Upload completed, fetching download URL");
       const downloadURL = await getDownloadURL(imageRef);
@@ -140,7 +145,21 @@ const BookDetails = () => {
       return downloadURL;
     } catch (e) {
       console.error("Image upload error:", e.message);
-      throw e;
+      throw new Error(`Image upload failed: ${e.message}`);
+    }
+  };
+
+  const deleteOldImage = async (imageUrl) => {
+    if (!imageUrl || imageUrl === PLACEHOLDER_URL) return;
+    try {
+      const path = decodeURIComponent(imageUrl.split("/o/")[1].split("?")[0]);
+      await deleteObject(storageRef(storage, path));
+      console.log("Old image deleted:", path);
+    } catch (e) {
+      if (e.code !== "storage/object-not-found") {
+        console.error("Delete old image error:", e.message);
+        alert("Warning", `Failed to delete old image: ${e.message}. Continuing with operation.`);
+      }
     }
   };
 
@@ -150,36 +169,20 @@ const BookDetails = () => {
       alert("Access Denied", "Only authorized users can submit characters.");
       return;
     }
-    if (!name.trim() && !description.trim()) {
-      console.log("Submit blocked: no name or description provided");
-      alert("Error", "Please provide a name or description.");
+    if (!name.trim()) {
+      console.log("Submit blocked: no name provided");
+      alert("Error", "Please provide a character name.");
       return;
     }
     setUploading(true);
     try {
-      let imageUrl = editingChar?.imageUrl || PLACEHOLDER_URL;
-      if (imageUri && imageUri !== editingChar?.imageUrl) {
-        if (editingChar && editingChar.imageUrl && editingChar.imageUrl !== PLACEHOLDER_URL) {
-          let path = "";
-          try {
-            console.log("Deleting old image, URL:", editingChar.imageUrl);
-            if (typeof editingChar.imageUrl === "string" && editingChar.imageUrl.includes("/o/")) {
-              const urlParts = editingChar.imageUrl.split("/o/");
-              path = decodeURIComponent(urlParts[1].split("?")[0]);
-              await deleteObject(ref(storage, path)).catch((e) => {
-                if (e.code !== "storage/object-not-found") {
-                  throw e;
-                }
-                console.warn("Old image not found:", path);
-              });
-              console.log("Old image deleted or not found:", path);
-            }
-          } catch (e) {
-            console.error("Delete old image error:", e.message, "Path:", path);
-            alert("Warning", `Failed to delete old image: ${e.message}. Continuing with update.`);
-          }
-        }
+      let imageUrl = editingChar ? editingChar.imageUrl || PLACEHOLDER_URL : PLACEHOLDER_URL;
+      let oldImageUrl = editingChar ? editingChar.imageUrl : null;
+      if (imageUri && imageUri !== oldImageUrl) {
         imageUrl = await uploadImage(imageUri);
+        if (oldImageUrl && oldImageUrl !== PLACEHOLDER_URL) {
+          await deleteOldImage(oldImageUrl);
+        }
       }
       const charData = {
         name: name.trim(),
@@ -193,9 +196,9 @@ const BookDetails = () => {
       if (editingChar) {
         const charRef = doc(db, "books", bookId, "characters", editingChar.id);
         console.log("Updating Firestore document:", charRef.path);
-        await updateDoc(charRef, charData);
+        await setDoc(charRef, charData, { merge: true });
         console.log("Character updated:", editingChar.id);
-        setChars(chars.map(item => (item.id === editingChar.id ? { id: editingChar.id, ...charData } : item)));
+        setChars(chars.map(item => (item.id === editingChar.id ? { id: item.id, ...charData } : item)));
         alert("Success", "Character updated successfully!");
       } else {
         console.log("Adding new Firestore document");
@@ -247,32 +250,11 @@ const BookDetails = () => {
       }
       const { imageUrl } = snap.data();
       if (imageUrl && imageUrl !== PLACEHOLDER_URL) {
-        let path = "";
-        try {
-          console.log("Raw imageUrl:", imageUrl);
-          if (typeof imageUrl !== "string" || !imageUrl.includes("/o/")) {
-            console.warn("Invalid imageUrl format:", imageUrl);
-          } else {
-            const urlParts = imageUrl.split("/o/");
-            path = decodeURIComponent(urlParts[1].split("?")[0]);
-            console.log("Attempting to delete image:", path);
-            await deleteObject(ref(storage, path)).catch((e) => {
-              if (e.code !== "storage/object-not-found") {
-                throw e;
-              }
-              console.warn("Image not found in storage:", path);
-            });
-            console.log("Image deleted or not found:", path);
-          }
-        } catch (e) {
-          console.error("Delete image error:", e.message, "Path:", path, "URL:", imageUrl);
-          alert("Warning", `Failed to delete image: ${e.message}. Character will still be deleted.`);
-        }
+        await deleteOldImage(imageUrl);
       } else {
         console.log("No image to delete or imageUrl is placeholder:", imageUrl);
       }
       await deleteDoc(charRef);
-      console.init
       console.log("Character deleted from Firestore:", id);
       setChars(chars.filter(c => c.id !== id));
       setSelChar(null);

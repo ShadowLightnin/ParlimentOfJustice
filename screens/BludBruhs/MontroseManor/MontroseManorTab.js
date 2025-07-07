@@ -2,15 +2,15 @@ import React, { useState, useEffect } from "react";
 import { View, ImageBackground, StyleSheet, Dimensions, TouchableOpacity, Text, ScrollView, TextInput, Image, Alert, Modal } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { db, storage, auth } from "../../../lib/firebase";
-import { collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, getDoc, getDocs } from "firebase/firestore";
-import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
+import { collection, addDoc, onSnapshot, deleteDoc, doc, setDoc, getDoc, getDocs } from "firebase/firestore";
+import { ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const isDesktop = SCREEN_WIDTH > 600;
 const ALLOWED_EMAILS = ["samuelp.woodwell@gmail.com", "cummingsnialla@gmail.com", "will@test.com", "c1wcummings@gmail.com", "aileen@test.com"];
-const RESTRICT_ACCESS = false; // Allow anyone to add books
-const RESTRICT_IMAGE_UPLOAD = true; // Restrict image uploads to ALLOWED_EMAILS
+const RESTRICT_ACCESS = false;
+const RESTRICT_IMAGE_UPLOAD = true;
 const PLACEHOLDER_IMAGE = require("../../../assets/Armor/PlaceHolder.jpg");
 const HARDCODED_BOOKS = [
   { id: "hardcoded-1", title: "Montrose Manor", coverImage: require("../../../assets/MontroseManor.jpg"), hardcoded: true },
@@ -79,24 +79,29 @@ const MontroseManorTab = () => {
       Alert.alert("Access Denied", "Only authorized users can upload images.");
       return;
     }
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    console.log("Image picker permission status:", status);
-    if (status !== "granted") {
-      Alert.alert("Permission Denied", "Sorry, we need camera roll permissions to make this work!");
-      return;
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 0.5,
-    });
-    console.log("Image picker result:", result);
-    if (!result.canceled && result.assets) {
-      setImageUri(result.assets[0].uri);
-      console.log("Image picked:", result.assets[0].uri);
-    } else {
-      console.log("Image picker canceled or no assets");
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      console.log("Image picker permission status:", status);
+      if (status !== "granted") {
+        Alert.alert("Permission Denied", "Sorry, we need camera roll permissions to make this work!");
+        return;
+      }
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.5,
+      });
+      console.log("Image picker result:", result);
+      if (!result.canceled && result.assets) {
+        setImageUri(result.assets[0].uri);
+        console.log("Image picked:", result.assets[0].uri);
+      } else {
+        console.log("Image picker canceled or no assets");
+      }
+    } catch (e) {
+      console.error("Image picker error:", e.message);
+      Alert.alert("Error", `Failed to pick image: ${e.message}`);
     }
   };
 
@@ -114,7 +119,7 @@ const MontroseManorTab = () => {
       const random = Math.random().toString(36).substring(2, 15);
       const imagePath = `books/${timestamp}_${random}.jpg`;
       console.log("Uploading to path:", imagePath);
-      const imageRef = ref(storage, imagePath);
+      const imageRef = storageRef(storage, imagePath);
       await uploadBytesResumable(imageRef, blob);
       console.log("Upload completed, fetching download URL");
       const downloadURL = await getDownloadURL(imageRef);
@@ -122,7 +127,21 @@ const MontroseManorTab = () => {
       return downloadURL;
     } catch (e) {
       console.error("Image upload error:", e.message);
-      throw e;
+      throw new Error(`Image upload failed: ${e.message}`);
+    }
+  };
+
+  const deleteOldImage = async (imageUrl) => {
+    if (!imageUrl || imageUrl === "placeholder") return;
+    try {
+      const path = decodeURIComponent(imageUrl.split("/o/")[1].split("?")[0]);
+      await deleteObject(storageRef(storage, path));
+      console.log("Old image deleted:", path);
+    } catch (e) {
+      if (e.code !== "storage/object-not-found") {
+        console.error("Delete old image error:", e.message);
+        Alert.alert("Warning", `Failed to delete old image: ${e.message}. Continuing with update.`);
+      }
     }
   };
 
@@ -131,15 +150,19 @@ const MontroseManorTab = () => {
       Alert.alert("Access Denied", "Only authorized users can submit books.");
       return;
     }
-    if (!title.trim() && !description.trim()) {
-      Alert.alert("Error", "Please provide a title or description.");
+    if (!title.trim()) {
+      Alert.alert("Error", "Please provide a book title.");
       return;
     }
     setUploading(true);
     try {
-      let imageUrl = editingBook?.imageUrl || "placeholder";
-      if (imageUri && imageUri !== editingBook?.imageUrl) {
+      let imageUrl = editingBook ? editingBook.imageUrl || "placeholder" : "placeholder";
+      let oldImageUrl = editingBook ? editingBook.imageUrl : null;
+      if (imageUri && imageUri !== oldImageUrl) {
         imageUrl = await uploadImage(imageUri);
+        if (oldImageUrl && oldImageUrl !== "placeholder") {
+          await deleteOldImage(oldImageUrl);
+        }
       }
       const bookData = {
         title: title.trim(),
@@ -153,9 +176,9 @@ const MontroseManorTab = () => {
       if (editingBook) {
         const bookRef = doc(db, "books", editingBook.id);
         console.log("Updating Firestore document:", bookRef.path);
-        await updateDoc(bookRef, bookData);
+        await setDoc(bookRef, bookData, { merge: true });
         console.log("Book updated:", editingBook.id);
-        setBooks(books.map(item => (item.id === editingBook.id ? { ...item, ...bookData } : item)));
+        setBooks(books.map(item => (item.id === editingBook.id ? { id: item.id, ...bookData } : item)));
         Alert.alert("Success", "Book updated successfully!");
       } else {
         console.log("Adding new Firestore document");
@@ -211,7 +234,7 @@ const MontroseManorTab = () => {
             const urlParts = imageUrl.split("/o/");
             path = decodeURIComponent(urlParts[1].split("?")[0]);
             console.log("Attempting to delete image:", path);
-            await deleteObject(ref(storage, path)).catch((e) => {
+            await deleteObject(storageRef(storage, path)).catch((e) => {
               if (e.code !== "storage/object-not-found") {
                 throw e;
               }
@@ -347,7 +370,7 @@ const MontroseManorTab = () => {
               onChangeText={setTitle}
               editable={canSubmit}
             />
-            {/* <TextInput
+            <TextInput
               style={[styles.input, styles.textArea]}
               placeholder="Description"
               placeholderTextColor="#888"
@@ -356,7 +379,7 @@ const MontroseManorTab = () => {
               multiline
               numberOfLines={4}
               editable={canSubmit}
-            /> */}
+            />
             <TouchableOpacity
               style={[styles.imagePicker, !canUploadImage && styles.disabled]}
               onPress={pickImage}
