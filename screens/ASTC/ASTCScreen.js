@@ -108,8 +108,8 @@ const ASTCScreen = () => {
   const handleCardPress = () => {
     Animated.timing(topPosition, {
       toValue: keyStopPosition,
-      duration: 5000,
-      useNativeDriver: false,
+      duration: 3500,
+      useNativeDriver: true,
     }).start(() => navigation.navigate('SpartansScreen'));
   };
 
@@ -190,11 +190,11 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     borderRadius: 8, 
     padding: 5,
-    overflow: 'hidden', // Ensure image doesn’t spill out
+    overflow: 'hidden',
   },
   cardImage: {
     width: '100%',
-    height: '90%', // Takes up most of the card height, leaving room for text
+    height: '90%',
     resizeMode: 'cover',
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,

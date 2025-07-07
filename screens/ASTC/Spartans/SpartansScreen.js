@@ -45,9 +45,9 @@ const backgroundImages = [
 
 // Member Data
 const members = [
-  { name: 'Cam', codename: 'Court Chief', screen: 'Cam', clickable: true, position: [1, 0], image: require('../../../assets/Armor/Cam3.jpg') },
-  { name: 'Ben', codename: 'Chemoshock', screen: 'BenP', clickable: true, position: [1, 1], image: require('../../../assets/Armor/Benp3.jpg') },
-  { name: 'Alex', codename: 'Huntsman', screen: 'Alex', clickable: true, position: [1, 2], image: require('../../../assets/Armor/Alex3.jpg') },
+  { name: 'Cam', codename: 'Court Chief', screen: 'Cam', clickable: true, image: require('../../../assets/Armor/Cam3.jpg') },
+  { name: 'Ben', codename: 'Chemoshock', screen: 'BenP', clickable: true, image: require('../../../assets/Armor/Benp3.jpg') },
+  { name: 'Alex', codename: 'Huntsman', screen: 'Alex', clickable: true, image: require('../../../assets/Armor/Alex3.jpg') },
 ];
 
 // Hardcoded Vehicles
@@ -97,19 +97,7 @@ const HARDCODED_VEHICLES = [
 ];
 
 // Placeholder Image
-const PLACEHOLDER_IMAGE = require('../../../assets/Armor/PlaceHolder.jpg');
-
-// Empty cell checker
-const isEmpty = (row, col) =>
-  (row === 0 && col === 0) ||
-  (row === 0 && col === 1) ||
-  (row === 0 && col === 2) ||
-  (row === 2 && col === 0) ||
-  (row === 2 && col === 1) ||
-  (row === 2 && col === 2);
-
-const getMemberAtPosition = (row, col) =>
-  members.find((member) => member.position[0] === row && member.position[1] === col);
+const PLACEHOLDER_IMAGE = require('../../../assets/splash-icon.png');
 
 const SpartansScreen = () => {
   const navigation = useNavigation();
@@ -117,6 +105,7 @@ const SpartansScreen = () => {
   const [backgroundImage, setBackgroundImage] = useState(
     backgroundImages[Math.floor(Math.random() * backgroundImages.length)]
   );
+  const [currentVehicleIndex, setCurrentVehicleIndex] = useState(0);
 
   useEffect(() => {
     if (isFocused) {
@@ -146,9 +135,9 @@ const SpartansScreen = () => {
         style={[
           styles.vehicleCard,
           {
-            width: isDesktop ? vehicleCardSizes.desktop.width : vehicleCardSizes.mobile.width,
+            width: SCREEN_WIDTH,
             height: isDesktop ? vehicleCardSizes.desktop.height : vehicleCardSizes.mobile.height,
-            marginRight: isDesktop ? 40 : 20,
+            paddingTop: isDesktop ? 15 : 10,
           },
         ]}
       >
@@ -162,6 +151,8 @@ const SpartansScreen = () => {
           onError={(e) => console.error("Vehicle image load error:", vehicle.id, "Error:", e.nativeEvent.error, "Source:", JSON.stringify(imageSource))}
         />
         <View style={styles.vehicleOverlay} />
+        <Text style={styles.vehicleName}>{vehicle.name || 'Unnamed Vehicle'}</Text>
+        <Text style={styles.vehicleDescription}>{vehicle.description || 'No description available'}</Text>
       </View>
     );
   };
@@ -174,10 +165,10 @@ const SpartansScreen = () => {
       <SafeAreaView style={styles.container}>
         <ScrollView
           style={styles.verticalScroll}
-          contentContainerStyle={styles.verticalScrollContent}
+          contentContainerStyle={[styles.verticalScrollContent, { paddingBottom: isDesktop ? 20 : 30 }]}
         >
           {/* Header Section */}
-          <View style={styles.headerWrapper}>
+          <View style={[styles.headerWrapper, { marginTop: isDesktop ? 5 : 10, marginBottom: isDesktop ? 2 : 5, paddingHorizontal: isDesktop ? 5 : 10 }]}>
             <TouchableOpacity
               style={styles.backButton}
               onPress={() => {
@@ -186,72 +177,77 @@ const SpartansScreen = () => {
             >
               <Text style={styles.backText}>← Back</Text>
             </TouchableOpacity>
-            <Text style={styles.header}>The Spartans</Text>
+            <Text style={[styles.header, { padding: isDesktop ? 5 : 8 }]}>The Spartans</Text>
             <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
               <Text style={styles.chatText}>🛡️</Text>
             </TouchableOpacity>
           </View>
 
           {/* Grid Layout */}
-          <View style={[styles.grid, { gap: cardSpacing, minHeight: cardSize * 1.6 * 2.5 }]}>
-            {[0, 1, 2].map((row) => (
-              <View key={row} style={[styles.row, { gap: cardSpacing }]}>
-                {[0, 1, 2].map((col) => {
-                  if (isEmpty(row, col)) {
-                    return <View key={col} style={{ width: cardSize, height: cardSize * 1.6 }} />;
-                  }
-
-                  const member = getMemberAtPosition(row, col);
-                  return (
-                    <TouchableOpacity
-                      key={col}
-                      style={[
-                        styles.card,
-                        { width: cardSize, height: cardSize * 1.6 },
-                        !member?.clickable && styles.disabledCard,
-                      ]}
-                      onPress={() => {
-                        if (member?.clickable) {
-                          navigation.navigate(member.screen);
-                        }
-                      }}
-                      disabled={!member?.clickable}
-                    >
-                      {member?.image && (
-                        <>
-                          <Image
-                            source={member.image}
-                            style={styles.characterImage}
-                            resizeMode="cover"
-                            fadeDuration={0}
-                            cache="force-cache"
-                            onError={(e) => console.error("Member image load error:", member.name, "Error:", e.nativeEvent.error)}
-                          />
-                          <View style={styles.transparentOverlay} />
-                        </>
-                      )}
-                      <Text style={styles.codename}>{member?.codename || ''}</Text>
-                      <Text style={styles.name}>{member?.name || ''}</Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-            ))}
+          <View style={[styles.grid, { gap: isDesktop ? 30 : 30 }]}>
+            <View style={[styles.row, { gap: cardSpacing }]}>
+              {members.map((member) => (
+                <TouchableOpacity
+                  key={member.name}
+                  style={[
+                    styles.card,
+                    { width: cardSize, height: cardSize * 1.6, paddingTop: isDesktop ? 10 : 5 },
+                    !member?.clickable && styles.disabledCard,
+                  ]}
+                  onPress={() => {
+                    if (member?.clickable) {
+                      navigation.navigate(member.screen);
+                    }
+                  }}
+                  disabled={!member?.clickable}
+                >
+                  {member?.image && (
+                    <>
+                      <Image
+                        source={member.image}
+                        style={styles.characterImage}
+                        resizeMode="cover"
+                        fadeDuration={0}
+                        cache="force-cache"
+                        onError={(e) => console.error("Member image load error:", member.name, "Error:", e.nativeEvent.error)}
+                      />
+                      <View style={styles.transparentOverlay} />
+                    </>
+                  )}
+                  <Text style={styles.codename}>{member?.codename || ''}</Text>
+                  <Text style={styles.name}>{member?.name || ''}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
 
           {/* Vehicle Bay */}
-          <View style={styles.vehicleBay}>
+          <View style={[styles.vehicleBay, { marginTop: isDesktop ? 2 : 5, marginBottom: isDesktop ? 2 : 5 }]}>
             <View style={styles.vehicleHeaderWrapper}>
-              <Text style={styles.vehicleHeader}>Vehicle Bay</Text>
+              <Text style={[styles.vehicleHeader, { padding: isDesktop ? 5 : 8 }]}>Vehicle Bay</Text>
             </View>
             <View style={styles.vehicleWindow}>
               <ScrollView
                 horizontal
-                contentContainerStyle={[styles.vehicleScroll, { paddingVertical: isDesktop ? 50 : 20 }]}
-                showsHorizontalScrollIndicator={true}
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                onScroll={(e) => setCurrentVehicleIndex(Math.round(e.nativeEvent.contentOffset.x / SCREEN_WIDTH))}
+                scrollEventThrottle={16}
+                contentContainerStyle={styles.vehicleScroll}
               >
                 {HARDCODED_VEHICLES.map((vehicle) => renderVehicle(vehicle))}
               </ScrollView>
+              <View style={styles.dotContainer}>
+                {HARDCODED_VEHICLES.map((_, index) => (
+                  <View
+                    key={index}
+                    style={[
+                      styles.dot,
+                      { backgroundColor: index === currentVehicleIndex ? '#00b3ff' : '#fff' },
+                    ]}
+                  />
+                ))}
+              </View>
             </View>
           </View>
         </ScrollView>
@@ -275,7 +271,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   verticalScrollContent: {
-    paddingBottom: 40,
     alignItems: 'center',
   },
   headerWrapper: {
@@ -283,9 +278,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
-    marginTop: 20,
-    paddingHorizontal: 20,
-    marginBottom: 10,
   },
   backButton: {
     padding: 10,
@@ -308,7 +300,6 @@ const styles = StyleSheet.create({
     textShadow: '0px 0px 15px yellow',
     backgroundColor: 'transparent',
     zIndex: 2,
-    padding: 10,
   },
   chatButton: {
     padding: 10,
@@ -364,8 +355,6 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   vehicleBay: {
-    marginTop: 10,
-    marginBottom: 10,
     width: '100%',
     alignItems: 'center',
   },
@@ -385,7 +374,6 @@ const styles = StyleSheet.create({
     textShadow: '0px 0px 15px yellow',
     backgroundColor: 'transparent',
     zIndex: 2,
-    padding: 10,
   },
   vehicleWindow: {
     width: '100%',
@@ -393,8 +381,6 @@ const styles = StyleSheet.create({
   },
   vehicleScroll: {
     flexDirection: 'row',
-    flexGrow: 1,
-    width: 'auto',
     alignItems: 'center',
   },
   vehicleCard: {
@@ -407,7 +393,7 @@ const styles = StyleSheet.create({
   },
   vehicleImage: {
     width: '100%',
-    height: '100%',
+    height: '70%',
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
   },
@@ -415,6 +401,31 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0)',
     zIndex: 1,
+  },
+  vehicleName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+    textAlign: 'center',
+    marginTop: 10,
+  },
+  vehicleDescription: {
+    fontSize: 14,
+    color: '#aaa',
+    textAlign: 'center',
+    marginTop: 5,
+    paddingHorizontal: 10,
+  },
+  dotContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 10,
+  },
+  dot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    marginHorizontal: 5,
   },
 });
 
