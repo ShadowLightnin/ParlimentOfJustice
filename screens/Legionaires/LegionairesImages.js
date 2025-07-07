@@ -70,6 +70,13 @@ const legionImages = {
   'Abby': { image: require('../../assets/Armor/AbbyGhost.jpg'), clickable: true },
   'Veronica Teaford': { image: require('../../assets/Armor/Veronica.jpg'), clickable: true },
   'Erica Teaford': { image: require('../../assets/Armor/Erica.jpg'), clickable: true },
+  'Lupa': { image: require('../../assets/Armor/Lupa.jpg'), clickable: true },
+  'Shanna': { image: require('../../assets/Armor/Shanna.jpg'), clickable: true },
+  'Elizabeth': { image: require('../../assets/Armor/ElizabethWE.jpg'), clickable: true },
+  'Noah': { image: require('../../assets/Armor/Noah.jpg'), clickable: true },
+  'Elise': { image: require('../../assets/Armor/Elise.jpg'), clickable: true },
+  'Brigdan': { image: require('../../assets/Armor/Brigdan.jpg'), clickable: true },
+  'Addie': { image: require('../../assets/Armor/AddieCH.jpg'), clickable: true },
 
 
   'Sheryl': { image: require('../../assets/Armor/She.jpg'), clickable: true },
