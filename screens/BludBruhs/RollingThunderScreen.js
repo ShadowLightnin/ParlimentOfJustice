@@ -30,7 +30,7 @@ try {
 }
 
 const members = [
-  { id: 'member-1', name: 'MIA', codename: '', screen: '', clickable: true, image: require('../../assets/Armor/PlaceHolder.jpg'), hardcoded: true },
+  // { id: 'member-1', name: 'MIA', codename: '', screen: '', clickable: true, image: require('../../assets/Armor/PlaceHolder.jpg'), hardcoded: true },
 ];
 
 const isDesktop = SCREEN_WIDTH > 600;

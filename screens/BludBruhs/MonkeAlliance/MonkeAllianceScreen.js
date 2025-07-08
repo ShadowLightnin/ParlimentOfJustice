@@ -40,7 +40,7 @@ const members = [
   { name: 'Rachel', codename: '', screen: '', clickable: true, image: require('../../../assets/Armor/RachelTB.jpg') },
   { name: 'Keith', codename: '', screen: '', clickable: true, image: require('../../../assets/Armor/Keith.jpg') },
   { name: 'Sandra', codename: '', screen: '', clickable: true, image: require('../../../assets/Armor/Sandra.jpg') },
-  { name: 'MIA', codename: '', screen: '', clickable: false },
+  { name: 'Shadow', codename: '', screen: '', clickable: true, image: require('../../../assets/Armor/SamsShadow.jpg') },
 ];
 
 // Grid layout settings
