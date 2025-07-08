@@ -32,7 +32,7 @@ const scrollableMembers = [
 // Fixed factions for bottom row
 const fixedMembers = [
   { name: '', codename: 'Ranger Squad', screen: 'RangerSquad', clickable: true, image: require('../../assets/BackGround/RangerSquad.jpg') },
-  { name: '', codename: 'Montrose Manor', screen: 'MontroseManorTab', clickable: true, image: require('../../assets/MontroseManorPlaceHolder.jpg') }, // have ' ' in name for invisible card
+  { name: '', codename: 'Montrose Manor', screen: 'MontroseManorTab', clickable: true, image: require('../../assets/TheMontroseManor.jpg') }, // have ' ' in name for invisible card
   { name: '', codename: 'MonkeAlliance', screen: 'MonkeAllianceScreen', clickable: true, image: require('../../assets/BackGround/Monke.jpg') },
 ];
 

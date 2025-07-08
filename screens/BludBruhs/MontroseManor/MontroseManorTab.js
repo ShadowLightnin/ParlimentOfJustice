@@ -13,7 +13,7 @@ const RESTRICT_ACCESS = false;
 const RESTRICT_IMAGE_UPLOAD = true;
 const PLACEHOLDER_IMAGE = require("../../../assets/Armor/PlaceHolder.jpg");
 const HARDCODED_BOOKS = [
-  { id: "hardcoded-1", title: "Montrose Manor", coverImage: require("../../../assets/MontroseManor.jpg"), hardcoded: true },
+  { id: "hardcoded-1", title: "Montrose Manor", coverImage: require("../../../assets/TheMontroseManor.jpg"), hardcoded: true },
 ];
 
 const MontroseManorTab = () => {
