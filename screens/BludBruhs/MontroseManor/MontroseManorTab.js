@@ -338,7 +338,7 @@ const MontroseManorTab = () => {
   };
 
   return (
-    <ImageBackground source={require("../../../assets/MontroseMansion.jpg")} style={styles.bg}>
+    <ImageBackground source={require("../../../assets/TheMaw.jpg")} style={styles.bg}>
       <TouchableOpacity
         onPress={() => {
           console.log("Navigating to EvilMontrose");
