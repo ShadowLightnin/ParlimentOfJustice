@@ -30,6 +30,7 @@ const homageFactions = [
 const worldBuildingFactions = [
   { name: 'Guardians of Justice', screen: 'JusticeScreen', clickable: true, image: require('../assets/BackGround/Justice.jpg') },
   { name: 'Infantry', screen: 'Infantry', clickable: true, image: require('../assets/BackGround/Soldiers.jpg') },
+  { name: 'Zion City', screen: '', clickable: true, image: require('../assets/ParliamentTower.jpg') },
   { name: 'Ship Yard', screen: 'ShipYardScreen', clickable: true, image: require('../assets/BackGround/ShipYard.jpg') },
   { name: 'Villains', screen: 'VillainsScreen', clickable: true, image: require('../assets/BackGround/VillainsHub.jpg') },
 ];
@@ -75,24 +76,58 @@ export const HomeScreen = () => {
         style={[
           styles.card,
           { width: cardWidth, height: cardHeight, margin: cardSpacing / 2 },
-          !item.clickable && styles.disabledCard
+          !item.clickable && styles.disabledCard,
         ]}
-        onPress={() => item.clickable && navigation.navigate(item.screen)}
-        disabled={!item.clickable}
+        onPress={() => item.clickable && item.screen && navigation.navigate(item.screen)}
+        disabled={!item.clickable || !item.screen}
       >
         <ImageBackground 
           source={item.image} 
           style={styles.imageBackground} 
           imageStyle={styles.imageOverlay}
         >
-          {/* Transparent Touch-Blocking Overlay */}
           <View style={styles.transparentOverlay} />
-
           {!item.clickable && <Text style={styles.disabledText}>Not Clickable at the moment</Text>}
         </ImageBackground>
       </TouchableOpacity>
     </Animated.View>
   );
+
+  const renderWorldBuildingGrid = () => {
+    // Split factions into top (2), middle (1), and bottom (2)
+    const topFactions = worldBuildingFactions.slice(0, 2);
+    const middleFaction = worldBuildingFactions[2] ? worldBuildingFactions[2] : null;
+    const bottomFactions = worldBuildingFactions.slice(3, 5);
+
+    return (
+      <View style={styles.gridContainer}>
+        {/* Top Row: 2 Cards */}
+        <View style={styles.row}>
+          {topFactions.map((item) => (
+            <View key={item.name} style={styles.gridItem}>
+              {renderFaction({ item })}
+            </View>
+          ))}
+          {topFactions.length < 2 && <View style={styles.gridItem} />} {/* Empty placeholder */}
+        </View>
+        {/* Middle Row: 1 Centered Card */}
+        {middleFaction && (
+          <View style={styles.middleRow}>
+            {renderFaction({ item: middleFaction })}
+          </View>
+        )}
+        {/* Bottom Row: 2 Cards */}
+        <View style={styles.row}>
+          {bottomFactions.map((item) => (
+            <View key={item.name} style={styles.gridItem}>
+              {renderFaction({ item })}
+            </View>
+          ))}
+          {bottomFactions.length < 2 && <View style={styles.gridItem} />} {/* Empty placeholder */}
+        </View>
+      </View>
+    );
+  };
 
   return (
     <ImageBackground source={require('../assets/BackGround/Parliment.png')} style={styles.background}>
@@ -114,7 +149,7 @@ export const HomeScreen = () => {
           <View style={styles.sectionContainer}>
             <View style={styles.headerContainer}>
               {/* <Text style={styles.sectionHeader}>Homage</Text>
-              <View style={styles.separatorLine} /> */}
+              <View style={styles.separatorLine} />*/}
             </View>
             <FlatList
               data={homageFactions}
@@ -131,13 +166,7 @@ export const HomeScreen = () => {
               <Text style={styles.sectionHeader}>World Building</Text>
               <View style={styles.separatorLine} />
             </View>
-            <FlatList
-              data={worldBuildingFactions}
-              keyExtractor={(item) => item.name}
-              renderItem={renderFaction}
-              numColumns={numColumns}
-              contentContainerStyle={styles.listContainer}
-            />
+            {renderWorldBuildingGrid()}
           </View>
 
           {/* Others Section */}
@@ -178,10 +207,10 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   topBar: {
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 20,
     paddingHorizontal: 10,
     paddingTop: 20,
@@ -211,7 +240,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   separatorLine: {
-    width: SCREEN_WIDTH - 40, // Match scrollContainer padding (20 * 2)
+    width: SCREEN_WIDTH - 40,
     borderBottomWidth: 2,
     borderBottomColor: '#79cbee77',
     marginBottom: 10,
@@ -219,6 +248,29 @@ const styles = StyleSheet.create({
   listContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  gridContainer: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: cardWidth * 2 + cardSpacing * 2,
+    marginVertical: cardSpacing / 2,
+  },
+  middleRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    width: cardWidth * 2 + cardSpacing * 2,
+    marginVertical: cardSpacing / 2,
+  },
+  gridItem: {
+    width: cardWidth + cardSpacing,
+    height: cardHeight + cardSpacing + 30, // Extra height for title
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   card: {
     borderRadius: 10,
@@ -263,7 +315,7 @@ const styles = StyleSheet.create({
   },
   chatText: {
     fontSize: 22,
-    color: "white",
+    color: 'white',
   },
   logoutButton: {
     padding: 10,
@@ -271,6 +323,6 @@ const styles = StyleSheet.create({
   },
   logoutText: {
     fontSize: 22,
-    color: "white",
+    color: 'white',
   },
 });
