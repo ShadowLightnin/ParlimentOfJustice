@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -9,8 +9,9 @@ import {
   Dimensions,
   Animated,
   Modal,
+  Alert,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { Audio } from "expo-av";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -29,7 +30,6 @@ const armor = [
   { name: "Philippines Crusader", image: require("../../assets/Armor/AileensSymbol.jpg"), clickable: true },
 ];
 
-// Data for kids' images
 const kids = [
   { name: "Niella Terra", image: require("../../assets/Armor/Niella.jpg"), clickable: true },
   { name: "Oliver Robertodd", image: require("../../assets/Armor/Oliver.jpg"), clickable: true },
@@ -41,7 +41,6 @@ const kids = [
   { name: "", image: require("../../assets/Armor/family3.jpg"), clickable: true },
 ];
 
-// Ariata's new story for the popup
 const ARIATA_STORY = `
    Aileen is an amazing, wonderful and caring person. Always looking out for those and helping whenever she can.
    She is very patient and understanding. She has a deep love for her family and loved ones, and for me.
@@ -55,38 +54,105 @@ const Aileen = () => {
   const navigation = useNavigation();
   const flashAnim = useRef(new Animated.Value(1)).current;
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
-  const [selectedCharacter, setSelectedCharacter] = useState(null); // State for popup
+  const [selectedCharacter, setSelectedCharacter] = useState(null);
+  const [currentSound, setCurrentSound] = useState(null);
+  const [pausedPosition, setPausedPosition] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
-  // Music setup
+  // Initialize sound on mount
   useEffect(() => {
-    let sound = null;
-    async function loadSound() {
+    const loadSound = async () => {
       try {
-        const { sound: audioSound } = await Audio.Sound.createAsync(
+        const { sound } = await Audio.Sound.createAsync(
           require("../../assets/audio/SourceOfStrength.mp4"),
           { shouldPlay: true, isLooping: true, volume: 1.0 }
         );
-        sound = audioSound;
-        await sound.playAsync();
+        setCurrentSound(sound);
         console.log("Music started playing at:", new Date().toISOString());
       } catch (error) {
         console.error("Error loading or playing audio:", error);
+        Alert.alert('Audio Error', 'Failed to load background music. Please check the audio file path: ../../assets/audio/SourceOfStrength.mp4');
       }
-    }
+    };
+
     loadSound();
 
     // Cleanup on unmount
     return () => {
-      if (sound) {
-        sound.stopAsync().then(() => {
-          sound.unloadAsync();
-          console.log("Audio stopped and released at:", new Date().toISOString());
-        }).catch((error) => {
-          console.error("Error stopping audio:", error);
-        });
+      if (currentSound) {
+        currentSound.stopAsync().catch((error) => console.error("Error stopping sound:", error));
+        currentSound.unloadAsync().catch((error) => console.error("Error unloading sound:", error));
+        setCurrentSound(null);
+        setPausedPosition(0);
+        setIsPaused(false);
+        console.log("Audio stopped and released at:", new Date().toISOString());
       }
     };
   }, []);
+
+  // Handle screen focus to resume/pause audio
+  useFocusEffect(
+    useCallback(() => {
+      const resumeSound = async () => {
+        if (currentSound && isPaused && pausedPosition >= 0 && !selectedCharacter) {
+          try {
+            await currentSound.setPositionAsync(pausedPosition);
+            await currentSound.playAsync();
+            setIsPaused(false);
+            console.log("Music resumed at:", new Date().toISOString());
+          } catch (error) {
+            console.error("Error resuming sound:", error);
+          }
+        }
+      };
+
+      resumeSound();
+
+      // Handle navigation to stop audio on all exits
+      const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+        if (currentSound) {
+          currentSound.stopAsync().catch((error) => console.error("Error stopping sound:", error));
+          currentSound.unloadAsync().catch((error) => console.error("Error unloading sound:", error));
+          setCurrentSound(null);
+          setPausedPosition(0);
+          setIsPaused(false);
+          console.log("Audio stopped and released at:", new Date().toISOString());
+        }
+      });
+
+      return () => {
+        unsubscribe();
+      };
+    }, [currentSound, isPaused, pausedPosition, navigation, selectedCharacter])
+  );
+
+  // Handle audio for modal open/close
+  useEffect(() => {
+    const handleModalAudio = async () => {
+      if (currentSound) {
+        try {
+          if (selectedCharacter && !isPaused) {
+            const status = await currentSound.getStatusAsync();
+            if (status.isPlaying) {
+              await currentSound.pauseAsync();
+              setPausedPosition(status.positionMillis || 0);
+              setIsPaused(true);
+              console.log("Music paused for modal at:", new Date().toISOString());
+            }
+          } else if (!selectedCharacter && isPaused) {
+            await currentSound.setPositionAsync(pausedPosition);
+            await currentSound.playAsync();
+            setIsPaused(false);
+            console.log("Music resumed after modal close at:", new Date().toISOString());
+          }
+        } catch (error) {
+          console.error("Error handling modal audio:", error);
+        }
+      }
+    };
+
+    handleModalAudio();
+  }, [selectedCharacter, currentSound, isPaused, pausedPosition]);
 
   // Dynamic window sizing
   useEffect(() => {
@@ -97,7 +163,7 @@ const Aileen = () => {
     return () => subscription?.remove();
   }, []);
 
-  // ⚡ Flashing Animation Effect for Planet
+  // Flashing Animation Effect for Planet
   useEffect(() => {
     const interval = setInterval(() => {
       Animated.sequence([
@@ -108,15 +174,52 @@ const Aileen = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const handlePlanetPress = () => {
+  const handlePlanetPress = async () => {
+    if (currentSound) {
+      try {
+        await currentSound.stopAsync();
+        await currentSound.unloadAsync();
+        setCurrentSound(null);
+        setPausedPosition(0);
+        setIsPaused(false);
+        console.log("Audio stopped for planet navigation at:", new Date().toISOString());
+      } catch (error) {
+        console.error("Error stopping sound for planet navigation:", error);
+      }
+    }
     navigation.navigate("WarpScreen");
   };
 
-  const handleCardPress = (item) => {
+  const handleCardPress = async (item) => {
     if (item.clickable) {
+      if (currentSound) {
+        try {
+          const status = await currentSound.getStatusAsync();
+          if (status.isPlaying) {
+            await currentSound.pauseAsync();
+            setPausedPosition(status.positionMillis || 0);
+            setIsPaused(true);
+            console.log("Music paused for card press at:", new Date().toISOString());
+          }
+        } catch (error) {
+          console.error("Error pausing sound for card press:", error);
+        }
+      }
       if (item.name === "Ariata") {
-        setSelectedCharacter(item); // Show popup for Ariata
+        setSelectedCharacter(item);
       } else if (item.name === "Seraphina") {
+        if (currentSound) {
+          try {
+            await currentSound.stopAsync();
+            await currentSound.unloadAsync();
+            setCurrentSound(null);
+            setPausedPosition(0);
+            setIsPaused(false);
+            console.log("Audio stopped for Seraphina navigation at:", new Date().toISOString());
+          } catch (error) {
+            console.error("Error stopping sound for Seraphina navigation:", error);
+          }
+        }
         navigation.navigate("Aileenchat");
       } else {
         console.log(`${item.name} clicked`);
@@ -124,8 +227,8 @@ const Aileen = () => {
     }
   };
 
-  const closePopup = () => {
-    setSelectedCharacter(null); // Close the popup
+  const closePopup = async () => {
+    setSelectedCharacter(null);
   };
 
   const isDesktop = windowWidth >= 768;
@@ -150,7 +253,24 @@ const Aileen = () => {
     <TouchableOpacity
       key={item.name}
       style={[styles.kidCard(isDesktop, windowWidth), item.clickable ? styles.clickable : styles.notClickable]}
-      onPress={() => item.clickable && console.log(`${item.name} clicked`)}
+      onPress={async () => {
+        if (item.clickable) {
+          if (currentSound) {
+            try {
+              const status = await currentSound.getStatusAsync();
+              if (status.isPlaying) {
+                await currentSound.pauseAsync();
+                setPausedPosition(status.positionMillis || 0);
+                setIsPaused(true);
+                console.log("Music paused for kid card press at:", new Date().toISOString());
+              }
+            } catch (error) {
+              console.error("Error pausing sound for kid card press:", error);
+            }
+          }
+          console.log(`${item.name} clicked`);
+        }
+      }}
       disabled={!item.clickable}
     >
       <Image source={item.image} style={styles.kidImage} />
@@ -168,12 +288,24 @@ const Aileen = () => {
         <View style={styles.headerContainer}>
           <TouchableOpacity
             style={styles.backButton}
-            onPress={() =>
+            onPress={async () => {
+              if (currentSound) {
+                try {
+                  await currentSound.stopAsync();
+                  await currentSound.unloadAsync();
+                  setCurrentSound(null);
+                  setPausedPosition(0);
+                  setIsPaused(false);
+                  console.log("Audio stopped and released at:", new Date().toISOString());
+                } catch (error) {
+                  console.error("Error stopping/unloading sound:", error);
+                }
+              }
               navigation.reset({
                 index: 0,
                 routes: [{ name: "EclipseHome" }],
-              })
-            }
+              });
+            }}
           >
             <Text style={styles.backButtonText}>←</Text>
           </TouchableOpacity>
@@ -203,7 +335,21 @@ const Aileen = () => {
           <Text style={styles.partnerHeader}>My Partner</Text>
           <TouchableOpacity
             style={[styles.partnerImageContainer(isDesktop, windowWidth), styles.clickable]}
-            onPress={() => navigation.navigate("Will")}
+            onPress={async () => {
+              if (currentSound) {
+                try {
+                  await currentSound.stopAsync();
+                  await currentSound.unloadAsync();
+                  setCurrentSound(null);
+                  setPausedPosition(0);
+                  setIsPaused(false);
+                  console.log("Audio stopped for partner navigation at:", new Date().toISOString());
+                } catch (error) {
+                  console.error("Error stopping sound for partner navigation:", error);
+                }
+              }
+              navigation.navigate("Will");
+            }}
           >
             <Image
               source={require("../../assets/Armor/Celestial.jpg")}

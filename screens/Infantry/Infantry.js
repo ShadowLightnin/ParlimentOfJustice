@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -11,10 +11,11 @@ import {
   Modal,
   Alert,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { db, auth, storage } from '../../lib/firebase';
 import { collection, onSnapshot, deleteDoc, doc, getDoc } from 'firebase/firestore';
 import { ref, deleteObject } from 'firebase/storage';
+import { Audio } from 'expo-av';
 import RecruitForm from './RecruitForm';
 
 // Screen dimensions
@@ -53,7 +54,72 @@ const InfantryScreen = () => {
   const [previewInfantry, setPreviewInfantry] = useState(null);
   const [infantry, setInfantry] = useState(hardcodedInfantry);
   const [deleteModal, setDeleteModal] = useState({ visible: false, infantry: null });
+  const [currentSound, setCurrentSound] = useState(null);
+  const [pausedPosition, setPausedPosition] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
   const canMod = RESTRICT_ACCESS ? auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
+
+  // Initialize sound on mount
+  useEffect(() => {
+    const loadSound = async () => {
+      try {
+        const { sound } = await Audio.Sound.createAsync(
+          require('../../assets/audio/SourceOfStrengthNinjagoMyVersion.mp4'),
+          { shouldPlay: true, isLooping: true, volume: 1.0 }
+        );
+        setCurrentSound(sound);
+      } catch (error) {
+        console.error('Failed to load audio file:', error);
+        Alert.alert('Audio Error', 'Failed to load background music. Please check the audio file path: ../../assets/audio/ForDemocracy.mp4');
+      }
+    };
+
+    loadSound();
+
+    // Cleanup sound on unmount
+    return () => {
+      if (currentSound) {
+        currentSound.stopAsync().catch((error) => console.error('Error stopping sound:', error));
+        currentSound.unloadAsync().catch((error) => console.error('Error unloading sound:', error));
+        setCurrentSound(null);
+        setPausedPosition(0);
+        setIsPaused(false);
+      }
+    };
+  }, []);
+
+  // Handle screen focus to resume/pause audio
+  useFocusEffect(
+    useCallback(() => {
+      const resumeSound = async () => {
+        if (currentSound && isPaused && pausedPosition >= 0) {
+          try {
+            await currentSound.setPositionAsync(pausedPosition);
+            await currentSound.playAsync();
+            setIsPaused(false);
+          } catch (error) {
+            console.error('Error resuming sound:', error);
+          }
+        }
+      };
+
+      resumeSound();
+
+      return () => {
+        if (currentSound && !isPaused) {
+          currentSound.pauseAsync().then(async () => {
+            try {
+              const status = await currentSound.getStatusAsync();
+              setPausedPosition(status.positionMillis || 0);
+              setIsPaused(true);
+            } catch (error) {
+              console.error('Error pausing sound:', error);
+            }
+          }).catch((error) => console.error('Error pausing sound:', error));
+        }
+      };
+    }, [currentSound, isPaused, pausedPosition])
+  );
 
   // Fetch dynamic infantry from Firestore
   useEffect(() => {
@@ -74,8 +140,20 @@ const InfantryScreen = () => {
     return () => unsub();
   }, []);
 
-  const handleInfantryPress = (infantryItem) => {
+  const handleInfantryPress = async (infantryItem) => {
     if (infantryItem.clickable) {
+      if (currentSound) {
+        try {
+          const status = await currentSound.getStatusAsync();
+          if (status.isPlaying) {
+            await currentSound.pauseAsync();
+            setPausedPosition(status.positionMillis || 0);
+            setIsPaused(true);
+          }
+        } catch (error) {
+          console.error('Error pausing sound on infantry press:', error);
+        }
+      }
       if (infantryItem.screen) {
         console.log('Navigating to screen:', infantryItem.screen);
         navigation.navigate(infantryItem.screen);
@@ -192,6 +270,17 @@ const InfantryScreen = () => {
       style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable(infantryItem.borderColor)]}
       onPress={() => {
         console.log('Closing preview modal');
+        if (currentSound) {
+          currentSound.pauseAsync().then(async () => {
+            try {
+              const status = await currentSound.getStatusAsync();
+              setPausedPosition(status.positionMillis || 0);
+              setIsPaused(true);
+            } catch (error) {
+              console.error('Error pausing sound on preview close:', error);
+            }
+          }).catch((error) => console.error('Error pausing sound:', error));
+        }
         setPreviewInfantry(null);
       }}
     >
@@ -216,6 +305,17 @@ const InfantryScreen = () => {
         <TouchableOpacity
           onPress={() => {
             console.log('Navigating back');
+            if (currentSound) {
+              currentSound.pauseAsync().then(async () => {
+                try {
+                  const status = await currentSound.getStatusAsync();
+                  setPausedPosition(status.positionMillis || 0);
+                  setIsPaused(true);
+                } catch (error) {
+                  console.error('Error pausing sound on back:', error);
+                }
+              }).catch((error) => console.error('Error pausing sound:', error));
+            }
             navigation.goBack();
           }}
           style={styles.back}
@@ -223,7 +323,7 @@ const InfantryScreen = () => {
           <Text style={styles.backText}>⬅️</Text>
         </TouchableOpacity>
         <ScrollView contentContainerStyle={styles.scroll}>
-          <Text style={styles.header}>Infantry Yard</Text>
+          <Text style={styles.header}>Infantry</Text>
           <View style={styles.scrollWrapper}>
             <ScrollView
               horizontal
@@ -252,6 +352,17 @@ const InfantryScreen = () => {
             animationType="fade"
             onRequestClose={() => {
               console.log('Closing preview modal');
+              if (currentSound) {
+                currentSound.pauseAsync().then(async () => {
+                  try {
+                    const status = await currentSound.getStatusAsync();
+                    setPausedPosition(status.positionMillis || 0);
+                    setIsPaused(true);
+                  } catch (error) {
+                    console.error('Error pausing sound on modal close:', error);
+                  }
+                }).catch((error) => console.error('Error pausing sound:', error));
+              }
               setPreviewInfantry(null);
             }}
           >
@@ -261,6 +372,17 @@ const InfantryScreen = () => {
                 activeOpacity={1}
                 onPress={() => {
                   console.log('Closing preview modal');
+                  if (currentSound) {
+                    currentSound.pauseAsync().then(async () => {
+                      try {
+                        const status = await currentSound.getStatusAsync();
+                        setPausedPosition(status.positionMillis || 0);
+                        setIsPaused(true);
+                      } catch (error) {
+                        console.error('Error pausing sound on modal outer press:', error);
+                      }
+                    }).catch((error) => console.error('Error pausing sound:', error));
+                  }
                   setPreviewInfantry(null);
                 }}
               >
@@ -283,6 +405,17 @@ const InfantryScreen = () => {
                   <TouchableOpacity
                     onPress={() => {
                       console.log('Closing preview modal');
+                      if (currentSound) {
+                        currentSound.pauseAsync().then(async () => {
+                          try {
+                            const status = await currentSound.getStatusAsync();
+                            setPausedPosition(status.positionMillis || 0);
+                            setIsPaused(true);
+                          } catch (error) {
+                            console.error('Error pausing sound on close button:', error);
+                          }
+                        }).catch((error) => console.error('Error pausing sound:', error));
+                      }
                       setPreviewInfantry(null);
                     }}
                     style={styles.close}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,8 +9,10 @@ import {
   Dimensions,
   ImageBackground,
   Modal,
+  Alert,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
+import { Audio } from 'expo-av';
 
 // Screen dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -60,18 +62,75 @@ const heroes = [
   { name: '', codename: 'Voice Fry', screen: '', clickable: true, image: require('../../assets/Armor/Johnathon_cleanup.jpg') },
 ];
 
+// Background music
+let backgroundSound;
+
+const playBackgroundMusic = async () => {
+  if (!backgroundSound) {
+    try {
+      const { sound } = await Audio.Sound.createAsync(
+        require('../../assets/audio/SourceOfStrengthNinjagoMyVersion.mp4'),
+        { shouldPlay: true, isLooping: true, volume: 1.0 }
+      );
+      backgroundSound = sound;
+      await sound.playAsync();
+    } catch (error) {
+      console.error('Failed to load audio file:', error);
+      Alert.alert('Audio Error', 'Failed to load background music. Please check the audio file path: ../../assets/audio/Superman.mp4');
+    }
+  }
+};
+
+const stopBackgroundMusic = async () => {
+  if (backgroundSound) {
+    try {
+      await backgroundSound.stopAsync();
+      await backgroundSound.unloadAsync();
+      backgroundSound = null;
+    } catch (error) {
+      console.error('Error stopping/unloading sound:', error);
+    }
+  }
+};
+
 const JusticeScreen = () => {
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
   const [previewHero, setPreviewHero] = useState(null);
 
-  const handleHeroPress = (hero) => {
+  // Handle audio and background image on focus
+  useEffect(() => {
+    if (isFocused) {
+      playBackgroundMusic();
+    }
+
+    // Handle navigation events
+    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+      if (e.data.action.type === 'NAVIGATE' && e.data.action.payload.name === 'Home') {
+        stopBackgroundMusic();
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [isFocused, navigation]);
+
+  const handleHeroPress = async (hero) => {
     if (hero.clickable) {
-      if (hero.screen) {
-        console.log('Navigating to screen:', hero.screen);
-        navigation.navigate(hero.screen); // Navigate if screen exists
-      } else {
+      if (!hero.screen) {
+        if (backgroundSound) {
+          try {
+            await backgroundSound.pauseAsync();
+          } catch (error) {
+            console.error('Error pausing sound on hero press:', error);
+          }
+        }
         console.log('Showing preview for hero:', hero.name || hero.codename || 'Unknown');
         setPreviewHero(hero); // Show modal if no screen
+      } else {
+        console.log('Navigating to screen:', hero.screen);
+        navigation.navigate(hero.screen); // Navigate if screen exists
       }
     }
   };
@@ -106,8 +165,9 @@ const JusticeScreen = () => {
   const renderPreviewCard = (hero) => (
     <TouchableOpacity
       style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
-      onPress={() => {
+      onPress={async () => {
         console.log('Closing preview modal');
+        await playBackgroundMusic(); // Resume audio
         setPreviewHero(null);
       }}
     >
@@ -131,8 +191,9 @@ const JusticeScreen = () => {
       <View style={styles.container}>
         {/* Back Button */}
         <TouchableOpacity
-          onPress={() => {
+          onPress={async () => {
             console.log('Navigating to Home');
+            await stopBackgroundMusic();
             navigation.navigate('Home');
           }}
           style={styles.backButton}
@@ -166,8 +227,9 @@ const JusticeScreen = () => {
           visible={!!previewHero}
           transparent={true}
           animationType="fade"
-          onRequestClose={() => {
+          onRequestClose={async () => {
             console.log('Closing preview modal');
+            await playBackgroundMusic(); // Resume audio
             setPreviewHero(null);
           }}
         >
@@ -175,8 +237,9 @@ const JusticeScreen = () => {
             <TouchableOpacity
               style={styles.modalOuterContainer}
               activeOpacity={1}
-              onPress={() => {
+              onPress={async () => {
                 console.log('Closing preview modal');
+                await playBackgroundMusic(); // Resume audio
                 setPreviewHero(null);
               }}
             >

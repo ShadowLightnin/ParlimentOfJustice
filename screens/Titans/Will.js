@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
-  View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions
+  View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions, Alert
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { Audio } from "expo-av";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -35,37 +35,76 @@ const kids = [
 const Will = () => {
   const navigation = useNavigation();
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
+  const [currentSound, setCurrentSound] = useState(null);
+  const [pausedPosition, setPausedPosition] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
-  // Music setup
+  // Initialize sound on mount
   useEffect(() => {
-    let sound = null;
-    async function loadSound() {
+    const loadSound = async () => {
       try {
-        const { sound: audioSound } = await Audio.Sound.createAsync(
+        const { sound } = await Audio.Sound.createAsync(
           require("../../assets/audio/SourceOfStrengthNinjagoMyVersion.mp4"),
           { shouldPlay: true, isLooping: true, volume: 1.0 }
         );
-        sound = audioSound;
-        await sound.playAsync();
+        setCurrentSound(sound);
         console.log("Music started playing at:", new Date().toISOString());
       } catch (error) {
         console.error("Error loading or playing audio:", error);
+        Alert.alert('Audio Error', 'Failed to load background music. Please check the audio file path: ../../assets/audio/SourceOfStrengthNinjagoMyVersion.mp4');
       }
-    }
+    };
+
     loadSound();
 
     // Cleanup on unmount
     return () => {
-      if (sound) {
-        sound.stopAsync().then(() => {
-          sound.unloadAsync();
-          console.log("Audio stopped and released at:", new Date().toISOString());
-        }).catch((error) => {
-          console.error("Error stopping audio:", error);
-        });
+      if (currentSound) {
+        currentSound.stopAsync().catch((error) => console.error("Error stopping sound:", error));
+        currentSound.unloadAsync().catch((error) => console.error("Error unloading sound:", error));
+        setCurrentSound(null);
+        setPausedPosition(0);
+        setIsPaused(false);
+        console.log("Audio stopped and released at:", new Date().toISOString());
       }
     };
   }, []);
+
+  // Handle screen focus to resume/stop audio
+  useFocusEffect(
+    useCallback(() => {
+      const resumeSound = async () => {
+        if (currentSound && isPaused && pausedPosition >= 0) {
+          try {
+            await currentSound.setPositionAsync(pausedPosition);
+            await currentSound.playAsync();
+            setIsPaused(false);
+            console.log("Music resumed at:", new Date().toISOString());
+          } catch (error) {
+            console.error("Error resuming sound:", error);
+          }
+        }
+      };
+
+      resumeSound();
+
+      // Handle navigation to stop audio on all exits
+      const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+        if (currentSound) {
+          currentSound.stopAsync().catch((error) => console.error("Error stopping sound:", error));
+          currentSound.unloadAsync().catch((error) => console.error("Error unloading sound:", error));
+          setCurrentSound(null);
+          setPausedPosition(0);
+          setIsPaused(false);
+          console.log("Audio stopped and released at:", new Date().toISOString());
+        }
+      });
+
+      return () => {
+        unsubscribe();
+      };
+    }, [currentSound, isPaused, pausedPosition, navigation])
+  );
 
   // Update window width on resize
   useEffect(() => {
@@ -76,7 +115,7 @@ const Will = () => {
     return () => subscription?.remove();
   }, []);
 
-  // Determine if it's desktop or mobile based on width (e.g., 768px as breakpoint)
+  // Determine if it's desktop or mobile based on width
   const isDesktop = windowWidth >= 768;
 
   // Render each armor card
@@ -84,7 +123,24 @@ const Will = () => {
     <TouchableOpacity
       key={armor.name}
       style={[styles.card(isDesktop, windowWidth), armor.clickable ? styles.clickable : styles.notClickable]}
-      onPress={() => armor.clickable && console.log(`${armor.name} clicked`)}
+      onPress={async () => {
+        if (armor.clickable) {
+          if (currentSound) {
+            try {
+              const status = await currentSound.getStatusAsync();
+              if (status.isPlaying) {
+                await currentSound.pauseAsync();
+                setPausedPosition(status.positionMillis || 0);
+                setIsPaused(true);
+                console.log("Music paused for armor click at:", new Date().toISOString());
+              }
+            } catch (error) {
+              console.error("Error pausing sound for armor click:", error);
+            }
+          }
+          console.log(`${armor.name} clicked`);
+        }
+      }}
       disabled={!armor.clickable}
     >
       <Image source={armor.image} style={styles.armorImage} />
@@ -101,7 +157,24 @@ const Will = () => {
     <TouchableOpacity
       key={item.name}
       style={[styles.kidCard(isDesktop, windowWidth), item.clickable ? styles.clickableKid : styles.notClickable]}
-      onPress={() => item.clickable && console.log(`${item.name} clicked`)}
+      onPress={async () => {
+        if (item.clickable) {
+          if (currentSound) {
+            try {
+              const status = await currentSound.getStatusAsync();
+              if (status.isPlaying) {
+                await currentSound.pauseAsync();
+                setPausedPosition(status.positionMillis || 0);
+                setIsPaused(true);
+                console.log("Music paused for kid click at:", new Date().toISOString());
+              }
+            } catch (error) {
+              console.error("Error pausing sound for kid click:", error);
+            }
+          }
+          console.log(`${item.name} clicked`);
+        }
+      }}
       disabled={!item.clickable}
     >
       <Image source={item.image} style={styles.kidImage} />
@@ -117,8 +190,20 @@ const Will = () => {
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.headerContainer}>
-          <TouchableOpacity style={styles.backButton} onPress={() => {
-            console.log('Navigating to TitanHome');
+          <TouchableOpacity style={styles.backButton} onPress={async () => {
+            console.log('Navigating to TitansHome');
+            if (currentSound) {
+              try {
+                await currentSound.stopAsync();
+                await currentSound.unloadAsync();
+                setCurrentSound(null);
+                setPausedPosition(0);
+                setIsPaused(false);
+                console.log("Audio stopped and released at:", new Date().toISOString());
+              } catch (error) {
+                console.error("Error stopping/unloading sound:", error);
+              }
+            }
             navigation.navigate('TitansHome');
           }}>
             <Text style={styles.backButtonText}>←</Text>
@@ -140,7 +225,21 @@ const Will = () => {
           <Text style={styles.partnerHeader}>My Partner</Text>
           <TouchableOpacity
             style={[styles.partnerImageContainer(isDesktop, windowWidth), styles.clickableKid]}
-            onPress={() => navigation.navigate("Aileen")}
+            onPress={async () => {
+              if (currentSound) {
+                try {
+                  await currentSound.stopAsync();
+                  await currentSound.unloadAsync();
+                  setCurrentSound(null);
+                  setPausedPosition(0);
+                  setIsPaused(false);
+                  console.log("Audio stopped for partner navigation at:", new Date().toISOString());
+                } catch (error) {
+                  console.error("Error stopping sound for partner navigation:", error);
+                }
+              }
+              navigation.navigate("Aileen");
+            }}
           >
             <Image
               source={require("../../assets/Armor/Aileen2.jpg")}

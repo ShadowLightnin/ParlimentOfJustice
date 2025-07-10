@@ -1,12 +1,13 @@
-import React, { useRef, useEffect, useContext } from 'react';
+import React, { useRef, useEffect, useContext, useState, useCallback } from 'react';
 import { 
   View, Text, ImageBackground, TouchableOpacity, StyleSheet, FlatList, 
   Animated, Alert, Dimensions, ScrollView 
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { signOut } from 'firebase/auth';
 import { auth } from '../lib/firebase';
 import { AuthContext } from '../context/auth-context';
+import { Audio } from 'expo-av';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 const isDesktop = SCREEN_WIDTH > 600;
@@ -30,7 +31,7 @@ const homageFactions = [
 const worldBuildingFactions = [
   { name: 'Guardians of Justice', screen: 'JusticeScreen', clickable: true, image: require('../assets/BackGround/Justice.jpg') },
   { name: 'Infantry', screen: 'Infantry', clickable: true, image: require('../assets/BackGround/Soldiers.jpg') },
-  { name: 'Zion City', screen: '', clickable: true, image: require('../assets/ParliamentTower.jpg') },
+  { name: 'Zion Metropolitan', screen: '', clickable: true, image: require('../assets/ParliamentTower.jpg') },
   { name: 'Ship Yard', screen: 'ShipYardScreen', clickable: true, image: require('../assets/BackGround/ShipYard.jpg') },
   { name: 'Villains', screen: 'VillainsScreen', clickable: true, image: require('../assets/BackGround/VillainsHub.jpg') },
 ];
@@ -43,18 +44,93 @@ export const HomeScreen = () => {
   const navigation = useNavigation();
   const authCtx = useContext(AuthContext);
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [currentSound, setCurrentSound] = useState(null);
+  const [pausedPosition, setPausedPosition] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
   const numColumns = isDesktop ? 3 : 2;
 
+  // Initialize sound on mount
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 400,
       useNativeDriver: true,
     }).start();
+
+    const loadSound = async () => {
+      try {
+        const { sound } = await Audio.Sound.createAsync(
+          require('../assets/audio/SourceOfStrengthNinjagoMyVersion.mp4'),
+          { shouldPlay: true, isLooping: false, volume: 1.0 }
+        );
+        setCurrentSound(sound);
+      } catch (error) {
+        console.error('Failed to load audio file:', error);
+        Alert.alert('Audio Error', 'Failed to load background music. Please check the audio file path: ../assets/audio/StarTrekEnterprise.mp4');
+      }
+    };
+
+    loadSound();
+
+    // Cleanup sound on unmount
+    return () => {
+      if (currentSound) {
+        currentSound.stopAsync().catch((error) => console.error('Error stopping sound:', error));
+        currentSound.unloadAsync().catch((error) => console.error('Error unloading sound:', error));
+        setCurrentSound(null);
+        setPausedPosition(0);
+        setIsPaused(false);
+      }
+    };
   }, []);
 
+  // Handle screen focus to resume/pause audio
+  useFocusEffect(
+    useCallback(() => {
+      const resumeSound = async () => {
+        if (currentSound && isPaused && pausedPosition >= 0) {
+          try {
+            await currentSound.setPositionAsync(pausedPosition);
+            await currentSound.playAsync();
+            setIsPaused(false);
+          } catch (error) {
+            console.error('Error resuming sound:', error);
+          }
+        }
+      };
+
+      resumeSound();
+
+      return () => {
+        if (currentSound && !isPaused) {
+          currentSound.pauseAsync().then(async () => {
+            try {
+              const status = await currentSound.getStatusAsync();
+              setPausedPosition(status.positionMillis || 0);
+              setIsPaused(true);
+            } catch (error) {
+              console.error('Error pausing sound:', error);
+            }
+          }).catch((error) => console.error('Error pausing sound:', error));
+        }
+      };
+    }, [currentSound, isPaused, pausedPosition])
+  );
+
   const handleLogout = async () => {
+    if (currentSound) {
+      try {
+        const status = await currentSound.getStatusAsync();
+        if (status.isPlaying) {
+          await currentSound.pauseAsync();
+          setPausedPosition(status.positionMillis || 0);
+          setIsPaused(true);
+        }
+      } catch (error) {
+        console.error('Error pausing sound on logout:', error);
+      }
+    }
     try {
       await signOut(auth);
       authCtx.logout(); 
@@ -63,7 +139,19 @@ export const HomeScreen = () => {
     }
   };
 
-  const goToChat = () => {
+  const goToChat = async () => {
+    if (currentSound) {
+      try {
+        const status = await currentSound.getStatusAsync();
+        if (status.isPlaying) {
+          await currentSound.pauseAsync();
+          setPausedPosition(status.positionMillis || 0);
+          setIsPaused(true);
+        }
+      } catch (error) {
+        console.error('Error pausing sound for chat:', error);
+      }
+    }
     navigation.navigate('PublicChat');
   };
 
@@ -149,7 +237,7 @@ export const HomeScreen = () => {
           <View style={styles.sectionContainer}>
             <View style={styles.headerContainer}>
               {/* <Text style={styles.sectionHeader}>Homage</Text>
-              <View style={styles.separatorLine} />*/}
+              <View style={styles.separatorLine} /> */}
             </View>
             <FlatList
               data={homageFactions}
@@ -268,7 +356,7 @@ const styles = StyleSheet.create({
   },
   gridItem: {
     width: cardWidth + cardSpacing,
-    height: cardHeight + cardSpacing + 30, // Extra height for title
+    height: cardHeight + cardSpacing + 30,
     alignItems: 'center',
     justifyContent: 'center',
   },
