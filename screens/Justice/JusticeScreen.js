@@ -69,7 +69,7 @@ const playBackgroundMusic = async () => {
   if (!backgroundSound) {
     try {
       const { sound } = await Audio.Sound.createAsync(
-        require('../../assets/audio/SourceOfStrengthNinjagoMyVersion.mp4'),
+        require('../../assets/audio/Superman.mp4'),
         { shouldPlay: true, isLooping: true, volume: 1.0 }
       );
       backgroundSound = sound;
