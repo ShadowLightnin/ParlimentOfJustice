@@ -44,7 +44,7 @@ const TitansScreen = () => {
     const loadSound = async () => {
       try {
         const { sound } = await Audio.Sound.createAsync(
-          require('../../assets/audio/SourceOfStrengthNinjagoMyVersion.mp4'),
+          require('../../assets/audio/AvengerXJL.mp4'),
           { shouldPlay: true, isLooping: false, volume: 1.0 }
         );
         setCurrentSound(sound);
