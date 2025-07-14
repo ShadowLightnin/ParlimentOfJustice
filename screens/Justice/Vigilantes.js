@@ -15,6 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import { db, auth, storage } from '../../lib/firebase';
 import { collection, onSnapshot, deleteDoc, doc, getDoc } from 'firebase/firestore';
 import { ref, deleteObject } from 'firebase/storage';
+import VigilantesWanted from './VigilantesWanted';
 
 // Screen dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -46,9 +47,9 @@ const VigilanteScreen = () => {
   const [deleteModal, setDeleteModal] = useState({ visible: false, vigilante: null });
   const canMod = RESTRICT_ACCESS ? auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
 
-  // Fetch dynamic vigilantes from Firestore
+  // Fetch dynamic vigilantes from Firestore (vigilantes collection)
   useEffect(() => {
-    const unsub = onSnapshot(collection(db, 'vigilante'), (snap) => {
+    const unsub = onSnapshot(collection(db, 'vigilantes'), (snap) => {
       const dynamicVigilantes = snap.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
@@ -88,7 +89,7 @@ const VigilanteScreen = () => {
         Alert.alert('Error', 'Cannot delete hardcoded vigilantes!');
         return;
       }
-      const vigilanteRef = doc(db, 'vigilante', id);
+      const vigilanteRef = doc(db, 'vigilantes', id);
       const snap = await getDoc(vigilanteRef);
       if (!snap.exists()) {
         Alert.alert('Error', 'Vigilante not found');
@@ -199,7 +200,7 @@ const VigilanteScreen = () => {
       />
       <View style={styles.transparentOverlay} />
       <Text style={styles.cardName}>
-        © {vigilante.name || vigilante.codename || 'Shattered'}; Broken Legacy
+        © {vigilante.name || vigilante.codename || 'Shattered'}; William Cummings
       </Text>
     </TouchableOpacity>
   );
@@ -226,7 +227,7 @@ const VigilanteScreen = () => {
               navigation.navigate('Justice');
             }}
           >
-            <Text style={styles.header}>Broken Vigilantes</Text>
+            <Text style={styles.header}>The Vigilantes</Text>
           </TouchableOpacity>
           <View style={styles.scrollWrapper}>
             <ScrollView
@@ -241,6 +242,15 @@ const VigilanteScreen = () => {
               )}
             </ScrollView>
           </View>
+          <VigilantesWanted
+            collectionPath="vigilantes" // Standardized to match the collection name
+            placeholderImage={require('../../assets/Armor/PlaceHolder.jpg')}
+            hero={vigilantes}
+            setHero={setVigilantes}
+            hardcodedHero={hardcodedVigilantes}
+            editingHero={previewVigilante?.isEditing ? previewVigilante : null}
+            setEditingHero={setPreviewVigilante}
+          />
           <Modal
             visible={!!previewVigilante && !previewVigilante.isEditing}
             transparent
