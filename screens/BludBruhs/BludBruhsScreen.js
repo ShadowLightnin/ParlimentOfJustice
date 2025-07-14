@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
   ScrollView,
   Modal,
 } from 'react-native';
+import { Audio } from 'expo-av'; // Import expo-av
 import { useNavigation } from '@react-navigation/native';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -32,20 +33,79 @@ const scrollableMembers = [
 // Fixed factions for bottom row
 const fixedMembers = [
   { name: '', codename: 'Ranger Squad', screen: 'RangerSquad', clickable: true, image: require('../../assets/BackGround/RangerSquad.jpg') },
-  { name: '', codename: 'Montrose Manor', screen: 'MontroseManorTab', clickable: true, image: require('../../assets/TheMontroseManor.jpg') }, // have ' ' in name for invisible card
+  { name: '', codename: 'Montrose Manor', screen: 'MontroseManorTab', clickable: true, image: require('../../assets/TheMontroseManor.jpg') },
   { name: '', codename: 'MonkeAlliance', screen: 'MonkeAllianceScreen', clickable: true, image: require('../../assets/BackGround/Monke.jpg') },
 ];
 
 const BludBruhsScreen = () => {
   const navigation = useNavigation();
   const [previewMember, setPreviewMember] = useState(null);
+  const [sound, setSound] = useState(null); // State for audio object
 
-  const goToChat = () => {
+  // Load and play background music
+  async function playBackgroundMusic() {
+    console.log('Loading Sound at:', new Date().toISOString());
+    const { sound } = await Audio.Sound.createAsync(
+      require('../../assets/audio/ThunderBorn.m4a'), // Replace with your desired audio file
+      { shouldPlay: true, isLooping: true }
+    );
+    setSound(sound);
+    console.log('Playing Sound at:', new Date().toISOString());
+    await sound.playAsync();
+  }
+
+  // Pause music
+  async function pauseBackgroundMusic() {
+    if (sound) {
+      console.log('Pausing Sound at:', new Date().toISOString());
+      await sound.pauseAsync();
+    }
+  }
+
+  // Resume music
+  async function resumeBackgroundMusic() {
+    if (sound) {
+      console.log('Resuming Sound at:', new Date().toISOString());
+      await sound.playAsync();
+    }
+  }
+
+  // Unload and stop music
+  async function stopBackgroundMusic() {
+    if (sound) {
+      console.log('Stopping Sound at:', new Date().toISOString());
+      await sound.stopAsync();
+      await sound.unloadAsync();
+      setSound(null);
+    }
+  }
+
+  // Play music on mount, stop on unmount
+  useEffect(() => {
+    playBackgroundMusic();
+
+    return () => {
+      stopBackgroundMusic();
+    };
+  }, []);
+
+  // Pause on modal open, resume on close
+  useEffect(() => {
+    if (previewMember) {
+      pauseBackgroundMusic();
+    } else if (!previewMember && sound) {
+      resumeBackgroundMusic();
+    }
+  }, [previewMember]);
+
+  const goToChat = async () => {
+    await stopBackgroundMusic(); // Stop music before navigating
     navigation.navigate('TeamChat');
   };
 
-  const goToHomeScreen = () => {
+  const goToHomeScreen = async () => {
     console.log("Navigating to HomeScreen from BludBruhsScreen at:", new Date().toISOString());
+    await stopBackgroundMusic(); // Stop music before navigating
     navigation.navigate('Home');
   };
 
@@ -53,32 +113,31 @@ const BludBruhsScreen = () => {
   const cardSize = isDesktop ? 160 : 100;
   const cardSpacing = isDesktop ? 25 : 10;
 
-  const handleMemberPress = (member) => {
+  const handleMemberPress = async (member) => {
     if (member.clickable) {
+      await stopBackgroundMusic(); // Stop music before navigating
       if (member.screen) {
-        navigation.navigate(member.screen, { from: 'BludBruhsHome' }); // Navigate if screen exists
+        navigation.navigate(member.screen, { from: 'BludBruhsHome' });
       } else {
-        setPreviewMember(member); // Show modal if no screen
+        setPreviewMember(member);
       }
     }
   };
 
   // Prepare grid rows
   const rows = [];
-  const initialScrollable = scrollableMembers.slice(0, 6); // First 6 for top 2 rows
-  const additionalScrollable = scrollableMembers.slice(6); // Remaining for scrolling
+  const initialScrollable = scrollableMembers.slice(0, 6);
+  const additionalScrollable = scrollableMembers.slice(6);
 
-  // Build initial scrollable rows (2 rows of 3)
   for (let i = 0; i < 2; i++) {
     const row = initialScrollable.slice(i * 3, (i + 1) * 3);
-    while (row.length < 3) row.push(null); // Fill empty slots
+    while (row.length < 3) row.push(null);
     rows.push(row);
   }
 
-  // Build additional scrollable rows
   for (let i = 0; i < additionalScrollable.length; i += 3) {
     const row = additionalScrollable.slice(i, i + 3);
-    while (row.length < 3) row.push(null); // Fill empty slots
+    while (row.length < 3) row.push(null);
     rows.push(row);
   }
 
@@ -109,7 +168,7 @@ const BludBruhsScreen = () => {
   const renderPreviewCard = (member) => (
     <TouchableOpacity
       style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
-      onPress={() => setPreviewMember(null)} // Close modal on card press
+      onPress={() => setPreviewMember(null)}
     >
       <Image
         source={member.image || require('../../assets/Armor/PlaceHolder.jpg')}
@@ -124,12 +183,11 @@ const BludBruhsScreen = () => {
   );
 
   return (
-    <ImageBackground 
-      source={require('../../assets/BackGround/Bludbruh2.jpg')} 
+    <ImageBackground
+      source={require('../../assets/BackGround/Bludbruh2.jpg')}
       style={styles.background}
     >
       <SafeAreaView style={styles.container}>
-        {/* Header & Back Button */}
         <View style={styles.headerWrapper}>
           <TouchableOpacity style={styles.backButton} onPress={goToHomeScreen}>
             <Text style={styles.backText}>← Back</Text>
@@ -140,7 +198,6 @@ const BludBruhsScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Scrollable Grid */}
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
           <View style={[styles.grid, { gap: cardSpacing }]}>
             {rows.map((row, rowIndex) => (
@@ -151,7 +208,6 @@ const BludBruhsScreen = () => {
           </View>
         </ScrollView>
 
-        {/* Fixed Bottom Row */}
         <View style={[styles.fixedRow, { gap: cardSpacing }]}>
           {fixedMembers.map((member, colIndex) => (
             <TouchableOpacity
@@ -162,7 +218,7 @@ const BludBruhsScreen = () => {
                 !member.clickable && styles.disabledCard,
                 member.name === ' ' && styles.subtleButton,
               ]}
-              onPress={() => member.clickable && navigation.navigate(member.screen, { from: 'BludBruhsHome' })}
+              onPress={() => handleMemberPress(member)}
               disabled={!member.clickable}
             >
               {member.image && (
@@ -177,7 +233,6 @@ const BludBruhsScreen = () => {
           ))}
         </View>
 
-        {/* Preview Modal */}
         <Modal
           visible={!!previewMember}
           transparent={true}

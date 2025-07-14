@@ -189,6 +189,16 @@ const JusticeScreen = () => {
       style={styles.background}
     >
       <View style={styles.container}>
+        {/* Title above Back Button and Vigilante Button */}
+        <TouchableOpacity
+          onPress={() => {
+            console.log('Navigating to Heroes screen');
+            navigation.navigate('Heroes');
+          }}
+        >
+          <Text style={[styles.header, { marginTop: 20, marginBottom: 60 }]}>Guardians of Justice</Text>
+        </TouchableOpacity>
+
         {/* Back Button */}
         <TouchableOpacity
           onPress={async () => {
@@ -201,14 +211,19 @@ const JusticeScreen = () => {
           <Text style={styles.backButtonText}>⬅️</Text>
         </TouchableOpacity>
 
-        {/* Clickable Title */}
+        {/* Vigilante Button */}
         <TouchableOpacity
           onPress={() => {
-            console.log('Navigating to Heroes screen');
-            navigation.navigate('Heroes');
+            console.log('Navigating to VigilanteScreen');
+            navigation.navigate('VigilanteScreen'); // Replace with your target screen
           }}
+          style={styles.vigilanteButton}
         >
-          <Text style={styles.header}>Guardians of Justice</Text>
+          <Image
+            source={require('../../assets/BackGround/Vigilantes.jpg')} // Replace with your desired vigilante image
+            style={styles.vigilanteImage}
+            resizeMode="contain"
+          />
         </TouchableOpacity>
 
         {/* Horizontal Scrollable Heroes Grid */}
@@ -287,7 +302,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 40,
+    top: 100, // Increased to ensure clear space below title
     left: 20,
     backgroundColor: 'rgba(17, 25, 40, 0.6)',
     paddingVertical: 15,
@@ -306,7 +321,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     textShadowColor: 'yellow',
     textShadowRadius: 15,
-    marginBottom: 20,
+  },
+  vigilanteButton: {
+    position: 'absolute',
+    top: 100, // Aligned with back button
+    right: 20,
+    padding: 5,
+    // backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 5,
+  },
+  vigilanteImage: {
+    width: 60, // Kept at 60
+    height: 60, // Kept at 60
+    borderRadius: 30,
+    opacity: 1, // Fully opaque
   },
   scrollWrapper: {
     width: SCREEN_WIDTH,
