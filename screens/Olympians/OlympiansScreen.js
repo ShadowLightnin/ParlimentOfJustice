@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import OlympiansMembers from './OlympiansMembers';
+import { Audio } from 'expo-av'; // Import expo-av for audio
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -29,14 +30,42 @@ export const OlympiansScreen = () => {
   const navigation = useNavigation();
   const [previewMember, setPreviewMember] = useState(null);
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
+  const [sound, setSound] = useState(null); // State to manage audio
 
   useEffect(() => {
     const updateDimensions = () => {
-      setWindowWidth(Dimensions.get("window").width);
+      setWindowWidth(Dimensions.get('window').width);
     };
-    const subscription = Dimensions.addEventListener("change", updateDimensions);
-    return () => subscription?.remove();
+    const subscription = Dimensions.addEventListener('change', updateDimensions);
+
+    // Load and play background music
+    async function loadSound() {
+      const { sound } = await Audio.Sound.createAsync(
+        require('../../assets/audio/SupermanTrailer.mp4'), // Replace with your audio file path
+        { shouldPlay: true, isLooping: true }
+      );
+      setSound(sound);
+      await sound.playAsync();
+    }
+    loadSound();
+
+    return () => {
+      subscription?.remove();
+      if (sound) {
+        sound.unloadAsync(); // Cleanup audio on unmount
+      }
+    };
   }, []);
+
+  useEffect(() => {
+    // Pause music when navigating back
+    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+      if (e.data.action.type === 'GO_BACK' && sound) {
+        sound.pauseAsync();
+      }
+    });
+    return unsubscribe;
+  }, [navigation, sound]);
 
   const goToChat = () => {
     navigation.navigate('TeamChat');
@@ -102,7 +131,15 @@ export const OlympiansScreen = () => {
     >
       <SafeAreaView style={styles.container}>
         <View style={styles.headerWrapper}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => {
+              if (sound) {
+                sound.pauseAsync(); // Stop music when back is pressed
+              }
+              navigation.goBack();
+            }}
+          >
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
           <Text style={styles.header}>Olympians</Text>
