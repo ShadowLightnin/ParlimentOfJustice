@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 // Hero Screens
 import Justice from '../screens/Justice/JusticeScreen.js';
 import Heroes from '../screens/Justice/Heroes.js';
-// import Vigilantes from '../screens/Justice/Vigilantes.js';
+import VigilanteScreen from '../screens/Justice/Vigilantes.js';
 
 // import Screen from '../screens/Justice/';
 
@@ -16,7 +16,7 @@ const JusticeStack = () => {
       {/* Base Screens */}
       <Stack.Screen name="Justice" component={Justice} />
       <Stack.Screen name="Heroes" component={Heroes} />
-      {/* <Stack.Screen name="Vigilantes" component={Vigilantes} /> */}
+      <Stack.Screen name="VigilanteScreen" component={VigilanteScreen} />
 
     </Stack.Navigator>
   );
