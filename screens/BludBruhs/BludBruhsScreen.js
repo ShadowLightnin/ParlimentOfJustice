@@ -12,7 +12,7 @@ import {
   Modal,
 } from 'react-native';
 import { Audio } from 'expo-av'; // Import expo-av
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -80,14 +80,15 @@ const BludBruhsScreen = () => {
     }
   }
 
-  // Play music on mount, stop on unmount
-  useEffect(() => {
-    playBackgroundMusic();
-
-    return () => {
-      stopBackgroundMusic();
-    };
-  }, []);
+  // Handle screen focus and blur
+  useFocusEffect(
+    React.useCallback(() => {
+      playBackgroundMusic(); // Play music when screen is focused
+      return () => {
+        stopBackgroundMusic(); // Stop music when screen is blurred
+      };
+    }, [])
+  );
 
   // Pause on modal open, resume on close
   useEffect(() => {
@@ -98,14 +99,14 @@ const BludBruhsScreen = () => {
     }
   }, [previewMember]);
 
-  const goToChat = async () => {
-    await stopBackgroundMusic(); // Stop music before navigating
+  const goToChat = () => {
+    stopBackgroundMusic(); // Stop music before navigating
     navigation.navigate('TeamChat');
   };
 
-  const goToHomeScreen = async () => {
+  const goToHomeScreen = () => {
     console.log("Navigating to HomeScreen from BludBruhsScreen at:", new Date().toISOString());
-    await stopBackgroundMusic(); // Stop music before navigating
+    stopBackgroundMusic(); // Stop music before navigating
     navigation.navigate('Home');
   };
 
@@ -113,9 +114,9 @@ const BludBruhsScreen = () => {
   const cardSize = isDesktop ? 160 : 100;
   const cardSpacing = isDesktop ? 25 : 10;
 
-  const handleMemberPress = async (member) => {
+  const handleMemberPress = (member) => {
     if (member.clickable) {
-      await stopBackgroundMusic(); // Stop music before navigating
+      stopBackgroundMusic(); // Stop music before navigating
       if (member.screen) {
         navigation.navigate(member.screen, { from: 'BludBruhsHome' });
       } else {

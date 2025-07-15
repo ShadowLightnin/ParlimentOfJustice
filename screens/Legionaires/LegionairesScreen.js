@@ -14,6 +14,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { memberCategories } from './LegionairesMembers';
 import legionImages from './LegionairesImages';
+import LegionFriends from './LegionFriends';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -27,6 +28,8 @@ const verticalSpacing = isDesktop ? 20 : 10;
 export const LegionairesScreen = () => {
   const navigation = useNavigation();
   const [previewMember, setPreviewMember] = useState(null);
+  const [members, setMembers] = useState(memberCategories);
+  const [editingMember, setEditingMember] = useState(null);
 
   const goToChat = () => {
     navigation.navigate('TeamChat');
@@ -133,6 +136,15 @@ export const LegionairesScreen = () => {
               </View>
             );
           })}
+          <LegionFriends
+            collectionPath="LegionairesMembers"
+            placeholderImage={require('../../assets/Armor/PlaceHolder.jpg')}
+            hero={members}
+            setHero={setMembers}
+            hardcodedHero={memberCategories}
+            editingHero={editingMember}
+            setEditingHero={setEditingMember}
+          />
         </ScrollView>
 
         <Modal
@@ -272,8 +284,8 @@ const styles = StyleSheet.create({
     shadowColor: 'transparent',
   },
   characterImage: {
-    width: '100%',
-    height: '70%',
+    width: cardSize, // Fixed from '100' to cardSize
+    height: '70%', // Ensure it scales with card height
     resizeMode: 'cover',
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
