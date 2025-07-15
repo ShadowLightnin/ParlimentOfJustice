@@ -34,6 +34,7 @@ export const LegionairesScreen = () => {
   const [previewMember, setPreviewMember] = useState(null);
   const [members, setMembers] = useState(memberCategories); // Start with hardcoded
   const [editingMember, setEditingMember] = useState(null);
+  const [deleteModal, setDeleteModal] = useState({ visible: false, member: null });
 
   useEffect(() => {
     // 🎯 Listen for real-time updates from Firestore
@@ -42,8 +43,8 @@ export const LegionairesScreen = () => {
       const updatedMembers = memberCategories.map(category => ({
         ...category,
         members: [
-          ...category.members.filter(m => legionImages[m.name]?.hardcoded || !fetchedMembers.some(fm => fm.name === m.name)), // Keep hardcoded in place
-          ...fetchedMembers.filter(m => m.category === category.category && !m.hardcoded) // Append added members
+          ...category.members.filter(m => legionImages[m.name]?.hardcoded || !fetchedMembers.some(fm => fm.name === m.name)),
+          ...fetchedMembers.filter(m => m.category === category.category && !m.hardcoded)
         ]
       }));
       setMembers(updatedMembers);
@@ -103,20 +104,7 @@ export const LegionairesScreen = () => {
             style={styles.deleteButton}
             onPress={() => {
               if (member.id) {
-                Alert.alert(
-                  'Confirm Delete',
-                  `Are you sure you want to delete ${member.name}? This action cannot be undone.`,
-                  [
-                    { text: 'Cancel', style: 'cancel' },
-                    {
-                      text: 'Delete',
-                      style: 'destructive',
-                      onPress: () => {
-                        deleteDoc(doc(db, 'LegionairesMembers', member.id)).then(() => onDelete(member));
-                      },
-                    },
-                  ]
-                );
+                setDeleteModal({ visible: true, member });
               }
             }}
           >
@@ -145,13 +133,36 @@ export const LegionairesScreen = () => {
     </TouchableOpacity>
   );
 
+  const confirmDelete = async (memberId) => {
+    try {
+      const memberToDelete = members
+        .flatMap(category => category.members)
+        .find(m => m.id === memberId);
+      if (!memberToDelete) {
+        console.error('Member not found for id:', memberId);
+        Alert.alert('Error', 'Member not found for deletion.');
+        setDeleteModal({ visible: false, member: null });
+        return;
+      }
+      await deleteDoc(doc(db, 'LegionairesMembers', memberId));
+      setMembers(prevMembers => prevMembers.map(category => ({
+        ...category,
+        members: category.members.filter(m => m.id !== memberId),
+      })));
+      setDeleteModal({ visible: false, member: null });
+      Alert.alert('Success', 'Member deleted successfully!');
+    } catch (error) {
+      console.error('Delete error:', error.message);
+      Alert.alert('Error', `Failed to delete member: ${error.message}`);
+    }
+  };
+
   const onDelete = (member) => {
-    setMembers(prevMembers => prevMembers.map(category => ({
-      ...category,
-      members: category.members.filter(m => m.name !== member.name),
-    })));
-    setPreviewMember(null);
-    setEditingMember(null);
+    if (!member || !member.id) {
+      console.warn('Invalid member provided to delete');
+      return;
+    }
+    setDeleteModal({ visible: true, member });
   };
 
   return (
@@ -187,8 +198,8 @@ export const LegionairesScreen = () => {
 
                       const member = {
                         ...memberObj,
-                        image: memberObj.imageUrl && memberObj.imageUrl !== 'placeholder' 
-                          ? { uri: memberObj.imageUrl } 
+                        image: memberObj.imageUrl && memberObj.imageUrl !== 'placeholder'
+                          ? { uri: memberObj.imageUrl }
                           : (legionImages[memberObj.name]?.image || require('../../assets/Armor/PlaceHolder.jpg')),
                         clickable: memberObj.clickable !== undefined ? memberObj.clickable : (legionImages[memberObj.name]?.clickable || true),
                       };
@@ -243,6 +254,33 @@ export const LegionairesScreen = () => {
                 <Text style={styles.previewCategory}>{previewMember?.category || 'Unknown'}</Text>
               </View>
             </TouchableOpacity>
+          </View>
+        </Modal>
+
+        <Modal
+          visible={deleteModal.visible}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setDeleteModal({ visible: false, member: null })}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalText}>{`Delete "${deleteModal.member?.name || ''}"?`}</Text>
+              <View style={styles.modalButtons}>
+                <TouchableOpacity
+                  style={styles.modalCancel}
+                  onPress={() => setDeleteModal({ visible: false, member: null })}
+                >
+                  <Text style={styles.modalCancelText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.modalDelete}
+                  onPress={() => deleteModal.member && confirmDelete(deleteModal.member.id)}
+                >
+                  <Text style={styles.modalDeleteText}>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
         </Modal>
       </SafeAreaView>
@@ -325,7 +363,7 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    justifyContent: 'center', // Changed to center the cards
+    justifyContent: 'center',
     flexWrap: 'wrap',
   },
   cardContainer: {
@@ -476,6 +514,54 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 12,
     fontWeight: 'bold',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    width: '80%',
+  },
+  modalText: {
+    fontSize: 18,
+    color: '#000',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+  },
+  modalCancel: {
+    backgroundColor: '#2196F3',
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginRight: 10,
+  },
+  modalCancelText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalDelete: {
+    backgroundColor: '#F44336',
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginLeft: 10,
+  },
+  modalDeleteText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 export default LegionairesScreen;
