@@ -12,8 +12,8 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { db, storage, auth } from '../../lib/firebase';
-import { doc, setDoc, addDoc, collection } from 'firebase/firestore';
-import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { doc, setDoc, addDoc, collection, deleteDoc } from 'firebase/firestore';
+import { ref as storageRef, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const isDesktop = SCREEN_WIDTH > 600;
@@ -39,6 +39,7 @@ const LegionFriends = ({
   hardcodedHero,
   editingHero,
   setEditingHero,
+  onDelete,
 }) => {
   const [name, setName] = useState('');
   const [codename, setCodename] = useState('');
@@ -161,6 +162,43 @@ const LegionFriends = ({
     setImageUri(null);
     setEditingHero(null);
     setSelectedCategory('College');
+  };
+
+  const handleDelete = async (memberName) => {
+    if (!canSubmit) {
+      Alert.alert('Access Denied', 'Only authorized users can delete members.');
+      return;
+    }
+    try {
+      const categoryIndex = hero.findIndex(cat => cat.category === memberName.category);
+      const memberIndex = hero[categoryIndex].members.findIndex(m => m.name === memberName.name);
+      if (memberIndex === -1) {
+        Alert.alert('Error', 'Member not found.');
+        return;
+      }
+      const member = hero[categoryIndex].members[memberIndex];
+      if (member.hardcoded) {
+        Alert.alert('Error', 'Cannot delete hardcoded members!');
+        return;
+      }
+      if (member.imageUrl && member.imageUrl !== 'placeholder') {
+        const urlParts = member.imageUrl.split('/o/');
+        if (urlParts.length > 1) {
+          const path = decodeURIComponent(urlParts[1].split('?')[0]);
+          await deleteObject(storageRef(storage, path)).catch(e => {
+            if (e.code !== 'storage/object-not-found') throw e;
+            console.warn('Image not found in storage:', path);
+          });
+        }
+      }
+      await deleteDoc(doc(db, collectionPath, memberName.name));
+      hero[categoryIndex].members.splice(memberIndex, 1);
+      setHero([...hero]);
+      if (onDelete) onDelete(memberName); // Notify parent component
+    } catch (e) {
+      console.error('Delete error:', e.message);
+      Alert.alert('Error', `Failed to delete member: ${e.message}`);
+    }
   };
 
   return (

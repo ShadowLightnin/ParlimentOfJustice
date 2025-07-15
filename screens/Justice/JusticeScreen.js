@@ -62,8 +62,8 @@ const heroes = [
   { name: '', codename: 'Voice Fry', screen: '', clickable: true, image: require('../../assets/Armor/Johnathon_cleanup.jpg') },
 ];
 
-// Background music
-let backgroundSound;
+// Background music (shared across screens)
+let backgroundSound = null;
 
 const playBackgroundMusic = async () => {
   if (!backgroundSound) {
@@ -98,21 +98,17 @@ const JusticeScreen = () => {
   const isFocused = useIsFocused();
   const [previewHero, setPreviewHero] = useState(null);
 
-  // Handle audio and background image on focus
+  // Handle audio on initial focus
   useEffect(() => {
-    if (isFocused) {
+    if (isFocused && !backgroundSound) {
       playBackgroundMusic();
     }
 
-    // Handle navigation events
-    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
-      if (e.data.action.type === 'NAVIGATE' && e.data.action.payload.name === 'Home') {
+    // Cleanup on unmount
+    return () => {
+      if (navigation.getState().routes[navigation.getState().index].name === 'Home') {
         stopBackgroundMusic();
       }
-    });
-
-    return () => {
-      unsubscribe();
     };
   }, [isFocused, navigation]);
 
@@ -213,14 +209,15 @@ const JusticeScreen = () => {
 
         {/* Vigilante Button */}
         <TouchableOpacity
-          onPress={() => {
+          onPress={async () => {
             console.log('Navigating to VigilanteScreen');
-            navigation.navigate('VigilanteScreen'); // Replace with your target screen
+            await stopBackgroundMusic();
+            navigation.navigate('VigilanteScreen');
           }}
           style={styles.vigilanteButton}
         >
           <Image
-            source={require('../../assets/BackGround/Vigilantes.jpg')} // Replace with your desired vigilante image
+            source={require('../../assets/BackGround/Vigilantes.jpg')}
             style={styles.vigilanteImage}
             resizeMode="contain"
           />
@@ -302,7 +299,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 100, // Increased to ensure clear space below title
+    top: 100,
     left: 20,
     backgroundColor: 'rgba(17, 25, 40, 0.6)',
     paddingVertical: 15,
@@ -324,17 +321,16 @@ const styles = StyleSheet.create({
   },
   vigilanteButton: {
     position: 'absolute',
-    top: 100, // Aligned with back button
+    top: 100,
     right: 20,
     padding: 5,
-    // backgroundColor: 'rgba(255, 255, 255, 0.1)',
     borderRadius: 5,
   },
   vigilanteImage: {
-    width: 60, // Kept at 60
-    height: 60, // Kept at 60
+    width: 60,
+    height: 60,
     borderRadius: 30,
-    opacity: 1, // Fully opaque
+    opacity: 1,
   },
   scrollWrapper: {
     width: SCREEN_WIDTH,

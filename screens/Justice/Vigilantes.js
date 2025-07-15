@@ -33,8 +33,8 @@ const verticalSpacing = isDesktop ? [30, 40, 50] : [20, 25, 30];
 
 // Hardcoded vigilantes data with broken theme
 const hardcodedVigilantes = [
-//   { id: 'vig-1', name: '', screen: '', image: require('../../assets/Armor/BatmanBroken.jpg'), clickable: true, borderColor: '#8B0000', hardcoded: true, description: 'Shattered protector with a long tale of woe spanning multiple lines, seeking redemption in the dark.' },
-//   { id: 'vig-2', name: '', screen: '', image: require('../../assets/Armor/DarkVigilante.jpg'), clickable: true, borderColor: '#4B0082', hardcoded: true, description: 'Lost in shadows, a broken soul with endless struggles across the night.' },
+//   { id: 'vig-1', name: '', screen: '', image: require('../../assets/Armor/BatmanBroken.jpg'), clickable: true, borderColor: '#8B0000', hardcoded: true, description: 'Shattered protector' },
+//   { id: 'vig-2', name: '', screen: '', image: require('../../assets/Armor/DarkVigilante.jpg'), clickable: true, borderColor: '#4B0082', hardcoded: true, description: 'Lost in shadows' },
 ];
 
 const ALLOWED_EMAILS = ["will@test.com", "c1wcummings@gmail.com"];
@@ -186,7 +186,13 @@ const VigilanteScreen = () => {
 
   // Render Preview Card
   const renderPreviewCard = (vigilante) => (
-    <View style={styles.previewCardContainer}>
+    <TouchableOpacity
+      style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable(vigilante.borderColor || '#C0C0C0')]}
+      onPress={() => {
+        console.log('Closing preview modal');
+        setPreviewVigilante(null);
+      }}
+    >
       <Image
         source={vigilante.image || (vigilante.imageUrl && vigilante.imageUrl !== 'placeholder' ? { uri: vigilante.imageUrl } : require('../../assets/Armor/PlaceHolder.jpg'))}
         style={styles.previewImage}
@@ -196,7 +202,7 @@ const VigilanteScreen = () => {
       <Text style={styles.cardName}>
         © {vigilante.name || vigilante.codename || 'Shattered'}; William Cummings
       </Text>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -265,9 +271,12 @@ const VigilanteScreen = () => {
               >
                 <View style={styles.imageContainer}>
                   <ScrollView
-                    vertical
+                    vertical // Changed to vertical scrolling
                     contentContainerStyle={styles.imageScrollContainer}
-                    showsVerticalScrollIndicator={true}
+                    showsVerticalScrollIndicator={true} // Show scroll indicator
+                    snapToAlignment="start"
+                    snapToInterval={SCREEN_HEIGHT * 0.6} // Adjusted for vertical height
+                    decelerationRate="fast"
                   >
                     {previewVigilante && renderPreviewCard(previewVigilante)}
                   </ScrollView>
@@ -275,7 +284,7 @@ const VigilanteScreen = () => {
                 <View style={styles.previewAboutSection}>
                   <Text style={styles.previewName}>{previewVigilante?.name || previewVigilante?.codename || 'Unknown'}</Text>
                   <ScrollView style={styles.descriptionScroll} contentContainerStyle={styles.descriptionContent}>
-                    <Text style={styles.previewDesc}>{previewVigilante?.description || 'A fractured soul wandering the abyss, seeking redemption through shattered dreams, with no end in sight to the torment of a broken past, lost in an eternal struggle.'}</Text>
+                    <Text style={styles.previewDesc}>{previewVigilante?.description || 'A fractured soul'}</Text>
                   </ScrollView>
                   <TouchableOpacity
                     onPress={() => {
@@ -392,7 +401,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
-    opacity: 0.8, // Slightly faded for broken feel
+    opacity: 1, // Slightly faded for broken feel
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
@@ -464,72 +473,74 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalOuterContainer: {
-    width: '85%',
-    height: '75%',
+    width: '85% + Math.random() * 10%',
+    height: '75% + Math.random() * 10%',
     justifyContent: 'center',
     alignItems: 'center',
   },
   imageContainer: {
     width: '100%',
-    paddingVertical: 10,
+    paddingVertical: 10 + Math.random() * 10,
     backgroundColor: '#2F2F2F',
     alignItems: 'center',
   },
   imageScrollContainer: {
-    paddingHorizontal: 5,
-    alignItems: 'center',
+    paddingHorizontal: 5 + Math.random() * 10,
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
   },
-  previewCardContainer: {
-    width: '100%',
-    alignItems: 'center',
-  },
+  previewCard: (isDesktop, windowWidth) => ({
+    width: isDesktop ? windowWidth * 0.18 + Math.random() * 0.05 * windowWidth : SCREEN_WIDTH * 0.75 + Math.random() * 0.05 * SCREEN_WIDTH,
+    height: isDesktop ? SCREEN_HEIGHT * 0.65 + Math.random() * 0.05 * SCREEN_HEIGHT : SCREEN_HEIGHT * 0.55 + Math.random() * 0.05 * SCREEN_HEIGHT,
+    borderRadius: 10 + Math.random() * 10,
+    overflow: 'hidden',
+    elevation: 3,
+    backgroundColor: '#2F2F2F',
+    marginRight: 10 + Math.random() * 10,
+  }),
   previewImage: {
-    width: '80%',
-    height: SCREEN_HEIGHT * 0.5,
+    width: '100%',
+    height: '100%',
     resizeMode: 'cover',
     opacity: 0.7,
   },
-  transparentOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1,
-  },
   cardName: {
     position: 'absolute',
-    bottom: 5,
-    left: 5,
-    fontSize: 14,
+    bottom: 5 + Math.random() * 10,
+    left: 5 + Math.random() * 10,
+    fontSize: 14 + Math.random() * 4,
     color: '#C0C0C0',
     fontWeight: '500',
     zIndex: 2,
   },
   previewAboutSection: {
-    marginTop: 10,
-    padding: 5,
+    marginTop: 10 + Math.random() * 10,
+    padding: 5 + Math.random() * 10,
     backgroundColor: '#2F2F2F',
-    borderRadius: 5,
-    width: '85%',
+    borderRadius: 5 + Math.random() * 5,
+    width: '85% + Math.random() * 10%',
   },
   previewName: {
-    fontSize: 14,
+    fontSize: 14 + Math.random() * 4,
     color: '#C0C0C0',
     textAlign: 'left',
   },
   descriptionScroll: {
-    maxHeight: 150, // Fixed height limit for scrolling
+    maxHeight: 150, // Fixed height for scrolling
   },
   descriptionContent: {
-    paddingVertical: 5,
+    paddingVertical: 5 + Math.random() * 5,
   },
   previewDesc: {
-    fontSize: 12,
+    fontSize: 12 + Math.random() * 4,
     color: '#8B0000',
     textAlign: 'left',
+    marginVertical: 5 + Math.random() * 10,
   },
   close: {
     backgroundColor: '#4B0082',
-    padding: 5,
-    borderRadius: 3,
+    padding: 5 + Math.random() * 5,
+    borderRadius: 3 + Math.random() * 5,
     alignSelf: 'flex-start',
   },
   modalOverlay: {
@@ -540,27 +551,27 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: '#2F2F2F',
-    padding: 10,
-    borderRadius: 5,
+    padding: 10 + Math.random() * 10,
+    borderRadius: 5 + Math.random() * 5,
     alignItems: 'center',
   },
   modalText: {
-    fontSize: 16,
+    fontSize: 16 + Math.random() * 4,
     color: '#C0C0C0',
-    marginBottom: 10,
+    marginBottom: 10 + Math.random() * 10,
     textAlign: 'left',
   },
   modalButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '80%',
+    width: '80% + Math.random() * 10%',
   },
   modalCancel: {
     backgroundColor: '#4B0082',
-    padding: 5,
-    borderRadius: 3,
+    padding: 5 + Math.random() * 5,
+    borderRadius: 3 + Math.random() * 5,
     flex: 1,
-    marginRight: 5,
+    marginRight: 5 + Math.random() * 5,
   },
   modalCancelText: {
     color: '#C0C0C0',
@@ -569,10 +580,10 @@ const styles = StyleSheet.create({
   },
   modalDelete: {
     backgroundColor: '#8B0000',
-    padding: 5,
-    borderRadius: 3,
+    padding: 5 + Math.random() * 5,
+    borderRadius: 3 + Math.random() * 5,
     flex: 1,
-    marginLeft: 5,
+    marginLeft: 5 + Math.random() * 5,
   },
   modalDeleteText: {
     color: '#C0C0C0',

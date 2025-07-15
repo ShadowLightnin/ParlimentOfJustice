@@ -278,7 +278,9 @@ const HeroesScreen = () => {
                 </View>
                 <View style={styles.previewAboutSection}>
                   <Text style={styles.previewName}>{previewHero?.name || previewHero?.codename || 'Unknown'}</Text>
-                  <Text style={styles.previewDesc}>{previewHero?.description || 'No description available'}</Text>
+                  <ScrollView style={styles.scrollableDesc}>
+                    <Text style={styles.previewDesc}>{previewHero?.description || 'No description available'}</Text>
+                  </ScrollView>
                   <TouchableOpacity
                     onPress={() => {
                       console.log('Closing preview modal');
@@ -515,11 +517,14 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
   },
+  scrollableDesc: {
+    maxHeight: 150, // Adjustable height for scrollable area
+    marginVertical: 10,
+  },
   previewDesc: {
     fontSize: 16,
     color: '#fff7f7',
     textAlign: 'center',
-    marginVertical: 10,
   },
   close: {
     backgroundColor: '#2196F3',

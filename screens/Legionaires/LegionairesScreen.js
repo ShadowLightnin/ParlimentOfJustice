@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,12 +10,16 @@ import {
   ScrollView,
   Dimensions,
   Modal,
+  Alert,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { collection, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
+import { db } from '../../lib/firebase'; // Ensure this path is correct
 import { memberCategories } from './LegionairesMembers';
 import legionImages from './LegionairesImages';
 import LegionFriends from './LegionFriends';
 
+// 🎯 Initialize with hardcoded members and fetch dynamic ones
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const isDesktop = SCREEN_WIDTH > 600;
@@ -28,8 +32,26 @@ const verticalSpacing = isDesktop ? 20 : 10;
 export const LegionairesScreen = () => {
   const navigation = useNavigation();
   const [previewMember, setPreviewMember] = useState(null);
-  const [members, setMembers] = useState(memberCategories);
+  const [members, setMembers] = useState(memberCategories); // Start with hardcoded
   const [editingMember, setEditingMember] = useState(null);
+
+  useEffect(() => {
+    // 🎯 Listen for real-time updates from Firestore
+    const unsubscribe = onSnapshot(collection(db, 'LegionairesMembers'), (snapshot) => {
+      const fetchedMembers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const updatedMembers = memberCategories.map(category => ({
+        ...category,
+        members: [
+          ...category.members.filter(m => legionImages[m.name]?.hardcoded || !fetchedMembers.some(fm => fm.name === m.name)), // Keep hardcoded in place
+          ...fetchedMembers.filter(m => m.category === category.category && !m.hardcoded) // Append added members
+        ]
+      }));
+      setMembers(updatedMembers);
+    }, (error) => {
+      console.error('Error fetching members:', error);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const goToChat = () => {
     navigation.navigate('TeamChat');
@@ -38,44 +60,78 @@ export const LegionairesScreen = () => {
   const handleMemberPress = (member) => {
     if (member.clickable) {
       if (member.screen && member.screen !== '') {
-        navigation.navigate(member.screen); // Navigate to the defined screen if it exists and isn’t empty
+        navigation.navigate(member.screen);
       } else {
-        setPreviewMember(member); // Show modal if no screen or screen is empty
+        setPreviewMember(member);
       }
     }
   };
 
   const renderMemberCard = (member) => (
-    <TouchableOpacity
-      key={member.name}
-      style={[
-        styles.card,
-        {
-          width: cardSize,
-          height: cardSize * cardHeightMultiplier,
-          marginHorizontal: horizontalSpacing / 2,
-          ...(member.clickable ? {} : styles.disabledCard),
-        },
-      ]}
-      onPress={() => handleMemberPress(member)}
-      disabled={!member.clickable}
-    >
-      {member.image && (
-        <>
-          <Image source={member.image} style={styles.characterImage} />
-          <View style={styles.transparentOverlay} />
-        </>
+    <View key={member.name} style={styles.cardContainer}>
+      <TouchableOpacity
+        style={[
+          styles.card,
+          {
+            width: cardSize,
+            height: cardSize * cardHeightMultiplier,
+            marginHorizontal: horizontalSpacing / 2,
+            ...(member.clickable ? styles.clickableCard : styles.disabledCard),
+          },
+        ]}
+        onPress={() => handleMemberPress(member)}
+        disabled={!member.clickable}
+      >
+        {member.image && (
+          <>
+            <Image source={member.image} style={styles.characterImage} />
+            <View style={styles.transparentOverlay} />
+          </>
+        )}
+        <Text style={styles.codename}>{member.codename || ''}</Text>
+        <Text style={styles.name}>{member.name}</Text>
+      </TouchableOpacity>
+      {!legionImages[member.name]?.hardcoded && !member.hardcoded && (
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.editButton}
+            onPress={() => setEditingMember(member)}
+          >
+            <Text style={styles.buttonText}>Edit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={() => {
+              if (member.id) {
+                Alert.alert(
+                  'Confirm Delete',
+                  `Are you sure you want to delete ${member.name}? This action cannot be undone.`,
+                  [
+                    { text: 'Cancel', style: 'cancel' },
+                    {
+                      text: 'Delete',
+                      style: 'destructive',
+                      onPress: () => {
+                        deleteDoc(doc(db, 'LegionairesMembers', member.id)).then(() => onDelete(member));
+                      },
+                    },
+                  ]
+                );
+              }
+            }}
+          >
+            <Text style={styles.buttonText}>Delete</Text>
+          </TouchableOpacity>
+        </View>
       )}
-      <Text style={styles.codename}>{member.codename || ''}</Text>
-      <Text style={styles.name}>{member.name}</Text>
-    </TouchableOpacity>
+    </View>
   );
 
   const renderPreviewCard = (member) => (
     <TouchableOpacity
       key={member.name}
       style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
-      onPress={() => setPreviewMember(null)} // Close modal on card press
+      onPress={() => setPreviewMember(null)}
     >
       <Image
         source={member.image || require('../../assets/Armor/PlaceHolder.jpg')}
@@ -88,6 +144,15 @@ export const LegionairesScreen = () => {
       </Text>
     </TouchableOpacity>
   );
+
+  const onDelete = (member) => {
+    setMembers(prevMembers => prevMembers.map(category => ({
+      ...category,
+      members: category.members.filter(m => m.name !== member.name),
+    })));
+    setPreviewMember(null);
+    setEditingMember(null);
+  };
 
   return (
     <ImageBackground
@@ -106,7 +171,7 @@ export const LegionairesScreen = () => {
         </View>
 
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          {memberCategories.map((categoryData, categoryIndex) => {
+          {members.map((categoryData, categoryIndex) => {
             const rows = Math.ceil(categoryData.members.length / columns);
 
             return (
@@ -121,12 +186,11 @@ export const LegionairesScreen = () => {
                       if (!memberObj || !memberObj.name) return <View key={colIndex} style={styles.cardSpacer} />;
 
                       const member = {
-                        name: memberObj.name,
-                        codename: memberObj.codename,
-                        category: categoryData.category,
-                        screen: memberObj.screen || '',
-                        image: legionImages[memberObj.name]?.image || require('../../assets/Armor/PlaceHolder.jpg'),
-                        clickable: legionImages[memberObj.name]?.clickable || false,
+                        ...memberObj,
+                        image: memberObj.imageUrl && memberObj.imageUrl !== 'placeholder' 
+                          ? { uri: memberObj.imageUrl } 
+                          : (legionImages[memberObj.name]?.image || require('../../assets/Armor/PlaceHolder.jpg')),
+                        clickable: memberObj.clickable !== undefined ? memberObj.clickable : (legionImages[memberObj.name]?.clickable || true),
                       };
 
                       return renderMemberCard(member);
@@ -144,6 +208,7 @@ export const LegionairesScreen = () => {
             hardcodedHero={memberCategories}
             editingHero={editingMember}
             setEditingHero={setEditingMember}
+            onDelete={onDelete}
           />
         </ScrollView>
 
@@ -260,8 +325,12 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'center', // Changed to center the cards
     flexWrap: 'wrap',
+  },
+  cardContainer: {
+    alignItems: 'center',
+    marginBottom: verticalSpacing,
   },
   card: {
     backgroundColor: '#1c1c1c',
@@ -274,6 +343,10 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 5,
   },
+  clickableCard: {
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
   cardSpacer: {
     width: cardSize,
     height: cardSize * cardHeightMultiplier,
@@ -284,8 +357,8 @@ const styles = StyleSheet.create({
     shadowColor: 'transparent',
   },
   characterImage: {
-    width: cardSize, // Fixed from '100' to cardSize
-    height: '70%', // Ensure it scales with card height
+    width: cardSize,
+    height: '70%',
     resizeMode: 'cover',
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
@@ -379,6 +452,30 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 5,
   },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 5,
+    width: cardSize,
+  },
+  editButton: {
+    backgroundColor: '#FFA500',
+    padding: 5,
+    borderRadius: 5,
+    alignItems: 'center',
+    width: '45%',
+  },
+  deleteButton: {
+    backgroundColor: '#F44336',
+    padding: 5,
+    borderRadius: 5,
+    alignItems: 'center',
+    width: '45%',
+  },
+  buttonText: {
+    color: '#FFF',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
 });
-
 export default LegionairesScreen;
