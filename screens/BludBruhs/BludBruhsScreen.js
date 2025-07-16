@@ -26,7 +26,7 @@ const scrollableMembers = [
   { name: 'Adin', codename: 'Aotearoa', screen: '', clickable: true, image: require('../../assets/Armor/Adin.jpg') },
   { name: 'Justin Platt', codename: 'Echo Wood', screen: '', clickable: true, image: require('../../assets/Armor/Justin2.jpg') },
   { name: 'Zack Dustin', codename: 'Carved Echo', screen: '', clickable: true, image: require('../../assets/Armor/Zack2_cleanup.jpg') },
-  { name: 'Joseph', codename: 'Technoman', screen: 'JosephD', clickable: false, image: require('../../assets/Armor/JosephD.jpg') },
+  { name: 'Joseph', codename: 'Technoman The Betrayer', screen: 'JosephD', clickable: true, image: require('../../assets/Armor/JosephD.jpg') },
   { name: 'Others', codename: 'Rolling Thunder', screen: 'RollingThunderScreen', clickable: true, image: require('../../assets/BackGround/Bludbruh4.jpg') },
 ];
 
