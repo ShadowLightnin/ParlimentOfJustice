@@ -222,8 +222,9 @@ const Sam = () => {
     return () => unsub();
   }, []);
 
-  const handlePlanetPress = () => {
-    console.log("Navigating to WarpScreen without stopping music at:", new Date().toISOString());
+  const handlePlanetPress = async () => {
+    console.log("Planet pressed, stopping music at:", new Date().toISOString());
+    await stopBackgroundMusic();
     navigation.navigate("WarpScreen", { from: "Sam" });
   };
 

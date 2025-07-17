@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { View, ImageBackground, StyleSheet, Dimensions, TouchableOpacity, Text, ScrollView, TextInput, Image, Alert, Modal } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { db, storage, auth } from "../../../lib/firebase";
 import { collection, addDoc, onSnapshot, deleteDoc, doc, setDoc, getDoc, getDocs } from "firebase/firestore";
 import { ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
+import { Audio } from 'expo-av';
+
+let backgroundSound = null;
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const isDesktop = SCREEN_WIDTH > 600;
@@ -16,8 +19,37 @@ const HARDCODED_BOOKS = [
   { id: "hardcoded-1", title: "Montrose Manor", coverImage: require("../../../assets/TheMontroseManor.jpg"), hardcoded: true },
 ];
 
+const playBackgroundMusic = async () => {
+  if (!backgroundSound) {
+    try {
+      const { sound } = await Audio.Sound.createAsync(
+        require("../../../assets/audio/MontroseDoom.mp4"),
+        { shouldPlay: true, isLooping: true, volume: 0.7 }
+      );
+      backgroundSound = sound;
+      await sound.playAsync();
+    } catch (error) {
+      console.error('Audio loading error:', error.message);
+      Alert.alert("Audio Error", "Failed to load background music: " + error.message);
+    }
+  }
+};
+
+const stopBackgroundMusic = async () => {
+  if (backgroundSound) {
+    try {
+      await backgroundSound.stopAsync();
+      await backgroundSound.unloadAsync();
+      backgroundSound = null;
+    } catch (error) {
+      console.error('Error stopping/unloading sound:', error);
+    }
+  }
+};
+
 const MontroseManorTab = () => {
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
   const [books, setBooks] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -39,8 +71,9 @@ const MontroseManorTab = () => {
     const unsubscribe = onSnapshot(
       collection(db, "books"),
       (snap) => {
-        console.log("Books snapshot:", snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-        setBooks([...HARDCODED_BOOKS, ...snap.docs.map((doc) => ({ id: doc.id, ...doc.data(), hardcoded: false }))]);
+        const newBooks = [...HARDCODED_BOOKS, ...snap.docs.map((doc) => ({ id: doc.id, ...doc.data(), hardcoded: false }))];
+        console.log("Books snapshot:", newBooks);
+        setBooks(newBooks);
       },
       (e) => {
         console.error("Snapshot error:", e.message);
@@ -73,6 +106,17 @@ const MontroseManorTab = () => {
       console.log("Form reset for new book");
     }
   }, [editingBook]);
+
+  useEffect(() => {
+    if (isFocused && !backgroundSound) {
+      playBackgroundMusic();
+    }
+    return () => {
+      if (navigation.getState().routes[navigation.getState().index].name === 'Home') {
+        stopBackgroundMusic();
+      }
+    };
+  }, [isFocused, navigation]);
 
   const pickImage = async () => {
     if (!canUploadImage) {
@@ -291,7 +335,7 @@ const MontroseManorTab = () => {
   };
 
   const renderBook = (book) => {
-    const imageSource = book.imageUrl ? { uri: book.imageUrl } : book.coverImage || PLACEHOLDER_IMAGE;
+    const imageSource = book.imageUrl ? { uri: book.imageUrl, cache: "force-cache" } : book.coverImage || PLACEHOLDER_IMAGE;
     console.log("Rendering book:", { id: book.id, title: book.title, imageSource: JSON.stringify(imageSource) });
     return (
       <View key={book.id} style={styles.bookCont}>
@@ -312,7 +356,12 @@ const MontroseManorTab = () => {
             style={styles.bookImg}
             resizeMode="cover"
             defaultSource={PLACEHOLDER_IMAGE}
-            onError={(e) => console.error("Image load error for book:", book.id, "Error:", e.nativeEvent.error, "Source:", JSON.stringify(imageSource))}
+            onError={(e) => {
+              console.error("Image load error for book:", book.id, "Error:", e.nativeEvent.error, "Source:", JSON.stringify(imageSource));
+              if (book.imageUrl) {
+                setBooks(books.map(item => item.id === book.id ? { ...item, imageUrl: null } : item));
+              }
+            }}
           />
         </TouchableOpacity>
         {!book.hardcoded && (
@@ -340,8 +389,9 @@ const MontroseManorTab = () => {
   return (
     <ImageBackground source={require("../../../assets/TheMaw.jpg")} style={styles.bg}>
       <TouchableOpacity
-        onPress={() => {
-          console.log("Navigating to EvilMontrose");
+        onPress={async () => {
+          console.log("Navigating to EvilMontrose, stopping music");
+          await stopBackgroundMusic();
           navigation.navigate("EvilMontrose");
         }}
         style={styles.back}
@@ -349,8 +399,9 @@ const MontroseManorTab = () => {
         <Text>Escape</Text>
       </TouchableOpacity>
       <TouchableOpacity
-        onPress={() => {
-          console.log("Navigating to BludBruhsHome");
+        onPress={async () => {
+          console.log("Navigating to BludBruhsHome, stopping music");
+          await stopBackgroundMusic();
           navigation.navigate("BludBruhsHome");
         }}
         style={styles.home}
@@ -389,16 +440,18 @@ const MontroseManorTab = () => {
             </TouchableOpacity>
             {imageUri && (
               <Image
-                source={{ uri: imageUri }}
+                source={{ uri: imageUri, cache: "force-cache" }}
                 style={styles.previewImage}
                 resizeMode="contain"
+                onError={(e) => console.error("Preview image error:", e.nativeEvent.error)}
               />
             )}
             {!imageUri && editingBook && editingBook.imageUrl && editingBook.imageUrl !== "placeholder" && (
               <Image
-                source={{ uri: editingBook.imageUrl }}
+                source={{ uri: editingBook.imageUrl, cache: "force-cache" }}
                 style={styles.previewImage}
                 resizeMode="contain"
+                onError={(e) => console.error("Editing preview image error:", e.nativeEvent.error)}
               />
             )}
             <View style={styles.buttonContainer}>

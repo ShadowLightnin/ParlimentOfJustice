@@ -33,7 +33,7 @@ const scrollableMembers = [
 // Fixed factions for bottom row
 const fixedMembers = [
   { name: '', codename: 'Ranger Squad', screen: 'RangerSquad', clickable: true, image: require('../../assets/BackGround/RangerSquad.jpg') },
-  { name: '', codename: 'Montrose Manor', screen: 'MontroseManorTab', clickable: true, image: require('../../assets/TheMontroseManor.jpg') },
+  { name: '', codename: 'Montrose Manor', screen: 'MontroseManorTab', clickable: true, image: require('../../assets/TheMontroseManor.jpg') }, // add a ' ' to make card invisible
   { name: '', codename: 'MonkeAlliance', screen: 'MonkeAllianceScreen', clickable: true, image: require('../../assets/BackGround/Monke.jpg') },
 ];
 
@@ -152,7 +152,16 @@ const BludBruhsScreen = () => {
         member?.name === ' ' && styles.subtleButton,
         !member && styles.emptyCard,
       ]}
-      onPress={() => handleMemberPress(member)}
+      onPress={async () => {
+        if (member?.clickable) {
+          await stopBackgroundMusic(); // Stop music before navigating
+          if (member.screen) {
+            navigation.navigate(member.screen, { from: 'BludBruhsHome' });
+          } else {
+            setPreviewMember(member);
+          }
+        }
+      }}
       disabled={!member?.clickable}
     >
       {member?.image && (
@@ -219,7 +228,12 @@ const BludBruhsScreen = () => {
                 !member.clickable && styles.disabledCard,
                 member.name === ' ' && styles.subtleButton,
               ]}
-              onPress={() => handleMemberPress(member)}
+              onPress={async () => {
+                if (member.clickable) {
+                  await stopBackgroundMusic(); // Stop music before navigating
+                  navigation.navigate(member.screen, { from: 'BludBruhsHome' });
+                }
+              }}
               disabled={!member.clickable}
             >
               {member.image && (

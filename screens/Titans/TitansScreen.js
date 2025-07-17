@@ -117,14 +117,13 @@ const TitansScreen = () => {
   const goToChat = async () => {
     if (currentSound) {
       try {
-        const status = await currentSound.getStatusAsync();
-        if (status.isPlaying) {
-          await currentSound.pauseAsync();
-          setPausedPosition(status.positionMillis || 0);
-          setIsPaused(true);
-        }
+        await currentSound.stopAsync();
+        await currentSound.unloadAsync();
+        setCurrentSound(null);
+        setPausedPosition(0);
+        setIsPaused(false);
       } catch (error) {
-        console.error('Error pausing sound for chat:', error);
+        console.error('Error stopping sound for chat:', error);
       }
     }
     navigation.navigate('TeamChat');
@@ -187,14 +186,13 @@ const TitansScreen = () => {
                   if (member.clickable) {
                     if (currentSound) {
                       try {
-                        const status = await currentSound.getStatusAsync();
-                        if (status.isPlaying) {
-                          await currentSound.pauseAsync();
-                          setPausedPosition(status.positionMillis || 0);
-                          setIsPaused(true);
-                        }
+                        await currentSound.stopAsync();
+                        await currentSound.unloadAsync();
+                        setCurrentSound(null);
+                        setPausedPosition(0);
+                        setIsPaused(false);
                       } catch (error) {
-                        console.error('Error pausing sound for member navigation:', error);
+                        console.error('Error stopping sound for member navigation:', error);
                       }
                     }
                     navigation.navigate(member.screen);
@@ -239,14 +237,13 @@ const TitansScreen = () => {
                         if (member?.clickable) {
                           if (currentSound) {
                             try {
-                              const status = await currentSound.getStatusAsync();
-                              if (status.isPlaying) {
-                                await currentSound.pauseAsync();
-                                setPausedPosition(status.positionMillis || 0);
-                                setIsPaused(true);
-                              }
+                              await currentSound.stopAsync();
+                              await currentSound.unloadAsync();
+                              setCurrentSound(null);
+                              setPausedPosition(0);
+                              setIsPaused(false);
                             } catch (error) {
-                              console.error('Error pausing sound for member navigation:', error);
+                              console.error('Error stopping sound for member navigation:', error);
                             }
                           }
                           navigation.navigate(member.screen);

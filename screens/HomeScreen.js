@@ -123,12 +123,14 @@ export const HomeScreen = () => {
       try {
         const status = await currentSound.getStatusAsync();
         if (status.isPlaying) {
-          await currentSound.pauseAsync();
-          setPausedPosition(status.positionMillis || 0);
-          setIsPaused(true);
+          await currentSound.stopAsync();
+          await currentSound.unloadAsync();
+          setCurrentSound(null);
+          setPausedPosition(0);
+          setIsPaused(false);
         }
       } catch (error) {
-        console.error('Error pausing sound on logout:', error);
+        console.error('Error stopping sound on logout:', error);
       }
     }
     try {
@@ -142,14 +144,13 @@ export const HomeScreen = () => {
   const goToChat = async () => {
     if (currentSound) {
       try {
-        const status = await currentSound.getStatusAsync();
-        if (status.isPlaying) {
-          await currentSound.pauseAsync();
-          setPausedPosition(status.positionMillis || 0);
-          setIsPaused(true);
-        }
+        await currentSound.stopAsync();
+        await currentSound.unloadAsync();
+        setCurrentSound(null);
+        setPausedPosition(0);
+        setIsPaused(false);
       } catch (error) {
-        console.error('Error pausing sound for chat:', error);
+        console.error('Error stopping sound for chat:', error);
       }
     }
     navigation.navigate('PublicChat');
@@ -166,7 +167,22 @@ export const HomeScreen = () => {
           { width: cardWidth, height: cardHeight, margin: cardSpacing / 2 },
           !item.clickable && styles.disabledCard,
         ]}
-        onPress={() => item.clickable && item.screen && navigation.navigate(item.screen)}
+        onPress={async () => {
+          if (item.clickable && item.screen) {
+            if (currentSound) {
+              try {
+                await currentSound.stopAsync();
+                await currentSound.unloadAsync();
+                setCurrentSound(null);
+                setPausedPosition(0);
+                setIsPaused(false);
+              } catch (error) {
+                console.error('Error stopping sound on faction press:', error);
+              }
+            }
+            navigation.navigate(item.screen);
+          }
+        }}
         disabled={!item.clickable || !item.screen}
       >
         <ImageBackground 
