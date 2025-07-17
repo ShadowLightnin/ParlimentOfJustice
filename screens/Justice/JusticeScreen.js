@@ -9,6 +9,7 @@ import {
   ImageBackground,
   Modal,
   Alert,
+  ScrollView,
 } from 'react-native';
 import { FlatList } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
@@ -96,7 +97,7 @@ const JusticeScreen = () => {
 
   const renderHeroCard = ({ item }) => (
     <TouchableOpacity
-      key={item.name || item.codename || item.image.toString()}
+      key={item.name || item.image.toString()}
       style={[
         styles.card,
         {
@@ -144,91 +145,95 @@ const JusticeScreen = () => {
       source={require('../../assets/BackGround/Justice.jpg')}
       style={styles.background}
     >
-      <View style={styles.container}>
-        <TouchableOpacity onPress={() => navigation.navigate('Heroes')}>
-          <Text style={[styles.header, { marginTop: 20, marginBottom: 60 }]}>Guardians of Justice</Text>
-        </TouchableOpacity>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.container}>
+          <TouchableOpacity onPress={() => navigation.navigate('Heroes')}>
+            <Text style={[styles.header, { marginTop: 20, marginBottom: 60 }]}>Guardians of Justice</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={async () => {
-            await stopBackgroundMusic();
-            navigation.navigate('Home');
-          }}
-          style={styles.backButton}
-        >
-          <Text style={styles.backButtonText}>⬅️</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={async () => {
+              await stopBackgroundMusic();
+              navigation.navigate('Home');
+            }}
+            style={styles.backButton}
+          >
+            <Text style={styles.backButtonText}>⬅️</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={async () => {
-            await stopBackgroundMusic();
-            navigation.navigate('VigilanteScreen');
-          }}
-          style={styles.vigilanteButton}
-        >
-          <Image
-            source={require('../../assets/BackGround/Vigilantes.jpg')}
-            style={styles.vigilanteImage}
-            resizeMode="contain"
-          />
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={async () => {
+              await stopBackgroundMusic();
+              navigation.navigate('VigilanteScreen');
+            }}
+            style={styles.vigilanteButton}
+          >
+            <Image
+              source={require('../../assets/BackGround/Vigilantes.jpg')}
+              style={styles.vigilanteImage}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
 
-        <View style={styles.scrollWrapper}>
-          <Text style={styles.categoryHeader}>Guardians</Text>
-          <FlatList
-            horizontal
-            data={Guardians}
-            renderItem={renderHeroCard}
-            keyExtractor={(item) => item.id}
-            showsHorizontalScrollIndicator={true}
-            contentContainerStyle={styles.scrollContainer}
-          />
-          <Text style={styles.categoryHeader}>Elementals</Text>
-          <FlatList
-            horizontal
-            data={Elementals}
-            renderItem={renderHeroCard}
-            keyExtractor={(item) => item.id}
-            showsHorizontalScrollIndicator={true}
-            contentContainerStyle={styles.scrollContainer}
-          />
-        </View>
-
-        <Modal
-          visible={!!previewHero}
-          transparent={true}
-          animationType="fade"
-          onRequestClose={async () => {
-            await playBackgroundMusic();
-            setPreviewHero(null);
-          }}
-        >
-          <View style={styles.modalBackground}>
-            <TouchableOpacity
-              style={styles.modalOuterContainer}
-              activeOpacity={1}
-              onPress={async () => {
-                await playBackgroundMusic();
-                setPreviewHero(null);
-              }}
-            >
-              <View style={styles.imageContainer}>
-                <FlatList
-                  horizontal
-                  data={[previewHero]}
-                  renderItem={({ item }) => renderPreviewCard(item)}
-                  keyExtractor={(item) => item.id}
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.imageScrollContainer}
-                />
-              </View>
-              <View style={styles.previewAboutSection}>
-                <Text style={styles.previewName}>{previewHero?.name || previewHero?.codename || 'Unknown'}</Text>
-              </View>
-            </TouchableOpacity>
+          <View style={styles.scrollWrapper}>
+            <Text style={styles.categoryHeader}>Guardians</Text>
+            <FlatList
+              horizontal
+              data={Guardians}
+              renderItem={renderHeroCard}
+              keyExtractor={(item) => item.name || item.image.toString()}
+              showsHorizontalScrollIndicator={true}
+              contentContainerStyle={styles.scrollContainer}
+            />
+            <Text style={styles.categoryHeader}>Elementals</Text>
+            <FlatList
+              horizontal
+              data={Elementals}
+              renderItem={renderHeroCard}
+              keyExtractor={(item) => item.name || item.image.toString()}
+              showsHorizontalScrollIndicator={true}
+              contentContainerStyle={styles.scrollContainer}
+            />
           </View>
-        </Modal>
-      </View>
+
+          <Modal
+            visible={!!previewHero}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={async () => {
+              await playBackgroundMusic();
+              setPreviewHero(null);
+            }}
+          >
+            <View style={styles.modalBackground}>
+              <TouchableOpacity
+                style={styles.modalOuterContainer}
+                activeOpacity={1}
+                onPress={async () => {
+                  await playBackgroundMusic();
+                  setPreviewHero(null);
+                }}
+              >
+                <View style={styles.imageContainer}>
+                  {previewHero && (
+                    <FlatList
+                      horizontal
+                      data={[previewHero]}
+                      renderItem={({ item }) => renderPreviewCard(item)}
+                      keyExtractor={(item) => item.name || item.image.toString()}
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={styles.imageScrollContainer}
+                    />
+                  )}
+                </View>
+                <View style={styles.previewAboutSection}>
+                  <Text style={styles.previewName}>{previewHero?.name || previewHero?.codename || 'Unknown'}</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </Modal>
+        </View>
+      </ScrollView>
     </ImageBackground>
   );
 };
@@ -239,11 +244,14 @@ const styles = StyleSheet.create({
     height: SCREEN_HEIGHT,
     resizeMode: 'cover',
   },
-  container: {
+  scrollView: {
     flex: 1,
+  },
+  container: {
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
     paddingTop: 40,
     alignItems: 'center',
+    paddingBottom: 20,
   },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -272,6 +280,14 @@ const styles = StyleSheet.create({
     textShadowColor: 'yellow',
     textShadowRadius: 15,
   },
+  categoryHeader: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FFF',
+    textAlign: 'left',
+    textShadowColor: 'yellow',
+    textShadowRadius: 15,
+  },
   vigilanteButton: {
     position: 'absolute',
     top: 100,
@@ -287,7 +303,7 @@ const styles = StyleSheet.create({
   },
   scrollWrapper: {
     width: SCREEN_WIDTH,
-    flex: 1,
+    marginTop: 20,
   },
   scrollContainer: {
     flexDirection: 'row',
