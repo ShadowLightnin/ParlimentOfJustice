@@ -33,8 +33,8 @@ const verticalSpacing = isDesktop ? 50 : 20;
 
 // Hardcoded heroes data with images, white border color
 const hardcodedHeroes = [
-  { id: 'hero-1', name: '', screen: '', image: require('../../assets/Armor/TheOne.jpg'), clickable: true, borderColor: 'white', hardcoded: true, description: '' },
-  { id: 'hero-2', name: '', screen: '', image: require('../../assets/Armor/TheOneness.jpg'), clickable: true, borderColor: 'white', hardcoded: true, description: '' },
+  // { id: 'hero-1', name: '', screen: '', image: require('../../assets/Armor/TheOne.jpg'), clickable: true, borderColor: 'white', hardcoded: true, description: '' },
+  // { id: 'hero-2', name: '', screen: '', image: require('../../assets/Armor/TheOneness.jpg'), clickable: true, borderColor: 'white', hardcoded: true, description: '' },
 ];
 
 const ALLOWED_EMAILS = ["will@test.com", "c1wcummings@gmail.com"];
