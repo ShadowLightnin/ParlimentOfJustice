@@ -21,8 +21,9 @@ const Azure = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Mediateir", copyright: "William Cummings", image: require("../../assets/Armor/Azure.jpg"), clickable: true },
+    { name: "Mediateir", copyright: "William Cummings", image: require("../../assets/Armor/Azure3.jpg"), clickable: true },
     { name: "Legacy", copyright: "William Cummings", image: require("../../assets/Armor/AzureLegacy.jpg"), clickable: true },
+    { name: "Mediateir", copyright: "William Cummings", image: require("../../assets/Armor/Azure.jpg"), clickable: true },
     { name: "Midigator", copyright: "William Cummings", image: require("../../assets/Armor/Azure2.jpg"), clickable: true },
     { name: "", image: require("../../assets/Armor/AzuresSymbol.jpg"), clickable: true },
   ];
