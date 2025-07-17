@@ -44,7 +44,7 @@ const Will = () => {
     const loadSound = async () => {
       try {
         const { sound } = await Audio.Sound.createAsync(
-          require("../../assets/audio/SourceOfStrengthNinjagoMyVersion.mp4"),
+          require("../../assets/audio/NightWing.mp4"),
           { shouldPlay: true, isLooping: true, volume: 1.0 }
         );
         setCurrentSound(sound);
