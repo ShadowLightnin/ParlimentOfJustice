@@ -3,12 +3,14 @@ import {
   View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions 
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { Audio } from 'expo-av'; // Import expo-av for audio
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const Emma = () => {
   const navigation = useNavigation();
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
+  const [sound, setSound] = useState(null); // State to manage audio object
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -16,6 +18,28 @@ const Emma = () => {
     };
     const subscription = Dimensions.addEventListener("change", updateDimensions);
     return () => subscription?.remove();
+  }, []);
+
+  // Load and play background music
+  useEffect(() => {
+    async function loadSound() {
+      console.log('Loading Sound at:', new Date().toISOString());
+      const { sound } = await Audio.Sound.createAsync(
+        require('../../assets/audio/BlueBloods.mp4'), // Replace with your audio file path
+        { shouldPlay: true, isLooping: false }
+      );
+      setSound(sound);
+      console.log('Playing Sound at:', new Date().toISOString());
+      await sound.playAsync();
+    }
+    loadSound();
+
+    return () => {
+      if (sound) {
+        console.log('Unloading Sound at:', new Date().toISOString());
+        sound.unloadAsync();
+      }
+    };
   }, []);
 
   const isDesktop = windowWidth >= 768;
@@ -47,7 +71,13 @@ const Emma = () => {
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.headerContainer}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={styles.backButton} onPress={() => {
+            if (sound) {
+              sound.stopAsync();
+              sound.unloadAsync();
+            }
+            navigation.goBack();
+          }}>
             <Text style={styles.backButtonText}>←</Text>
           </TouchableOpacity>
           <Text style={styles.title}>Kintsunera</Text>

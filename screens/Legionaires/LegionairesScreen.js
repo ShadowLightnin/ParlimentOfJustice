@@ -18,6 +18,7 @@ import { db } from '../../lib/firebase'; // Ensure this path is correct
 import { memberCategories } from './LegionairesMembers';
 import legionImages from './LegionairesImages';
 import LegionFriends from './LegionFriends';
+import { Audio } from 'expo-av'; // Import expo-av for audio
 
 // 🎯 Initialize with hardcoded members and fetch dynamic ones
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -35,6 +36,7 @@ export const LegionairesScreen = () => {
   const [members, setMembers] = useState(memberCategories); // Start with hardcoded
   const [editingMember, setEditingMember] = useState(null);
   const [deleteModal, setDeleteModal] = useState({ visible: false, member: null });
+  const [sound, setSound] = useState(null); // State to manage audio object
 
   useEffect(() => {
     // 🎯 Listen for real-time updates from Firestore
@@ -51,15 +53,40 @@ export const LegionairesScreen = () => {
     }, (error) => {
       console.error('Error fetching members:', error);
     });
-    return () => unsubscribe();
+
+    // Load and play background music
+    async function loadSound() {
+      console.log('Loading Sound at:', new Date().toISOString());
+      const { sound } = await Audio.Sound.createAsync(
+        require('../../assets/audio/BlueBloodsExtend.mp4'), // Replace with your audio file path
+        { shouldPlay: true, isLooping: true }
+      );
+      setSound(sound);
+      console.log('Playing Sound at:', new Date().toISOString());
+      await sound.playAsync();
+    }
+    loadSound();
+
+    return () => {
+      unsubscribe();
+      if (sound) {
+        console.log('Unloading Sound at:', new Date().toISOString());
+        sound.unloadAsync();
+      }
+    };
   }, []);
 
   const goToChat = () => {
+    if (sound) {
+      sound.stopAsync();
+      sound.unloadAsync();
+    }
     navigation.navigate('TeamChat');
   };
 
   const handleMemberPress = (member) => {
     if (member.clickable) {
+      if (sound) sound.pauseAsync(); // Pause music when previewing
       if (member.screen && member.screen !== '') {
         navigation.navigate(member.screen);
       } else {
@@ -119,7 +146,10 @@ export const LegionairesScreen = () => {
     <TouchableOpacity
       key={member.name}
       style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
-      onPress={() => setPreviewMember(null)}
+      onPress={() => {
+        setPreviewMember(null);
+        if (sound) sound.playAsync(); // Resume music when closing preview
+      }}
     >
       <Image
         source={member.image || require('../../assets/Armor/PlaceHolder.jpg')}
@@ -172,7 +202,13 @@ export const LegionairesScreen = () => {
     >
       <SafeAreaView style={styles.container}>
         <View style={styles.headerWrapper}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={styles.backButton} onPress={() => {
+            if (sound) {
+              sound.stopAsync();
+              sound.unloadAsync();
+            }
+            navigation.goBack();
+          }}>
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
           <Text style={styles.header}>Legionnaires</Text>
@@ -227,13 +263,19 @@ export const LegionairesScreen = () => {
           visible={!!previewMember}
           transparent={true}
           animationType="fade"
-          onRequestClose={() => setPreviewMember(null)}
+          onRequestClose={() => {
+            setPreviewMember(null);
+            if (sound) sound.playAsync(); // Resume music when closing modal
+          }}
         >
           <View style={styles.modalBackground}>
             <TouchableOpacity
               style={styles.modalOuterContainer}
               activeOpacity={1}
-              onPress={() => setPreviewMember(null)}
+              onPress={() => {
+                setPreviewMember(null);
+                if (sound) sound.playAsync(); // Resume music when closing modal
+              }}
             >
               <View style={styles.imageContainer}>
                 <ScrollView

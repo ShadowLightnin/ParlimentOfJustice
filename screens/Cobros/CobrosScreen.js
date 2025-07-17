@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
   Modal,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Audio } from 'expo-av'; // Import expo-av for audio
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -49,13 +50,41 @@ const verticalSpacing = isDesktop ? 50 : 20;
 export const CobrosScreen = () => {
   const navigation = useNavigation();
   const [previewMember, setPreviewMember] = useState(null);
+  const [sound, setSound] = useState(null); // State to manage audio object
+
+  useEffect(() => {
+    // Load and play background music
+    async function loadSound() {
+      console.log('Loading Sound at:', new Date().toISOString());
+      const { sound } = await Audio.Sound.createAsync(
+        require('../../assets/audio/JusticeGang.mp4'), // Replace with your audio file path
+        { shouldPlay: true, isLooping: false }
+      );
+      setSound(sound);
+      console.log('Playing Sound at:', new Date().toISOString());
+      await sound.playAsync();
+    }
+    loadSound();
+
+    return () => {
+      if (sound) {
+        console.log('Unloading Sound at:', new Date().toISOString());
+        sound.unloadAsync();
+      }
+    };
+  }, []);
 
   const goToChat = () => {
+    if (sound) {
+      sound.stopAsync();
+      sound.unloadAsync();
+    }
     navigation.navigate('TeamChat');
   };
 
   const handleMemberPress = (member) => {
     if (member.clickable) {
+      if (sound) sound.pauseAsync(); // Pause music when previewing
       if (member.screen) {
         navigation.navigate(member.screen); // Navigate to the defined screen if it exists
       } else {
@@ -93,7 +122,10 @@ export const CobrosScreen = () => {
     <TouchableOpacity
       key={member.name}
       style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
-      onPress={() => setPreviewMember(null)} // Close modal on card press
+      onPress={() => {
+        setPreviewMember(null);
+        if (sound) sound.playAsync(); // Resume music when closing preview
+      }} // Close modal on card press
     >
       <Image
         source={member.image || require('../../assets/Armor/PlaceHolder.jpg')}
@@ -112,7 +144,13 @@ export const CobrosScreen = () => {
       <SafeAreaView style={styles.container}>
         {/* Header & Back Button */}
         <View style={styles.headerWrapper}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={styles.backButton} onPress={() => {
+            if (sound) {
+              sound.stopAsync();
+              sound.unloadAsync();
+            }
+            navigation.goBack();
+          }}>
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
           <Text style={styles.header}>Cobros 314</Text>
@@ -150,13 +188,19 @@ export const CobrosScreen = () => {
           visible={!!previewMember}
           transparent={true}
           animationType="fade"
-          onRequestClose={() => setPreviewMember(null)}
+          onRequestClose={() => {
+            setPreviewMember(null);
+            if (sound) sound.playAsync(); // Resume music when closing modal
+          }}
         >
           <View style={styles.modalBackground}>
             <TouchableOpacity
               style={styles.modalOuterContainer}
               activeOpacity={1}
-              onPress={() => setPreviewMember(null)}
+              onPress={() => {
+                setPreviewMember(null);
+                if (sound) sound.playAsync(); // Resume music when closing modal
+              }}
             >
               <View style={styles.imageContainer}>
                 <ScrollView
