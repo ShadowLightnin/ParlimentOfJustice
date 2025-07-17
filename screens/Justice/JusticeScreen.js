@@ -60,6 +60,211 @@ const heroes = [
   { name: 'Socialation', screen: '', image: require('../../assets/Armor/Jaden.jpg'), clickable: true },
   { name: 'Spiltz', screen: '', image: require('../../assets/Armor/Jonas.jpg'), clickable: true },
   { name: '', codename: 'Voice Fry', screen: '', clickable: true, image: require('../../assets/Armor/Johnathon_cleanup.jpg') },
+  
+  { name: 'First Elemental Master', screen: '', image: require('../../assets/Armor/ElementalArmor/FirstElementalMaster.jpg'), clickable: true },
+  { name: 'Master Of Creation', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfCreation.jpg'), clickable: true },
+  { name: 'Creation Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/CreationElemental3.jpg'), clickable: true },
+  { name: 'Creation Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/CreationElemental.jpg'), clickable: true },
+  { name: 'Creation Elemental 3', screen: '', image: require('../../assets/Armor/ElementalArmor/CreationElemental2.jpg'), clickable: true },
+  { name: 'GoldenPower Elemental Master', screen: '', image: require('../../assets/Armor/ElementalArmor/GoldenPowerElementalMaster.jpg'), clickable: true },
+  { name: 'GoldenPower Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/GoldenPowerElemental.jpg'), clickable: true },
+  
+  { name: 'Master Of Destruction', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfDestruction.jpg'), clickable: true },
+  { name: 'Destruction Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/DestructionElemental3.jpg'), clickable: true },
+  { name: 'Destruction Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/DestructionElemental.jpg'), clickable: true },
+  { name: 'Destruction Elemental 3', screen: '', image: require('../../assets/Armor/ElementalArmor/DestructionElemental2.jpg'), clickable: true },
+  
+  { name: 'DragonPower Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/DragonPowerElemental.jpg'), clickable: true },
+  { name: 'DragonPower Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/DragonPowerElemental2.jpg'), clickable: true },
+  { name: 'OniPower Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/OniPowerElemental.jpg'), clickable: true },
+  { name: 'OniPower Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/OniPowerElemental2.jpg'), clickable: true },
+  
+  { name: 'Master Of Fire', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfFire.jpg'), clickable: true },
+  { name: 'Fire Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/FireElemental.jpg'), clickable: true },
+
+  { name: 'Master Of Lightning', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfLightning.jpg'), clickable: true },
+  { name: 'Lightning Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/LightningELemental.jpg'), clickable: true },
+
+  { name: 'Master Of Ice', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfIce.jpg'), clickable: true },
+  { name: 'Ice Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/IceElemental.jpg'), clickable: true },
+  { name: 'Ice Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/IceElemental2.jpg'), clickable: true },
+  { name: 'Ice Elemental 3', screen: '', image: require('../../assets/Armor/ElementalArmor/IceElemental3.jpg'), clickable: true },
+
+  { name: 'Master Of Earth', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfEarth.jpg'), clickable: true },
+  { name: 'Earth Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/EarthElemental.jpg'), clickable: true },
+
+  { name: 'Master Of Water', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfWater.jpg'), clickable: true },
+  { name: 'Water Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/WaterElemental.jpg'), clickable: true },
+
+  { name: 'Master Of Energy', screen: '', image: require('../../assets/Armor/ElementalArmor/EnergyElemental4.jpg'), clickable: true },
+  { name: 'Energy Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfEnergy.jpg'), clickable: true },
+  { name: 'Energy Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/EnergyElemental.jpg'), clickable: true },
+  { name: 'Energy Elemental 3', screen: '', image: require('../../assets/Armor/ElementalArmor/EnergyElemental2.jpg'), clickable: true },
+  { name: 'Energy Elemental 4', screen: '', image: require('../../assets/Armor/ElementalArmor/EnergyElemental3.jpg'), clickable: true },
+
+  { name: 'Master Of Wind', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfWind.jpg'), clickable: true },
+  { name: 'Wind Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/WindElemental.jpg'), clickable: true },
+
+  { name: 'Master Of Shadow', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfShadow.jpg'), clickable: true },
+  { name: 'Shadow Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/ShadowElemental.jpg'), clickable: true },
+
+  { name: 'Master Of Light', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfLight.jpg'), clickable: true },
+  { name: 'Light Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/LightElemental.jpg'), clickable: true },
+  { name: 'Light Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/LightElemental2.jpg'), clickable: true },
+  { name: 'Light Elemental 3', screen: '', image: require('../../assets/Armor/ElementalArmor/LightElemental3.jpg'), clickable: true },
+
+  { name: 'Master Of Metal', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfMetal.jpg'), clickable: true },
+  { name: 'Metal Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/MetalElemental.jpg'), clickable: true },
+
+  { name: 'Master Of Poison', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfPoison.jpg'), clickable: true },
+  { name: 'Poison Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/PoisonElemental.jpg'), clickable: true },
+
+  { name: 'Master Of Nature', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfNature.jpg'), clickable: true },
+  { name: 'Nature Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/NatureElemental.jpg'), clickable: true },
+
+  { name: 'Master Of Mind', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfMind.jpg'), clickable: true },
+  { name: 'Mind Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/MindElemental.jpg'), clickable: true },
+
+  { name: 'Master Of Speed', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfSpeed.jpg'), clickable: true },
+  { name: 'Speed Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/SpeedElemental.jpg'), clickable: true },
+
+  { name: 'Master Of Gravity', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfGravity.jpg'), clickable: true },
+  { name: 'Gravity Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/GravityElemental.jpg'), clickable: true },
+
+  { name: 'Master Of Amber', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfAmber.jpg'), clickable: true },
+  { name: 'Amber Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/AmberElemental.jpg'), clickable: true },
+
+  { name: 'Master Of Smoke', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfSmoke.jpg'), clickable: true },
+  { name: 'Smoke Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/SmokeElemental.jpg'), clickable: true },
+
+  { name: 'Master Of Sound', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfSound.jpg'), clickable: true },
+  { name: 'Sound Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/SoundElemental.jpg'), clickable: true },
+
+  { name: 'Master Of Form', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfForm.jpg'), clickable: true },
+  { name: 'Form Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/FormElemental.jpg'), clickable: true },
+
+  { name: 'Master Of Time', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfTime.jpg'), clickable: true },
+  { name: 'Time Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/TimeElemental.jpg'), clickable: true },
+  { name: 'Time Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/TimeElemental2.jpg'), clickable: true },
+  { name: 'Time Elemental 3', screen: '', image: require('../../assets/Armor/ElementalArmor/TimeElemental3.jpg'), clickable: true },
+
+  { name: 'Master Of Darkness', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfDarkness.jpg'), clickable: true },
+  { name: 'Darkness Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/DarknessElemental.jpg'), clickable: true },
+
+  { name: 'Master Of Heat', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfHeat.jpg'), clickable: true },
+  { name: 'Heat Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/HeatElemental.jpg'), clickable: true },
+  { name: 'Heat Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/HeatElemental2.jpg'), clickable: true },
+  { name: 'Heat Elemental 3', screen: '', image: require('../../assets/Armor/ElementalArmor/HeatElemental3.jpg'), clickable: true },
+  
+  { name: 'Master Of Quake', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfQuake.jpg'), clickable: true },
+  { name: 'Quake Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/QuakeElemental.jpg'), clickable: true },
+  { name: 'Quake Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/QuakeElemental2.jpg'), clickable: true },
+
+  { name: 'Master Of Fusion', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfFusion.jpg'), clickable: true },
+  { name: 'Fusion Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/FusionElemental.jpg'), clickable: true },
+
+  { name: 'Master Of Technology', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfTechnology.jpg'), clickable: true },
+  { name: 'Technology Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/TechnologyElemental.jpg'), clickable: true },
+
+  { name: 'Lava Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/LavaElemental.jpg'), clickable: true },
+  { name: 'Lava Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/LavaElemental2.jpg'), clickable: true },
+  { name: 'Lava Elemental 4', screen: '', image: require('../../assets/Armor/ElementalArmor/LavaElemental4.jpg'), clickable: true },
+  
+  { name: 'Life Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/LifeElemental.jpg'), clickable: true },
+  { name: 'Life Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/LifeElemental2.jpg'), clickable: true },
+
+  { name: 'Master Of Chaos', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfChaos.jpg'), clickable: true },
+  { name: 'Chaos Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/ChaosElemental.jpg'), clickable: true },
+
+  { name: 'Master Of Focus', screen: '', image: require('../../assets/Armor/ElementalArmor/MasterOfFocus.jpg'), clickable: true },
+  { name: 'Focus Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/FocusElemental.jpg'), clickable: true },
+
+  { name: 'Fertility Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/FertilityElemental.jpg'), clickable: true },
+  { name: 'Fertility Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/FertilityElemental2.jpg'), clickable: true },
+  
+  { name: 'First Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/FirstElemental.jpg'), clickable: true },
+  { name: 'First Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/FirstElemental2.jpg'), clickable: true },
+  
+  { name: 'Love Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/LoveElemental.jpg'), clickable: true },
+  { name: 'Love Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/LoveElemental2.jpg'), clickable: true },
+
+  { name: 'BlackHole Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/BlackHoleElemental.jpg'), clickable: true },
+  { name: 'BlackHole Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/BlackHoleElemental2.jpg'), clickable: true },
+  { name: 'BlackHole Elemental 3', screen: '', image: require('../../assets/Armor/ElementalArmor/BlackHoleElemental3.jpg'), clickable: true },
+  { name: 'BlackHole Elemental 4', screen: '', image: require('../../assets/Armor/ElementalArmor/BlackHoleElemental4.jpg'), clickable: true },
+  { name: 'BlackHole Elemental 5', screen: '', image: require('../../assets/Armor/ElementalArmor/BlackHoleElemental5.jpg'), clickable: true },
+  { name: 'BlackHole Elemental 6', screen: '', image: require('../../assets/Armor/ElementalArmor/BlackHoleElemental6.jpg'), clickable: true },
+  { name: 'BlackHole Elemental 7', screen: '', image: require('../../assets/Armor/ElementalArmor/BlackHoleElemental7.jpg'), clickable: true },
+  
+  { name: 'Brown Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/BrownElemental.jpg'), clickable: true },
+  { name: 'Brown Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/BrownElemental2.jpg'), clickable: true },
+  
+  { name: 'Cosmos Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/CosmosElemental.jpg'), clickable: true },
+  { name: 'Cosmos Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/CosmosElemental2.jpg'), clickable: true },
+  
+  { name: 'DarkEnergey Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/DarkEnergeyElemental.jpg'), clickable: true },
+  { name: 'DarkEnergey Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/DarkEnergeyElemental2.jpg'), clickable: true },
+  
+  { name: 'DarkMatter Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/DarkMatterELemental.jpg'), clickable: true },
+  { name: 'DarkMatter Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/DarkMatterElemental2.jpg'), clickable: true },
+  
+  { name: 'Death Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/DeathElemental.jpg'), clickable: true },
+  { name: 'Death Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/DeathElemental2.jpg'), clickable: true },
+    
+  { name: 'Galaxy Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/GalaxyElemental.jpg'), clickable: true },
+  { name: 'Galaxy Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/GalaxyElemental2.jpg'), clickable: true },
+  
+  { name: 'IMG 0474 Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/IMG_0474.jpg'), clickable: true },
+  { name: 'IMG 0475 Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/IMG_0475.jpg'), clickable: true },
+  
+  { name: 'Maw Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/MawElemental.jpg'), clickable: true },
+  { name: 'Maw Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/MawElemental2.jpg'), clickable: true },
+  { name: 'Maw Elemental 3', screen: '', image: require('../../assets/Armor/ElementalArmor/MawElemental3.jpg'), clickable: true },
+  { name: 'Maw Elemental 4', screen: '', image: require('../../assets/Armor/ElementalArmor/MawElemental4.jpg'), clickable: true },
+  
+  { name: 'Plasma Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/PlasmaElemental.jpg'), clickable: true },
+  { name: 'Plasma Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/PlasmaElemental2.jpg'), clickable: true },
+  { name: 'Plasma Elemental 3', screen: '', image: require('../../assets/Armor/ElementalArmor/PlasmaElemental3.jpg'), clickable: true },
+  
+  { name: 'Portal Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/PortalElemental.jpg'), clickable: true },
+  { name: 'Portal Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/PortalElemental2.jpg'), clickable: true },
+  
+  { name: 'Quantum Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/QuantumElemental.jpg'), clickable: true },
+  { name: 'Quantum Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/QuantumElemental2.jpg'), clickable: true },
+  
+  { name: 'Quasar Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/QuasarElemetal.jpg'), clickable: true },
+  { name: 'Quasar Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/QuasarElemetal2.jpg'), clickable: true },
+  
+  { name: 'Reality Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/RealityElemental.jpg'), clickable: true },
+  { name: 'Reality Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/RealityElemental2.jpg'), clickable: true },
+  { name: 'Stories Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/StoriesElemental.jpg'), clickable: true },
+  { name: 'Stories Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/StoriesElemental2.jpg'), clickable: true },
+  
+  { name: 'Rift Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/RiftElemental.jpg'), clickable: true },
+  { name: 'Rift Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/RiftElemental2.jpg'), clickable: true },
+  
+  { name: 'Soul Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/SoulElemental.jpg'), clickable: true },
+  { name: 'Soul Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/SoulElemental2.jpg'), clickable: true },
+  
+  { name: 'Spinjitzu Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/SpinjitzuElemental.jpg'), clickable: true },
+  { name: 'Spinjitzu Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/SpinjitzuElemental2.jpg'), clickable: true },
+  
+  { name: 'Star Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/StarElemental.jpg'), clickable: true },
+  { name: 'Star Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/StarElemental2.jpg'), clickable: true },
+  
+  { name: 'Storm Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/StormElemental.jpg'), clickable: true },
+  { name: 'Storm Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/StormElemental2.jpg'), clickable: true },
+  
+  { name: 'Telekinisis Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/TelekinisisElemental.jpg'), clickable: true },
+  { name: 'Telekinisis Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/TelekinisisElemental2.jpg'), clickable: true },
+  
+  { name: 'Thunder Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/ThunderElemental.jpg'), clickable: true },
+  { name: 'Thunder Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/ThunderElemental2.jpg'), clickable: true },
+  
+  { name: 'Void Elemental', screen: '', image: require('../../assets/Armor/ElementalArmor/VoidElemental.jpg'), clickable: true },
+  { name: 'Void Elemental 2', screen: '', image: require('../../assets/Armor/ElementalArmor/VoidElemental2.jpg'), clickable: true },
+  { name: 'Void Elemental 3', screen: '', image: require('../../assets/Armor/ElementalArmor/VoidElemental3.jpg'), clickable: true },
+  { name: 'Void Elemental 4', screen: '', image: require('../../assets/Armor/ElementalArmor/VoidElemental4.jpg'), clickable: true },
 ];
 
 // Background music (shared across screens)
