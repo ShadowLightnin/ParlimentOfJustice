@@ -45,90 +45,77 @@ export const HomeScreen = () => {
   const authCtx = useContext(AuthContext);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [currentSound, setCurrentSound] = useState(null);
-  const [pausedPosition, setPausedPosition] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const numColumns = isDesktop ? 3 : 2;
 
-  // Initialize sound on mount
+  // Initialize animation
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 400,
       useNativeDriver: true,
     }).start();
+  }, [fadeAnim]);
 
-    const loadSound = async () => {
+  // Handle music playback
+  const playTheme = async () => {
+    if (!currentSound) {
       try {
         const { sound } = await Audio.Sound.createAsync(
           require('../assets/audio/StarTrekEnterprise.mp4'),
-          { shouldPlay: true, isLooping: false, volume: 1.0 }
+          { shouldPlay: true, isLooping: true, volume: 1.0 }
         );
         setCurrentSound(sound);
+        await sound.playAsync();
+        setIsPlaying(true);
       } catch (error) {
         console.error('Failed to load audio file:', error);
         Alert.alert('Audio Error', 'Failed to load background music. Please check the audio file path: ../assets/audio/StarTrekEnterprise.mp4');
       }
-    };
-
-    loadSound();
-
-    // Cleanup sound on unmount
-    return () => {
-      if (currentSound) {
-        currentSound.stopAsync().catch((error) => console.error('Error stopping sound:', error));
-        currentSound.unloadAsync().catch((error) => console.error('Error unloading sound:', error));
-        setCurrentSound(null);
-        setPausedPosition(0);
-        setIsPaused(false);
+    } else if (!isPlaying) {
+      try {
+        await currentSound.playAsync();
+        setIsPlaying(true);
+      } catch (error) {
+        console.error('Error resuming sound:', error);
       }
-    };
-  }, []);
+    }
+  };
 
-  // Handle screen focus to resume/pause audio
+  // Handle music pause
+  const pauseTheme = async () => {
+    if (currentSound && isPlaying) {
+      try {
+        await currentSound.pauseAsync();
+        setIsPlaying(false);
+      } catch (error) {
+        console.error('Error pausing sound:', error);
+      }
+    }
+  };
+
+  // Cleanup sound on unmount or navigation
   useFocusEffect(
     useCallback(() => {
-      const resumeSound = async () => {
-        if (currentSound && isPaused && pausedPosition >= 0) {
-          try {
-            await currentSound.setPositionAsync(pausedPosition);
-            await currentSound.playAsync();
-            setIsPaused(false);
-          } catch (error) {
-            console.error('Error resuming sound:', error);
-          }
-        }
-      };
-
-      resumeSound();
-
       return () => {
-        if (currentSound && !isPaused) {
-          currentSound.pauseAsync().then(async () => {
-            try {
-              const status = await currentSound.getStatusAsync();
-              setPausedPosition(status.positionMillis || 0);
-              setIsPaused(true);
-            } catch (error) {
-              console.error('Error pausing sound:', error);
-            }
-          }).catch((error) => console.error('Error pausing sound:', error));
+        if (currentSound) {
+          currentSound.stopAsync().catch((error) => console.error('Error stopping sound:', error));
+          currentSound.unloadAsync().catch((error) => console.error('Error unloading sound:', error));
+          setCurrentSound(null);
+          setIsPlaying(false);
         }
       };
-    }, [currentSound, isPaused, pausedPosition])
+    }, [currentSound])
   );
 
   const handleLogout = async () => {
     if (currentSound) {
       try {
-        const status = await currentSound.getStatusAsync();
-        if (status.isPlaying) {
-          await currentSound.stopAsync();
-          await currentSound.unloadAsync();
-          setCurrentSound(null);
-          setPausedPosition(0);
-          setIsPaused(false);
-        }
+        await currentSound.stopAsync();
+        await currentSound.unloadAsync();
+        setCurrentSound(null);
+        setIsPlaying(false);
       } catch (error) {
         console.error('Error stopping sound on logout:', error);
       }
@@ -147,8 +134,7 @@ export const HomeScreen = () => {
         await currentSound.stopAsync();
         await currentSound.unloadAsync();
         setCurrentSound(null);
-        setPausedPosition(0);
-        setIsPaused(false);
+        setIsPlaying(false);
       } catch (error) {
         console.error('Error stopping sound for chat:', error);
       }
@@ -174,8 +160,7 @@ export const HomeScreen = () => {
                 await currentSound.stopAsync();
                 await currentSound.unloadAsync();
                 setCurrentSound(null);
-                setPausedPosition(0);
-                setIsPaused(false);
+                setIsPlaying(false);
               } catch (error) {
                 console.error('Error stopping sound on faction press:', error);
               }
@@ -198,36 +183,32 @@ export const HomeScreen = () => {
   );
 
   const renderWorldBuildingGrid = () => {
-    // Split factions into top (2), middle (1), and bottom (2)
     const topFactions = worldBuildingFactions.slice(0, 2);
     const middleFaction = worldBuildingFactions[2] ? worldBuildingFactions[2] : null;
     const bottomFactions = worldBuildingFactions.slice(3, 5);
 
     return (
       <View style={styles.gridContainer}>
-        {/* Top Row: 2 Cards */}
         <View style={styles.row}>
           {topFactions.map((item) => (
             <View key={item.name} style={styles.gridItem}>
               {renderFaction({ item })}
             </View>
           ))}
-          {topFactions.length < 2 && <View style={styles.gridItem} />} {/* Empty placeholder */}
+          {topFactions.length < 2 && <View style={styles.gridItem} />}
         </View>
-        {/* Middle Row: 1 Centered Card */}
         {middleFaction && (
           <View style={styles.middleRow}>
             {renderFaction({ item: middleFaction })}
           </View>
         )}
-        {/* Bottom Row: 2 Cards */}
         <View style={styles.row}>
           {bottomFactions.map((item) => (
             <View key={item.name} style={styles.gridItem}>
               {renderFaction({ item })}
             </View>
           ))}
-          {bottomFactions.length < 2 && <View style={styles.gridItem} />} {/* Empty placeholder */}
+          {bottomFactions.length < 2 && <View style={styles.gridItem} />}
         </View>
       </View>
     );
@@ -236,7 +217,6 @@ export const HomeScreen = () => {
   return (
     <ImageBackground source={require('../assets/BackGround/Parliment.png')} style={styles.background}>
       <View style={styles.container}>
-        {/* Header and Buttons */}
         <View style={styles.topBar}>
           <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
             <Text style={styles.logoutText}>🚪</Text>
@@ -247,9 +227,16 @@ export const HomeScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Scrollable Content */}
+        <View style={styles.musicControls}>
+          <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
+            <Text style={styles.musicButtonText}>Theme</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
+            <Text style={styles.musicButtonText}>Pause</Text>
+          </TouchableOpacity>
+        </View>
+
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          {/* Homage Section */}
           <View style={styles.sectionContainer}>
             <View style={styles.headerContainer}>
               {/* <Text style={styles.sectionHeader}>Homage</Text>
@@ -264,7 +251,6 @@ export const HomeScreen = () => {
             />
           </View>
 
-          {/* World Building Section */}
           <View style={styles.sectionContainer}>
             <View style={styles.headerContainer}>
               <Text style={styles.sectionHeader}>World Building</Text>
@@ -273,7 +259,6 @@ export const HomeScreen = () => {
             {renderWorldBuildingGrid()}
           </View>
 
-          {/* Others Section */}
           <View style={styles.sectionContainer}>
             <View style={styles.headerContainer}>
               <Text style={styles.sectionHeader}>Others</Text>
@@ -428,5 +413,21 @@ const styles = StyleSheet.create({
   logoutText: {
     fontSize: 22,
     color: 'white',
+  },
+  musicControls: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  musicButton: {
+    padding: 10,
+    backgroundColor: '#1e90ff',
+    borderRadius: 8,
+    marginHorizontal: 10,
+  },
+  musicButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
