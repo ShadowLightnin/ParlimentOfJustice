@@ -417,16 +417,16 @@ const styles = StyleSheet.create({
   musicControls: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: 5, // Reduced from 20 to raise buttons
   },
   musicButton: {
     padding: 10,
-    backgroundColor: '#1e90ff',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)', // Blended with theme
     borderRadius: 8,
     marginHorizontal: 10,
   },
   musicButtonText: {
-    color: '#fff',
+    color: '#00b3ff', // Matches theme accent
     fontSize: 16,
     fontWeight: 'bold',
   },

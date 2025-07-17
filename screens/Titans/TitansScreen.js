@@ -36,82 +36,57 @@ const getMemberAtPosition = (row, col) =>
 const TitansScreen = () => {
   const navigation = useNavigation();
   const [currentSound, setCurrentSound] = useState(null);
-  const [pausedPosition, setPausedPosition] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
-  // Initialize sound on mount
-  useEffect(() => {
-    const loadSound = async () => {
+  // Handle music playback
+  const playTheme = async () => {
+    if (!currentSound) {
       try {
         const { sound } = await Audio.Sound.createAsync(
           require('../../assets/audio/AvengerXJL.mp4'),
-          { shouldPlay: true, isLooping: false, volume: 1.0 }
+          { shouldPlay: true, isLooping: true, volume: 1.0 }
         );
         setCurrentSound(sound);
+        await sound.playAsync();
+        setIsPlaying(true);
       } catch (error) {
         console.error('Failed to load audio file:', error);
         Alert.alert('Audio Error', 'Failed to load background music. Please check the audio file path: ../../assets/audio/AvengerXJL.mp4');
       }
-    };
-
-    loadSound();
-
-    // Cleanup sound on unmount
-    return () => {
-      if (currentSound) {
-        currentSound.stopAsync().catch((error) => console.error('Error stopping sound:', error));
-        currentSound.unloadAsync().catch((error) => console.error('Error unloading sound:', error));
-        setCurrentSound(null);
-        setPausedPosition(0);
-        setIsPaused(false);
+    } else if (!isPlaying) {
+      try {
+        await currentSound.playAsync();
+        setIsPlaying(true);
+      } catch (error) {
+        console.error('Error resuming sound:', error);
       }
-    };
-  }, []);
+    }
+  };
 
-  // Handle screen focus to resume/pause audio
+  // Handle music pause
+  const pauseTheme = async () => {
+    if (currentSound && isPlaying) {
+      try {
+        await currentSound.pauseAsync();
+        setIsPlaying(false);
+      } catch (error) {
+        console.error('Error pausing sound:', error);
+      }
+    }
+  };
+
+  // Cleanup sound on unmount or navigation
   useFocusEffect(
     useCallback(() => {
-      const resumeSound = async () => {
-        if (currentSound && isPaused && pausedPosition >= 0) {
-          try {
-            await currentSound.setPositionAsync(pausedPosition);
-            await currentSound.playAsync();
-            setIsPaused(false);
-          } catch (error) {
-            console.error('Error resuming sound:', error);
-          }
-        }
-      };
-
-      resumeSound();
-
-      // Handle navigation to stop audio when going to Home
-      const unsubscribe = navigation.addListener('beforeRemove', (e) => {
-        if (e.data.action.type === 'NAVIGATE' && e.data.action.payload.name === 'Home') {
-          if (currentSound) {
-            currentSound.stopAsync().catch((error) => console.error('Error stopping sound:', error));
-            currentSound.unloadAsync().catch((error) => console.error('Error unloading sound:', error));
-            setCurrentSound(null);
-            setPausedPosition(0);
-            setIsPaused(false);
-          }
-        } else if (currentSound && !isPaused) {
-          currentSound.pauseAsync().then(async () => {
-            try {
-              const status = await currentSound.getStatusAsync();
-              setPausedPosition(status.positionMillis || 0);
-              setIsPaused(true);
-            } catch (error) {
-              console.error('Error pausing sound:', error);
-            }
-          }).catch((error) => console.error('Error pausing sound:', error));
-        }
-      });
-
       return () => {
-        unsubscribe();
+        if (currentSound) {
+          currentSound.stopAsync().catch((error) => console.error('Error stopping sound:', error));
+          currentSound.unloadAsync().catch((error) => console.error('Error unloading sound:', error));
+          setCurrentSound(null);
+          setIsPlaying(false);
+        }
       };
-    }, [currentSound, isPaused, pausedPosition, navigation])
+    }, [currentSound])
   );
 
   const goToChat = async () => {
@@ -120,8 +95,7 @@ const TitansScreen = () => {
         await currentSound.stopAsync();
         await currentSound.unloadAsync();
         setCurrentSound(null);
-        setPausedPosition(0);
-        setIsPaused(false);
+        setIsPlaying(false);
       } catch (error) {
         console.error('Error stopping sound for chat:', error);
       }
@@ -150,8 +124,7 @@ const TitansScreen = () => {
                   await currentSound.stopAsync();
                   await currentSound.unloadAsync();
                   setCurrentSound(null);
-                  setPausedPosition(0);
-                  setIsPaused(false);
+                  setIsPlaying(false);
                 } catch (error) {
                   console.error('Error stopping/unloading sound:', error);
                 }
@@ -164,6 +137,16 @@ const TitansScreen = () => {
           <Text style={styles.header}>Titans</Text>
           <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
             <Text style={styles.chatText}>🛡️</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Music Controls */}
+        <View style={styles.musicControls}>
+          <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
+            <Text style={styles.musicButtonText}>Theme</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
+            <Text style={styles.musicButtonText}>Pause</Text>
           </TouchableOpacity>
         </View>
 
@@ -189,8 +172,7 @@ const TitansScreen = () => {
                         await currentSound.stopAsync();
                         await currentSound.unloadAsync();
                         setCurrentSound(null);
-                        setPausedPosition(0);
-                        setIsPaused(false);
+                        setIsPlaying(false);
                       } catch (error) {
                         console.error('Error stopping sound for member navigation:', error);
                       }
@@ -215,8 +197,7 @@ const TitansScreen = () => {
             ))}
           </ScrollView>
         ) : (
-          <View style={[styles.grid, { gap: cardSpacing }]}
->
+          <View style={[styles.grid, { gap: cardSpacing }]}>
             {[0, 1, 2].map((row) => (
               <View key={row} style={[styles.row, { gap: cardSpacing }]}>
                 {[0, 1, 2].map((col) => {
@@ -240,8 +221,7 @@ const TitansScreen = () => {
                               await currentSound.stopAsync();
                               await currentSound.unloadAsync();
                               setCurrentSound(null);
-                              setPausedPosition(0);
-                              setIsPaused(false);
+                              setIsPlaying(false);
                             } catch (error) {
                               console.error('Error stopping sound for member navigation:', error);
                             }
@@ -373,6 +353,22 @@ const styles = StyleSheet.create({
   disabledCard: {
     backgroundColor: '#444',
     shadowColor: 'transparent',
+  },
+  musicControls: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  musicButton: {
+    padding: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 5,
+    marginHorizontal: 10,
+  },
+  musicButtonText: {
+    fontSize: 16,
+    color: '#00b3ff',
+    fontWeight: 'bold',
   },
 });
 

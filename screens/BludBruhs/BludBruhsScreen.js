@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -40,73 +40,83 @@ const fixedMembers = [
 const BludBruhsScreen = () => {
   const navigation = useNavigation();
   const [previewMember, setPreviewMember] = useState(null);
-  const [sound, setSound] = useState(null); // State for audio object
+  const [currentSound, setCurrentSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
-  // Load and play background music
-  async function playBackgroundMusic() {
-    console.log('Loading Sound at:', new Date().toISOString());
-    const { sound } = await Audio.Sound.createAsync(
-      require('../../assets/audio/ThunderBorn.m4a'), // Replace with your desired audio file
-      { shouldPlay: true, isLooping: true }
-    );
-    setSound(sound);
-    console.log('Playing Sound at:', new Date().toISOString());
-    await sound.playAsync();
-  }
-
-  // Pause music
-  async function pauseBackgroundMusic() {
-    if (sound) {
-      console.log('Pausing Sound at:', new Date().toISOString());
-      await sound.pauseAsync();
+  // Handle music playback
+  const playTheme = async () => {
+    if (!currentSound) {
+      try {
+        const { sound } = await Audio.Sound.createAsync(
+          require('../../assets/audio/ThunderBorn.m4a'),
+          { shouldPlay: true, isLooping: true, volume: 1.0 }
+        );
+        setCurrentSound(sound);
+        await sound.playAsync();
+        setIsPlaying(true);
+      } catch (error) {
+        console.error('Failed to load audio file:', error);
+        Alert.alert('Audio Error', 'Failed to load background music. Please check the audio file path: ../../assets/audio/ThunderBorn.m4a');
+      }
+    } else if (!isPlaying) {
+      try {
+        await currentSound.playAsync();
+        setIsPlaying(true);
+      } catch (error) {
+        console.error('Error resuming sound:', error);
+      }
     }
-  }
+  };
 
-  // Resume music
-  async function resumeBackgroundMusic() {
-    if (sound) {
-      console.log('Resuming Sound at:', new Date().toISOString());
-      await sound.playAsync();
+  // Handle music pause
+  const pauseTheme = async () => {
+    if (currentSound && isPlaying) {
+      try {
+        await currentSound.pauseAsync();
+        setIsPlaying(false);
+      } catch (error) {
+        console.error('Error pausing sound:', error);
+      }
     }
-  }
+  };
 
   // Unload and stop music
-  async function stopBackgroundMusic() {
-    if (sound) {
+  const stopBackgroundMusic = async () => {
+    if (currentSound) {
       console.log('Stopping Sound at:', new Date().toISOString());
-      await sound.stopAsync();
-      await sound.unloadAsync();
-      setSound(null);
+      await currentSound.stopAsync();
+      await currentSound.unloadAsync();
+      setCurrentSound(null);
+      setIsPlaying(false);
     }
-  }
+  };
 
-  // Handle screen focus and blur
+  // Cleanup sound on unmount or navigation
   useFocusEffect(
-    React.useCallback(() => {
-      playBackgroundMusic(); // Play music when screen is focused
+    useCallback(() => {
       return () => {
-        stopBackgroundMusic(); // Stop music when screen is blurred
+        stopBackgroundMusic();
       };
-    }, [])
+    }, [currentSound])
   );
 
   // Pause on modal open, resume on close
   useEffect(() => {
     if (previewMember) {
-      pauseBackgroundMusic();
-    } else if (!previewMember && sound) {
-      resumeBackgroundMusic();
+      pauseTheme();
+    } else if (!previewMember && currentSound && !isPlaying) {
+      playTheme();
     }
   }, [previewMember]);
 
   const goToChat = () => {
-    stopBackgroundMusic(); // Stop music before navigating
+    stopBackgroundMusic();
     navigation.navigate('TeamChat');
   };
 
   const goToHomeScreen = () => {
     console.log("Navigating to HomeScreen from BludBruhsScreen at:", new Date().toISOString());
-    stopBackgroundMusic(); // Stop music before navigating
+    stopBackgroundMusic();
     navigation.navigate('Home');
   };
 
@@ -116,7 +126,7 @@ const BludBruhsScreen = () => {
 
   const handleMemberPress = (member) => {
     if (member.clickable) {
-      stopBackgroundMusic(); // Stop music before navigating
+      stopBackgroundMusic();
       if (member.screen) {
         navigation.navigate(member.screen, { from: 'BludBruhsHome' });
       } else {
@@ -154,7 +164,7 @@ const BludBruhsScreen = () => {
       ]}
       onPress={async () => {
         if (member?.clickable) {
-          await stopBackgroundMusic(); // Stop music before navigating
+          await stopBackgroundMusic();
           if (member.screen) {
             navigation.navigate(member.screen, { from: 'BludBruhsHome' });
           } else {
@@ -208,6 +218,15 @@ const BludBruhsScreen = () => {
           </TouchableOpacity>
         </View>
 
+        <View style={styles.musicControls}>
+          <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
+            <Text style={styles.musicButtonText}>Theme</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
+            <Text style={styles.musicButtonText}>Pause</Text>
+          </TouchableOpacity>
+        </View>
+
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
           <View style={[styles.grid, { gap: cardSpacing }]}>
             {rows.map((row, rowIndex) => (
@@ -230,7 +249,7 @@ const BludBruhsScreen = () => {
               ]}
               onPress={async () => {
                 if (member.clickable) {
-                  await stopBackgroundMusic(); // Stop music before navigating
+                  await stopBackgroundMusic();
                   navigation.navigate(member.screen, { from: 'BludBruhsHome' });
                 }
               }}
@@ -474,6 +493,22 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     marginTop: 5,
+  },
+  musicControls: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  musicButton: {
+    padding: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 5,
+    marginHorizontal: 10,
+  },
+  musicButtonText: {
+    fontSize: 16,
+    color: '#00b3ff',
+    fontWeight: 'bold',
   },
 });
 
