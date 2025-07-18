@@ -111,7 +111,7 @@ export const OlympiansScreen = () => {
       key={member.name}
       style={[
         styles.jenniferCard,
-        { width: 2 * cardSize, height: cardSize * cardHeightMultiplier },
+        { width: 2 * cardSize, height: cardSize * 2.5 }, // Increased height multiplier to 2.5
       ]}
       onPress={() => handleMemberPress(member)}
       disabled={!member.clickable}
@@ -120,7 +120,7 @@ export const OlympiansScreen = () => {
         <>
           <Image
             source={member.image}
-            style={[styles.characterImage, { width: '100%', height: cardSize * 1.2 }]}
+            style={[styles.characterImage, { width: '100%', height: cardSize * 1.5 }]} // Adjusted image height
           />
           <View style={styles.transparentOverlay} />
         </>
