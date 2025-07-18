@@ -39,7 +39,7 @@ const WarpScreen = () => {
       if (isMounted) {
         navigation.replace("Montrose"); // 🌌 Navigate to the new tabs screen
       }
-    }, 8150); // Delay for warp effect
+    }, 8250); // Delay for warp effect
 
     return () => {
       isMounted = false;

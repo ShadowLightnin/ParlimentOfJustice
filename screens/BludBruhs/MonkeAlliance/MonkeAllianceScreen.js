@@ -81,6 +81,15 @@ export const MonkeAllianceScreen = () => {
     };
   }, []);
 
+  const stopMonkeSound = async () => {
+    if (sound) {
+      await sound.stopAsync();
+      await sound.unloadAsync();
+      setSound(null);
+      console.log("Monke sound stopped via back button at:", new Date().toISOString());
+    }
+  };
+
   const goToChat = () => {
     console.log('Navigating to TeamChat:', new Date().toISOString());
     try {
@@ -152,8 +161,9 @@ export const MonkeAllianceScreen = () => {
       <SafeAreaView style={styles.container}>
         {/* Header & Back Button */}
         <View style={styles.headerWrapper}>
-          <TouchableOpacity style={styles.backButton} onPress={() => {
+          <TouchableOpacity style={styles.backButton} onPress={async () => {
             console.log('Back button pressed:', new Date().toISOString());
+            await stopMonkeSound();
             navigation.goBack();
           }}>
             <Text style={styles.backText}>← Back</Text>
