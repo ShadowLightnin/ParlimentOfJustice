@@ -24,7 +24,7 @@ const cardHeightMultiplier = 1.6;
 const horizontalSpacing = isDesktop ? 40 : 10;
 const verticalSpacing = isDesktop ? 50 : 20;
 
-const rows = Math.ceil(OlympiansMembers.length / columns);
+const rows = Math.ceil((OlympiansMembers.length - 1) / columns); // Adjust for Jennifer's card
 
 export const OlympiansScreen = () => {
   const navigation = useNavigation();
@@ -106,6 +106,31 @@ export const OlympiansScreen = () => {
     </TouchableOpacity>
   );
 
+  const renderJenniferCard = (member) => (
+    <TouchableOpacity
+      key={member.name}
+      style={[
+        styles.jenniferCard,
+        { width: 2 * cardSize, height: cardSize * cardHeightMultiplier },
+      ]}
+      onPress={() => handleMemberPress(member)}
+      disabled={!member.clickable}
+    >
+      {member.image && (
+        <>
+          <Image
+            source={member.image}
+            style={[styles.characterImage, { width: '100%', height: cardSize * 1.2 }]}
+          />
+          <View style={styles.transparentOverlay} />
+        </>
+      )}
+      <Text style={[styles.codename, styles.jenniferCodename]}>{member.codename || ''}</Text>
+      <Text style={[styles.name, styles.jenniferName]}>{member.name}</Text>
+      <Text style={styles.inMemoriam}>In Loving Memory</Text>
+    </TouchableOpacity>
+  );
+
   const renderPreviewCard = (member) => (
     <TouchableOpacity
       key={member.name}
@@ -123,6 +148,8 @@ export const OlympiansScreen = () => {
       </Text>
     </TouchableOpacity>
   );
+
+  const jenniferMember = OlympiansMembers.find(member => member.name === 'Jennifer');
 
   return (
     <ImageBackground
@@ -149,6 +176,12 @@ export const OlympiansScreen = () => {
         </View>
 
         <ScrollView contentContainerStyle={styles.scrollContainer}>
+          {jenniferMember && (
+            <View style={styles.jenniferCardContainer}>
+              {renderJenniferCard(jenniferMember)}
+            </View>
+          )}
+          <View style={styles.spacingBelowJennifer} />
           {Array.from({ length: rows }).map((_, rowIndex) => (
             <View
               key={rowIndex}
@@ -156,9 +189,9 @@ export const OlympiansScreen = () => {
             >
               {Array.from({ length: columns }).map((_, colIndex) => {
                 const memberIndex = rowIndex * columns + colIndex;
-                const member = OlympiansMembers[memberIndex];
+                const member = OlympiansMembers[memberIndex + (memberIndex >= OlympiansMembers.findIndex(m => m.name === 'Jennifer') ? 1 : 0)];
 
-                if (!member || !member.name) {
+                if (!member || !member.name || member.name === 'Jennifer') {
                   return (
                     <View
                       key={colIndex}
@@ -302,6 +335,44 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     color: '#aaa',
     textAlign: 'center',
+  },
+  jenniferCard: {
+    backgroundColor: '#1c1c1c',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+    padding: 10,
+    shadowColor: '#ff9999', // Soft pinkish shadow for a memorial feel
+    shadowOpacity: 1.5,
+    shadowRadius: 15,
+    elevation: 10,
+  },
+  jenniferCodename: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#ff9999', // Pinkish tone for memorial
+    textAlign: 'center',
+    marginTop: 5,
+  },
+  jenniferName: {
+    fontSize: 12,
+    fontStyle: 'italic',
+    color: '#ffcccc', // Lighter pink for name
+    textAlign: 'center',
+  },
+  inMemoriam: {
+    fontSize: 12,
+    fontStyle: 'italic',
+    color: '#ff9999',
+    textAlign: 'center',
+    marginTop: 5,
+  },
+  jenniferCardContainer: {
+    alignItems: 'center',
+    marginTop: verticalSpacing,
+  },
+  spacingBelowJennifer: {
+    height: verticalSpacing * 2, // Double spacing below Jennifer's card
   },
   modalBackground: {
     flex: 1,

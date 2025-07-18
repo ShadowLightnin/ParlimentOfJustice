@@ -86,7 +86,6 @@ export const LegionairesScreen = () => {
 
   const handleMemberPress = (member) => {
     if (member.clickable) {
-      if (sound) sound.pauseAsync(); // Pause music when previewing
       if (member.screen && member.screen !== '') {
         navigation.navigate(member.screen);
       } else {
@@ -148,7 +147,6 @@ export const LegionairesScreen = () => {
       style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
       onPress={() => {
         setPreviewMember(null);
-        if (sound) sound.playAsync(); // Resume music when closing preview
       }}
     >
       <Image
@@ -263,19 +261,13 @@ export const LegionairesScreen = () => {
           visible={!!previewMember}
           transparent={true}
           animationType="fade"
-          onRequestClose={() => {
-            setPreviewMember(null);
-            if (sound) sound.playAsync(); // Resume music when closing modal
-          }}
+          onRequestClose={() => setPreviewMember(null)}
         >
           <View style={styles.modalBackground}>
             <TouchableOpacity
               style={styles.modalOuterContainer}
               activeOpacity={1}
-              onPress={() => {
-                setPreviewMember(null);
-                if (sound) sound.playAsync(); // Resume music when closing modal
-              }}
+              onPress={() => setPreviewMember(null)}
             >
               <View style={styles.imageContainer}>
                 <ScrollView

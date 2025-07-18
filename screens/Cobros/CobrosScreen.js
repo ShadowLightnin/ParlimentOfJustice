@@ -84,7 +84,6 @@ export const CobrosScreen = () => {
 
   const handleMemberPress = (member) => {
     if (member.clickable) {
-      if (sound) sound.pauseAsync(); // Pause music when previewing
       if (member.screen) {
         navigation.navigate(member.screen); // Navigate to the defined screen if it exists
       } else {
@@ -122,10 +121,7 @@ export const CobrosScreen = () => {
     <TouchableOpacity
       key={member.name}
       style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
-      onPress={() => {
-        setPreviewMember(null);
-        if (sound) sound.playAsync(); // Resume music when closing preview
-      }} // Close modal on card press
+      onPress={() => setPreviewMember(null)} // Close modal on card press
     >
       <Image
         source={member.image || require('../../assets/Armor/PlaceHolder.jpg')}
@@ -188,19 +184,13 @@ export const CobrosScreen = () => {
           visible={!!previewMember}
           transparent={true}
           animationType="fade"
-          onRequestClose={() => {
-            setPreviewMember(null);
-            if (sound) sound.playAsync(); // Resume music when closing modal
-          }}
+          onRequestClose={() => setPreviewMember(null)}
         >
           <View style={styles.modalBackground}>
             <TouchableOpacity
               style={styles.modalOuterContainer}
               activeOpacity={1}
-              onPress={() => {
-                setPreviewMember(null);
-                if (sound) sound.playAsync(); // Resume music when closing modal
-              }}
+              onPress={() => setPreviewMember(null)}
             >
               <View style={styles.imageContainer}>
                 <ScrollView

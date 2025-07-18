@@ -427,7 +427,7 @@ const styles = StyleSheet.create({
   },
   musicButtonText: {
     color: '#00b3ff', // Matches theme accent
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: 'bold',
   },
 });

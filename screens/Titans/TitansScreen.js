@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   musicButtonText: {
-    fontSize: 16,
+    fontSize: 12,
     color: '#00b3ff',
     fontWeight: 'bold',
   },

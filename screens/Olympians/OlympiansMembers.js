@@ -6,7 +6,7 @@ const baseMembers = [
 // 🎯 Families grouped with corresponding superhero codenames and positions
 const familyData = [
   {
-    family: 'Parents',
+    family: 'Cummings/Parents',
     members: [
       { name: 'Angela', codename: 'Celestial Angel', screen: '' },
       { name: 'Todd', codename: 'Stellar', screen: '' },
@@ -33,7 +33,7 @@ const familyData = [
       { name: 'Gemma', codename: 'Slendowg', screen: '' },
     ],
   },
-    {
+  {
     family: 'Jensen',
     members: [
       { name: 'Savannah', codename: 'Vivid Spark', screen: '' },
@@ -83,6 +83,12 @@ const familyData = [
       { name: 'Sophia', codename: 'Chroma Sprint', screen: '' },
       { name: 'Paisley', codename: 'Prism Weaver', screen: '' },
       { name: 'Ellie', codename: 'Ethereal Flutter', screen: '' },
+    ],
+  },
+  {
+    family: 'Stillman',
+    members: [
+      { name: 'Jennifer', codename: 'Eternal Guardian', screen: '' }, // Special tribute with no codename initially
     ],
   },
   {
@@ -199,6 +205,7 @@ const characterImages = {
   Emilee: require('../../assets/Armor/Emily.jpg'),
   Samantha: require('../../assets/Armor/Samantha.jpg'),
   Ella: require('../../assets/Armor/Ella.jpg'),
+  Jennifer: require('../../assets/Armor/AuntJennifer.jpg'),
   Mary: require('../../assets/Armor/Mary.jpg'),
   Chance: require('../../assets/Armor/Chance.jpg'),
   Ava: require('../../assets/Armor/Ava.jpg'),
@@ -291,13 +298,13 @@ const additionalMembers = familyData.flatMap((family, familyIndex) =>
     codename: member.codename,
     family: family.family,
     screen: member.screen || '', // Use defined screen or default to empty string
-    clickable: true,
+    clickable: member.clickable !== undefined ? member.clickable : true,
     position: [Math.floor((i + (familyIndex * 10)) / 3), (i + (familyIndex * 10)) % 3],
     image: characterImages[member.name] || require('../../assets/Armor/PlaceHolder.jpg'),
   }))
 );
 
 // 🎯 Merge base members with auto-generated family members
-const fullOlympiansList = [...baseMembers, ...additionalMembers].filter(member => member.name);
+const OlympiansMembers = [...baseMembers, ...additionalMembers].filter(member => member.name);
 
-export default fullOlympiansList;
+export default OlympiansMembers;
