@@ -301,7 +301,7 @@ const RangerSquad = () => {
           />
           <View style={styles.transparentOverlay} />
           <Text style={styles.cardName}>
-            © {clone.codename || clone.name || 'Unknown'}; William Cummings
+            © {clone.codename || clone.name || 'Unknown'}; Samuel Woodwell
           </Text>
         </TouchableOpacity>
       );

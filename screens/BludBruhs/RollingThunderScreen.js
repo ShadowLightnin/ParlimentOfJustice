@@ -258,7 +258,7 @@ const RollingThunderScreen = () => {
           />
           <View style={styles.transparentOverlay} />
           <Text style={styles.cardName}>
-            © {member.codename || member.name || 'Unknown'}; William Cummings
+            © {member.codename || member.name || 'Unknown'}; Samuel Woodwell
           </Text>
         </TouchableOpacity>
       );
