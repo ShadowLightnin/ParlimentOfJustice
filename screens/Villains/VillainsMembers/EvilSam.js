@@ -17,6 +17,7 @@ import { db, auth, storage } from "../../../lib/firebase";
 import { collection, onSnapshot, deleteDoc, doc, getDoc } from "firebase/firestore";
 import { ref, deleteObject } from "firebase/storage";
 import SamsArmory from "../../BludBruhs/SamsArmory";
+import { Audio } from 'expo-av';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -35,6 +36,7 @@ const EvilSam = () => {
   const [armorList, setArmorList] = useState(characters);
   const [previewArmor, setPreviewArmor] = useState(null);
   const [deleteModal, setDeleteModal] = useState({ visible: false, armor: null });
+  const [sound, setSound] = useState(null);
   const canMod = RESTRICT_ACCESS ? auth.currentUser?.email && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
   const isDesktop = windowWidth >= 768;
 
@@ -59,8 +61,47 @@ const EvilSam = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Audio playback
+  useEffect(() => {
+    let isMounted = true;
+
+    const playEvilWalkerSound = async () => {
+      const { sound: evilWalkerSound } = await Audio.Sound.createAsync(
+        require('../../../assets/audio/evilWalker.m4a'),
+        { shouldPlay: true, isLooping: true, volume: 1.0 }
+      );
+      if (isMounted) {
+        setSound(evilWalkerSound);
+        await evilWalkerSound.playAsync();
+        console.log("evilWalker.m4a started playing at:", new Date().toISOString());
+      }
+    };
+
+    playEvilWalkerSound();
+
+    return () => {
+      isMounted = false;
+      if (sound) {
+        sound.stopAsync().catch(err => console.error("Error stopping sound:", err));
+        sound.unloadAsync().catch(err => console.error("Error unloading sound:", err));
+        setSound(null);
+        console.log("evilWalker.m4a stopped at:", new Date().toISOString());
+      }
+    };
+  }, []);
+
+  const stopEvilWalkerSound = async () => {
+    if (sound) {
+      await sound.stopAsync();
+      await sound.unloadAsync();
+      setSound(null);
+      console.log("evilWalker.m4a stopped via button at:", new Date().toISOString());
+    }
+  };
+
   // 🌌 Planet Click Handler → Leads to Warp Screen
-  const handlePlanetPress = () => {
+  const handlePlanetPress = async () => {
+    await stopEvilWalkerSound();
     navigation.navigate("WarpScreen");
   };
 
@@ -258,7 +299,10 @@ const EvilSam = () => {
           <View style={styles.headerContainer}>
             <TouchableOpacity
               style={styles.backButton}
-              onPress={() => navigation.replace("VillainsScreen", { screen: "VillainsTab" })}
+              onPress={async () => {
+                await stopEvilWalkerSound();
+                navigation.replace("VillainsScreen", { screen: "VillainsTab" });
+              }}
             >
               <Text style={styles.backButtonText}>⬅️</Text>
             </TouchableOpacity>

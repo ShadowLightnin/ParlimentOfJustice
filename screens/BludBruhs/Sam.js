@@ -21,7 +21,7 @@ import SamsArmory from './SamsArmory';
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 let backgroundSound = null;
-const MUSIC_LOOP = false;
+const MUSIC_LOOP = true;
 
 const playBackgroundMusic = async () => {
   if (backgroundSound) {
@@ -29,20 +29,20 @@ const playBackgroundMusic = async () => {
       await backgroundSound.stopAsync();
       await backgroundSound.unloadAsync();
       backgroundSound = null;
-      console.log("Existing music stopped before replay at:", new Date().toISOString());
+      console.log("Existing background music stopped before replay at:", new Date().toISOString());
     } catch (error) {
-      console.error("Error stopping existing music:", error);
+      console.error("Error stopping existing background music:", error);
     }
   }
   
   try {
     const { sound } = await Audio.Sound.createAsync(
-      require('../../assets/audio/Sam.mp4'),
+      require('../../assets/audio/goodWalker.m4a'),
       { shouldPlay: true, isLooping: MUSIC_LOOP, volume: 1.0 }
     );
     backgroundSound = sound;
     await sound.playAsync();
-    console.log("Music started playing at:", new Date().toISOString());
+    console.log("Background music (goodWalker) started playing at:", new Date().toISOString());
   } catch (error) {
     console.error("Error playing background music:", error);
   }
@@ -51,7 +51,7 @@ const playBackgroundMusic = async () => {
 const stopBackgroundMusic = async () => {
   if (backgroundSound) {
     try {
-      console.log("Attempting to stop music at:", new Date().toISOString());
+      console.log("Attempting to stop background music at:", new Date().toISOString());
       await backgroundSound.setVolumeAsync(0.0);
       await backgroundSound.pauseAsync();
       await backgroundSound.stopAsync();
@@ -64,12 +64,12 @@ const stopBackgroundMusic = async () => {
         shouldDuckAndroid: false,
         playThroughEarpieceAndroid: false,
       });
-      console.log("Music fully stopped, unloaded, and audio mode reset at:", new Date().toISOString());
+      console.log("Background music fully stopped, unloaded, and audio mode reset at:", new Date().toISOString());
     } catch (error) {
       console.error("Error stopping background music:", error);
     }
   } else {
-    console.log("No music to stop at:", new Date().toISOString());
+    console.log("No background music to stop at:", new Date().toISOString());
   }
 };
 
@@ -93,7 +93,6 @@ const Sam = () => {
   const route = useRoute();
   const isFocused = useIsFocused();
   const flashAnim = useRef(new Animated.Value(1)).current;
-  const popupAnim = useRef(new Animated.Value(-100)).current;
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [hasShownPopup, setHasShownPopup] = useState(false);
   const [fromBludBruhsHome, setFromBludBruhsHome] = useState(false);
@@ -132,40 +131,10 @@ const Sam = () => {
       playBackgroundMusic();
     }
     return () => {
+      stopBackgroundMusic();
       console.log("Sam component fully unmounting at:", new Date().toISOString());
     };
   }, [isFocused]);
-
-  useEffect(() => {
-    console.log("Popup useEffect - isFocused:", isFocused, "fromBludBruhsHome:", fromBludBruhsHome, "hasShownPopup:", hasShownPopup);
-    if (isFocused && fromBludBruhsHome && !hasShownPopup) {
-      const showPopup = () => {
-        console.log("Showing popup at:", new Date().toISOString());
-        setIsPopupVisible(true);
-        Animated.timing(popupAnim, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: true,
-        }).start();
-
-        const autoCloseTimer = setTimeout(() => {
-          Animated.timing(popupAnim, {
-            toValue: -100,
-            duration: 300,
-            useNativeDriver: true,
-          }).start(() => setIsPopupVisible(false));
-          setHasShownPopup(true);
-          console.log("Popup closed, hasShownPopup set to true at:", new Date().toISOString());
-        }, 3000);
-
-        return () => clearTimeout(autoCloseTimer);
-      };
-
-      console.log("Scheduling popup in 26.5s at:", new Date().toISOString());
-      const timer = setTimeout(showPopup, 26500);
-      return () => clearTimeout(timer);
-    }
-  }, [isFocused, fromBludBruhsHome, hasShownPopup]);
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -223,31 +192,9 @@ const Sam = () => {
   }, []);
 
   const handlePlanetPress = async () => {
-    console.log("Planet pressed, stopping music at:", new Date().toISOString());
+    console.log("Planet pressed, stopping background music and navigating to WarpScreen at:", new Date().toISOString());
     await stopBackgroundMusic();
     navigation.navigate("WarpScreen", { from: "Sam" });
-  };
-
-  const confirmWarp = () => {
-    Animated.timing(popupAnim, {
-      toValue: -100,
-      duration: 300,
-      useNativeDriver: true,
-    }).start(() => {
-      setIsPopupVisible(false);
-      console.log("Navigating to WarpScreen without stopping music at:", new Date().toISOString());
-      navigation.navigate("WarpScreen", { from: "Sam" });
-    });
-  };
-
-  const cancelWarp = () => {
-    Animated.timing(popupAnim, {
-      toValue: -100,
-      duration: 300,
-      useNativeDriver: true,
-    }).start(() => {
-      setIsPopupVisible(false);
-    });
   };
 
   const handleBackPress = async () => {
@@ -486,20 +433,6 @@ const Sam = () => {
         </View>
       </ScrollView>
 
-      {isPopupVisible && (
-        <Animated.View style={[styles.popup, { transform: [{ translateY: popupAnim }] }]}>
-          <Text style={styles.popupText}>Would you like to warp to Melcornia?</Text>
-          <View style={styles.popupButtons}>
-            <TouchableOpacity style={styles.popupButton} onPress={confirmWarp}>
-              <Text style={styles.popupButtonText}>Yes</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.popupButton} onPress={cancelWarp}>
-              <Text style={styles.popupButtonText}>No</Text>
-            </TouchableOpacity>
-          </View>
-        </Animated.View>
-      )}
-
       {previewArmor && !previewArmor.isEditing && (
         <Modal
           visible={!!previewArmor}
@@ -726,42 +659,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     textAlign: "center",
     marginTop: 10,
-  },
-  popup: {
-    position: 'absolute',
-    top: 0,
-    left: SCREEN_WIDTH * 0.1,
-    right: SCREEN_WIDTH * 0.1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    padding: 15,
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
-    zIndex: 10,
-    alignItems: 'center',
-  },
-  popupText: {
-    fontSize: 16,
-    color: '#00b3ff',
-    fontWeight: 'bold',
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  popupButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '60%',
-  },
-  popupButton: {
-    padding: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 5,
-    width: '40%',
-    alignItems: 'center',
-  },
-  popupButtonText: {
-    fontSize: 14,
-    color: '#fff',
-    fontWeight: 'bold',
   },
   modalBackground: {
     flex: 1,

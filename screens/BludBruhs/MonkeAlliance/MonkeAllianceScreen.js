@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Audio } from 'expo-av';
 
 // Screen dimensions with error handling
 let SCREEN_WIDTH, SCREEN_HEIGHT;
@@ -55,6 +56,30 @@ const verticalSpacing = isDesktop ? 50 : 20;
 export const MonkeAllianceScreen = () => {
   const navigation = useNavigation();
   const [previewMember, setPreviewMember] = useState(null);
+  const [sound, setSound] = useState(null);
+
+  useEffect(() => {
+    const playMonkeSound = async () => {
+      const { sound: monkeSound } = await Audio.Sound.createAsync(
+        require('../../../assets/audio/monke.m4a'),
+        { shouldPlay: true, isLooping: false, volume: 1.0 }
+      );
+      setSound(monkeSound);
+      await monkeSound.playAsync();
+      console.log("Monke sound (monke.m4a) started playing at:", new Date().toISOString());
+    };
+
+    playMonkeSound();
+
+    return () => {
+      if (sound) {
+        sound.stopAsync().catch(err => console.error("Error stopping sound:", err));
+        sound.unloadAsync().catch(err => console.error("Error unloading sound:", err));
+        setSound(null);
+        console.log("Monke sound stopped at:", new Date().toISOString());
+      }
+    };
+  }, []);
 
   const goToChat = () => {
     console.log('Navigating to TeamChat:', new Date().toISOString());
