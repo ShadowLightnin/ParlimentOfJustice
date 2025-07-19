@@ -6,12 +6,16 @@ import ChatRoom from "../components/ChatRoom";
 // Screen dimensions
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
-const PublicChatScreen = () => {
+const PublicChatScreen = ({ route }) => {
   const navigation = useNavigation();
+  const { isYourUniverse } = route.params || { isYourUniverse: true }; // Default to Prime Universe
+  const backgroundImage = isYourUniverse 
+    ? require("../assets/BackGround/Parliment.png") 
+    : require("../assets/BackGround/Power.jpg");
 
   return (
     <ImageBackground
-      source={require("../assets/BackGround/Parliment.png")} 
+      source={backgroundImage}
       style={styles.background}
     >
       <View style={styles.container}>

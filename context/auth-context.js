@@ -40,25 +40,19 @@ export const AuthContext = createContext({
 });
 
 const AuthContextProvider = ({ children }) => {
-  // Authentication state
   const [authToken, setAuthToken] = useState(null);
-
-  // User state managed by useReducer
   const [state, dispatch] = useReducer(userReducer, initialUserState);
 
-  // Authenticate user and store token
   const authenticate = async (token) => {
     setAuthToken(token);
     await AsyncStorage.setItem('token', token);
   };
 
-  // Logout user and remove token
   const logout = async () => {
     setAuthToken(null);
     await AsyncStorage.removeItem('token');
   };
 
-  // Load token from AsyncStorage on app start
   useEffect(() => {
     const loadToken = async () => {
       const storedToken = await AsyncStorage.getItem('token');
