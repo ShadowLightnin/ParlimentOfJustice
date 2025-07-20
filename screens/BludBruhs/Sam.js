@@ -10,12 +10,11 @@ import {
   Animated,
   Modal,
   Alert,
-  TextInput,
 } from "react-native";
 import { useNavigation, useIsFocused, useRoute } from "@react-navigation/native";
 import { Audio } from 'expo-av';
 import { db, auth, storage } from '../../lib/firebase';
-import { collection, onSnapshot, deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
+import { collection, onSnapshot, deleteDoc, doc, getDoc } from 'firebase/firestore';
 import { ref, deleteObject } from 'firebase/storage';
 import SamsArmory from './SamsArmory';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -108,28 +107,19 @@ const Sam = () => {
   const canMod = RESTRICT_ACCESS ? auth.currentUser?.email && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
   const isDesktop = windowWidth >= 768;
   const [isYourUniverse, setIsYourUniverse] = useState(null);
-  const [customAboutMe, setCustomAboutMe] = useState('');
-  const [editModalVisible, setEditModalVisible] = useState(false);
 
-  // Load universe preference and custom about me on mount
+  // Load universe preference on mount, default to Prime (Will’s)
   useEffect(() => {
-    const loadPreferences = async () => {
+    const loadUniversePreference = async () => {
       try {
         const savedUniverse = await AsyncStorage.getItem('selectedUniverse');
         setIsYourUniverse(savedUniverse ? savedUniverse === 'your' : true); // Default to Prime
-
-        const userEmail = auth.currentUser?.email || 'default';
-        const aboutMeRef = doc(db, 'samAboutMe', userEmail);
-        const docSnap = await getDoc(aboutMeRef);
-        if (docSnap.exists()) {
-          setCustomAboutMe(docSnap.data().text || '');
-        }
       } catch (error) {
-        console.error('Error loading preferences:', error);
+        console.error('Error loading universe preference:', error);
         setIsYourUniverse(true); // Default to Prime on error
       }
     };
-    loadPreferences();
+    loadUniversePreference();
   }, []);
 
   useEffect(() => {
@@ -193,7 +183,7 @@ const Sam = () => {
         id: doc.id,
         ...doc.data(),
         clickable: true,
-        borderColor: doc.data().borderColor || '#00b3ff',
+        borderColor: doc.data().borderColor || (isYourUniverse ? '#00b3ff' : '#800080'),
         hardcoded: false,
         copyright: 'Samuel Woodwell',
       }));
@@ -295,73 +285,75 @@ const Sam = () => {
     }
   };
 
-  const saveAboutMe = async (text) => {
-    try {
-      const userEmail = auth.currentUser?.email || 'default';
-      await setDoc(doc(db, 'samAboutMe', userEmail), { text }, { merge: true });
-      setCustomAboutMe(text);
-      setEditModalVisible(false);
-      Alert.alert('Success', 'About Me saved successfully!');
-    } catch (error) {
-      console.error('Error saving About Me:', error);
-      Alert.alert('Error', 'Failed to save About Me.');
-    }
-  };
+  const cardWidth = isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9;
 
-  const cardWidth = isDesktop ? Math.min(windowWidth * 0.3, 300) : Math.min(SCREEN_WIDTH * 0.9, 300);
-
-  const renderArmorCard = (armor) => {
-    if (!armor) return null; // Safeguard against invalid armor
-    return (
-      <View key={armor.id || `${armor.name}-${armor.codename}`} style={styles.armorCont}>
-        <TouchableOpacity
-          style={[styles.card, armor.clickable ? styles.clickable(armor.borderColor || 'rgba(255, 255, 255, 0.1)') : styles.notClickable, { width: cardWidth }]}
-          onPress={() => handleArmorPress(armor)}
-          disabled={!armor.clickable}
-        >
-          <Image
-            source={
-              armor.image ||
-              (armor.imageUrl && armor.imageUrl !== 'placeholder'
-                ? { uri: armor.imageUrl }
-                : require('../../assets/Armor/PlaceHolder.jpg'))
-            }
-            style={styles.armorImage}
-            resizeMode="cover"
-            onError={(e) => console.error('Image load error:', armor.name || armor.codename, e.nativeEvent.error)}
-          />
-          <View style={styles.transparentOverlay} />
-          <Text style={styles.cardName}>
-            © {armor.name || armor.codename || 'Unknown'}; {armor.copyright}
-          </Text>
-          {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
-        </TouchableOpacity>
-        {!armor.hardcoded && (
-          <View style={[styles.buttons, { width: cardWidth }]}>
-            <TouchableOpacity
-              onPress={() => setPreviewArmor({ ...armor, isEditing: true })}
-              style={[styles.editButton, !canMod && styles.disabled]}
-              disabled={!canMod}
-            >
-              <Text style={styles.buttonText}>Edit</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setDeleteModal({ visible: true, armor: { id: armor.id, name: armor.name || armor.codename || 'Unknown' } })}
-              style={[styles.deleteButton, !canMod && styles.disabled]}
-              disabled={!canMod}
-            >
-              <Text style={styles.buttonText}>Delete</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </View>
-    );
-  };
+  const renderArmorCard = (armor) => (
+    <View key={armor.id || `${armor.name}-${armor.codename}`} style={styles.armorCont}>
+      <TouchableOpacity
+        style={[
+          styles.card,
+          armor.clickable ? styles.clickable(armor.borderColor || (isYourUniverse ? '#00b3ff' : '#800080')) : styles.notClickable,
+          { width: cardWidth },
+          {
+            backgroundColor: isYourUniverse ? 'rgba(0, 179, 255, 0.1)' : 'rgba(128, 0, 128, 0.1)',
+            shadowColor: isYourUniverse ? '#00b3ff' : '#800080',
+            shadowOpacity: 0.8,
+            shadowRadius: 10,
+          },
+        ]}
+        onPress={() => handleArmorPress(armor)}
+        disabled={!armor.clickable}
+      >
+        <Image
+          source={
+            armor.image ||
+            (armor.imageUrl && armor.imageUrl !== 'placeholder'
+              ? { uri: armor.imageUrl }
+              : require('../../assets/Armor/PlaceHolder.jpg'))
+          }
+          style={styles.armorImage}
+          resizeMode="cover"
+          onError={(e) => console.error('Image load error:', armor.name || armor.codename, e.nativeEvent.error)}
+        />
+        <View style={styles.transparentOverlay} />
+        <Text style={[styles.cardName, { color: isYourUniverse ? '#00b3ff' : '#800080' }]}>
+          © {armor.name || armor.codename || 'Unknown'}; {armor.copyright}
+        </Text>
+        {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+      </TouchableOpacity>
+      {!armor.hardcoded && (
+        <View style={[styles.buttons, { width: cardWidth }]}>
+          <TouchableOpacity
+            onPress={() => setPreviewArmor({ ...armor, isEditing: true })}
+            style={[styles.editButton, !canMod && styles.disabled]}
+            disabled={!canMod}
+          >
+            <Text style={styles.buttonText}>Edit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setDeleteModal({ visible: true, armor: { id: armor.id, name: armor.name || armor.codename || 'Unknown' } })}
+            style={[styles.deleteButton, !canMod && styles.disabled]}
+            disabled={!canMod}
+          >
+            <Text style={styles.buttonText}>Delete</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+    </View>
+  );
 
   const renderPreviewCard = (armor) => (
     <TouchableOpacity
       key={armor.id || `${armor.name}-${armor.codename}`}
-      style={[styles.card, styles.clickable(armor.borderColor || 'rgba(255, 255, 255, 0.1)'), { width: cardWidth }]}
+      style={[
+        styles.card,
+        styles.clickable(armor.borderColor || (isYourUniverse ? '#00b3ff' : '#800080')),
+        { width: cardWidth },
+        {
+          backgroundColor: isYourUniverse ? 'rgba(0, 179, 255, 0.1)' : 'rgba(128, 0, 128, 0.1)',
+          shadowColor: isYourUniverse ? '#00b3ff' : '#800080',
+        },
+      ]}
       onPress={() => {
         console.log('Closing preview modal');
         setPreviewArmor(null);
@@ -379,58 +371,56 @@ const Sam = () => {
         onError={(e) => console.error('Preview image load error:', armor.name || armor.codename, e.nativeEvent.error)}
       />
       <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>
+      <Text style={[styles.cardName, { color: isYourUniverse ? '#00b3ff' : '#800080' }]}>
         © {armor.name || armor.codename || 'Unknown'}; {armor.copyright}
       </Text>
     </TouchableOpacity>
   );
 
-return (
-  <View style={styles.container}>
-    <ScrollView contentContainerStyle={[styles.scrollContainer, { minHeight: SCREEN_HEIGHT, flexGrow: 1 }]}>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={handleBackPress}
-        >
-          <Text style={styles.backButtonText}>⬅️</Text>
-        </TouchableOpacity>
-        <Text style={[styles.title, { textShadowColor: isYourUniverse ? '#00b3ff' : '#800080' }]}>
-          Void Walker
-        </Text>
-        <TouchableOpacity onPress={handlePlanetPress} style={styles.planetContainer}>
-          <Animated.Image
-            source={require("../../assets/Space/ExoPlanet2.jpg")}
-            style={[styles.planetImage, { opacity: flashAnim }]}
-          />
-        </TouchableOpacity>
-      </View>
+  return (
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.headerContainer}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={handleBackPress}
+          >
+            <Text style={styles.backButtonText}>⬅️</Text>
+          </TouchableOpacity>
+          <Text style={[styles.title, { textShadowColor: isYourUniverse ? '#00b3ff' : '#800080' }]}>
+            Void Walker
+          </Text>
+          <TouchableOpacity onPress={handlePlanetPress} style={styles.planetContainer}>
+            <Animated.Image
+              source={require("../../assets/Space/ExoPlanet2.jpg")}
+              style={[styles.planetImage, { opacity: flashAnim }]}
+            />
+          </TouchableOpacity>
+        </View>
 
-      <View style={styles.imageContainer}>
-        <ScrollView
-          horizontal
-          contentContainerStyle={[styles.imageScrollContainer, { minWidth: SCREEN_WIDTH }]}
-          showsHorizontalScrollIndicator={false}
-          snapToAlignment="center"
-          snapToInterval={cardWidth + 20} // Adjusted to include margin
-          decelerationRate="fast"
-        >
-          {armorList.map(renderArmorCard)}
-        </ScrollView>
-      </View>
+        <View style={styles.imageContainer}>
+          <ScrollView
+            horizontal
+            contentContainerStyle={styles.imageScrollContainer}
+            showsHorizontalScrollIndicator={false}
+            snapToAlignment="center"
+            snapToInterval={windowWidth * 0.7 + 20}
+            decelerationRate="fast"
+          >
+            {armorList.map(renderArmorCard)}
+          </ScrollView>
+        </View>
 
-      <SamsArmory
-        collectionPath="samArmory"
-        placeholderImage={require('../../assets/Armor/PlaceHolder.jpg')}
-        friend={armorList}
-        setFriend={setArmorList}
-        hardcodedFriend={armors}
-        editingFriend={previewArmor?.isEditing ? previewArmor : null}
-        setEditingFriend={setPreviewArmor}
-        style={{ minHeight: 200, flex: 1 }} // Ensure minimum height and flexibility
-      />
+        <SamsArmory
+          collectionPath="samArmory"
+          placeholderImage={require('../../assets/Armor/PlaceHolder.jpg')}
+          friend={armorList}
+          setFriend={setArmorList}
+          hardcodedFriend={armors}
+          editingFriend={previewArmor?.isEditing ? previewArmor : null}
+          setEditingFriend={setPreviewArmor}
+        />
 
-      {isYourUniverse && (
         <View style={styles.aboutSection}>
           <Text style={[styles.aboutHeader, { textShadowColor: isYourUniverse ? '#00b3ff' : '#800080' }]}>About Me</Text>
           <Text style={styles.aboutText}>
@@ -479,145 +469,87 @@ return (
             The Bludbruhs ended when Sam’s reliance on his dark powers—taught by Erevos and the Enlightened—fractured the group. After joining the Parliament of Justice, Sam tried to suppress his past, but a mission gone wrong unleashed his dark surge, alienating his team. Zeke, Elijah, and others left for the Monkie Alliance, seeking a path free of shadow. Sam, left with a loyal few, embraced his electrical core over his dark roots, renaming the faction Thunder Born—a rebirth symbolizing his lightning might and a break from the blood-soaked “Bludbruhs” name tied to his corrupted past.
           </Text>
         </View>
+      </ScrollView>
+
+      {previewArmor && !previewArmor.isEditing && (
+        <Modal
+          visible={!!previewArmor}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={() => {
+            console.log('Closing preview modal');
+            setPreviewArmor(null);
+          }}
+        >
+          <View style={styles.modalBackground}>
+            <TouchableOpacity
+              style={styles.modalOuterContainer}
+              activeOpacity={1}
+              onPress={() => {
+                console.log('Closing preview modal');
+                setPreviewArmor(null);
+              }}
+            >
+              <View style={styles.imageContainer}>
+                <ScrollView
+                  horizontal
+                  contentContainerStyle={styles.imageScrollContainer}
+                  showsHorizontalScrollIndicator={false}
+                  snapToAlignment="center"
+                  snapToInterval={cardWidth}
+                  decelerationRate="fast"
+                  centerContent={true}
+                >
+                  {renderPreviewCard(previewArmor)}
+                </ScrollView>
+              </View>
+              <View style={styles.previewAboutSection}>
+                <Text style={[styles.previewCodename, { color: isYourUniverse ? '#00b3ff' : '#800080' }]}>{previewArmor?.codename || 'No Codename'}</Text>
+                <Text style={[styles.previewName, { color: isYourUniverse ? '#fff' : '#ddd' }]}>{previewArmor?.name || 'Unknown'}</Text>
+                <Text style={styles.previewDesc}>{previewArmor?.description || 'No description available'}</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    console.log('Closing preview modal');
+                    setPreviewArmor(null);
+                  }}
+                  style={styles.closeButton}
+                >
+                  <Text style={styles.buttonText}>Close</Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </Modal>
       )}
 
-      {!isYourUniverse && (
-        <View style={styles.aboutSection}>
-          <Text style={[styles.aboutHeader, { textShadowColor: isYourUniverse ? '#00b3ff' : '#800080' }]}>About Me</Text>
-          {customAboutMe ? (
-            <>
-              <Text style={styles.aboutText}>{customAboutMe}</Text>
-              <TouchableOpacity style={styles.editButton} onPress={() => setEditModalVisible(true)}>
-                <Text style={styles.buttonText}>Edit About Me</Text>
-              </TouchableOpacity>
-            </>
-          ) : (
-            <>
-              <Text style={styles.aboutText}>No custom About Me yet. Click below to add one!</Text>
-              <TouchableOpacity style={styles.editButton} onPress={() => setEditModalVisible(true)}>
-                <Text style={styles.buttonText}>Add About Me</Text>
-              </TouchableOpacity>
-            </>
-          )}
-        </View>
-      )}
-    </ScrollView> {/* Closing tag for the outer ScrollView */}
-
-    {previewArmor && !previewArmor.isEditing && (
       <Modal
-        visible={!!previewArmor}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => {
-          console.log('Closing preview modal');
-          setPreviewArmor(null);
-        }}
+        visible={deleteModal.visible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setDeleteModal({ visible: false, armor: null })}
       >
-        <View style={styles.modalBackground}>
-          <TouchableOpacity
-            style={styles.modalOuterContainer}
-            activeOpacity={1}
-            onPress={() => {
-              console.log('Closing preview modal');
-              setPreviewArmor(null);
-            }}
-          >
-            <View style={styles.imageContainer}>
-              <ScrollView
-                horizontal
-                contentContainerStyle={[styles.imageScrollContainer, { minWidth: cardWidth }]}
-                showsHorizontalScrollIndicator={false}
-                snapToAlignment="center"
-                snapToInterval={cardWidth}
-                decelerationRate="fast"
-                centerContent={true}
-              >
-                {renderPreviewCard(previewArmor)}
-              </ScrollView>
-            </View>
-            <View style={styles.previewAboutSection}>
-              <Text style={styles.previewCodename}>{previewArmor?.codename || 'No Codename'}</Text>
-              <Text style={styles.previewName}>{previewArmor?.name || 'Unknown'}</Text>
-              <Text style={styles.previewDesc}>{previewArmor?.description || 'No description available'}</Text>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>{`Delete "${deleteModal.armor?.name || ''}" and its image?`}</Text>
+            <View style={styles.modalButtons}>
               <TouchableOpacity
-                onPress={() => {
-                  console.log('Closing preview modal');
-                  setPreviewArmor(null);
-                }}
-                style={styles.closeButton}
+                style={styles.modalCancel}
+                onPress={() => setDeleteModal({ visible: false, armor: null })}
               >
-                <Text style={styles.buttonText}>Close</Text>
+                <Text style={styles.modalCancelText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalDelete}
+                onPress={() => deleteModal.armor && confirmDelete(deleteModal.armor.id)}
+              >
+                <Text style={styles.modalDeleteText}>Delete</Text>
               </TouchableOpacity>
             </View>
-          </TouchableOpacity>
+          </View>
         </View>
       </Modal>
-    )}
-
-    <Modal
-      visible={deleteModal.visible}
-      transparent
-      animationType="slide"
-      onRequestClose={() => setDeleteModal({ visible: false, armor: null })}
-    >
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalText}>{`Delete "${deleteModal.armor?.name || ''}" and its image?`}</Text>
-          <View style={styles.modalButtons}>
-            <TouchableOpacity
-              style={styles.modalCancel}
-              onPress={() => setDeleteModal({ visible: false, armor: null })}
-            >
-              <Text style={styles.modalCancelText}>Cancel</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.modalDelete}
-              onPress={() => deleteModal.armor && confirmDelete(deleteModal.armor.id)}
-            >
-              <Text style={styles.modalDeleteText}>Delete</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    </Modal>
-
-    <Modal
-      visible={editModalVisible}
-      transparent
-      animationType="slide"
-      onRequestClose={() => setEditModalVisible(false)}
-    >
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalText}>Edit About Me</Text>
-          <TextInput
-            style={styles.aboutInput}
-            value={customAboutMe}
-            onChangeText={setCustomAboutMe}
-            multiline
-            numberOfLines={10}
-            placeholder="Write your About Me here..."
-            placeholderTextColor="#ccc"
-          />
-          <View style={styles.modalButtons}>
-            <TouchableOpacity
-              style={styles.modalCancel}
-              onPress={() => setEditModalVisible(false)}
-            >
-              <Text style={styles.modalCancelText}>Cancel</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.modalDelete}
-              onPress={() => saveAboutMe(customAboutMe)}
-            >
-              <Text style={styles.modalDeleteText}>Save</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    </Modal>
-  </View>
-);
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -709,7 +641,6 @@ const styles = StyleSheet.create({
     bottom: 10,
     left: 10,
     fontSize: 16,
-    color: "white",
     fontWeight: "bold",
   },
   disabledText: {
@@ -768,14 +699,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 10,
   },
-  aboutInput: {
-    height: 200,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 5,
-    padding: 10,
-    color: '#fff',
-    textAlignVertical: 'top',
-  },
   modalBackground: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.9)',
@@ -798,12 +721,10 @@ const styles = StyleSheet.create({
   previewCodename: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#00b3ff',
     textAlign: 'center',
   },
   previewName: {
     fontSize: 14,
-    color: '#aaa',
     textAlign: 'center',
     marginTop: 5,
   },
@@ -830,7 +751,6 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     alignItems: 'center',
-    width: '80%',
   },
   modalText: {
     fontSize: 18,
@@ -841,8 +761,7 @@ const styles = StyleSheet.create({
   modalButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '100%',
-    marginTop: 10,
+    width: '80%',
   },
   modalCancel: {
     backgroundColor: '#2196F3',

@@ -10,14 +10,16 @@ import {
   Dimensions,
   ScrollView,
   Modal,
+  Alert,
 } from 'react-native';
-import { Audio } from 'expo-av'; // Import expo-av
+import { Audio } from 'expo-av';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // Scrollable characters (no position needed)
-const scrollableMembers = [
+const scrollableMembersBase = [
   { name: 'Sam', codename: 'Void Walker', screen: 'Sam', clickable: true, image: require('../../assets/Armor/Sam.jpg') },
   { name: 'Cole', codename: 'Cruiser', screen: 'Cole', clickable: true, image: require('../../assets/Armor/ColeR.jpg') },
   { name: 'Taylor', codename: 'Stellar', screen: '', clickable: true, image: require('../../assets/Armor/Taylor.jpg') },
@@ -26,22 +28,53 @@ const scrollableMembers = [
   { name: 'Adin', codename: 'Aotearoa', screen: '', clickable: true, image: require('../../assets/Armor/Adin.jpg') },
   { name: 'Justin Platt', codename: 'Echo Wood', screen: '', clickable: true, image: require('../../assets/Armor/Justin2.jpg') },
   { name: 'Zack Dustin', codename: 'Carved Echo', screen: '', clickable: true, image: require('../../assets/Armor/Zack2_cleanup.jpg') },
-  { name: 'Joseph', codename: 'Technoman The Betrayer', screen: 'JosephD', clickable: true, image: require('../../assets/Armor/JosephD.jpg') },
+  { name: 'Joseph', codename: 'Technoman', screen: 'JosephD', clickable: true, image: require('../../assets/Armor/JosephD.jpg') },
   { name: 'Others', codename: 'Rolling Thunder', screen: 'RollingThunderScreen', clickable: true, image: require('../../assets/BackGround/Bludbruh4.jpg') },
 ];
 
 // Fixed factions for bottom row
 const fixedMembers = [
   { name: '', codename: 'Ranger Squad', screen: 'RangerSquad', clickable: true, image: require('../../assets/BackGround/RangerSquad.jpg') },
-  { name: '', codename: 'Montrose Manor', screen: 'MontroseManorTab', clickable: true, image: require('../../assets/TheMontroseManor.jpg') }, // add a ' ' to make card invisible
+  { name: '', codename: 'Montrose Manor', screen: 'MontroseManorTab', clickable: true, image: require('../../assets/TheMontroseManor.jpg') },
   { name: '', codename: 'MonkeAlliance', screen: 'MonkeAllianceScreen', clickable: true, image: require('../../assets/BackGround/Monke.jpg') },
 ];
 
-const BludBruhsScreen = () => {
+const BludBruhsScreen = ({ route }) => {
   const navigation = useNavigation();
   const [previewMember, setPreviewMember] = useState(null);
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isYourUniverse, setIsYourUniverse] = useState(route.params?.isYourUniverse ?? null); // Initial value from route
+
+  // Load universe preference on mount, default to Prime if not set
+  useEffect(() => {
+    const loadUniversePreference = async () => {
+      try {
+        const savedUniverse = await AsyncStorage.getItem('selectedUniverse');
+        setIsYourUniverse(savedUniverse ? savedUniverse === 'your' : route.params?.isYourUniverse ?? true);
+      } catch (error) {
+        console.error('Error loading universe preference:', error);
+        setIsYourUniverse(route.params?.isYourUniverse ?? true); // Default to Prime on error
+      }
+    };
+    loadUniversePreference();
+  }, [route.params]);
+
+  // Dynamically get Joseph based on universe
+  const getJosephMember = () => {
+    if (isYourUniverse) {
+      return { name: 'Joseph', codename: 'Technoman', screen: 'JosephD', clickable: true, image: require('../../assets/Armor/JosephD.jpg') };
+    } else {
+      return { name: 'Joseph', codename: 'The Betrayer', screen: 'JosephD', clickable: false, image: require('../../assets/Armor/PlaceHolder.jpg') };
+    }
+  };
+
+  // Prepare scrollable members with dynamic Joseph
+  const dynamicScrollableMembers = [...scrollableMembersBase];
+  const josephIndex = dynamicScrollableMembers.findIndex(m => m.name === 'Joseph');
+  if (josephIndex !== -1) {
+    dynamicScrollableMembers[josephIndex] = getJosephMember();
+  }
 
   // Handle music playback
   const playTheme = async () => {
@@ -111,7 +144,7 @@ const BludBruhsScreen = () => {
 
   const goToChat = () => {
     stopBackgroundMusic();
-    navigation.navigate('TeamChat');
+    navigation.navigate('TeamChat', { isYourUniverse });
   };
 
   const goToHomeScreen = () => {
@@ -128,28 +161,22 @@ const BludBruhsScreen = () => {
     if (member.clickable) {
       stopBackgroundMusic();
       if (member.screen) {
-        navigation.navigate(member.screen, { from: 'BludBruhsHome' });
+        navigation.navigate(member.screen, { from: 'BludBruhsHome', isYourUniverse });
       } else {
         setPreviewMember(member);
       }
     }
   };
 
-  // Prepare grid rows
+  // Prepare grid rows without padding with nulls
   const rows = [];
-  const initialScrollable = scrollableMembers.slice(0, 6);
-  const additionalScrollable = scrollableMembers.slice(6);
-
-  for (let i = 0; i < 2; i++) {
-    const row = initialScrollable.slice(i * 3, (i + 1) * 3);
-    while (row.length < 3) row.push(null);
-    rows.push(row);
+  const initialScrollable = dynamicScrollableMembers.slice(0, 9);
+  for (let i = 0; i < Math.ceil(initialScrollable.length / 3); i++) {
+    rows.push(initialScrollable.slice(i * 3, (i + 1) * 3));
   }
-
-  for (let i = 0; i < additionalScrollable.length; i += 3) {
-    const row = additionalScrollable.slice(i, i + 3);
-    while (row.length < 3) row.push(null);
-    rows.push(row);
+  const additionalScrollable = dynamicScrollableMembers.slice(9);
+  for (let i = 0; i < Math.ceil(additionalScrollable.length / 3); i++) {
+    rows.push(additionalScrollable.slice(i * 3, (i + 1) * 3));
   }
 
   const renderMemberCard = (member, index) => (
@@ -160,13 +187,20 @@ const BludBruhsScreen = () => {
         { width: cardSize, height: cardSize * 1.6 },
         !member?.clickable && styles.disabledCard,
         member?.name === ' ' && styles.subtleButton,
-        !member && styles.emptyCard,
+        {
+          borderWidth: 2,
+          borderColor: isYourUniverse ? '#00b3ff' : '#800080',
+          backgroundColor: isYourUniverse ? 'rgba(0, 179, 255, 0.1)' : 'rgba(128, 0, 128, 0.1)',
+          shadowColor: isYourUniverse ? '#00b3ff' : '#800080',
+          shadowOpacity: 0.8,
+          shadowRadius: 10,
+        },
       ]}
       onPress={async () => {
         if (member?.clickable) {
           await stopBackgroundMusic();
           if (member.screen) {
-            navigation.navigate(member.screen, { from: 'BludBruhsHome' });
+            navigation.navigate(member.screen, { from: 'BludBruhsHome', isYourUniverse });
           } else {
             setPreviewMember(member);
           }
@@ -180,14 +214,22 @@ const BludBruhsScreen = () => {
           <View style={styles.transparentOverlay} />
         </>
       )}
-      <Text style={styles.codename}>{member?.codename || ''}</Text>
-      <Text style={styles.name}>{member?.name || ''}</Text>
+      <Text style={[styles.codename, { color: isYourUniverse ? '#00b3ff' : '#800080', textShadowColor: isYourUniverse ? '#00b3ff' : '#800080', textShadowRadius: 10 }]}>{member?.codename || ''}</Text>
+      <Text style={[styles.name, { color: isYourUniverse ? '#fff' : '#ddd', textShadowColor: isYourUniverse ? '#00b3ff' : '#800080', textShadowRadius: 10 }]}>{member?.name || ''}</Text>
     </TouchableOpacity>
   );
 
   const renderPreviewCard = (member) => (
     <TouchableOpacity
-      style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
+      style={[
+        styles.previewCard(isDesktop, SCREEN_WIDTH),
+        styles.clickable,
+        {
+          borderColor: isYourUniverse ? '#00b3ff' : '#800080',
+          backgroundColor: isYourUniverse ? 'rgba(0, 179, 255, 0.1)' : 'rgba(128, 0, 128, 0.1)',
+          shadowColor: isYourUniverse ? '#00b3ff' : '#800080',
+        },
+      ]}
       onPress={() => setPreviewMember(null)}
     >
       <Image
@@ -196,15 +238,15 @@ const BludBruhsScreen = () => {
         resizeMode="cover"
       />
       <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>
-        © {member.codename || 'Unknown'}; Thunder Born
+      <Text style={[styles.cardName, { color: isYourUniverse ? '#00b3ff' : '#800080', textShadowColor: isYourUniverse ? '#00b3ff' : '#800080', textShadowRadius: 10 }]}>
+        © {member.codename || 'Unknown'}; {isYourUniverse ? 'Thunder Born' : 'Thunder Born'}
       </Text>
     </TouchableOpacity>
   );
 
   return (
     <ImageBackground
-      source={require('../../assets/BackGround/Bludbruh2.jpg')}
+      source={isYourUniverse ? require('../../assets/BackGround/Bludbruh2.jpg') : require('../../assets/BackGround/Bludbruh2.jpg')}
       style={styles.background}
     >
       <SafeAreaView style={styles.container}>
@@ -212,18 +254,22 @@ const BludBruhsScreen = () => {
           <TouchableOpacity style={styles.backButton} onPress={goToHomeScreen}>
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
-          <Text style={styles.header}>Thunder Born</Text>
+          <Text style={[styles.header, isYourUniverse ? 
+            { color: '#00FFFF', textShadowColor: '#fffb00', textShadowOffset: { width: 1, height: 2 }, textShadowRadius: 20 } : 
+            { color: '#00FFFF', textShadowColor: '#fffb00', textShadowOffset: { width: 1, height: 2 }, textShadowRadius: 20 }]}>
+              {isYourUniverse ? 'Thunder Born' : 'Thunder Born'}
+          </Text>
           <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
-            <Text style={styles.chatText}>🛡️</Text>
+            <Text style={[styles.chatText, { color: isYourUniverse ? '#00b3ff' : '#800080' }]}>🛡️</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.musicControls}>
           <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
-            <Text style={styles.musicButtonText}>Theme</Text>
+            <Text style={[styles.musicButtonText, { color: isYourUniverse ? '#00b3ff' : '#800080' }]}>Theme</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
-            <Text style={styles.musicButtonText}>Pause</Text>
+            <Text style={[styles.musicButtonText, { color: isYourUniverse ? '#00b3ff' : '#800080' }]}>Pause</Text>
           </TouchableOpacity>
         </View>
 
@@ -231,7 +277,7 @@ const BludBruhsScreen = () => {
           <View style={[styles.grid, { gap: cardSpacing }]}>
             {rows.map((row, rowIndex) => (
               <View key={rowIndex} style={[styles.row, { gap: cardSpacing }]}>
-                {row.map((member, colIndex) => renderMemberCard(member, colIndex))}
+                {row.map((member, colIndex) => renderMemberCard(member, colIndex + rowIndex * 3))}
               </View>
             ))}
           </View>
@@ -246,11 +292,19 @@ const BludBruhsScreen = () => {
                 { width: cardSize, height: cardSize * 1.6 },
                 !member.clickable && styles.disabledCard,
                 member.name === ' ' && styles.subtleButton,
+                {
+                  borderWidth: 2,
+                  borderColor: isYourUniverse ? '#00b3ff' : '#800080',
+                  backgroundColor: isYourUniverse ? 'rgba(0, 179, 255, 0.1)' : 'rgba(128, 0, 128, 0.1)',
+                  shadowColor: isYourUniverse ? '#00b3ff' : '#800080',
+                  shadowOpacity: 0.8,
+                  shadowRadius: 10,
+                },
               ]}
               onPress={async () => {
                 if (member.clickable) {
                   await stopBackgroundMusic();
-                  navigation.navigate(member.screen, { from: 'BludBruhsHome' });
+                  navigation.navigate(member.screen, { from: 'BludBruhsHome', isYourUniverse });
                 }
               }}
               disabled={!member.clickable}
@@ -261,8 +315,8 @@ const BludBruhsScreen = () => {
                   <View style={styles.transparentOverlay} />
                 </>
               )}
-              <Text style={styles.codename}>{member.codename || ''}</Text>
-              <Text style={styles.name}>{member.name || ''}</Text>
+              <Text style={[styles.codename, { color: isYourUniverse ? '#00b3ff' : '#800080', textShadowColor: isYourUniverse ? '#00b3ff' : '#800080', textShadowRadius: 10 }]}>{member.codename || ''}</Text>
+              <Text style={[styles.name, { color: isYourUniverse ? '#fff' : '#ddd', textShadowColor: isYourUniverse ? '#00b3ff' : '#800080', textShadowRadius: 10 }]}>{member.name || ''}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -293,8 +347,14 @@ const BludBruhsScreen = () => {
                 </ScrollView>
               </View>
               <View style={styles.previewAboutSection}>
-                <Text style={styles.previewCodename}>{previewMember?.codename || 'N/A'}</Text>
-                <Text style={styles.previewName}>{previewMember?.name || 'Unknown'}</Text>
+                <Text style={[styles.previewCodename, { color: isYourUniverse ? '#00b3ff' : '#800080', textShadowColor: isYourUniverse ? '#00b3ff' : '#800080', textShadowRadius: 10 }]}>{previewMember?.codename || 'N/A'}</Text>
+                <Text style={[styles.previewName, { color: isYourUniverse ? '#fff' : '#ddd', textShadowColor: isYourUniverse ? '#00b3ff' : '#800080', textShadowRadius: 10 }]}>{previewMember?.name || 'Unknown'}</Text>
+                <TouchableOpacity
+                  onPress={() => setPreviewMember(null)}
+                  style={styles.closeButton}
+                >
+                  <Text style={styles.buttonText}>Close</Text>
+                </TouchableOpacity>
               </View>
             </TouchableOpacity>
           </View>
@@ -309,120 +369,126 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
     resizeMode: 'cover',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   container: {
     flex: 1,
+    width: '100%',
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    paddingHorizontal: 20,
-    alignItems: 'center',
-  },
-  transparentOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1,
   },
   headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     width: '100%',
-    marginTop: 50,
-    paddingHorizontal: 20,
-    marginBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingTop: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
   backButton: {
     padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 5,
   },
   backText: {
     fontSize: 18,
-    color: '#00b3ff',
-    fontWeight: 'bold',
+    color: '#fff',
   },
   header: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#00FFFF',
-    textAlign: 'center',
-    textShadowColor: '#fffb00',
-    textShadowOffset: { width: 1, height: 2 },
-    textShadowRadius: 20,
-    flex: 1,
   },
   chatButton: {
     padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 5,
   },
   chatText: {
     fontSize: 20,
-    color: '#00b3ff',
+  },
+  musicControls: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 5,
+  },
+  musicButton: {
+    padding: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 8,
+    marginHorizontal: 10,
+  },
+  musicButtonText: {
+    fontSize: 12,
+    fontWeight: 'bold',
   },
   scrollView: {
     flex: 1,
-    width: '100%',
   },
   scrollContent: {
-    paddingBottom: 20,
-    alignItems: 'center',
+    padding: 10,
   },
   grid: {
-    justifyContent: 'center',
+    flexDirection: 'column',
     alignItems: 'center',
   },
   row: {
     flexDirection: 'row',
+    justifyContent: 'center',
   },
   fixedRow: {
     flexDirection: 'row',
+    justifyContent: 'center',
     paddingVertical: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
   card: {
-    backgroundColor: '#1c1c1c',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 8,
-    shadowColor: '#00FFFF',
-    shadowOpacity: 1.5,
-    shadowRadius: 10,
+    borderRadius: 10,
+    overflow: 'hidden',
     elevation: 5,
-    padding: 5,
+  },
+  disabledCard: {
+    opacity: 0.5,
+    backgroundColor: '#555',
   },
   subtleButton: {
-    backgroundColor: '#2a2a2a00',
-    shadowColor: '#444',
-    shadowOpacity: 0.1,
-    elevation: 2,
-    opacity: 0.2,
+    opacity: 0.3,
   },
   emptyCard: {
     backgroundColor: 'transparent',
-    shadowColor: 'transparent',
   },
   characterImage: {
     width: '100%',
-    height: '70%',
+    height: '100%',
     resizeMode: 'cover',
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
   },
-  name: {
-    fontSize: 10,
-    fontStyle: 'italic',
-    color: '#aaa',
-    textAlign: 'center',
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 1,
   },
   codename: {
-    fontSize: 12,
+    position: 'absolute',
+    bottom: 10,
+    left: 5,
+    fontSize: 14,
     fontWeight: 'bold',
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 5,
   },
-  disabledCard: {
-    backgroundColor: '#444',
-    shadowColor: 'transparent',
+  name: {
+    position: 'absolute',
+    bottom: 25,
+    left: 5,
+    fontSize: 12,
+  },
+  previewCard: (isDesktop, width) => ({
+    width: isDesktop ? width * 0.6 : width * 0.7,
+    height: isDesktop ? SCREEN_HEIGHT * 0.6 : SCREEN_HEIGHT * 0.5,
+    borderRadius: 10,
+    overflow: 'hidden',
+    elevation: 5,
+  }),
+  clickable: {
+    borderWidth: 2,
+  },
+  previewImage: {
+    width: '100%',
+    height: '100%',
   },
   modalBackground: {
     flex: 1,
@@ -431,83 +497,48 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalOuterContainer: {
-    width: '90%',
-    height: '80%',
+    width: '80%',
+    height: '70%',
     justifyContent: 'center',
     alignItems: 'center',
   },
   imageContainer: {
     width: '100%',
-    paddingVertical: 20,
-    backgroundColor: '#111',
-    alignItems: 'center',
-    paddingLeft: 20,
+    height: '70%',
   },
   imageScrollContainer: {
     flexDirection: 'row',
-    paddingHorizontal: 10,
     alignItems: 'center',
-    justifyContent: 'center',
   },
-  previewCard: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.2 : SCREEN_WIDTH * 0.8,
-    height: isDesktop ? SCREEN_HEIGHT * 0.7 : SCREEN_HEIGHT * 0.6,
-    borderRadius: 15,
-    overflow: 'hidden',
-    elevation: 5,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    marginRight: 20,
-  }),
-  clickable: {
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+  previewAboutSection: {
+    padding: 10,
+    backgroundColor: '#222',
+    borderRadius: 10,
+    alignItems: 'center',
   },
-  previewImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
+  previewCodename: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  previewName: {
+    fontSize: 16,
+    marginVertical: 5,
+  },
+  closeButton: {
+    backgroundColor: '#2196F3',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#FFF',
+    fontWeight: 'bold',
   },
   cardName: {
     position: 'absolute',
     bottom: 10,
     left: 10,
-    fontSize: 16,
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  previewAboutSection: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#222',
-    borderRadius: 10,
-    width: '100%',
-  },
-  previewCodename: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#00b3ff',
-    textAlign: 'center',
-  },
-  previewName: {
-    fontSize: 16,
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 5,
-  },
-  musicControls: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 20,
-  },
-  musicButton: {
-    padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 5,
-    marginHorizontal: 10,
-  },
-  musicButtonText: {
-    fontSize: 12,
-    color: '#00b3ff',
+    fontSize: 14,
     fontWeight: 'bold',
   },
 });
