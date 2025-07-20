@@ -325,7 +325,7 @@ export const HomeScreen = () => {
           </TouchableOpacity>
           <TouchableOpacity onPress={toggleUniverse} style={styles.headerButton}>
             <Text style={[styles.header, { textShadowColor: isYourUniverse ? '#00b3ff' : '#da1cda', textShadowRadius: 10 }]}>
-              {isYourUniverse ? 'The Parliament of Justice' : 'The Parliament of Power'}
+              {isYourUniverse ? 'The Parliament of Justice' : 'Shadows of Montrose: \nThe Parliament of Power'}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
