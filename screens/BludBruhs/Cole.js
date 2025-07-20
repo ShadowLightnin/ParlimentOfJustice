@@ -22,6 +22,7 @@ const Cole = () => {
 
   const armors = [
     { name: "Cruiser", image: require("../../assets/Armor/ColeR.jpg"), clickable: true },
+    { name: "Bruiser", image: require("../../assets/Armor/ColeR2.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (

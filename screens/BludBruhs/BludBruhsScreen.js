@@ -214,7 +214,7 @@ const BludBruhsScreen = ({ route }) => {
           <View style={styles.transparentOverlay} />
         </>
       )}
-      <Text style={[styles.codename, { color: isYourUniverse ? '#00b3ff' : '#800080', textShadowColor: isYourUniverse ? '#00b3ff' : '#800080', textShadowRadius: 10 }]}>{member?.codename || ''}</Text>
+      <Text style={[styles.codename, { color: isYourUniverse ? '#00b3ff' : '#df45df', textShadowColor: isYourUniverse ? '#00b3ff' : '#800080', textShadowRadius: 10 }]}>{member?.codename || ''}</Text>
       <Text style={[styles.name, { color: isYourUniverse ? '#fff' : '#ddd', textShadowColor: isYourUniverse ? '#00b3ff' : '#800080', textShadowRadius: 10 }]}>{member?.name || ''}</Text>
     </TouchableOpacity>
   );
@@ -384,7 +384,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 10,
     paddingTop: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(0, 0, 0, 0.564)',
   },
   backButton: {
     padding: 10,
@@ -436,7 +436,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     paddingVertical: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(0, 0, 0, 0.406)',
   },
   card: {
     borderRadius: 10,
@@ -444,7 +444,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   disabledCard: {
-    opacity: 0.5,
+    opacity: 0.8,
     backgroundColor: '#555',
   },
   subtleButton: {

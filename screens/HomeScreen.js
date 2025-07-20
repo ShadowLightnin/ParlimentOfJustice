@@ -217,9 +217,9 @@ export const HomeScreen = () => {
           !item.clickable && styles.disabledCard,
           {
             borderWidth: 2,
-            borderColor: isYourUniverse ? '#00b3ff' : '#800080',
+            borderColor: isYourUniverse ? '#00b3ff35' : '#800080',
             backgroundColor: isYourUniverse ? 'rgba(0, 179, 255, 0.1)' : 'rgba(128, 0, 128, 0.1)',
-            shadowColor: isYourUniverse ? '#00b3ff' : '#800080',
+            shadowColor: isYourUniverse ? '#00b3ff35' : '#800080',
             shadowOpacity: 0.8,
             shadowRadius: 10,
           },
