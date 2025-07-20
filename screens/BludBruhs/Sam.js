@@ -10,13 +10,15 @@ import {
   Animated,
   Modal,
   Alert,
+  TextInput,
 } from "react-native";
 import { useNavigation, useIsFocused, useRoute } from "@react-navigation/native";
 import { Audio } from 'expo-av';
 import { db, auth, storage } from '../../lib/firebase';
-import { collection, onSnapshot, deleteDoc, doc, getDoc } from 'firebase/firestore';
+import { collection, onSnapshot, deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
 import { ref, deleteObject } from 'firebase/storage';
 import SamsArmory from './SamsArmory';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -85,6 +87,9 @@ const armors = [
   { id: 'sam-9', name: 'Celestial Walker', codename: 'Celestial Walker', copyright: 'Samuel Woodwell', image: require('../../assets/Armor/Sam10.jpg'), clickable: true, hardcoded: true },
 ];
 
+// IDs to exclude in Pinnacle Universe
+const pinnacleExclusions = ['sam-2', 'sam-3', 'sam-4', 'sam-6', 'sam-7', 'sam-8', 'sam-9'];
+
 const ALLOWED_EMAILS = ['will@test.com', 'c1wcummings@gmail.com', 'samuelp.woodwell@gmail.com'];
 const RESTRICT_ACCESS = true;
 
@@ -102,6 +107,30 @@ const Sam = () => {
   const [deleteModal, setDeleteModal] = useState({ visible: false, armor: null });
   const canMod = RESTRICT_ACCESS ? auth.currentUser?.email && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
   const isDesktop = windowWidth >= 768;
+  const [isYourUniverse, setIsYourUniverse] = useState(null);
+  const [customAboutMe, setCustomAboutMe] = useState('');
+  const [editModalVisible, setEditModalVisible] = useState(false);
+
+  // Load universe preference and custom about me on mount
+  useEffect(() => {
+    const loadPreferences = async () => {
+      try {
+        const savedUniverse = await AsyncStorage.getItem('selectedUniverse');
+        setIsYourUniverse(savedUniverse ? savedUniverse === 'your' : true); // Default to Prime
+
+        const userEmail = auth.currentUser?.email || 'default';
+        const aboutMeRef = doc(db, 'samAboutMe', userEmail);
+        const docSnap = await getDoc(aboutMeRef);
+        if (docSnap.exists()) {
+          setCustomAboutMe(docSnap.data().text || '');
+        }
+      } catch (error) {
+        console.error('Error loading preferences:', error);
+        setIsYourUniverse(true); // Default to Prime on error
+      }
+    };
+    loadPreferences();
+  }, []);
 
   useEffect(() => {
     const params = route.params || {};
@@ -177,19 +206,18 @@ const Sam = () => {
       );
       console.log('Filtered dynamic armors:', filteredDynamic.map(a => ({ id: a.id, name: a.name || a.codename })));
 
-      const combinedMap = new Map();
-      [...validatedArmors, ...filteredDynamic].forEach((armor) => {
-        combinedMap.set(armor.id, armor);
-      });
-      const combined = Array.from(combinedMap.values());
-      console.log('Combined armors:', combined.map(a => ({ id: a.id, name: a.name || a.codename })));
+      // Filter out excluded armors in Pinnacle Universe
+      const combined = [...validatedArmors, ...filteredDynamic].filter(armor =>
+        isYourUniverse || !pinnacleExclusions.includes(armor.id)
+      );
+      console.log('Combined armors (after universe filter):', combined.map(a => ({ id: a.id, name: a.name || a.codename })));
       setArmorList(combined);
     }, (e) => {
       console.error('Firestore error:', e.code, e.message);
       Alert.alert('Error', `Failed to fetch armors: ${e.message}`);
     });
     return () => unsub();
-  }, []);
+  }, [isYourUniverse]);
 
   const handlePlanetPress = async () => {
     console.log("Planet pressed, stopping background music and navigating to WarpScreen at:", new Date().toISOString());
@@ -267,52 +295,68 @@ const Sam = () => {
     }
   };
 
-  const cardWidth = isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9;
+  const saveAboutMe = async (text) => {
+    try {
+      const userEmail = auth.currentUser?.email || 'default';
+      await setDoc(doc(db, 'samAboutMe', userEmail), { text }, { merge: true });
+      setCustomAboutMe(text);
+      setEditModalVisible(false);
+      Alert.alert('Success', 'About Me saved successfully!');
+    } catch (error) {
+      console.error('Error saving About Me:', error);
+      Alert.alert('Error', 'Failed to save About Me.');
+    }
+  };
 
-  const renderArmorCard = (armor) => (
-    <View key={armor.id || `${armor.name}-${armor.codename}`} style={styles.armorCont}>
-      <TouchableOpacity
-        style={[styles.card, armor.clickable ? styles.clickable(armor.borderColor || 'rgba(255, 255, 255, 0.1)') : styles.notClickable, { width: cardWidth }]}
-        onPress={() => handleArmorPress(armor)}
-        disabled={!armor.clickable}
-      >
-        <Image
-          source={
-            armor.image ||
-            (armor.imageUrl && armor.imageUrl !== 'placeholder'
-              ? { uri: armor.imageUrl }
-              : require('../../assets/Armor/PlaceHolder.jpg'))
-          }
-          style={styles.armorImage}
-          resizeMode="cover"
-          onError={(e) => console.error('Image load error:', armor.name || armor.codename, e.nativeEvent.error)}
-        />
-        <View style={styles.transparentOverlay} />
-        <Text style={styles.cardName}>
-          © {armor.name || armor.codename || 'Unknown'}; {armor.copyright}
-        </Text>
-        {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
-      </TouchableOpacity>
-      {!armor.hardcoded && (
-        <View style={[styles.buttons, { width: cardWidth }]}>
-          <TouchableOpacity
-            onPress={() => setPreviewArmor({ ...armor, isEditing: true })}
-            style={[styles.editButton, !canMod && styles.disabled]}
-            disabled={!canMod}
-          >
-            <Text style={styles.buttonText}>Edit</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setDeleteModal({ visible: true, armor: { id: armor.id, name: armor.name || armor.codename || 'Unknown' } })}
-            style={[styles.deleteButton, !canMod && styles.disabled]}
-            disabled={!canMod}
-          >
-            <Text style={styles.buttonText}>Delete</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-    </View>
-  );
+  const cardWidth = isDesktop ? Math.min(windowWidth * 0.3, 300) : Math.min(SCREEN_WIDTH * 0.9, 300);
+
+  const renderArmorCard = (armor) => {
+    if (!armor) return null; // Safeguard against invalid armor
+    return (
+      <View key={armor.id || `${armor.name}-${armor.codename}`} style={styles.armorCont}>
+        <TouchableOpacity
+          style={[styles.card, armor.clickable ? styles.clickable(armor.borderColor || 'rgba(255, 255, 255, 0.1)') : styles.notClickable, { width: cardWidth }]}
+          onPress={() => handleArmorPress(armor)}
+          disabled={!armor.clickable}
+        >
+          <Image
+            source={
+              armor.image ||
+              (armor.imageUrl && armor.imageUrl !== 'placeholder'
+                ? { uri: armor.imageUrl }
+                : require('../../assets/Armor/PlaceHolder.jpg'))
+            }
+            style={styles.armorImage}
+            resizeMode="cover"
+            onError={(e) => console.error('Image load error:', armor.name || armor.codename, e.nativeEvent.error)}
+          />
+          <View style={styles.transparentOverlay} />
+          <Text style={styles.cardName}>
+            © {armor.name || armor.codename || 'Unknown'}; {armor.copyright}
+          </Text>
+          {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+        </TouchableOpacity>
+        {!armor.hardcoded && (
+          <View style={[styles.buttons, { width: cardWidth }]}>
+            <TouchableOpacity
+              onPress={() => setPreviewArmor({ ...armor, isEditing: true })}
+              style={[styles.editButton, !canMod && styles.disabled]}
+              disabled={!canMod}
+            >
+              <Text style={styles.buttonText}>Edit</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setDeleteModal({ visible: true, armor: { id: armor.id, name: armor.name || armor.codename || 'Unknown' } })}
+              style={[styles.deleteButton, !canMod && styles.disabled]}
+              disabled={!canMod}
+            >
+              <Text style={styles.buttonText}>Delete</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+    );
+  };
 
   const renderPreviewCard = (armor) => (
     <TouchableOpacity
@@ -341,50 +385,54 @@ const Sam = () => {
     </TouchableOpacity>
   );
 
-  return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.headerContainer}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={handleBackPress}
-          >
-            <Text style={styles.backButtonText}>⬅️</Text>
-          </TouchableOpacity>
-          <Text style={styles.title}>Void Walker</Text>
-          <TouchableOpacity onPress={handlePlanetPress} style={styles.planetContainer}>
-            <Animated.Image
-              source={require("../../assets/Space/ExoPlanet2.jpg")}
-              style={[styles.planetImage, { opacity: flashAnim }]}
-            />
-          </TouchableOpacity>
-        </View>
+return (
+  <View style={styles.container}>
+    <ScrollView contentContainerStyle={[styles.scrollContainer, { minHeight: SCREEN_HEIGHT, flexGrow: 1 }]}>
+      <View style={styles.headerContainer}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={handleBackPress}
+        >
+          <Text style={styles.backButtonText}>⬅️</Text>
+        </TouchableOpacity>
+        <Text style={[styles.title, { textShadowColor: isYourUniverse ? '#00b3ff' : '#800080' }]}>
+          Void Walker
+        </Text>
+        <TouchableOpacity onPress={handlePlanetPress} style={styles.planetContainer}>
+          <Animated.Image
+            source={require("../../assets/Space/ExoPlanet2.jpg")}
+            style={[styles.planetImage, { opacity: flashAnim }]}
+          />
+        </TouchableOpacity>
+      </View>
 
-        <View style={styles.imageContainer}>
-          <ScrollView
-            horizontal
-            contentContainerStyle={styles.imageScrollContainer}
-            showsHorizontalScrollIndicator={false}
-            snapToAlignment="center"
-            snapToInterval={windowWidth * 0.7 + 20}
-            decelerationRate="fast"
-          >
-            {armorList.map(renderArmorCard)}
-          </ScrollView>
-        </View>
+      <View style={styles.imageContainer}>
+        <ScrollView
+          horizontal
+          contentContainerStyle={[styles.imageScrollContainer, { minWidth: SCREEN_WIDTH }]}
+          showsHorizontalScrollIndicator={false}
+          snapToAlignment="center"
+          snapToInterval={cardWidth + 20} // Adjusted to include margin
+          decelerationRate="fast"
+        >
+          {armorList.map(renderArmorCard)}
+        </ScrollView>
+      </View>
 
-        <SamsArmory
-          collectionPath="samArmory"
-          placeholderImage={require('../../assets/Armor/PlaceHolder.jpg')}
-          friend={armorList}
-          setFriend={setArmorList}
-          hardcodedFriend={armors}
-          editingFriend={previewArmor?.isEditing ? previewArmor : null}
-          setEditingFriend={setPreviewArmor}
-        />
+      <SamsArmory
+        collectionPath="samArmory"
+        placeholderImage={require('../../assets/Armor/PlaceHolder.jpg')}
+        friend={armorList}
+        setFriend={setArmorList}
+        hardcodedFriend={armors}
+        editingFriend={previewArmor?.isEditing ? previewArmor : null}
+        setEditingFriend={setPreviewArmor}
+        style={{ minHeight: 200, flex: 1 }} // Ensure minimum height and flexibility
+      />
 
+      {isYourUniverse && (
         <View style={styles.aboutSection}>
-          <Text style={styles.aboutHeader}>About Me</Text>
+          <Text style={[styles.aboutHeader, { textShadowColor: isYourUniverse ? '#00b3ff' : '#800080' }]}>About Me</Text>
           <Text style={styles.aboutText}>
             Sam Woodwell, known as Striker, is a tempest of power and turmoil, the conflicted leader of the Thunder Born, a faction born from the ashes of the Bludbruhs within Zion City’s evolving landscape. His presence is electric and commanding, a volatile mix of dark mastery and raw energy that makes him both a force and a liability. Behind his metallic Jedi robes and floating skull helmet, Sam is intense, driven, and torn between his past corruption and present redemption, his heart anchored by a lingering love for Chroma, a figure still shrouded in evil. He’s tied to his former Bludbruhs—Cole “Cruiser,” Joseph “Techoman,” James “Shadowmind,” and Tanner - Wolff—but his rift with them marks a new chapter. Off the battlefield, he’s a brooding strategist, wrestling with his demons, but his dark powers often alienate those he seeks to protect.
           </Text>
@@ -431,87 +479,145 @@ const Sam = () => {
             The Bludbruhs ended when Sam’s reliance on his dark powers—taught by Erevos and the Enlightened—fractured the group. After joining the Parliament of Justice, Sam tried to suppress his past, but a mission gone wrong unleashed his dark surge, alienating his team. Zeke, Elijah, and others left for the Monkie Alliance, seeking a path free of shadow. Sam, left with a loyal few, embraced his electrical core over his dark roots, renaming the faction Thunder Born—a rebirth symbolizing his lightning might and a break from the blood-soaked “Bludbruhs” name tied to his corrupted past.
           </Text>
         </View>
-      </ScrollView>
-
-      {previewArmor && !previewArmor.isEditing && (
-        <Modal
-          visible={!!previewArmor}
-          transparent={true}
-          animationType="fade"
-          onRequestClose={() => {
-            console.log('Closing preview modal');
-            setPreviewArmor(null);
-          }}
-        >
-          <View style={styles.modalBackground}>
-            <TouchableOpacity
-              style={styles.modalOuterContainer}
-              activeOpacity={1}
-              onPress={() => {
-                console.log('Closing preview modal');
-                setPreviewArmor(null);
-              }}
-            >
-              <View style={styles.imageContainer}>
-                <ScrollView
-                  horizontal
-                  contentContainerStyle={styles.imageScrollContainer}
-                  showsHorizontalScrollIndicator={false}
-                  snapToAlignment="center"
-                  snapToInterval={cardWidth}
-                  decelerationRate="fast"
-                  centerContent={true}
-                >
-                  {renderPreviewCard(previewArmor)}
-                </ScrollView>
-              </View>
-              <View style={styles.previewAboutSection}>
-                <Text style={styles.previewCodename}>{previewArmor?.codename || 'No Codename'}</Text>
-                <Text style={styles.previewName}>{previewArmor?.name || 'Unknown'}</Text>
-                <Text style={styles.previewDesc}>{previewArmor?.description || 'No description available'}</Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    console.log('Closing preview modal');
-                    setPreviewArmor(null);
-                  }}
-                  style={styles.closeButton}
-                >
-                  <Text style={styles.buttonText}>Close</Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </Modal>
       )}
 
-      <Modal
-        visible={deleteModal.visible}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setDeleteModal({ visible: false, armor: null })}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>{`Delete "${deleteModal.armor?.name || ''}" and its image?`}</Text>
-            <View style={styles.modalButtons}>
-              <TouchableOpacity
-                style={styles.modalCancel}
-                onPress={() => setDeleteModal({ visible: false, armor: null })}
-              >
-                <Text style={styles.modalCancelText}>Cancel</Text>
+      {!isYourUniverse && (
+        <View style={styles.aboutSection}>
+          <Text style={[styles.aboutHeader, { textShadowColor: isYourUniverse ? '#00b3ff' : '#800080' }]}>About Me</Text>
+          {customAboutMe ? (
+            <>
+              <Text style={styles.aboutText}>{customAboutMe}</Text>
+              <TouchableOpacity style={styles.editButton} onPress={() => setEditModalVisible(true)}>
+                <Text style={styles.buttonText}>Edit About Me</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.modalDelete}
-                onPress={() => deleteModal.armor && confirmDelete(deleteModal.armor.id)}
+            </>
+          ) : (
+            <>
+              <Text style={styles.aboutText}>No custom About Me yet. Click below to add one!</Text>
+              <TouchableOpacity style={styles.editButton} onPress={() => setEditModalVisible(true)}>
+                <Text style={styles.buttonText}>Add About Me</Text>
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
+      )}
+    </ScrollView> {/* Closing tag for the outer ScrollView */}
+
+    {previewArmor && !previewArmor.isEditing && (
+      <Modal
+        visible={!!previewArmor}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => {
+          console.log('Closing preview modal');
+          setPreviewArmor(null);
+        }}
+      >
+        <View style={styles.modalBackground}>
+          <TouchableOpacity
+            style={styles.modalOuterContainer}
+            activeOpacity={1}
+            onPress={() => {
+              console.log('Closing preview modal');
+              setPreviewArmor(null);
+            }}
+          >
+            <View style={styles.imageContainer}>
+              <ScrollView
+                horizontal
+                contentContainerStyle={[styles.imageScrollContainer, { minWidth: cardWidth }]}
+                showsHorizontalScrollIndicator={false}
+                snapToAlignment="center"
+                snapToInterval={cardWidth}
+                decelerationRate="fast"
+                centerContent={true}
               >
-                <Text style={styles.modalDeleteText}>Delete</Text>
+                {renderPreviewCard(previewArmor)}
+              </ScrollView>
+            </View>
+            <View style={styles.previewAboutSection}>
+              <Text style={styles.previewCodename}>{previewArmor?.codename || 'No Codename'}</Text>
+              <Text style={styles.previewName}>{previewArmor?.name || 'Unknown'}</Text>
+              <Text style={styles.previewDesc}>{previewArmor?.description || 'No description available'}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  console.log('Closing preview modal');
+                  setPreviewArmor(null);
+                }}
+                style={styles.closeButton}
+              >
+                <Text style={styles.buttonText}>Close</Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </TouchableOpacity>
         </View>
       </Modal>
-    </View>
-  );
+    )}
+
+    <Modal
+      visible={deleteModal.visible}
+      transparent
+      animationType="slide"
+      onRequestClose={() => setDeleteModal({ visible: false, armor: null })}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalText}>{`Delete "${deleteModal.armor?.name || ''}" and its image?`}</Text>
+          <View style={styles.modalButtons}>
+            <TouchableOpacity
+              style={styles.modalCancel}
+              onPress={() => setDeleteModal({ visible: false, armor: null })}
+            >
+              <Text style={styles.modalCancelText}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.modalDelete}
+              onPress={() => deleteModal.armor && confirmDelete(deleteModal.armor.id)}
+            >
+              <Text style={styles.modalDeleteText}>Delete</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+
+    <Modal
+      visible={editModalVisible}
+      transparent
+      animationType="slide"
+      onRequestClose={() => setEditModalVisible(false)}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalText}>Edit About Me</Text>
+          <TextInput
+            style={styles.aboutInput}
+            value={customAboutMe}
+            onChangeText={setCustomAboutMe}
+            multiline
+            numberOfLines={10}
+            placeholder="Write your About Me here..."
+            placeholderTextColor="#ccc"
+          />
+          <View style={styles.modalButtons}>
+            <TouchableOpacity
+              style={styles.modalCancel}
+              onPress={() => setEditModalVisible(false)}
+            >
+              <Text style={styles.modalCancelText}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.modalDelete}
+              onPress={() => saveAboutMe(customAboutMe)}
+            >
+              <Text style={styles.modalDeleteText}>Save</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  </View>
+);
 };
 
 const styles = StyleSheet.create({
@@ -544,7 +650,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#00b3ff",
+    color: "#fff",
+    textShadowRadius: 10,
     textAlign: "center",
     flex: 1,
   },
@@ -651,7 +758,8 @@ const styles = StyleSheet.create({
   aboutHeader: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#00b3ff",
+    color: "#fff",
+    textShadowRadius: 10,
     textAlign: "center",
   },
   aboutText: {
@@ -659,6 +767,14 @@ const styles = StyleSheet.create({
     color: "#fff",
     textAlign: "center",
     marginTop: 10,
+  },
+  aboutInput: {
+    height: 200,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 5,
+    padding: 10,
+    color: '#fff',
+    textAlignVertical: 'top',
   },
   modalBackground: {
     flex: 1,
@@ -714,6 +830,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     alignItems: 'center',
+    width: '80%',
   },
   modalText: {
     fontSize: 18,
@@ -724,7 +841,8 @@ const styles = StyleSheet.create({
   modalButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '80%',
+    width: '100%',
+    marginTop: 10,
   },
   modalCancel: {
     backgroundColor: '#2196F3',

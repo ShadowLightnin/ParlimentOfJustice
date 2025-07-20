@@ -63,15 +63,16 @@ export const HomeScreen = () => {
 
   const numColumns = isDesktop ? 3 : 2;
 
-  // Load universe preference on mount, default to yours
+  // Load universe preference on mount, default to Prime (Justice)
   useEffect(() => {
     const loadUniversePreference = async () => {
       try {
         const savedUniverse = await AsyncStorage.getItem('selectedUniverse');
-        setIsYourUniverse(savedUniverse ? savedUniverse === 'your' : userEmail === YOUR_EMAIL || !userEmail);
+        // Default to Prime (Justice) unless a different preference is saved
+        setIsYourUniverse(savedUniverse ? savedUniverse === 'your' : true);
       } catch (error) {
         console.error('Error loading universe preference:', error);
-        setIsYourUniverse(userEmail === YOUR_EMAIL || !userEmail);
+        setIsYourUniverse(true); // Default to Prime (Justice) on error
       }
     };
     loadUniversePreference();
@@ -147,21 +148,8 @@ export const HomeScreen = () => {
     }
   };
 
-  // Cleanup sound
-  useFocusEffect(
-    useCallback(() => {
-      return () => {
-        if (currentSound) {
-          currentSound.stopAsync().catch(error => console.error('Error stopping sound:', error));
-          currentSound.unloadAsync().catch(error => console.error('Error unloading sound:', error));
-          setCurrentSound(null);
-          setIsPlaying(false);
-        }
-      };
-    }, [currentSound])
-  );
-
-  const handleLogout = async () => {
+  // Cleanup sound when navigating away
+  const stopAndUnloadAudio = async () => {
     if (currentSound) {
       try {
         await currentSound.stopAsync();
@@ -169,9 +157,22 @@ export const HomeScreen = () => {
         setCurrentSound(null);
         setIsPlaying(false);
       } catch (error) {
-        console.error('Error stopping sound on logout:', error);
+        console.error('Error stopping/unloading sound:', error);
       }
     }
+  };
+
+  // Cleanup sound on focus change
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        stopAndUnloadAudio();
+      };
+    }, [currentSound])
+  );
+
+  const handleLogout = async () => {
+    await stopAndUnloadAudio();
     try {
       await signOut(auth);
       authCtx.logout();
@@ -181,16 +182,7 @@ export const HomeScreen = () => {
   };
 
   const goToChat = async () => {
-    if (currentSound) {
-      try {
-        await currentSound.stopAsync();
-        await currentSound.unloadAsync();
-        setCurrentSound(null);
-        setIsPlaying(false);
-      } catch (error) {
-        console.error('Error stopping sound for chat:', error);
-      }
-    }
+    await stopAndUnloadAudio();
     navigation.navigate('PublicChat', { isYourUniverse }); // Pass universe state
   };
 
@@ -217,16 +209,7 @@ export const HomeScreen = () => {
         ]}
         onPress={async () => {
           if (item.clickable && item.screen) {
-            if (currentSound) {
-              try {
-                await currentSound.stopAsync();
-                await currentSound.unloadAsync();
-                setCurrentSound(null);
-                setIsPlaying(false);
-              } catch (error) {
-                console.error('Error stopping sound on faction press:', error);
-              }
-            }
+            await stopAndUnloadAudio();
             navigation.navigate(item.screen);
           }
         }}
@@ -597,8 +580,8 @@ const styles = StyleSheet.create({
   },
 
   primeButton: {
-    backgroundColor: '#30675c', // Teal base
-    shadowColor: '#174e43',
+    backgroundColor: '#174e43', // Teal base
+    shadowColor: '#30675c',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.8,
     shadowRadius: 10,
