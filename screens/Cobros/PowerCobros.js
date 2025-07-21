@@ -149,7 +149,7 @@ export const PowerCobros = () => {
           }}>
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
-          <Text style={styles.header}>Power Cobros</Text>
+          <Text style={styles.header}>Cobros</Text>
           <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
             <Image
               source={require('../../assets/BackGround/26.jpg')}
@@ -266,13 +266,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   chatButton: {
-    padding: 10,
+    padding: 5,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     borderRadius: 5,
   },
   chatImage: {
-    width: 80,
-    height: 80,
+    width: 60,
+    height: 60,
     resizeMode: 'contain',
   },
   scrollContainer: {
