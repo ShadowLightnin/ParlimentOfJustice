@@ -60,12 +60,19 @@ const BludBruhsScreen = ({ route }) => {
     loadUniversePreference();
   }, [route.params]);
 
-  // Dynamically get Joseph based on universe
+  // Dynamically get Joseph based on universe with random image selection
   const getJosephMember = () => {
     if (isYourUniverse) {
       return { name: 'Joseph', codename: 'Technoman', screen: 'JosephD', clickable: true, image: require('../../assets/Armor/JosephD.jpg') };
     } else {
-      return { name: 'Joseph', codename: 'The Betrayer', screen: 'JosephD', clickable: false, image: require('../../assets/Armor/PlaceHolder.jpg') };
+      const random = Math.random();
+      if (random < 0.02) { // 1/50 chance (0.02)
+        return { name: 'Joseph', codename: 'The Betrayer', screen: 'JosephD', clickable: false, image: require('../../assets/Armor/JosephD4.jpg') };
+      } else if (random < 0.51) { // 50% chance (0 to 0.51)
+        return { name: 'Joseph', codename: 'The Betrayer', screen: 'JosephD', clickable: false, image: require('../../assets/Armor/JosephD2.jpg') };
+      } else { // 50% chance (0.51 to 1)
+        return { name: 'Joseph', codename: 'The Betrayer', screen: 'JosephD', clickable: false, image: require('../../assets/Armor/JosephD3.jpg') };
+      }
     }
   };
 
@@ -307,7 +314,7 @@ const BludBruhsScreen = ({ route }) => {
                   navigation.navigate(member.screen, { from: 'BludBruhsHome', isYourUniverse });
                 }
               }}
-              disabled={!member.clickable}
+              disabled={!member?.clickable}
             >
               {member.image && (
                 <>

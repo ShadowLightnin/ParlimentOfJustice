@@ -32,6 +32,14 @@ const homageFactions = [
   { name: 'Constollation', screen: 'Constollation', clickable: true, image: require('../assets/BackGround/Constollation.jpg') },
 ];
 
+const pinnacleHomageFactions = [
+  { name: 'Thunder Born', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/Bludbruh2.jpg') },
+  { name: 'Titans', screen: 'Titans', clickable: true, image: require('../assets/BackGround/Titans.jpg'), pinnacleScreen: 'PowerTitans' },
+  { name: 'Olympians', screen: 'Olympians', clickable: true, image: require('../assets/BackGround/Olympians.jpg') },
+  { name: 'Cobros', screen: 'Cobros', clickable: true, image: require('../assets/BackGround/Cobros.jpg'), pinnacleScreen: 'PowerCobros' },
+  { name: 'Legionaires', screen: 'Legionaires', clickable: true, image: require('../assets/BackGround/League.jpg') },
+];
+
 const worldBuildingFactions = [
   { name: 'Guardians of Justice', screen: 'JusticeScreen', clickable: true, image: require('../assets/BackGround/Justice.jpg') },
   { name: 'Ship Yard', screen: 'ShipYardScreen', clickable: true, image: require('../assets/BackGround/ShipYard.jpg') },
@@ -77,11 +85,10 @@ export const HomeScreen = () => {
     const loadUniversePreference = async () => {
       try {
         const savedUniverse = await AsyncStorage.getItem('selectedUniverse');
-        // Default to Prime (Justice) unless a different preference is saved
         setIsYourUniverse(savedUniverse ? savedUniverse === 'your' : true);
       } catch (error) {
         console.error('Error loading universe preference:', error);
-        setIsYourUniverse(true); // Default to Prime (Justice) on error
+        setIsYourUniverse(true);
       }
     };
     loadUniversePreference();
@@ -192,7 +199,7 @@ export const HomeScreen = () => {
 
   const goToChat = async () => {
     await stopAndUnloadAudio();
-    navigation.navigate('PublicChat', { isYourUniverse }); // Pass universe state
+    navigation.navigate('PublicChat', { isYourUniverse });
   };
 
   const toggleUniverse = () => setUniverseModalVisible(true);
@@ -227,7 +234,11 @@ export const HomeScreen = () => {
         onPress={async () => {
           if (item.clickable && item.screen) {
             await stopAndUnloadAudio();
-            navigation.navigate(item.screen);
+            if (isYourUniverse || !item.pinnacleScreen) {
+              navigation.navigate(item.screen);
+            } else {
+              navigation.navigate(item.screen, { screen: item.pinnacleScreen });
+            }
           }
         }}
         disabled={!item.clickable || !item.screen}
@@ -272,37 +283,19 @@ export const HomeScreen = () => {
   };
 
   const renderPinnacleHomageGrid = () => {
-    const pinnacleHomageOrder = [
-      { name: 'Thunder Born', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/Bludbruh2.jpg') },
-      { name: 'Titans', screen: 'Titans', clickable: true, image: require('../assets/BackGround/Titans.jpg') },
-      { name: 'Eclipse', screen: 'Eclipse', clickable: true, image: require('../assets/BackGround/Eclipse.jpg') },
-      { name: 'Olympians', screen: 'Olympians', clickable: true, image: require('../assets/BackGround/Olympians.jpg') },
-      { name: 'Cobros', screen: 'Cobros', clickable: true, image: require('../assets/BackGround/Cobros.jpg') },
-      { name: 'ASTC (Spartans)', screen: 'ASTC', clickable: true, image: require('../assets/BackGround/26.jpg') },
-      { name: 'Legionaires', screen: 'Legionaires', clickable: true, image: require('../assets/BackGround/League.jpg') },
-      { name: 'Constollation', screen: 'Constollation', clickable: true, image: require('../assets/BackGround/Constollation.jpg') },
-    ];
-
+    const factionsToShow = pinnacleHomageFactions;
     return (
       <View style={styles.gridContainer}>
         <View style={styles.row}>
-          {pinnacleHomageOrder.slice(0, 2).map((item, index) => (
+          {factionsToShow.slice(0, 2).map((item, index) => (
             <View key={item.name} style={styles.gridItem}>{renderFaction({ item })}</View>
           ))}
         </View>
         <View style={styles.row}>
-          <View style={styles.gridItem}>{renderFaction({ item: pinnacleHomageOrder[2] })}</View>
+          <View style={styles.gridItem}>{renderFaction({ item: factionsToShow[2] })}</View>
         </View>
         <View style={styles.row}>
-          {pinnacleHomageOrder.slice(3, 5).map((item, index) => (
-            <View key={item.name} style={styles.gridItem}>{renderFaction({ item })}</View>
-          ))}
-        </View>
-        <View style={styles.row}>
-          <View style={styles.gridItem}>{renderFaction({ item: pinnacleHomageOrder[5] })}</View>
-        </View>
-        <View style={styles.row}>
-          {pinnacleHomageOrder.slice(6, 8).map((item, index) => (
+          {factionsToShow.slice(3, 5).map((item, index) => (
             <View key={item.name} style={styles.gridItem}>{renderFaction({ item })}</View>
           ))}
         </View>

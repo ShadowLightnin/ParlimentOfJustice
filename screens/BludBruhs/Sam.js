@@ -87,7 +87,7 @@ const armors = [
 ];
 
 // IDs to exclude in Pinnacle Universe
-const pinnacleExclusions = ['sam-2', 'sam-3', 'sam-4', 'sam-6', 'sam-7', 'sam-8', 'sam-9'];
+const pinnacleExclusions = ['sam-2', 'sam-3', 'sam-4', 'sam-5', 'sam-6', 'sam-7', 'sam-8', 'sam-9'];
 
 const ALLOWED_EMAILS = ['will@test.com', 'c1wcummings@gmail.com', 'samuelp.woodwell@gmail.com'];
 const RESTRICT_ACCESS = true;

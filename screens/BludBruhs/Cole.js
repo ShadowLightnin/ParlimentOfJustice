@@ -3,12 +3,15 @@ import {
   View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions 
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { Audio } from 'expo-av';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const Cole = () => {
   const navigation = useNavigation();
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
+  const [currentSound, setCurrentSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -18,11 +21,48 @@ const Cole = () => {
     return () => subscription?.remove();
   }, []);
 
+  // Load and play music on mount
+  useEffect(() => {
+    const playMusic = async () => {
+      try {
+        const { sound } = await Audio.Sound.createAsync(
+          require('../../assets/audio/cole.m4a'),
+          { shouldPlay: true, isLooping: true, volume: 1.0 }
+        );
+        setCurrentSound(sound);
+        await sound.playAsync();
+        setIsPlaying(true);
+      } catch (error) {
+        console.error('Failed to load audio file:', error);
+      }
+    };
+    playMusic();
+
+    // Cleanup on unmount
+    return () => {
+      if (currentSound) {
+        currentSound.unloadAsync();
+      }
+    };
+  }, []);
+
+  // Stop music when back button is pressed
+  const handleBackPress = async () => {
+    if (currentSound) {
+      await currentSound.stopAsync();
+      await currentSound.unloadAsync();
+      setCurrentSound(null);
+      setIsPlaying(false);
+    }
+    navigation.goBack();
+  };
+
   const isDesktop = windowWidth >= 768;
 
   const armors = [
     { name: "Cruiser", image: require("../../assets/Armor/ColeR.jpg"), clickable: true },
     { name: "Bruiser", image: require("../../assets/Armor/ColeR2.jpg"), clickable: true },
+    { name: "Pruiser", image: require("../../assets/Armor/ColeR3.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (
@@ -45,7 +85,7 @@ const Cole = () => {
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.headerContainer}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
             <Text style={styles.backButtonText}>←</Text>
           </TouchableOpacity>
           <Text style={styles.title}>Cruiser</Text>
