@@ -42,7 +42,7 @@ const EclipseScreen = () => {
     if (!currentSound) {
       try {
         const { sound } = await Audio.Sound.createAsync(
-          require('../../assets/audio/AvengerXJL.mp4'),
+          require('../../assets/audio/CaptainAmericaEpic.mp4'),
           { shouldPlay: true, isLooping: true, volume: 1.0 }
         );
         setCurrentSound(sound);
