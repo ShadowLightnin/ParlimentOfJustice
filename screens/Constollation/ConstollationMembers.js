@@ -7,7 +7,9 @@ export const memberCategories = [
     members: [
       { name: 'Beckstead', codename: 'Doctor', screen: '' },
       { name: 'Huffaker', codename: 'Dentist', screen: '' },
+      { name: 'Bailey', codename: 'Orthodontist', screen: '' },
       { name: 'Misty', codename: 'Counselor', screen: '' },
+      { name: 'Brittany', codename: 'Stylist', screen: '' },
       { name: 'Mark', codename: 'Apple Tech', screen: '' },
     ],
   },
@@ -169,6 +171,7 @@ export const memberCategories = [
   //     { name: 'Smii7y', codename: '', screen: '' },
   //     { name: 'PlayswithGray', codename: '', screen: '' },
   //     { name: 'Thor Skywalker', codename: '', screen: '' },
+  //     { name: 'Sailor Naboo', codename: '', screen: '' },
   //     { name: 'Muselk', codename: '', screen: '' },
   //     { name: 'Lazarbeam', codename: '', screen: '' },
   //   ],
