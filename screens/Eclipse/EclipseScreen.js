@@ -91,8 +91,8 @@ const EclipseScreen = () => {
   };
 
   const isDesktop = SCREEN_WIDTH > 600;
-  const cardSize = isDesktop ? 200 : 100; // Larger cards on desktop
-  const cardSpacing = isDesktop ? 30 : 10; // More spacing on desktop
+  const cardSize = isDesktop ? 200 : Math.min(120, SCREEN_WIDTH / 3 - 20); // Dynamic card size for mobile
+  const cardSpacing = isDesktop ? 30 : Math.min(15, (SCREEN_WIDTH - 3 * cardSize) / 4); // Dynamic spacing
 
   return (
     <ImageBackground
@@ -155,9 +155,9 @@ const EclipseScreen = () => {
           </ScrollView>
         ) : (
           <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={[styles.horizontalScroll, { gap: cardSpacing, paddingVertical: 10 }]}
+            vertical
+            showsVerticalScrollIndicator={true}
+            contentContainerStyle={[styles.verticalScroll, { gap: cardSpacing, paddingVertical: 10 }]}
           >
             <View style={[styles.grid, { gap: cardSpacing }]}>
               {[0, 1, 2].map((row) => (
@@ -257,9 +257,12 @@ const styles = StyleSheet.create({
     color: '#00b3ff',
   },
   grid: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  verticalScroll: {
+    paddingVertical: 20,
+    paddingHorizontal: 10,
   },
   horizontalScroll: {
     paddingVertical: 20,

@@ -43,7 +43,7 @@ const PowerTitans = () => {
     if (!currentSound) {
       try {
         const { sound } = await Audio.Sound.createAsync(
-          require('../../assets/audio/AvengerXJL.mp4'),
+          // require('../../assets/audio/AvengerXJL.mp4'), // Verify the correct audio file path and format (e.g., .mp3 or .wav)
           { shouldPlay: true, isLooping: true, volume: 1.0 }
         );
         setCurrentSound(sound);
@@ -168,21 +168,7 @@ const PowerTitans = () => {
                   { width: cardSize, height: cardSize * 1.6 },
                   !member.clickable && styles.disabledCard,
                 ]}
-                onPress={async () => {
-                  if (member.clickable) {
-                    if (currentSound) {
-                      try {
-                        await currentSound.stopAsync();
-                        await currentSound.unloadAsync();
-                        setCurrentSound(null);
-                        setIsPlaying(false);
-                      } catch (error) {
-                        console.error('Error stopping sound for member navigation:', error);
-                      }
-                    }
-                    navigation.navigate(member.screen);
-                  }
-                }}
+                onPress={() => member.clickable && navigation.navigate(member.screen)}
                 disabled={!member.clickable}
               >
                 {member.image && (
@@ -201,9 +187,9 @@ const PowerTitans = () => {
           </ScrollView>
         ) : (
           <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={[styles.horizontalScroll, { gap: cardSpacing, paddingVertical: 10 }]}
+            vertical
+            showsVerticalScrollIndicator={true}
+            contentContainerStyle={[styles.verticalScroll, { gap: cardSpacing, paddingVertical: 10, minHeight: SCREEN_HEIGHT }]}
           >
             <View style={[styles.grid, { gap: cardSpacing }]}>
               {[0, 1, 2].map((row) => (
@@ -212,7 +198,6 @@ const PowerTitans = () => {
                     if (isEmpty(row, col)) {
                       return <View key={col} style={{ width: cardSize, height: cardSize * 1.4 }} />;
                     }
-
                     const member = getMemberAtPosition(row, col);
                     return (
                       <TouchableOpacity
@@ -222,21 +207,7 @@ const PowerTitans = () => {
                           { width: cardSize, height: cardSize * 1.6 },
                           !member?.clickable && styles.disabledCard,
                         ]}
-                        onPress={async () => {
-                          if (member?.clickable) {
-                            if (currentSound) {
-                              try {
-                                await currentSound.stopAsync();
-                                await currentSound.unloadAsync();
-                                setCurrentSound(null);
-                                setIsPlaying(false);
-                              } catch (error) {
-                                console.error('Error stopping sound for member navigation:', error);
-                              }
-                            }
-                            navigation.navigate(member.screen);
-                          }
-                        }}
+                        onPress={() => member?.clickable && navigation.navigate(member.screen)}
                         disabled={!member?.clickable}
                       >
                         {member?.image && (
@@ -319,9 +290,12 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   grid: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  verticalScroll: {
+    paddingVertical: 20,
+    paddingHorizontal: 10,
   },
   horizontalScroll: {
     paddingVertical: 20,
