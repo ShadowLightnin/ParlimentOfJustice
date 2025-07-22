@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -9,8 +9,10 @@ import {
   SafeAreaView,
   Dimensions,
   ScrollView,
+  Alert,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { Audio } from 'expo-av';
 
 // Screen dimensions
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -33,6 +35,56 @@ const getMemberAtPosition = (row, col) =>
 
 const EclipseScreen = () => {
   const navigation = useNavigation();
+  const [currentSound, setCurrentSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const playTheme = async () => {
+    if (!currentSound) {
+      try {
+        const { sound } = await Audio.Sound.createAsync(
+          require('../../assets/audio/AvengerXJL.mp4'),
+          { shouldPlay: true, isLooping: true, volume: 1.0 }
+        );
+        setCurrentSound(sound);
+        await sound.playAsync();
+        setIsPlaying(true);
+      } catch (error) {
+        console.error('Failed to load audio file:', error);
+        Alert.alert('Audio Error', 'Failed to load background music. Please check the audio file path: ../../assets/audio/AvengerXJL.mp4');
+      }
+    } else if (!isPlaying) {
+      try {
+        await currentSound.playAsync();
+        setIsPlaying(true);
+      } catch (error) {
+        console.error('Error resuming sound:', error);
+      }
+    }
+  };
+
+  const pauseTheme = async () => {
+    if (currentSound && isPlaying) {
+      try {
+        await currentSound.pauseAsync();
+        setIsPlaying(false);
+      } catch (error) {
+        console.error('Error pausing sound:', error);
+      }
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        if (currentSound) {
+          currentSound.stopAsync().catch((error) => console.error('Error stopping sound:', error));
+          currentSound.unloadAsync().catch((error) => console.error('Error unloading sound:', error));
+          setCurrentSound(null);
+          setIsPlaying(false);
+        }
+      };
+    }, [currentSound])
+  );
 
   const goToChat = () => {
     navigation.navigate('TeamChat');
@@ -56,6 +108,16 @@ const EclipseScreen = () => {
           <Text style={styles.header}>Eclipse</Text>
           <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
             <Text style={styles.chatText}>🛡️</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Music Controls */}
+        <View style={styles.musicControls}>
+          <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
+            <Text style={styles.musicButtonText}>Theme</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
+            <Text style={styles.musicButtonText}>Pause</Text>
           </TouchableOpacity>
         </View>
 
@@ -92,43 +154,48 @@ const EclipseScreen = () => {
             ))}
           </ScrollView>
         ) : (
-          <View style={[styles.grid, { gap: cardSpacing }]}>
-            {[0, 1, 2].map((row) => (
-              <View key={row} style={[styles.row, { gap: cardSpacing }]}>
-                {[0, 1, 2].map((col) => {
-                  if (isEmpty(row, col)) {
-                    return <View key={col} style={{ width: cardSize, height: cardSize * 1.4 }} />;
-                  }
-
-                  const member = getMemberAtPosition(row, col);
-                  return (
-                    <TouchableOpacity
-                      key={col}
-                      style={[
-                        styles.card,
-                        { width: cardSize, height: cardSize * 1.6 },
-                        !member?.clickable && styles.disabledCard,
-                      ]}
-                      onPress={() => member?.clickable && navigation.navigate(member.screen)}
-                      disabled={!member?.clickable}
-                    >
-                      {member?.image && (
-                        <>
-                          <Image
-                            source={member.image}
-                            style={[styles.characterImage, { width: '100%', height: cardSize * 1.2 }]}
-                          />
-                          <View style={styles.transparentOverlay} />
-                        </>
-                      )}
-                      <Text style={styles.codename}>{member?.codename || ''}</Text>
-                      <Text style={styles.name}>{member?.name || ''}</Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-            ))}
-          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={[styles.horizontalScroll, { gap: cardSpacing, paddingVertical: 10 }]}
+          >
+            <View style={[styles.grid, { gap: cardSpacing }]}>
+              {[0, 1, 2].map((row) => (
+                <View key={row} style={[styles.row, { gap: cardSpacing }]}>
+                  {[0, 1, 2].map((col) => {
+                    if (isEmpty(row, col)) {
+                      return <View key={col} style={{ width: cardSize, height: cardSize * 1.4 }} />;
+                    }
+                    const member = getMemberAtPosition(row, col);
+                    return (
+                      <TouchableOpacity
+                        key={col}
+                        style={[
+                          styles.card,
+                          { width: cardSize, height: cardSize * 1.6 },
+                          !member?.clickable && styles.disabledCard,
+                        ]}
+                        onPress={() => member?.clickable && navigation.navigate(member.screen)}
+                        disabled={!member?.clickable}
+                      >
+                        {member?.image && (
+                          <>
+                            <Image
+                              source={member.image}
+                              style={[styles.characterImage, { width: '100%', height: cardSize * 1.2 }]}
+                            />
+                            <View style={styles.transparentOverlay} />
+                          </>
+                        )}
+                        <Text style={styles.codename}>{member?.codename || ''}</Text>
+                        <Text style={styles.name}>{member?.name || ''}</Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              ))}
+            </View>
+          </ScrollView>
         )}
       </SafeAreaView>
     </ImageBackground>
@@ -234,6 +301,22 @@ const styles = StyleSheet.create({
   disabledCard: {
     backgroundColor: '#444',
     shadowColor: 'transparent',
+  },
+  musicControls: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  musicButton: {
+    padding: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 5,
+    marginHorizontal: 10,
+  },
+  musicButtonText: {
+    fontSize: 12,
+    color: '#00b3ff',
+    fontWeight: 'bold',
   },
 });
 

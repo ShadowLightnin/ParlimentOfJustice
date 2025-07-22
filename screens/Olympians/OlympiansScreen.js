@@ -127,7 +127,7 @@ export const OlympiansScreen = () => {
       )}
       <Text style={[styles.codename, styles.jenniferCodename]}>{member.codename || ''}</Text>
       <Text style={[styles.name, styles.jenniferName]}>{member.name}</Text>
-      <Text style={styles.inMemoriam}>In Loving Memory</Text>
+      {/* <Text style={styles.inMemoriam}>In Loving Memory</Text> */}
     </TouchableOpacity>
   );
 

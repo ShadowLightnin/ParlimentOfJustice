@@ -104,8 +104,8 @@ const PowerTitans = () => {
   };
 
   const isDesktop = SCREEN_WIDTH > 600;
-  const cardSize = isDesktop ? 200 : 100; // Larger cards on desktop
-  const cardSpacing = isDesktop ? 30 : 10; // More spacing on desktop
+  const cardSize = isDesktop ? 200 : Math.min(120, SCREEN_WIDTH / 3 - 20); // Dynamic card size for mobile
+  const cardSpacing = isDesktop ? 30 : Math.min(15, (SCREEN_WIDTH - 3 * cardSize) / 4); // Dynamic spacing
 
   return (
     <ImageBackground
@@ -200,57 +200,63 @@ const PowerTitans = () => {
             ))}
           </ScrollView>
         ) : (
-          <View style={[styles.grid, { gap: cardSpacing }]}>
-            {[0, 1, 2].map((row) => (
-              <View key={row} style={[styles.row, { gap: cardSpacing }]}>
-                {[0, 1, 2].map((col) => {
-                  if (isEmpty(row, col)) {
-                    return <View key={col} style={{ width: cardSize, height: cardSize * 1.4 }} />;
-                  }
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={[styles.horizontalScroll, { gap: cardSpacing, paddingVertical: 10 }]}
+          >
+            <View style={[styles.grid, { gap: cardSpacing }]}>
+              {[0, 1, 2].map((row) => (
+                <View key={row} style={[styles.row, { gap: cardSpacing }]}>
+                  {[0, 1, 2].map((col) => {
+                    if (isEmpty(row, col)) {
+                      return <View key={col} style={{ width: cardSize, height: cardSize * 1.4 }} />;
+                    }
 
-                  const member = getMemberAtPosition(row, col);
-                  return (
-                    <TouchableOpacity
-                      key={col}
-                      style={[
-                        styles.card,
-                        { width: cardSize, height: cardSize * 1.6 },
-                        !member?.clickable && styles.disabledCard,
-                      ]}
-                      onPress={async () => {
-                        if (member?.clickable) {
-                          if (currentSound) {
-                            try {
-                              await currentSound.stopAsync();
-                              await currentSound.unloadAsync();
-                              setCurrentSound(null);
-                              setIsPlaying(false);
-                            } catch (error) {
-                              console.error('Error stopping sound for member navigation:', error);
+                    const member = getMemberAtPosition(row, col);
+                    return (
+                      <TouchableOpacity
+                        key={col}
+                        style={[
+                          styles.card,
+                          { width: cardSize, height: cardSize * 1.6 },
+                          !member?.clickable && styles.disabledCard,
+                        ]}
+                        onPress={async () => {
+                          if (member?.clickable) {
+                            if (currentSound) {
+                              try {
+                                await currentSound.stopAsync();
+                                await currentSound.unloadAsync();
+                                setCurrentSound(null);
+                                setIsPlaying(false);
+                              } catch (error) {
+                                console.error('Error stopping sound for member navigation:', error);
+                              }
                             }
+                            navigation.navigate(member.screen);
                           }
-                          navigation.navigate(member.screen);
-                        }
-                      }}
-                      disabled={!member?.clickable}
-                    >
-                      {member?.image && (
-                        <>
-                          <Image
-                            source={member.image}
-                            style={[styles.characterImage, { width: '100%', height: cardSize * 1.2 }]}
-                          />
-                          <View style={styles.transparentOverlay} />
-                        </>
-                      )}
-                      <Text style={styles.codename}>{member?.codename || ''}</Text>
-                      <Text style={styles.name}>{member?.name || ''}</Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-            ))}
-          </View>
+                        }}
+                        disabled={!member?.clickable}
+                      >
+                        {member?.image && (
+                          <>
+                            <Image
+                              source={member.image}
+                              style={[styles.characterImage, { width: '100%', height: cardSize * 1.2 }]}
+                            />
+                            <View style={styles.transparentOverlay} />
+                          </>
+                        )}
+                        <Text style={styles.codename}>{member?.codename || ''}</Text>
+                        <Text style={styles.name}>{member?.name || ''}</Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              ))}
+            </View>
+          </ScrollView>
         )}
       </SafeAreaView>
     </ImageBackground>
