@@ -255,12 +255,12 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   headerWrapper: {
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '100%',
-    marginTop: 50,
-    paddingHorizontal: 20,
-    marginBottom: 20,
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingTop: 10,
   },
   backButton: {
     padding: 10,

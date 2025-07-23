@@ -43,7 +43,7 @@ const TitansScreen = () => {
     if (!currentSound) {
       try {
         const { sound } = await Audio.Sound.createAsync(
-          // require('../../assets/audio/AvengerXJL.mp4'),
+          require('../../assets/audio/AvengerXJL.mp4'),
           { shouldPlay: true, isLooping: true, volume: 1.0 }
         );
         setCurrentSound(sound);
@@ -302,6 +302,7 @@ const styles = StyleSheet.create({
     textShadowColor: '#00b3ff',
     textShadowRadius: 15,
     flex: 1,
+    paddingRight: 20,
   },
   chatButton: {
     padding: 10,

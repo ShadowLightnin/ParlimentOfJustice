@@ -220,13 +220,12 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   headerWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     width: '100%',
-    marginTop: 50,
-    paddingHorizontal: 20,
-    marginBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingTop: 10,
   },
   backButton: {
     padding: 10,
@@ -246,6 +245,7 @@ const styles = StyleSheet.create({
     textShadowColor: '#00b3ff',
     textShadowRadius: 35,
     flex: 1,
+    paddingRight: 20,
   },
   chatButton: {
     padding: 10,

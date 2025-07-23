@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   ImageBackground
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Audio } from 'expo-av';
 
 // Screen dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -80,6 +81,45 @@ const villains = [
 
 const VillainsTab = () => {
   const navigation = useNavigation();
+  const [sound, setSound] = useState(null);
+
+  // Play background music
+  const playBackgroundMusic = async () => {
+    if (!sound) {
+      try {
+        const { sound: newSound } = await Audio.Sound.createAsync(
+          require('../../assets/audio/BlackHoleBomb.mp4'), // Adjust path to your audio file
+          { shouldPlay: true, isLooping: true, volume: 0.7 }
+        );
+        setSound(newSound);
+        await newSound.playAsync();
+      } catch (error) {
+        console.error('Audio loading error:', error.message);
+        Alert.alert('Audio Error', 'Failed to load background music: ' + error.message);
+      }
+    }
+  };
+
+  // Stop and unload music
+  const stopBackgroundMusic = async () => {
+    if (sound) {
+      try {
+        await sound.stopAsync();
+        await sound.unloadAsync();
+        setSound(null);
+      } catch (error) {
+        console.error('Error stopping/unloading sound:', error);
+      }
+    }
+  };
+
+  // Cleanup on unmount or navigation
+  useEffect(() => {
+    playBackgroundMusic();
+    return () => {
+      stopBackgroundMusic();
+    };
+  }, []);
 
   // Render Each Villain Card
   const renderVillainCard = (villain) => (
@@ -116,7 +156,10 @@ const VillainsTab = () => {
       <View style={styles.container}>
         {/* Back Button */}
         <TouchableOpacity
-          onPress={() => navigation.navigate('Villains')}
+          onPress={async () => {
+            await stopBackgroundMusic();
+            navigation.navigate('Villains');
+          }}
           style={styles.backButton}
         >
           <Text style={styles.backButtonText}>⬅️ Back</Text>
