@@ -270,7 +270,7 @@ const RollingThunderScreen = () => {
 
   return (
     <ImageBackground
-      source={require('../../assets/BackGround/Bludbruh4.jpg')}
+      source={require('../../assets/BackGround/RollingThunder.jpg')}
       style={styles.background}
       onError={(e) => console.error('Background image load error:', e.nativeEvent.error)}
     >

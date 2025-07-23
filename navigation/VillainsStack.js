@@ -88,6 +88,7 @@ import VoidConquerorScreen from '../screens/Villains/BigBadMembers/VoidConqueror
 import ErevosScreen from '../screens/Villains/BigBadMembers/ErevosScreen';
 import AlmarraScreen from '../screens/Villains/BigBadMembers/AlmarraScreen';
 import VortigarScreen from '../screens/Villains/BigBadMembers/VortigarScreen';
+import Torath from '../screens/Villains/BigBadMembers/Torath';
 
 // import Screen from '../screens/Villains/BigBadMembers/Screen';
 
@@ -178,6 +179,10 @@ const VillainsStack = () => {
       <Stack.Screen name="ErevosScreen" component={ErevosScreen} />
       <Stack.Screen name="AlmarraScreen" component={AlmarraScreen} />
       <Stack.Screen name="VortigarScreen" component={VortigarScreen} />
+      <Stack.Screen name="Torath" component={Torath} />
+      {/* <Stack.Screen name="Screen" component={Screen} /> */}
+      
+      {/* Add more screens as needed */}
     </Stack.Navigator>
   );
 };
