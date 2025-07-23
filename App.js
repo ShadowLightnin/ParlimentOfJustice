@@ -19,6 +19,7 @@ import { OlympiansStack } from './navigation/OlympiansStack';
 import { CobrosStack } from './navigation/CobrosStack';
 import { SpartansStack } from './navigation/SpartansStack';
 import { BludBruhsStack } from './navigation/BludBruhsStack';
+  import MonkeAllianceScreen from './screens/BludBruhs/MonkeAlliance/MonkeAllianceScreen';
 import { LegionairesStack } from './navigation/LegionairesStack';
 import { ForgeStack } from './navigation/ForgeStack';
 import { ConstollationStack } from './navigation/ConstollationStack';
@@ -68,6 +69,7 @@ function AuthenticatedStack() {
       <Stack.Screen name="Cobros" component={CobrosStack} />
       <Stack.Screen name="ASTC" component={SpartansStack} />
       <Stack.Screen name="BludBruhs" component={BludBruhsStack} />
+          <Stack.Screen name="MonkeAllianceScreen" component={MonkeAllianceScreen} />
       <Stack.Screen name="Legionaires" component={LegionairesStack} />
       <Stack.Screen name="ForgeScreen" component={ForgeStack} />
       <Stack.Screen name="Constollation" component={ConstollationStack} />

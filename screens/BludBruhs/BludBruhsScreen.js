@@ -29,7 +29,7 @@ const scrollableMembersBase = [
   { name: 'Justin Platt', codename: 'Echo Wood', screen: '', clickable: true, image: require('../../assets/Armor/Justin2.jpg') },
   { name: 'Zack Dustin', codename: 'Carved Echo', screen: '', clickable: true, image: require('../../assets/Armor/Zack2_cleanup.jpg') },
   { name: 'Joseph', codename: 'Technoman', screen: 'JosephD', clickable: true, image: require('../../assets/Armor/JosephD.jpg') },
-  { name: 'Others', codename: 'Rolling Thunder', screen: 'RollingThunderScreen', clickable: true, image: require('../../assets/BackGround/RollingThunder.jpg') },
+  { name: 'Thunder Born', codename: 'Rolling Thunder', screen: 'RollingThunderScreen', clickable: true, image: require('../../assets/BackGround/RollingThunder.jpg') },
 ];
 
 // Fixed factions for bottom row

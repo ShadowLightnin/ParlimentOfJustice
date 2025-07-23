@@ -34,6 +34,7 @@ const homageFactions = [
 
 const pinnacleHomageFactions = [
   { name: 'Thunder Born', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/Bludbruh2.jpg') },
+  { name: 'Monke Alliance', screen: 'MonkeAllianceScreen', clickable: true, image: require('../assets/BackGround/Monke.jpg') },
   { name: 'Titans', screen: 'Titans', clickable: true, image: require('../assets/BackGround/Titans.jpg'), pinnacleScreen: 'PowerTitans' },
   { name: 'Olympians', screen: 'Olympians', clickable: true, image: require('../assets/BackGround/Olympians.jpg') },
   { name: 'Cobros', screen: 'Cobros', clickable: true, image: require('../assets/BackGround/Cobros.jpg'), pinnacleScreen: 'PowerCobros' },
@@ -282,28 +283,7 @@ export const HomeScreen = () => {
     );
   };
 
-  const renderPinnacleHomageGrid = () => {
-    const factionsToShow = pinnacleHomageFactions;
-    return (
-      <View style={styles.gridContainer}>
-        <View style={styles.row}>
-          {factionsToShow.slice(0, 2).map((item, index) => (
-            <View key={item.name} style={styles.gridItem}>{renderFaction({ item })}</View>
-          ))}
-        </View>
-        <View style={styles.row}>
-          <View style={styles.gridItem}>{renderFaction({ item: factionsToShow[2] })}</View>
-        </View>
-        <View style={styles.row}>
-          {factionsToShow.slice(3, 5).map((item, index) => (
-            <View key={item.name} style={styles.gridItem}>{renderFaction({ item })}</View>
-          ))}
-        </View>
-      </View>
-    );
-  };
-
-  const filteredHomageFactions = isYourUniverse ? homageFactions : homageFactions.filter(f => f.name !== 'The Forge');
+  const filteredHomageFactions = isYourUniverse ? homageFactions : pinnacleHomageFactions;
   const filteredOtherFactions = isYourUniverse ? otherFactions : [];
 
   return (
@@ -337,17 +317,14 @@ export const HomeScreen = () => {
 
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.sectionContainer}>
-            {isYourUniverse ? (
-              <FlatList
-                data={filteredHomageFactions}
-                keyExtractor={item => item.name}
-                renderItem={renderFaction}
-                numColumns={numColumns}
-                contentContainerStyle={styles.listContainer}
-              />
-            ) : (
-              renderPinnacleHomageGrid()
-            )}
+            <FlatList
+              data={filteredHomageFactions}
+              keyExtractor={item => item.name}
+              renderItem={renderFaction}
+              numColumns={numColumns}
+              contentContainerStyle={styles.listContainer}
+              key={isYourUniverse ? 'prime' : 'pinnacle'} // Force re-render on universe change
+            />
           </View>
 
           <View style={styles.sectionContainer}>

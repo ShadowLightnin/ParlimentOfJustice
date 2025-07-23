@@ -285,7 +285,7 @@ const RollingThunderScreen = () => {
           >
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
-          <Text style={styles.header}>Rolling Thunder</Text>
+          <Text style={styles.header}>Rolling Thunder:Thunder Born</Text>
           <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
             <Text style={styles.chatText}>🛡️</Text>
           </TouchableOpacity>
