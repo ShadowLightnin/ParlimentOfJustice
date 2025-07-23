@@ -285,7 +285,7 @@ const RollingThunderScreen = () => {
           >
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
-          <Text style={styles.header}>Rolling Thunder:Thunder Born</Text>
+          <Text style={styles.header}>{"Rolling Thunder:\nThunder Born"}</Text>
           <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
             <Text style={styles.chatText}>🛡️</Text>
           </TouchableOpacity>
@@ -424,12 +424,12 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   headerWrapper: {
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '100%',
-    marginTop: 50,
-    paddingHorizontal: 20,
-    marginBottom: 20,
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingTop: 10,
   },
   backButton: {
     padding: 10,
