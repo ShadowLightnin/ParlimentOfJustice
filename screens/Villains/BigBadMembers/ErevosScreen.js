@@ -149,26 +149,25 @@ const ErevosScreen = () => {
   The Enlightened:
 </Text>
 <Text style={styles.aboutText}>
-  Erevos leads a secret cabal known as <Text style={{ fontWeight: 'bold' }}>The Enlightened</Text>, mirroring the ancient Light. Each member represents a domain of power:
+  Erevos leads a secret cabal known as <Text style={{ fontWeight: 'bold' }}>The Enlightened</Text>, mirroring the ancient Light. Each Lieutenant represents a domain of power and fulfills a vital role in Erevos’s grand strategy:
 </Text>
 <Text style={styles.aboutText}>
-  • <Text style={{ fontWeight: 'bold' }}>Chrona</Text>: Time-bending manipulator of fate and contingency.
+  • <Text style={{ fontWeight: 'bold' }}>Chrona</Text>: A time-bending manipulator of fate and contingency. She sees alternate timelines and subtly influences causality to ensure Erevos's future dominance.
 </Text>
 <Text style={styles.aboutText}>
-  • <Text style={{ fontWeight: 'bold' }}>Noctura</Text>: Illusionist who clouds mass perception and media.
+  • <Text style={{ fontWeight: 'bold' }}>Noctura</Text>: A master illusionist and psychological manipulator. Noctura uses hallucinations and misinformation to cloud mass perception, control narratives, and disrupt social cohesion. Behind the veil of her illusions, she also commands a network of elite spies and seduction agents, subtly turning diplomats, influencers, and even heroes into pawns of The Enlightened.</Text>
+<Text style={styles.aboutText}>
+  • <Text style={{ fontWeight: 'bold' }}>Sable</Text>: Erevos's most trusted and lethal assassin. A master of dimensional phasing, she can enter and exit reality to execute targets without leaving a trace. Known to always finish the mission.
 </Text>
 <Text style={styles.aboutText}>
-  • <Text style={{ fontWeight: 'bold' }}>Sable</Text>: Silent dimensional assassin.
+  • <Text style={{ fontWeight: 'bold' }}>Obelisk</Text>: A mystic warlock who commands dark rituals and ancient energy. He maintains Erevos’s arcane strongholds and opens portals to cosmic realms, allowing communication with entities beyond mortal comprehension.
 </Text>
 <Text style={styles.aboutText}>
-  • <Text style={{ fontWeight: 'bold' }}>Obelisk</Text>: Mystic warlock maintaining portals to forbidden realms.
+  • <Text style={{ fontWeight: 'bold' }}>Titanus</Text>: A genetically and cybernetically enhanced juggernaut. As Erevos’s personal enforcer, Titanus crushes resistance movements and wipes out rebellious metahumans with brute force.
 </Text>
 <Text style={styles.aboutText}>
-  • <Text style={{ fontWeight: 'bold' }}>Titanus</Text>: Genetically enhanced titan who enforces Erevos’s will with brute power.
-</Text>
-<Text style={styles.aboutText}>
-  • <Text style={{ fontWeight: 'bold' }}>Red Mercury</Text>: Political puppetmaster and resource magnate.
-</Text>
+  • <Text style={{ fontWeight: 'bold' }}>Red Mercury</Text>: The political puppetmaster and financial juggernaut of The Enlightened. He commands vast empires of wealth, media, and industry, pulling the strings behind world leaders and global institutions. Every law passed, every crisis exploited, every conflict prolonged—his influence shapes it all. Red Mercury ensures the cabal’s shadow remains cast across every government on Earth.</Text>
+
 
 <Text style={styles.aboutText}>
   Pact with Torath – The Devourer:

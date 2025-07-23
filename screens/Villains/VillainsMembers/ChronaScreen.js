@@ -9,15 +9,13 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 // Array of Sable-related images (replace with your actual image paths)
 const characters = [
   { name: "Chrona", image: require("../../../assets/Villains/Chrona.jpg"), clickable: true },
-  { name: "Chrona the Time-Bender", image: require("../../../assets/Villains/Chrona2.jpg"), clickable: true }, // Example placeholder
-  // Add more images here as needed
+  { name: "Chrona the Time-Bender", image: require("../../../assets/Villains/Chrona2.jpg"), clickable: true },
 ];
 
 const ChronaScreen = () => {
   const navigation = useNavigation();
   const [windowWidth, setWindowWidth] = useState(Dimensions.get("window").width);
 
-  // Update window width on resize
   useEffect(() => {
     const updateDimensions = () => {
       setWindowWidth(Dimensions.get("window").width);
@@ -26,10 +24,8 @@ const ChronaScreen = () => {
     return () => subscription?.remove();
   }, []);
 
-  // Determine if it's desktop or mobile based on width (768px breakpoint)
   const isDesktop = windowWidth >= 768;
 
-  // Render each image card
   const renderCharacterCard = (character) => (
     <TouchableOpacity
       key={character.name}
@@ -37,22 +33,14 @@ const ChronaScreen = () => {
       onPress={() => character.clickable && console.log(`${character.name} clicked`)}
       disabled={!character.clickable}
     >
-      <Image
-        source={character.image}
-        style={styles.armorImage}
-      />
+      <Image source={character.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>
-        © {character.name || 'Unknown'}; William Cummings
-      </Text>
+      <Text style={styles.cardName}>© {character.name || 'Unknown'}; William Cummings</Text>
     </TouchableOpacity>
   );
 
   return (
-    <ImageBackground
-      source={require("../../../assets/BackGround/Enlightened.jpg")}
-      style={styles.background}
-    >
+    <ImageBackground source={require("../../../assets/BackGround/Enlightened.jpg")} style={styles.background}>
       <View style={styles.overlay}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.headerContainer}>
@@ -77,29 +65,42 @@ const ChronaScreen = () => {
 
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
-            <Text style={styles.aboutText}>
-            • Nemesis: Sam Woodwell “Void Walker”
+            <Text style={styles.aboutText}>• Nemesis: Sam Woodwell “Void Walker”</Text>
 
-            </Text>
             <Text style={styles.aboutText}>
-            Chrona, the Time-Bender: With control over small pockets of time, 
-            Chrona can slow, rewind, or even freeze time within a limited area. 
-            She uses her abilities to foresee potential obstacles to Erevos’s rule, 
-            manipulating events in his favor.
+              Chrona, the Time-Bender: With control over small pockets of time, Chrona can slow, rewind, or even freeze time within a limited area. She uses her abilities to foresee potential obstacles to Erevos’s rule, manipulating events in his favor.
+            </Text>
 
-            </Text>
             <Text style={styles.aboutText}>
-            She resents Sam for leaving her and the Enlightened, and wants to turn him back.
+              She is obsessed with Void Walker (Sam) and was once his closest companion in the Enlightened. When he defected, it shattered her emotionally and spiritually. Chrona believes she alone understands him and is willing to manipulate the very timeline itself to bring him back.
             </Text>
-            <Text style={styles.aboutText}>
 
-            </Text>  
+            <Text style={styles.aboutText}>
+              Erevos, wary of the dangerous paradoxes that could arise, has forbidden Chrona from altering the past in that way — though he still uses her immense powers to safeguard his plans.
+            </Text>
+
+            <Text style={styles.aboutText}>
+              Chrona is cold, meticulous, and almost machine-like in her ability to calculate outcomes. Her loyalty to Erevos is partly out of devotion, but also because she sees his vision as the only constant in a timeline full of chaos.
+            </Text>
+
+            <Text style={styles.aboutText}>
+              Despite her emotional turmoil, Chrona maintains a facade of perfection and control. Her armor is custom-built to regulate temporal shifts and her mind is trained to resist time-based feedback.
+            </Text>
+
+            <Text style={styles.aboutText}>
+              She is one of Erevos’s most powerful and dangerous lieutenants — a master tactician who sees the battlefield five moves ahead.
+            </Text>
+
+            <Text style={styles.aboutText}>
+              Her rivalry with Sable is intense, not just due to their competing love for Sam, but because Chrona sees emotion as weakness while Sable embraces it.
+            </Text>
           </View>
         </ScrollView>
       </View>
     </ImageBackground>
   );
 };
+
 const styles = StyleSheet.create({
   background: {
     width: SCREEN_WIDTH,
@@ -134,7 +135,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#D4AF37", // Gold-like hue from original
+    color: "#D4AF37",
     textAlign: "center",
     flex: 1,
   },
@@ -198,7 +199,7 @@ const styles = StyleSheet.create({
   aboutHeader: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#D4AF37", // Gold-like hue from original
+    color: "#D4AF37",
     textAlign: "center",
   },
   aboutText: {
@@ -208,5 +209,5 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
-  
+
 export default ChronaScreen;

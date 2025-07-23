@@ -73,26 +73,33 @@ const TitanusScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-            Titanus, the Titan of Steel: Enhanced by experimental 
-            cybernetics and mutated DNA, Titanus is the muscle of The Enlightened, 
-            with strength that rivals even the strongest Titans of the Parliament. 
-            His primary role is to crush resistance with brute force. He is a bodyguard for Everos, as if he needs one.
+              Titanus, the Titan of Steel: Enhanced by experimental cybernetics and mutated DNA, Titanus is the muscle of The Enlightened, with strength that rivals even the strongest Titans of the Parliament. His primary role is to crush resistance with brute force. He is a bodyguard for Erevos—though Erevos rarely needs one.
             </Text>
             <Text style={styles.aboutText}>
-
+              Once a gladiator imprisoned in an off-world penal colony, Titanus earned his name by surviving every deathmatch and becoming legend. His body was reshaped in a brutal experiment fusing alien alloys with human flesh, leaving him more weapon than man.
             </Text>
             <Text style={styles.aboutText}>
-
+              He was freed by Erevos during a prison siege and pledged his allegiance out of sheer respect for Erevos’s power and promise of purpose. Titanus sees Erevos as the only being worthy of commanding him.
             </Text>
             <Text style={styles.aboutText}>
-
-            </Text>  
+              Despite his rage and might, Titanus is not unintelligent. He’s strategic, patient, and holds a code of honor forged in battle. He despises cowardice, manipulation, and weakness, which fuels his hatred for most heroes—whom he sees as hypocrites hiding behind laws and morality.
+            </Text>
+            <Text style={styles.aboutText}>
+              He views the Parliament of Justice as a delusion of peacekeepers playing war. He believes only strength creates order—and that mercy is what weakens civilizations before they fall.
+            </Text>
+            <Text style={styles.aboutText}>
+              Among The Enlightened, Titanus serves not just as a blunt instrument, but as a war general and executioner. When diplomacy fails—or Erevos wants to send a message—Titanus is unleashed.
+            </Text>
+            <Text style={styles.aboutText}>
+              He has a deep rivalry with the Titan known as Annihilator, whom he once battled for hours across a broken planet during a failed ambush. Titanus still bears the scar—and the grudge.
+            </Text>
           </View>
         </ScrollView>
       </View>
     </ImageBackground>
   );
 };
+
 const styles = StyleSheet.create({
   background: {
     width: SCREEN_WIDTH,
@@ -127,7 +134,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#D4AF37", // Gold-like hue from original
+    color: "#D4AF37",
     textAlign: "center",
     flex: 1,
   },
@@ -191,7 +198,7 @@ const styles = StyleSheet.create({
   aboutHeader: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#D4AF37", // Gold-like hue from original
+    color: "#D4AF37",
     textAlign: "center",
   },
   aboutText: {

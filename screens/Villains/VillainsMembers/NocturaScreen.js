@@ -22,7 +22,6 @@ const NocturaScreen = () => {
 
   const characters = [
     { name: "Noctura the Illusionist", image: require("../../../assets/Villains/Noctura.jpg"), clickable: true },
-    // Add more related characters here if desired
   ];
 
   const renderCharacterCard = (character) => (
@@ -73,12 +72,31 @@ const NocturaScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Noctura, the Illusionist: A master manipulator capable of 
-              bending reality and perception, Noctura has the power to 
-              influence entire populations through hallucinogenic energy. 
-              She manages psychological warfare and media manipulation, 
-              keeping the masses in a fog of confusion. She's the tactician and 
-              makes sure that everything goes according to Erevos's plans.
+              • <Text style={{ fontWeight: 'bold' }}>Noctura the Illusionist</Text>: Born Liora Valen, she is the reigning queen of illusion and deception, able to conjure reality-warping hallucinations that cloud the minds of even the strongest heroes.
+            </Text>
+            <Text style={styles.aboutText}>
+              Noctura sees heroes not as saviors, but as distractions—meddlesome idealists who prolong suffering through sentimentality. She believes true peace can only come through control, not compassion.
+            </Text>
+            <Text style={styles.aboutText}>
+              A former child prodigy raised in a secretive monastery of mentalists, Liora mastered techniques of dream-weaving and psychic suggestion by adolescence. She later overthrew her nation's monarchy, enthralling her people into a permanent state of obedience.
+            </Text>
+            <Text style={styles.aboutText}>
+              She rules as a sovereign empress, her image beloved and feared across continents. Her broadcasts induce mass hypnosis, shaping the minds of millions to align with the goals of The Enlightened.
+            </Text>
+            <Text style={styles.aboutText}>
+              Through her illusions, Noctura can impersonate world leaders, manufacture fake disasters, or conceal entire fleets. She often appears in multiple places at once, sowing disinformation with chilling precision.
+            </Text>
+            <Text style={styles.aboutText}>
+              Her loyalty to Erevos stems from shared philosophy—both see freedom as chaos and believe the only path to order is universal manipulation. She is his high priestess of perception, shaping belief itself as a weapon.
+            </Text>
+            <Text style={styles.aboutText}>
+              But beneath her calm exterior is a deep bitterness toward those who still believe in free will. Noctura has seen the worst of humanity's choices and considers heroism a dangerous illusion in itself.
+            </Text>
+            <Text style={styles.aboutText}>
+              Noctura is the eye behind the veil, the voice in the dream, and the spell cast over society. She doesn’t need to lift a finger to destroy her enemies—she simply convinces them they’re already defeated.
+            </Text>
+            <Text style={styles.aboutText}>
+              She is regarded as Erevos’s primary lieutenant, a co-strategist alongside Obelisk and often the one entrusted with the execution of the cabal’s most delicate plans. When Erevos does not speak, Noctura’s voice becomes his will.
             </Text>
           </View>
         </ScrollView>
@@ -121,7 +139,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#D4AF37", // Gold-like hue from original
+    color: "#D4AF37",
     textAlign: "center",
     flex: 1,
   },
@@ -185,7 +203,7 @@ const styles = StyleSheet.create({
   aboutHeader: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#D4AF37", // Gold-like hue from original
+    color: "#D4AF37",
     textAlign: "center",
   },
   aboutText: {

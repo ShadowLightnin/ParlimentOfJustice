@@ -72,9 +72,28 @@ const ObeliskScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Obelisk, the Warlock: A master of ancient dark arts and mysticism, 
-              Obelisk performs rituals that enhance Erevos’s strength and manipulate 
-              supernatural forces to bend to The Enlightened's will. He also maintains a portal to the cosmic realm.
+              • <Text style={{ fontWeight: 'bold' }}>Obelisk</Text>: A cold and ancient sorcerer of cosmic age, Obelisk predates even the rise of modern civilization. He has walked among the ruins of empires and studied forces that predate mortal understanding.
+            </Text>
+            <Text style={styles.aboutText}>
+              Obelisk views heroes as short-sighted meddlers who delay the inevitable unraveling of the world. In his eyes, their morals are dust—he believes only the dominion of the arcane can bring true stability.
+            </Text>
+            <Text style={styles.aboutText}>
+              Unlike the flamboyant chaos of mortal warlocks, Obelisk is solemn, slow-speaking, and calculating. He speaks in riddles and incantations that bend the seams of reality, drawing from magic sourced beyond the veil of time.
+            </Text>
+            <Text style={styles.aboutText}>
+              His loyalty to Erevos is not born of worship but curiosity—Obelisk witnessed Erevos's rise millennia ago and aligned himself out of interest in what he calls “the one who walks unmarred by death.”
+            </Text>
+            <Text style={styles.aboutText}>
+              In truth, Erevos is aware that Obelisk may be a remnant of a Maw-touched being—something old and dangerous that doesn't realize its origin. He keeps Obelisk close, both as a tool and a potential threat.
+            </Text>
+            <Text style={styles.aboutText}>
+              As a member of The Enlightened, Obelisk is the cultic spiritualist. He oversees rituals, relic awakenings, forbidden summoning, and astral rites that keep the cabal anchored across timelines and dimensions.
+            </Text>
+            <Text style={styles.aboutText}>
+              His presence signals moments of great power-shifting; when Obelisk appears, it means reality itself is being tested, warped, or rewritten. Portals tremble in his wake, and his voice alone has been known to turn lesser minds into husks.
+            </Text>
+            <Text style={styles.aboutText}>
+              Obelisk is one of Erevos’s most relied-upon advisors—equal in trust to Noctura—and the keeper of knowledge long forbidden even in ancient libraries. Together, they form the ideological core of the Enlightened’s arcane arm.
             </Text>
           </View>
         </ScrollView>
@@ -117,7 +136,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: "#D4AF37", // Gold-like hue from original
+    color: "#D4AF37",
     textAlign: "center",
     flex: 1,
   },
@@ -181,7 +200,7 @@ const styles = StyleSheet.create({
   aboutHeader: {
     fontSize: 22,
     fontWeight: "bold",
-    color: "#D4AF37", // Gold-like hue from original
+    color: "#D4AF37",
     textAlign: "center",
   },
   aboutText: {

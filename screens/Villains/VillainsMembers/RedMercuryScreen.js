@@ -75,22 +75,31 @@ const RedMercuryScreen = () => {
 
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
-            <Text style={styles.aboutText}>
-            Lane Mercury aka Red Murcury: An industrialist who serves as the public 
-            face and financial powerhouse behind many of Erevos’s schemes. 
-            Red Mercury provides The Enlightened with money, resources, and 
-            political connections, shielding their plans from public scrutiny.
-            </Text>
-            <Text style={styles.aboutText}>
-
-            </Text>
-            <Text style={styles.aboutText}>
-
-            </Text>
-            <Text style={styles.aboutText}>
-
-            </Text>  
-          </View>
+<Text style={styles.aboutText}>
+  • <Text style={{ fontWeight: 'bold' }}>Red Mercury</Text>: Born Lane Mercury, he is the master manipulator of global influence, unmatched in wealth, charisma, and cold calculation.
+</Text>
+<Text style={styles.aboutText}>
+Red Mercury views heroes as naive idealists—fools who disrupt the natural order with sentiment and chaos. To him, their moral codes are liabilities that prevent true progress.
+</Text>
+<Text style={styles.aboutText}>
+  A former tech mogul turned political kingmaker, Red Mercury presents himself as a benevolent futurist and public philanthropist while secretly funding warlords, black-ops units, and authoritarian regimes to destabilize the world and create dependence on his empire. He serves as the public face and financial engine behind The Enlightened, ensuring Erevos’s rise goes unseen by the masses.
+</Text>
+<Text style={styles.aboutText}>
+  Lane’s influence stretches across the globe—from controlling stock markets and digital infrastructure to rigging elections through deepfake media networks. He is untouchable, operating with diplomatic immunity and wielding entire governments as puppets.
+</Text>
+<Text style={styles.aboutText}>
+  His sprawling conglomerate, Mercury Global, is the world’s most powerful megacorp, masking its true operations behind layers of shell companies and corporate espionage. It funds most anti-hero legislation, produces anti-metahuman tech, and secretly backs extremist movements to increase public fear and justify government crackdowns.
+</Text>
+<Text style={styles.aboutText}>
+  Lane’s loyalty to Erevos is rooted in ideology: he sees Erevos as the only being capable of creating the perfect, hierarchical world order. Unlike others who fear Erevos, Lane admires him as the apex of evolution and sees himself as the architect behind Erevos’s ascent.
+</Text>
+<Text style={styles.aboutText}>
+  Lane also employs his personal assassin, <Text style={{ fontWeight: 'bold' }}>Blackout</Text>, a silent operative cloaked in energy disruption fields, capable of neutralizing electronics and rendering targets unconscious in seconds. Blackout acts as Lane’s shadow, eliminating threats before they ever reach the spotlight. Silent, surgical, and surgically loyal, Blackout has never failed a mission—his presence often unconfirmed, his victims erased without trace.
+</Text>
+<Text style={styles.aboutText}>
+  Red Mercury is the political puppetmaster and financial juggernaut of The Enlightened. He commands vast empires of wealth, media, and industry, pulling the strings behind world leaders and global institutions. Every law passed, every crisis exploited, every conflict prolonged—his influence shapes it all. He ensures the cabal’s shadow remains cast across every government on Earth.
+</Text>          
+</View>
         </ScrollView>
       </View>
     </ImageBackground>
