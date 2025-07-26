@@ -72,7 +72,7 @@ const ObeliskScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              • <Text style={{ fontWeight: 'bold' }}>Obelisk</Text>: A cold and ancient sorcerer of cosmic age, Obelisk predates even the rise of modern civilization. He has walked among the ruins of empires and studied forces that predate mortal understanding.
+              • <Text style={{ fontWeight: 'bold' }}>Obelisk</Text>: A cold and ancient sorcerer of cosmic age, an Arcane Lord of Chaos, Obelisk predates even the rise of modern civilization. He has walked among the ruins of empires and studied forces that predate mortal understanding.
             </Text>
             <Text style={styles.aboutText}>
               Obelisk views heroes as short-sighted meddlers who delay the inevitable unraveling of the world. In his eyes, their morals are dust—he believes only the dominion of the arcane can bring true stability.

@@ -29,6 +29,7 @@ const demonFactions = [
   { name: 'Ghosts', screen: 'GhostsScreen', image: require('../../assets/BackGround/Ghosts2.jpg'), clickable: true },
   { name: 'Bugs', screen: 'BugsScreen', image: require('../../assets/BackGround/Bugs.jpg'), clickable: true },
   { name: 'Pirates', screen: 'PiratesScreen', image: require('../../assets/BackGround/Pirates.jpg'), clickable: true },
+  { name: 'Arcane Lords of Chaos', screen: '', image: require('../../assets/BackGround/ChaosLords.jpg'), clickable: true },
 ];
 
 const DemonsSectionScreen = () => {
