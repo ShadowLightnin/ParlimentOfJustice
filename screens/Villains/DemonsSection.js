@@ -20,16 +20,19 @@ const isDesktop = SCREEN_WIDTH > 600;
 const cardSize = isDesktop ? 400 : 300;
 
 // Demon factions data
-const demonFactions = [
+const demonLords = [
   { name: 'Skinwalkers', screen: 'SkinwalkerScreen', image: require('../../assets/BackGround/Skinwalkers.jpg'), clickable: true },
   { name: 'Weeping Angels', screen: 'StatuesScreen', image: require('../../assets/BackGround/Statue.jpg'), clickable: true },
   { name: 'Oni', screen: 'OniScreen', image: require('../../assets/BackGround/Oni.jpg'), clickable: true },
+  { name: 'Ghosts', screen: 'GhostsScreen', image: require('../../assets/BackGround/Ghosts2.jpg'), clickable: true },
+  { name: 'Arcane Lords of Chaos', screen: '', image: require('../../assets/BackGround/ChaosLords.jpg'), clickable: true },
+];
+
+const otherEvilThreats = [
   { name: 'Aliens', screen: 'AliensScreen', image: require('../../assets/BackGround/Aliens.jpg'), clickable: true },
   { name: 'Metalmen', screen: 'RobotsScreen', image: require('../../assets/BackGround/Robots.jpg'), clickable: true },
-  { name: 'Ghosts', screen: 'GhostsScreen', image: require('../../assets/BackGround/Ghosts2.jpg'), clickable: true },
   { name: 'Bugs', screen: 'BugsScreen', image: require('../../assets/BackGround/Bugs.jpg'), clickable: true },
   { name: 'Pirates', screen: 'PiratesScreen', image: require('../../assets/BackGround/Pirates.jpg'), clickable: true },
-  { name: 'Arcane Lords of Chaos', screen: '', image: require('../../assets/BackGround/ChaosLords.jpg'), clickable: true },
 ];
 
 const DemonsSectionScreen = () => {
@@ -41,11 +44,15 @@ const DemonsSectionScreen = () => {
   // Initialize sound on first mount
   useEffect(() => {
     const loadSound = async () => {
-      const { sound } = await Audio.Sound.createAsync(
-        require('../../assets/audio/HelldiverForEarth.mp4'),
-        { shouldPlay: true, isLooping: false, volume: 1.0 }
-      );
-      setCurrentSound(sound);
+      try {
+        const { sound } = await Audio.Sound.createAsync(
+          require('../../assets/audio/HelldiverForEarth.mp4'),
+          { shouldPlay: true, isLooping: false, volume: 1.0 }
+        );
+        setCurrentSound(sound);
+      } catch (error) {
+        console.error('Error loading sound:', error);
+      }
     };
 
     loadSound();
@@ -72,7 +79,7 @@ const DemonsSectionScreen = () => {
             await currentSound.playAsync();
             setIsPaused(false);
           } catch (error) {
-            console.log('Error resuming sound:', error);
+            console.error('Error resuming sound:', error);
           }
         }
       };
@@ -87,7 +94,7 @@ const DemonsSectionScreen = () => {
               setPausedPosition(status.positionMillis || 0);
               setIsPaused(true);
             } catch (error) {
-              console.log('Error pausing sound:', error);
+              console.error('Error pausing sound:', error);
             }
           });
         }
@@ -97,7 +104,7 @@ const DemonsSectionScreen = () => {
 
   // Pause audio and save position before navigating to faction screen
   const handleFactionPress = async (faction) => {
-    if (faction.clickable && currentSound) {
+    if (faction.clickable && faction.screen && currentSound) {
       try {
         const status = await currentSound.getStatusAsync();
         if (status.isPlaying) {
@@ -107,7 +114,7 @@ const DemonsSectionScreen = () => {
         }
         navigation.navigate(faction.screen);
       } catch (error) {
-        console.log('Error in handleFactionPress:', error);
+        console.error('Error in handleFactionPress:', error);
       }
     }
   };
@@ -123,7 +130,7 @@ const DemonsSectionScreen = () => {
           setIsPaused(true);
         }
       } catch (error) {
-        console.log('Error in handleBackPress:', error);
+        console.error('Error in handleBackPress:', error);
       }
     }
     navigation.goBack();
@@ -135,11 +142,11 @@ const DemonsSectionScreen = () => {
       key={faction.name}
       style={[
         styles.factionCard,
-        { width: cardSize, height: cardSize * 1.2 + 60 }, // Extra height for text
+        { width: cardSize, height: cardSize * 1.2 + 60 },
         faction.clickable ? styles.clickable : styles.notClickable
       ]}
       onPress={() => handleFactionPress(faction)}
-      disabled={!faction.clickable}
+      disabled={!faction.clickable || !faction.screen}
     >
       <Image
         source={faction.image}
@@ -151,7 +158,7 @@ const DemonsSectionScreen = () => {
 
       <View style={styles.textContainer}>
         <Text style={styles.factionName}>{faction.name}</Text>
-        {!faction.clickable && <Text style={styles.disabledText}> </Text>}
+        {!faction.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
       </View>
     </TouchableOpacity>
   );
@@ -161,29 +168,45 @@ const DemonsSectionScreen = () => {
       source={require('../../assets/BackGround/NateEmblem.jpg')}
       style={styles.background}
     >
-      <View style={styles.container}>
-        {/* Back Button */}
-        <TouchableOpacity
-          onPress={handleBackPress}
-          style={styles.backButton}
-        >
-          <Text style={styles.backButtonText}>⬅️</Text>
-        </TouchableOpacity>
+      {/* Back Button */}
+      <TouchableOpacity
+        onPress={handleBackPress}
+        style={styles.backButton}
+      >
+        <Text style={styles.backButtonText}>⬅️</Text>
+      </TouchableOpacity>
 
-        {/* Title */}
-        <Text style={styles.header}>⚡️ Demon Lords ⚡️</Text>
+      {/* Vertical ScrollView for entire content */}
+      <ScrollView
+        contentContainerStyle={styles.scrollContentContainer}
+        showsVerticalScrollIndicator={true}
+      >
+        <View style={styles.container}>
+          {/* Demon Lords Section */}
+          <Text style={styles.header}>⚡️ Demon Lords ⚡️</Text>
+          <View style={styles.scrollWrapper}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={true}
+              contentContainerStyle={[styles.scrollContainer, { gap: isDesktop ? 40 : 20 }]}
+            >
+              {demonLords.map(renderFactionCard)}
+            </ScrollView>
+          </View>
 
-        {/* Horizontal Scrollable Cards */}
-        <View style={styles.scrollWrapper}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={true}
-            contentContainerStyle={[styles.scrollContainer, { gap: isDesktop ? 40 : 20 }]}
-          >
-            {demonFactions.map(renderFactionCard)}
-          </ScrollView>
+          {/* Dark Forces Section */}
+          <Text style={styles.header}> Dark Forces </Text>
+          <View style={styles.scrollWrapper}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={true}
+              contentContainerStyle={[styles.scrollContainer, { gap: isDesktop ? 40 : 20 }]}
+            >
+              {otherEvilThreats.map(renderFactionCard)}
+            </ScrollView>
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </ImageBackground>
   );
 };
@@ -196,10 +219,14 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   container: {
-    flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    paddingTop: 40,
+    paddingTop: 20,
     alignItems: 'center',
+    paddingBottom: 20,
+  },
+  scrollContentContainer: {
+    paddingTop: 80, // Space for back button
+    paddingBottom: 40, // Extra padding at bottom
   },
   backButton: {
     position: 'absolute',
@@ -210,6 +237,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 8,
     elevation: 5,
+    zIndex: 1,
   },
   backButtonText: {
     color: '#FFF',
@@ -224,10 +252,11 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(241, 99, 43, 1)',
     textShadowRadius: 20,
     marginBottom: 20,
+    marginTop: 20,
   },
   scrollWrapper: {
     width: SCREEN_WIDTH,
-    flex: 1,
+    height: cardSize * 1.2 + 100, // Adjusted for original card height + text
   },
   scrollContainer: {
     flexDirection: 'row',
@@ -240,7 +269,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     overflow: 'hidden',
     elevation: 5,
-    backgroundColor: 'rgba(0, 0, 0, 0)', // Transparent to remove red background
+    backgroundColor: 'rgba(0, 0, 0, 0)',
     alignItems: 'center',
     marginRight: 20,
   },
@@ -252,7 +281,7 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
   factionImage: {
-    borderRadius: 15, // Match card border radius
+    borderRadius: 15,
     resizeMode: 'contain',
   },
   transparentOverlay: {
