@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,9 +7,10 @@ import {
   ScrollView,
   StyleSheet,
   Dimensions,
-  ImageBackground
+  ImageBackground,
+  Alert
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Audio } from 'expo-av';
 
 // Screen dimensions
@@ -41,7 +42,6 @@ const bigBads = [
   { name: 'Cronos', screen: '', image: require('../../assets/Villains/Cronos.jpg'), clickable: false, borderColor: null },
   { name: "Cor'vas", screen: '', image: require('../../assets/Villains/Corvas.jpg'), clickable: false, borderColor: null },
 
-  
   // { name: '', screen: '', image: require('../../assets/Villains/.jpg'), clickable: false },
 ];
 
@@ -51,47 +51,66 @@ const cardSizes = {
   mobile: { width: 350, height: 500 },
 };
 
+// Background music (shared across screens)
+let backgroundSound = null;
+
+const playBackgroundMusic = async () => {
+  if (!backgroundSound) {
+    try {
+      const { sound } = await Audio.Sound.createAsync(
+        require('../../assets/audio/BigThreat.mp4'),
+        { shouldPlay: true, isLooping: true, volume: 0.7 }
+      );
+      backgroundSound = sound;
+      await sound.playAsync();
+      console.log('BigThreat.mp4 started playing at:', new Date().toISOString());
+    } catch (error) {
+      console.error('Failed to load audio file:', error);
+      Alert.alert('Audio Error', 'Failed to load background music: ' + error.message);
+    }
+  }
+};
+
+const stopBackgroundMusic = async () => {
+  if (backgroundSound) {
+    try {
+      await backgroundSound.stopAsync();
+      await backgroundSound.unloadAsync();
+      backgroundSound = null;
+      console.log('BigThreat.mp4 stopped at:', new Date().toISOString());
+    } catch (error) {
+      console.error('Error stopping/unloading sound:', error);
+    }
+  }
+};
+
 const BigBadsTab = () => {
   const navigation = useNavigation();
-  const [sound, setSound] = useState(null);
+  const isFocused = useIsFocused();
 
-  // Play background music
-  const playBackgroundMusic = async () => {
-    if (!sound) {
-      try {
-        const { sound: newSound } = await Audio.Sound.createAsync(
-          require('../../assets/audio/BigThreat.mp4'), // Adjust path to your audio file
-          { shouldPlay: true, isLooping: true, volume: 0.7 }
-        );
-        setSound(newSound);
-        await newSound.playAsync();
-      } catch (error) {
-        console.error('Audio loading error:', error.message);
-        Alert.alert('Audio Error', 'Failed to load background music: ' + error.message);
-      }
-    }
-  };
-
-  // Stop and unload music
-  const stopBackgroundMusic = async () => {
-    if (sound) {
-      try {
-        await sound.stopAsync();
-        await sound.unloadAsync();
-        setSound(null);
-      } catch (error) {
-        console.error('Error stopping/unloading sound:', error);
-      }
-    }
-  };
-
-  // Cleanup on unmount or navigation
+  // Handle audio based on focus
   useEffect(() => {
-    playBackgroundMusic();
+    if (isFocused && !backgroundSound) {
+      playBackgroundMusic();
+    }
     return () => {
-      stopBackgroundMusic();
+      // Only stop music if navigating to Villains
+      if (navigation.getState().routes[navigation.getState().index].name === 'Villains') {
+        stopBackgroundMusic();
+      }
     };
-  }, []);
+  }, [isFocused, navigation]);
+
+  // Handle big bad card press
+  const handleBigBadPress = async (bigBad) => {
+    if (bigBad.clickable && bigBad.screen) {
+      // Stop audio for ErevosScreen, Torath, and any future additions
+      if (['', ''].includes(bigBad.screen)) {
+        await stopBackgroundMusic();
+      }
+      navigation.navigate(bigBad.screen);
+    }
+  };
 
   // Render Each Big Bad Card
   const renderBigBadCard = (bigBad) => (
@@ -105,14 +124,11 @@ const BigBadsTab = () => {
         },
         bigBad.clickable && bigBad.borderColor ? styles.clickable(bigBad.borderColor) : styles.notClickable
       ]}
-      onPress={() => bigBad.clickable && navigation.navigate(bigBad.screen)}
+      onPress={() => handleBigBadPress(bigBad)}
       disabled={!bigBad.clickable}
     >
       <Image source={bigBad.image} style={styles.image} />
-      
-      {/* Transparent Overlay for Image Protection */}
       <View style={styles.transparentOverlay} />
-
       <Text style={styles.name}>{bigBad.name}</Text>
       {!bigBad.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
@@ -224,7 +240,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   transparentOverlay: {
-    ...StyleSheet.absoluteFillObject, 
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0)',
     zIndex: 1,
   },

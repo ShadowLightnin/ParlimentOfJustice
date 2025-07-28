@@ -3,6 +3,7 @@ import {
   View, Text, ImageBackground, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { Audio } from "expo-av";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -14,7 +15,9 @@ const characters = [
 const SableScreen = () => {
   const navigation = useNavigation();
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
+  const [sound, setSound] = useState(null);
 
+  // Dynamic window sizing
   useEffect(() => {
     const updateDimensions = () => {
       setWindowWidth(Dimensions.get("window").width);
@@ -23,7 +26,68 @@ const SableScreen = () => {
     return () => subscription?.remove();
   }, []);
 
+  // Audio playback and interruption
+  useEffect(() => {
+    let isMounted = true;
+
+    const playSableTheme = async () => {
+      try {
+        // Interrupt other audio
+        await Audio.setAudioModeAsync({
+          allowsRecordingIOS: false,
+          playsInSilentModeIOS: true,
+          interruptsOtherAudio: true, // Stop other audio (e.g., BlackHoleBomb.mp4)
+          shouldDuckOthers: true, // Lower volume of other audio if interruption fails
+          playThroughEarpieceAndroid: false,
+          staysActiveInBackground: false,
+        });
+        console.log("Audio mode set to interrupt other audio at:", new Date().toISOString());
+
+        // Load and play Sable's theme
+        const { sound: sableSound } = await Audio.Sound.createAsync(
+          require("../../../assets/audio/sableEvilish.m4a"), // Placeholder path; replace with actual file
+          { shouldPlay: true, isLooping: true, volume: 0.7 }
+        );
+        if (isMounted) {
+          setSound(sableSound);
+          await sableSound.playAsync();
+          console.log("sableTheme.m4a started playing at:", new Date().toISOString());
+        }
+      } catch (error) {
+        console.error("Audio loading error:", error.message);
+        // Optional: Alert.alert("Audio Error", "Failed to load Sable's theme: " + error.message);
+      }
+    };
+
+    playSableTheme();
+
+    // Cleanup on unmount
+    return () => {
+      isMounted = false;
+      if (sound) {
+        sound.stopAsync().catch(err => console.error("Error stopping sound on unmount:", err));
+        sound.unloadAsync().catch(err => console.error("Error unloading sound on unmount:", err));
+        setSound(null);
+        console.log("sableTheme.m4a stopped on unmount at:", new Date().toISOString());
+      }
+    };
+  }, []);
+
   const isDesktop = windowWidth >= 768;
+
+  const handleBackPress = async () => {
+    if (sound) {
+      try {
+        await sound.stopAsync();
+        await sound.unloadAsync();
+        setSound(null);
+        console.log("sableTheme.m4a stopped via back button at:", new Date().toISOString());
+      } catch (error) {
+        console.error("Error stopping sound in handleBackPress:", error);
+      }
+    }
+    navigation.goBack();
+  };
 
   const renderCharacterCard = (character) => (
     <TouchableOpacity
@@ -51,7 +115,7 @@ const SableScreen = () => {
       <View style={styles.overlay}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.headerContainer}>
-            <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+            <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
               <Text style={styles.backButtonText}>←</Text>
             </TouchableOpacity>
             <Text style={styles.title}>Sable the Assassin</Text>
@@ -84,7 +148,7 @@ const SableScreen = () => {
             <Text style={styles.aboutText}>
               Among the Enlightened, Sable is considered one of Erevos’s deadliest lieutenants and serves as his most deadly and affective spy and informant.
             </Text>
-           <Text style={styles.aboutText}>
+            <Text style={styles.aboutText}>
               She was once Erevos’s top infiltrator during the Shadow Purges, a mission that wiped out dozens of rising metahuman factions before they could become threats. Her name is whispered in fear by resistance cells.
             </Text>
             <Text style={styles.aboutText}>
@@ -102,7 +166,7 @@ const SableScreen = () => {
             <Text style={styles.aboutText}>
               Sable’s codename among the Enlightened is “The Final Whisper”—because when she appears, there is no sound, no escape, and no warning.
             </Text>
-          <Text style={styles.aboutText}>
+            <Text style={styles.aboutText}>
               Sable was once a war orphan taken in by Erevos during one of his earliest purges. She grew up in his shadow, trained by his assassins, and eventually earned his personal trust and mentorship.
             </Text>
             <Text style={styles.aboutText}>

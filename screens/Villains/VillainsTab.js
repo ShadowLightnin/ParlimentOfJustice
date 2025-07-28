@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,9 +7,10 @@ import {
   ScrollView,
   StyleSheet,
   Dimensions,
-  ImageBackground
+  ImageBackground,
+  Alert
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Audio } from 'expo-av';
 
 // Screen dimensions
@@ -20,11 +21,44 @@ const isDesktop = SCREEN_WIDTH > 600;
 
 // Card dimensions for desktop and mobile (Matching Big Bads)
 const cardSizes = {
-  desktop: { width: 400, height: 600 },
+  desktop: { misc: 400, height: 600 },
   mobile: { width: 350, height: 500 },
 };
 const horizontalSpacing = isDesktop ? 40 : 20; 
 const verticalSpacing = isDesktop ? 50 : 20;
+
+// Background music (shared across screens)
+let backgroundSound = null;
+
+const playBackgroundMusic = async () => {
+  if (!backgroundSound) {
+    try {
+      const { sound } = await Audio.Sound.createAsync(
+        require('../../assets/audio/BlackHoleBomb.mp4'),
+        { shouldPlay: true, isLooping: true, volume: 0.7 }
+      );
+      backgroundSound = sound;
+      await sound.playAsync();
+      console.log('BlackHoleBomb.mp4 started playing at:', new Date().toISOString());
+    } catch (error) {
+      console.error('Failed to load audio file:', error);
+      Alert.alert('Audio Error', 'Failed to load background music: ' + error.message);
+    }
+  }
+};
+
+const stopBackgroundMusic = async () => {
+  if (backgroundSound) {
+    try {
+      await backgroundSound.stopAsync();
+      await backgroundSound.unloadAsync();
+      backgroundSound = null;
+      console.log('BlackHoleBomb.mp4 stopped at:', new Date().toISOString());
+    } catch (error) {
+      console.error('Error stopping/unloading sound:', error);
+    }
+  }
+};
 
 // Villains data with images, respective screens, and border colors
 const villains = [
@@ -67,8 +101,6 @@ const villains = [
   { name: 'The Blind Witch', screen: '', image: require('../../assets/Villains/IMG_4325.webp'), clickable: false, borderColor: null },
   { name: 'Elick', screen: '', image: require('../../assets/Villains/IMG_4343.webp'), clickable: false, borderColor: null },
 
-  
-  
   // { name: 'Soulless Soul', screen: 'SoullessSoulScreen', image: require('../../assets/Villains/SoullessSoul.jpg'), clickable: true },
   // { name: 'The Void', screen: 'TheVoidScreen', image: require('../../assets/Villains/TheVoid.jpg'), clickable: true },
   // { name: 'Shadow Scribe', screen: 'ShadowScribeScreen', image: require('../../assets/Villains/ShadowScribe.jpg'), clickable: true },
@@ -76,50 +108,35 @@ const villains = [
   // { name: 'Unholy Vortex', screen: 'UnholyVortexScreen', image: require('../../assets/Villains/UnholyVortex.jpg'), clickable: true },
   // { name: 'Shadow Stalker', screen: 'ShadowStalkerScreen', image: require('../../assets/Villains/ShadowStalker.jpg'), clickable: true },
   // { name: '', screen: '', image: require('../../assets/Villains/.jpg'), clickable: false },
-
 ];
 
 const VillainsTab = () => {
   const navigation = useNavigation();
-  const [sound, setSound] = useState(null);
+  const isFocused = useIsFocused();
 
-  // Play background music
-  const playBackgroundMusic = async () => {
-    if (!sound) {
-      try {
-        const { sound: newSound } = await Audio.Sound.createAsync(
-          require('../../assets/audio/BlackHoleBomb.mp4'), // Adjust path to your audio file
-          { shouldPlay: true, isLooping: true, volume: 0.7 }
-        );
-        setSound(newSound);
-        await newSound.playAsync();
-      } catch (error) {
-        console.error('Audio loading error:', error.message);
-        Alert.alert('Audio Error', 'Failed to load background music: ' + error.message);
-      }
-    }
-  };
-
-  // Stop and unload music
-  const stopBackgroundMusic = async () => {
-    if (sound) {
-      try {
-        await sound.stopAsync();
-        await sound.unloadAsync();
-        setSound(null);
-      } catch (error) {
-        console.error('Error stopping/unloading sound:', error);
-      }
-    }
-  };
-
-  // Cleanup on unmount or navigation
+  // Handle audio based on focus
   useEffect(() => {
-    playBackgroundMusic();
+    if (isFocused && !backgroundSound) {
+      playBackgroundMusic();
+    }
     return () => {
-      stopBackgroundMusic();
+      // Only stop music if navigating to Villains
+      if (navigation.getState().routes[navigation.getState().index].name === 'Villains') {
+        stopBackgroundMusic();
+      }
     };
-  }, []);
+  }, [isFocused, navigation]);
+
+  // Handle villain card press
+  const handleVillainPress = async (villain) => {
+    if (villain.clickable && villain.screen) {
+      // Stop audio for EvilSam, SableScreen, and any future additions
+      if (['EvilSam', 'SableScreen'].includes(villain.screen)) {
+        await stopBackgroundMusic();
+      }
+      navigation.navigate(villain.screen);
+    }
+  };
 
   // Render Each Villain Card
   const renderVillainCard = (villain) => (
@@ -133,16 +150,11 @@ const VillainsTab = () => {
         },
         villain.clickable && villain.borderColor ? styles.clickable(villain.borderColor) : styles.notClickable
       ]}
-      onPress={() => villain.clickable && navigation.navigate(villain.screen)}
+      onPress={() => handleVillainPress(villain)}
       disabled={!villain.clickable}
     >
-      {/* Image */}
       <Image source={villain.image} style={styles.image} />
-      
-      {/* Transparent Overlay for Protection */}
       <View style={styles.transparentOverlay} />
-
-      {/* Villain Name */}
       <Text style={styles.name}>{villain.name}</Text>
       {!villain.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
