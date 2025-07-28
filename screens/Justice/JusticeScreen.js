@@ -16,6 +16,7 @@ import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Audio } from 'expo-av';
 import Guardians from './Guardians';
 import Elementals from './Elementals';
+import JusticeLeague from './JusticeLeague';
 
 // Screen dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -189,6 +190,15 @@ const JusticeScreen = () => {
             <FlatList
               horizontal
               data={Elementals}
+              renderItem={renderHeroCard}
+              keyExtractor={(item) => item.name || item.image.toString()}
+              showsHorizontalScrollIndicator={true}
+              contentContainerStyle={styles.scrollContainer}
+            />
+            <Text style={styles.categoryHeader}>Justice League</Text>
+            <FlatList
+              horizontal
+              data={JusticeLeague}
               renderItem={renderHeroCard}
               keyExtractor={(item) => item.name || item.image.toString()}
               showsHorizontalScrollIndicator={true}

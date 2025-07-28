@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -19,12 +19,12 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 // Grid layout settings
 const isDesktop = SCREEN_WIDTH > 600;
 
-// Card dimensions for desktop and mobile (Matching Big Bads)
+// Card dimensions for desktop and mobile
 const cardSizes = {
-  desktop: { misc: 400, height: 600 },
+  desktop: { width: 400, height: 600 },
   mobile: { width: 350, height: 500 },
 };
-const horizontalSpacing = isDesktop ? 40 : 20; 
+const horizontalSpacing = isDesktop ? 40 : 20;
 const verticalSpacing = isDesktop ? 50 : 20;
 
 // Background music (shared across screens)
@@ -91,16 +91,9 @@ const villains = [
   { name: 'Obsidian Shroud', screen: 'ObsidianShroudScreen', image: require('../../assets/Villains/ObsidianShroud.jpg'), clickable: true, borderColor: 'red' },
   { name: 'Fangstrike', screen: 'FangstrikeScreen', image: require('../../assets/Villains/Fangstrike.jpg'), clickable: true, borderColor: 'red' },
   { name: 'Void Phantom', screen: 'VoidPhantomScreen', image: require('../../assets/Villains/VoidPhantom.jpg'), clickable: true, borderColor: 'red' },
-  { name: 'Chrona', screen: 'ChronaScreen', image: require('../../assets/Villains/Chrona.jpg'), clickable: true, borderColor: 'gold' },
-  { name: 'Evil Void Walker', screen: 'EvilSam', image: require('../../assets/Armor/Sam2.jpg'), clickable: true, borderColor: 'blue' },
-  { name: 'Sable', screen: 'SableScreen', image: require('../../assets/Villains/Sable.jpg'), clickable: true, borderColor: 'gold' },
-  { name: 'Noctura', screen: 'NocturaScreen', image: require('../../assets/Villains/Noctura.jpg'), clickable: true, borderColor: 'gold' },
-  { name: 'Obelisk', screen: 'ObeliskScreen', image: require('../../assets/Villains/Obelisk.jpg'), clickable: true, borderColor: 'gold' },
-  { name: 'Red Murcury', screen: 'RedMercuryScreen', image: require('../../assets/Villains/RedMercury.jpg'), clickable: true, borderColor: 'gold' },
-  { name: 'Titanus', screen: 'TitanusScreen', image: require('../../assets/Villains/Titanus.jpg'), clickable: true, borderColor: 'gold' },
   { name: 'The Blind Witch', screen: '', image: require('../../assets/Villains/IMG_4325.webp'), clickable: false, borderColor: null },
   { name: 'Elick', screen: '', image: require('../../assets/Villains/IMG_4343.webp'), clickable: false, borderColor: null },
-
+  
   // { name: 'Soulless Soul', screen: 'SoullessSoulScreen', image: require('../../assets/Villains/SoullessSoul.jpg'), clickable: true },
   // { name: 'The Void', screen: 'TheVoidScreen', image: require('../../assets/Villains/TheVoid.jpg'), clickable: true },
   // { name: 'Shadow Scribe', screen: 'ShadowScribeScreen', image: require('../../assets/Villains/ShadowScribe.jpg'), clickable: true },
@@ -108,6 +101,17 @@ const villains = [
   // { name: 'Unholy Vortex', screen: 'UnholyVortexScreen', image: require('../../assets/Villains/UnholyVortex.jpg'), clickable: true },
   // { name: 'Shadow Stalker', screen: 'ShadowStalkerScreen', image: require('../../assets/Villains/ShadowStalker.jpg'), clickable: true },
   // { name: '', screen: '', image: require('../../assets/Villains/.jpg'), clickable: false },
+];
+
+// Enlightened data with images, respective screens, and border colors
+const enlightened = [
+  { name: 'Noctura', screen: 'NocturaScreen', image: require('../../assets/Villains/Noctura.jpg'), clickable: true, borderColor: 'gold' },
+  { name: 'Obelisk', screen: 'ObeliskScreen', image: require('../../assets/Villains/Obelisk.jpg'), clickable: true, borderColor: 'gold' },
+  { name: 'Red Murcury', screen: 'RedMercuryScreen', image: require('../../assets/Villains/RedMercury.jpg'), clickable: true, borderColor: 'gold' },
+  { name: 'Chrona', screen: 'ChronaScreen', image: require('../../assets/Villains/Chrona.jpg'), clickable: true, borderColor: 'gold' },
+  { name: 'Evil Void Walker', screen: 'EvilSam', image: require('../../assets/Armor/Sam2.jpg'), clickable: true, borderColor: 'blue' },
+  { name: 'Sable', screen: 'SableScreen', image: require('../../assets/Villains/Sable.jpg'), clickable: true, borderColor: 'gold' },
+  { name: 'Titanus', screen: 'TitanusScreen', image: require('../../assets/Villains/Titanus.jpg'), clickable: true, borderColor: 'gold' },
 ];
 
 const VillainsTab = () => {
@@ -165,36 +169,47 @@ const VillainsTab = () => {
       source={require('../../assets/BackGround/Villains.jpg')}
       style={styles.background}
     >
-      <View style={styles.container}>
-        {/* Back Button */}
-        <TouchableOpacity
-          onPress={async () => {
-            await stopBackgroundMusic();
-            navigation.navigate('Villains');
-          }}
-          style={styles.backButton}
-        >
-          <Text style={styles.backButtonText}>⬅️ Back</Text>
-        </TouchableOpacity>
-
-        {/* Title */}
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Villainy')}
-        >
-          <Text style={styles.header}>Villains</Text>
-        </TouchableOpacity>
-
-        {/* Scrollable Grid */}
-        <View style={styles.scrollWrapper}>
-          <ScrollView
-            horizontal
-            contentContainerStyle={styles.scrollContainer}
-            showsHorizontalScrollIndicator={true}
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.container}>
+          {/* Back Button */}
+          <TouchableOpacity
+            onPress={async () => {
+              await stopBackgroundMusic();
+              navigation.navigate('Villains');
+            }}
+            style={styles.backButton}
           >
-            {villains.map(renderVillainCard)}
-          </ScrollView>
+            <Text style={styles.backButtonText}>⬅️ Back</Text>
+          </TouchableOpacity>
+
+          {/* Title */}
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Villainy')}
+          >
+            <Text style={styles.header}>Villains</Text>
+          </TouchableOpacity>
+
+          {/* Scrollable Grids */}
+          <View style={styles.scrollWrapper}>
+            <Text style={styles.categoryHeader}>Villains</Text>
+            <ScrollView
+              horizontal
+              contentContainerStyle={styles.scrollContainer}
+              showsHorizontalScrollIndicator={true}
+            >
+              {villains.map(renderVillainCard)}
+            </ScrollView>
+            <Text style={styles.categoryHeader}>The Enlightened</Text>
+            <ScrollView
+              horizontal
+              contentContainerStyle={styles.scrollContainer}
+              showsHorizontalScrollIndicator={true}
+            >
+              {enlightened.map(renderVillainCard)}
+            </ScrollView>
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </ImageBackground>
   );
 };
@@ -206,10 +221,13 @@ const styles = StyleSheet.create({
     height: SCREEN_HEIGHT,
     resizeMode: 'cover',
   },
-  container: {
+  scrollView: {
     flex: 1,
+  },
+  container: {
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
     paddingTop: 40,
+    paddingBottom: 40,
     alignItems: 'center',
   },
   backButton: {
@@ -238,7 +256,7 @@ const styles = StyleSheet.create({
   },
   scrollWrapper: {
     width: SCREEN_WIDTH,
-    flex: 1,
+    marginTop: 20,
   },
   scrollContainer: {
     flexDirection: 'row',
@@ -267,7 +285,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   transparentOverlay: {
-    ...StyleSheet.absoluteFillObject, 
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0)',
     zIndex: 1,
   },
@@ -283,6 +301,16 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#ff4444',
     marginTop: 5,
+  },
+  categoryHeader: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FFF',
+    textAlign: 'left',
+    textShadowColor: '#ff4d4d',
+    textShadowRadius: 15,
+    marginLeft: 10,
+    marginBottom: 10,
   },
 });
 
