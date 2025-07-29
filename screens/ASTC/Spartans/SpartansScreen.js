@@ -94,6 +94,48 @@ const HARDCODED_VEHICLES = [
     description: 'The Spartans big truck with lots of firepower, designed for heavy-duty transport and combat support.',
     image: require('../../../assets/ShipYard/Spartan7.jpg'),
   },
+    // {
+  //   id: 'vehicle-8',
+  //   name: 'Camborghini',
+  //   description: 'The Spartans heavy artillery vehicle, capable of delivering devastating firepower from a distance.',
+  //   image: require('../../../assets/ShipYard/Spartan8.jpg'),
+  // },
+  // {
+  //   id: 'vehicle-9',
+  //   name: 'Wraith',
+  //   description: 'The Spartans heavy artillery vehicle, capable of delivering devastating firepower from a distance.',
+  //   image: require('../../../assets/ShipYard/Spartan8.jpg'),
+  // },
+  // {
+  //   id: 'vehicle-10',
+  //   name: 'Scorpion',
+  //   description: 'The Spartans main battle tank, designed for frontline combat and heavy armor protection.',
+  //   image: require('../../../assets/ShipYard/Spartan9.jpg'),
+  // },
+  // {
+  //   id: 'vehicle-11',
+  //   name: 'Phantom',
+  //   description: 'The Spartans stealth transport vehicle, used for covert operations and quick insertions.',
+  //   image: require('../../../assets/ShipYard/Spartan10.jpg'),
+  // },
+  // {
+  //   id: 'vehicle-12',
+  //   name: 'Ghost',
+  //   description: 'The Spartans fast attack vehicle, designed for rapid strikes and hit-and-run tactics.',
+  //   image: require('../../../assets/ShipYard/Spartan11.jpg'),
+  // },
+  // {
+  //   id: 'vehicle-13',
+  //   name: 'Banshee',
+  //   description: 'The Spartans aerial assault vehicle, capable of delivering devastating air support.',
+  //   image: require('../../../assets/ShipYard/Spartan12.jpg'),
+  // },
+  // {
+  //   id: 'vehicle-14',
+  //   name: 'Mantis',
+  //   description: 'The Spartans exosuit, designed for enhanced combat capabilities and mobility.',
+  //   image: require('../../../assets/ShipYard/Spartan18.jpg'),
+  // },
 ];
 
 // Placeholder Image
