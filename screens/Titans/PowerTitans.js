@@ -43,7 +43,7 @@ const PowerTitans = () => {
     if (!currentSound) {
       try {
         const { sound } = await Audio.Sound.createAsync(
-          // require('../../assets/audio/AvengerXJL.mp4'), // Verify the correct audio file path and format (e.g., .mp3 or .wav)
+          require('../../assets/audio/FireAndAsh.mp4'), // Verify the correct audio file path and format (e.g., .mp3 or .wav)
           { shouldPlay: true, isLooping: true, volume: 1.0 }
         );
         setCurrentSound(sound);

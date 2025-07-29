@@ -8,17 +8,27 @@ import { Audio } from "expo-av";
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const armors = [
-  { name: "Night Hawk", image: require("../../assets/Armor/WillNightHawk.jpg"), clickable: true },
+  { name: "Night Hawk", image: require("../../assets/Armor/WillNightHawk2.jpg"), clickable: true },
+  { name: "Celestial", image: require("../../assets/Armor/WillCelestial.jpg"), clickable: true },
+  { name: "Sentinel", image: require("../../assets/Armor/WillSentinel.jpg"), clickable: true },
+  { name: "Shadow Storm", image: require("../../assets/Armor/WillShadowStorm.jpg"), clickable: true },
+  { name: "Defender v1", image: require("../../assets/Armor/WillDefender1.jpg"), clickable: true },
+  { name: "Defender v2", image: require("../../assets/Armor/WillDefender2.jpg"), clickable: true },
+  { name: "Wrath", image: require("../../assets/Armor/WillWrath.jpg"), clickable: true },
+  
   { name: "Legacy", image: require("../../assets/Armor/WillLegacy.jpg"), clickable: true },
   { name: "Lightning Leopard", image: require("../../assets/Armor/Will.jpg"), clickable: true },
-  { name: "White Night Hawk", image: require("../../assets/Armor/NightHawk.jpg"), clickable: true },
-  { name: "Defender 1", image: require("../../assets/Armor/Defender1.jpg"), clickable: true },
-  { name: "Defender 2", image: require("../../assets/Armor/Defender2.jpg"), clickable: true },
-  { name: "Shadow Storm", image: require("../../assets/Armor/ShadowStorm.jpg"), clickable: true },
-  { name: "Celestial", image: require("../../assets/Armor/Celestial.jpg"), clickable: true },
-  { name: "Sentinel", image: require("../../assets/Armor/Sentinel.jpg"), clickable: true },
-  { name: "Wrath", image: require("../../assets/Armor/Wrath.jpg"), clickable: true },
-  { name: "Night Hawk Proto", image: require("../../assets/NightHawkWillBeBorn.jpg"), clickable: true },
+  { name: "Night Hawk: Building", image: require("../../assets/Armor/WillNightHawk.jpg"), clickable: true },
+  { name: "Flying Night Hawk", image: require("../../assets/Armor/WillNightHawk3.jpg"), clickable: true },
+
+  { name: "Concept: Night Hawk", image: require("../../assets/NightHawkWillBeBorn.jpg"), clickable: true },
+  { name: "Concept: White Night Hawk", image: require("../../assets/Armor/NightHawk.jpg"), clickable: true },
+  { name: "Concept: Defender 1", image: require("../../assets/Armor/Defender1.jpg"), clickable: true },
+  { name: "Concept: Defender 2", image: require("../../assets/Armor/Defender2.jpg"), clickable: true },
+  { name: "Concept: Shadow Storm", image: require("../../assets/Armor/ShadowStorm.jpg"), clickable: true },
+  { name: "Concept: Celestial", image: require("../../assets/Armor/Celestial.jpg"), clickable: true },
+  { name: "Concept: Sentinel", image: require("../../assets/Armor/Sentinel.jpg"), clickable: true },
+  { name: "Concept: Wrath", image: require("../../assets/Armor/Wrath.jpg"), clickable: true },
   { name: "Night Hawk Helmet", image: require("../../assets/Armor/MyHelmets2.jpg"), clickable: true },
 ];
 
