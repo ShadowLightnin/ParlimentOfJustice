@@ -14,12 +14,12 @@
     },
     "ios": {
       "supportsTablet": true,
-      "favicon": "./assets/favicon.png"
-
-    },
+"web": { "favicon": "./assets/favicon.png" },
+"ios": { "icon": "./assets/favicon.png" }    
+},
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/favicon.png",
         "backgroundColor": "#ffffff"
       }
     },
