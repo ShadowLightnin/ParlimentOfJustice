@@ -14,11 +14,12 @@
     },
     "ios": {
       "supportsTablet": true,
-      "icon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png"
+
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/favicon.png",
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
     },
