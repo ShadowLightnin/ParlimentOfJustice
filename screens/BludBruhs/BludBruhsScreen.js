@@ -44,9 +44,9 @@ const BludBruhsScreen = ({ route }) => {
   const [previewMember, setPreviewMember] = useState(null);
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isYourUniverse, setIsYourUniverse] = useState(route.params?.isYourUniverse ?? null); // Initial value from route
+  const [isYourUniverse, setIsYourUniverse] = useState(route.params?.isYourUniverse ?? null);
 
-  // Load universe preference on mount, default to Prime if not set
+  // Load universe preference on mount
   useEffect(() => {
     const loadUniversePreference = async () => {
       try {
@@ -54,11 +54,16 @@ const BludBruhsScreen = ({ route }) => {
         setIsYourUniverse(savedUniverse ? savedUniverse === 'your' : route.params?.isYourUniverse ?? true);
       } catch (error) {
         console.error('Error loading universe preference:', error);
-        setIsYourUniverse(route.params?.isYourUniverse ?? true); // Default to Prime on error
+        setIsYourUniverse(route.params?.isYourUniverse ?? true);
       }
     };
     loadUniversePreference();
   }, [route.params]);
+
+  // Filter scrollable members based on universe
+  const dynamicScrollableMembers = isYourUniverse
+    ? scrollableMembersBase.filter(member => member.name !== 'Justin Platt' && member.name !== 'Zack Dustin')
+    : scrollableMembersBase;
 
   // Dynamically get Joseph based on universe with random image selection
   const getJosephMember = () => {
@@ -66,21 +71,21 @@ const BludBruhsScreen = ({ route }) => {
       return { name: 'Joseph', codename: 'Technoman', screen: 'JosephD', clickable: true, image: require('../../assets/Armor/JosephD.jpg') };
     } else {
       const random = Math.random();
-      if (random < 0.02) { // 1/50 chance (0.02)
+      if (random < 0.02) {
         return { name: 'Joseph', codename: 'The Betrayer', screen: 'JosephD', clickable: false, image: require('../../assets/Armor/JosephD4.jpg') };
-      } else if (random < 0.51) { // 50% chance (0 to 0.51)
+      } else if (random < 0.51) {
         return { name: 'Joseph', codename: 'The Betrayer', screen: 'JosephD', clickable: false, image: require('../../assets/Armor/JosephD2.jpg') };
-      } else { // 50% chance (0.51 to 1)
+      } else {
         return { name: 'Joseph', codename: 'The Betrayer', screen: 'JosephD', clickable: false, image: require('../../assets/Armor/JosephD3.jpg') };
       }
     }
   };
 
-  // Prepare scrollable members with dynamic Joseph
-  const dynamicScrollableMembers = [...scrollableMembersBase];
-  const josephIndex = dynamicScrollableMembers.findIndex(m => m.name === 'Joseph');
+  // Update Joseph in dynamicScrollableMembers
+  const finalScrollableMembers = [...dynamicScrollableMembers];
+  const josephIndex = finalScrollableMembers.findIndex(m => m.name === 'Joseph');
   if (josephIndex !== -1) {
-    dynamicScrollableMembers[josephIndex] = getJosephMember();
+    finalScrollableMembers[josephIndex] = getJosephMember();
   }
 
   // Handle music playback
@@ -160,28 +165,21 @@ const BludBruhsScreen = ({ route }) => {
     navigation.navigate('Home');
   };
 
+  const goToAddMemberScreen = () => {
+    navigation.navigate('AddMember', { isYourUniverse });
+  };
+
   const isDesktop = SCREEN_WIDTH > 600;
   const cardSize = isDesktop ? 160 : 100;
   const cardSpacing = isDesktop ? 25 : 10;
 
-  const handleMemberPress = (member) => {
-    if (member.clickable) {
-      stopBackgroundMusic();
-      if (member.screen) {
-        navigation.navigate(member.screen, { from: 'BludBruhsHome', isYourUniverse });
-      } else {
-        setPreviewMember(member);
-      }
-    }
-  };
-
-  // Prepare grid rows without padding with nulls
+  // Prepare grid rows
   const rows = [];
-  const initialScrollable = dynamicScrollableMembers.slice(0, 9);
+  const initialScrollable = finalScrollableMembers.slice(0, 9);
   for (let i = 0; i < Math.ceil(initialScrollable.length / 3); i++) {
     rows.push(initialScrollable.slice(i * 3, (i + 1) * 3));
   }
-  const additionalScrollable = dynamicScrollableMembers.slice(9);
+  const additionalScrollable = finalScrollableMembers.slice(9);
   for (let i = 0; i < Math.ceil(additionalScrollable.length / 3); i++) {
     rows.push(additionalScrollable.slice(i * 3, (i + 1) * 3));
   }
@@ -266,9 +264,14 @@ const BludBruhsScreen = ({ route }) => {
             { color: '#00FFFF', textShadowColor: '#fffb00', textShadowOffset: { width: 1, height: 2 }, textShadowRadius: 20 }]}>
               {isYourUniverse ? 'Thunder Born' : 'Thunder Born'}
           </Text>
-          <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
-            <Text style={[styles.chatText, { color: isYourUniverse ? '#00b3ff' : '#800080' }]}>🛡️</Text>
-          </TouchableOpacity>
+          <View style={styles.headerRight}>
+            <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
+              <Text style={[styles.chatText, { color: isYourUniverse ? '#00b3ff' : '#800080' }]}>🛡️</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={goToAddMemberScreen} style={styles.plusButton}>
+              <Text style={[styles.plusText, { color: isYourUniverse ? '#00b3ff' : '#800080' }]}>+</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.musicControls}>
@@ -393,6 +396,10 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     backgroundColor: 'rgba(0, 0, 0, 0.564)',
   },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   backButton: {
     padding: 10,
   },
@@ -409,6 +416,13 @@ const styles = StyleSheet.create({
   },
   chatText: {
     fontSize: 20,
+  },
+  plusButton: {
+    padding: 10,
+  },
+  plusText: {
+    fontSize: 24,
+    fontWeight: 'bold',
   },
   musicControls: {
     flexDirection: 'row',

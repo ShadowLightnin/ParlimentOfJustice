@@ -10,17 +10,16 @@ import {
   TextInput,
   Modal,
   Alert,
-  ImageBackground, // Added missing import
+  ImageBackground,
 } from 'react-native';
 import { Video } from 'expo-av';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { db, storage, auth } from '../../lib/firebase';
-import { collection, addDoc, setDoc, doc, getDoc, onSnapshot, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, setDoc, doc, deleteDoc } from 'firebase/firestore';
 import { ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const isDesktop = SCREEN_WIDTH > 600;
 const ALLOWED_EMAILS = ['samuelp.woodwell@gmail.com', 'cummingsnialla@gmail.com', 'will@test.com', 'c1wcummings@gmail.com', 'aileen@test.com'];
 const RESTRICT_ACCESS = false;
 const PLACEHOLDER_IMAGE = require('../../assets/Armor/PlaceHolder.jpg');
@@ -38,6 +37,7 @@ const CharacterDetailScreen = () => {
   const [imageDescription, setImageDescription] = useState('');
   const [canSubmit, setCanSubmit] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [mode, setMode] = useState('add'); // 'add', 'edit', 'view'
   const member = route.params?.member;
 
   useEffect(() => {
@@ -47,20 +47,23 @@ const CharacterDetailScreen = () => {
     };
     checkAuth();
     const authUnsub = auth.onAuthStateChanged(checkAuth);
-    if (member) {
+    const initialMode = route.params?.mode || 'add';
+    setMode(initialMode);
+    if (member && initialMode !== 'add') {
       setName(member.name || '');
       setDescription(member.description || '');
       setImages(member.images || []);
       setVideoUri(member.videoUri || null);
+      if (initialMode === 'view' && videoUri) {
+        videoRef.current?.playAsync();
+        setIsPlaying(true);
+      }
     }
     return () => authUnsub();
-  }, [member]);
+  }, [member, route.params?.mode]);
 
   const pickImage = async () => {
-    if (!canSubmit) {
-      Alert.alert('Access Denied', 'Only authorized users can upload images.');
-      return;
-    }
+    if (!canSubmit || mode === 'view') return;
     try {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
@@ -84,10 +87,7 @@ const CharacterDetailScreen = () => {
   };
 
   const pickVideo = async () => {
-    if (!canSubmit) {
-      Alert.alert('Access Denied', 'Only authorized users can upload videos.');
-      return;
-    }
+    if (!canSubmit || mode === 'view') return;
     try {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
@@ -100,14 +100,19 @@ const CharacterDetailScreen = () => {
       });
       if (!result.canceled && result.assets) {
         setVideoUri(result.assets[0].uri);
-        if (videoRef.current) {
-          await videoRef.current.unloadAsync();
-        }
+        if (videoRef.current) await videoRef.current.unloadAsync();
       }
     } catch (error) {
       console.error('Video picker error:', error);
       Alert.alert('Error', 'Failed to pick video: ' + error.message);
     }
+  };
+
+  const deleteVideo = () => {
+    if (!canSubmit || mode === 'view') return;
+    if (videoUri && videoUri.startsWith('http')) deleteOldMedia(videoUri);
+    setVideoUri(null);
+    if (videoRef.current) videoRef.current.unloadAsync();
   };
 
   const uploadMedia = async (uri, type) => {
@@ -139,10 +144,7 @@ const CharacterDetailScreen = () => {
   };
 
   const handleSave = async () => {
-    if (!canSubmit) {
-      Alert.alert('Access Denied', 'Only authorized users can save characters.');
-      return;
-    }
+    if (!canSubmit || mode === 'view') return;
     if (!name.trim()) {
       Alert.alert('Error', 'Please provide a character name.');
       return;
@@ -165,24 +167,24 @@ const CharacterDetailScreen = () => {
         if (member?.videoUri && !member.videoUri.startsWith('http')) {
           await deleteOldMedia(member.videoUri);
         }
+      } else if (!videoUri && member?.videoUri) {
+        await deleteOldMedia(member.videoUri);
       }
 
-      const charData = {
-        name: name.trim(),
-        description: description.trim(),
-        images: imageUrls,
-        videoUri: videoUrl,
-        clickable: true,
-      };
+      const charData = { name: name.trim(), description: description.trim(), images: imageUrls, videoUri: videoUrl, clickable: true };
       if (member?.id) {
-        await setDoc(doc(db, 'characters', member.id), charData, { merge: true });
+        await setDoc(doc(db, 'powerTitansMembers', member.id), charData, { merge: true });
         Alert.alert('Success', 'Character updated successfully!');
       } else {
-        const charRef = await addDoc(collection(db, 'characters'), charData);
+        const charRef = await addDoc(collection(db, 'powerTitansMembers'), charData);
         charData.id = charRef.id;
         Alert.alert('Success', 'Character added successfully!');
       }
-      navigation.navigate('PowerTitans', { newMember: charData });
+      setMode('view'); // Switch to view mode after save
+      if (videoUrl) {
+        videoRef.current?.playAsync();
+        setIsPlaying(true);
+      }
     } catch (e) {
       console.error('Save error:', e.message);
       Alert.alert('Error', `Failed to save character: ${e.message}`);
@@ -192,11 +194,13 @@ const CharacterDetailScreen = () => {
   };
 
   const handleImageEdit = (index) => {
+    if (mode === 'view') return;
     setEditingImageIndex(index);
     setImageDescription(images[index]?.description || '');
   };
 
   const saveImageDescription = () => {
+    if (mode === 'view') return;
     const newImages = [...images];
     newImages[editingImageIndex].description = imageDescription;
     setImages(newImages);
@@ -205,21 +209,17 @@ const CharacterDetailScreen = () => {
   };
 
   const deleteImage = (index) => {
+    if (mode === 'view') return;
     const newImages = [...images];
-    if (newImages[index].uri.startsWith('http')) {
-      deleteOldMedia(newImages[index].uri);
-    }
+    if (newImages[index].uri.startsWith('http')) deleteOldMedia(newImages[index].uri);
     newImages.splice(index, 1);
     setImages(newImages);
   };
 
   const togglePlayPause = async () => {
     if (videoRef.current) {
-      if (isPlaying) {
-        await videoRef.current.pauseAsync();
-      } else {
-        await videoRef.current.playAsync();
-      }
+      if (isPlaying) await videoRef.current.pauseAsync();
+      else await videoRef.current.playAsync();
       setIsPlaying(!isPlaying);
     }
   };
@@ -231,39 +231,70 @@ const CharacterDetailScreen = () => {
           <Text style={styles.backText}>← Back</Text>
         </TouchableOpacity>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <Text style={styles.header}>Add/Edit Character</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Character Name"
-            value={name}
-            onChangeText={setName}
-            editable={canSubmit}
-          />
-          <TextInput
-            style={[styles.input, styles.textArea]}
-            placeholder="Description"
-            value={description}
-            onChangeText={setDescription}
-            multiline
-            numberOfLines={4}
-            editable={canSubmit}
-          />
-          <TouchableOpacity style={styles.button} onPress={pickImage} disabled={!canSubmit}>
-            <Text style={styles.buttonText}>Add Image</Text>
-          </TouchableOpacity>
+          <Text style={styles.header}>{name || 'Add/Edit Character'}</Text>
+          {mode !== 'view' && (
+            <>
+              <TextInput style={styles.input} placeholder="Character Name" value={name} onChangeText={setName} editable={canSubmit} />
+              <TextInput style={[styles.input, styles.textArea]} placeholder="Description" value={description} onChangeText={setDescription} multiline numberOfLines={4} editable={canSubmit} />
+              <TouchableOpacity style={styles.button} onPress={pickImage} disabled={!canSubmit}>
+                <Text style={styles.buttonText}>Add Image</Text>
+              </TouchableOpacity>
+            </>
+          )}
           <ScrollView horizontal style={styles.imageScroll}>
             {images.map((img, index) => (
               <View key={index} style={styles.imageContainer}>
                 <Image source={img.uri.startsWith('http') ? { uri: img.uri } : img.uri} style={styles.image} />
-                <TouchableOpacity style={styles.editButton} onPress={() => handleImageEdit(index)}>
-                  <Text style={styles.buttonText}>Edit</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.deleteButton} onPress={() => deleteImage(index)}>
-                  <Text style={styles.buttonText}>X</Text>
-                </TouchableOpacity>
+                {mode !== 'view' && (
+                  <>
+                    <TouchableOpacity style={styles.editButton} onPress={() => handleImageEdit(index)}>
+                      <Text style={styles.buttonText}>Edit</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.deleteButton} onPress={() => deleteImage(index)}>
+                      <Text style={styles.buttonText}>X</Text>
+                    </TouchableOpacity>
+                  </>
+                )}
+                <Text style={styles.descriptionText}>{img.description}</Text>
               </View>
             ))}
           </ScrollView>
+          {mode !== 'view' && (
+            <>
+              <TouchableOpacity style={styles.button} onPress={pickVideo} disabled={!canSubmit}>
+                <Text style={styles.buttonText}>Add Video</Text>
+              </TouchableOpacity>
+              {videoUri && (
+                <TouchableOpacity style={styles.deleteButton} onPress={deleteVideo} disabled={!canSubmit}>
+                  <Text style={styles.buttonText}>Delete Video</Text>
+                </TouchableOpacity>
+              )}
+            </>
+          )}
+          {videoUri && (
+            <View style={styles.videoContainer}>
+              <Video
+                ref={videoRef}
+                source={{ uri: videoUri }}
+                style={styles.video}
+                resizeMode="cover"
+                isLooping
+                shouldPlay={mode === 'view' && !isPlaying}
+                onPlaybackStatusUpdate={(status) => status.isPlaying !== isPlaying && setIsPlaying(status.isPlaying)}
+              />
+              {mode !== 'view' && (
+                <TouchableOpacity style={styles.playButton} onPress={togglePlayPause}>
+                  <Text style={styles.buttonText}>{isPlaying ? 'Pause' : 'Play'}</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          )}
+          {mode !== 'view' && (
+            <TouchableOpacity style={[styles.saveButton, !canSubmit && styles.disabled]} onPress={handleSave} disabled={!canSubmit || uploading}>
+              <Text style={styles.buttonText}>{uploading ? 'Saving...' : 'Save'}</Text>
+            </TouchableOpacity>
+          )}
+          {mode === 'view' && <Text style={styles.descriptionText}>{description}</Text>}
           {editingImageIndex !== null && (
             <Modal transparent visible={true} onRequestClose={() => setEditingImageIndex(null)}>
               <View style={styles.modalOverlay}>
@@ -284,27 +315,6 @@ const CharacterDetailScreen = () => {
               </View>
             </Modal>
           )}
-          <TouchableOpacity style={styles.button} onPress={pickVideo} disabled={!canSubmit}>
-            <Text style={styles.buttonText}>Add Video</Text>
-          </TouchableOpacity>
-          {videoUri && (
-            <View style={styles.videoContainer}>
-              <Video
-                ref={videoRef}
-                source={{ uri: videoUri }}
-                style={styles.video}
-                resizeMode="cover"
-                isLooping
-                shouldPlay={false}
-              />
-              <TouchableOpacity style={styles.playButton} onPress={togglePlayPause}>
-                <Text style={styles.buttonText}>{isPlaying ? 'Pause' : 'Play'}</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-          <TouchableOpacity style={[styles.saveButton, !canSubmit && styles.disabled]} onPress={handleSave} disabled={!canSubmit || uploading}>
-            <Text style={styles.buttonText}>{uploading ? 'Saving...' : 'Save'}</Text>
-          </TouchableOpacity>
         </ScrollView>
       </View>
     </ImageBackground>
@@ -312,130 +322,29 @@ const CharacterDetailScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
-    resizeMode: 'cover',
-  },
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    paddingTop: 50,
-  },
-  backButton: {
-    position: 'absolute',
-    top: 40,
-    left: 20,
-    padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 5,
-    zIndex: 10,
-  },
-  backText: {
-    fontSize: 18,
-    color: '#00b3ff',
-    fontWeight: 'bold',
-  },
-  scrollContainer: {
-    paddingBottom: 20,
-    paddingHorizontal: 20,
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#fff',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  input: {
-    backgroundColor: '#333',
-    color: '#fff',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 15,
-    fontSize: 16,
-  },
-  textArea: {
-    height: 100,
-    textAlignVertical: 'top',
-  },
-  button: {
-    backgroundColor: '#555',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  saveButton: {
-    backgroundColor: '#00b3ff',
-    padding: 15,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  disabled: {
-    backgroundColor: '#ccc',
-    opacity: 0.6,
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  imageScroll: {
-    height: 150,
-    marginBottom: 15,
-  },
-  imageContainer: {
-    marginRight: 10,
-    alignItems: 'center',
-  },
-  image: {
-    width: 120,
-    height: 120,
-    borderRadius: 10,
-  },
-  editButton: {
-    backgroundColor: '#FFC107',
-    padding: 5,
-    borderRadius: 5,
-    marginTop: 5,
-  },
-  deleteButton: {
-    backgroundColor: '#F44336',
-    padding: 5,
-    borderRadius: 5,
-    marginTop: 5,
-  },
-  videoContainer: {
-    position: 'relative',
-    marginBottom: 15,
-  },
-  video: {
-    width: '100%',
-    height: 200,
-    borderRadius: 10,
-  },
-  playButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    padding: 5,
-    borderRadius: 5,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    backgroundColor: '#222',
-    padding: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
+  background: { flex: 1, width: SCREEN_WIDTH, height: SCREEN_HEIGHT, resizeMode: 'cover' },
+  overlay: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.6)', paddingTop: 50 },
+  backButton: { position: 'absolute', top: 40, left: 20, padding: 10, backgroundColor: 'rgba(255, 255, 255, 0.2)', borderRadius: 5, zIndex: 10 },
+  backText: { fontSize: 18, color: '#00b3ff', fontWeight: 'bold' },
+  scrollContainer: { paddingBottom: 20, paddingHorizontal: 20 },
+  header: { fontSize: 24, fontWeight: 'bold', color: '#fff', textAlign: 'center', marginBottom: 20 },
+  input: { backgroundColor: '#333', color: '#fff', padding: 10, borderRadius: 5, marginBottom: 15, fontSize: 16 },
+  textArea: { height: 100, textAlignVertical: 'top' },
+  button: { backgroundColor: '#555', padding: 10, borderRadius: 5, alignItems: 'center', marginBottom: 15 },
+  saveButton: { backgroundColor: '#00b3ff', padding: 15, borderRadius: 5, alignItems: 'center' },
+  disabled: { backgroundColor: '#ccc', opacity: 0.6 },
+  buttonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
+  imageScroll: { height: 150, marginBottom: 15 },
+  imageContainer: { marginRight: 10, alignItems: 'center' },
+  image: { width: 120, height: 120, borderRadius: 10 },
+  editButton: { backgroundColor: '#FFC107', padding: 5, borderRadius: 5, marginTop: 5 },
+  deleteButton: { backgroundColor: '#F44336', padding: 5, borderRadius: 5, marginTop: 5 },
+  videoContainer: { position: 'relative', marginBottom: 15 },
+  video: { width: '100%', height: 200, borderRadius: 10 },
+  playButton: { position: 'absolute', top: 10, right: 10, backgroundColor: 'rgba(255, 255, 255, 0.2)', padding: 5, borderRadius: 5 },
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.7)', justifyContent: 'center', alignItems: 'center' },
+  modalContent: { backgroundColor: '#222', padding: 20, borderRadius: 10, alignItems: 'center' },
+  descriptionText: { color: '#fff', fontSize: 14, textAlign: 'center', marginTop: 5 },
 });
 
 export default CharacterDetailScreen;
