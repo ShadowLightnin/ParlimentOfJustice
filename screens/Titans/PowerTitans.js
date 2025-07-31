@@ -42,19 +42,19 @@ const playBackgroundMusic = async () => {
     try {
       const { sound } = await Audio.Sound.createAsync(
         require('../../assets/audio/FireAndAsh.mp4'),
-        { shouldPlay: true, isLooping: true, volume: 0.7 }
+        { shouldPlay: false, isLooping: true, volume: 0.7 }
       );
       backgroundSound = sound;
-      await sound.playAsync();
+      await backgroundSound.playAsync(); // Play the sound after loading
     } catch (error) {
       console.error('Failed to load audio file:', error);
       Alert.alert('Audio Error', 'Failed to load background music: ' + error.message);
     }
-  } else if (backgroundSound) {
+  } else {
     try {
-      await backgroundSound.playAsync();
+      await backgroundSound.playAsync(); // Resume if already loaded
     } catch (error) {
-      console.error('Error resuming sound:', error);
+      console.error('Error playing sound:', error);
     }
   }
 };
@@ -138,7 +138,6 @@ const PowerTitans = () => {
           navigation.setParams({ newMember: undefined });
         }
       });
-      playBackgroundMusic();
       return () => {
         unsubscribe();
         if (navigation.getState().routes[navigation.getState().index].name === 'PowerTitans') {
@@ -148,8 +147,9 @@ const PowerTitans = () => {
     }, [navigation])
   );
 
-  const handleMemberPress = (member) => {
+  const handleMemberPress = async (member) => {
     if (member.clickable && member.screen) {
+      await stopBackgroundMusic(); // Stop audio when clicking a card
       navigation.navigate(member.screen, { member, mode: 'view' });
     }
   };
@@ -266,7 +266,7 @@ const PowerTitans = () => {
           </TouchableOpacity>
         </View>
         <View style={styles.musicControls}>
-          <TouchableOpacity style={styles.musicButton} onPress={playBackgroundMusic}>
+          <TouchableOpacity style={styles.musicButton} onPress={async () => { await playBackgroundMusic(); }}>
             <Text style={styles.musicButtonText}>Theme</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.musicButton} onPress={pauseBackgroundMusic}>
