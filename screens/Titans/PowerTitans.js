@@ -9,6 +9,7 @@ import {
   Dimensions,
   ScrollView,
   Alert,
+  Modal,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Audio } from 'expo-av';
@@ -84,6 +85,7 @@ const PowerTitans = () => {
   const navigation = useNavigation();
   const [members, setMembers] = useState(initialMembers);
   const unsubscribeRef = useRef(null);
+  const [deleteModal, setDeleteModal] = useState({ visible: false, member: null });
   const ALLOWED_EMAILS = ['samuelp.woodwell@gmail.com', 'cummingsnialla@gmail.com', 'will@test.com', 'c1wcummings@gmail.com', 'aileen@test.com'];
   const RESTRICT_ACCESS = false;
 
@@ -158,56 +160,42 @@ const PowerTitans = () => {
     }
   };
 
-  const handleDelete = async (member) => {
+  const confirmDelete = async (memberId) => {
     if (!auth.currentUser || !ALLOWED_EMAILS.includes(auth.currentUser.email)) {
       Alert.alert('Access Denied', 'Only authorized users can delete characters.');
       return;
     }
-    Alert.alert(
-      'Confirm Delete',
-      `Delete "${member.name}" and its associated media? This action cannot be undone.`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              if (member.id) {
-                const memberRef = doc(db, 'powerTitansMembers', member.id);
-                // Delete associated media first
-                const mediaDeletionPromises = [];
-                member.images.forEach(img => {
-                  if (img.uri && img.uri.startsWith('http')) {
-                    const path = decodeURIComponent(img.uri.split('/o/')[1].split('?')[0]);
-                    mediaDeletionPromises.push(deleteObject(storageRef(storage, path)).catch(e => {
-                      if (e.code !== 'storage/object-not-found') throw e;
-                    }));
-                  }
-                });
-                if (member.videoUri && member.videoUri.startsWith('http')) {
-                  const path = decodeURIComponent(member.videoUri.split('/o/')[1].split('?')[0]);
-                  mediaDeletionPromises.push(deleteObject(storageRef(storage, path)).catch(e => {
-                    if (e.code !== 'storage/object-not-found') throw e;
-                  }));
-                }
-                await Promise.all(mediaDeletionPromises);
-
-                // Delete the document from Firestore
-                await deleteDoc(memberRef);
-                setMembers(prevMembers => prevMembers.filter(m => m.id !== member.id));
-                Alert.alert('Success', 'Character deleted successfully!');
-              } else {
-                Alert.alert('Error', 'This character cannot be deleted (no ID found).');
-              }
-            } catch (e) {
-              console.error('Delete error:', e.message);
-              Alert.alert('Error', `Failed to delete character: ${e.message}. Please try again or contact support.`);
-            }
-          },
-        },
-      ]
-    );
+    try {
+      const member = members.find(m => m.id === memberId);
+      if (!member || !member.id) {
+        Alert.alert('Error', 'This character cannot be deleted (no ID found).');
+        return;
+      }
+      const memberRef = doc(db, 'powerTitansMembers', memberId);
+      const mediaDeletionPromises = [];
+      member.images.forEach(img => {
+        if (img.uri && img.uri.startsWith('http')) {
+          const path = decodeURIComponent(img.uri.split('/o/')[1].split('?')[0]);
+          mediaDeletionPromises.push(deleteObject(storageRef(storage, path)).catch(e => {
+            if (e.code !== 'storage/object-not-found') throw e;
+          }));
+        }
+      });
+      if (member.videoUri && member.videoUri.startsWith('http')) {
+        const path = decodeURIComponent(member.videoUri.split('/o/')[1].split('?')[0]);
+        mediaDeletionPromises.push(deleteObject(storageRef(storage, path)).catch(e => {
+          if (e.code !== 'storage/object-not-found') throw e;
+        }));
+      }
+      await Promise.all(mediaDeletionPromises);
+      await deleteDoc(memberRef);
+      setMembers(prevMembers => prevMembers.filter(m => m.id !== memberId));
+      setDeleteModal({ visible: false, member: null });
+      Alert.alert('Success', 'Character deleted successfully!');
+    } catch (e) {
+      console.error('Delete error:', e.message);
+      Alert.alert('Error', `Failed to delete character: ${e.message}. Please try again or contact support.`);
+    }
   };
 
   const renderMemberCard = (member) => (
@@ -239,7 +227,7 @@ const PowerTitans = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.deleteButton, (!auth.currentUser || !ALLOWED_EMAILS.includes(auth.currentUser.email)) && styles.disabled]}
-            onPress={() => handleDelete(member)}
+            onPress={() => setDeleteModal({ visible: true, member: member })}
             disabled={!auth.currentUser || !ALLOWED_EMAILS.includes(auth.currentUser.email)}
           >
             <Text style={styles.buttonText}>Delete</Text>
@@ -264,7 +252,7 @@ const PowerTitans = () => {
 
   return (
     <ImageBackground source={require('../../assets/BackGround/Titans.jpg')} style={styles.background}>
-      <View style={styles.container}>
+      <ScrollView style={styles.scrollContainerStyle} contentContainerStyle={styles.container}>
         <View style={styles.headerWrapper}>
           <TouchableOpacity onPress={async () => { await stopBackgroundMusic(); navigation.navigate('Home'); }} style={styles.backButton}>
             <Text style={styles.backText}>← Back</Text>
@@ -290,18 +278,45 @@ const PowerTitans = () => {
             {members.map(renderMemberCard)}
           </ScrollView>
         </View>
-      </View>
+        <Modal
+          visible={deleteModal.visible}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setDeleteModal({ visible: false, member: null })}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalText}>{`Delete "${deleteModal.member?.name || ''}" and its associated media?`}</Text>
+              <View style={styles.modalButtons}>
+                <TouchableOpacity
+                  style={styles.modalCancel}
+                  onPress={() => setDeleteModal({ visible: false, member: null })}
+                >
+                  <Text style={styles.modalCancelText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.modalDelete}
+                  onPress={() => deleteModal.member && confirmDelete(deleteModal.member.id)}
+                >
+                  <Text style={styles.modalDeleteText}>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+      </ScrollView>
     </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   background: { width: SCREEN_WIDTH, height: SCREEN_HEIGHT, resizeMode: 'cover' },
-  container: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.7)', paddingTop: 40, alignItems: 'center' },
+  scrollContainerStyle: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.7)' },
+  container: { paddingTop: 40, paddingBottom: 20 },
   headerWrapper: { width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10, paddingTop: 10 },
   backButton: { padding: 10, backgroundColor: 'rgba(255, 255, 255, 0.2)', borderRadius: 5 },
   backText: { fontSize: 18, color: '#00b3ff', fontWeight: 'bold' },
-  header: { fontSize: 28, fontWeight: 'bold', color: '#fff', textAlign: 'center', textShadowColor: '#800080', textShadowRadius: 15, flex: 1 },
+  header: { fontSize: 28, fontWeight: 'bold', color: '#fff', textAlign: 'center', textShadowColor: '#800080', textShadowRadius: 15, flex: 1, paddingLeft: 25 },
   eclipseButton: { padding: 5, backgroundColor: 'rgba(255, 255, 255, 0.2)', borderRadius: 5 },
   eclipseImage: { width: 60, height: 60, resizeMode: 'contain' },
   plusButton: { padding: 10 },
@@ -310,7 +325,7 @@ const styles = StyleSheet.create({
   musicButton: { padding: 10, backgroundColor: 'rgba(255, 255, 255, 0.2)', borderRadius: 8, marginHorizontal: 10 },
   musicButtonText: { fontSize: 12, fontWeight: 'bold', color: '#00b3ff' },
   scrollWrapper: { width: SCREEN_WIDTH, flex: 1 },
-  scrollContainer: { flexDirection: 'row', flexGrow: 1, width: 'auto', paddingVertical: 20, alignItems: 'center' },
+  scrollContainer: { flexDirection: 'row', flexGrow: 1, width: 'auto', paddingVertical: 20 },
   cardContainer: { marginHorizontal: 10, alignItems: 'center' },
   card: { borderRadius: 10, overflow: 'hidden', elevation: 5, backgroundColor: 'rgba(0, 0, 0, 0.7)' },
   clickable: (borderColor) => ({ borderColor: borderColor || 'purple', borderWidth: 2 }),
@@ -327,7 +342,55 @@ const styles = StyleSheet.create({
   editButton: { backgroundColor: '#FFC107', padding: 5, borderRadius: 5, flex: 1, marginRight: 5, alignItems: 'center' },
   deleteButton: { backgroundColor: '#F44336', padding: 5, borderRadius: 5, flex: 1, marginLeft: 5, alignItems: 'center' },
   disabled: { backgroundColor: '#ccc', opacity: 0.6 },
-  buttonText: { color: '#fff', fontSize: 14, fontWeight: 'bold' },
+  buttonText: { color: '#fff', fontSize: 18, fontWeight: 'bold' },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'rgba(255,255,255,0.9)',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    width: '80%',
+  },
+  modalText: {
+    fontSize: 18,
+    color: '#000',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+  },
+  modalCancel: {
+    backgroundColor: '#2196F3',
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginRight: 10,
+  },
+  modalCancelText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalDelete: {
+    backgroundColor: '#F44336',
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginLeft: 10,
+  },
+  modalDeleteText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
 });
 
 export default PowerTitans;

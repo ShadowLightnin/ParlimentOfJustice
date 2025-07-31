@@ -228,7 +228,7 @@ const CharacterDetailScreen = () => {
     <ImageBackground source={videoUri ? { uri: videoUri } : require('../../assets/BackGround/Titans.jpg')} style={styles.background}>
       <View style={styles.overlay}>
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.backText}>← Back</Text>
+          <Text style={styles.backText}> ← </Text>
         </TouchableOpacity>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Text style={styles.header}>{name || 'Add/Edit Character'}</Text>
