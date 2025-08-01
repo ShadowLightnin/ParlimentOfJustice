@@ -288,7 +288,7 @@ export const HomeScreen = () => {
 
   return (
     <ImageBackground 
-      source={isYourUniverse ? require('../assets/BackGround/Parliment.png') : require('../assets/BackGround/Power.jpg')}
+      source={isYourUniverse ? require('../assets/BackGround/Parliament.jpg') : require('../assets/BackGround/Power.jpg')}
       style={styles.background}
     >
       <View style={styles.container}>

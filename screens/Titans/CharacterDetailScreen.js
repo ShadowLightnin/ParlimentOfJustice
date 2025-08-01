@@ -11,6 +11,7 @@ import {
   Modal,
   Alert,
   ImageBackground,
+  Platform,
 } from 'react-native';
 import { Video, Audio } from 'expo-av';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -35,7 +36,7 @@ const CharacterDetailScreen = () => {
   const [mediaType, setMediaType] = useState(null); // 'video' or 'audio'
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef(null);
-  const audioRef = useRef(null);
+  const audioRef = useRef(null); // Will hold Audio.Sound instance
   const [editingImageIndex, setEditingImageIndex] = useState(null);
   const [imageName, setImageName] = useState('');
   const [canSubmit, setCanSubmit] = useState(true);
@@ -48,6 +49,17 @@ const CharacterDetailScreen = () => {
   const isDesktop = windowWidth >= 768;
   const cardWidth = isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9;
 
+  // Configure Audio for background playback
+  useEffect(() => {
+    Audio.setAudioModeAsync({
+      allowsRecordingIOS: false,
+      playsInSilentModeIOS: true,
+      staysActiveInBackground: true,
+      shouldDuckAndroid: true,
+      playThroughEarpieceAndroid: false,
+    }).catch((e) => console.error('Audio mode setup error:', e));
+  }, []);
+
   useEffect(() => {
     const updateDimensions = () => {
       setWindowWidth(Dimensions.get('window').width);
@@ -59,108 +71,226 @@ const CharacterDetailScreen = () => {
   useEffect(() => {
     const checkAuth = () => {
       const user = auth.currentUser;
-      setCanSubmit(RESTRICT_ACCESS ? (user && ALLOWED_EMAILS.includes(user.email)) : true);
+      console.log('Checking auth:', user ? `User: ${user.email}` : 'No authenticated user');
+      const isAllowed = RESTRICT_ACCESS ? user && ALLOWED_EMAILS.includes(user.email) : true;
+      setCanSubmit(isAllowed);
+      if (!user) {
+        console.warn('No authenticated user found. Uploads may fail.');
+      } else if (!isAllowed) {
+        console.warn(`User ${user.email} not in ALLOWED_EMAILS. Uploads restricted.`);
+      }
     };
     checkAuth();
     const authUnsub = auth.onAuthStateChanged(checkAuth);
     const initialMode = route.params?.mode || 'add';
     setMode(initialMode);
     if (member && initialMode !== 'add') {
+      console.log('Loading member data:', { id: member.id, name: member.name, images: member.images?.length, mediaUri: member.mediaUri || member.videoUri });
       setName(member.name || '');
       setDescription(member.description || '');
       setImages(member.images?.map(img => ({ uri: img.uri, name: img.description || '' })) || []);
       setMediaUri(member.mediaUri || member.videoUri || null);
       setMediaType(member.mediaType || (member.videoUri ? 'video' : null));
+      // Restore playback state if provided
+      setIsPlaying(route.params?.isPlaying || false);
     }
     return () => authUnsub();
-  }, [member, route.params?.mode]);
+  }, [member, route.params?.mode, route.params?.isPlaying]);
 
   useEffect(() => {
     let activeRef = null;
-    if (mode === 'view' && mediaUri && mediaType === 'video' && videoRef.current) {
-      activeRef = videoRef.current;
-    } else if (mode === 'view' && mediaUri && mediaType === 'audio' && audioRef.current) {
-      activeRef = audioRef.current;
-    }
-    if (activeRef) {
-      activeRef.playAsync().then(() => {
-        setIsPlaying(true);
-        console.log(`${mediaType} started playing: ${mediaUri}`);
-      }).catch((e) => {
-        console.error(`${mediaType} play error:`, e);
-        Alert.alert('Playback Error', `Failed to play ${mediaType}: ${e.message}`);
-      });
-    }
-    return () => {
-      if (videoRef.current) {
-        videoRef.current.pauseAsync().catch((e) => console.error('Video pause error:', e));
-        videoRef.current.unloadAsync().catch((e) => console.error('Video unload error:', e));
-      }
-      if (audioRef.current) {
-        audioRef.current.pauseAsync().catch((e) => console.error('Audio pause error:', e));
-        audioRef.current.unloadAsync().catch((e) => console.error('Audio unload error:', e));
+    const loadAudio = async () => {
+      if (mediaUri && mediaType === 'audio' && !audioRef.current) {
+        try {
+          const sound = new Audio.Sound();
+          await sound.loadAsync({ uri: mediaUri });
+          audioRef.current = sound;
+          console.log('Audio loaded in useEffect:', mediaUri);
+          // Resume playback if isPlaying is true
+          if (isPlaying) {
+            await sound.playAsync();
+            console.log('Resumed audio playback:', mediaUri);
+          }
+        } catch (e) {
+          console.error('Audio load error in useEffect:', e.message, e.stack);
+          Alert.alert('Error', `Failed to load audio: ${e.message}`);
+          return;
+        }
       }
     };
-  }, [mode, mediaUri, mediaType]);
+
+    loadAudio();
+
+    if (mode === 'view' && mediaUri && mediaType === 'video' && videoRef.current) {
+      activeRef = videoRef.current;
+      if (isPlaying) {
+        activeRef.playAsync().then(() => {
+          setIsPlaying(true);
+          console.log('Video started playing:', mediaUri);
+        }).catch((e) => {
+          console.error('Video play error:', e.message, e.stack);
+          Alert.alert('Playback Error', `Failed to play video: ${e.message}`);
+        });
+      }
+    } else if (mode === 'view' && mediaUri && mediaType === 'audio' && audioRef.current) {
+      activeRef = audioRef.current;
+      audioRef.current.getStatusAsync().then((status) => {
+        if (status.isLoaded && isPlaying) {
+          activeRef.playAsync().then(() => {
+            setIsPlaying(true);
+            console.log('Audio started playing:', mediaUri);
+          }).catch((e) => {
+            console.error('Audio play error:', e.message, e.stack);
+            Alert.alert('Playback Error', `Failed to play audio: ${e.message}`);
+          });
+        } else if (!status.isLoaded) {
+          console.error('Audio not loaded for playback:', mediaUri);
+          Alert.alert('Playback Error', 'Audio is not loaded.');
+        }
+      }).catch((e) => {
+        console.error('Audio status error:', e.message, e.stack);
+      });
+    }
+
+    return () => {
+      // Do not pause or unload media to allow background playback
+      console.log('Component unmounting, keeping media active:', { mediaUri, mediaType, isPlaying });
+    };
+  }, [mode, mediaUri, mediaType, isPlaying]);
 
   const pickImage = async () => {
-    if (!canSubmit || mode === 'view') return;
+    if (!canSubmit || mode === 'view') {
+      console.log('Pick image blocked:', { canSubmit, mode });
+      Alert.alert('Access Denied', 'Cannot pick images in this mode or without authorization.');
+      return;
+    }
     try {
+      console.log('Launching image picker with mediaTypes: images');
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      console.log('Image picker permission status:', status);
       if (status !== 'granted') {
         Alert.alert('Permission Denied', 'We need camera roll permissions to pick images!');
         return;
       }
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
+        mediaTypes: 'images',
+        allowsEditing: Platform.OS !== 'web',
         aspect: [1, 1],
         quality: 0.5,
       });
+      console.log('Image picker result:', result);
       if (!result.canceled && result.assets) {
         const newImage = { uri: result.assets[0].uri, name: '' };
         setImages([...images, newImage]);
+        console.log('Image selected:', newImage.uri);
+      } else {
+        console.log('Image picker canceled or no assets returned');
       }
     } catch (error) {
-      console.error('Image picker error:', error);
-      Alert.alert('Error', 'Failed to pick image: ' + error.message);
+      console.error('Image picker error:', error.message, error.stack);
+      Alert.alert('Error', `Failed to pick image: ${error.message}`);
     }
   };
 
   const pickMedia = async () => {
-    if (!canSubmit || mode === 'view') return;
+    if (!canSubmit || mode === 'view') {
+      console.log('Pick media blocked:', { canSubmit, mode });
+      Alert.alert('Access Denied', 'Cannot pick media in this mode or without authorization.');
+      return;
+    }
     try {
+      console.log('Launching media picker with mediaTypes: all');
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      console.log('Media picker permission status:', status);
       if (status !== 'granted') {
         Alert.alert('Permission Denied', 'We need media permissions to pick files!');
         return;
       }
       const audioStatus = await Audio.requestPermissionsAsync();
+      console.log('Audio permission status:', audioStatus.status);
       if (!audioStatus.granted) {
         Alert.alert('Audio Permission Denied', 'We need audio permissions to play compatible media!');
         return;
       }
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        mediaTypes: 'all',
         allowsEditing: false,
       });
+      console.log('Media picker result:', result);
       if (!result.canceled && result.assets) {
         const uri = result.assets[0].uri;
-        const extension = uri.split('.').pop().toLowerCase();
+        let extension;
+        const validExtensions = ['jpg', 'jpeg', 'png', 'mp4', 'm4a', 'mp3'];
+
+        if (uri.startsWith('data:')) {
+          const mimeTypeMatch = uri.match(/^data:([a-z]+\/[a-z0-9\-\+]+);base64,/i);
+          const mimeType = mimeTypeMatch ? mimeTypeMatch[1] : null;
+          console.log('Parsed MIME type:', mimeType, 'URI:', uri);
+          if (!mimeType) {
+            console.warn('Invalid data URI format');
+            Alert.alert('Error', 'Invalid file format selected. Please choose a valid .jpg, .jpeg, .png, .mp4, .m4a, or .mp3 file.');
+            return;
+          }
+          const mimeToExt = {
+            'image/jpeg': 'jpg',
+            'image/png': 'png',
+            'video/mp4': 'mp4',
+            'audio/mpeg': 'mp3',
+            'audio/mp4': 'm4a',
+            'audio/m4a': 'm4a',
+            'audio/x-m4a': 'm4a',
+          };
+          extension = mimeToExt[mimeType];
+          if (!extension) {
+            console.warn(`Unsupported MIME type: ${mimeType}`);
+            Alert.alert('Error', `Unsupported file type: ${mimeType}. Only .jpg, .jpeg, .png, .mp4, .m4a, and .mp3 are supported.`);
+            return;
+          }
+        } else {
+          extension = uri.split('.').pop().toLowerCase();
+        }
+
+        if (!validExtensions.includes(extension)) {
+          console.warn(`Unsupported file extension: ${extension}`);
+          Alert.alert('Error', 'Only .jpg, .jpeg, .png, .mp4, .m4a, and .mp3 files are supported.');
+          return;
+        }
+
         const isAudio = ['m4a', 'mp3'].includes(extension);
         const isVideo = ['mp4'].includes(extension);
         let fileUri = uri;
-        if (uri.startsWith('data:')) {
-          fileUri = await FileSystem.downloadAsync(
-            uri,
-            FileSystem.documentDirectory + 'temp.' + extension
-          ).then(({ uri }) => uri).catch(e => {
-            console.error('File conversion error:', e);
-            return uri;
-          });
+
+        if (uri.startsWith('data:') && Platform.OS !== 'web') {
+          try {
+            fileUri = await FileSystem.downloadAsync(
+              uri,
+              FileSystem.documentDirectory + `temp.${extension}`
+            ).then(({ uri }) => uri);
+            console.log('Converted data URI to file:', fileUri);
+          } catch (e) {
+            console.error('FileSystem.downloadAsync error:', e.message, e.stack);
+            Alert.alert('Error', `Failed to process media file: ${e.message}`);
+            return;
+          }
         }
-        if (videoRef.current) await videoRef.current.unloadAsync();
-        if (audioRef.current) await audioRef.current.unloadAsync();
+
+        if (videoRef.current) await videoRef.current.unloadAsync().catch((e) => console.error('Video unload error:', e));
+        if (audioRef.current) {
+          await audioRef.current.unloadAsync().catch((e) => console.error('Audio unload error:', e));
+          audioRef.current = null;
+        }
+        if (isAudio) {
+          const sound = new Audio.Sound();
+          try {
+            await sound.loadAsync({ uri: fileUri });
+            audioRef.current = sound;
+            console.log('Audio loaded:', fileUri);
+          } catch (e) {
+            console.error('Audio load error:', e.message, e.stack);
+            Alert.alert('Error', `Failed to load audio: ${e.message}`);
+            return;
+          }
+        }
         setMediaUri(fileUri);
         setMediaType(isVideo ? 'video' : isAudio ? 'audio' : null);
         setIsPlaying(false);
@@ -168,53 +298,81 @@ const CharacterDetailScreen = () => {
         if (!isAudio && !isVideo) {
           Alert.alert('Note', 'Only .mp4, .m4a, and .mp3 files are playable. Other file types will be stored but not played.');
         }
+      } else {
+        console.log('Media picker canceled or no assets returned');
       }
     } catch (error) {
-      console.error('Media picker error:', error);
-      Alert.alert('Error', 'Failed to pick media: ' + error.message);
+      console.error('Media picker error:', error.message, error.stack);
+      Alert.alert('Error', `Failed to pick media: ${error.message}`);
     }
-  };
-
-  const deleteMedia = async (type, index = null) => {
-    if (!canSubmit || mode === 'view') return;
-    if (type === 'media' && mediaUri && mediaUri.startsWith('http')) await deleteOldMedia(mediaUri);
-    if (type === 'image' && index !== null && images[index].uri.startsWith('http')) await deleteOldMedia(images[index].uri);
-    if (type === 'media') {
-      setMediaUri(null);
-      setMediaType(null);
-      if (videoRef.current) await videoRef.current.unloadAsync();
-      if (audioRef.current) await audioRef.current.unloadAsync();
-    } else if (type === 'image' && index !== null) {
-      const newImages = [...images];
-      newImages.splice(index, 1);
-      setImages(newImages);
-    }
-    setDeleteModal({ visible: false, type: null, index: null });
   };
 
   const uploadMedia = async (uri, type) => {
-    if (!auth.currentUser) throw new Error('User not authenticated');
+    if (!auth.currentUser) {
+      console.error('No authenticated user. Upload aborted.');
+      throw new Error('User not authenticated');
+    }
+    console.log('Current user:', auth.currentUser.email || 'None');
     try {
+      console.log(`Preparing to upload ${type} with URI: ${uri}`);
       let blob;
+      let extension;
+
       if (uri.startsWith('data:')) {
+        const mimeType = uri.match(/^data:([a-z]+\/[a-z0-9\-\+]+);base64,/i)?.[1];
+        if (!mimeType) throw new Error('Invalid data URI format');
+        const mimeToExt = {
+          'image/jpeg': 'jpg',
+          'image/png': 'png',
+          'video/mp4': 'mp4',
+          'audio/mpeg': 'mp3',
+          'audio/mp4': 'm4a',
+          'audio/m4a': 'm4a',
+          'audio/x-m4a': 'm4a',
+        };
+        extension = mimeToExt[mimeType];
+        if (!extension) throw new Error(`Unsupported MIME type: ${mimeType}`);
         const response = await fetch(uri);
+        if (!response.ok) throw new Error(`Fetch failed for data URI: ${response.statusText}`);
         blob = await response.blob();
       } else {
-        const response = await fetch(uri.startsWith('file://') ? 'file://' + encodeURI(uri.replace('file://', '')) : uri);
+        const fetchUri = uri.startsWith('file://') ? uri : encodeURI(uri);
+        console.log(`Fetching URI: ${fetchUri}`);
+        const response = await fetch(fetchUri);
+        if (!response.ok) throw new Error(`Fetch failed for URI ${fetchUri}: ${response.statusText}`);
         blob = await response.blob();
+        extension = uri.split('.').pop().toLowerCase();
       }
+
       const timestamp = Date.now();
       const random = Math.random().toString(36).substring(2, 15);
-      const extension = uri.split('.').pop().toLowerCase();
-      const path = `${type || 'media'}/${timestamp}_${random}.${extension}`;
+      const path = `characters/${timestamp}_${random}.${extension}`;
+      console.log(`Uploading to Firebase Storage path: ${path}`);
       const mediaRef = storageRef(storage, path);
       const uploadTask = uploadBytesResumable(mediaRef, blob);
-      await new Promise((resolve, reject) => {
-        uploadTask.on('state_changed', null, reject, resolve);
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Upload timed out after 30 seconds')), 30000);
       });
-      return await getDownloadURL(mediaRef);
+      await Promise.race([
+        new Promise((resolve, reject) => {
+          uploadTask.on('state_changed',
+            (snapshot) => {
+              console.log(`Uploading ${type}: ${(snapshot.bytesTransferred / snapshot.totalBytes * 100).toFixed(2)}%`);
+            },
+            (error) => {
+              console.error('Upload task error:', error.message, error.stack);
+              reject(error);
+            },
+            resolve
+          );
+        }),
+        timeoutPromise,
+      ]);
+      const downloadURL = await getDownloadURL(mediaRef);
+      console.log(`Uploaded ${type} to: ${downloadURL}`);
+      return downloadURL;
     } catch (e) {
-      console.error('Upload error:', e);
+      console.error('Upload error:', e.message, e.stack);
       throw new Error(`Upload failed: ${e.message}`);
     }
   };
@@ -224,24 +382,68 @@ const CharacterDetailScreen = () => {
     try {
       const path = decodeURIComponent(url.split('/o/')[1].split('?')[0]);
       await deleteObject(storageRef(storage, path));
+      console.log(`Deleted media: ${url}`);
     } catch (e) {
       if (e.code !== 'storage/object-not-found') {
-        console.error('Delete media error:', e.message);
+        console.error('Delete media error:', e.message, e.stack);
         Alert.alert('Warning', `Failed to delete media: ${e.message}. Continuing with operation.`);
       }
     }
   };
 
+  const deleteMedia = async (type, index) => {
+    try {
+      if (type === 'image' && index !== null) {
+        const image = images[index];
+        if (image.uri.startsWith('http')) {
+          await deleteOldMedia(image.uri);
+        }
+        setImages(images.filter((_, i) => i !== index));
+        console.log(`Deleted image at index ${index}`);
+      } else if (type === 'media') {
+        if (mediaUri && mediaUri.startsWith('http')) {
+          await deleteOldMedia(mediaUri);
+        }
+        if (audioRef.current) {
+          await audioRef.current.unloadAsync().catch((e) => console.error('Audio unload error:', e));
+          audioRef.current = null;
+        }
+        setMediaUri(null);
+        setMediaType(null);
+        setIsPlaying(false);
+        console.log('Deleted media');
+      }
+      setDeleteModal({ visible: false, type: null, index: null });
+    } catch (e) {
+      console.error('Delete error:', e.message, e.stack);
+      Alert.alert('Error', `Failed to delete ${type}: ${e.message}`);
+    }
+  };
+
   const handleSave = async () => {
-    if (!canSubmit || mode === 'view') return;
+    if (!canSubmit || mode === 'view') {
+      console.log('Save blocked:', { canSubmit, mode });
+      Alert.alert('Access Denied', 'Cannot save in this mode or without authorization.');
+      return;
+    }
     if (!name.trim()) {
+      console.log('Save blocked: no name provided');
       Alert.alert('Error', 'Please provide a character name.');
+      return;
+    }
+    if (!auth.currentUser) {
+      console.log('Save blocked: no authenticated user');
+      Alert.alert('Authentication Required', 'Please log in to save changes.', [
+        { text: 'OK', onPress: () => navigation.navigate('Login') },
+      ]);
       return;
     }
     setUploading(true);
     try {
+      console.log('Starting save operation:', { name: name.trim(), images: images.length, mediaUri, mediaType });
       const imageUrls = await Promise.all(images.map(async (img, index) => {
         if (!img.uri.startsWith('http')) {
+          console.log(`Uploading image ${index + 1}: ${img.uri}`);
           const url = await uploadMedia(img.uri, 'image');
           if (member?.images?.[index]?.uri && !member.images[index].uri.startsWith('http')) {
             await deleteOldMedia(member.images[index].uri);
@@ -253,28 +455,41 @@ const CharacterDetailScreen = () => {
       let mediaUrl = member?.mediaUri || member?.videoUri || null;
       let savedMediaType = member?.mediaType || (member?.videoUri ? 'video' : null);
       if (mediaUri && !mediaUri.startsWith('http')) {
-        mediaUrl = await uploadMedia(mediaUri, mediaType);
+        console.log(`Uploading media: ${mediaUri}`);
+        mediaUrl = await uploadMedia(mediaUri, mediaType || 'media');
         if (member?.mediaUri || member?.videoUri) await deleteOldMedia(member.mediaUri || member.videoUri);
+        savedMediaType = mediaType;
       } else if (!mediaUri && (member?.mediaUri || member?.videoUri)) {
         await deleteOldMedia(member.mediaUri || member.videoUri);
       }
-      const charData = { name: name.trim(), description: description.trim(), images: imageUrls, mediaUri: mediaUrl, mediaType: mediaType, clickable: true };
+      const charData = { name: name.trim(), description: description.trim(), images: imageUrls, mediaUri: mediaUrl, mediaType: savedMediaType, clickable: true };
       if (member?.id) {
+        console.log(`Updating character with ID: ${member.id}`);
         await setDoc(doc(db, 'powerTitansMembers', member.id), charData, { merge: true });
+        console.log('Character updated:', { id: member.id, name: charData.name, images: charData.images.length });
         Alert.alert('Success', 'Character updated successfully!');
       } else {
+        console.log('Adding new character');
         const charRef = await addDoc(collection(db, 'powerTitansMembers'), charData);
         charData.id = charRef.id;
+        console.log('Character added:', { id: charRef.id, name: charData.name, images: charData.images.length });
         Alert.alert('Success', 'Character added successfully!');
       }
       setMode('view');
       if (mediaUrl && mediaType === 'video' && videoRef.current) {
         videoRef.current.playAsync().then(() => setIsPlaying(true)).catch((e) => console.error('Video play error:', e));
       } else if (mediaUrl && mediaType === 'audio' && audioRef.current) {
-        audioRef.current.playAsync().then(() => setIsPlaying(true)).catch((e) => console.error('Audio play error:', e));
+        audioRef.current.getStatusAsync().then((status) => {
+          if (status.isLoaded) {
+            audioRef.current.playAsync().then(() => setIsPlaying(true)).catch((e) => console.error('Audio play error:', e));
+          } else {
+            console.error('Audio not loaded after save:', mediaUrl);
+            Alert.alert('Playback Error', 'Audio is not loaded.');
+          }
+        }).catch((e) => console.error('Audio status error:', e));
       }
     } catch (e) {
-      console.error('Save error:', e.message);
+      console.error('Save error:', e.message, e.stack);
       Alert.alert('Error', `Failed to save character: ${e.message}`);
     } finally {
       setUploading(false);
@@ -306,12 +521,18 @@ const CharacterDetailScreen = () => {
         style={[
           styles.card,
           mode !== 'view' ? styles.clickable('#00b3ff') : styles.notClickable,
-          { width: cardWidth, height: SCREEN_HEIGHT * 0.7 },
-          { backgroundColor: 'rgba(0, 179, 255, 0.1)', shadowColor: '#00b3ff', shadowOpacity: 0.8, shadowRadius: 10 },
+          { width: cardWidth, height: SCREEN_HEIGHT * 0.7, backgroundColor: 'rgba(0, 179, 255, 0.1)', shadowColor: '#00b3ff', shadowOpacity: 0.8, shadowRadius: 10 },
         ]}
         onPress={() => handleImagePress(index)}
       >
-        <Image source={img.uri.startsWith('http') ? { uri: img.uri } : img.uri} style={styles.armorImage} />
+        <Image
+          source={img.uri.startsWith('http') ? { uri: img.uri } : img.uri}
+          style={styles.armorImage}
+          onError={(e) => {
+            console.error('Image load error:', e.nativeEvent.error, 'URI:', img.uri);
+            setImages(images.map((image, i) => i === index ? { ...image, uri: PLACEHOLDER_IMAGE } : image));
+          }}
+        />
         <View style={styles.transparentOverlay} />
       </TouchableOpacity>
       {mode !== 'view' && (
@@ -330,15 +551,27 @@ const CharacterDetailScreen = () => {
   const renderPreviewCard = (img) => (
     <TouchableOpacity
       key={img.index}
-      style={[
-        styles.card,
-        styles.clickable('#00b3ff'),
-        { width: cardWidth, height: SCREEN_HEIGHT * 0.7 },
-        { backgroundColor: 'rgba(0, 179, 255, 0.1)', shadowColor: '#00b3ff' },
-      ]}
+      style={{
+        ...styles.card,
+        borderWidth: 2,
+        borderColor: '#00b3ff',
+        width: cardWidth,
+        height: SCREEN_HEIGHT * 0.7,
+        backgroundColor: 'rgba(0, 179, 255, 0.1)',
+        shadowColor: '#00b3ff',
+        shadowOpacity: 0.8,
+        shadowRadius: 10,
+      }}
       onPress={() => setPreviewImage(null)}
     >
-      <Image source={img.uri.startsWith('http') ? { uri: img.uri } : img.uri} style={styles.armorImage} />
+      <Image
+        source={img.uri && img.uri !== PLACEHOLDER_IMAGE ? { uri: img.uri } : PLACEHOLDER_IMAGE}
+        style={styles.armorImage}
+        onError={(e) => {
+          console.error('Preview image load error:', e.nativeEvent.error, 'URI:', img.uri);
+          setPreviewImage({ ...img, uri: null });
+        }}
+      />
       <View style={styles.transparentOverlay} />
     </TouchableOpacity>
   );
@@ -347,9 +580,9 @@ const CharacterDetailScreen = () => {
     if (!mediaUri) return null;
     const mediaStyle = {
       width: '100%',
-      height: mediaType === 'video' ? 20 : 5,
+      height: mediaType === 'video' ? 200 : 50,
       borderRadius: 10,
-      // backgroundColor: '#333',
+      backgroundColor: '#333',
       justifyContent: 'center',
       alignItems: 'center',
     };
@@ -363,17 +596,13 @@ const CharacterDetailScreen = () => {
             resizeMode="cover"
             isLooping
             shouldPlay={mode === 'view' && isPlaying}
-            onPlaybackStatusUpdate={(status) => setIsPlaying(!!status.isPlaying)}
+            onPlaybackStatusUpdate={(status) => {
+              console.log('Video playback status:', status);
+              setIsPlaying(!!status.isPlaying);
+            }}
           />
         ) : mediaType === 'audio' ? (
           <View style={mediaStyle}>
-            <Audio
-              ref={audioRef}
-              source={{ uri: mediaUri }}
-              isLooping
-              shouldPlay={mode === 'view' && isPlaying}
-              onPlaybackStatusUpdate={(status) => setIsPlaying(!!status.isPlaying)}
-            />
             <Text style={styles.mediaText}>Audio: {mediaUri.split('/').pop()}</Text>
           </View>
         ) : (
@@ -397,14 +626,48 @@ const CharacterDetailScreen = () => {
 
   const togglePlayPause = async () => {
     if (mediaType === 'video' && videoRef.current) {
-      if (isPlaying) await videoRef.current.pauseAsync();
-      else await videoRef.current.playAsync();
-      setIsPlaying(!isPlaying);
+      try {
+        if (isPlaying) {
+          await videoRef.current.pauseAsync();
+        } else {
+          await videoRef.current.playAsync();
+        }
+        setIsPlaying(!isPlaying);
+        console.log(`Video ${isPlaying ? 'paused' : 'playing'}: ${mediaUri}`);
+      } catch (e) {
+        console.error('Video toggle error:', e.message, e.stack);
+        Alert.alert('Playback Error', `Failed to toggle video: ${e.message}`);
+      }
     } else if (mediaType === 'audio' && audioRef.current) {
-      if (isPlaying) await audioRef.current.pauseAsync();
-      else await audioRef.current.playAsync();
-      setIsPlaying(!isPlaying);
+      try {
+        const status = await audioRef.current.getStatusAsync();
+        if (!status.isLoaded) {
+          console.error('Audio not loaded for playback:', mediaUri);
+          Alert.alert('Playback Error', 'Audio is not loaded.');
+          return;
+        }
+        if (isPlaying) {
+          await audioRef.current.pauseAsync();
+        } else {
+          await audioRef.current.playAsync();
+        }
+        setIsPlaying(!isPlaying);
+        console.log(`Audio ${isPlaying ? 'paused' : 'playing'}: ${mediaUri}`);
+      } catch (e) {
+        console.error('Audio toggle error:', e.message, e.stack);
+        Alert.alert('Playback Error', `Failed to toggle audio: ${e.message}`);
+      }
     }
+  };
+
+  // Override back button to pass playback state
+  const handleBackPress = () => {
+    navigation.navigate('PowerTitans', { // Replace with actual screen name, e.g., 'CharacterList'
+      isPlaying,
+      mediaUri,
+      mediaType,
+      member,
+    });
   };
 
   return (
@@ -413,7 +676,7 @@ const CharacterDetailScreen = () => {
       style={styles.background}
     >
       <View style={styles.overlay}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
           <Text style={styles.backButtonText}>⬅️</Text>
         </TouchableOpacity>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
