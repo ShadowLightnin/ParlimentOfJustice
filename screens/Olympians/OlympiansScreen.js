@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import OlympiansMembers from './OlympiansMembers';
-import { Audio } from 'expo-av'; // Import expo-av for audio
+import { Audio } from 'expo-av';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -24,13 +24,14 @@ const cardHeightMultiplier = 1.6;
 const horizontalSpacing = isDesktop ? 40 : 10;
 const verticalSpacing = isDesktop ? 50 : 20;
 
-const rows = Math.ceil((OlympiansMembers.length - 1) / columns); // Adjust for Jennifer's card
+const rows = Math.ceil((OlympiansMembers.length - 1) / columns);
 
 export const OlympiansScreen = () => {
   const navigation = useNavigation();
   const [previewMember, setPreviewMember] = useState(null);
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
-  const [sound, setSound] = useState(null); // State to manage audio
+  const [sound, setSound] = useState(null);
+  const soundRef = useRef(null); // Track sound object to handle async loading
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -40,43 +41,70 @@ export const OlympiansScreen = () => {
 
     // Load and play background music
     async function loadSound() {
-      const { sound } = await Audio.Sound.createAsync(
-        require('../../assets/audio/SupermanTrailer.mp4'), // Replace with your audio file path
-        { shouldPlay: true, isLooping: true }
-      );
-      setSound(sound);
-      await sound.playAsync();
+      try {
+        const { sound } = await Audio.Sound.createAsync(
+          require('../../assets/audio/SupermanTrailer.mp4'),
+          { shouldPlay: true, isLooping: true }
+        );
+        soundRef.current = sound; // Store in ref to track immediately
+        setSound(sound);
+        await sound.playAsync();
+        console.log('Background music started: SupermanTrailer.mp4');
+      } catch (error) {
+        console.error('Failed to load audio:', error);
+      }
     }
     loadSound();
 
     return () => {
       subscription?.remove();
-      if (sound) {
-        sound.unloadAsync(); // Cleanup audio on unmount
+      // Cleanup audio on unmount
+      if (soundRef.current) {
+        soundRef.current.stopAsync().catch((e) => console.error('Error stopping audio:', e));
+        soundRef.current.unloadAsync().catch((e) => console.error('Error unloading audio:', e));
+        soundRef.current = null;
+        console.log('Audio stopped and unloaded on unmount');
       }
     };
   }, []);
 
   useEffect(() => {
-    // Pause music when navigating back
-    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
-      if (e.data.action.type === 'GO_BACK' && sound) {
-        sound.pauseAsync();
+    // Stop and unload music when navigating away
+    const unsubscribe = navigation.addListener('beforeRemove', async (e) => {
+      if (soundRef.current) {
+        try {
+          await soundRef.current.stopAsync();
+          await soundRef.current.unloadAsync();
+          soundRef.current = null;
+          console.log('Audio stopped and unloaded on navigation');
+        } catch (error) {
+          console.error('Error stopping/unloading audio on navigation:', error);
+        }
       }
     });
     return unsubscribe;
-  }, [navigation, sound]);
+  }, [navigation]);
 
-  const goToChat = () => {
+  const goToChat = async () => {
+    if (soundRef.current) {
+      try {
+        await soundRef.current.stopAsync();
+        await soundRef.current.unloadAsync();
+        soundRef.current = null;
+        console.log('Audio stopped and unloaded for TeamChat navigation');
+      } catch (error) {
+        console.error('Error stopping/unloading audio for TeamChat:', error);
+      }
+    }
     navigation.navigate('TeamChat');
   };
 
   const handleMemberPress = (member) => {
     if (member.clickable) {
       if (member.screen && member.screen !== '') {
-        navigation.navigate(member.screen); // Navigate to the defined screen if it exists and isn’t empty
+        navigation.navigate(member.screen);
       } else {
-        setPreviewMember(member); // Show modal if no screen or screen is empty
+        setPreviewMember(member);
       }
     }
   };
@@ -111,7 +139,7 @@ export const OlympiansScreen = () => {
       key={member.name}
       style={[
         styles.jenniferCard,
-        { width: 2 * cardSize, height: cardSize * 2.5 }, // Increased height multiplier to 2.5
+        { width: 2 * cardSize, height: cardSize * 2.5 },
       ]}
       onPress={() => handleMemberPress(member)}
       disabled={!member.clickable}
@@ -120,14 +148,13 @@ export const OlympiansScreen = () => {
         <>
           <Image
             source={member.image}
-            style={[styles.characterImage, { width: '100%', height: cardSize * 1.5 }]} // Adjusted image height
+            style={[styles.characterImage, { width: '100%', height: cardSize * 1.5 }]}
           />
           <View style={styles.transparentOverlay} />
         </>
       )}
       <Text style={[styles.codename, styles.jenniferCodename]}>{member.codename || ''}</Text>
       <Text style={[styles.name, styles.jenniferName]}>{member.name}</Text>
-      {/* <Text style={styles.inMemoriam}>In Loving Memory</Text> */}
     </TouchableOpacity>
   );
 
@@ -135,7 +162,7 @@ export const OlympiansScreen = () => {
     <TouchableOpacity
       key={member.name}
       style={[styles.previewCard(isDesktop, windowWidth), styles.clickable]}
-      onPress={() => setPreviewMember(null)} // Close modal on card press
+      onPress={() => setPreviewMember(null)}
     >
       <Image
         source={member.image || require('../../assets/Armor/PlaceHolder.jpg')}
@@ -160,9 +187,16 @@ export const OlympiansScreen = () => {
         <View style={styles.headerWrapper}>
           <TouchableOpacity
             style={styles.backButton}
-            onPress={() => {
-              if (sound) {
-                sound.pauseAsync(); // Stop music when back is pressed
+            onPress={async () => {
+              if (soundRef.current) {
+                try {
+                  await soundRef.current.stopAsync();
+                  await soundRef.current.unloadAsync();
+                  soundRef.current = null;
+                  console.log('Audio stopped and unloaded on back press');
+                } catch (error) {
+                  console.error('Error stopping/unloading audio on back press:', error);
+                }
               }
               navigation.goBack();
             }}
@@ -342,7 +376,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 8,
     padding: 10,
-    shadowColor: '#ff9999', // Soft pinkish shadow for a memorial feel
+    shadowColor: '#ff9999',
     shadowOpacity: 1.5,
     shadowRadius: 15,
     elevation: 10,
@@ -350,29 +384,22 @@ const styles = StyleSheet.create({
   jenniferCodename: {
     fontSize: 14,
     fontWeight: 'bold',
-    color: '#ff9999', // Pinkish tone for memorial
+    color: '#ff9999',
     textAlign: 'center',
     marginTop: 5,
   },
   jenniferName: {
     fontSize: 12,
     fontStyle: 'italic',
-    color: '#ffcccc', // Lighter pink for name
+    color: '#ffcccc',
     textAlign: 'center',
-  },
-  inMemoriam: {
-    fontSize: 12,
-    fontStyle: 'italic',
-    color: '#ff9999',
-    textAlign: 'center',
-    marginTop: 5,
   },
   jenniferCardContainer: {
     alignItems: 'center',
     marginTop: verticalSpacing,
   },
   spacingBelowJennifer: {
-    height: verticalSpacing * 2, // Double spacing below Jennifer's card
+    height: verticalSpacing * 2,
   },
   modalBackground: {
     flex: 1,

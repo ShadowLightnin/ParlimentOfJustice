@@ -35,10 +35,20 @@ const homageFactions = [
 const pinnacleHomageFactions = [
   { name: 'Thunder Born', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/Bludbruh2.jpg'), pinnacleScreen: 'PowerBorn' },
   { name: 'Monke Alliance', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/Monke.jpg'), pinnacleScreen: 'PowerMonke' },
-  // { name: 'Monke Alliance', screen: 'MonkeAllianceScreen', clickable: true, image: require('../assets/BackGround/Monke.jpg') },
+    // { name: 'Monke Alliance', screen: 'MonkeAllianceScreen', clickable: true, image: require('../assets/BackGround/Monke.jpg') },
   { name: 'Titans', screen: 'Titans', clickable: true, image: require('../assets/BackGround/Titans.jpg'), pinnacleScreen: 'PowerTitans' },
   { name: 'Olympians', screen: 'Olympians', clickable: true, image: require('../assets/BackGround/Olympians.jpg') },
   { name: 'Cobros', screen: 'Cobros', clickable: true, image: require('../assets/BackGround/Cobros.jpg'), pinnacleScreen: 'PowerCobros' },
+  { name: 'Legionaires', screen: 'Legionaires', clickable: true, image: require('../assets/BackGround/League.jpg') },
+];
+
+// Define desktop-specific order for Pinnacle Universe
+const desktopPinnacleHomageFactions = [
+  { name: 'Thunder Born', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/Bludbruh2.jpg'), pinnacleScreen: 'PowerBorn' },
+  { name: 'Titans', screen: 'Titans', clickable: true, image: require('../assets/BackGround/Titans.jpg'), pinnacleScreen: 'PowerTitans' },
+  { name: 'Monke Alliance', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/Monke.jpg'), pinnacleScreen: 'PowerMonke' },
+  { name: 'Cobros', screen: 'Cobros', clickable: true, image: require('../assets/BackGround/Cobros.jpg'), pinnacleScreen: 'PowerCobros' },
+  { name: 'Olympians', screen: 'Olympians', clickable: true, image: require('../assets/BackGround/Olympians.jpg') },
   { name: 'Legionaires', screen: 'Legionaires', clickable: true, image: require('../assets/BackGround/League.jpg') },
 ];
 
@@ -63,8 +73,8 @@ const otherFactions = [
   { name: 'Designs', screen: 'Designs', clickable: true, image: require('../assets/BackGround/donut_hologram.png') },
 ];
 
-const YOUR_EMAIL = "will@test.com"; // Your email
-const FRIEND_EMAIL = "samuelp.woodwell@gmail.com"; // Sam’s email
+const YOUR_EMAIL = "will@test.com";
+const FRIEND_EMAIL = "samuelp.woodwell@gmail.com";
 const mirrorRules = {
   [YOUR_EMAIL]: { 'Thunder Born': { targetCollection: `friend_ThunderBorn`, sameUniverse: true } },
   [FRIEND_EMAIL]: { 'Thunder Born': { targetCollection: `your_GuardiansOfJustice`, sameUniverse: false } },
@@ -284,7 +294,8 @@ export const HomeScreen = () => {
     );
   };
 
-  const filteredHomageFactions = isYourUniverse ? homageFactions : pinnacleHomageFactions;
+  // Use desktop-specific order for Pinnacle Universe on desktop
+  const filteredHomageFactions = isYourUniverse ? homageFactions : (isDesktop ? desktopPinnacleHomageFactions : pinnacleHomageFactions);
   const filteredOtherFactions = isYourUniverse ? otherFactions : [];
 
   return (

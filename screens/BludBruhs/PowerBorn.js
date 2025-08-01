@@ -29,15 +29,15 @@ const horizontalSpacing = isDesktop ? 40 : 20;
 const verticalSpacing = isDesktop ? 50 : 20;
 
 const initialMembers = [
-//   { name: 'Sam', codename: 'Void Walker', screen: 'CharacterDetail', clickable: true, image: require('../../assets/Armor/Sam.jpg'), borderColor: '#800080', tempKey: 'init1' },
-//   { name: 'Cole', codename: 'Cruiser', screen: 'CharacterDetail', clickable: true, image: require('../../assets/Armor/ColeR.jpg'), borderColor: '#800080', tempKey: 'init2' },
-//   { name: 'Taylor', codename: 'Stellar', screen: 'CharacterDetail', clickable: true, image: require('../../assets/Armor/Taylor.jpg'), borderColor: '#800080', tempKey: 'init3' },
-//   { name: 'James', codename: 'Shadowmind', screen: 'CharacterDetail', clickable: true, image: require('../../assets/Armor/JamesBb.jpg'), borderColor: '#800080', tempKey: 'init4' },
-//   { name: 'Tanner', codename: 'Wolff', screen: 'CharacterDetail', clickable: true, image: require('../../assets/Armor/TannerBb.jpg'), borderColor: '#800080', tempKey: 'init5' },
-//   { name: 'Adin', codename: 'Aotearoa', screen: 'CharacterDetail', clickable: true, image: require('../../assets/Armor/Adin.jpg'), borderColor: '#800080', tempKey: 'init6' },
-//   { name: 'Justin Platt', codename: 'Echo Wood', screen: 'CharacterDetail', clickable: true, image: require('../../assets/Armor/Justin2.jpg'), borderColor: '#800080', tempKey: 'init7' },
-//   { name: 'Zack Dustin', codename: 'Carved Echo', screen: 'CharacterDetail', clickable: true, image: require('../../assets/Armor/Zack2_cleanup.jpg'), borderColor: '#800080', tempKey: 'init8' },
-//   { name: 'Joseph', codename: 'Technoman', screen: 'CharacterDetail', clickable: true, image: require('../../assets/Armor/JosephD.jpg'), borderColor: '#800080', tempKey: 'init9' },
+  // { name: 'Sam', codename: 'Void Walker', screen: 'CharacterDetail', clickable: true, image: require('../../assets/Armor/Sam.jpg'), borderColor: '#800080', tempKey: 'init1' },
+  // { name: 'Cole', codename: 'Cruiser', screen: 'CharacterDetail', clickable: true, image: require('../../assets/Armor/ColeR.jpg'), borderColor: '#800080', tempKey: 'init2' },
+  // { name: 'Taylor', codename: 'Stellar', screen: 'CharacterDetail', clickable: true, image: require('../../assets/Armor/Taylor.jpg'), borderColor: '#800080', tempKey: 'init3' },
+  // { name: 'James', codename: 'Shadowmind', screen: 'CharacterDetail', clickable: true, image: require('../../assets/Armor/JamesBb.jpg'), borderColor: '#800080', tempKey: 'init4' },
+  // { name: 'Tanner', codename: 'Wolff', screen: 'CharacterDetail', clickable: true, image: require('../../assets/Armor/TannerBb.jpg'), borderColor: '#800080', tempKey: 'init5' },
+  // { name: 'Adin', codename: 'Aotearoa', screen: 'CharacterDetail', clickable: true, image: require('../../assets/Armor/Adin.jpg'), borderColor: '#800080', tempKey: 'init6' },
+  // { name: 'Justin Platt', codename: 'Echo Wood', screen: 'CharacterDetail', clickable: true, image: require('../../assets/Armor/Justin2.jpg'), borderColor: '#800080', tempKey: 'init7' },
+  // { name: 'Zack Dustin', codename: 'Carved Echo', screen: 'CharacterDetail', clickable: true, image: require('../../assets/Armor/Zack2_cleanup.jpg'), borderColor: '#800080', tempKey: 'init8' },
+  // { name: 'Joseph', codename: 'Technoman', screen: 'CharacterDetail', clickable: true, image: require('../../assets/Armor/JosephD.jpg'), borderColor: '#800080', tempKey: 'init9' },
 ];
 
 const fixedMembers = [
@@ -254,8 +254,7 @@ const PowerBorn = () => {
       >
         <Image source={item.image} style={styles.image} />
         <View style={styles.transparentOverlay} />
-        <Text style={[styles.codename, { textShadowColor: '#800080' }]}>{item.codename || item.name}</Text>
-        {!isFixed && <Text style={[styles.name, { textShadowColor: '#800080' }]}>{item.name}</Text>}
+        <Text style={styles.name}>{isFixed ? item.codename : item.name}</Text>
       </TouchableOpacity>
       {!isFixed && !item.tempKey && (
         <View style={[styles.buttons, { width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width }]}>
@@ -286,7 +285,7 @@ const PowerBorn = () => {
             <TouchableOpacity onPress={async () => { await stopBackgroundMusic(); navigation.navigate('Home'); }} style={styles.backButton}>
               <Text style={styles.backText}>← Back</Text>
             </TouchableOpacity>
-            <Text style={styles.header}>Power Born</Text>
+            <Text style={styles.header}>Thunder Born</Text>
             <View style={styles.headerRight}>
               <TouchableOpacity onPress={() => navigation.navigate('ThunderCharacterDetail', { mode: 'add', isYourUniverse: false })} style={styles.plusButton}>
                 <Text style={styles.plusText}>+</Text>
@@ -408,19 +407,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   cardContainer: { marginHorizontal: 10, alignItems: 'center' },
-  card: { borderRadius: 10, overflow: 'hidden', elevation: 5, backgroundColor: 'rgba(128, 0, 128, 0.1)' },
+  card: { borderRadius: 10, overflow: 'hidden', elevation: 5, backgroundColor: 'rgba(0, 0, 0, 0.7)' },
   clickable: (borderColor) => ({ 
     borderWidth: 2, 
     borderColor: borderColor || '#800080', 
-    shadowColor: borderColor || '#800080', 
-    shadowOpacity: 0.8, 
-    shadowRadius: 10 
   }),
   disabledCard: { opacity: 0.8, backgroundColor: '#555' },
   image: { width: '100%', height: '100%', resizeMode: 'cover' },
-  transparentOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1 },
-  codename: { position: 'absolute', bottom: 10, left: 5, fontSize: 14, fontWeight: 'bold', color: '#df45df', textShadowRadius: 10 },
-  name: { position: 'absolute', bottom: 25, left: 5, fontSize: 12, color: '#ddd', textShadowRadius: 10 },
+  transparentOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0, 0, 0, 0)', zIndex: 1 },
+  name: { position: 'absolute', bottom: 10, left: 10, fontSize: 16, color: 'white', fontWeight: 'bold' },
   buttons: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 10 },
   editButton: { backgroundColor: '#FFC107', padding: 5, borderRadius: 5, flex: 1, marginRight: 5, alignItems: 'center' },
   deleteButton: { backgroundColor: '#F44336', padding: 5, borderRadius: 5, flex: 1, marginLeft: 5, alignItems: 'center' },

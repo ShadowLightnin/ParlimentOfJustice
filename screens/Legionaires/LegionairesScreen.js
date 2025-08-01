@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -14,13 +14,12 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { collection, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
-import { db } from '../../lib/firebase'; // Ensure this path is correct
+import { db } from '../../lib/firebase';
 import { memberCategories } from './LegionairesMembers';
 import legionImages from './LegionairesImages';
 import LegionFriends from './LegionFriends';
-import { Audio } from 'expo-av'; // Import expo-av for audio
+import { Audio } from 'expo-av';
 
-// 🎯 Initialize with hardcoded members and fetch dynamic ones
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const isDesktop = SCREEN_WIDTH > 600;
@@ -33,13 +32,14 @@ const verticalSpacing = isDesktop ? 20 : 10;
 export const LegionairesScreen = () => {
   const navigation = useNavigation();
   const [previewMember, setPreviewMember] = useState(null);
-  const [members, setMembers] = useState(memberCategories); // Start with hardcoded
+  const [members, setMembers] = useState(memberCategories);
   const [editingMember, setEditingMember] = useState(null);
   const [deleteModal, setDeleteModal] = useState({ visible: false, member: null });
-  const [sound, setSound] = useState(null); // State to manage audio object
+  const [sound, setSound] = useState(null);
+  const soundRef = useRef(null); // Track sound object to handle async loading
 
   useEffect(() => {
-    // 🎯 Listen for real-time updates from Firestore
+    // Listen for real-time updates from Firestore
     const unsubscribe = onSnapshot(collection(db, 'LegionairesMembers'), (snapshot) => {
       const fetchedMembers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       const updatedMembers = memberCategories.map(category => ({
@@ -56,30 +56,60 @@ export const LegionairesScreen = () => {
 
     // Load and play background music
     async function loadSound() {
-      console.log('Loading Sound at:', new Date().toISOString());
-      const { sound } = await Audio.Sound.createAsync(
-        require('../../assets/audio/BlueBloodsExtend.mp4'), // Replace with your audio file path
-        { shouldPlay: true, isLooping: true }
-      );
-      setSound(sound);
-      console.log('Playing Sound at:', new Date().toISOString());
-      await sound.playAsync();
+      try {
+        console.log('Loading Sound at:', new Date().toISOString());
+        const { sound } = await Audio.Sound.createAsync(
+          require('../../assets/audio/BlueBloodsExtend.mp4'),
+          { shouldPlay: true, isLooping: true }
+        );
+        soundRef.current = sound; // Store in ref to track immediately
+        setSound(sound);
+        console.log('Playing Sound at:', new Date().toISOString());
+        await sound.playAsync();
+      } catch (error) {
+        console.error('Failed to load audio:', error);
+      }
     }
     loadSound();
 
     return () => {
       unsubscribe();
-      if (sound) {
-        console.log('Unloading Sound at:', new Date().toISOString());
-        sound.unloadAsync();
+      if (soundRef.current) {
+        soundRef.current.stopAsync().catch((e) => console.error('Error stopping audio:', e));
+        soundRef.current.unloadAsync().catch((e) => console.error('Error unloading audio:', e));
+        soundRef.current = null;
+        console.log('Audio stopped and unloaded on unmount');
       }
     };
   }, []);
 
-  const goToChat = () => {
-    if (sound) {
-      sound.stopAsync();
-      sound.unloadAsync();
+  useEffect(() => {
+    // Stop and unload music when navigating away
+    const unsubscribe = navigation.addListener('beforeRemove', async (e) => {
+      if (soundRef.current) {
+        try {
+          await soundRef.current.stopAsync();
+          await soundRef.current.unloadAsync();
+          soundRef.current = null;
+          console.log('Audio stopped and unloaded on navigation');
+        } catch (error) {
+          console.error('Error stopping/unloading audio on navigation:', error);
+        }
+      }
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  const goToChat = async () => {
+    if (soundRef.current) {
+      try {
+        await soundRef.current.stopAsync();
+        await soundRef.current.unloadAsync();
+        soundRef.current = null;
+        console.log('Audio stopped and unloaded for TeamChat navigation');
+      } catch (error) {
+        console.error('Error stopping/unloading audio for TeamChat:', error);
+      }
     }
     navigation.navigate('TeamChat');
   };
@@ -200,10 +230,16 @@ export const LegionairesScreen = () => {
     >
       <SafeAreaView style={styles.container}>
         <View style={styles.headerWrapper}>
-          <TouchableOpacity style={styles.backButton} onPress={() => {
-            if (sound) {
-              sound.stopAsync();
-              sound.unloadAsync();
+          <TouchableOpacity style={styles.backButton} onPress={async () => {
+            if (soundRef.current) {
+              try {
+                await soundRef.current.stopAsync();
+                await soundRef.current.unloadAsync();
+                soundRef.current = null;
+                console.log('Audio stopped and unloaded on back press');
+              } catch (error) {
+                console.error('Error stopping/unloading audio on back press:', error);
+              }
             }
             navigation.goBack();
           }}>
@@ -597,4 +633,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
 export default LegionairesScreen;

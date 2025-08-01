@@ -29,20 +29,20 @@ const horizontalSpacing = isDesktop ? 40 : 20;
 const verticalSpacing = isDesktop ? 50 : 20;
 
 const initialMembers = [
-//   { name: 'Zeke', codename: 'Enderstrike', screen: 'Zeke', clickable: true, image: require('../../assets/Armor/Zeke.jpg'), borderColor: 'purple', tempKey: 'init1' },
-//   { name: 'Elijah Potter', codename: 'Chaos Wither', screen: 'Elijah', clickable: true, image: require('../../assets/Armor/Elijah.jpg'), borderColor: 'purple', tempKey: 'init2' },
-//   { name: 'Tom C', codename: 'Thunder Whisperer', screen: 'TomBb', clickable: true, image: require('../../assets/Armor/TomC3_cleanup.jpg'), borderColor: 'purple', tempKey: 'init3' },
-//   { name: 'Ammon T', codename: 'Quick Wit', screen: 'AmmonT', clickable: true, image: require('../../assets/Armor/AmmonT.jpg'), borderColor: 'purple', tempKey: 'init4' },
-//   { name: 'Eli C', codename: 'Shawdow Hunter', screen: 'Eli', clickable: true, image: require('../../assets/Armor/Eli.jpg'), borderColor: 'purple', tempKey: 'init5' },
-//   { name: 'Ethan T', codename: 'Bolt Watcher', screen: 'EthanT', clickable: true, image: require('../../assets/Armor/Ethan.jpg'), borderColor: 'purple', tempKey: 'init6' },
-//   { name: 'Alex M', codename: 'Swiftmind', screen: 'AlexM', clickable: true, image: require('../../assets/Armor/AlexM.jpg'), borderColor: 'purple', tempKey: 'init7' },
-//   { name: 'Damon', codename: 'Pixel Maverick', screen: 'Damon', clickable: true, image: require('../../assets/Armor/Damon_cleanup.jpg'), borderColor: 'purple', tempKey: 'init8' },
-//   { name: 'Lauren', codename: '', screen: '', clickable: true, image: require('../../assets/Armor/Lauren.jpg'), borderColor: 'purple', tempKey: 'init9' },
-//   { name: 'Lizzie', codename: '', screen: '', clickable: true, image: require('../../assets/Armor/LizzieTB.jpg'), borderColor: 'purple', tempKey: 'init10' },
-//   { name: 'Rachel', codename: '', screen: '', clickable: true, image: require('../../assets/Armor/RachelTB.jpg'), borderColor: 'purple', tempKey: 'init11' },
-//   { name: 'Keith', codename: '', screen: '', clickable: true, image: require('../../assets/Armor/Keith.jpg'), borderColor: 'purple', tempKey: 'init12' },
-//   { name: 'Sandra', codename: '', screen: '', clickable: true, image: require('../../assets/Armor/Sandra.jpg'), borderColor: 'purple', tempKey: 'init13' },
-//   { name: 'Shadow', codename: '', screen: '', clickable: true, image: require('../../assets/Armor/SamsShadow.jpg'), borderColor: 'purple', tempKey: 'init14' },
+  // { name: 'Zeke', codename: 'Enderstrike', screen: 'MonkeCharacterDetail', clickable: true, image: require('../../assets/Armor/Zeke.jpg'), borderColor: 'purple', tempKey: 'init1' },
+  // { name: 'Elijah Potter', codename: 'Chaos Wither', screen: 'MonkeCharacterDetail', clickable: true, image: require('../../assets/Armor/Elijah.jpg'), borderColor: 'purple', tempKey: 'init2' },
+  // { name: 'Tom C', codename: 'Thunder Whisperer', screen: 'MonkeCharacterDetail', clickable: true, image: require('../../assets/Armor/TomC3_cleanup.jpg'), borderColor: 'purple', tempKey: 'init3' },
+  // { name: 'Ammon T', codename: 'Quick Wit', screen: 'MonkeCharacterDetail', clickable: true, image: require('../../assets/Armor/AmmonT.jpg'), borderColor: 'purple', tempKey: 'init4' },
+  // { name: 'Eli C', codename: 'Shawdow Hunter', screen: 'MonkeCharacterDetail', clickable: true, image: require('../../assets/Armor/Eli.jpg'), borderColor: 'purple', tempKey: 'init5' },
+  // { name: 'Ethan T', codename: 'Bolt Watcher', screen: 'MonkeCharacterDetail', clickable: true, image: require('../../assets/Armor/Ethan.jpg'), borderColor: 'purple', tempKey: 'init6' },
+  // { name: 'Alex M', codename: 'Swiftmind', screen: 'MonkeCharacterDetail', clickable: true, image: require('../../assets/Armor/AlexM.jpg'), borderColor: 'purple', tempKey: 'init7' },
+  // { name: 'Damon', codename: 'Pixel Maverick', screen: 'MonkeCharacterDetail', clickable: true, image: require('../../assets/Armor/Damon_cleanup.jpg'), borderColor: 'purple', tempKey: 'init8' },
+  // { name: 'Lauren', codename: '', screen: 'MonkeCharacterDetail', clickable: true, image: require('../../assets/Armor/Lauren.jpg'), borderColor: 'purple', tempKey: 'init9' },
+  // { name: 'Lizzie', codename: '', screen: 'MonkeCharacterDetail', clickable: true, image: require('../../assets/Armor/LizzieTB.jpg'), borderColor: 'purple', tempKey: 'init10' },
+  // { name: 'Rachel', codename: '', screen: 'MonkeCharacterDetail', clickable: true, image: require('../../assets/Armor/RachelTB.jpg'), borderColor: 'purple', tempKey: 'init11' },
+  // { name: 'Keith', codename: '', screen: 'MonkeCharacterDetail', clickable: true, image: require('../../assets/Armor/Keith.jpg'), borderColor: 'purple', tempKey: 'init12' },
+  // { name: 'Sandra', codename: '', screen: 'MonkeCharacterDetail', clickable: true, image: require('../../assets/Armor/Sandra.jpg'), borderColor: 'purple', tempKey: 'init13' },
+  // { name: 'Shadow', codename: '', screen: 'MonkeCharacterDetail', clickable: true, image: require('../../assets/Armor/SamsShadow.jpg'), borderColor: 'purple', tempKey: 'init14' },
 ];
 
 let backgroundSound = null;
@@ -115,7 +115,7 @@ const PowerMonke = () => {
             name: doc.data().name || 'Unnamed Character',
             codename: doc.data().codename || '',
             description: doc.data().description || '',
-            screen: doc.data().screen || '',
+            screen: 'MonkeCharacterDetail', // Ensure screen is set for all members
             clickable: true,
             image: doc.data().images?.[0]?.uri ? { uri: doc.data().images[0].uri } : require('../../assets/Armor/PlaceHolder.jpg'),
             borderColor: 'purple',
@@ -157,7 +157,7 @@ const PowerMonke = () => {
                       name: newMember.name,
                       codename: newMember.codename,
                       description: newMember.description,
-                      screen: newMember.screen || '',
+                      screen: 'MonkeCharacterDetail', // Ensure screen is set
                       images: newMember.images,
                       image: newMember.images?.[0]?.uri ? { uri: newMember.images[0].uri } : m.image,
                       videoUri: newMember.videoUri,
@@ -169,7 +169,7 @@ const PowerMonke = () => {
                 ...prevMembers.filter(m => !m.id),
                 {
                   ...newMember,
-                  screen: newMember.screen || '',
+                  screen: 'MonkeCharacterDetail', // Ensure screen is set
                   image: newMember.images?.[0]?.uri ? { uri: newMember.images[0].uri } : require('../../assets/Armor/PlaceHolder.jpg'),
                   borderColor: 'purple',
                 },
@@ -260,7 +260,6 @@ const PowerMonke = () => {
       >
         <Image source={item.image} style={styles.image} />
         <View style={styles.transparentOverlay} />
-        <Text style={styles.codename}>{item.codename || item.name}</Text>
         <Text style={styles.name}>{item.name}</Text>
       </TouchableOpacity>
       {!item.tempKey && (
@@ -291,7 +290,7 @@ const PowerMonke = () => {
           <TouchableOpacity onPress={async () => { await stopBackgroundMusic(); navigation.navigate('Home'); }} style={styles.backButton}>
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
-          <Text style={styles.header}>Power Monke</Text>
+          <Text style={styles.header}>Monke Alliance</Text>
           <View style={styles.headerRight}>
             <TouchableOpacity onPress={() => navigation.navigate('MonkeCharacterDetail', { mode: 'add' })} style={styles.plusButton}>
               <Text style={styles.plusText}>+</Text>
@@ -373,8 +372,6 @@ const styles = StyleSheet.create({
   },
   plusButton: { padding: 10 },
   plusText: { fontSize: 24, fontWeight: 'bold', color: '#00b3ff' },
-  teamChatButton: { padding: 5, backgroundColor: 'rgba(255, 255, 255, 0.2)', borderRadius: 5 },
-  teamChatImage: { width: 60, height: 60, resizeMode: 'contain' },
   musicControls: { flexDirection: 'row', justifyContent: 'center', marginVertical: 5 },
   musicButton: { padding: 10, backgroundColor: 'rgba(255, 255, 255, 0.2)', borderRadius: 8, marginHorizontal: 10 },
   musicButtonText: { fontSize: 12, fontWeight: 'bold', color: '#00b3ff' },
@@ -396,29 +393,17 @@ const styles = StyleSheet.create({
   clickable: (borderColor) => ({ 
     borderColor: borderColor || 'purple', 
     borderWidth: 2, 
-    shadowColor: borderColor || 'purple', 
-    shadowOpacity: 0.8, 
-    shadowRadius: 10 
   }),
   notClickable: { opacity: 0.5 },
   image: { width: '100%', height: '100%', resizeMode: 'cover' },
-  transparentOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 1 },
-  codename: { 
-    position: 'absolute', 
-    bottom: 10, 
-    left: 5, 
-    fontSize: 14, 
-    fontWeight: 'bold', 
-    color: '#fff', 
-    textShadowRadius: 10 
-  },
+  transparentOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0, 0, 0, 0)', zIndex: 1 },
   name: { 
     position: 'absolute', 
-    bottom: 25, 
-    left: 5, 
-    fontSize: 12, 
-    color: '#fff', 
-    textShadowRadius: 10 
+    bottom: 10, 
+    left: 10, 
+    fontSize: 16, 
+    color: 'white', 
+    fontWeight: 'bold' 
   },
   buttons: {
     flexDirection: 'row',
