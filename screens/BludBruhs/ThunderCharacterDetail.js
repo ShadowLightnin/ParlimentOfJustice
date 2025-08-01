@@ -26,30 +26,30 @@ const ALLOWED_EMAILS = ['samuelp.woodwell@gmail.com', 'cummingsnialla@gmail.com'
 const RESTRICT_ACCESS = true;
 const PLACEHOLDER_IMAGE = require('../../assets/Armor/PlaceHolder.jpg');
 
-const CharacterDetailScreen = () => {
+const ThunderCharacterDetail = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [images, setImages] = useState([]);
   const [mediaUri, setMediaUri] = useState(null);
-  const [mediaType, setMediaType] = useState(null); // 'video' or 'audio'
+  const [mediaType, setMediaType] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef(null);
-  const audioRef = useRef(null); // Will hold Audio.Sound instance
+  const audioRef = useRef(null);
   const [editingImageIndex, setEditingImageIndex] = useState(null);
   const [imageName, setImageName] = useState('');
   const [canSubmit, setCanSubmit] = useState(true);
   const [uploading, setUploading] = useState(false);
-  const [mode, setMode] = useState('add'); // 'add', 'edit', 'view'
+  const [mode, setMode] = useState('add');
   const [previewImage, setPreviewImage] = useState(null);
   const [deleteModal, setDeleteModal] = useState({ visible: false, type: null, index: null });
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
   const member = route.params?.member;
+  const isYourUniverse = route.params?.isYourUniverse ?? false;
   const isDesktop = windowWidth >= 768;
   const cardWidth = isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9;
 
-  // Configure Audio for background playback
   useEffect(() => {
     Audio.setAudioModeAsync({
       allowsRecordingIOS: false,
@@ -100,7 +100,7 @@ const CharacterDetailScreen = () => {
     const fetchCharacterData = async () => {
       if (member?.id && (!member.mediaUri || !member.mediaType)) {
         try {
-          const docRef = doc(db, 'powerTitansMembers', member.id);
+          const docRef = doc(db, 'powerBornMembers', member.id);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
             const data = docSnap.data();
@@ -110,7 +110,7 @@ const CharacterDetailScreen = () => {
             setImages(data.images?.map(img => ({ uri: img.uri, name: img.name || '' })) || []);
             setMediaUri(data.mediaUri || data.videoUri || null);
             setMediaType(data.mediaType || (data.videoUri ? 'video' : null));
-            setIsPlaying(false); // Ensure no auto-play on fetch
+            setIsPlaying(false);
           } else {
             console.warn('Character not found in Firestore:', member.id);
           }
@@ -131,7 +131,7 @@ const CharacterDetailScreen = () => {
         setImages(member.images?.map(img => ({ uri: img.uri, name: img.name || '' })) || []);
         setMediaUri(member.mediaUri || member.videoUri || null);
         setMediaType(member.mediaType || (member.videoUri ? 'video' : null));
-        setIsPlaying(false); // Ensure no auto-play on mount
+        setIsPlaying(false);
       }
     };
 
@@ -157,7 +157,6 @@ const CharacterDetailScreen = () => {
           await sound.loadAsync({ uri: mediaUri });
           audioRef.current = sound;
           console.log('Audio loaded in useEffect:', mediaUri);
-          // Only play if explicitly set (e.g., by user action)
           if (isPlaying && mode === 'view') {
             await sound.playAsync();
             console.log('Resumed audio playback:', mediaUri);
@@ -527,11 +526,11 @@ const CharacterDetailScreen = () => {
       let charId = member?.id;
       if (charId) {
         console.log(`Updating character with ID: ${charId}`);
-        await setDoc(doc(db, 'powerTitansMembers', charId), charData, { merge: true });
+        await setDoc(doc(db, 'powerBornMembers', charId), charData, { merge: true });
         console.log('Character updated:', { id: charId, name: charData.name, images: charData.images.length, mediaUri: charData.mediaUri });
       } else {
         console.log('Adding new character');
-        const charRef = await addDoc(collection(db, 'powerTitansMembers'), charData);
+        const charRef = await addDoc(collection(db, 'powerBornMembers'), charData);
         charId = charRef.id;
         console.log('Character added:', { id: charId, name: charData.name, images: charData.images.length, mediaUri: charData.mediaUri });
       }
@@ -540,7 +539,7 @@ const CharacterDetailScreen = () => {
       setImages(imageUrls);
       setMediaUri(mediaUrl);
       setMediaType(savedMediaType);
-      setIsPlaying(false); // Ensure no auto-play after save
+      setIsPlaying(false);
       return { ...charData, id: charId };
     } catch (e) {
       console.error('Save error:', e.message, e.stack);
@@ -602,7 +601,7 @@ const CharacterDetailScreen = () => {
       }
     }
     setIsPlaying(false);
-    navigation.navigate('PowerTitans', {
+    navigation.navigate('PowerBorn', {
       isPlaying: false,
       mediaUri: savedData ? savedData.mediaUri : mediaUri,
       mediaType: savedData ? savedData.mediaType : mediaType,
@@ -624,8 +623,8 @@ const CharacterDetailScreen = () => {
       <TouchableOpacity
         style={[
           styles.card,
-          mode !== 'view' ? styles.clickable('#00b3ff') : styles.notClickable,
-          { width: cardWidth, height: SCREEN_HEIGHT * 0.65, backgroundColor: 'rgba(0, 179, 255, 0.1)', shadowColor: '#00b3ff', shadowOpacity: 0.8, shadowRadius: 10 },
+          mode !== 'view' ? styles.clickable('#800080') : styles.notClickable,
+          { width: cardWidth, height: SCREEN_HEIGHT * 0.65, backgroundColor: 'rgba(128, 0, 128, 0.1)', shadowColor: '#800080', shadowOpacity: 0.8, shadowRadius: 10 },
         ]}
         onPress={() => handleImagePress(index)}
       >
@@ -665,13 +664,13 @@ const CharacterDetailScreen = () => {
       style={{
         ...styles.card,
         borderWidth: 2,
-        borderColor: '#00b3ff',
-        width: cardWidth,
-        height: SCREEN_HEIGHT * 0.65,
-        backgroundColor: 'rgba(0, 179, 255, 0.1)',
-        shadowColor: '#00b3ff',
+        borderColor: '#800080',
+        backgroundColor: 'rgba(128, 0, 128, 0.1)',
+        shadowColor: '#800080',
         shadowOpacity: 0.8,
         shadowRadius: 10,
+        width: cardWidth,
+        height: SCREEN_HEIGHT * 0.65,
       }}
       onPress={() => setPreviewImage(null)}
     >
@@ -721,11 +720,11 @@ const CharacterDetailScreen = () => {
           />
         ) : mediaType === 'audio' ? (
           <View style={mediaStyle}>
-            {/* <Text style={styles.mediaText}>Audio: {mediaUri.split('/').pop()}</Text> */}
+            <Text style={styles.mediaText}>Audio: {mediaUri.split('/').pop()}</Text>
           </View>
         ) : (
           <View style={mediaStyle}>
-            {/* <Text style={styles.mediaText}>File: {mediaUri.split('/').pop()}</Text> */}
+            <Text style={styles.mediaText}>File: {mediaUri.split('/').pop()}</Text>
           </View>
         )}
         {(mediaType === 'video' || mediaType === 'audio') && (
@@ -780,7 +779,7 @@ const CharacterDetailScreen = () => {
 
   return (
     <ImageBackground
-      source={require('../../assets/BackGround/Titans.jpg')}
+      source={require('../../assets/BackGround/Bludbruh2.jpg')}
       style={styles.background}
     >
       <View style={styles.overlay}>
@@ -917,7 +916,7 @@ const styles = StyleSheet.create({
   background: { flex: 1, width: SCREEN_WIDTH, height: SCREEN_HEIGHT, resizeMode: 'cover' },
   overlay: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.6)', paddingTop: 50 },
   backButton: { padding: 10, backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: 5 },
-  backButtonText: { fontSize: 24, color: '#fff' },
+  backButtonText: { fontSize: 24, color: '#800080', fontWeight: 'bold' },
   scrollContainer: { paddingBottom: 20 },
   headerContainer: {
     flexDirection: 'row',
@@ -929,18 +928,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#333',
   },
-  title: { fontSize: 28, fontWeight: 'bold', color: '#fff', textAlign: 'center', flex: 1 },
+  title: { fontSize: 28, fontWeight: 'bold', color: '#df45df', textAlign: 'center', flex: 1, textShadowColor: '#800080', textShadowOffset: { width: 1, height: 2 }, textShadowRadius: 10 },
   input: { backgroundColor: '#333', color: '#fff', padding: 10, borderRadius: 5, marginBottom: 10, fontSize: 16 },
   textArea: { height: 100, textAlignVertical: 'top' },
-  button: { backgroundColor: '#555', padding: 10, borderRadius: 5, alignItems: 'center', marginBottom: 10 },
-  saveButton: { backgroundColor: '#00b3ff', padding: 15, borderRadius: 5, alignItems: 'center' },
+  button: { backgroundColor: '#800080', padding: 10, borderRadius: 5, alignItems: 'center', marginBottom: 10 },
+  saveButton: { backgroundColor: '#800080', padding: 15, borderRadius: 5, alignItems: 'center' },
   disabled: { backgroundColor: '#ccc', opacity: 0.6 },
   buttonText: { color: '#fff', fontWeight: 'bold', fontSize: 12 },
   imageContainer: { width: '100%', paddingVertical: 20, backgroundColor: '#111', paddingLeft: 15 },
   imageScrollContainer: { flexDirection: 'row', paddingHorizontal: 10, alignItems: 'center' },
   armorCont: { marginRight: 20, alignItems: 'center' },
-  card: { height: SCREEN_HEIGHT * 0.65, borderRadius: 15, overflow: 'hidden', elevation: 5, backgroundColor: 'rgba(0, 0, 0, 0.7)' },
-  clickable: (borderColor) => ({ borderWidth: 2, borderColor: borderColor || 'rgba(255, 255, 255, 0.1)' }),
+  card: { height: SCREEN_HEIGHT * 0.65, borderRadius: 15, overflow: 'hidden', elevation: 5, backgroundColor: 'rgba(128, 0, 128, 0.1)' },
+  clickable: (borderColor) => ({ borderWidth: 2, borderColor: borderColor || '#800080', shadowColor: borderColor || '#800080', shadowOpacity: 0.8, shadowRadius: 10 }),
   notClickable: { opacity: 0.8 },
   armorImage: { width: '100%', height: '100%', resizeMode: 'contain', padding: 10 },
   imageNameContainer: {
@@ -964,7 +963,7 @@ const styles = StyleSheet.create({
   deleteButton: { backgroundColor: '#F44336', padding: 8, borderRadius: 5, flex: 1, marginLeft: 5, alignItems: 'center' },
   mediaContainer: { marginBottom: 10 },
   mediaText: { color: '#fff', fontSize: 16, textAlign: 'center' },
-  playButton: { backgroundColor: 'rgba(255, 255, 255, 0.2)', padding: 5, borderRadius: 5, alignSelf: 'center', marginTop: 5 },
+  playButton: { backgroundColor: '#800080', padding: 5, borderRadius: 5, alignSelf: 'center', marginTop: 5 },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.7)', justifyContent: 'center', alignItems: 'center' },
   modalContent: { backgroundColor: '#222', padding: 20, borderRadius: 10, alignItems: 'center' },
   descriptionText: { color: '#fff', fontSize: 14, textAlign: 'center', marginTop: 5 },
@@ -972,13 +971,13 @@ const styles = StyleSheet.create({
   modalOuterContainer: { width: '80%', height: '70%', justifyContent: 'center', alignItems: 'center' },
   previewAboutSection: { marginTop: 15, padding: 10, backgroundColor: '#222', borderRadius: 10, width: '100%' },
   previewName: { fontSize: 14, textAlign: 'center', marginTop: 5, color: '#fff' },
-  closeButton: { backgroundColor: '#2196F3', padding: 10, borderRadius: 5, alignSelf: 'center' },
+  closeButton: { backgroundColor: '#800080', padding: 10, borderRadius: 5, alignSelf: 'center' },
   modalText: { fontSize: 18, color: '#fff', marginBottom: 20, textAlign: 'center' },
   modalButtons: { flexDirection: 'row', justifyContent: 'space-between', width: '80%' },
-  modalCancel: { backgroundColor: '#2196F3', padding: 10, borderRadius: 5, flex: 1, marginRight: 10 },
+  modalCancel: { backgroundColor: '#800080', padding: 10, borderRadius: 5, flex: 1, marginRight: 10 },
   modalCancelText: { color: '#FFF', fontWeight: 'bold', textAlign: 'center' },
   modalDelete: { backgroundColor: '#F44336', padding: 10, borderRadius: 5, flex: 1, marginLeft: 10 },
   modalDeleteText: { color: '#FFF', fontWeight: 'bold', textAlign: 'center' },
 });
 
-export default CharacterDetailScreen;
+export default ThunderCharacterDetail;

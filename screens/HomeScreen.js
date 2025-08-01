@@ -33,8 +33,9 @@ const homageFactions = [
 ];
 
 const pinnacleHomageFactions = [
-  { name: 'Thunder Born', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/Bludbruh2.jpg') },
-  { name: 'Monke Alliance', screen: 'MonkeAllianceScreen', clickable: true, image: require('../assets/BackGround/Monke.jpg') },
+  { name: 'Thunder Born', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/Bludbruh2.jpg'), pinnacleScreen: 'PowerBorn' },
+  { name: 'Monke Alliance', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/Monke.jpg'), pinnacleScreen: 'PowerMonke' },
+  // { name: 'Monke Alliance', screen: 'MonkeAllianceScreen', clickable: true, image: require('../assets/BackGround/Monke.jpg') },
   { name: 'Titans', screen: 'Titans', clickable: true, image: require('../assets/BackGround/Titans.jpg'), pinnacleScreen: 'PowerTitans' },
   { name: 'Olympians', screen: 'Olympians', clickable: true, image: require('../assets/BackGround/Olympians.jpg') },
   { name: 'Cobros', screen: 'Cobros', clickable: true, image: require('../assets/BackGround/Cobros.jpg'), pinnacleScreen: 'PowerCobros' },

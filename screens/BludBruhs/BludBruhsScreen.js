@@ -262,7 +262,7 @@ const BludBruhsScreen = ({ route }) => {
           <Text style={[styles.header, isYourUniverse ? 
             { color: '#00FFFF', textShadowColor: '#fffb00', textShadowOffset: { width: 1, height: 2 }, textShadowRadius: 20 } : 
             { color: '#00FFFF', textShadowColor: '#fffb00', textShadowOffset: { width: 1, height: 2 }, textShadowRadius: 20 }]}>
-              {isYourUniverse ? 'Thunder Born' : 'Thunder Born'}
+              {isYourUniverse ? 'Thunder Born' : 'Shattered Realm: \nThunder Born'}
           </Text>
           <View style={styles.headerRight}>
             <TouchableOpacity onPress={goToChat} style={styles.chatButton}>

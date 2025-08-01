@@ -1,6 +1,10 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BludBruhsScreen from '../screens/BludBruhs/BludBruhsScreen';
+  import PowerBorn from '../screens/BludBruhs/PowerBorn';
+    import ThunderCharacterDetail from '../screens/BludBruhs/ThunderCharacterDetail';
+  import PowerMonke from '../screens/BludBruhs/PowerMonke';
+    import MonkeCharacterDetail from '../screens/BludBruhs/MonkeCharacterDetail';
 import AddMemberScreen from '../screens/BludBruhs/AddMemberScreen';
 import TeamChatScreen from "../screens/BludBruhs/TeamChatScreen";
 import UploadCharacter from '../components/UploadCharacter';
@@ -48,6 +52,10 @@ export function BludBruhsStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="BludBruhsHome" component={BludBruhsScreen} />
+        <Stack.Screen name="PowerBorn" component={PowerBorn} />
+          <Stack.Screen name="ThunderCharacterDetail" component={ThunderCharacterDetail} />
+        <Stack.Screen name="PowerMonke" component={PowerMonke} />
+          <Stack.Screen name="MonkeCharacterDetail" component={MonkeCharacterDetail} />
       <Stack.Screen name="AddMember" component={AddMemberScreen} />
       <Stack.Screen name="TeamChat" component={TeamChatScreen} />
       <Stack.Screen name="UploadCharacter" component={UploadCharacter} />

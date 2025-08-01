@@ -94,12 +94,30 @@ const HARDCODED_VEHICLES = [
     description: 'The Spartans big truck with lots of firepower, designed for heavy-duty transport and combat support.',
     image: require('../../../assets/ShipYard/Spartan7.jpg'),
   },
-    // {
-  //   id: 'vehicle-8',
-  //   name: 'Camborghini',
-  //   description: 'The Spartans heavy artillery vehicle, capable of delivering devastating firepower from a distance.',
-  //   image: require('../../../assets/ShipYard/Spartan8.jpg'),
-  // },
+    {
+    id: 'vehicle-8',
+    name: 'Camborghini',
+    description: 'Need to get somewhere fast? The Spartans luxury vehicle, designed for speed and style.',
+    image: require('../../../assets/ShipYard/Camborghini.jpg'),
+  },
+    {
+    id: 'vehicle-9',
+    name: 'Mongoose',
+    description: 'The Spartans light utility vehicle, designed for quick maneuvers and agile operations. And knolls.',
+    image: require('../../../assets/ShipYard/Mongoose.jpg'),
+  },
+    {
+    id: 'vehicle-10',
+    name: 'ATK',
+    description: 'The Spartans ATK vehicle, designed for rapid deployment and heavy dune rides',
+    image: require('../../../assets/ShipYard/ATK.jpg'),
+  },
+    {
+    id: 'vehicle-11',
+    name: 'Camustacge',
+    description: 'The Spartans loud vehicle, designed for sportsman operations and quick insertions.',
+    image: require('../../../assets/ShipYard/Camustacge.jpg'),
+  },
   // {
   //   id: 'vehicle-9',
   //   name: 'Wraith',
