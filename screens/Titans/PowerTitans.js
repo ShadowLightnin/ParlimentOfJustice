@@ -14,7 +14,7 @@ import {
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Audio } from 'expo-av';
 import { db, auth, storage } from '../../lib/firebase';
-import { collection, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
+import { collection, onSnapshot, deleteDoc, doc, getDocs } from 'firebase/firestore';
 import { ref as storageRef, deleteObject } from 'firebase/storage';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -45,14 +45,14 @@ const playBackgroundMusic = async () => {
         { shouldPlay: false, isLooping: true, volume: 0.7 }
       );
       backgroundSound = sound;
-      await backgroundSound.playAsync(); // Play the sound after loading
+      await backgroundSound.playAsync();
     } catch (error) {
       console.error('Failed to load audio file:', error);
       Alert.alert('Audio Error', 'Failed to load background music: ' + error.message);
     }
   } else {
     try {
-      await backgroundSound.playAsync(); // Resume if already loaded
+      await backgroundSound.playAsync();
     } catch (error) {
       console.error('Error playing sound:', error);
     }
@@ -84,6 +84,7 @@ const stopBackgroundMusic = async () => {
 const PowerTitans = () => {
   const navigation = useNavigation();
   const [members, setMembers] = useState(initialMembers);
+  const [limitModalVisible, setLimitModalVisible] = useState(false);
   const unsubscribeRef = useRef(null);
   const [deleteModal, setDeleteModal] = useState({ visible: false, member: null });
   const ALLOWED_EMAILS = ['samuelp.woodwell@gmail.com', 'cummingsnialla@gmail.com', 'will@test.com', 'c1wcummings@gmail.com', 'aileen@test.com'];
@@ -149,7 +150,7 @@ const PowerTitans = () => {
 
   const handleMemberPress = async (member) => {
     if (member.clickable && member.screen) {
-      await stopBackgroundMusic(); // Stop audio when clicking a card
+      await stopBackgroundMusic();
       navigation.navigate(member.screen, { member, mode: 'view' });
     }
   };
@@ -157,6 +158,30 @@ const PowerTitans = () => {
   const handleEdit = (member) => {
     if (member.clickable && member.screen) {
       navigation.navigate(member.screen, { member, mode: 'edit' });
+    }
+  };
+
+  const handleAddTitan = async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        Alert.alert('Authentication Required', 'Please log in to add a titan.', [
+          { text: 'OK', onPress: () => navigation.navigate('Login') },
+        ]);
+        return;
+      }
+      const titanCollection = collection(db, 'powerTitansMembers');
+      const snapshot = await getDocs(titanCollection);
+      const titanCount = snapshot.size;
+      if (titanCount >= 7) {
+        setLimitModalVisible(true);
+      } else {
+        await stopBackgroundMusic();
+        navigation.navigate('CharacterDetail', { mode: 'add' });
+      }
+    } catch (error) {
+      console.error('Error checking titan count:', error.message);
+      Alert.alert('Error', `Failed to check titan limit: ${error.message}`);
     }
   };
 
@@ -216,7 +241,7 @@ const PowerTitans = () => {
         <View style={styles.transparentOverlay} />
         <Text style={styles.name}>{member.name}</Text>
       </TouchableOpacity>
-      {!member.tempKey && ( // Only show edit/delete for Firebase members
+      {!member.tempKey && (
         <View style={styles.buttons}>
           <TouchableOpacity
             style={[styles.editButton, (!auth.currentUser || !ALLOWED_EMAILS.includes(auth.currentUser.email)) && styles.disabled]}
@@ -258,7 +283,7 @@ const PowerTitans = () => {
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
           <Text style={styles.header}>Titans</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('CharacterDetail', { mode: 'add' })} style={styles.plusButton}>
+          <TouchableOpacity onPress={handleAddTitan} style={styles.plusButton}>
             <Text style={styles.plusText}>+</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={goToEclipse} style={styles.eclipseButton}>
@@ -301,6 +326,24 @@ const PowerTitans = () => {
                   <Text style={styles.modalDeleteText}>Delete</Text>
                 </TouchableOpacity>
               </View>
+            </View>
+          </View>
+        </Modal>
+        <Modal
+          visible={limitModalVisible}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setLimitModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalText}>There can be no more than 7 Titans at a time.</Text>
+              <TouchableOpacity
+                style={styles.modalCancel}
+                onPress={() => setLimitModalVisible(false)}
+              >
+                <Text style={styles.modalCancelText}>OK</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </Modal>
@@ -350,7 +393,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: 'rgba(255,255,255,0.9)',
+    backgroundColor: '#000',
     padding: 20,
     borderRadius: 10,
     alignItems: 'center',
@@ -358,7 +401,7 @@ const styles = StyleSheet.create({
   },
   modalText: {
     fontSize: 18,
-    color: '#000',
+    color: 'rgba(255,255,255,0.9)',
     marginBottom: 20,
     textAlign: 'center',
   },
