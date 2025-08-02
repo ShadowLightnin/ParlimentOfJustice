@@ -17,6 +17,7 @@ import { Audio } from 'expo-av';
 import Guardians from './Guardians';
 import Elementals from './Elementals';
 import JusticeLeague from './JusticeLeague';
+import TheSeven from './TheSeven';
 
 // Screen dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -199,6 +200,15 @@ const JusticeScreen = () => {
             <FlatList
               horizontal
               data={JusticeLeague}
+              renderItem={renderHeroCard}
+              keyExtractor={(item) => item.name || item.image.toString()}
+              showsHorizontalScrollIndicator={true}
+              contentContainerStyle={styles.scrollContainer}
+            />
+            <Text style={styles.categoryHeader}>Omni Jumpers</Text>
+            <FlatList
+              horizontal
+              data={TheSeven}
               renderItem={renderHeroCard}
               keyExtractor={(item) => item.name || item.image.toString()}
               showsHorizontalScrollIndicator={true}
