@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import {
   ImageBackground,
   Alert
 } from 'react-native';
-import { useNavigation, useIsFocused } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Audio } from 'expo-av';
 
 // Screen dimensions
@@ -30,7 +30,7 @@ const verticalSpacing = isDesktop ? 50 : 20;
 // Background music (shared across screens)
 let backgroundSound = null;
 
-const playBackgroundMusic = async () => {
+const playTheme = async () => {
   if (!backgroundSound) {
     try {
       const { sound } = await Audio.Sound.createAsync(
@@ -43,6 +43,26 @@ const playBackgroundMusic = async () => {
     } catch (error) {
       console.error('Failed to load audio file:', error);
       Alert.alert('Audio Error', 'Failed to load background music: ' + error.message);
+    }
+  } else if (!isPlaying) {
+    try {
+      await backgroundSound.playAsync();
+      setIsPlaying(true);
+      console.log('Audio resumed at:', new Date().toISOString());
+    } catch (error) {
+      console.error('Error resuming sound:', error);
+    }
+  }
+};
+
+const pauseTheme = async () => {
+  if (backgroundSound && isPlaying) {
+    try {
+      await backgroundSound.pauseAsync();
+      setIsPlaying(false);
+      console.log('Audio paused at:', new Date().toISOString());
+    } catch (error) {
+      console.error('Error pausing sound:', error);
     }
   }
 };
@@ -116,27 +136,77 @@ const enlightened = [
 
 const VillainsTab = () => {
   const navigation = useNavigation();
-  const isFocused = useIsFocused();
+  const [currentSound, setCurrentSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   // Handle audio based on focus
-  useEffect(() => {
-    if (isFocused && !backgroundSound) {
-      playBackgroundMusic();
-    }
-    return () => {
-      // Only stop music if navigating to Villains
-      if (navigation.getState().routes[navigation.getState().index].name === 'Villains') {
-        stopBackgroundMusic();
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        if (currentSound) {
+          currentSound.stopAsync().catch((error) => console.error('Error stopping sound:', error));
+          currentSound.unloadAsync().catch((error) => console.error('Error unloading sound:', error));
+          setCurrentSound(null);
+          setIsPlaying(false);
+          console.log('BlackHoleBomb.mp4 stopped at:', new Date().toISOString());
+        }
+      };
+    }, [currentSound])
+  );
+
+  // Handle music playback
+  const playTheme = async () => {
+    if (!currentSound) {
+      try {
+        const { sound } = await Audio.Sound.createAsync(
+          require('../../assets/audio/BlackHoleBomb.mp4'),
+          { shouldPlay: true, isLooping: true, volume: 0.7 }
+        );
+        setCurrentSound(sound);
+        await sound.playAsync();
+        setIsPlaying(true);
+        console.log('BlackHoleBomb.mp4 started playing at:', new Date().toISOString());
+      } catch (error) {
+        console.error('Failed to load audio file:', error);
+        Alert.alert('Audio Error', 'Failed to load background music: ' + error.message);
       }
-    };
-  }, [isFocused, navigation]);
+    } else if (!isPlaying) {
+      try {
+        await currentSound.playAsync();
+        setIsPlaying(true);
+        console.log('Audio resumed at:', new Date().toISOString());
+      } catch (error) {
+        console.error('Error resuming sound:', error);
+      }
+    }
+  };
+
+  // Handle music pause
+  const pauseTheme = async () => {
+    if (currentSound && isPlaying) {
+      try {
+        await currentSound.pauseAsync();
+        setIsPlaying(false);
+        console.log('Audio paused at:', new Date().toISOString());
+      } catch (error) {
+        console.error('Error pausing sound:', error);
+      }
+    }
+  };
 
   // Handle villain card press
   const handleVillainPress = async (villain) => {
     if (villain.clickable && villain.screen) {
-      // Stop audio for EvilSam, SableScreen, and any future additions
-      if (['EvilSam', 'SableScreen'].includes(villain.screen)) {
-        await stopBackgroundMusic();
+      if (currentSound) {
+        try {
+          await currentSound.stopAsync();
+          await currentSound.unloadAsync();
+          setCurrentSound(null);
+          setIsPlaying(false);
+          console.log('BlackHoleBomb.mp4 stopped at:', new Date().toISOString());
+        } catch (error) {
+          console.error('Error stopping/unloading sound:', error);
+        }
       }
       navigation.navigate(villain.screen);
     }
@@ -174,7 +244,17 @@ const VillainsTab = () => {
           {/* Back Button */}
           <TouchableOpacity
             onPress={async () => {
-              await stopBackgroundMusic();
+              if (currentSound) {
+                try {
+                  await currentSound.stopAsync();
+                  await currentSound.unloadAsync();
+                  setCurrentSound(null);
+                  setIsPlaying(false);
+                  console.log('BlackHoleBomb.mp4 stopped at:', new Date().toISOString());
+                } catch (error) {
+                  console.error('Error stopping/unloading sound:', error);
+                }
+              }
               navigation.navigate('Villains');
             }}
             style={styles.backButton}
@@ -188,6 +268,16 @@ const VillainsTab = () => {
           >
             <Text style={styles.header}>Villains</Text>
           </TouchableOpacity>
+
+          {/* Music Controls */}
+          <View style={styles.musicControls}>
+            <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
+              <Text style={styles.musicButtonText}>Theme</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
+              <Text style={styles.musicButtonText}>Pause</Text>
+            </TouchableOpacity>
+          </View>
 
           {/* Scrollable Grids */}
           <View style={styles.scrollWrapper}>
@@ -253,6 +343,22 @@ const styles = StyleSheet.create({
     textShadowColor: '#ff4d4dff',
     textShadowRadius: 20,
     marginBottom: 20,
+  },
+  musicControls: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  musicButton: {
+    padding: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 5,
+    marginHorizontal: 10,
+  },
+  musicButtonText: {
+    fontSize: 12,
+    color: '#ff0000',
+    fontWeight: 'bold',
   },
   scrollWrapper: {
     width: SCREEN_WIDTH,

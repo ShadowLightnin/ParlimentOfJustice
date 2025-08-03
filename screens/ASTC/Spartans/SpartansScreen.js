@@ -17,6 +17,7 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // Background Images Array
 const backgroundImages = [
+  require('../../../assets/BackGround/ASTC.jpg'),
   require('../../../assets/Halo/26.jpg'),
   require('../../../assets/Halo/5.jpg'),
   require('../../../assets/Halo/9.jpg'),
@@ -28,6 +29,8 @@ const backgroundImages = [
   require('../../../assets/Halo/16.jpg'),
   require('../../../assets/Halo/18.jpg'),
   require('../../../assets/Halo/19.jpg'),
+  require('../../../assets/BackGround/ASTC.jpg'),
+  require('../../../assets/BackGround/ASTC.jpg'),
   require('../../../assets/Halo/20.png'),
   require('../../../assets/Halo/21.jpg'),
   require('../../../assets/Halo/22.jpg'),
@@ -35,12 +38,18 @@ const backgroundImages = [
   require('../../../assets/Halo/24.jpg'),
   require('../../../assets/Halo/25.jpg'),
   require('../../../assets/Halo/27.jpg'),
+  require('../../../assets/BackGround/ASTC.jpg'),
+  require('../../../assets/BackGround/ASTC.jpg'),
   require('../../../assets/Halo/28.jpg'),
   require('../../../assets/Halo/29.jpg'),
   require('../../../assets/Halo/30.jpg'),
   require('../../../assets/Halo/31.jpg'),
   require('../../../assets/Halo/32.png'),
   require('../../../assets/Halo/33.jpg'),
+  require('../../../assets/BackGround/ASTC.jpg'),
+  require('../../../assets/BackGround/ASTC.jpg'),
+  require('../../../assets/BackGround/ASTC.jpg'),
+
 ];
 
 // Member Data

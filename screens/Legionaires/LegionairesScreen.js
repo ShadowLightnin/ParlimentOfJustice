@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -12,7 +12,7 @@ import {
   Modal,
   Alert,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { collection, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { memberCategories } from './LegionairesMembers';
@@ -35,8 +35,63 @@ export const LegionairesScreen = () => {
   const [members, setMembers] = useState(memberCategories);
   const [editingMember, setEditingMember] = useState(null);
   const [deleteModal, setDeleteModal] = useState({ visible: false, member: null });
-  const [sound, setSound] = useState(null);
-  const soundRef = useRef(null); // Track sound object to handle async loading
+  const [currentSound, setCurrentSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  // Handle music playback
+  const playTheme = async () => {
+    if (!currentSound) {
+      try {
+        const { sound } = await Audio.Sound.createAsync(
+          require('../../assets/audio/BlueBloodsExtend.mp4'),
+          { shouldPlay: true, isLooping: true, volume: 1.0 }
+        );
+        setCurrentSound(sound);
+        await sound.playAsync();
+        setIsPlaying(true);
+        console.log('Playing Sound at:', new Date().toISOString());
+      } catch (error) {
+        console.error('Failed to load audio file:', error);
+        Alert.alert('Audio Error', 'Failed to load background music. Please check the audio file path: ../../assets/audio/BlueBloodsExtend.mp4');
+      }
+    } else if (!isPlaying) {
+      try {
+        await currentSound.playAsync();
+        setIsPlaying(true);
+        console.log('Audio resumed at:', new Date().toISOString());
+      } catch (error) {
+        console.error('Error resuming sound:', error);
+      }
+    }
+  };
+
+  // Handle music pause
+  const pauseTheme = async () => {
+    if (currentSound && isPlaying) {
+      try {
+        await currentSound.pauseAsync();
+        setIsPlaying(false);
+        console.log('Audio paused at:', new Date().toISOString());
+      } catch (error) {
+        console.error('Error pausing sound:', error);
+      }
+    }
+  };
+
+  // Cleanup sound on unmount or navigation
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        if (currentSound) {
+          currentSound.stopAsync().catch((error) => console.error('Error stopping sound:', error));
+          currentSound.unloadAsync().catch((error) => console.error('Error unloading sound:', error));
+          setCurrentSound(null);
+          setIsPlaying(false);
+          console.log('Audio stopped and unloaded on unmount');
+        }
+      };
+    }, [currentSound])
+  );
 
   useEffect(() => {
     // Listen for real-time updates from Firestore
@@ -54,58 +109,18 @@ export const LegionairesScreen = () => {
       console.error('Error fetching members:', error);
     });
 
-    // Load and play background music
-    async function loadSound() {
-      try {
-        console.log('Loading Sound at:', new Date().toISOString());
-        const { sound } = await Audio.Sound.createAsync(
-          require('../../assets/audio/BlueBloodsExtend.mp4'),
-          { shouldPlay: true, isLooping: true }
-        );
-        soundRef.current = sound; // Store in ref to track immediately
-        setSound(sound);
-        console.log('Playing Sound at:', new Date().toISOString());
-        await sound.playAsync();
-      } catch (error) {
-        console.error('Failed to load audio:', error);
-      }
-    }
-    loadSound();
-
     return () => {
       unsubscribe();
-      if (soundRef.current) {
-        soundRef.current.stopAsync().catch((e) => console.error('Error stopping audio:', e));
-        soundRef.current.unloadAsync().catch((e) => console.error('Error unloading audio:', e));
-        soundRef.current = null;
-        console.log('Audio stopped and unloaded on unmount');
-      }
     };
   }, []);
 
-  useEffect(() => {
-    // Stop and unload music when navigating away
-    const unsubscribe = navigation.addListener('beforeRemove', async (e) => {
-      if (soundRef.current) {
-        try {
-          await soundRef.current.stopAsync();
-          await soundRef.current.unloadAsync();
-          soundRef.current = null;
-          console.log('Audio stopped and unloaded on navigation');
-        } catch (error) {
-          console.error('Error stopping/unloading audio on navigation:', error);
-        }
-      }
-    });
-    return unsubscribe;
-  }, [navigation]);
-
   const goToChat = async () => {
-    if (soundRef.current) {
+    if (currentSound) {
       try {
-        await soundRef.current.stopAsync();
-        await soundRef.current.unloadAsync();
-        soundRef.current = null;
+        await currentSound.stopAsync();
+        await currentSound.unloadAsync();
+        setCurrentSound(null);
+        setIsPlaying(false);
         console.log('Audio stopped and unloaded for TeamChat navigation');
       } catch (error) {
         console.error('Error stopping/unloading audio for TeamChat:', error);
@@ -114,8 +129,19 @@ export const LegionairesScreen = () => {
     navigation.navigate('TeamChat');
   };
 
-  const handleMemberPress = (member) => {
+  const handleMemberPress = async (member) => {
     if (member.clickable) {
+      if (currentSound) {
+        try {
+          await currentSound.stopAsync();
+          await currentSound.unloadAsync();
+          setCurrentSound(null);
+          setIsPlaying(false);
+          console.log('Audio stopped and unloaded for member navigation');
+        } catch (error) {
+          console.error('Error stopping sound for member navigation:', error);
+        }
+      }
       if (member.screen && member.screen !== '') {
         navigation.navigate(member.screen);
       } else {
@@ -225,17 +251,18 @@ export const LegionairesScreen = () => {
 
   return (
     <ImageBackground
-      source={require('../../assets/BackGround/League.jpg')}
+      source={require('../../assets/BackGround/Legionaires2.jpg')}
       style={styles.background}
     >
       <SafeAreaView style={styles.container}>
         <View style={styles.headerWrapper}>
           <TouchableOpacity style={styles.backButton} onPress={async () => {
-            if (soundRef.current) {
+            if (currentSound) {
               try {
-                await soundRef.current.stopAsync();
-                await soundRef.current.unloadAsync();
-                soundRef.current = null;
+                await currentSound.stopAsync();
+                await currentSound.unloadAsync();
+                setCurrentSound(null);
+                setIsPlaying(false);
                 console.log('Audio stopped and unloaded on back press');
               } catch (error) {
                 console.error('Error stopping/unloading audio on back press:', error);
@@ -248,6 +275,15 @@ export const LegionairesScreen = () => {
           <Text style={styles.header}>Legionnaires</Text>
           <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
             <Text style={styles.chatText}>🛡️</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.musicControls}>
+          <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
+            <Text style={styles.musicButtonText}>Theme</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
+            <Text style={styles.musicButtonText}>Pause</Text>
           </TouchableOpacity>
         </View>
 
@@ -406,6 +442,22 @@ const styles = StyleSheet.create({
   chatText: {
     fontSize: 20,
     color: '#00b3ff',
+  },
+  musicControls: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  musicButton: {
+    padding: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 5,
+    marginHorizontal: 10,
+  },
+  musicButtonText: {
+    fontSize: 12,
+    color: '#00b3ff',
+    fontWeight: 'bold',
   },
   scrollContainer: {
     paddingBottom: 20,

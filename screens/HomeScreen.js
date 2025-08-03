@@ -25,9 +25,9 @@ const homageFactions = [
   { name: 'Eclipse', screen: 'Eclipse', clickable: true, image: require('../assets/BackGround/Eclipse.jpg') },
   { name: 'Olympians', screen: 'Olympians', clickable: true, image: require('../assets/BackGround/Olympians.jpg') },
   { name: 'Cobros', screen: 'Cobros', clickable: true, image: require('../assets/BackGround/Cobros.jpg') },
-  { name: 'ASTC (Spartans)', screen: 'ASTC', clickable: true, image: require('../assets/BackGround/26.jpg') },
+  { name: 'ASTC (Spartans)', screen: 'ASTC', clickable: true, image: require('../assets/BackGround/ASTC.jpg') },
   { name: 'Thunder Born', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/Bludbruh2.jpg') },
-  { name: 'Legionaires', screen: 'Legionaires', clickable: true, image: require('../assets/BackGround/League.jpg') },
+  { name: 'Legionaires', screen: 'Legionaires', clickable: true, image: require('../assets/BackGround/Legionaires2.jpg') },
   { name: 'The Forge', screen: 'ForgeScreen', clickable: true, image: require('../assets/BackGround/Forge.jpg') },
   { name: 'Constollation', screen: 'Constollation', clickable: true, image: require('../assets/BackGround/Constollation.jpg') },
 ];
@@ -39,7 +39,7 @@ const pinnacleHomageFactions = [
   { name: 'Titans', screen: 'Titans', clickable: true, image: require('../assets/BackGround/Titans.jpg'), pinnacleScreen: 'PowerTitans' },
   { name: 'Olympians', screen: 'Olympians', clickable: true, image: require('../assets/BackGround/Olympians.jpg') },
   { name: 'Cobros', screen: 'Cobros', clickable: true, image: require('../assets/BackGround/Cobros.jpg'), pinnacleScreen: 'PowerCobros' },
-  { name: 'Legionaires', screen: 'Legionaires', clickable: true, image: require('../assets/BackGround/League.jpg') },
+  { name: 'Legionaires', screen: 'Legionaires', clickable: true, image: require('../assets/BackGround/Legionaires.jpg') },
 ];
 
 // Define desktop-specific order for Pinnacle Universe
@@ -49,7 +49,7 @@ const desktopPinnacleHomageFactions = [
   { name: 'Monke Alliance', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/Monke.jpg'), pinnacleScreen: 'PowerMonke' },
   { name: 'Cobros', screen: 'Cobros', clickable: true, image: require('../assets/BackGround/Cobros.jpg'), pinnacleScreen: 'PowerCobros' },
   { name: 'Olympians', screen: 'Olympians', clickable: true, image: require('../assets/BackGround/Olympians.jpg') },
-  { name: 'Legionaires', screen: 'Legionaires', clickable: true, image: require('../assets/BackGround/League.jpg') },
+  { name: 'Legionaires', screen: 'Legionaires', clickable: true, image: require('../assets/BackGround/Legionaires.jpg') },
 ];
 
 const worldBuildingFactions = [

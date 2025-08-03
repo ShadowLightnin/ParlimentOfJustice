@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import {
   ImageBackground,
   Alert
 } from 'react-native';
-import { useNavigation, useIsFocused } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Audio } from 'expo-av';
 
 // Screen dimensions
@@ -54,7 +54,7 @@ const cardSizes = {
 // Background music (shared across screens)
 let backgroundSound = null;
 
-const playBackgroundMusic = async () => {
+const playTheme = async () => {
   if (!backgroundSound) {
     try {
       const { sound } = await Audio.Sound.createAsync(
@@ -67,6 +67,26 @@ const playBackgroundMusic = async () => {
     } catch (error) {
       console.error('Failed to load audio file:', error);
       Alert.alert('Audio Error', 'Failed to load background music: ' + error.message);
+    }
+  } else if (!isPlaying) {
+    try {
+      await backgroundSound.playAsync();
+      setIsPlaying(true);
+      console.log('Audio resumed at:', new Date().toISOString());
+    } catch (error) {
+      console.error('Error resuming sound:', error);
+    }
+  }
+};
+
+const pauseTheme = async () => {
+  if (backgroundSound && isPlaying) {
+    try {
+      await backgroundSound.pauseAsync();
+      setIsPlaying(false);
+      console.log('Audio paused at:', new Date().toISOString());
+    } catch (error) {
+      console.error('Error pausing sound:', error);
     }
   }
 };
@@ -86,27 +106,37 @@ const stopBackgroundMusic = async () => {
 
 const BigBadsTab = () => {
   const navigation = useNavigation();
-  const isFocused = useIsFocused();
+  const [currentSound, setCurrentSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   // Handle audio based on focus
-  useEffect(() => {
-    if (isFocused && !backgroundSound) {
-      playBackgroundMusic();
-    }
-    return () => {
-      // Only stop music if navigating to Villains
-      if (navigation.getState().routes[navigation.getState().index].name === 'Villains') {
-        stopBackgroundMusic();
-      }
-    };
-  }, [isFocused, navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        if (currentSound) {
+          currentSound.stopAsync().catch((error) => console.error('Error stopping sound:', error));
+          currentSound.unloadAsync().catch((error) => console.error('Error unloading sound:', error));
+          setCurrentSound(null);
+          setIsPlaying(false);
+          console.log('BigThreat.mp4 stopped at:', new Date().toISOString());
+        }
+      };
+    }, [currentSound])
+  );
 
   // Handle big bad card press
   const handleBigBadPress = async (bigBad) => {
     if (bigBad.clickable && bigBad.screen) {
-      // Stop audio for ErevosScreen, Torath, and any future additions
-      if (['', ''].includes(bigBad.screen)) {
-        await stopBackgroundMusic();
+      if (currentSound) {
+        try {
+          await currentSound.stopAsync();
+          await currentSound.unloadAsync();
+          setCurrentSound(null);
+          setIsPlaying(false);
+          console.log('BigThreat.mp4 stopped at:', new Date().toISOString());
+        } catch (error) {
+          console.error('Error stopping/unloading sound:', error);
+        }
       }
       navigation.navigate(bigBad.screen);
     }
@@ -143,7 +173,17 @@ const BigBadsTab = () => {
         {/* Back Button */}
         <TouchableOpacity
           onPress={async () => {
-            await stopBackgroundMusic();
+            if (currentSound) {
+              try {
+                await currentSound.stopAsync();
+                await currentSound.unloadAsync();
+                setCurrentSound(null);
+                setIsPlaying(false);
+                console.log('BigThreat.mp4 stopped at:', new Date().toISOString());
+              } catch (error) {
+                console.error('Error stopping/unloading sound:', error);
+              }
+            }
             navigation.navigate('Villains');
           }}
           style={styles.backButton}
@@ -157,6 +197,16 @@ const BigBadsTab = () => {
         >
           <Text style={styles.header}>Big Bads</Text>
         </TouchableOpacity>
+
+        {/* Music Controls */}
+        <View style={styles.musicControls}>
+          <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
+            <Text style={styles.musicButtonText}>Theme</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
+            <Text style={styles.musicButtonText}>Pause</Text>
+          </TouchableOpacity>
+        </View>
 
         {/* Horizontal Scrollable Cards */}
         <View style={styles.scrollWrapper}>
@@ -209,6 +259,22 @@ const styles = StyleSheet.create({
     textShadowColor: '#9561f5',
     textShadowRadius: 25,
     marginBottom: 20,
+  },
+  musicControls: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  musicButton: {
+    padding: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 5,
+    marginHorizontal: 10,
+  },
+  musicButtonText: {
+    fontSize: 12,
+    color: '#8800ff',
+    fontWeight: 'bold',
   },
   scrollWrapper: {
     width: SCREEN_WIDTH,

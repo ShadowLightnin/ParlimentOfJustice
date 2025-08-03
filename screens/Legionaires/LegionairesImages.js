@@ -1,17 +1,19 @@
 // 🎯 Static mapping of character images for Legionaires
 const legionImages = {
+  // 🟢 College Members
   'Mason Erickson': { image: require('../../assets/Armor/MasonE.jpg'), clickable: true },
   'Davis Clark': { image: require('../../assets/Armor/Davis.jpg'), clickable: true },
   'Mckain Bailey': { image: require('../../assets/Armor/Bailey.jpg'), clickable: true },
 
 
+  // 🟢 Young Womens members
   'Mika': { image: require('../../assets/Armor/Mika.jpg'), clickable: true },
   'Malia': { image: require('../../assets/Armor/Malia.jpg'), clickable: true },
   'Jami': { image: require('../../assets/Armor/Jami.jpg'), clickable: true },
   'Cami': { image: require('../../assets/Armor/Cami.jpg'), clickable: true },
   'Kanani': { image: require('../../assets/Armor/Kanani.jpg'), clickable: true },
 
-
+  // 🟢 High School Members
   'Kenndedy Carman': { image: require('../../assets/Armor/Kennedy.jpg'), clickable: true },
   'Jack Clark': { image: require('../../assets/Armor/JackClark.jpg'), clickable: true },
   'Emma Bronson': { image: require('../../assets/Armor/EmmaBron.jpg'), clickable: true },
@@ -41,7 +43,7 @@ const legionImages = {
   'Xavier': { image: require('../../assets/Armor/Xavier.jpg'), clickable: true },
   'Josh Davis': { image: require('../../assets/Armor/JoshD.jpg'), clickable: true },
   
-  
+  // 🟢 Jr High members
   'Will Knight': { image: require('../../assets/Armor/WillK.jpg'), clickable: true },
   'Paxton': { image: require('../../assets/Armor/Paxton.jpg'), clickable: true },
   'Spencer Hill': { image: require('../../assets/Armor/SpencerHill.jpg'), clickable: true },
@@ -57,7 +59,7 @@ const legionImages = {
   'Sydney': { image: require('../../assets/Armor/Sydney.jpg'), clickable: true },
   'Natalie': { image: require('../../assets/Armor/Natalie.jpg'), clickable: true }, 
   
-  
+  // 🟢 Elementry members
   'Josh Noble': { image: require('../../assets/Armor/JoshNoble.jpg'), clickable: true },
   'Matt Lihpia': { image: require('../../assets/Armor/MattLih.jpg'), clickable: true },
   'Jose Rodriguez': { image: require('../../assets/Armor/JoseRod.jpg'), clickable: true },
@@ -78,7 +80,7 @@ const legionImages = {
   'Brigdan': { image: require('../../assets/Armor/Brigdan.jpg'), clickable: true },
   'Addie': { image: require('../../assets/Armor/AddieCH.jpg'), clickable: true },
 
-
+  // 🟢 Aileen's Friends
   'Sheryl': { image: require('../../assets/Armor/She.jpg'), clickable: true },
   'Krystel': { image: require('../../assets/Armor/Krystel.jpg'), clickable: true },
   'Deb': { image: require('../../assets/Armor/Deb.jpg'), clickable: true },

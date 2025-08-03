@@ -332,7 +332,7 @@ const RobotsScreen = () => {
               navigation.navigate('RobotsTab');
             }}
           >
-            <Text style={styles.header}>Robots</Text>
+            <Text style={styles.header}>Metalmen</Text>
           </TouchableOpacity>
           <View style={styles.scrollWrapper}>
             <ScrollView

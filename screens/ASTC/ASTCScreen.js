@@ -34,6 +34,9 @@ const backgroundImages = [
 
 // 🖼️ Button Images Array
 const buttonImages = [
+  require('../../assets/BackGround/ASTC.jpg'),
+  require('../../assets/BackGround/ASTC.jpg'),
+  require('../../assets/BackGround/ASTC.jpg'),
   require('../../assets/Halo/23.jpg'),
   require('../../assets/Halo/24.jpg'),
   require('../../assets/Halo/25.jpg'),

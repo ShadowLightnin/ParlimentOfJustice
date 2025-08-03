@@ -57,68 +57,63 @@ const InfantryScreen = () => {
   const [currentSound, setCurrentSound] = useState(null);
   const [pausedPosition, setPausedPosition] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const canMod = RESTRICT_ACCESS ? auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
 
   // Initialize sound on mount
-  useEffect(() => {
-    const loadSound = async () => {
+  // Handle music playback
+  const playTheme = async () => {
+    if (!currentSound) {
       try {
         const { sound } = await Audio.Sound.createAsync(
           require('../../assets/audio/ForDemocracy.mp4'),
           { shouldPlay: true, isLooping: true, volume: 1.0 }
         );
         setCurrentSound(sound);
+        await sound.playAsync();
+        setIsPlaying(true);
+        console.log('ForDemocracy.mp4 started playing at:', new Date().toISOString());
       } catch (error) {
         console.error('Failed to load audio file:', error);
         Alert.alert('Audio Error', 'Failed to load background music. Please check the audio file path: ../../assets/audio/ForDemocracy.mp4');
       }
-    };
-
-    loadSound();
-
-    // Cleanup sound on unmount
-    return () => {
-      if (currentSound) {
-        currentSound.stopAsync().catch((error) => console.error('Error stopping sound:', error));
-        currentSound.unloadAsync().catch((error) => console.error('Error unloading sound:', error));
-        setCurrentSound(null);
-        setPausedPosition(0);
-        setIsPaused(false);
+    } else if (!isPlaying) {
+      try {
+        await currentSound.playAsync();
+        setIsPlaying(true);
+        console.log('Audio resumed at:', new Date().toISOString());
+      } catch (error) {
+        console.error('Error resuming sound:', error);
       }
-    };
-  }, []);
+    }
+  };
+
+  // Handle music pause
+  const pauseTheme = async () => {
+    if (currentSound && isPlaying) {
+      try {
+        await currentSound.pauseAsync();
+        setIsPlaying(false);
+        console.log('Audio paused at:', new Date().toISOString());
+      } catch (error) {
+        console.error('Error pausing sound:', error);
+      }
+    }
+  };
 
   // Handle screen focus to resume/pause audio
   useFocusEffect(
     useCallback(() => {
-      const resumeSound = async () => {
-        if (currentSound && isPaused && pausedPosition >= 0) {
-          try {
-            await currentSound.setPositionAsync(pausedPosition);
-            await currentSound.playAsync();
-            setIsPaused(false);
-          } catch (error) {
-            console.error('Error resuming sound:', error);
-          }
-        }
-      };
-
-      resumeSound();
-
       return () => {
-        if (currentSound && !isPaused) {
-          currentSound.pauseAsync().then(async () => {
-            try {
-              const status = await currentSound.getStatusAsync();
-              setPausedPosition(status.positionMillis || 0);
-              setIsPaused(true);
-            } catch (error) {
-              console.error('Error pausing sound:', error);
-            }
-          }).catch((error) => console.error('Error pausing sound:', error));
+        if (currentSound) {
+          currentSound.stopAsync().catch((error) => console.error('Error stopping sound:', error));
+          currentSound.unloadAsync().catch((error) => console.error('Error unloading sound:', error));
+          setCurrentSound(null);
+          setIsPlaying(false);
+          console.log('ForDemocracy.mp4 stopped at:', new Date().toISOString());
         }
       };
-    }, [currentSound, isPaused, pausedPosition])
+    }, [currentSound])
   );
 
   // Fetch dynamic infantry from Firestore
@@ -144,14 +139,13 @@ const InfantryScreen = () => {
     if (infantryItem.clickable) {
       if (currentSound) {
         try {
-          const status = await currentSound.getStatusAsync();
-          if (status.isPlaying) {
-            await currentSound.pauseAsync();
-            setPausedPosition(status.positionMillis || 0);
-            setIsPaused(true);
-          }
+          await currentSound.stopAsync();
+          await currentSound.unloadAsync();
+          setCurrentSound(null);
+          setIsPlaying(false);
+          console.log('ForDemocracy.mp4 stopped at:', new Date().toISOString());
         } catch (error) {
-          console.error('Error pausing sound on infantry press:', error);
+          console.error('Error stopping/unloading sound:', error);
         }
       }
       if (infantryItem.screen) {
@@ -271,15 +265,16 @@ const InfantryScreen = () => {
       onPress={() => {
         console.log('Closing preview modal');
         if (currentSound) {
-          currentSound.pauseAsync().then(async () => {
+          currentSound.stopAsync().then(async () => {
             try {
-              const status = await currentSound.getStatusAsync();
-              setPausedPosition(status.positionMillis || 0);
-              setIsPaused(true);
+              await currentSound.unloadAsync();
+              setCurrentSound(null);
+              setIsPlaying(false);
+              console.log('ForDemocracy.mp4 stopped at:', new Date().toISOString());
             } catch (error) {
-              console.error('Error pausing sound on preview close:', error);
+              console.error('Error unloading sound on preview close:', error);
             }
-          }).catch((error) => console.error('Error pausing sound:', error));
+          }).catch((error) => console.error('Error stopping sound:', error));
         }
         setPreviewInfantry(null);
       }}
@@ -306,15 +301,16 @@ const InfantryScreen = () => {
           onPress={() => {
             console.log('Navigating back');
             if (currentSound) {
-              currentSound.pauseAsync().then(async () => {
+              currentSound.stopAsync().then(async () => {
                 try {
-                  const status = await currentSound.getStatusAsync();
-                  setPausedPosition(status.positionMillis || 0);
-                  setIsPaused(true);
+                  await currentSound.unloadAsync();
+                  setCurrentSound(null);
+                  setIsPlaying(false);
+                  console.log('ForDemocracy.mp4 stopped at:', new Date().toISOString());
                 } catch (error) {
-                  console.error('Error pausing sound on back:', error);
+                  console.error('Error unloading sound on back:', error);
                 }
-              }).catch((error) => console.error('Error pausing sound:', error));
+              }).catch((error) => console.error('Error stopping sound:', error));
             }
             navigation.goBack();
           }}
@@ -324,6 +320,14 @@ const InfantryScreen = () => {
         </TouchableOpacity>
         <ScrollView contentContainerStyle={styles.scroll}>
           <Text style={styles.header}>Infantry</Text>
+          <View style={styles.musicControls}>
+            <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
+              <Text style={styles.musicButtonText}>Theme</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
+              <Text style={styles.musicButtonText}>Pause</Text>
+            </TouchableOpacity>
+          </View>
           <View style={styles.scrollWrapper}>
             <ScrollView
               horizontal
@@ -353,15 +357,16 @@ const InfantryScreen = () => {
             onRequestClose={() => {
               console.log('Closing preview modal');
               if (currentSound) {
-                currentSound.pauseAsync().then(async () => {
+                currentSound.stopAsync().then(async () => {
                   try {
-                    const status = await currentSound.getStatusAsync();
-                    setPausedPosition(status.positionMillis || 0);
-                    setIsPaused(true);
+                    await currentSound.unloadAsync();
+                    setCurrentSound(null);
+                    setIsPlaying(false);
+                    console.log('ForDemocracy.mp4 stopped at:', new Date().toISOString());
                   } catch (error) {
-                    console.error('Error pausing sound on modal close:', error);
+                    console.error('Error unloading sound on modal close:', error);
                   }
-                }).catch((error) => console.error('Error pausing sound:', error));
+                }).catch((error) => console.error('Error stopping sound:', error));
               }
               setPreviewInfantry(null);
             }}
@@ -373,15 +378,16 @@ const InfantryScreen = () => {
                 onPress={() => {
                   console.log('Closing preview modal');
                   if (currentSound) {
-                    currentSound.pauseAsync().then(async () => {
+                    currentSound.stopAsync().then(async () => {
                       try {
-                        const status = await currentSound.getStatusAsync();
-                        setPausedPosition(status.positionMillis || 0);
-                        setIsPaused(true);
+                        await currentSound.unloadAsync();
+                        setCurrentSound(null);
+                        setIsPlaying(false);
+                        console.log('ForDemocracy.mp4 stopped at:', new Date().toISOString());
                       } catch (error) {
-                        console.error('Error pausing sound on modal outer press:', error);
+                        console.error('Error unloading sound on modal outer press:', error);
                       }
-                    }).catch((error) => console.error('Error pausing sound:', error));
+                    }).catch((error) => console.error('Error stopping sound:', error));
                   }
                   setPreviewInfantry(null);
                 }}
@@ -406,15 +412,16 @@ const InfantryScreen = () => {
                     onPress={() => {
                       console.log('Closing preview modal');
                       if (currentSound) {
-                        currentSound.pauseAsync().then(async () => {
+                        currentSound.stopAsync().then(async () => {
                           try {
-                            const status = await currentSound.getStatusAsync();
-                            setPausedPosition(status.positionMillis || 0);
-                            setIsPaused(true);
+                            await currentSound.unloadAsync();
+                            setCurrentSound(null);
+                            setIsPlaying(false);
+                            console.log('ForDemocracy.mp4 stopped at:', new Date().toISOString());
                           } catch (error) {
-                            console.error('Error pausing sound on close button:', error);
+                            console.error('Error unloading sound on close button:', error);
                           }
-                        }).catch((error) => console.error('Error pausing sound:', error));
+                        }).catch((error) => console.error('Error stopping sound:', error));
                       }
                       setPreviewInfantry(null);
                     }}
@@ -496,6 +503,22 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     textShadowColor: '#FFD700', // Gold to match hardcoded border
     textShadowRadius: 15,
+  },
+  musicControls: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  musicButton: {
+    padding: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 5,
+    marginHorizontal: 10,
+  },
+  musicButtonText: {
+    fontSize: 12,
+    color: '#00b3ff',
+    fontWeight: 'bold',
   },
   scrollWrapper: {
     width: SCREEN_WIDTH,

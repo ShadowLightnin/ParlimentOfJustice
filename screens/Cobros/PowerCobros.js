@@ -152,7 +152,7 @@ export const PowerCobros = () => {
           <Text style={styles.header}>Cobros</Text>
           <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
             <Image
-              source={require('../../assets/BackGround/26.jpg')}
+              source={require('../../assets/BackGround/ASTC.jpg')}
               style={styles.chatImage}
             />
           </TouchableOpacity>
