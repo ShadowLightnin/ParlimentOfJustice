@@ -1,5 +1,6 @@
 const JusticeLeague = [
-    // { name: 'The Flash', screen: '', image: require('../../assets/Armor/TheFlash.jpg'), clickable: true },
+    { name: 'Dragoknight', screen: '', image: require('../../assets/Armor/JusticeLeague/Dragoknight.jpg'), clickable: true },
+    // { name: 'The Flash', screen: '', image: require('../../assets/Armor/JusticeLeague/TheFlash.jpg'), clickable: true },
 ];
 
 export default JusticeLeague;
