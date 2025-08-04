@@ -23,6 +23,7 @@ const HEADER_MARGIN_TOP = IS_DESKTOP ? 20 : 30;
 const villainsFactions = [
   {
     name: 'Villains',
+    pinnacleName: 'The Darkness: Villains',
     screen: 'VillainsTab',
     pinnacleScreen: 'PowerVillains',
     clickable: true,
@@ -34,6 +35,7 @@ const villainsFactions = [
   },
   {
     name: 'Big Bads',
+    pinnacleName: 'The Darkness: Big Bads',
     screen: 'BigBadsTab',
     pinnacleScreen: 'PowerBoss',
     clickable: true,
@@ -101,7 +103,9 @@ const VillainsScreen = () => {
             >
               <Text style={styles.backButtonText}>⬅️</Text>
             </TouchableOpacity>
-            <Text style={styles.header}>  The Enlightened</Text>
+            <Text style={styles.header}>
+              {isYourUniverse ? 'The Enlightened' : 'The Darkness'}
+            </Text>
             <View style={styles.headerSpacer} />
           </View>
 
@@ -113,6 +117,7 @@ const VillainsScreen = () => {
                 <Card
                   key={item.name}
                   image={item.image}
+                  name={isYourUniverse || !item.pinnacleName ? item.name : item.pinnacleName}
                   onPress={() => {
                     navigation.navigate(isYourUniverse || !item.pinnacleScreen ? item.screen : item.pinnacleScreen);
                   }}
@@ -128,6 +133,7 @@ const VillainsScreen = () => {
             <View style={styles.middleRow}>
               <Card
                 image={villainsFactions[2].image}
+                name={villainsFactions[2].name}
                 onPress={() => navigation.navigate(villainsFactions[2].screen)}
                 mobileWidth={villainsFactions[2].mobileWidth}
                 mobileHeight={villainsFactions[2].mobileHeight}
@@ -140,6 +146,7 @@ const VillainsScreen = () => {
             <View style={styles.bottomRow}>
               <Card
                 image={villainsFactions[3].image}
+                name={villainsFactions[3].name}
                 onPress={() => navigation.navigate(villainsFactions[3].screen)}
                 mobileWidth={villainsFactions[3].mobileWidth}
                 mobileHeight={villainsFactions[3].mobileHeight}
@@ -157,6 +164,7 @@ const VillainsScreen = () => {
 // Card Component with Transparent Overlay
 const Card = ({
   image,
+  name,
   onPress,
   mobileWidth,
   mobileHeight,
@@ -172,8 +180,9 @@ const Card = ({
       onPress={onPress}
     >
       <Image source={image} style={styles.cardImage} />
-      {/* Transparent Overlay to Prevent Saving */}
-      <View style={styles.transparentOverlay} />
+      <View style={styles.transparentOverlay}>
+        <Text style={styles.cardText}>{name}</Text>
+      </View>
     </TouchableOpacity>
   );
 };
@@ -257,8 +266,19 @@ const styles = StyleSheet.create({
   },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1, // Ensures overlay blocks saving but keeps interaction intact
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Slightly darker for text readability
+    zIndex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingBottom: 10,
+  },
+  cardText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    textShadowColor: '#000',
+    textShadowRadius: 5,
   },
 });
 

@@ -282,9 +282,9 @@ const styles = StyleSheet.create({
   header: { 
     fontSize: 28, 
     fontWeight: 'bold', 
-    color: '#630404', 
+    color: '#ff1c1c', 
     textAlign: 'center', 
-    textShadowColor: '#ff1c1c', 
+    textShadowColor: '#a11a1a', 
     textShadowRadius: 15, 
     flex: 1 
   },

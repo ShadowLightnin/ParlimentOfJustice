@@ -808,7 +808,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#333',
   },
-  title: { fontSize: 28, fontWeight: 'bold', color: '#630404', textAlign: 'center', flex: 1, textShadowColor: '#ff1c1c', textShadowOffset: { width: 1, height: 2 }, textShadowRadius: 10 },
+  title: { fontSize: 28, fontWeight: 'bold', color: '#ff1c1c', textAlign: 'center', flex: 1, textShadowColor: '#a11a1a', textShadowOffset: { width: 1, height: 2 }, textShadowRadius: 10 },
   input: { backgroundColor: '#333', color: '#fff', padding: 10, borderRadius: 5, marginBottom: 10, fontSize: 16 },
   textArea: { height: 100, textAlignVertical: 'top' },
   button: { backgroundColor: '#630404', padding: 10, borderRadius: 5, alignItems: 'center', marginBottom: 10 },

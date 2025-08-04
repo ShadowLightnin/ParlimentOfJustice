@@ -10,7 +10,7 @@ const PublicChatScreen = ({ route }) => {
   const navigation = useNavigation();
   const { isYourUniverse } = route.params || { isYourUniverse: true }; // Default to Prime Universe
   const backgroundImage = isYourUniverse 
-    ? require("../assets/BackGround/Parliment.png") 
+    ? require("../assets/BackGround/Parliament.jpg") 
     : require("../assets/BackGround/Power.jpg");
 
   return (
