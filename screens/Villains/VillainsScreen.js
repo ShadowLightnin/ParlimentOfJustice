@@ -19,7 +19,7 @@ const IS_DESKTOP = SCREEN_WIDTH > 600; // Desktop width breakpoint
 // Dynamic spacing for mobile and larger screens
 const HEADER_MARGIN_TOP = IS_DESKTOP ? 20 : 30;
 
-// Villains factions data with pinnacleScreen for alternate universe
+// Villains factions data with pinnacleScreen and shadow colors
 const villainsFactions = [
   {
     name: 'Villains',
@@ -32,6 +32,8 @@ const villainsFactions = [
     mobileHeight: 160,
     desktopWidth: 290,
     desktopHeight: 300,
+    primeShadowColor: '#800080', // Purple for card shadow in Prime
+    pinnacleShadowColor: '#4b0082', // Corrupted purple for card shadow in Pinnacle
   },
   {
     name: 'Big Bads',
@@ -44,6 +46,8 @@ const villainsFactions = [
     mobileHeight: 160,
     desktopWidth: 290,
     desktopHeight: 300,
+    primeShadowColor: '#b8860b', // Ominous gold for card shadow in Prime
+    pinnacleShadowColor: '#4b0082', // Corrupted purple for card shadow in Pinnacle
   },
   {
     name: 'Villain Ship Yard',
@@ -54,6 +58,8 @@ const villainsFactions = [
     mobileHeight: 160,
     desktopWidth: 290,
     desktopHeight: 300,
+    primeShadowColor: '#ff0000', // Red for card shadow in Prime
+    pinnacleShadowColor: '#4b0082', // Corrupted purple for card shadow in Pinnacle
   },
   {
     name: 'Demons Section',
@@ -64,6 +70,8 @@ const villainsFactions = [
     mobileHeight: 160,
     desktopWidth: 340,
     desktopHeight: 400,
+    primeShadowColor: '#ff4500', // Fiery orange-red for card shadow in Prime
+    pinnacleShadowColor: '#4b0082', // Corrupted purple for card shadow in Pinnacle
   },
 ];
 
@@ -125,6 +133,8 @@ const VillainsScreen = () => {
                   mobileHeight={item.mobileHeight}
                   desktopWidth={item.desktopWidth}
                   desktopHeight={item.desktopHeight}
+                  shadowColor={isYourUniverse ? item.primeShadowColor : item.pinnacleShadowColor}
+                  isYourUniverse={isYourUniverse}
                 />
               ))}
             </View>
@@ -139,6 +149,8 @@ const VillainsScreen = () => {
                 mobileHeight={villainsFactions[2].mobileHeight}
                 desktopWidth={villainsFactions[2].desktopWidth}
                 desktopHeight={villainsFactions[2].desktopHeight}
+                shadowColor={isYourUniverse ? villainsFactions[2].primeShadowColor : villainsFactions[2].pinnacleShadowColor}
+                isYourUniverse={isYourUniverse}
               />
             </View>
 
@@ -152,6 +164,8 @@ const VillainsScreen = () => {
                 mobileHeight={villainsFactions[3].mobileHeight}
                 desktopWidth={villainsFactions[3].desktopWidth}
                 desktopHeight={villainsFactions[3].desktopHeight}
+                shadowColor={isYourUniverse ? villainsFactions[3].primeShadowColor : villainsFactions[3].pinnacleShadowColor}
+                isYourUniverse={isYourUniverse}
               />
             </View>
           </View>
@@ -161,7 +175,7 @@ const VillainsScreen = () => {
   );
 };
 
-// Card Component with Transparent Overlay
+// Card Component with Name Above
 const Card = ({
   image,
   name,
@@ -170,20 +184,36 @@ const Card = ({
   mobileHeight,
   desktopWidth,
   desktopHeight,
+  shadowColor,
+  isYourUniverse,
 }) => {
   const cardWidth = IS_DESKTOP ? desktopWidth : mobileWidth;
   const cardHeight = IS_DESKTOP ? desktopHeight : mobileHeight;
 
   return (
-    <TouchableOpacity
-      style={[styles.card, { width: cardWidth, height: cardHeight }]}
-      onPress={onPress}
-    >
-      <Image source={image} style={styles.cardImage} />
-      <View style={styles.transparentOverlay}>
-        <Text style={styles.cardText}>{name}</Text>
-      </View>
-    </TouchableOpacity>
+    <View style={styles.cardWrapper}>
+      <Text style={[styles.factionTitle, { textShadowColor: isYourUniverse ? '#00b3ff' : '#800080' }]}>{name}</Text>
+      <TouchableOpacity
+        style={[
+          styles.card,
+          { 
+            width: cardWidth, 
+            height: cardHeight, 
+            borderColor: shadowColor, 
+            shadowColor: shadowColor,
+            backgroundColor: `rgba(${parseInt(shadowColor.slice(1, 3), 16)}, ${parseInt(shadowColor.slice(3, 5), 16)}, ${parseInt(shadowColor.slice(5, 7), 16)}, 0.1)`,
+            borderWidth: 2,
+            shadowOffset: { width: 0, height: 0 },
+            shadowOpacity: 0.8,
+            shadowRadius: 10,
+          }
+        ]}
+        onPress={onPress}
+      >
+        <Image source={image} style={styles.cardImage} />
+        <View style={styles.transparentOverlay} />
+      </TouchableOpacity>
+    </View>
   );
 };
 
@@ -254,6 +284,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 5,
   },
+  cardWrapper: {
+    alignItems: 'center',
+    marginBottom: 10,
+  },
   card: {
     borderRadius: 10,
     overflow: 'hidden',
@@ -266,19 +300,16 @@ const styles = StyleSheet.create({
   },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Slightly darker for text readability
+    backgroundColor: 'rgba(0, 0, 0, 0)', // No overlay color, just for interaction
     zIndex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    paddingBottom: 10,
   },
-  cardText: {
-    color: '#FFF',
-    fontSize: 16,
+  factionTitle: {
+    fontSize: IS_DESKTOP ? 20 : 14,
     fontWeight: 'bold',
+    color: '#fff',
     textAlign: 'center',
-    textShadowColor: '#000',
-    textShadowRadius: 5,
+    marginBottom: 5,
+    textShadowRadius: 10,
   },
 });
 
