@@ -5,10 +5,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import VillainsScreen from '../screens/Villains/VillainsScreen';
 import VillainsTab from '../screens/Villains/VillainsTab';
 import Villainy from '../screens/Villains/Villainy';
+  import PowerVillains from '../screens/Villains/PowerVillains';
+  import VillainCharacterDetail from '../screens/Villains/VillainCharacterDetail';
 
 // Big Bads Screens
 import BigBadsTab from '../screens/Villains/BigBadsTab';
 import BigBoss from '../screens/Villains/BigBoss';
+  import PowerBoss from '../screens/Villains/PowerBoss';
+  import PowerBossDetail from '../screens/Villains/PowerBossDetail';
 
 // Demons Section
 import DemonsSection from '../screens/Villains/DemonsSection';
@@ -101,9 +105,13 @@ const VillainsStack = () => {
       <Stack.Screen name="Villains" component={VillainsScreen} />
       <Stack.Screen name="VillainsTab" component={VillainsTab} />
         <Stack.Screen name="Villainy" component={Villainy} />
+          <Stack.Screen name="PowerVillains" component={PowerVillains} />
+          <Stack.Screen name="VillainCharacterDetail" component={VillainCharacterDetail} />
 
       <Stack.Screen name="BigBadsTab" component={BigBadsTab} />
       <Stack.Screen name="BigBoss" component={BigBoss} />
+        <Stack.Screen name="PowerBoss" component={PowerBoss} />
+        <Stack.Screen name="PowerBossDetail" component={PowerBossDetail} />
 
       <Stack.Screen name="DemonsSection" component={DemonsSection} />
       <Stack.Screen name="DarkLords" component={DarkLords} />
