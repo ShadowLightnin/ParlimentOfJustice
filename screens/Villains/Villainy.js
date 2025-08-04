@@ -614,6 +614,8 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'transparent',
     zIndex: 1,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+
   },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,

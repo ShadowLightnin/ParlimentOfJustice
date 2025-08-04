@@ -284,7 +284,7 @@ const PowerMonke = () => {
   );
 
   return (
-    <ImageBackground source={require('../../assets/BackGround/Monke.jpg')} style={styles.background}>
+    <ImageBackground source={require('../../assets/BackGround/PowerMonke.jpg')} style={styles.background}>
       <ScrollView style={styles.scrollContainerStyle} contentContainerStyle={styles.container}>
         <View style={styles.headerWrapper}>
           <TouchableOpacity onPress={async () => { await stopBackgroundMusic(); navigation.navigate('Home'); }} style={styles.backButton}>

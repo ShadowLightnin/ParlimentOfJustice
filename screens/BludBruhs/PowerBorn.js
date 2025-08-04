@@ -278,7 +278,7 @@ const PowerBorn = () => {
   );
 
   return (
-    <ImageBackground source={require('../../assets/BackGround/Bludbruh2.jpg')} style={styles.background}>
+    <ImageBackground source={require('../../assets/BackGround/PowerBorn.jpg')} style={styles.background}>
       <ScrollView style={styles.scrollView}>
         <View style={styles.container}>
           <View style={styles.headerWrapper}>

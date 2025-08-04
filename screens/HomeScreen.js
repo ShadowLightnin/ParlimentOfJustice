@@ -33,8 +33,8 @@ const homageFactions = [
 ];
 
 const pinnacleHomageFactions = [
-  { name: 'Thunder Born', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/Bludbruh2.jpg'), pinnacleScreen: 'PowerBorn' },
-  { name: 'Monke Alliance', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/Monke.jpg'), pinnacleScreen: 'PowerMonke' },
+  { name: 'Thunder Born', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/PowerBorn.jpg'), pinnacleScreen: 'PowerBorn' },
+  { name: 'Monke Alliance', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/PowerMonke.jpg'), pinnacleScreen: 'PowerMonke' },
     // { name: 'Monke Alliance', screen: 'MonkeAllianceScreen', clickable: true, image: require('../assets/BackGround/Monke.jpg') },
   { name: 'Titans', screen: 'Titans', clickable: true, image: require('../assets/BackGround/Titans.jpg'), pinnacleScreen: 'PowerTitans' },
   { name: 'Olympians', screen: 'Olympians', clickable: true, image: require('../assets/BackGround/Olympians.jpg') },
@@ -44,9 +44,9 @@ const pinnacleHomageFactions = [
 
 // Define desktop-specific order for Pinnacle Universe
 const desktopPinnacleHomageFactions = [
-  { name: 'Thunder Born', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/Bludbruh2.jpg'), pinnacleScreen: 'PowerBorn' },
+  { name: 'Thunder Born', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/PowerBorn.jpg'), pinnacleScreen: 'PowerBorn' },
   { name: 'Titans', screen: 'Titans', clickable: true, image: require('../assets/BackGround/Titans.jpg'), pinnacleScreen: 'PowerTitans' },
-  { name: 'Monke Alliance', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/Monke.jpg'), pinnacleScreen: 'PowerMonke' },
+  { name: 'Monke Alliance', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/PowerMonke.jpg'), pinnacleScreen: 'PowerMonke' },
   { name: 'Cobros', screen: 'Cobros', clickable: true, image: require('../assets/BackGround/Cobros.jpg'), pinnacleScreen: 'PowerCobros' },
   { name: 'Olympians', screen: 'Olympians', clickable: true, image: require('../assets/BackGround/Olympians.jpg') },
   { name: 'Legionaires', screen: 'Legionaires', clickable: true, image: require('../assets/BackGround/Legionaires.jpg') },

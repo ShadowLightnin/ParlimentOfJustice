@@ -50,7 +50,7 @@ const villainsFactions = [
     pinnacleShadowColor: '#4b0082', // Corrupted purple for card shadow in Pinnacle
   },
   {
-    name: 'Villain Ship Yard',
+    name: 'Villain Fleet',
     screen: 'VillainFleet',
     clickable: true,
     image: require('../../assets/BackGround/VillainShipYard.jpg'),
