@@ -587,7 +587,7 @@ const styles = StyleSheet.create({
     maxWidth: 600,
   },
   modalTitle: {
-    fontSize: isDesktop ? 24 : 20,
+    fontSize: isDesktop ? 24 : 18,
     fontWeight: 'bold',
     color: '#FFF',
     textAlign: 'center',
@@ -635,9 +635,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 0,
     left: 0,
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingBottom: 30,
   },
   quadrantBottomRight: {
     width: '50%',
