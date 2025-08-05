@@ -35,7 +35,6 @@ const homageFactions = [
 const pinnacleHomageFactions = [
   { name: 'Thunder Born', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/PowerBorn.jpg'), pinnacleScreen: 'PowerBorn' },
   { name: 'Monke Alliance', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/PowerMonke.jpg'), pinnacleScreen: 'PowerMonke' },
-    // { name: 'Monke Alliance', screen: 'MonkeAllianceScreen', clickable: true, image: require('../assets/BackGround/Monke.jpg') },
   { name: 'Titans', screen: 'Titans', clickable: true, image: require('../assets/BackGround/Titans.jpg'), pinnacleScreen: 'PowerTitans' },
   { name: 'Olympians', screen: 'Olympians', clickable: true, image: require('../assets/BackGround/Olympians.jpg') },
   { name: 'Cobros', screen: 'Cobros', clickable: true, image: require('../assets/BackGround/Cobros.jpg'), pinnacleScreen: 'PowerCobros' },
@@ -226,6 +225,11 @@ export const HomeScreen = () => {
     setUniverseModalVisible(false);
   };
 
+  const handleQuadrantPress = async (isYour) => {
+    await stopAndUnloadAudio();
+    switchUniverse(isYour);
+  };
+
   const renderFaction = ({ item }) => (
     <Animated.View style={{ opacity: fadeAnim }}>
       <Text style={[styles.factionTitle, { textShadowColor: isYourUniverse ? '#00b3ff' : '#800080', textShadowRadius: 10 }]}>{item.name || ''}</Text>
@@ -372,14 +376,41 @@ export const HomeScreen = () => {
         >
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
-              <Text style={styles.modalText}>Select Universe</Text>
-              <TouchableOpacity style={[styles.modalButton, styles.primeButton]} onPress={() => switchUniverse(true)}>
-                <Text style={styles.modalButtonText}>Prime Universe</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.modalButton, styles.pinnacleButton]} onPress={() => switchUniverse(false)}>
-                <Text style={styles.modalButtonText}>Pinnacle Universe</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.modalCancel} onPress={() => setUniverseModalVisible(false)}>
+              <Text style={styles.modalTitle}>Choose Your Universe</Text>
+              <ImageBackground
+                source={require('../assets/Space/Mirror.jpg')}
+                style={styles.mirrorImage}
+                imageStyle={styles.mirrorImageStyle}
+              >
+                <View style={styles.quadrantContainer}>
+                  {/* Top Left Quadrant: Prime Universe (Clickable) */}
+                  <TouchableOpacity
+                    style={styles.quadrantTopLeft}
+                    onPress={() => handleQuadrantPress(true)}
+                  >
+                    <View style={styles.transparentOverlay} />
+                  </TouchableOpacity>
+                  {/* Top Right Quadrant: Prime Universe Text */}
+                  <View style={styles.quadrantTopRight}>
+                    <Text style={[styles.universeText, styles.primeText]}>Prime Universe</Text>
+                  </View>
+                  {/* Bottom Left Quadrant: Pinnacle Universe Text */}
+                  <View style={styles.quadrantBottomLeft}>
+                    <Text style={[styles.universeText, styles.pinnacleText]}>Pinnacle Universe</Text>
+                  </View>
+                  {/* Bottom Right Quadrant: Pinnacle Universe (Clickable) */}
+                  <TouchableOpacity
+                    style={styles.quadrantBottomRight}
+                    onPress={() => handleQuadrantPress(false)}
+                  >
+                    <View style={styles.transparentOverlay} />
+                  </TouchableOpacity>
+                </View>
+              </ImageBackground>
+              <TouchableOpacity
+                style={styles.modalCancel}
+                onPress={() => setUniverseModalVisible(false)}
+              >
                 <Text style={styles.modalButtonText}>Cancel</Text>
               </TouchableOpacity>
             </View>
@@ -552,12 +583,90 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     alignItems: 'center',
+    width: '90%',
+    maxWidth: 600,
   },
-  modalText: {
-    fontSize: 18,
+  modalTitle: {
+    fontSize: isDesktop ? 24 : 20,
+    fontWeight: 'bold',
     color: '#FFF',
-    marginBottom: 20,
     textAlign: 'center',
+    marginBottom: 5,
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 5,
+  },
+  mirrorImage: {
+    width: '100%',
+    height: SCREEN_HEIGHT * 0.5,
+    maxHeight: 400,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  mirrorImageStyle: {
+    resizeMode: 'contain',
+  },
+  quadrantContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: '100%',
+    height: '100%',
+  },
+  quadrantTopLeft: {
+    width: '50%',
+    height: '50%',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+  quadrantTopRight: {
+    width: '50%',
+    height: '50%',
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  quadrantBottomLeft: {
+    width: '50%',
+    height: '50%',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingBottom: 30,
+  },
+  quadrantBottomRight: {
+    width: '50%',
+    height: '50%',
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+  },
+  universeText: {
+    fontSize: isDesktop ? 20 : 16,
+    fontWeight: 'bold',
+    color: '#FFF',
+    textAlign: 'center',
+  },
+  primeText: {
+    textShadowColor: '#00b3ff',
+    textShadowRadius: 10,
+    shadowColor: '#30675c',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
+  },
+  pinnacleText: {
+    textShadowColor: '#800080',
+    textShadowRadius: 10,
+    shadowColor: '#c553c5',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
   },
   modalButton: {
     padding: 10,
