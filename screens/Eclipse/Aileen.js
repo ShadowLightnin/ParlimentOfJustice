@@ -276,7 +276,11 @@ const Aileen = () => {
       <Image source={item.image} style={styles.kidImage} />
       <View style={styles.transparentOverlay} />
       <Text style={styles.kidCardName}>
-        © {item.name || 'Unknown'}; William Cummings
+        {/* ©  */}
+        {item.name 
+        // || 'Unknown'
+        }
+        {/* ; William Cummings */}
       </Text>
       {!item.clickable && <Text style={styles.kidDisabledText}> </Text>}
     </TouchableOpacity>
