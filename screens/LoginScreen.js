@@ -36,7 +36,6 @@ const backgroundImages = [
     require('../assets/BackGround/Legionaires.jpg'),
     require('../assets/BackGround/Forge.jpg'),
     require('../assets/BackGround/Constollation.jpg'),
-    require('../assets/BackGround/Justice.jpg'),
     require('../assets/BackGround/ShipYard.jpg'),
     require('../assets/BackGround/Soldiers.jpg'),
     require('../assets/BackGround/Vigilantes.jpg'),

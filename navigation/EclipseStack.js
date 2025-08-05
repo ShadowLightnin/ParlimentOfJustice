@@ -8,6 +8,7 @@ import Aileen from '../screens/Eclipse/Aileen';
 import Will from '../screens/Titans/Will';
 import WarpScreen from "../screens/Eclipse/WarpScreen";
 import Kolob from "../screens/Eclipse/Kolob.js"; // Your new tab screen
+import Angels from '../screens/Eclipse/Angels.js';
 import BackWarpScreen from "../screens/Eclipse/BackWarpScreen";
 import Myran from '../screens/Eclipse/Myran';
 import Kelsie from '../screens/Eclipse/Kelsie';
@@ -24,6 +25,7 @@ export function EclipseStack() {
       <Stack.Screen name="TeamChat" component={TeamChatScreen} />
       <Stack.Screen name="Aileen" component={Aileen} />
             <Stack.Screen name="Will" component={Will} />
+          <Stack.Screen name="Angels" component={Angels} />
       <Stack.Screen name="Aileenchat" component={Aileenchat} />
       <Stack.Screen name="WarpScreen" component={WarpScreen} />
       <Stack.Screen name="Kolob" component={Kolob} />

@@ -331,33 +331,63 @@ const Aileen = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.partnerContainer}>
-          <Text style={styles.partnerHeader}>My Partner</Text>
-          <TouchableOpacity
-            style={[styles.partnerImageContainer(isDesktop, windowWidth), styles.clickable]}
-            onPress={async () => {
-              if (currentSound) {
-                try {
-                  await currentSound.stopAsync();
-                  await currentSound.unloadAsync();
-                  setCurrentSound(null);
-                  setPausedPosition(0);
-                  setIsPaused(false);
-                  console.log("Audio stopped for partner navigation at:", new Date().toISOString());
-                } catch (error) {
-                  console.error("Error stopping sound for partner navigation:", error);
+        <View style={styles.tabsContainer}>
+          <View style={styles.tabItem}>
+            <Text style={styles.partnerHeader}>My Partner</Text>
+            <TouchableOpacity
+              style={[styles.partnerImageContainer(isDesktop, windowWidth), styles.clickable]}
+              onPress={async () => {
+                if (currentSound) {
+                  try {
+                    await currentSound.stopAsync();
+                    await currentSound.unloadAsync();
+                    setCurrentSound(null);
+                    setPausedPosition(0);
+                    setIsPaused(false);
+                    console.log("Audio stopped for partner navigation at:", new Date().toISOString());
+                  } catch (error) {
+                    console.error("Error stopping sound for partner navigation:", error);
+                  }
                 }
-              }
-              navigation.navigate("Will");
-            }}
-          >
-            <Image
-              source={require("../../assets/Armor/Celestial.jpg")}
-              style={styles.partnerImage(isDesktop, windowWidth)}
-            />
-            <View style={styles.transparentOverlay} />
-            <Text style={styles.partnerName}></Text>
-          </TouchableOpacity>
+                navigation.navigate("Will");
+              }}
+            >
+              <Image
+                source={require("../../assets/Armor/Celestial.jpg")}
+                style={styles.partnerImage(isDesktop, windowWidth)}
+              />
+              <View style={styles.transparentOverlay} />
+              <Text style={styles.partnerName}></Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.tabItem}>
+            <Text style={styles.heavensGuardHeader}>Heaven's Guard</Text>
+            <TouchableOpacity
+              style={[styles.partnerImageContainer(isDesktop, windowWidth), styles.clickable]}
+              onPress={async () => {
+                if (currentSound) {
+                  try {
+                    await currentSound.stopAsync();
+                    await currentSound.unloadAsync();
+                    setCurrentSound(null);
+                    setPausedPosition(0);
+                    setIsPaused(false);
+                    console.log("Audio stopped for Heaven's Guard navigation at:", new Date().toISOString());
+                  } catch (error) {
+                    console.error("Error stopping sound for Heaven's Guard navigation:", error);
+                  }
+                }
+                navigation.navigate("Angels");
+              }}
+            >
+              <Image
+                source={require("../../assets/BackGround/Angel2.jpg")}
+                style={styles.partnerImage(isDesktop, windowWidth)}
+              />
+              <View style={styles.transparentOverlay} />
+              <Text style={styles.partnerName}></Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.kidsContainer}>
@@ -496,11 +526,27 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     backgroundColor: "#111",
   },
-  partnerContainer: {
+  tabsContainer: {
     width: "100%",
     paddingVertical: 20,
     backgroundColor: "#111",
+    flexDirection: "row",
+    justifyContent: "space-around",
     alignItems: "center",
+  },
+  tabItem: {
+    alignItems: "center",
+    flex: 1,
+    maxWidth: "45%",
+  },
+  heavensGuardHeader: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#000000",
+    textAlign: "center",
+    marginBottom: 10,
+    textShadowColor: "gold",
+    textShadowRadius: 25,
   },
   partnerHeader: {
     fontSize: 22,
