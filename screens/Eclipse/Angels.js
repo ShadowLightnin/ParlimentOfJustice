@@ -21,6 +21,14 @@ const isDesktop = SCREEN_WIDTH > 600;
 
 // Angels data with images, respective screens, and border colors
 const angels = [
+  { name: '', screen: '', image: require('../../assets/Armor/Angels/IMG_0486.jpg'), clickable: true, borderColor: 'gold' },
+  { name: '', screen: '', image: require('../../assets/Armor/Angels/IMG_0487.jpg'), clickable: true, borderColor: 'gold' },
+  { name: '', screen: '', image: require('../../assets/Armor/Angels/IMG_0488.jpg'), clickable: true, borderColor: 'gold' },
+  { name: '', screen: '', image: require('../../assets/Armor/Angels/IMG_0489.jpg'), clickable: true, borderColor: 'gold' },
+  { name: '', screen: '', image: require('../../assets/Armor/Angels/IMG_0490.jpg'), clickable: true, borderColor: 'gold' },
+  { name: '', screen: '', image: require('../../assets/Armor/Angels/IMG_0491.jpg'), clickable: true, borderColor: 'gold' },
+  { name: '', screen: '', image: require('../../assets/Armor/Angels/IMG_0492.jpg'), clickable: true, borderColor: 'gold' },
+  { name: '', screen: '', image: require('../../assets/Armor/Angels/IMG_0493.jpg'), clickable: true, borderColor: 'gold' },
   { name: '', screen: '', image: require('../../assets/Armor/Angels/IMG_0498.jpg'), clickable: true, borderColor: 'gold' },
   { name: '', screen: '', image: require('../../assets/Armor/Angels/IMG_0499.jpg'), clickable: true, borderColor: 'gold' },
   { name: '', screen: '', image: require('../../assets/Armor/Angels/IMG_0500.jpg'), clickable: true, borderColor: 'gold' },
@@ -61,6 +69,7 @@ const angels = [
   { name: '', screen: '', image: require('../../assets/Armor/Angels/IMG_0577.jpg'), clickable: true, borderColor: 'gold' },
   { name: '', screen: '', image: require('../../assets/Armor/Angels/IMG_0578.jpg'), clickable: true, borderColor: 'gold' },
   { name: '', screen: '', image: require('../../assets/Armor/Angels/IMG_0579.jpg'), clickable: true, borderColor: 'gold' },
+  { name: '', screen: '', image: require('../../assets/Armor/Angels/IMG_0581.jpg'), clickable: true, borderColor: 'gold' },
   { name: '', screen: '', image: require('../../assets/Armor/Angels/IMG_5635.jpg'), clickable: true, borderColor: 'gold' },
   { name: '', screen: '', image: require('../../assets/Armor/Angels/IMG_6943.jpg'), clickable: true, borderColor: 'gold' },
     // { name: '', screen: '', image: require('../../assets/Angels/.jpg'), clickable: false, borderColor: null },
