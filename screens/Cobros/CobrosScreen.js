@@ -144,7 +144,7 @@ export const CobrosScreen = () => {
       description: descriptions[member.name] || 'No description available',
     };
 
-    console.log('Passing member:', member.name, 'Images:', enhancedMember.images);
+    // console.log('Passing member:', member.name, 'Images:', enhancedMember.images);
 
     return (
       <TouchableOpacity

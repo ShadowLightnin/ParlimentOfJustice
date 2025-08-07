@@ -145,7 +145,7 @@ export const OlympiansScreen = () => {
       family: olympiansCategories.find(category => category.members.some(m => m.name === member.name))?.family || 'Unknown',
     };
 
-    console.log('Passing member:', member.name, 'Images:', enhancedMember.images);
+    // console.log('Passing member:', member.name, 'Images:', enhancedMember.images);
 
     return (
       <TouchableOpacity
