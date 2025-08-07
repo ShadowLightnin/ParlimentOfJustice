@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Dimensions,
   ImageBackground,
+  Modal,
   Alert
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -26,59 +27,6 @@ const cardSizes = {
 };
 const horizontalSpacing = isDesktop ? 40 : 20;
 const verticalSpacing = isDesktop ? 50 : 20;
-
-// Background music (shared across screens)
-let backgroundSound = null;
-
-const playTheme = async () => {
-  if (!backgroundSound) {
-    try {
-      const { sound } = await Audio.Sound.createAsync(
-        require('../../assets/audio/BlackHoleBomb.mp4'),
-        { shouldPlay: true, isLooping: true, volume: 0.7 }
-      );
-      backgroundSound = sound;
-      await sound.playAsync();
-      console.log('BlackHoleBomb.mp4 started playing at:', new Date().toISOString());
-    } catch (error) {
-      console.error('Failed to load audio file:', error);
-      Alert.alert('Audio Error', 'Failed to load background music: ' + error.message);
-    }
-  } else if (!isPlaying) {
-    try {
-      await backgroundSound.playAsync();
-      setIsPlaying(true);
-      console.log('Audio resumed at:', new Date().toISOString());
-    } catch (error) {
-      console.error('Error resuming sound:', error);
-    }
-  }
-};
-
-const pauseTheme = async () => {
-  if (backgroundSound && isPlaying) {
-    try {
-      await backgroundSound.pauseAsync();
-      setIsPlaying(false);
-      console.log('Audio paused at:', new Date().toISOString());
-    } catch (error) {
-      console.error('Error pausing sound:', error);
-    }
-  }
-};
-
-const stopBackgroundMusic = async () => {
-  if (backgroundSound) {
-    try {
-      await backgroundSound.stopAsync();
-      await backgroundSound.unloadAsync();
-      backgroundSound = null;
-      console.log('BlackHoleBomb.mp4 stopped at:', new Date().toISOString());
-    } catch (error) {
-      console.error('Error stopping/unloading sound:', error);
-    }
-  }
-};
 
 // Villains data with images, respective screens, and border colors
 const villains = [
@@ -111,11 +59,11 @@ const villains = [
   { name: 'Obsidian Shroud', screen: 'ObsidianShroudScreen', image: require('../../assets/Villains/ObsidianShroud.jpg'), clickable: true, borderColor: 'red' },
   { name: 'Fangstrike', screen: 'FangstrikeScreen', image: require('../../assets/Villains/Fangstrike.jpg'), clickable: true, borderColor: 'red' },
   { name: 'Void Phantom', screen: 'VoidPhantomScreen', image: require('../../assets/Villains/VoidPhantom.jpg'), clickable: true, borderColor: 'red' },
-  { name: 'The Blind Witch', screen: '', image: require('../../assets/Villains/IMG_4325.webp'), clickable: false, borderColor: null },
-  { name: 'Elick', screen: '', image: require('../../assets/Villains/IMG_4343.webp'), clickable: false, borderColor: null },
-  { name: 'BlackOut', screen: '', image: require('../../assets/Villains/BlackOut.jpg'), clickable: true, borderColor: null, hardcoded: true },
-  { name: 'Void Consumer', screen: '', image: require('../../assets/Villains/VoidConsumer.jpg'), clickable: true, borderColor: null, hardcoded: true },
-
+  { name: 'The Blind Witch', screen: '', image: require('../../assets/Villains/IMG_4325.webp'), clickable: false, borderColor: 'red' },
+  { name: 'Elick', screen: '', image: require('../../assets/Villains/IMG_4343.webp'), clickable: false, borderColor: 'red' },
+  { name: 'BlackOut', screen: '', image: require('../../assets/Villains/BlackOut.jpg'), clickable: false, borderColor: 'red' },
+  { name: 'Void Consumer', screen: '', image: require('../../assets/Villains/VoidConsumer.jpg'), clickable: false, borderColor: 'red' },
+  
   
   // { name: 'Soulless Soul', screen: 'SoullessSoulScreen', image: require('../../assets/Villains/SoullessSoul.jpg'), clickable: true },
   // { name: 'The Void', screen: 'TheVoidScreen', image: require('../../assets/Villains/TheVoid.jpg'), clickable: true },
@@ -141,6 +89,7 @@ const VillainsTab = () => {
   const navigation = useNavigation();
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [previewVillain, setPreviewVillain] = useState(null);
 
   // Handle audio based on focus
   useFocusEffect(
@@ -212,6 +161,8 @@ const VillainsTab = () => {
         }
       }
       navigation.navigate(villain.screen);
+    } else {
+      setPreviewVillain(villain);
     }
   };
 
@@ -228,14 +179,43 @@ const VillainsTab = () => {
         villain.clickable && villain.borderColor ? styles.clickable(villain.borderColor) : styles.notClickable
       ]}
       onPress={() => handleVillainPress(villain)}
-      disabled={!villain.clickable}
+      disabled={false} // Allow press to trigger modal even if not clickable
     >
       <Image source={villain.image} style={styles.image} />
       <View style={styles.transparentOverlay} />
       <Text style={styles.name}>{villain.name}</Text>
-      {!villain.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+      {!villain.clickable && <Text style={styles.disabledText}>Preview Only</Text>}
     </TouchableOpacity>
   );
+
+  // Render Preview Modal
+  const renderPreviewModal = () => {
+    if (!previewVillain) return null;
+    return (
+      <Modal
+        visible={!!previewVillain}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setPreviewVillain(null)}
+      >
+        <View style={styles.modalBackground}>
+          <TouchableOpacity
+            style={styles.modalContainer}
+            activeOpacity={1}
+            onPress={() => setPreviewVillain(null)}
+          >
+            <Image
+              source={previewVillain.image}
+              style={styles.previewImage}
+              resizeMode="contain"
+              onError={(e) => console.error('Image load error:', e.nativeEvent.error, 'URI:', previewVillain.image)}
+            />
+            <Text style={styles.previewName}>{previewVillain.name}</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+    );
+  };
 
   return (
     <ImageBackground
@@ -301,6 +281,9 @@ const VillainsTab = () => {
               {enlightened.map(renderVillainCard)}
             </ScrollView>
           </View>
+
+          {/* Preview Modal */}
+          {renderPreviewModal()}
         </View>
       </ScrollView>
     </ImageBackground>
@@ -343,7 +326,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: 'rgba(63, 0, 0, 0.897)',
     textAlign: 'center',
-    textShadowColor: '#ff4d4dff',
+    textShadowColor: '#ff4d4d',
     textShadowRadius: 20,
     marginBottom: 20,
   },
@@ -420,6 +403,37 @@ const styles = StyleSheet.create({
     textShadowRadius: 15,
     marginLeft: 10,
     marginBottom: 10,
+  },
+  modalBackground: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: '80%',
+    height: '60%',
+    backgroundColor: '#750000',
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+    borderWidth: 2,
+    borderColor: '#ff4d4d',
+  },
+  previewImage: {
+    width: '100%',
+    height: '80%',
+    borderRadius: 10,
+  },
+  previewName: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FFF',
+    textAlign: 'center',
+    marginTop: 10,
+    textShadowColor: '#ff4d4d',
+    textShadowRadius: 10,
   },
 });
 
