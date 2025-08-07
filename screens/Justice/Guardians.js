@@ -26,9 +26,6 @@ const Guardians = [
   { name: 'White Ninja', screen: '', image: require('../../assets/Armor/WhiteNinja.jpg'), clickable: true },
   { name: 'Unnamed', screen: '', image: require('../../assets/Armor/Superman6.jpg'), clickable: true },
   { name: 'Ironman', screen: '', image: require('../../assets/Armor/Ironman.jpg'), clickable: true },
-  { name: 'Socialation', screen: '', image: require('../../assets/Armor/Jaden.jpg'), clickable: true },
-  { name: 'Spiltz', screen: '', image: require('../../assets/Armor/Jonas.jpg'), clickable: true },
-  { name: 'Voice Fry', codename: '', screen: '', clickable: true, image: require('../../assets/Armor/Johnathon_cleanup.jpg') },
 ];
 
 export default Guardians;

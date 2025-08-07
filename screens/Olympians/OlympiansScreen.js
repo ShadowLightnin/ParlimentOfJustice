@@ -13,8 +13,9 @@ import {
   Alert,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import OlympiansMembers from './OlympiansMembers';
+import { olympiansCategories } from './OlympiansMembers';
 import { Audio } from 'expo-av';
+import descriptions from './OlympiansDescription';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -24,8 +25,6 @@ const cardSize = isDesktop ? 160 : 100;
 const cardHeightMultiplier = 1.6;
 const horizontalSpacing = isDesktop ? 40 : 10;
 const verticalSpacing = isDesktop ? 50 : 20;
-
-const rows = Math.ceil((OlympiansMembers.length - 1) / columns);
 
 export const OlympiansScreen = () => {
   const navigation = useNavigation();
@@ -131,79 +130,161 @@ export const OlympiansScreen = () => {
       if (member.screen && member.screen !== '') {
         navigation.navigate(member.screen);
       } else {
-        setPreviewMember(member);
+        navigation.navigate('OlympiansCharacterDetail', { member });
       }
     }
   };
 
-  const renderMemberCard = (member) => (
-    <TouchableOpacity
-      key={member.name}
-      style={[
-        styles.card,
-        { width: cardSize, height: cardSize * cardHeightMultiplier },
-        !member.clickable && styles.disabledCard,
-      ]}
-      onPress={() => handleMemberPress(member)}
-      disabled={!member.clickable}
-    >
-      {member.image && (
-        <>
-          <Image
-            source={member.image}
-            style={[styles.characterImage, { width: '100%', height: cardSize * 1.2 }]}
-          />
-          <View style={styles.transparentOverlay} />
-        </>
-      )}
-      <Text style={styles.codename}>{member.codename || ''}</Text>
-      <Text style={styles.name}>{member.name}</Text>
-    </TouchableOpacity>
-  );
+  const renderMemberCard = (member) => {
+    const enhancedMember = {
+      ...member,
+      image: member.images?.[0]?.uri || require('../../assets/Armor/PlaceHolder.jpg'),
+      images: member.images || [{ uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Placeholder', clickable: true }],
+      clickable: member.clickable !== undefined ? member.clickable : true,
+      description: descriptions[member.name] || 'No description available',
+      family: olympiansCategories.find(category => category.members.some(m => m.name === member.name))?.family || 'Unknown',
+    };
 
-  const renderJenniferCard = (member) => (
-    <TouchableOpacity
-      key={member.name}
-      style={[
-        styles.jenniferCard,
-        { width: 2 * cardSize, height: cardSize * 2.5 },
-      ]}
-      onPress={() => handleMemberPress(member)}
-      disabled={!member.clickable}
-    >
-      {member.image && (
-        <>
-          <Image
-            source={member.image}
-            style={[styles.characterImage, { width: '100%', height: cardSize * 1.5 }]}
-          />
-          <View style={styles.transparentOverlay} />
-        </>
-      )}
-      <Text style={[styles.codename, styles.jenniferCodename]}>{member.codename || ''}</Text>
-      <Text style={[styles.name, styles.jenniferName]}>{member.name}</Text>
-    </TouchableOpacity>
-  );
+    console.log('Passing member:', member.name, 'Images:', enhancedMember.images);
 
-  const renderPreviewCard = (member) => (
-    <TouchableOpacity
-      key={member.name}
-      style={[styles.previewCard(isDesktop, windowWidth), styles.clickable]}
-      onPress={() => setPreviewMember(null)}
-    >
-      <Image
-        source={member.image || require('../../assets/Armor/PlaceHolder.jpg')}
-        style={styles.previewImage}
-        resizeMode="cover"
-      />
-      <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>
-        © {member.codename || 'Unknown'}; William Cummings
-      </Text>
-    </TouchableOpacity>
-  );
+    return (
+      <TouchableOpacity
+        key={member.name}
+        style={[
+          styles.card,
+          { width: cardSize, height: cardSize * cardHeightMultiplier },
+          !enhancedMember.clickable && styles.disabledCard,
+        ]}
+        onPress={() => handleMemberPress(enhancedMember)}
+        disabled={!enhancedMember.clickable}
+      >
+        {enhancedMember.image && (
+          <>
+            <Image
+              source={typeof enhancedMember.image === 'string' ? { uri: enhancedMember.image } : enhancedMember.image}
+              style={[styles.characterImage, { width: '100%', height: cardSize * 1.2 }]}
+              onError={(e) => console.error('Image load error:', e.nativeEvent.error, 'URI:', enhancedMember.image)}
+            />
+            <View style={styles.transparentOverlay} />
+          </>
+        )}
+        <Text style={styles.codename}>{enhancedMember.codename || ''}</Text>
+        <Text style={styles.name}>{enhancedMember.name}</Text>
+      </TouchableOpacity>
+    );
+  };
 
-  const jenniferMember = OlympiansMembers.find(member => member.name === 'Jennifer');
+  const renderJenniferCard = (member) => {
+    const enhancedMember = {
+      ...member,
+      image: member.images?.[0]?.uri || require('../../assets/Armor/PlaceHolder.jpg'),
+      images: member.images || [{ uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Placeholder', clickable: true }],
+      clickable: member.clickable !== undefined ? member.clickable : true,
+      description: descriptions[member.name] || 'No description available',
+      family: olympiansCategories.find(category => category.members.some(m => m.name === member.name))?.family || 'Unknown',
+    };
+
+    return (
+      <TouchableOpacity
+        key={member.name}
+        style={[
+          styles.jenniferCard,
+          { width: 2 * cardSize, height: cardSize * 2.5 },
+        ]}
+        onPress={() => handleMemberPress(enhancedMember)}
+        disabled={!enhancedMember.clickable}
+      >
+        {enhancedMember.image && (
+          <>
+            <Image
+              source={typeof enhancedMember.image === 'string' ? { uri: enhancedMember.image } : enhancedMember.image}
+              style={[styles.characterImage, { width: '100%', height: cardSize * 1.5 }]}
+              onError={(e) => console.error('Image load error:', e.nativeEvent.error, 'URI:', enhancedMember.image)}
+            />
+            <View style={styles.transparentOverlay} />
+          </>
+        )}
+        <Text style={[styles.codename, styles.jenniferCodename]}>{enhancedMember.codename || ''}</Text>
+        <Text style={[styles.name, styles.jenniferName]}>{enhancedMember.name}</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  const renderPreviewCard = (img, index) => {
+    const key = img.uri ? `${typeof img.uri === 'string' ? img.uri : index}-${index}` : `image-${index}`;
+    return (
+      <TouchableOpacity
+        key={key}
+        style={[styles.previewCard(isDesktop, windowWidth), styles.clickable]}
+        onPress={() => setPreviewMember(null)}
+      >
+        <Image
+          source={typeof img.uri === 'string' ? { uri: img.uri } : img.uri}
+          style={styles.previewImage}
+          resizeMode="cover"
+          onError={(e) => console.error('Image load error:', e.nativeEvent.error, 'URI:', img.uri)}
+        />
+        <View style={styles.transparentOverlay} />
+        <Text style={styles.cardName}>
+          © {img.name || 'Unknown'}; William Cummings
+        </Text>
+      </TouchableOpacity>
+    );
+  };
+
+  const jenniferMember = olympiansCategories
+    .flatMap(category => category.members)
+    .find(member => member.name === 'Jennifer');
+
+  const allMembers = olympiansCategories
+    .flatMap(category => category.members)
+    .filter(member => member.name !== 'Jennifer');
+
+  const renderModalContent = () => {
+    if (!previewMember) return null;
+
+    const images = previewMember.images?.length
+      ? previewMember.images.map((img, idx) => ({
+          uri: img.uri,
+          name: img.name || `Image ${idx + 1}`,
+        }))
+      : [{
+          uri: previewMember.image || require('../../assets/Armor/PlaceHolder.jpg'),
+          name: previewMember.name || 'Default Image',
+        }];
+
+    console.log('Preview Member:', previewMember.name, 'Images:', images);
+
+    return (
+      <TouchableOpacity
+        style={styles.modalOuterContainer}
+        activeOpacity={1}
+        onPress={() => setPreviewMember(null)}
+      >
+        <View style={styles.imageContainer}>
+          <ScrollView
+            horizontal
+            contentContainerStyle={styles.imageScrollContainer}
+            showsHorizontalScrollIndicator={false}
+            snapToAlignment="center"
+            snapToInterval={windowWidth * 0.7 + 20}
+            decelerationRate="fast"
+            centerContent={true}
+          >
+            {images.map(renderPreviewCard)}
+          </ScrollView>
+        </View>
+        <View style={styles.previewAboutSection}>
+          <Text style={styles.previewCodename}>{previewMember?.codename || 'N/A'}</Text>
+          <Text style={styles.previewName}>{previewMember?.name || 'Unknown'}</Text>
+          <Text style={styles.previewFamily}>{previewMember?.family || 'Unknown'}</Text>
+          <Text style={styles.previewDescription}>
+            {descriptions[previewMember.name] || 'No description available'}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <ImageBackground
@@ -253,28 +334,28 @@ export const OlympiansScreen = () => {
             </View>
           )}
           <View style={styles.spacingBelowJennifer} />
-          {Array.from({ length: rows }).map((_, rowIndex) => (
-            <View
-              key={rowIndex}
-              style={[styles.row, { marginBottom: verticalSpacing, gap: horizontalSpacing }]}
-            >
-              {Array.from({ length: columns }).map((_, colIndex) => {
-                const memberIndex = rowIndex * columns + colIndex;
-                const member = OlympiansMembers[memberIndex + (memberIndex >= OlympiansMembers.findIndex(m => m.name === 'Jennifer') ? 1 : 0)];
-
-                if (!member || !member.name || member.name === 'Jennifer') {
-                  return (
-                    <View
-                      key={colIndex}
-                      style={{ width: cardSize, height: cardSize * cardHeightMultiplier }}
-                    />
-                  );
-                }
-
-                return renderMemberCard(member);
-              })}
-            </View>
-          ))}
+          <View style={styles.membersContainer}>
+            {Array.from({ length: Math.ceil(allMembers.length / columns) }).map((_, rowIndex) => (
+              <View
+                key={rowIndex}
+                style={[styles.row, { marginBottom: verticalSpacing, gap: horizontalSpacing }]}
+              >
+                {Array.from({ length: columns }).map((_, colIndex) => {
+                  const memberIndex = rowIndex * columns + colIndex;
+                  const member = allMembers[memberIndex];
+                  if (!member || !member.name) {
+                    return (
+                      <View
+                        key={colIndex}
+                        style={{ width: cardSize, height: cardSize * cardHeightMultiplier }}
+                      />
+                    );
+                  }
+                  return renderMemberCard(member);
+                })}
+              </View>
+            ))}
+          </View>
         </ScrollView>
 
         <Modal
@@ -284,30 +365,7 @@ export const OlympiansScreen = () => {
           onRequestClose={() => setPreviewMember(null)}
         >
           <View style={styles.modalBackground}>
-            <TouchableOpacity
-              style={styles.modalOuterContainer}
-              activeOpacity={1}
-              onPress={() => setPreviewMember(null)}
-            >
-              <View style={styles.imageContainer}>
-                <ScrollView
-                  horizontal
-                  contentContainerStyle={styles.imageScrollContainer}
-                  showsHorizontalScrollIndicator={false}
-                  snapToAlignment="center"
-                  snapToInterval={windowWidth * 0.7 + 20}
-                  decelerationRate="fast"
-                  centerContent={true}
-                >
-                  {previewMember && renderPreviewCard(previewMember)}
-                </ScrollView>
-              </View>
-              <View style={styles.previewAboutSection}>
-                <Text style={styles.previewCodename}>{previewMember?.codename || 'N/A'}</Text>
-                <Text style={styles.previewName}>{previewMember?.name || 'Unknown'}</Text>
-                <Text style={styles.previewFamily}>{previewMember?.family || 'Unknown'}</Text>
-              </View>
-            </TouchableOpacity>
+            {renderModalContent()}
           </View>
         </Modal>
       </SafeAreaView>
@@ -384,6 +442,10 @@ const styles = StyleSheet.create({
   scrollContainer: {
     paddingBottom: 20,
     width: SCREEN_WIDTH,
+    alignItems: 'center',
+  },
+  membersContainer: {
+    width: '100%',
     alignItems: 'center',
   },
   row: {
@@ -518,15 +580,21 @@ const styles = StyleSheet.create({
     color: '#00b3ff',
     textAlign: 'center',
   },
+  previewName: {
+    fontSize: 16,
+    color: '#fff',
+    textAlign: 'center',
+    marginTop: 5,
+  },
   previewFamily: {
     fontSize: 16,
     color: '#fff',
     textAlign: 'center',
     marginTop: 5,
   },
-  previewName: {
-    fontSize: 16,
-    color: '#fff',
+  previewDescription: {
+    fontSize: 14,
+    color: '#aaa',
     textAlign: 'center',
     marginTop: 5,
   },

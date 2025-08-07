@@ -1,93 +1,465 @@
-// 🎯 Static mapping of character images for Legionaires
 const legionImages = {
   // 🟢 College Members
-  'Mason Erickson': { image: require('../../assets/Armor/MasonE.jpg'), clickable: true },
-  'Davis Clark': { image: require('../../assets/Armor/Davis.jpg'), clickable: true },
-  'Mckain Bailey': { image: require('../../assets/Armor/Bailey.jpg'), clickable: true },
-
+  'Mason Erickson': {
+    images: [
+      { uri: require('../../assets/Armor/MasonE.jpg'), name: 'Mason Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Mason Placeholder', clickable: true },
+    ],
+  },
+  'Davis Clark': {
+    images: [
+      { uri: require('../../assets/Armor/Davis.jpg'), name: 'Davis Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Davis Placeholder', clickable: true },
+    ],
+  },
+  'Mckain Bailey': {
+    images: [
+      { uri: require('../../assets/Armor/Bailey.jpg'), name: 'Mckain Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Mckain Placeholder', clickable: true },
+    ],
+  },
 
   // 🟢 Young Womens members
-  'Mika': { image: require('../../assets/Armor/Mika.jpg'), clickable: true },
-  'Malia': { image: require('../../assets/Armor/Malia.jpg'), clickable: true },
-  'Jami': { image: require('../../assets/Armor/Jami.jpg'), clickable: true },
-  'Cami': { image: require('../../assets/Armor/Cami.jpg'), clickable: true },
-  'Kanani': { image: require('../../assets/Armor/Kanani.jpg'), clickable: true },
+  'Mika': {
+    images: [
+      { uri: require('../../assets/Armor/Mika.jpg'), name: 'Mika Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Mika Placeholder', clickable: true },
+    ],
+  },
+  'Malia': {
+    images: [
+      { uri: require('../../assets/Armor/Malia.jpg'), name: 'Malia Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Malia Placeholder', clickable: true },
+    ],
+  },
+  'Jami': {
+    images: [
+      { uri: require('../../assets/Armor/Jami.jpg'), name: 'Jami Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Jami Placeholder', clickable: true },
+    ],
+  },
+  'Cami': {
+    images: [
+      { uri: require('../../assets/Armor/Cami.jpg'), name: 'Cami Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Cami Placeholder', clickable: true },
+    ],
+  },
+  'Kanani': {
+    images: [
+      { uri: require('../../assets/Armor/Kanani.jpg'), name: 'Kanani Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Kanani Placeholder', clickable: true },
+    ],
+  },
 
   // 🟢 High School Members
-  'Kenndedy Carman': { image: require('../../assets/Armor/Kennedy.jpg'), clickable: true },
-  'Jack Clark': { image: require('../../assets/Armor/JackClark.jpg'), clickable: true },
-  'Emma Bronson': { image: require('../../assets/Armor/EmmaBron.jpg'), clickable: true },
-  'Ella Duce': { image: require('../../assets/Armor/EllaDuce.jpg'), clickable: true },
-  'Addison Morris': { image: require('../../assets/Armor/AddisonMorris.jpg'), clickable: true },
-  'Alyssa': { image: require('../../assets/Armor/Alyssa.jpg'), clickable: true },
-  'Cody Cline': { image: require('../../assets/Armor/Cody.jpg'), clickable: true },
-  'Kinnley Cline': { image: require('../../assets/Armor/Kinnley.jpg'), clickable: true },
-  'Jack Smith': { image: require('../../assets/Armor/Jack.jpg'), clickable: true },
-  'Dylan': { image: require('../../assets/Armor/Dylan.jpg'), clickable: true },
-  'Jessica Fisher': { image: require('../../assets/Armor/JessicaF.jpg'), clickable: true },
-  'Dustin Edmonds': { image: require('../../assets/Armor/DustinE.jpg'), clickable: true },
-  'Justin Platt': { image: require('../../assets/Armor/Justin2.jpg'), clickable: true },
-  'Zack Dustin': { image: require('../../assets/Armor/Zack2_cleanup.jpg'), clickable: true },
-  'Josh Clark': { image: require('../../assets/Armor/JoshClark.jpg'), clickable: true },
-  'Miles Robinson': { image: require('../../assets/Armor/MilesRob.jpg'), clickable: true },
-  'Lizzy': { image: require('../../assets/Armor/Lizzy.jpg'), clickable: true },
-  'Sam': { image: require('../../assets/Armor/SamMal.jpg'), clickable: true },
-  'Spencer': { image: require('../../assets/Armor/SpencerHen.jpg'), clickable: true },
-  'Sanford Duncan': { image: require('../../assets/Armor/Sanford.jpg'), clickable: true },
-  'Magic Matt': { image: require('../../assets/Armor/MagicMatt.jpg'), clickable: true },
-  'Kanyon': { image: require('../../assets/Armor/Kanyon.jpg'), clickable: true }, 
-  'John': { image: require('../../assets/Armor/JohnHS.jpg'), clickable: true },  
-  'Quinton': { image: require('../../assets/Armor/Quinton.jpg'), clickable: true },  
-  'Emery': { image: require('../../assets/Armor/Emery.jpg'), clickable: true },
-  'Mason': { image: require('../../assets/Armor/MasonHS.jpg'), clickable: true },
-  'Xavier': { image: require('../../assets/Armor/Xavier.jpg'), clickable: true },
-  'Josh Davis': { image: require('../../assets/Armor/JoshD.jpg'), clickable: true },
-  
+  'Kenndedy Carman': {
+    images: [
+      { uri: require('../../assets/Armor/Kennedy.jpg'), name: 'Kennedy Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Kennedy Placeholder', clickable: true },
+    ],
+  },
+  'Jack Clark': {
+    images: [
+      { uri: require('../../assets/Armor/JackClark.jpg'), name: 'Jack Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Jack Placeholder', clickable: true },
+    ],
+  },
+  'Emma Bronson': {
+    images: [
+      { uri: require('../../assets/Armor/EmmaBron.jpg'), name: 'Emma Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Emma Placeholder', clickable: true },
+    ],
+  },
+  'Ella Duce': {
+    images: [
+      { uri: require('../../assets/Armor/EllaDuce.jpg'), name: 'Ella Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Ella Placeholder', clickable: true },
+    ],
+  },
+  'Addison Morris': {
+    images: [
+      { uri: require('../../assets/Armor/AddisonMorris.jpg'), name: 'Addison Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Addison Placeholder', clickable: true },
+    ],
+  },
+  'Alyssa': {
+    images: [
+      { uri: require('../../assets/Armor/Alyssa.jpg'), name: 'Alyssa Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Alyssa Placeholder', clickable: true },
+    ],
+  },
+  'Cody Cline': {
+    images: [
+      { uri: require('../../assets/Armor/Cody.jpg'), name: 'Cody Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Cody Placeholder', clickable: true },
+    ],
+  },
+  'Kinnley Cline': {
+    images: [
+      { uri: require('../../assets/Armor/Kinnley.jpg'), name: 'Kinnley Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Kinnley Placeholder', clickable: true },
+    ],
+  },
+  'Jack Smith': {
+    images: [
+      { uri: require('../../assets/Armor/Jack.jpg'), name: 'Jack Smith Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Jack Smith Placeholder', clickable: true },
+    ],
+  },
+  'Dylan': {
+    images: [
+      { uri: require('../../assets/Armor/Dylan.jpg'), name: 'Dylan Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Dylan Placeholder', clickable: true },
+    ],
+  },
+  'Jessica Fisher': {
+    images: [
+      { uri: require('../../assets/Armor/JessicaF.jpg'), name: 'Jessica Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Jessica Placeholder', clickable: true },
+    ],
+  },
+  'Dustin Edmonds': {
+    images: [
+      { uri: require('../../assets/Armor/DustinE.jpg'), name: 'Dustin Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Dustin Placeholder', clickable: true },
+    ],
+  },
+  'Justin Platt': {
+    images: [
+      { uri: require('../../assets/Armor/Justin2.jpg'), name: 'Justin Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Justin Placeholder', clickable: true },
+    ],
+  },
+  'Zack Dustin': {
+    images: [
+      { uri: require('../../assets/Armor/Zack2_cleanup.jpg'), name: 'Zack Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Zack Placeholder', clickable: true },
+    ],
+  },
+  'Josh Clark': {
+    images: [
+      { uri: require('../../assets/Armor/JoshClark.jpg'), name: 'Josh Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Josh Placeholder', clickable: true },
+    ],
+  },
+  'Miles Robinson': {
+    images: [
+      { uri: require('../../assets/Armor/MilesRob.jpg'), name: 'Miles Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Miles Placeholder', clickable: true },
+    ],
+  },
+  'Lizzy': {
+    images: [
+      { uri: require('../../assets/Armor/Lizzy.jpg'), name: 'Lizzy Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Lizzy Placeholder', clickable: true },
+    ],
+  },
+  'Sam': {
+    images: [
+      { uri: require('../../assets/Armor/SamMal.jpg'), name: 'Sam Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Sam Placeholder', clickable: true },
+    ],
+  },
+  'Spencer': {
+    images: [
+      { uri: require('../../assets/Armor/SpencerHen.jpg'), name: 'Spencer Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Spencer Placeholder', clickable: true },
+    ],
+  },
+  'Sanford Duncan': {
+    images: [
+      { uri: require('../../assets/Armor/Sanford.jpg'), name: 'Sanford Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Sanford Placeholder', clickable: true },
+    ],
+  },
+  'Magic Matt': {
+    images: [
+      { uri: require('../../assets/Armor/MagicMatt.jpg'), name: 'Matt Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Matt Placeholder', clickable: true },
+    ],
+  },
+  'Kanyon': {
+    images: [
+      { uri: require('../../assets/Armor/Kanyon.jpg'), name: 'Kanyon Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Kanyon Placeholder', clickable: true },
+    ],
+  },
+  'John': {
+    images: [
+      { uri: require('../../assets/Armor/JohnHS.jpg'), name: 'John Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'John Placeholder', clickable: true },
+    ],
+  },
+  'Quinton': {
+    images: [
+      { uri: require('../../assets/Armor/Quinton.jpg'), name: 'Quinton Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Quinton Placeholder', clickable: true },
+    ],
+  },
+  'Emery': {
+    images: [
+      { uri: require('../../assets/Armor/Emery.jpg'), name: 'Emery Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Emery Placeholder', clickable: true },
+    ],
+  },
+  'Mason': {
+    images: [
+      { uri: require('../../assets/Armor/MasonHS.jpg'), name: 'Mason HS Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Mason HS Placeholder', clickable: true },
+    ],
+  },
+  'Xavier': {
+    images: [
+      { uri: require('../../assets/Armor/Xavier.jpg'), name: 'Xavier Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Xavier Placeholder', clickable: true },
+    ],
+  },
+  'Josh Davis': {
+    images: [
+      { uri: require('../../assets/Armor/JoshD.jpg'), name: 'Josh Davis Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Josh Davis Placeholder', clickable: true },
+    ],
+  },
+
   // 🟢 Jr High members
-  'Will Knight': { image: require('../../assets/Armor/WillK.jpg'), clickable: true },
-  'Paxton': { image: require('../../assets/Armor/Paxton.jpg'), clickable: true },
-  'Spencer Hill': { image: require('../../assets/Armor/SpencerHill.jpg'), clickable: true },
-  'Cassidy Cline': { image: require('../../assets/Armor/Cassidy.jpg'), clickable: true },
-  'Adam Leger': { image: require('../../assets/Armor/Adam.jpg'), clickable: true },
-  'Sam Phillips': { image: require('../../assets/Armor/SamPh.jpg'), clickable: true },
-  'Hayden Perks': { image: require('../../assets/Armor/Hayden.jpg'), clickable: true },
-  'Cienna': { image: require('../../assets/Armor/Cienna.jpg'), clickable: true },
-  'Clayton': { image: require('../../assets/Armor/Clayton.jpg'), clickable: true },
-  'Bridget': { image: require('../../assets/Armor/Bridget.jpg'), clickable: true },
-  'Ryan': { image: require('../../assets/Armor/RyanMC.jpg'), clickable: true },
-  'Carson': { image: require('../../assets/Armor/Carson.jpg'), clickable: true },
-  'Sydney': { image: require('../../assets/Armor/Sydney.jpg'), clickable: true },
-  'Natalie': { image: require('../../assets/Armor/Natalie.jpg'), clickable: true }, 
-  
-  // 🟢 Elementry members
-  'Josh Noble': { image: require('../../assets/Armor/JoshNoble.jpg'), clickable: true },
-  'Matt Lihpia': { image: require('../../assets/Armor/MattLih.jpg'), clickable: true },
-  'Jose Rodriguez': { image: require('../../assets/Armor/JoseRod.jpg'), clickable: true },
-  'Jorge': { image: require('../../assets/Armor/Jorge.jpg'), clickable: true },
-  'Tayton Baker': { image: require('../../assets/Armor/Tayton.jpg'), clickable: true },
-  'Michael': { image: require('../../assets/Armor/MichealBerks.jpg'), clickable: true },
-  'Thomas': { image: require('../../assets/Armor/Thomas.jpg'), clickable: true },
-  'Nate Greene': { image: require('../../assets/Armor/NateGree.jpg'), clickable: true },
-  'Ivan Aparicio': { image: require('../../assets/Armor/Ivan.jpg'), clickable: true },
-  'Abby': { image: require('../../assets/Armor/AbbyGhost.jpg'), clickable: true },
-  'Veronica Teaford': { image: require('../../assets/Armor/Veronica.jpg'), clickable: true },
-  'Erica Teaford': { image: require('../../assets/Armor/Erica.jpg'), clickable: true },
-  'Lupa': { image: require('../../assets/Armor/Lupa.jpg'), clickable: true },
-  'Shanna': { image: require('../../assets/Armor/Shanna.jpg'), clickable: true },
-  'Elizabeth': { image: require('../../assets/Armor/ElizabethWE.jpg'), clickable: true },
-  'Noah': { image: require('../../assets/Armor/Noah.jpg'), clickable: true },
-  'Elise': { image: require('../../assets/Armor/Elise.jpg'), clickable: true },
-  'Brigdan': { image: require('../../assets/Armor/Brigdan.jpg'), clickable: true },
-  'Addie': { image: require('../../assets/Armor/AddieCH.jpg'), clickable: true },
+  'Will Knight': {
+    images: [
+      { uri: require('../../assets/Armor/WillK.jpg'), name: 'Will Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Will Placeholder', clickable: true },
+    ],
+  },
+  'Paxton': {
+    images: [
+      { uri: require('../../assets/Armor/Paxton.jpg'), name: 'Paxton Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Paxton Placeholder', clickable: true },
+    ],
+  },
+  'Spencer Hill': {
+    images: [
+      { uri: require('../../assets/Armor/SpencerHill.jpg'), name: 'Spencer Hill Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Spencer Hill Placeholder', clickable: true },
+    ],
+  },
+  'Cassidy Cline': {
+    images: [
+      { uri: require('../../assets/Armor/Cassidy.jpg'), name: 'Cassidy Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Cassidy Placeholder', clickable: true },
+    ],
+  },
+  'Adam Leger': {
+    images: [
+      { uri: require('../../assets/Armor/Adam.jpg'), name: 'Adam Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Adam Placeholder', clickable: true },
+    ],
+  },
+  'Sam Phillips': {
+    images: [
+      { uri: require('../../assets/Armor/SamPh.jpg'), name: 'Sam Phillips Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Sam Phillips Placeholder', clickable: true },
+    ],
+  },
+  'Hayden Perks': {
+    images: [
+      { uri: require('../../assets/Armor/Hayden.jpg'), name: 'Hayden Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Hayden Placeholder', clickable: true },
+    ],
+  },
+  'Cienna': {
+    images: [
+      { uri: require('../../assets/Armor/Cienna.jpg'), name: 'Cienna Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Cienna Placeholder', clickable: true },
+    ],
+  },
+  'Clayton': {
+    images: [
+      { uri: require('../../assets/Armor/Clayton.jpg'), name: 'Clayton Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Clayton Placeholder', clickable: true },
+    ],
+  },
+  'Bridget': {
+    images: [
+      { uri: require('../../assets/Armor/Bridget.jpg'), name: 'Bridget Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Bridget Placeholder', clickable: true },
+    ],
+  },
+  'Ryan': {
+    images: [
+      { uri: require('../../assets/Armor/RyanMC.jpg'), name: 'Ryan Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Ryan Placeholder', clickable: true },
+    ],
+  },
+  'Carson': {
+    images: [
+      { uri: require('../../assets/Armor/Carson.jpg'), name: 'Carson Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Carson Placeholder', clickable: true },
+    ],
+  },
+  'Sydney': {
+    images: [
+      { uri: require('../../assets/Armor/Sydney.jpg'), name: 'Sydney Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Sydney Placeholder', clickable: true },
+    ],
+  },
+  'Natalie': {
+    images: [
+      { uri: require('../../assets/Armor/Natalie.jpg'), name: 'Natalie Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Natalie Placeholder', clickable: true },
+    ],
+  },
+
+  // 🟢 Elementary members
+  'Josh Noble': {
+    images: [
+      { uri: require('../../assets/Armor/JoshNoble.jpg'), name: 'Josh Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Josh Placeholder', clickable: true },
+    ],
+  },
+  'Matt Lihpia': {
+    images: [
+      { uri: require('../../assets/Armor/MattLih.jpg'), name: 'Matt Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Matt Placeholder', clickable: true },
+    ],
+  },
+  'Jose Rodriguez': {
+    images: [
+      { uri: require('../../assets/Armor/JoseRod.jpg'), name: 'Jose Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Jose Placeholder', clickable: true },
+    ],
+  },
+  'Jorge': {
+    images: [
+      { uri: require('../../assets/Armor/Jorge.jpg'), name: 'Jorge Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Jorge Placeholder', clickable: true },
+    ],
+  },
+  'Tayton Baker': {
+    images: [
+      { uri: require('../../assets/Armor/Tayton.jpg'), name: 'Tayton Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Tayton Placeholder', clickable: true },
+    ],
+  },
+  'Michael': {
+    images: [
+      { uri: require('../../assets/Armor/MichealBerks.jpg'), name: 'Michael Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Michael Placeholder', clickable: true },
+    ],
+  },
+  'Thomas': {
+    images: [
+      { uri: require('../../assets/Armor/Thomas.jpg'), name: 'Thomas Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Thomas Placeholder', clickable: true },
+    ],
+  },
+  'Nate Greene': {
+    images: [
+      { uri: require('../../assets/Armor/NateGree.jpg'), name: 'Nate Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Nate Placeholder', clickable: true },
+    ],
+  },
+  'Ivan Aparicio': {
+    images: [
+      { uri: require('../../assets/Armor/Ivan.jpg'), name: 'Ivan Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Ivan Placeholder', clickable: true },
+    ],
+  },
+  'Abby': {
+    images: [
+      { uri: require('../../assets/Armor/AbbyGhost.jpg'), name: 'Abby Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Abby Placeholder', clickable: true },
+    ],
+  },
+  'Veronica Teaford': {
+    images: [
+      { uri: require('../../assets/Armor/Veronica.jpg'), name: 'Veronica Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Veronica Placeholder', clickable: true },
+    ],
+  },
+  'Erica Teaford': {
+    images: [
+      { uri: require('../../assets/Armor/Erica.jpg'), name: 'Erica Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Erica Placeholder', clickable: true },
+    ],
+  },
+  'Lupa': {
+    images: [
+      { uri: require('../../assets/Armor/Lupa.jpg'), name: 'Lupa Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Lupa Placeholder', clickable: true },
+    ],
+  },
+  'Shanna': {
+    images: [
+      { uri: require('../../assets/Armor/Shanna.jpg'), name: 'Shanna Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Shanna Placeholder', clickable: true },
+    ],
+  },
+  'Elizabeth': {
+    images: [
+      { uri: require('../../assets/Armor/ElizabethWE.jpg'), name: 'Elizabeth Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Elizabeth Placeholder', clickable: true },
+    ],
+  },
+  'Noah': {
+    images: [
+      { uri: require('../../assets/Armor/Noah.jpg'), name: 'Noah Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Noah Placeholder', clickable: true },
+    ],
+  },
+  'Elise': {
+    images: [
+      { uri: require('../../assets/Armor/Elise.jpg'), name: 'Elise Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Elise Placeholder', clickable: true },
+    ],
+  },
+  'Brigdan': {
+    images: [
+      { uri: require('../../assets/Armor/Brigdan.jpg'), name: 'Brigdan Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Brigdan Placeholder', clickable: true },
+    ],
+  },
+  'Addie': {
+    images: [
+      { uri: require('../../assets/Armor/AddieCH.jpg'), name: 'Addie Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Addie Placeholder', clickable: true },
+    ],
+  },
 
   // 🟢 Aileen's Friends
-  'Sheryl': { image: require('../../assets/Armor/She.jpg'), clickable: true },
-  'Krystel': { image: require('../../assets/Armor/Krystel.jpg'), clickable: true },
-  'Deb': { image: require('../../assets/Armor/Deb.jpg'), clickable: true },
-  'Emma BYU': { image: require('../../assets/Armor/EmmaBYU.jpg'), clickable: true },
-  'Jessica BYU': { image: require('../../assets/Armor/JessicaBYU.jpg'), clickable: true },
-  'Victoria': { image: require('../../assets/Armor/Victoria.jpg'), clickable: true },
-  };
-  
-  export default legionImages;
-  
+  'Sheryl': {
+    images: [
+      { uri: require('../../assets/Armor/She.jpg'), name: 'Sheryl Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Sheryl Placeholder', clickable: true },
+    ],
+  },
+  'Krystel': {
+    images: [
+      { uri: require('../../assets/Armor/Krystel.jpg'), name: 'Krystel Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Krystel Placeholder', clickable: true },
+    ],
+  },
+  'Deb': {
+    images: [
+      { uri: require('../../assets/Armor/Deb.jpg'), name: 'Deb Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Deb Placeholder', clickable: true },
+    ],
+  },
+  'Emma BYU': {
+    images: [
+      { uri: require('../../assets/Armor/EmmaBYU.jpg'), name: 'Emma BYU Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Emma BYU Placeholder', clickable: true },
+    ],
+  },
+  'Jessica BYU': {
+    images: [
+      { uri: require('../../assets/Armor/JessicaBYU.jpg'), name: 'Jessica BYU Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Jessica BYU Placeholder', clickable: true },
+    ],
+  },
+  'Victoria': {
+    images: [
+      { uri: require('../../assets/Armor/Victoria.jpg'), name: 'Victoria Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Victoria Placeholder', clickable: true },
+    ],
+  },
+};
+
+export default legionImages;

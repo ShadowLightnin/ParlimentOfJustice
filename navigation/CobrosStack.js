@@ -1,6 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { CobrosScreen } from '../screens/Cobros/CobrosScreen';
+import CobrosCharacterDetail from '../screens/Cobros/CobrosCharacterDetail';
 import PowerCobros  from '../screens/Cobros/PowerCobros';
 import TeamChatScreen from "../screens/Cobros/TeamChatScreen";
 
@@ -12,6 +13,7 @@ export function CobrosStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="CobrosHome" component={CobrosScreen} />
+      <Stack.Screen name="CobrosCharacterDetail" component={CobrosCharacterDetail} />
       <Stack.Screen name="PowerCobros" component={PowerCobros} />
       <Stack.Screen name="TeamChat" component={TeamChatScreen} />
       {/* <Stack.Screen name="" component={} /> */}

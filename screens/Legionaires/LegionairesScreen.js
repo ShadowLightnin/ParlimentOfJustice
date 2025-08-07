@@ -17,6 +17,7 @@ import { collection, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 import { memberCategories } from './LegionairesMembers';
 import legionImages from './LegionairesImages';
+import descriptions from './LegionDescription';
 import LegionFriends from './LegionFriends';
 import { Audio } from 'expo-av';
 
@@ -31,7 +32,6 @@ const verticalSpacing = isDesktop ? 20 : 10;
 
 export const LegionairesScreen = () => {
   const navigation = useNavigation();
-  const [previewMember, setPreviewMember] = useState(null);
   const [members, setMembers] = useState(memberCategories);
   const [editingMember, setEditingMember] = useState(null);
   const [deleteModal, setDeleteModal] = useState({ visible: false, member: null });
@@ -145,7 +145,7 @@ export const LegionairesScreen = () => {
       if (member.screen && member.screen !== '') {
         navigation.navigate(member.screen);
       } else {
-        setPreviewMember(member);
+        navigation.navigate('LegionairesCharacterDetail', { member });
       }
     }
   };
@@ -195,26 +195,6 @@ export const LegionairesScreen = () => {
         </View>
       )}
     </View>
-  );
-
-  const renderPreviewCard = (member) => (
-    <TouchableOpacity
-      key={member.name}
-      style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
-      onPress={() => {
-        setPreviewMember(null);
-      }}
-    >
-      <Image
-        source={member.image || require('../../assets/Armor/PlaceHolder.jpg')}
-        style={styles.previewImage}
-        resizeMode="cover"
-      />
-      <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>
-        © {member.codename || 'Unknown'}; William Cummings
-      </Text>
-    </TouchableOpacity>
   );
 
   const confirmDelete = async (memberId) => {
@@ -306,8 +286,14 @@ export const LegionairesScreen = () => {
                         ...memberObj,
                         image: memberObj.imageUrl && memberObj.imageUrl !== 'placeholder'
                           ? { uri: memberObj.imageUrl }
-                          : (legionImages[memberObj.name]?.image || require('../../assets/Armor/PlaceHolder.jpg')),
-                        clickable: memberObj.clickable !== undefined ? memberObj.clickable : (legionImages[memberObj.name]?.clickable || true),
+                          : (legionImages[memberObj.name]?.images?.[0]?.uri || require('../../assets/Armor/PlaceHolder.jpg')),
+                        images: legionImages[memberObj.name]?.images || (
+                          memberObj.imageUrl && memberObj.imageUrl !== 'placeholder'
+                            ? [{ uri: memberObj.imageUrl, name: memberObj.name || 'Member Image', clickable: true }]
+                            : [{ uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Placeholder', clickable: true }]
+                        ),
+                        clickable: memberObj.clickable !== undefined ? memberObj.clickable : (legionImages[memberObj.name]?.images?.[0]?.clickable || true),
+                        description: descriptions[memberObj.name] || memberObj.description || 'No description available',
                       };
 
                       return renderMemberCard(member);
@@ -328,40 +314,6 @@ export const LegionairesScreen = () => {
             onDelete={onDelete}
           />
         </ScrollView>
-
-        <Modal
-          visible={!!previewMember}
-          transparent={true}
-          animationType="fade"
-          onRequestClose={() => setPreviewMember(null)}
-        >
-          <View style={styles.modalBackground}>
-            <TouchableOpacity
-              style={styles.modalOuterContainer}
-              activeOpacity={1}
-              onPress={() => setPreviewMember(null)}
-            >
-              <View style={styles.imageContainer}>
-                <ScrollView
-                  horizontal
-                  contentContainerStyle={styles.imageScrollContainer}
-                  showsHorizontalScrollIndicator={false}
-                  snapToAlignment="center"
-                  snapToInterval={SCREEN_WIDTH * 0.7 + 20}
-                  decelerationRate="fast"
-                  centerContent={true}
-                >
-                  {previewMember && renderPreviewCard(previewMember)}
-                </ScrollView>
-              </View>
-              <View style={styles.previewAboutSection}>
-                <Text style={styles.previewCodename}>{previewMember?.codename || 'N/A'}</Text>
-                <Text style={styles.previewName}>{previewMember?.name || 'Unknown'}</Text>
-                <Text style={styles.previewCategory}>{previewMember?.category || 'Unknown'}</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </Modal>
 
         <Modal
           visible={deleteModal.visible}
@@ -534,82 +486,6 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
     color: '#aaa',
     textAlign: 'center',
-  },
-  modalBackground: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.9)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalOuterContainer: {
-    width: '90%',
-    height: '80%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  imageContainer: {
-    width: '100%',
-    paddingVertical: 20,
-    backgroundColor: '#111',
-    alignItems: 'center',
-    paddingLeft: 20,
-  },
-  imageScrollContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  previewCard: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.2 : SCREEN_WIDTH * 0.9,
-    height: isDesktop ? SCREEN_HEIGHT * 0.7 : SCREEN_HEIGHT * 0.6,
-    borderRadius: 15,
-    overflow: 'hidden',
-    elevation: 5,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    marginRight: 20,
-  }),
-  clickable: {
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  previewImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  cardName: {
-    position: 'absolute',
-    bottom: 10,
-    left: 10,
-    fontSize: 16,
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  previewAboutSection: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#222',
-    borderRadius: 10,
-    width: '100%',
-  },
-  previewCodename: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#00b3ff',
-    textAlign: 'center',
-  },
-  previewCategory: {
-    fontSize: 16,
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 5,
-  },
-  previewName: {
-    fontSize: 16,
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 5,
   },
   buttonContainer: {
     flexDirection: 'row',

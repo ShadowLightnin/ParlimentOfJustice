@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,38 +10,17 @@ import {
   ScrollView,
   Dimensions,
   Modal,
+  Alert,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { Audio } from 'expo-av'; // Import expo-av for audio
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { cobrosMembers } from './CobrosMembers';
+import { Audio } from 'expo-av';
+import descriptions from './CobrosDescription';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
-const members = [
-  { name: 'Tanner Despain', codename: 'Titanium', screen: '', clickable: true, image: require('../../assets/Armor/TannerD.jpg') },
-  { name: 'Ethan Workman', codename: 'Schriker', screen: '', clickable: true, image: require('../../assets/Armor/EthanW.jpg') },
-  { name: 'Wesley Holbrook', codename: 'Warlock', screen: '', clickable: true, image: require('../../assets/Armor/WesleyH.jpg') },
-  { name: 'Josh Larson', codename: 'Juggernaut', screen: '', clickable: true, image: require('../../assets/Armor/JoshL.jpg') },
-  { name: 'Jonah Gray', codename: 'Echo Song', screen: '', clickable: true, image: require('../../assets/Armor/Jonah.jpg') },
-  { name: 'Joseph Slack', codename: 'Caster', screen: '', clickable: true, image: require('../../assets/Armor/JosephS_cleanup.jpg') },
-  { name: 'Jaden Boyer', codename: 'Aether Blaze', screen: '', clickable: true, image: require('../../assets/Armor/Jaden3.jpg') },
-  { name: 'Jonas Boyer', codename: 'Sports Master', screen: '', clickable: true, image: require('../../assets/Armor/Jonas3.jpg') },
-  { name: 'Andrew DeDen', codename: 'Loneman', screen: '', clickable: true, image: require('../../assets/Armor/AndrewD.jpg') },
-  { name: 'Jimmy Larson', codename: 'Renaissance', screen: '', clickable: true, image: require('../../assets/Armor/Jimmy.jpg') },
-  { name: 'Johnathon Gray', codename: 'Vocalnought', screen: '', clickable: true, image: require('../../assets/Armor/Johnathon3.jpg') },
-  { name: 'Nick Larsen', codename: 'Iron Guard', screen: '', clickable: true, image: require('../../assets/Armor/Nick2.jpg') },
-  { name: 'Vanner Johnson', codename: 'Viral', screen: '', clickable: true, image: require('../../assets/Armor/Vanner.jpg') },
-  { name: 'Tommy Holbrook', codename: 'Swift Shadow', screen: '', clickable: true, image: require('../../assets/Armor/TommyH.jpg') },
-  { name: 'Alex Wood', codename: 'Vortex Flash', screen: '', clickable: true, image: require('../../assets/Armor/AlexW.jpg') },
-  { name: 'Rick Holly', codename: 'Valor Knight', screen: '', clickable: true, image: require('../../assets/Armor/Rick.jpg') },
-  { name: 'Trent Cook', codename: 'Captain', screen: '', clickable: true, image: require('../../assets/Armor/Trent.jpg') },
-  { name: 'Robbie Petersen', codename: 'Quickstike', screen: '', clickable: true, image: require('../../assets/Armor/Robbie.jpg') },
-  { name: 'Micheal', codename: 'Guardian Sentinel', screen: '', clickable: true, image: require('../../assets/Armor/Micheal.jpg') },
-  { name: 'Kyle', codename: 'Jugridge', screen: '', clickable: true, image: require('../../assets/Armor/KyleP.jpg') },
-];
-
 const isDesktop = SCREEN_WIDTH > 600;
 const columns = isDesktop ? 5 : 3;
-const rows = Math.ceil(members.length / columns);
 const cardSize = isDesktop ? 160 : 100;
 const cardHeightMultiplier = 1.6;
 const horizontalSpacing = isDesktop ? 40 : 10;
@@ -50,103 +29,241 @@ const verticalSpacing = isDesktop ? 50 : 20;
 export const CobrosScreen = () => {
   const navigation = useNavigation();
   const [previewMember, setPreviewMember] = useState(null);
-  const [sound, setSound] = useState(null); // State to manage audio object
+  const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
+  const [currentSound, setCurrentSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  // Handle music playback
+  const playTheme = async () => {
+    if (!currentSound) {
+      try {
+        const { sound } = await Audio.Sound.createAsync(
+          require('../../assets/audio/JusticeGang.mp4'),
+          { shouldPlay: true, isLooping: true, volume: 1.0 }
+        );
+        setCurrentSound(sound);
+        await sound.playAsync();
+        setIsPlaying(true);
+        console.log('Playing Sound at:', new Date().toISOString());
+      } catch (error) {
+        console.error('Failed to load audio file:', error);
+        Alert.alert('Audio Error', 'Failed to load background music. Please check the audio file path: ../../assets/audio/JusticeGang.mp4');
+      }
+    } else if (!isPlaying) {
+      try {
+        await currentSound.playAsync();
+        setIsPlaying(true);
+        console.log('Audio resumed at:', new Date().toISOString());
+      } catch (error) {
+        console.error('Error resuming sound:', error);
+      }
+    }
+  };
+
+  // Handle music pause
+  const pauseTheme = async () => {
+    if (currentSound && isPlaying) {
+      try {
+        await currentSound.pauseAsync();
+        setIsPlaying(false);
+        console.log('Audio paused at:', new Date().toISOString());
+      } catch (error) {
+        console.error('Error pausing sound:', error);
+      }
+    }
+  };
+
+  // Cleanup sound on unmount or navigation
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        if (currentSound) {
+          currentSound.stopAsync().catch((error) => console.error('Error stopping sound:', error));
+          currentSound.unloadAsync().catch((error) => console.error('Error unloading sound:', error));
+          setCurrentSound(null);
+          setIsPlaying(false);
+          console.log('Audio stopped and unloaded on unmount');
+        }
+      };
+    }, [currentSound])
+  );
 
   useEffect(() => {
-    // Load and play background music
-    async function loadSound() {
-      console.log('Loading Sound at:', new Date().toISOString());
-      const { sound } = await Audio.Sound.createAsync(
-        require('../../assets/audio/JusticeGang.mp4'), // Replace with your audio file path
-        { shouldPlay: true, isLooping: false }
-      );
-      setSound(sound);
-      console.log('Playing Sound at:', new Date().toISOString());
-      await sound.playAsync();
-    }
-    loadSound();
+    const updateDimensions = () => {
+      setWindowWidth(Dimensions.get('window').width);
+    };
+    const subscription = Dimensions.addEventListener('change', updateDimensions);
 
     return () => {
-      if (sound) {
-        console.log('Unloading Sound at:', new Date().toISOString());
-        sound.unloadAsync();
-      }
+      subscription?.remove();
     };
   }, []);
 
-  const goToChat = () => {
-    if (sound) {
-      sound.stopAsync();
-      sound.unloadAsync();
+  const goToChat = async () => {
+    if (currentSound) {
+      try {
+        await currentSound.stopAsync();
+        await currentSound.unloadAsync();
+        setCurrentSound(null);
+        setIsPlaying(false);
+        console.log('Audio stopped and unloaded for TeamChat navigation');
+      } catch (error) {
+        console.error('Error stopping/unloading audio for TeamChat:', error);
+      }
     }
     navigation.navigate('TeamChat');
   };
 
-  const handleMemberPress = (member) => {
+  const handleMemberPress = async (member) => {
     if (member.clickable) {
-      if (member.screen) {
-        navigation.navigate(member.screen); // Navigate to the defined screen if it exists
+      if (currentSound) {
+        try {
+          await currentSound.stopAsync();
+          await currentSound.unloadAsync();
+          setCurrentSound(null);
+          setIsPlaying(false);
+          console.log('Audio stopped and unloaded for member navigation');
+        } catch (error) {
+          console.error('Error stopping sound for member navigation:', error);
+        }
+      }
+      if (member.screen && member.screen !== '') {
+        navigation.navigate(member.screen);
       } else {
-        setPreviewMember(member); // Show modal if no screen is defined
+        navigation.navigate('CobrosCharacterDetail', { member });
       }
     }
   };
 
-  const renderMemberCard = (member) => (
-    <TouchableOpacity 
-      key={member.name} 
-      style={[
-        styles.card, 
-        { width: cardSize, height: cardSize * cardHeightMultiplier },
-        !member.clickable && styles.disabledCard
-      ]}
-      onPress={() => handleMemberPress(member)}
-      disabled={!member.clickable}
-    >
-      {member?.image && (
-        <>
-          <Image 
-            source={member.image || require('../../assets/Armor/PlaceHolder.jpg')} 
-            style={styles.characterImage} 
-          />
-          <View style={styles.transparentOverlay} />
-        </>
-      )}
-      <Text style={styles.codename}>{member.codename}</Text>
-      <Text style={styles.name}>{member.name}</Text>
-    </TouchableOpacity>
-  );
+  const renderMemberCard = (member) => {
+    const enhancedMember = {
+      ...member,
+      image: member.images?.[0]?.uri || require('../../assets/Armor/PlaceHolder.jpg'),
+      images: member.images || [{ uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Placeholder', clickable: true }],
+      clickable: member.clickable !== undefined ? member.clickable : true,
+      description: descriptions[member.name] || 'No description available',
+    };
 
-  const renderPreviewCard = (member) => (
-    <TouchableOpacity
-      key={member.name}
-      style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
-      onPress={() => setPreviewMember(null)} // Close modal on card press
-    >
-      <Image
-        source={member.image || require('../../assets/Armor/PlaceHolder.jpg')}
-        style={styles.previewImage}
-        resizeMode="cover"
-      />
-      <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>
-        © {member.codename || 'Unknown'}; William Cummings
-      </Text>
-    </TouchableOpacity>
-  );
+    console.log('Passing member:', member.name, 'Images:', enhancedMember.images);
+
+    return (
+      <TouchableOpacity
+        key={member.name}
+        style={[
+          styles.card,
+          { width: cardSize, height: cardSize * cardHeightMultiplier },
+          !enhancedMember.clickable && styles.disabledCard,
+        ]}
+        onPress={() => handleMemberPress(enhancedMember)}
+        disabled={!enhancedMember.clickable}
+      >
+        {enhancedMember.image && (
+          <>
+            <Image
+              source={typeof enhancedMember.image === 'string' ? { uri: enhancedMember.image } : enhancedMember.image}
+              style={[styles.characterImage, { width: '100%', height: cardSize * 1.2 }]}
+              onError={(e) => console.error('Image load error:', e.nativeEvent.error, 'URI:', enhancedMember.image)}
+            />
+            <View style={styles.transparentOverlay} />
+          </>
+        )}
+        <Text style={styles.codename}>{enhancedMember.codename || ''}</Text>
+        <Text style={styles.name}>{enhancedMember.name}</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  const renderPreviewCard = (img, index) => {
+    const key = img.uri ? `${typeof img.uri === 'string' ? img.uri : index}-${index}` : `image-${index}`;
+    return (
+      <TouchableOpacity
+        key={key}
+        style={[styles.previewCard(isDesktop, windowWidth), styles.clickable]}
+        onPress={() => setPreviewMember(null)}
+      >
+        <Image
+          source={typeof img.uri === 'string' ? { uri: img.uri } : img.uri}
+          style={styles.previewImage}
+          resizeMode="cover"
+          onError={(e) => console.error('Image load error:', e.nativeEvent.error, 'URI:', img.uri)}
+        />
+        <View style={styles.transparentOverlay} />
+        <Text style={styles.cardName}>
+          © {img.name || 'Unknown'}; William Cummings
+        </Text>
+      </TouchableOpacity>
+    );
+  };
+
+  const renderModalContent = () => {
+    if (!previewMember) return null;
+
+    const images = previewMember.images?.length
+      ? previewMember.images.map((img, idx) => ({
+          uri: img.uri,
+          name: img.name || `Image ${idx + 1}`,
+        }))
+      : [{
+          uri: previewMember.image || require('../../assets/Armor/PlaceHolder.jpg'),
+          name: previewMember.name || 'Default Image',
+        }];
+
+    console.log('Preview Member:', previewMember.name, 'Images:', images);
+
+    return (
+      <TouchableOpacity
+        style={styles.modalOuterContainer}
+        activeOpacity={1}
+        onPress={() => setPreviewMember(null)}
+      >
+        <View style={styles.imageContainer}>
+          <ScrollView
+            horizontal
+            contentContainerStyle={styles.imageScrollContainer}
+            showsHorizontalScrollIndicator={false}
+            snapToAlignment="center"
+            snapToInterval={windowWidth * 0.7 + 20}
+            decelerationRate="fast"
+            centerContent={true}
+          >
+            {images.map(renderPreviewCard)}
+          </ScrollView>
+        </View>
+        <View style={styles.previewAboutSection}>
+          <Text style={styles.previewCodename}>{previewMember?.codename || 'N/A'}</Text>
+          <Text style={styles.previewName}>{previewMember?.name || 'Unknown'}</Text>
+          <Text style={styles.previewDescription}>
+            {descriptions[previewMember.name] || 'No description available'}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
-    <ImageBackground source={require('../../assets/BackGround/Cobros.jpg')} style={styles.background}>
+    <ImageBackground
+      source={require('../../assets/BackGround/Cobros.jpg')}
+      style={styles.background}
+    >
       <SafeAreaView style={styles.container}>
-        {/* Header & Back Button */}
         <View style={styles.headerWrapper}>
-          <TouchableOpacity style={styles.backButton} onPress={() => {
-            if (sound) {
-              sound.stopAsync();
-              sound.unloadAsync();
-            }
-            navigation.goBack();
-          }}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={async () => {
+              if (currentSound) {
+                try {
+                  await currentSound.stopAsync();
+                  await currentSound.unloadAsync();
+                  setCurrentSound(null);
+                  setIsPlaying(false);
+                  console.log('Audio stopped and unloaded on back press');
+                } catch (error) {
+                  console.error('Error stopping/unloading audio on back press:', error);
+                }
+              }
+              navigation.goBack();
+            }}
+          >
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
           <Text style={styles.header}>Cobros 314</Text>
@@ -155,31 +272,40 @@ export const CobrosScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Grid Layout */}
+        <View style={styles.musicControls}>
+          <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
+            <Text style={styles.musicButtonText}>Theme</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
+            <Text style={styles.musicButtonText}>Pause</Text>
+          </TouchableOpacity>
+        </View>
+
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          {Array.from({ length: rows }).map((_, rowIndex) => (
-            <View 
-              key={rowIndex} 
-              style={[styles.row, { gap: horizontalSpacing, marginBottom: verticalSpacing }]}
-            >
-              {Array.from({ length: columns }).map((_, colIndex) => {
-                const memberIndex = rowIndex * columns + colIndex;
-                const member = members[memberIndex];
-
-                if (!member) return (
-                  <View 
-                    key={colIndex} 
-                    style={{ width: cardSize, height: cardSize * cardHeightMultiplier }} 
-                  />
-                );
-
-                return renderMemberCard(member);
-              })}
-            </View>
-          ))}
+          <View style={styles.membersContainer}>
+            {Array.from({ length: Math.ceil(cobrosMembers.length / columns) }).map((_, rowIndex) => (
+              <View
+                key={rowIndex}
+                style={[styles.row, { marginBottom: verticalSpacing, gap: horizontalSpacing }]}
+              >
+                {Array.from({ length: columns }).map((_, colIndex) => {
+                  const memberIndex = rowIndex * columns + colIndex;
+                  const member = cobrosMembers[memberIndex];
+                  if (!member || !member.name) {
+                    return (
+                      <View
+                        key={colIndex}
+                        style={{ width: cardSize, height: cardSize * cardHeightMultiplier }}
+                      />
+                    );
+                  }
+                  return renderMemberCard(member);
+                })}
+              </View>
+            ))}
+          </View>
         </ScrollView>
 
-        {/* Preview Modal */}
         <Modal
           visible={!!previewMember}
           transparent={true}
@@ -187,29 +313,7 @@ export const CobrosScreen = () => {
           onRequestClose={() => setPreviewMember(null)}
         >
           <View style={styles.modalBackground}>
-            <TouchableOpacity
-              style={styles.modalOuterContainer}
-              activeOpacity={1}
-              onPress={() => setPreviewMember(null)}
-            >
-              <View style={styles.imageContainer}>
-                <ScrollView
-                  horizontal
-                  contentContainerStyle={styles.imageScrollContainer}
-                  showsHorizontalScrollIndicator={false}
-                  snapToAlignment="center"
-                  snapToInterval={SCREEN_WIDTH * 0.7 + 20}
-                  decelerationRate="fast"
-                  centerContent={true}
-                >
-                  {previewMember && renderPreviewCard(previewMember)}
-                </ScrollView>
-              </View>
-              <View style={styles.previewAboutSection}>
-                <Text style={styles.previewCodename}>{previewMember?.codename || 'N/A'}</Text>
-                <Text style={styles.previewName}> {previewMember?.name || 'Unknown'}</Text>
-              </View>
-            </TouchableOpacity>
+            {renderModalContent()}
           </View>
         </Modal>
       </SafeAreaView>
@@ -257,7 +361,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#7d1a1a',
     textAlign: 'center',
-    textShadowColor: '#e0cd22', 
+    textShadowColor: '#e0cd22',
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 40,
     flex: 1,
@@ -271,9 +375,29 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#fff',
   },
+  musicControls: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  musicButton: {
+    padding: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 5,
+    marginHorizontal: 10,
+  },
+  musicButtonText: {
+    fontSize: 12,
+    color: '#00b3ff',
+    fontWeight: 'bold',
+  },
   scrollContainer: {
     paddingBottom: 20,
-    flexGrow: 1,
+    width: SCREEN_WIDTH,
+    alignItems: 'center',
+  },
+  membersContainer: {
+    width: '100%',
     alignItems: 'center',
   },
   row: {
@@ -296,19 +420,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#444',
   },
   characterImage: {
-    width: '100%',
-    height: '70%',
     resizeMode: 'cover',
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
   },
   codename: {
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: 'bold',
     color: '#fff',
     textAlign: 'center',
     marginTop: 5,
   },
   name: {
-    fontSize: 10,
+    fontSize: 8,
     fontStyle: 'italic',
     color: '#aaa',
     textAlign: 'center',
@@ -380,6 +504,12 @@ const styles = StyleSheet.create({
   previewName: {
     fontSize: 16,
     color: '#fff',
+    textAlign: 'center',
+    marginTop: 5,
+  },
+  previewDescription: {
+    fontSize: 14,
+    color: '#aaa',
     textAlign: 'center',
     marginTop: 5,
   },
