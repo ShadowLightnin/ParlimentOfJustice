@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,8 @@ import {
   ScrollView,
   StyleSheet,
   Dimensions,
-  ImageBackground
+  ImageBackground,
+  Alert, // <-- you referenced Alert in playTheme errors
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Audio } from 'expo-av';
@@ -38,11 +39,8 @@ const otherEvilThreats = [
 const DemonsSectionScreen = () => {
   const navigation = useNavigation();
   const [currentSound, setCurrentSound] = useState(null);
-  const [pausedPosition, setPausedPosition] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // Initialize sound on first mount
   // Handle music playback
   const playTheme = async () => {
     if (!currentSound) {
@@ -83,7 +81,7 @@ const DemonsSectionScreen = () => {
     }
   };
 
-  // Handle screen focus to resume audio
+  // Cleanup audio on blur/unmount
   useFocusEffect(
     useCallback(() => {
       return () => {
@@ -98,19 +96,22 @@ const DemonsSectionScreen = () => {
     }, [currentSound])
   );
 
-  // Pause audio and save position before navigating to faction screen
+  // Navigate regardless of audio state; stop/unload if playing
   const handleFactionPress = async (faction) => {
-    if (faction.clickable && faction.screen && currentSound) {
-      try {
+    if (!faction.clickable || !faction.screen) return;
+
+    try {
+      if (currentSound) {
         await currentSound.stopAsync();
         await currentSound.unloadAsync();
         setCurrentSound(null);
         setIsPlaying(false);
         console.log('HelldiverForEarth.mp4 stopped at:', new Date().toISOString());
-        navigation.navigate(faction.screen);
-      } catch (error) {
-        console.error('Error in handleFactionPress:', error);
       }
+
+      navigation.navigate(faction.screen);
+    } catch (error) {
+      console.error('Error in handleFactionPress:', error);
     }
   };
 
@@ -146,9 +147,9 @@ const DemonsSectionScreen = () => {
         source={faction.image}
         style={[styles.factionImage, { width: cardSize, height: cardSize * 1.2 }]}
       />
-      
-      {/* Transparent Overlay for Image Protection */}
-      <View style={styles.transparentOverlay} />
+
+      {/* Transparent overlay that IGNORES touches */}
+      <View pointerEvents="none" style={styles.transparentOverlay} />
 
       <View style={styles.textContainer}>
         <Text style={styles.factionName}>{faction.name}</Text>
@@ -305,7 +306,7 @@ const styles = StyleSheet.create({
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1,
+    // zIndex removed so it doesn't sit above and catch touches
   },
   textContainer: {
     alignItems: 'center',
