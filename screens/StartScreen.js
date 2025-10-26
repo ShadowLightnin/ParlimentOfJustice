@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, Animated, TouchableWithoutFeedback, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Animated, TouchableOpacity, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window'); // Get device width
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window'); // Get device dimensions
 
 const factions = [
   'The Parliament of Justice', 'Titans', 'Eclipse', 'Olympians', 'Cobros',
@@ -15,6 +15,7 @@ export const StartScreen = () => {
   const navigation = useNavigation();
   const slideAnim = useRef(new Animated.Value(-1)).current; // For faction text animation
   const popupAnim = useRef(new Animated.Value(-100)).current; // For popup slide animation
+  const buttonGlowAnim = useRef(new Animated.Value(0)).current; // For button glow effect
 
   useEffect(() => {
     // Animation for sliding faction names
@@ -28,6 +29,24 @@ export const StartScreen = () => {
         setIndex((prevIndex) => (prevIndex + 1) % factions.length);
         startAnimation();
       });
+    };
+
+    // Button glow animation (pulsating effect)
+    const glowAnimation = () => {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(buttonGlowAnim, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(buttonGlowAnim, {
+            toValue: 0,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
     };
 
     // Popup logic: show and slide down after 5 seconds, slide up and hide after 3 seconds
@@ -48,6 +67,7 @@ export const StartScreen = () => {
     }, 10000); // Show after 5 seconds
 
     startAnimation();
+    glowAnimation();
 
     return () => clearTimeout(popupTimer); // Cleanup timer
   }, []);
@@ -57,96 +77,169 @@ export const StartScreen = () => {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={handlePress}>
-      <View style={styles.container}>
-        <View style={styles.content}>
-          <Text style={styles.staticText}></Text>
-          <View style={styles.dynamicTextContainer}>
-            <Text style={styles.dynamicText}>{factions[index]}</Text>
-            <Animated.View
-              style={[
-                styles.slideBox,
-                {
-                  left: slideAnim.interpolate({
-                    inputRange: [-1, 1],
-                    outputRange: ['-150%', '150%'],
-                  }),
-                },
-              ]}
-            />
-          </View>
-        </View>
-        {showPopup && (
+    <View style={styles.container}>
+      <View style={styles.gridBackground} />
+      <View style={styles.content}>
+        <Text style={styles.staticText}></Text>
+        <View style={styles.dynamicTextContainer}>
+          <Text style={styles.dynamicText}>{factions[index]}</Text>
           <Animated.View
             style={[
-              styles.popup,
+              styles.slideBox,
               {
-                transform: [{ translateY: popupAnim }],
+                left: slideAnim.interpolate({
+                  inputRange: [-1, 1],
+                  outputRange: ['-150%', '150%'],
+                }),
               },
             ]}
-          >
-            <Text style={styles.popupText}>Tap the screen to continue</Text>
-          </Animated.View>
-        )}
+          />
+        </View>
       </View>
-    </TouchableWithoutFeedback>
+      <TouchableOpacity style={styles.startButton} onPress={handlePress}>
+        <Animated.View
+          style={[
+            styles.glowEffect,
+            {
+              opacity: buttonGlowAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0.3, 0.8],
+              }),
+            },
+          ]}
+        />
+        <Text style={styles.startButtonText}>Initiate Omni-drive</Text>
+      </TouchableOpacity>
+      {showPopup && (
+        <Animated.View
+          style={[
+            styles.popup,
+            {
+              transform: [{ translateY: popupAnim }],
+            },
+          ]}
+        >
+          <Text style={styles.popupText}>Omni-jump ready to engage</Text>
+        </Animated.View>
+      )}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor: '#0A0F1C', // Dark Tron-like background
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20, // Adds padding for smaller screens
+    paddingHorizontal: 20,
+  },
+  gridBackground: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'transparent',
+    borderColor: '#00FFFF', // Neon cyan grid lines
+    borderWidth: 0.5,
+    opacity: 0.1,
+    // Simulating a subtle grid pattern (React Native doesn't support CSS grid overlays, so this is a simplified effect)
   },
   content: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
   },
   staticText: {
-    fontSize: SCREEN_WIDTH > 600 ? 40 : 20, // Larger for desktop, smaller for mobile
-    color: 'white',
-    fontWeight: '500',
+    fontSize: SCREEN_WIDTH > 600 ? 40 : 20,
+    color: '#00FFFF', // Neon cyan for Tron vibe
+    fontWeight: '700',
+    fontFamily: 'monospace', // Futuristic font
+    textShadowColor: '#00B7EB', // Electric blue glow
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 8,
   },
   dynamicTextContainer: {
     position: 'relative',
     overflow: 'hidden',
   },
   dynamicText: {
-    fontSize: SCREEN_WIDTH > 600 ? 50 : 28, // Scales down text size for mobile
-    fontWeight: '500',
-    letterSpacing: SCREEN_WIDTH > 600 ? 4 : 2, // Smaller spacing for smaller screens
-    color: '#b2d7dd',
-    textShadowColor: '#00b3ff',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 10,
+    fontSize: SCREEN_WIDTH > 600 ? 50 : 28,
+    fontWeight: '700',
+    letterSpacing: SCREEN_WIDTH > 600 ? 4 : 2,
+    color: '#00FFFF', // Neon cyan
+    fontFamily: 'monospace',
+    textShadowColor: '#00B7EB', // Electric blue glow
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 12,
   },
   slideBox: {
     position: 'absolute',
     top: 0,
     height: '100%',
-    width: '500%', // Ensures full coverage of dynamic text
-    backgroundColor: 'black',
+    width: '500%',
+    backgroundColor: '#0A0F1C', // Match container background
   },
   popup: {
     position: 'absolute',
-    top: 0,
-    width: '60%',
-    backgroundColor: 'rgba(75, 75, 75, 0.116)',
+    top: 20,
+    width: '70%',
+    backgroundColor: 'rgba(0, 15, 28, 0.7)', // Dark, semi-transparent Tron-like popup
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#00FFFF', // Neon cyan border
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    shadowColor: '#00B7EB',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
+    elevation: 10,
   },
   popupText: {
     fontSize: SCREEN_WIDTH > 600 ? 20 : 16,
-    color: '#ffffff9d',
-    fontWeight: 'bold',
+    color: '#00FFFF', // Neon cyan
+    fontWeight: '700',
+    fontFamily: 'monospace',
+    textShadowColor: '#00B7EB',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 6,
+  },
+  startButton: {
+    position: 'absolute',
+    bottom: SCREEN_HEIGHT * 0.1, // Place button 10% from bottom
+    backgroundColor: 'transparent',
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 5,
+    borderWidth: 2,
+    borderColor: '#00FFFF', // Neon cyan border
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'visible',
+  },
+  glowEffect: {
+    position: 'absolute',
+    top: -2,
+    left: -2,
+    right: -2,
+    bottom: -2,
+    borderRadius: 5,
+    backgroundColor: '#00FFFF', // Neon cyan glow
+    opacity: 0.3,
+    shadowColor: '#00B7EB',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  startButtonText: {
+    fontSize: SCREEN_WIDTH > 600 ? 24 : 18,
+    color: '#00FFFF', // Neon cyan text
+    fontWeight: '700',
+    fontFamily: 'monospace',
+    textAlign: 'center',
+    textShadowColor: '#00B7EB',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 6,
   },
 });
