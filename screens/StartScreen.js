@@ -1,3 +1,4 @@
+// screens/start/StartScreen.js
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { View, Text, StyleSheet, Animated, TouchableOpacity, Dimensions, SafeAreaView, Alert } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -61,7 +62,6 @@ export const StartScreen = () => {
   // Cleanup sound on unmount
   useFocusEffect(
     useCallback(() => {
-      playTheme(); // Play automatically on mount
       return () => {
         if (currentSound) {
           currentSound.stopAsync().catch((error) => console.error('Error stopping sound:', error));

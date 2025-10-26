@@ -37,13 +37,33 @@ export const LegionairesScreen = () => {
   const [deleteModal, setDeleteModal] = useState({ visible: false, member: null });
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [background, setBackground] = useState(null);
+  const [audioFile, setAudioFile] = useState(null);
+
+  // Randomly select background and audio on mount
+  useEffect(() => {
+    const selectMedia = () => {
+      const random = Math.random();
+      if (random < 0.4) {
+        // Option 1: Original background and audio
+        setBackground(require('../../assets/BackGround/Legionaires2.jpg'));
+        setAudioFile(require('../../assets/audio/BlueBloodsExtend.mp4'));
+      } else {
+        // Option 2: New background and audio
+        setBackground(require('../../assets/BackGround/AnimatedLegion.gif'));
+        setAudioFile(require('../../assets/audio/Legion2.mp4'));
+      }
+    };
+    selectMedia();
+  }, []);
 
   // Handle music playback
   const playTheme = async () => {
+    if (!audioFile) return; // Wait until audioFile is set
     if (!currentSound) {
       try {
         const { sound } = await Audio.Sound.createAsync(
-          require('../../assets/audio/BlueBloodsExtend.mp4'),
+          audioFile,
           { shouldPlay: true, isLooping: true, volume: 1.0 }
         );
         setCurrentSound(sound);
@@ -52,7 +72,7 @@ export const LegionairesScreen = () => {
         console.log('Playing Sound at:', new Date().toISOString());
       } catch (error) {
         console.error('Failed to load audio file:', error);
-        Alert.alert('Audio Error', 'Failed to load background music. Please check the audio file path: ../../assets/audio/BlueBloodsExtend.mp4');
+        Alert.alert('Audio Error', `Failed to load background music. Please check the audio file path: ${audioFile}`);
       }
     } else if (!isPlaying) {
       try {
@@ -231,7 +251,7 @@ export const LegionairesScreen = () => {
 
   return (
     <ImageBackground
-      source={require('../../assets/BackGround/Legionaires2.jpg')}
+      source={background || require('../../assets/BackGround/Legionaires2.jpg')} // Fallback to original
       style={styles.background}
     >
       <SafeAreaView style={styles.container}>
@@ -346,6 +366,7 @@ export const LegionairesScreen = () => {
   );
 };
 
+// Styles remain unchanged
 const styles = StyleSheet.create({
   background: {
     width: SCREEN_WIDTH,
