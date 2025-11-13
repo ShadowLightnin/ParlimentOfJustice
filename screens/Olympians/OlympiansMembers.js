@@ -52,6 +52,10 @@ export const olympiansCategories = [
         { uri: require('../../assets/Armor/Bobby.jpg'), name: 'Bobby Primary', clickable: true },
         { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Bobby Placeholder', clickable: true },
       ]},
+      { name: 'Liberty', codename: 'Serenity', screen: '', images: [
+        { uri: require('../../assets/Armor/Liberty.jpg'), name: 'Liberty Primary', clickable: true },
+        { uri: require('../../assets/Armor/Liberty2.jpg'), name: 'Liberty Peace', clickable: true },
+      ]},
       { name: 'Ammon', codename: 'Valoron', screen: '', images: [
         { uri: require('../../assets/Armor/Ammon.jpg'), name: 'Ammon Primary', clickable: true },
         { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Ammon Placeholder', clickable: true },

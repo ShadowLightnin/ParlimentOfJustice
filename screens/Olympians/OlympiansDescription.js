@@ -9,6 +9,7 @@ export const descriptions = {
   'Lumi': 'Fade Shade, in shadowy, ethereal armor, moves unseen, striking with precision and disrupting enemy plans.',
   'Heather S': 'Verdant, cloaked in nature-inspired armor, harnesses the power of the earth to heal allies and control the battlefield.',
   'Bobby': 'Crown Medic, a military doctor in tactical armor, combines medical expertise with combat prowess to save lives under fire.',
+  'Liberty': 'Serenity, in tranquil, flowing armor, radiates calm and healing energy, soothing allies and dispelling chaos.',
   'Ammon': 'Valoron, in shining, valorous armor, inspires courage, leading charges with unbreakable resolve and strategic brilliance.',
   'Piper': 'Jetstrike, in sleek, aerodynamic armor, moves with lightning speed, delivering swift, devastating attacks.',
   'Gemma': 'Slendowg, with agile, streamlined armor, uses her quick wit and reflexes to outmaneuver opponents with ease.',
