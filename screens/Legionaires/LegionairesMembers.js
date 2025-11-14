@@ -11,8 +11,9 @@ export const memberCategories = [
     ],
   },
   {
-    category: "Aileen's Friends",
+    category: "Loved Ones Friends",
     members: [
+      { name: 'Kemerey', codename: 'Seraphine', screen: '', hardcoded: true },
       { name: 'Sheryl', codename: 'Sage', screen: '', hardcoded: true },
       { name: 'Krystel', codename: 'Prism', screen: '', hardcoded: true },
       { name: 'Deb', codename: 'Oracle', screen: '', hardcoded: true },

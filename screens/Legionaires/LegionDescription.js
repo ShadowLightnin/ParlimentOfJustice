@@ -5,6 +5,7 @@ export const descriptions = {
   'Mckain Bailey': 'Description for Mckain Bailey goes here',
 
   // Aileen's Friends
+  'Kemerey': 'Description for Kemerey goes here',
   'Sheryl': 'Description for Sheryl goes here',
   'Krystel': 'Description for Krystel goes here',
   'Deb': 'Description for Deb goes here',

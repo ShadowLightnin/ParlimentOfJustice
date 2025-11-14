@@ -23,7 +23,7 @@ const RESTRICT_ACCESS = true;
 
 const CATEGORIES = [
   { label: 'College', value: 'College' },
-  { label: "Aileen's Friends", value: "Aileen's Friends" },
+  { label: "Loved Ones Friends", value: "Loved Ones Friends" },
   { label: 'Young Womens', value: 'Young Womens' },
   { label: 'High School', value: 'High School' },
   { label: 'Jr. High', value: 'Jr. High' },

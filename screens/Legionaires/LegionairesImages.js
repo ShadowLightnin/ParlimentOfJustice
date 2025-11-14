@@ -424,6 +424,12 @@ const legionImages = {
   },
 
   // 🟢 Aileen's Friends
+  'Kemerey': {
+    images: [
+      { uri: require('../../assets/Armor/Kemerey.jpg'), name: 'Kemerey Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Kemerey Placeholder', clickable: true },
+    ],
+  },
   'Sheryl': {
     images: [
       { uri: require('../../assets/Armor/She.jpg'), name: 'Sheryl Primary', clickable: true },
@@ -438,7 +444,7 @@ const legionImages = {
   },
   'Deb': {
     images: [
-      { uri: require('../../assets/Armor/Deb.jpg'), name: 'Deb Primary', clickable: true },
+      { uri: require('../../assets/Armor/Deb2.jpg'), name: 'Deb Primary', clickable: true },
       { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Deb Placeholder', clickable: true },
     ],
   },
