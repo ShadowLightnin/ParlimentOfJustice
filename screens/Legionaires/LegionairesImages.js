@@ -423,7 +423,7 @@ const legionImages = {
     ],
   },
 
-  // 🟢 Aileen's Friends
+  // 🟢 Fellowship
   'Kemerey': {
     images: [
       { uri: require('../../assets/Armor/Kemerey.jpg'), name: 'Kemerey Primary', clickable: true },

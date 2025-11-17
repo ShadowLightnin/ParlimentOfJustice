@@ -1,6 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
 import {
-  View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions, Alert
+  View,
+  Text,
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+  Alert,
 } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { Audio } from "expo-av";
@@ -8,28 +15,35 @@ import { Audio } from "expo-av";
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const armors = [
+  { name: "Parliament Founder", image: require("../../assets/Armor/WillNightHawk3.jpg"), clickable: true },
+  { name: "Titan Founder", image: require("../../assets/Armor/WillNightHawk4.jpg"), clickable: true },
+  { name: "Night Hawk: Building", image: require("../../assets/Armor/WillNightHawk.jpg"), clickable: true },
+  { name: "Titan Night Hawk", image: require("../../assets/Armor/WillNightHawk5.jpg"), clickable: true },
+  { name: "Spartan Night Hawk", image: require("../../assets/Armor/WillNightHawk6.jpg"), clickable: true },
+  { name: "Flying Night Hawk", image: require("../../assets/Armor/WillNightHawkFly.jpg"), clickable: true },
+  { name: "Night Hawk Flying", image: require("../../assets/Armor/WillNightHawkFly2.jpg"), clickable: true },
+  { name: "Legacy", image: require("../../assets/Armor/WillLegacy.jpg"), clickable: true },
+  { name: "Lightning Leopard", image: require("../../assets/Armor/Will.jpg"), clickable: true },
+];
+
+const legacyArmors = [
   { name: "Night Hawk", image: require("../../assets/Armor/WillNightHawk2.jpg"), clickable: true },
   { name: "Celestial", image: require("../../assets/Armor/WillCelestial.jpg"), clickable: true },
   { name: "Sentinel", image: require("../../assets/Armor/WillSentinel.jpg"), clickable: true },
-  { name: "Shadow Storm", image: require("../../assets/Armor/WillShadowStorm.jpg"), clickable: true },
-  { name: "Defender v1", image: require("../../assets/Armor/WillDefender1.jpg"), clickable: true },
-  { name: "Defender v2", image: require("../../assets/Armor/WillDefender2.jpg"), clickable: true },
   { name: "Wrath", image: require("../../assets/Armor/WillWrath.jpg"), clickable: true },
-  
-  { name: "Legacy", image: require("../../assets/Armor/WillLegacy.jpg"), clickable: true },
-  { name: "Lightning Leopard", image: require("../../assets/Armor/Will.jpg"), clickable: true },
-  { name: "Night Hawk: Building", image: require("../../assets/Armor/WillNightHawk.jpg"), clickable: true },
-  { name: "Flying Night Hawk", image: require("../../assets/Armor/WillNightHawk3.jpg"), clickable: true },
+  { name: "Shadow Storm", image: require("../../assets/Armor/WillShadowStorm.jpg"), clickable: true },
+  { name: "Defender v2", image: require("../../assets/Armor/WillDefender2.jpg"), clickable: true },
+  { name: "Defender v1", image: require("../../assets/Armor/WillDefender1.jpg"), clickable: true },
 
-  { name: "Concept: Night Hawk", image: require("../../assets/NightHawkWillBeBorn.jpg"), clickable: true },
-  { name: "Concept: White Night Hawk", image: require("../../assets/Armor/NightHawk.jpg"), clickable: true },
-  { name: "Concept: Defender 1", image: require("../../assets/Armor/Defender1.jpg"), clickable: true },
-  { name: "Concept: Defender 2", image: require("../../assets/Armor/Defender2.jpg"), clickable: true },
-  { name: "Concept: Shadow Storm", image: require("../../assets/Armor/ShadowStorm.jpg"), clickable: true },
-  { name: "Concept: Celestial", image: require("../../assets/Armor/Celestial.jpg"), clickable: true },
-  { name: "Concept: Sentinel", image: require("../../assets/Armor/Sentinel.jpg"), clickable: true },
-  { name: "Concept: Wrath", image: require("../../assets/Armor/Wrath.jpg"), clickable: true },
-  { name: "Night Hawk Helmet", image: require("../../assets/Armor/MyHelmets2.jpg"), clickable: true },
+  // { name: "Concept: Night Hawk", image: require("../../assets/NightHawkWillBeBorn.jpg"), clickable: true },
+  // { name: "Concept: White Night Hawk", image: require("../../assets/Armor/NightHawk.jpg"), clickable: true },
+  // { name: "Concept: Defender 1", image: require("../../assets/Armor/Defender1.jpg"), clickable: true },
+  // { name: "Concept: Defender 2", image: require("../../assets/Armor/Defender2.jpg"), clickable: true },
+  // { name: "Concept: Shadow Storm", image: require("../../assets/Armor/ShadowStorm.jpg"), clickable: true },
+  // { name: "Concept: Celestial", image: require("../../assets/Armor/Celestial.jpg"), clickable: true },
+  // { name: "Concept: Sentinel", image: require("../../assets/Armor/Sentinel.jpg"), clickable: true },
+  // { name: "Concept: Wrath", image: require("../../assets/Armor/Wrath.jpg"), clickable: true },
+  // { name: "Night Hawk Helmet", image: require("../../assets/Armor/MyHelmets2.jpg"), clickable: true },
 ];
 
 const kids = [
@@ -62,7 +76,10 @@ const Will = () => {
         console.log("Music started playing at:", new Date().toISOString());
       } catch (error) {
         console.error("Error loading or playing audio:", error);
-        Alert.alert('Audio Error', 'Failed to load background music. Please check the audio file path: ../../assets/audio/SourceOfStrengthNinjagoMyVersion.mp4');
+        Alert.alert(
+          "Audio Error",
+          "Failed to load background music. Please check the audio file path: ../../assets/audio/SourceOfStrengthNinjagoMyVersion.mp4"
+        );
       }
     };
 
@@ -100,7 +117,7 @@ const Will = () => {
       resumeSound();
 
       // Handle navigation to stop audio on all exits
-      const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+      const unsubscribe = navigation.addListener("beforeRemove", (e) => {
         if (currentSound) {
           currentSound.stopAsync().catch((error) => console.error("Error stopping sound:", error));
           currentSound.unloadAsync().catch((error) => console.error("Error unloading sound:", error));
@@ -157,7 +174,7 @@ const Will = () => {
       <Image source={armor.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
       <Text style={styles.cardName}>
-        © {armor.name || 'Unknown'}; William Cummings
+        © {armor.name || "Unknown"}; William Cummings
       </Text>
       {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
@@ -191,7 +208,7 @@ const Will = () => {
       <Image source={item.image} style={styles.kidImage} />
       <View style={styles.transparentOverlay} />
       <Text style={styles.kidCardName}>
-        © {item.name || 'Unknown'}; William Cummings
+        © {item.name || "Unknown"}; William Cummings
       </Text>
       {!item.clickable && <Text style={styles.kidDisabledText}> </Text>}
     </TouchableOpacity>
@@ -201,27 +218,31 @@ const Will = () => {
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.headerContainer}>
-          <TouchableOpacity style={styles.backButton} onPress={async () => {
-            console.log('Navigating to TitansHome');
-            if (currentSound) {
-              try {
-                await currentSound.stopAsync();
-                await currentSound.unloadAsync();
-                setCurrentSound(null);
-                setPausedPosition(0);
-                setIsPaused(false);
-                console.log("Audio stopped and released at:", new Date().toISOString());
-              } catch (error) {
-                console.error("Error stopping/unloading sound:", error);
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={async () => {
+              console.log("Navigating to TitansHome");
+              if (currentSound) {
+                try {
+                  await currentSound.stopAsync();
+                  await currentSound.unloadAsync();
+                  setCurrentSound(null);
+                  setPausedPosition(0);
+                  setIsPaused(false);
+                  console.log("Audio stopped and released at:", new Date().toISOString());
+                } catch (error) {
+                  console.error("Error stopping/unloading sound:", error);
+                }
               }
-            }
-            navigation.navigate('TitansHome');
-          }}>
-            <Text style={styles.backButtonText}>←</Text>
+              navigation.navigate("TitansHome");
+            }}
+          >
+            <Text style={styles.backButtonText}>Back</Text>
           </TouchableOpacity>
           <Text style={styles.title}>Night Hawk</Text>
         </View>
 
+        {/* Main Armory */}
         <View style={styles.imageContainer}>
           <ScrollView
             horizontal={true}
@@ -232,6 +253,19 @@ const Will = () => {
           </ScrollView>
         </View>
 
+        {/* Legacy Armory */}
+        <View style={styles.legacyContainer}>
+          <Text style={styles.legacyHeader}>Legacy Armory</Text>
+          <ScrollView
+            horizontal={true}
+            contentContainerStyle={styles.imageScrollContainer}
+            showsHorizontalScrollIndicator={true}
+          >
+            {legacyArmors.map(renderArmorCard)}
+          </ScrollView>
+        </View>
+
+        {/* Partner Section */}
         <View style={styles.partnerContainer}>
           <Text style={styles.partnerHeader}>My Partner</Text>
           <TouchableOpacity
@@ -261,6 +295,7 @@ const Will = () => {
           </TouchableOpacity>
         </View>
 
+        {/* Kids Section */}
         <View style={styles.kidsContainer}>
           <Text style={styles.kidsHeader}>Our Future Family</Text>
           <ScrollView
@@ -275,14 +310,13 @@ const Will = () => {
           </ScrollView>
         </View>
 
+        {/* About Section */}
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
             William Cummings, known as Night Hawk, is a master of shadows and strategy, the older Cummings sibling and a cornerstone of the Titans within the Parliament of Justice. His lean, agile frame hides a mind as sharp as his claws and a heart loyal to his family. Behind his sleek, ever-changing helmets, William is a tech genius and stealth expert, always two steps ahead of his enemies and ready to adapt to any situation. He’s in a relationship with Aileen, whose strength complements his tactical mind, and he shares an unbreakable bond with his sister Emma. As one of the oldest cousins, William bridges the gap between tradition (like Spencer’s ideals) and innovation, using his suits to protect his cousins—Spencer, Jared, Jennifer (McNeil), Ben, Azure (Briggs), and the rest. Off the battlefield, he’s a problem-solver, often tinkering with gadgets or strategizing with his family, but his drive to stay invisible and untouchable sometimes isolates him.
           </Text>
-          <Text style={styles.aboutText}>
-            Backstory
-          </Text>
+          <Text style={styles.aboutText}>Backstory</Text>
           <Text style={styles.aboutText}>
             William grew up in a tech-savvy household on the edge of Zion City’s Terrestrial sector, alongside his younger sister Emma. The Cummings family valued both physical prowess and intellectual innovation, and William inherited a knack for mechanics from his parents. While Emma gravitated toward mechanical flight and flair, William focused on stealth and precision, inspired by heroes like Batman and Nightwing, whose shadows and symbols spoke to him.
           </Text>
@@ -295,9 +329,7 @@ const Will = () => {
           <Text style={styles.aboutText}>
             In a relationship with Aileen, William finds balance, her cultural strength grounding his high-tech approach. Together, they face Zion City’s chaos, but William’s fear of failure—especially toward his sister and cousins—drives him to push his suits and abilities to their limits.
           </Text>
-          <Text style={styles.aboutText}>
-            Abilities
-          </Text>
+          <Text style={styles.aboutText}>Abilities</Text>
           <Text style={styles.aboutText}>
             William’s suits and innate skills make him a versatile operative, with a focus on stealth, technology, and combat:
           </Text>
@@ -316,63 +348,45 @@ const Will = () => {
           <Text style={styles.aboutText}>
             Energy Projection (Via Suits): Certain suits (Celestial, Sentinel, Wrath) can emit energy blasts or create force fields, drawing on their glowing visors and design motifs.
           </Text>
-          <Text style={styles.aboutText}>
-            Armor Description
-          </Text>
+          <Text style={styles.aboutText}>Armor Description</Text>
           <Text style={styles.aboutText}>
             William’s armor is a showcase of versatility and style, with each suit tailored to a specific role. Here’s a detailed breakdown:
           </Text>
-          <Text style={styles.aboutText}>
-            Night Hawk Suit:
-          </Text>
+          <Text style={styles.aboutText}>Night Hawk Suit:</Text>
           <Text style={styles.aboutText}>
             Helmet: A refined version of Defender 2.0, splitting from a V visor to a Y/T visor for better visibility and intimidation. Two spikes on the helmet have three light rings (radar, sonar, infrared) that pulse in sync with his stealth mode. Colors shift from gunmetal grey and dark green to white and blue, with a Hawk symbol (Nightwing-inspired) on the chest.
           </Text>
           <Text style={styles.aboutText}>
-            Body Armor: Sleek and lightweight, prioritizing agility over bulk. Includes Batman’s gauntlet spikes and Wolverine’s claws for combat, and a stealth coating that turns it invisible.
+            Body Armor: High-performance, lightweight, prioritizing agility over bulk. Includes Batman’s gauntlet spikes and Wolverine’s claws for combat, and a stealth coating that turns it invisible.
           </Text>
           <Text style={styles.aboutText}>
             Additional Features: A compact power core in the chest fuels color changes and invisibility.
           </Text>
-          <Text style={styles.aboutText}>
-            Defender Suit 1.0:
-          </Text>
+          <Text style={styles.aboutText}>Defender Suit 1.0:</Text>
           <Text style={styles.aboutText}>
             Body styled after Iron Man Mark 85, gunmetal grey instead of red, dark green instead of gold. Helmet styled after Arkham Knight and Final Stage Omega from Fortnite, with true omega spikes. Armor gaps held by carbon fiber chainmail, making it rugged yet flexible.
           </Text>
-          <Text style={styles.aboutText}>
-            Defender Suit 2.0:
-          </Text>
+          <Text style={styles.aboutText}>Defender Suit 2.0:</Text>
           <Text style={styles.aboutText}>
             Like 1.0 but with a Mark 46 body and Mark 85 texture, fully filled for flight like Iron Man. Blends Mark 45, 46, and 85 styles, with enhanced durability and speed. Used for aerial assaults and heavy combat.
           </Text>
-          <Text style={styles.aboutText}>
-            Shadow Storm Suit:
-          </Text>
+          <Text style={styles.aboutText}>Shadow Storm Suit:</Text>
           <Text style={styles.aboutText}>
             Like Defender 2.0 but with a bat symbol instead of an arc reactor and a retractable bat cape for gliding or intimidation. Black with dark grey accents, ideal for stealth and psychological warfare.
           </Text>
-          <Text style={styles.aboutText}>
-            Celestial Suit:
-          </Text>
+          <Text style={styles.aboutText}>Celestial Suit:</Text>
           <Text style={styles.aboutText}>
             Like Night Hawk but all white with golden swirls, symbolizing purity and power. Visor glows gold, enhancing night vision and energy projection. Lighter and more ceremonial, used for leadership or morale-boosting missions.
           </Text>
-          <Text style={styles.aboutText}>
-            Sentinel Suit:
-          </Text>
+          <Text style={styles.aboutText}>Sentinel Suit:</Text>
           <Text style={styles.aboutText}>
             Like Night Hawk but all white with dark green as dark grey and gold accents, visor indented and glowing blue. Designed for defense, with reinforced plating and a shield generator for protecting allies.
           </Text>
-          <Text style={styles.aboutText}>
-            Wrath Suit:
-          </Text>
+          <Text style={styles.aboutText}>Wrath Suit:</Text>
           <Text style={styles.aboutText}>
             Like Defender 2.0 but bigger, bulkier, black, broken-looking, and war-weathered, glowing fire red. Used for overwhelming force, reflecting William’s darker moments or desperate battles.
           </Text>
-          <Text style={styles.aboutText}>
-            Personality and Role in the Team
-          </Text>
+          <Text style={styles.aboutText}>Personality and Role in the Team</Text>
           <Text style={styles.aboutText}>
             William is the tactician and shadow of the Titans, balancing Spencer’s power, Jared’s speed, and Jennifer’s healing with his own stealth and tech. He’s pragmatic but carries a fear of failure, especially toward his sister Emma and the family. His relationship with Spencer is respectful but tense—William sees Spencer’s fall as a cautionary tale, while Spencer worries William’s tech obsession distances him from their roots. With Jared, he’s a rival in strategy, often outsmarting his speed with preparation, and with Jennifer, he’s protective, relying on her to heal his physical and emotional scars.
           </Text>
@@ -427,6 +441,23 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     backgroundColor: "#111",
     paddingLeft: 15,
+  },
+  legacyContainer: {
+    width: "100%",
+    paddingVertical: 20,
+    backgroundColor: "#111",
+    paddingLeft: 15,
+    marginTop: 10,
+  },
+  legacyHeader: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#2a6d5d",
+    textAlign: "center",
+    marginBottom: 10,
+    textShadowColor: "#089272",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
   },
   partnerContainer: {
     width: "100%",

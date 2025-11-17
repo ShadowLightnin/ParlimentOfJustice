@@ -21,6 +21,7 @@ const Cam = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
+    { name: "Court Chief", copyright: "William Cummings", image: require("../../../assets/Armor/Cam4.jpg"), clickable: true },
     { name: "Court Chief", copyright: "William Cummings", image: require("../../../assets/Armor/Cam3.jpg"), clickable: true },
     { name: "", image: require("../../../assets/Armor/Cam.jpg"), clickable: true }, // No copyright
     { name: "Court Chief", copyright: "William Cummings", image: require("../../../assets/Armor/Cam2.jpg"), clickable: true }, // With copyright

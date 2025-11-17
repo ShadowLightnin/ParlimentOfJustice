@@ -22,8 +22,8 @@ const ALLOWED_EMAILS = ["will@test.com", "c1wcummings@gmail.com"];
 const RESTRICT_ACCESS = true;
 
 const CATEGORIES = [
-  { label: 'College', value: 'College' },
-  { label: "Loved Ones Friends", value: "Loved Ones Friends" },
+  { label: 'Alumni', value: 'College' },
+  { label: "Fellowship", value: "Fellowship" },
   { label: 'Young Womens', value: 'Young Womens' },
   { label: 'High School', value: 'High School' },
   { label: 'Jr. High', value: 'Jr. High' },

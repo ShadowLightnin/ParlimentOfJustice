@@ -3,7 +3,7 @@ import legionImages from './LegionairesImages';
 // 🎯 Legionaires Member List with Categories and Superhero Codenames
 export const memberCategories = [
   {
-    category: "College",
+    category: "Alumni",
     members: [
       { name: 'Mason Erickson', codename: 'Might', screen: '', hardcoded: true },
       { name: 'Davis Clark', codename: 'Cyberman', screen: '', hardcoded: true },
@@ -11,7 +11,7 @@ export const memberCategories = [
     ],
   },
   {
-    category: "Loved Ones Friends",
+    category: "Fellowship",
     members: [
       { name: 'Kemerey', codename: 'Seraphine', screen: '', hardcoded: true },
       { name: 'Sheryl', codename: 'Sage', screen: '', hardcoded: true },
