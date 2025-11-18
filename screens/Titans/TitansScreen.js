@@ -14,10 +14,8 @@ import {
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Audio } from 'expo-av';
 
-// Screen dimensions
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
-// Member Data
 const members = [
   { name: 'Spencer McNeil', codename: 'Annihilator', screen: 'Spencer', clickable: true, position: [0, 0], image: require('../../assets/Armor/Spencer5.jpg') },
   { name: 'Azure Briggs', codename: 'Mediateir', screen: 'Azure', clickable: true, position: [0, 2], image: require('../../assets/Armor/Azure3.jpg') },
@@ -28,17 +26,15 @@ const members = [
   { name: 'Emma Cummings', codename: 'Kintsunera', screen: 'Emma', clickable: true, position: [2, 2], image: require('../../assets/Armor/EmmaLegacy.jpg') },
 ];
 
-// Empty cell checker
 const isEmpty = (row, col) => (row === 0 && col === 1) || (row === 2 && col === 1);
 const getMemberAtPosition = (row, col) =>
-  members.find((member) => member.position[0] === row && member.position[1] === col);
+  members.find(m => m.position[0] === row && m.position[1] === col);
 
 const TitansScreen = () => {
   const navigation = useNavigation();
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // Handle music playback
   const playTheme = async () => {
     if (!currentSound) {
       try {
@@ -50,92 +46,64 @@ const TitansScreen = () => {
         await sound.playAsync();
         setIsPlaying(true);
       } catch (error) {
-        console.error('Failed to load audio file:', error);
-        Alert.alert('Audio Error', 'Failed to load background music. Please check the audio file path: ../../assets/audio/AvengerXJL.mp4');
+        Alert.alert('Audio Error', 'Failed to load background music.');
       }
     } else if (!isPlaying) {
-      try {
-        await currentSound.playAsync();
-        setIsPlaying(true);
-      } catch (error) {
-        console.error('Error resuming sound:', error);
-      }
+      await currentSound.playAsync();
+      setIsPlaying(true);
     }
   };
 
-  // Handle music pause
   const pauseTheme = async () => {
     if (currentSound && isPlaying) {
-      try {
-        await currentSound.pauseAsync();
-        setIsPlaying(false);
-      } catch (error) {
-        console.error('Error pausing sound:', error);
-      }
+      await currentSound.pauseAsync();
+      setIsPlaying(false);
     }
   };
 
-  // Cleanup sound on unmount or navigation
-  useFocusEffect(
-    useCallback(() => {
-      return () => {
-        if (currentSound) {
-          currentSound.stopAsync().catch((error) => console.error('Error stopping sound:', error));
-          currentSound.unloadAsync().catch((error) => console.error('Error unloading sound:', error));
-          setCurrentSound(null);
-          setIsPlaying(false);
-        }
-      };
-    }, [currentSound])
-  );
-
-  const goToChat = async () => {
+  const stopSound = async () => {
     if (currentSound) {
-      try {
-        await currentSound.stopAsync();
-        await currentSound.unloadAsync();
-        setCurrentSound(null);
-        setIsPlaying(false);
-      } catch (error) {
-        console.error('Error stopping sound for chat:', error);
-      }
+      await currentSound.stopAsync();
+      await currentSound.unloadAsync();
+      setCurrentSound(null);
+      setIsPlaying(false);
     }
-    navigation.navigate('TeamChat');
   };
+
+  useFocusEffect(useCallback(() => () => stopSound(), [currentSound]));
 
   const isDesktop = SCREEN_WIDTH > 600;
-  const cardSize = isDesktop ? 200 : Math.min(120, SCREEN_WIDTH / 3 - 20); // Dynamic card size for mobile
-  const cardSpacing = isDesktop ? 30 : Math.min(15, (SCREEN_WIDTH - 3 * cardSize) / 4); // Dynamic spacing
+  
+  // EXACT same dynamic sizing as your original
+  const cardSize = isDesktop ? 200 : Math.min(120, SCREEN_WIDTH / 3 - 20);
+  const cardSpacing = isDesktop ? 30 : Math.min(15, (SCREEN_WIDTH - 3 * cardSize) / 4);
 
   return (
     <ImageBackground
       source={require('../../assets/BackGround/Titans.jpg')}
       style={styles.background}
+      resizeMode="cover"
     >
       <SafeAreaView style={styles.container}>
-        {/* Header Section */}
+        {/* Header */}
         <View style={styles.headerWrapper}>
           <TouchableOpacity
             style={styles.backButton}
             onPress={async () => {
-              console.log('Navigating to Home');
-              if (currentSound) {
-                try {
-                  await currentSound.stopAsync();
-                  await currentSound.unloadAsync();
-                  setCurrentSound(null);
-                  setIsPlaying(false);
-                } catch (error) {
-                  console.error('Error stopping/unloading sound:', error);
-                }
-              }
+              await stopSound();
               navigation.navigate('Home');
             }}
           >
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
           <Text style={styles.header}>Titans</Text>
-          <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
+          <TouchableOpacity
+            onPress={async () => {
+              await stopSound();
+              navigation.navigate('TeamChat');
+            }}
+            style={styles.chatButton}
+          >
             <Text style={styles.chatText}>🛡️</Text>
           </TouchableOpacity>
         </View>
@@ -150,102 +118,83 @@ const TitansScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Layout based on device */}
+        {/* Desktop: Horizontal Scroll */}
         {isDesktop ? (
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={[styles.horizontalScroll, { gap: cardSpacing }]}
+            contentContainerStyle={{ padding: 20, gap: cardSpacing, alignItems: 'center' }}
           >
-            {members.map((member, index) => (
+            {members.map((m, i) => (
               <TouchableOpacity
-                key={index}
+                key={i}
                 style={[
                   styles.card,
                   { width: cardSize, height: cardSize * 1.6 },
-                  !member.clickable && styles.disabledCard,
+                  !m.clickable && styles.disabledCard,
+                  {
+                    borderWidth: 2,
+                    borderColor: '#00b3ff',
+                    backgroundColor: 'rgba(0, 179, 255, 0.1)',
+                    shadowColor: '#00b3ff',
+                    shadowOpacity: 0.8,
+                    shadowRadius: 10,
+                    elevation: 10,
+                  },
                 ]}
                 onPress={async () => {
-                  if (member.clickable) {
-                    if (currentSound) {
-                      try {
-                        await currentSound.stopAsync();
-                        await currentSound.unloadAsync();
-                        setCurrentSound(null);
-                        setIsPlaying(false);
-                      } catch (error) {
-                        console.error('Error stopping sound for member navigation:', error);
-                      }
-                    }
-                    navigation.navigate(member.screen);
+                  if (m.clickable) {
+                    await stopSound();
+                    navigation.navigate(m.screen);
                   }
                 }}
-                disabled={!member.clickable}
+                disabled={!m.clickable}
               >
-                {member.image && (
-                  <>
-                    <Image
-                      source={member.image}
-                      style={[styles.characterImage, { width: '100%', height: cardSize * 1.2 }]}
-                    />
-                    <View style={styles.transparentOverlay} />
-                  </>
-                )}
-                <Text style={styles.codename}>{member.codename}</Text>
-                <Text style={styles.name}>{member.name}</Text>
+                <Image source={m.image} style={styles.characterImage} resizeMode="cover" />
+                <Text style={styles.codename}>{m.codename}</Text>
+                <Text style={styles.name}>{m.name}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
         ) : (
-          <ScrollView
-            vertical
-            showsVerticalScrollIndicator={true}
-            contentContainerStyle={[styles.verticalScroll, { gap: cardSpacing, paddingVertical: 10 }]}
-          >
-            <View style={[styles.grid, { gap: cardSpacing }]}>
-              {[0, 1, 2].map((row) => (
-                <View key={row} style={[styles.row, { gap: cardSpacing }]}>
-                  {[0, 1, 2].map((col) => {
+          /* Mobile: 3×3 Grid — EXACT same layout as original */
+          <ScrollView contentContainerStyle={{ padding: 10 }}>
+            <View style={{ gap: cardSpacing, alignItems: 'center' }}>
+              {[0, 1, 2].map(row => (
+                <View key={row} style={{ flexDirection: 'row', gap: cardSpacing }}>
+                  {[0, 1, 2].map(col => {
                     if (isEmpty(row, col)) {
-                      return <View key={col} style={{ width: cardSize, height: cardSize * 1.4 }} />;
+                      return <View key={col} style={{ width: cardSize, height: cardSize * 1.6 }} />;
                     }
-                    const member = getMemberAtPosition(row, col);
+                    const m = getMemberAtPosition(row, col);
                     return (
                       <TouchableOpacity
                         key={col}
                         style={[
                           styles.card,
                           { width: cardSize, height: cardSize * 1.6 },
-                          !member?.clickable && styles.disabledCard,
+                          !m?.clickable && styles.disabledCard,
+                          {
+                            borderWidth: 2,
+                            borderColor: '#00b3ff',
+                            backgroundColor: 'rgba(0, 179, 255, 0.1)',
+                            shadowColor: '#00b3ff',
+                            shadowOpacity: 0.8,
+                            shadowRadius: 10,
+                            elevation: 10,
+                          },
                         ]}
                         onPress={async () => {
-                          if (member?.clickable) {
-                            if (currentSound) {
-                              try {
-                                await currentSound.stopAsync();
-                                await currentSound.unloadAsync();
-                                setCurrentSound(null);
-                                setIsPlaying(false);
-                              } catch (error) {
-                                console.error('Error stopping sound for member navigation:', error);
-                              }
-                            }
-                            navigation.navigate(member.screen);
+                          if (m?.clickable) {
+                            await stopSound();
+                            navigation.navigate(m.screen);
                           }
                         }}
-                        disabled={!member?.clickable}
+                        disabled={!m?.clickable}
                       >
-                        {member?.image && (
-                          <>
-                            <Image
-                              source={member.image}
-                              style={[styles.characterImage, { width: '100%', height: cardSize * 1.2 }]}
-                            />
-                            <View style={styles.transparentOverlay} />
-                          </>
-                        )}
-                        <Text style={styles.codename}>{member?.codename || ''}</Text>
-                        <Text style={styles.name}>{member?.name || ''}</Text>
+                        <Image source={m.image} style={styles.characterImage} resizeMode="cover" />
+                        <Text style={styles.codename}>{m.codename}</Text>
+                        <Text style={styles.name}>{m.name}</Text>
                       </TouchableOpacity>
                     );
                   })}
@@ -263,18 +212,10 @@ const styles = StyleSheet.create({
   background: {
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
-    resizeMode: 'cover',
   },
   container: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    paddingHorizontal: 20,
-    alignItems: 'center',
-  },
-  transparentOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1,
   },
   headerWrapper: {
     width: '100%',
@@ -298,11 +239,10 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     color: '#fff',
-    textAlign: 'center',
     textShadowColor: '#00b3ff',
-    textShadowRadius: 15,
+    textShadowRadius: 20,
+    textAlign: 'center',
     flex: 1,
-    paddingRight: 20,
   },
   chatButton: {
     padding: 10,
@@ -313,70 +253,54 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#00b3ff',
   },
-  grid: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  verticalScroll: {
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-  },
-  horizontalScroll: {
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-    alignItems: 'center',
-  },
-  row: {
-    flexDirection: 'row',
-  },
-  card: {
-    backgroundColor: '#1c1c1c',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 8,
-    shadowColor: '#00b3ff',
-    shadowOpacity: 1.5,
-    shadowRadius: 10,
-    elevation: 5,
-    padding: 5,
-  },
-  characterImage: {
-    resizeMode: 'cover',
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-  },
-  codename: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 5,
-  },
-  name: {
-    fontSize: 10,
-    fontStyle: 'italic',
-    color: '#aaa',
-    textAlign: 'center',
-  },
-  disabledCard: {
-    backgroundColor: '#444',
-    shadowColor: 'transparent',
-  },
   musicControls: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 20,
+    marginVertical: 10,
   },
   musicButton: {
     padding: 10,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 5,
+    borderRadius: 8,
     marginHorizontal: 10,
   },
   musicButtonText: {
     fontSize: 12,
     color: '#00b3ff',
     fontWeight: 'bold',
+  },
+  card: {
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  characterImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  codename: {
+    position: 'absolute',
+    bottom: 12,
+    left: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#00b3ff',
+    textShadowColor: '#00b3ff',
+    textShadowRadius: 12,
+    zIndex: 2,
+  },
+  name: {
+    position: 'absolute',
+    bottom: 34,
+    left: 10,
+    fontSize: 14,
+    color: '#fff',
+    textShadowColor: '#00b3ff',
+    textShadowRadius: 12,
+    zIndex: 2,
+  },
+  disabledCard: {
+    opacity: 0.6,
   },
 });
 

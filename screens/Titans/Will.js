@@ -237,7 +237,7 @@ const Will = () => {
               navigation.navigate("TitansHome");
             }}
           >
-            <Text style={styles.backButtonText}>Back</Text>
+            <Text style={styles.backButtonText}>←</Text>
           </TouchableOpacity>
           <Text style={styles.title}>Night Hawk</Text>
         </View>

@@ -51,35 +51,28 @@ const EclipseScreen = () => {
         setIsPlaying(true);
       } catch (error) {
         console.error('Failed to load audio file:', error);
-        Alert.alert('Audio Error', 'Failed to load background music. Please check the audio file path: ../../assets/audio/AvengerXJL.mp4');
+        Alert.alert('Audio Error', 'Failed to load background music.');
       }
     } else if (!isPlaying) {
-      try {
-        await currentSound.playAsync();
-        setIsPlaying(true);
-      } catch (error) {
-        console.error('Error resuming sound:', error);
-      }
+      await currentSound.playAsync();
+      setIsPlaying(true);
     }
   };
 
   const pauseTheme = async () => {
     if (currentSound && isPlaying) {
-      try {
-        await currentSound.pauseAsync();
-        setIsPlaying(false);
-      } catch (error) {
-        console.error('Error pausing sound:', error);
-      }
+      await currentSound.pauseAsync();
+      setIsPlaying(false);
     }
   };
 
+  // Cleanup sound on unmount or navigation
   useFocusEffect(
     useCallback(() => {
       return () => {
         if (currentSound) {
-          currentSound.stopAsync().catch((error) => console.error('Error stopping sound:', error));
-          currentSound.unloadAsync().catch((error) => console.error('Error unloading sound:', error));
+          currentSound.stopAsync().catch(() => {});
+          currentSound.unloadAsync().catch(() => {});
           setCurrentSound(null);
           setIsPlaying(false);
         }
@@ -92,13 +85,15 @@ const EclipseScreen = () => {
   };
 
   const isDesktop = SCREEN_WIDTH > 600;
-  const cardSize = isDesktop ? 200 : Math.min(120, SCREEN_WIDTH / 3 - 20); // Dynamic card size for mobile
-  const cardSpacing = isDesktop ? 30 : Math.min(15, (SCREEN_WIDTH - 3 * cardSize) / 4); // Dynamic spacing
+  // Now using the EXACT same dynamic sizing as Titans — big, bold cards
+  const cardSize = isDesktop ? 200 : Math.min(120, SCREEN_WIDTH / 3 - 20);
+  const cardSpacing = isDesktop ? 35 : Math.min(15, (SCREEN_WIDTH - 3 * cardSize) / 4);
 
   return (
     <ImageBackground
       source={require('../../assets/BackGround/Eclipse.jpg')}
       style={styles.background}
+      resizeMode="cover"
     >
       <SafeAreaView style={styles.container}>
         {/* Header Section */}
@@ -115,19 +110,19 @@ const EclipseScreen = () => {
         {/* Music Controls */}
         <View style={styles.musicControls}>
           <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
-            <Text style={styles.musicButtonText}>Theme</Text>
+            <Text style={ styles.musicButtonText}>Theme</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
             <Text style={styles.musicButtonText}>Pause</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Layout based on device */}
+        {/* Desktop Horizontal Scroll */}
         {isDesktop ? (
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={[styles.horizontalScroll, { gap: cardSpacing }]}
+            contentContainerStyle={{ padding: 20, gap: cardSpacing, alignItems: 'center' }}
           >
             {members.map((member, index) => (
               <TouchableOpacity
@@ -136,36 +131,34 @@ const EclipseScreen = () => {
                   styles.card,
                   { width: cardSize, height: cardSize * 1.6 },
                   !member.clickable && styles.disabledCard,
+                  {
+                    borderWidth: 2,
+                    borderColor: '#00b3ff',
+                    backgroundColor: 'rgba(0, 179, 255, 0.1)',
+                    shadowColor: '#00b3ff',
+                    shadowOpacity: 0.8,
+                    shadowRadius: 10,
+                    elevation: 10,
+                  },
                 ]}
                 onPress={() => member.clickable && navigation.navigate(member.screen)}
                 disabled={!member.clickable}
               >
-                {member.image && (
-                  <>
-                    <Image
-                      source={member.image}
-                      style={[styles.characterImage, { width: '100%', height: cardSize * 1.2 }]}
-                    />
-                    <View style={styles.transparentOverlay} />
-                  </>
-                )}
-                <Text style={styles.codename}>{member.codename}</Text>
-                <Text style={styles.name}>{member.name}</Text>
+                {member.image && <Image source={member.image} style={styles.characterImage} resizeMode="cover" />}
+                <Text style={styles.codename}>{member.codename || 'TBA'}</Text>
+                <Text style={styles.name}>{member.name || ''}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
         ) : (
-          <ScrollView
-            vertical
-            showsVerticalScrollIndicator={true}
-            contentContainerStyle={[styles.verticalScroll, { gap: cardSpacing, paddingVertical: 10 }]}
-          >
-            <View style={[styles.grid, { gap: cardSpacing }]}>
+          /* Mobile 3x3 Grid */
+          <ScrollView contentContainerStyle={{ padding: 10 }}>
+            <View style={{ gap: cardSpacing, alignItems: 'center' }}>
               {[0, 1, 2].map((row) => (
-                <View key={row} style={[styles.row, { gap: cardSpacing }]}>
+                <View key={row} style={{ flexDirection: 'row', gap: cardSpacing }}>
                   {[0, 1, 2].map((col) => {
                     if (isEmpty(row, col)) {
-                      return <View key={col} style={{ width: cardSize, height: cardSize * 1.4 }} />;
+                      return <View key={col} style={{ width: cardSize, height: cardSize * 1.6 }} />;
                     }
                     const member = getMemberAtPosition(row, col);
                     return (
@@ -175,20 +168,21 @@ const EclipseScreen = () => {
                           styles.card,
                           { width: cardSize, height: cardSize * 1.6 },
                           !member?.clickable && styles.disabledCard,
+                          {
+                            borderWidth: 2,
+                            borderColor: '#00b3ff',
+                            backgroundColor: 'rgba(0, 179, 255, 0.1)',
+                            shadowColor: '#00b3ff',
+                            shadowOpacity: 0.8,
+                            shadowRadius: 10,
+                            elevation: 10,
+                          },
                         ]}
                         onPress={() => member?.clickable && navigation.navigate(member.screen)}
                         disabled={!member?.clickable}
                       >
-                        {member?.image && (
-                          <>
-                            <Image
-                              source={member.image}
-                              style={[styles.characterImage, { width: '100%', height: cardSize * 1.2 }]}
-                            />
-                            <View style={styles.transparentOverlay} />
-                          </>
-                        )}
-                        <Text style={styles.codename}>{member?.codename || ''}</Text>
+                        {member?.image && <Image source={member.image} style={styles.characterImage} resizeMode="cover" />}
+                        <Text style={styles.codename}>{member?.codename || 'TBA'}</Text>
                         <Text style={styles.name}>{member?.name || ''}</Text>
                       </TouchableOpacity>
                     );
@@ -212,13 +206,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    paddingHorizontal: 20,
-    alignItems: 'center',
-  },
-  transparentOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1,
   },
   headerWrapper: {
     width: '100%',
@@ -235,7 +222,7 @@ const styles = StyleSheet.create({
   },
   backText: {
     fontSize: 18,
-    color: '#00b3ff',
+    color: '#00b4ff',
     fontWeight: 'bold',
   },
   header: {
@@ -257,70 +244,56 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#00b3ff',
   },
-  grid: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  verticalScroll: {
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-  },
-  horizontalScroll: {
-    paddingVertical: 20,
-    paddingHorizontal: 10,
-    alignItems: 'center',
-  },
-  row: {
-    flexDirection: 'row',
-  },
-  card: {
-    backgroundColor: '#1c1c1c',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 8,
-    shadowColor: '#00b3ff',
-    shadowOpacity: 1.5,
-    shadowRadius: 10,
-    elevation: 5,
-    padding: 5,
-  },
-  characterImage: {
-    resizeMode: 'cover',
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-  },
-  codename: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 5,
-  },
-  name: {
-    fontSize: 10,
-    fontStyle: 'italic',
-    color: '#aaa',
-    textAlign: 'center',
-  },
-  disabledCard: {
-    backgroundColor: '#444',
-    shadowColor: 'transparent',
-  },
   musicControls: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 20,
+    marginVertical: 10,
   },
   musicButton: {
     padding: 10,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 5,
+    borderRadius: 8,
     marginHorizontal: 10,
   },
   musicButtonText: {
     fontSize: 12,
     color: '#00b3ff',
     fontWeight: 'bold',
+  },
+  card: {
+    borderRadius: 10,
+    overflow: 'hidden',
+    elevation: 5,
+  },
+  // नए
+  characterImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  codename: {
+    position: 'absolute',
+    bottom: 12,
+    left: 10,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#00b3ff',
+    textShadowColor: '#00b3ff',
+    textShadowRadius: 12,
+    zIndex: 2,
+  },
+  name: {
+    position: 'absolute',
+    bottom: 34,
+    left: 10,
+    fontSize: 14,
+    color: '#fff',
+    textShadowColor: '#00b3ff',
+    textShadowRadius: 12,
+    zIndex: 2,
+  },
+  disabledCard: {
+    opacity: 0.6,
   },
 });
 
