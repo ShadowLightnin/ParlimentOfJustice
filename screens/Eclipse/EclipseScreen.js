@@ -14,14 +14,11 @@ import {
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Audio } from 'expo-av';
 
-// Screen dimensions
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
-// Member Data
 const members = [
   { name: '', codename: 'TBA', screen: '', clickable: false, position: [0, 0], image: require('../../assets/Armor/PlaceHolder.jpg') },
   { name: 'James', codename: 'Gentle Hand', screen: 'James', clickable: true, position: [0, 2], image: require('../../assets/Armor/James.jpg') },
-  // { name: 'Kelsie', codename: 'Eliptic-Dancer', screen: 'Kelsie', clickable: true, position: [1, 0], image: require('../../assets/Armor/Kelsie2.jpg') },
   { name: '', codename: 'TBA', screen: '', clickable: false, position: [1, 0], image: require('../../assets/Armor/PlaceHolder.jpg') },
   { name: 'Aileen', codename: 'Ariata', screen: 'Aileen', clickable: true, position: [1, 1], image: require('../../assets/Armor/AileenAriata.jpg') },
   { name: '', codename: 'TBA', screen: '', clickable: false, position: [1, 2], image: require('../../assets/Armor/PlaceHolder.jpg') },
@@ -29,7 +26,6 @@ const members = [
   { name: '', codename: 'TBA', screen: '', clickable: false, position: [2, 2], image: require('../../assets/Armor/PlaceHolder.jpg') },
 ];
 
-// Empty cell checker
 const isEmpty = (row, col) => (row === 0 && col === 1) || (row === 2 && col === 1);
 const getMemberAtPosition = (row, col) =>
   members.find((member) => member.position[0] === row && member.position[1] === col);
@@ -66,7 +62,6 @@ const EclipseScreen = () => {
     }
   };
 
-  // Cleanup sound on unmount or navigation
   useFocusEffect(
     useCallback(() => {
       return () => {
@@ -85,7 +80,6 @@ const EclipseScreen = () => {
   };
 
   const isDesktop = SCREEN_WIDTH > 600;
-  // Now using the EXACT same dynamic sizing as Titans — big, bold cards
   const cardSize = isDesktop ? 200 : Math.min(120, SCREEN_WIDTH / 3 - 20);
   const cardSpacing = isDesktop ? 35 : Math.min(15, (SCREEN_WIDTH - 3 * cardSize) / 4);
 
@@ -96,7 +90,7 @@ const EclipseScreen = () => {
       resizeMode="cover"
     >
       <SafeAreaView style={styles.container}>
-        {/* Header Section */}
+        {/* Header */}
         <View style={styles.headerWrapper}>
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Text style={styles.backText}>← Back</Text>
@@ -110,88 +104,95 @@ const EclipseScreen = () => {
         {/* Music Controls */}
         <View style={styles.musicControls}>
           <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
-            <Text style={ styles.musicButtonText}>Theme</Text>
+            <Text style={styles.musicButtonText}>Theme</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
             <Text style={styles.musicButtonText}>Pause</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Desktop Horizontal Scroll */}
-        {isDesktop ? (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ padding: 20, gap: cardSpacing, alignItems: 'center' }}
-          >
-            {members.map((member, index) => (
-              <TouchableOpacity
-                key={index}
-                style={[
-                  styles.card,
-                  { width: cardSize, height: cardSize * 1.6 },
-                  !member.clickable && styles.disabledCard,
-                  {
-                    borderWidth: 2,
-                    borderColor: '#00b3ff',
-                    backgroundColor: 'rgba(0, 179, 255, 0.1)',
-                    shadowColor: '#00b3ff',
-                    shadowOpacity: 0.8,
-                    shadowRadius: 10,
-                    elevation: 10,
-                  },
-                ]}
-                onPress={() => member.clickable && navigation.navigate(member.screen)}
-                disabled={!member.clickable}
-              >
-                {member.image && <Image source={member.image} style={styles.characterImage} resizeMode="cover" />}
-                <Text style={styles.codename}>{member.codename || 'TBA'}</Text>
-                <Text style={styles.name}>{member.name || ''}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        ) : (
-          /* Mobile 3x3 Grid */
-          <ScrollView contentContainerStyle={{ padding: 10 }}>
-            <View style={{ gap: cardSpacing, alignItems: 'center' }}>
-              {[0, 1, 2].map((row) => (
-                <View key={row} style={{ flexDirection: 'row', gap: cardSpacing }}>
-                  {[0, 1, 2].map((col) => {
-                    if (isEmpty(row, col)) {
-                      return <View key={col} style={{ width: cardSize, height: cardSize * 1.6 }} />;
-                    }
-                    const member = getMemberAtPosition(row, col);
-                    return (
-                      <TouchableOpacity
-                        key={col}
-                        style={[
-                          styles.card,
-                          { width: cardSize, height: cardSize * 1.6 },
-                          !member?.clickable && styles.disabledCard,
-                          {
-                            borderWidth: 2,
-                            borderColor: '#00b3ff',
-                            backgroundColor: 'rgba(0, 179, 255, 0.1)',
-                            shadowColor: '#00b3ff',
-                            shadowOpacity: 0.8,
-                            shadowRadius: 10,
-                            elevation: 10,
-                          },
-                        ]}
-                        onPress={() => member?.clickable && navigation.navigate(member.screen)}
-                        disabled={!member?.clickable}
-                      >
-                        {member?.image && <Image source={member.image} style={styles.characterImage} resizeMode="cover" />}
-                        <Text style={styles.codename}>{member?.codename || 'TBA'}</Text>
-                        <Text style={styles.name}>{member?.name || ''}</Text>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </View>
+        {/* Perfectly Centered Content — Same as Titans */}
+        <View style={styles.contentCenter}>
+          {isDesktop ? (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{
+                padding: 20,
+                gap: cardSpacing,
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: SCREEN_HEIGHT * 0.7,
+              }}
+            >
+              {members.map((member, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={[
+                    styles.card,
+                    { width: cardSize, height: cardSize * 1.6 },
+                    !member.clickable && styles.disabledCard,
+                    {
+                      borderWidth: 2,
+                      borderColor: '#00b3ff',
+                      backgroundColor: 'rgba(0, 179, 255, 0.1)',
+                      shadowColor: '#00b3ff',
+                      shadowOpacity: 0.8,
+                      shadowRadius: 10,
+                      elevation: 10,
+                    },
+                  ]}
+                  onPress={() => member.clickable && navigation.navigate(member.screen)}
+                  disabled={!member.clickable}
+                >
+                  <Image source={member.image} style={styles.characterImage} resizeMode="cover" />
+                  <Text style={styles.codename}>{member.codename || 'TBA'}</Text>
+                  <Text style={styles.name}>{member.name || ''}</Text>
+                </TouchableOpacity>
               ))}
-            </View>
-          </ScrollView>
-        )}
+            </ScrollView>
+          ) : (
+            <ScrollView contentContainerStyle={{ padding: 10 }}>
+              <View style={{ gap: cardSpacing, alignItems: 'center' }}>
+                {[0, 1, 2].map((row) => (
+                  <View key={row} style={{ flexDirection: 'row', gap: cardSpacing }}>
+                    {[0, 1, 2].map((col) => {
+                      if (isEmpty(row, col)) {
+                        return <View key={col} style={{ width: cardSize, height: cardSize * 1.6 }} />;
+                      }
+                      const member = getMemberAtPosition(row, col);
+                      return member ? (
+                        <TouchableOpacity
+                          key={col}
+                          style={[
+                            styles.card,
+                            { width: cardSize, height: cardSize * 1.6 },
+                            !member.clickable && styles.disabledCard,
+                            {
+                              borderWidth: 2,
+                              borderColor: '#00b3ff',
+                              backgroundColor: 'rgba(0, 179, 255, 0.1)',
+                              shadowColor: '#00b3ff',
+                              shadowOpacity: 0.8,
+                              shadowRadius: 10,
+                              elevation: 10,
+                            },
+                          ]}
+                          onPress={() => member.clickable && navigation.navigate(member.screen)}
+                          disabled={!member.clickable}
+                        >
+                          <Image source={member.image} style={styles.characterImage} resizeMode="cover" />
+                          <Text style={styles.codename}>{member.codename || 'TBA'}</Text>
+                          <Text style={styles.name}>{member.name || ''}</Text>
+                        </TouchableOpacity>
+                      ) : null;
+                    })}
+                  </View>
+                ))}
+              </View>
+            </ScrollView>
+          )}
+        </View>
       </SafeAreaView>
     </ImageBackground>
   );
@@ -206,6 +207,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
+  },
+  contentCenter: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerWrapper: {
     width: '100%',
@@ -263,9 +269,7 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: 10,
     overflow: 'hidden',
-    elevation: 5,
   },
-  // नए
   characterImage: {
     width: '100%',
     height: '100%',

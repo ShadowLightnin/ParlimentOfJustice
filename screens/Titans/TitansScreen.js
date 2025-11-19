@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import {
   View,
   Text,
@@ -32,8 +32,8 @@ const getMemberAtPosition = (row, col) =>
 
 const TitansScreen = () => {
   const navigation = useNavigation();
-  const [currentSound, setCurrentSound] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentSound, setCurrentSound] = React.useState(null);
+  const [isPlaying, setIsPlaying] = React.useState(false);
 
   const playTheme = async () => {
     if (!currentSound) {
@@ -64,17 +64,19 @@ const TitansScreen = () => {
   const stopSound = async () => {
     if (currentSound) {
       await currentSound.stopAsync();
-      await currentSound.unloadAsync();
+      await currentSound.unloadAsync();  // ← FIXED
       setCurrentSound(null);
       setIsPlaying(false);
     }
   };
 
-  useFocusEffect(useCallback(() => () => stopSound(), [currentSound]));
+  useFocusEffect(
+    useCallback(() => {
+      return () => stopSound();
+    }, [currentSound])
+  );
 
   const isDesktop = SCREEN_WIDTH > 600;
-  
-  // EXACT same dynamic sizing as your original
   const cardSize = isDesktop ? 200 : Math.min(120, SCREEN_WIDTH / 3 - 20);
   const cardSpacing = isDesktop ? 30 : Math.min(15, (SCREEN_WIDTH - 3 * cardSize) / 4);
 
@@ -118,91 +120,98 @@ const TitansScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Desktop: Horizontal Scroll */}
-        {isDesktop ? (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ padding: 20, gap: cardSpacing, alignItems: 'center' }}
-          >
-            {members.map((m, i) => (
-              <TouchableOpacity
-                key={i}
-                style={[
-                  styles.card,
-                  { width: cardSize, height: cardSize * 1.6 },
-                  !m.clickable && styles.disabledCard,
-                  {
-                    borderWidth: 2,
-                    borderColor: '#00b3ff',
-                    backgroundColor: 'rgba(0, 179, 255, 0.1)',
-                    shadowColor: '#00b3ff',
-                    shadowOpacity: 0.8,
-                    shadowRadius: 10,
-                    elevation: 10,
-                  },
-                ]}
-                onPress={async () => {
-                  if (m.clickable) {
-                    await stopSound();
-                    navigation.navigate(m.screen);
-                  }
-                }}
-                disabled={!m.clickable}
-              >
-                <Image source={m.image} style={styles.characterImage} resizeMode="cover" />
-                <Text style={styles.codename}>{m.codename}</Text>
-                <Text style={styles.name}>{m.name}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        ) : (
-          /* Mobile: 3×3 Grid — EXACT same layout as original */
-          <ScrollView contentContainerStyle={{ padding: 10 }}>
-            <View style={{ gap: cardSpacing, alignItems: 'center' }}>
-              {[0, 1, 2].map(row => (
-                <View key={row} style={{ flexDirection: 'row', gap: cardSpacing }}>
-                  {[0, 1, 2].map(col => {
-                    if (isEmpty(row, col)) {
-                      return <View key={col} style={{ width: cardSize, height: cardSize * 1.6 }} />;
+        {/* Perfectly Centered Content */}
+        <View style={styles.contentCenter}>
+          {isDesktop ? (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{
+                padding: 20,
+                gap: cardSpacing,
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: SCREEN_HEIGHT * 0.7,
+              }}
+            >
+              {members.map((m, i) => (
+                <TouchableOpacity
+                  key={i}
+                  style={[
+                    styles.card,
+                    { width: cardSize, height: cardSize * 1.6 },
+                    !m.clickable && styles.disabledCard,
+                    {
+                      borderWidth: 2,
+                      borderColor: '#00b3ff',
+                      backgroundColor: 'rgba(0, 179, 255, 0.1)',
+                      shadowColor: '#00b3ff',
+                      shadowOpacity: 0.8,
+                      shadowRadius: 10,
+                      elevation: 10,
+                    },
+                  ]}
+                  onPress={async () => {
+                    if (m.clickable) {
+                      await stopSound();
+                      navigation.navigate(m.screen);
                     }
-                    const m = getMemberAtPosition(row, col);
-                    return (
-                      <TouchableOpacity
-                        key={col}
-                        style={[
-                          styles.card,
-                          { width: cardSize, height: cardSize * 1.6 },
-                          !m?.clickable && styles.disabledCard,
-                          {
-                            borderWidth: 2,
-                            borderColor: '#00b3ff',
-                            backgroundColor: 'rgba(0, 179, 255, 0.1)',
-                            shadowColor: '#00b3ff',
-                            shadowOpacity: 0.8,
-                            shadowRadius: 10,
-                            elevation: 10,
-                          },
-                        ]}
-                        onPress={async () => {
-                          if (m?.clickable) {
-                            await stopSound();
-                            navigation.navigate(m.screen);
-                          }
-                        }}
-                        disabled={!m?.clickable}
-                      >
-                        <Image source={m.image} style={styles.characterImage} resizeMode="cover" />
-                        <Text style={styles.codename}>{m.codename}</Text>
-                        <Text style={styles.name}>{m.name}</Text>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </View>
+                  }}
+                  disabled={!m.clickable}
+                >
+                  <Image source={m.image} style={styles.characterImage} resizeMode="cover" />
+                  <Text style={styles.codename}>{m.codename}</Text>
+                  <Text style={styles.name}>{m.name}</Text>
+                </TouchableOpacity>
               ))}
-            </View>
-          </ScrollView>
-        )}
+            </ScrollView>
+          ) : (
+            <ScrollView contentContainerStyle={{ padding: 10 }}>
+              <View style={{ gap: cardSpacing, alignItems: 'center' }}>
+                {[0, 1, 2].map(row => (
+                  <View key={row} style={{ flexDirection: 'row', gap: cardSpacing }}>
+                    {[0, 1, 2].map(col => {
+                      if (isEmpty(row, col)) {
+                        return <View key={col} style={{ width: cardSize, height: cardSize * 1.6 }} />;
+                      }
+                      const m = getMemberAtPosition(row, col);
+                      return m ? (
+                        <TouchableOpacity
+                          key={col}
+                          style={[
+                            styles.card,
+                            { width: cardSize, height: cardSize * 1.6 },
+                            !m.clickable && styles.disabledCard,
+                            {
+                              borderWidth: 2,
+                              borderColor: '#00b3ff',
+                              backgroundColor: 'rgba(0, 179, 255, 0.1)',
+                              shadowColor: '#00b3ff',
+                              shadowOpacity: 0.8,
+                              shadowRadius: 10,
+                              elevation: 10,
+                            },
+                          ]}
+                          onPress={async () => {
+                            if (m.clickable) {
+                              await stopSound();
+                              navigation.navigate(m.screen);
+                            }
+                          }}
+                          disabled={!m.clickable}
+                        >
+                          <Image source={m.image} style={styles.characterImage} resizeMode="cover" />
+                          <Text style={styles.codename}>{m.codename}</Text>
+                          <Text style={styles.name}>{m.name}</Text>
+                        </TouchableOpacity>
+                      ) : null;
+                    })}
+                  </View>
+                ))}
+              </View>
+            </ScrollView>
+          )}
+        </View>
       </SafeAreaView>
     </ImageBackground>
   );
@@ -216,6 +225,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
+  },
+  contentCenter: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerWrapper: {
     width: '100%',

@@ -45,9 +45,9 @@ export const ConstollationScreen = () => {
   const handleMemberPress = (member) => {
     if (member.clickable) {
       if (member.screen && member.screen !== '') {
-        navigation.navigate(member.screen); // Navigate to the defined screen if it exists and isn’t empty
+        navigation.navigate(member.screen);
       } else {
-        setPreviewMember(member); // Show modal if no screen or screen is empty
+        setPreviewMember(member);
       }
     }
   };
@@ -61,18 +61,22 @@ export const ConstollationScreen = () => {
           width: cardSize,
           height: cardSize * cardHeightMultiplier,
           marginHorizontal: horizontalSpacing / 2,
-          ...(member.clickable ? {} : styles.disabledCard),
+        },
+        !member.clickable && styles.disabledCard,
+        {
+          borderWidth: 2,
+          borderColor: '#00b3ff',
+          backgroundColor: 'rgba(0, 179, 255, 0.1)',
+          shadowColor: '#00b3ff',
+          shadowOpacity: 0.8,
+          shadowRadius: 10,
+          elevation: 10,
         },
       ]}
       onPress={() => handleMemberPress(member)}
       disabled={!member.clickable}
     >
-      {member.image && (
-        <>
-          <Image source={member.image} style={styles.characterImage} />
-          <View style={styles.transparentOverlay} />
-        </>
-      )}
+      <Image source={member.image} style={styles.characterImage} resizeMode="cover" />
       <Text style={styles.codename}>{member.codename || ''}</Text>
       <Text style={styles.name}>{member.name}</Text>
     </TouchableOpacity>
@@ -82,7 +86,7 @@ export const ConstollationScreen = () => {
     <TouchableOpacity
       key={member.name}
       style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
-      onPress={() => setPreviewMember(null)} // Close modal on card press
+      onPress={() => setPreviewMember(null)}
     >
       <Image
         source={member.image || require('../../assets/Armor/PlaceHolder.jpg')}
@@ -273,15 +277,8 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   card: {
-    backgroundColor: '#1c1c1c',
-    justifyContent: 'center',
-    alignItems: 'center',
     borderRadius: 8,
-    padding: 5,
-    shadowColor: '#00b3ff',
-    shadowOpacity: 1.5,
-    shadowRadius: 10,
-    elevation: 5,
+    overflow: 'hidden',
   },
   cardSpacer: {
     width: cardSize,
@@ -289,28 +286,33 @@ const styles = StyleSheet.create({
     marginHorizontal: horizontalSpacing / 2,
   },
   disabledCard: {
-    backgroundColor: '#444',
-    shadowColor: 'transparent',
+    opacity: 0.6,
   },
   characterImage: {
     width: '100%',
-    height: '70%',
+    height: '100%',
     resizeMode: 'cover',
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
   },
   codename: {
-    fontSize: 12,
+    position: 'absolute',
+    bottom: 12,
+    left: 10,
+    fontSize: 14,
     fontWeight: 'bold',
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 5,
+    color: '#00b3ff',
+    textShadowColor: '#00b3ff',
+    textShadowRadius: 12,
+    zIndex: 2,
   },
   name: {
-    fontSize: 10,
-    fontStyle: 'italic',
-    color: '#aaa',
-    textAlign: 'center',
+    position: 'absolute',
+    bottom: 34,
+    left: 10,
+    fontSize: 12,
+    color: '#fff',
+    textShadowColor: '#00b3ff',
+    textShadowRadius: 12,
+    zIndex: 2,
   },
   modalBackground: {
     flex: 1,

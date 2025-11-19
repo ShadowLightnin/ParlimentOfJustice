@@ -37,7 +37,6 @@ const coworkers = [
   { name: 'Gary', codename: '', screen: '', clickable: false, },
   { name: 'Trevor', codename: '', screen: '', clickable: false, },
   { name: 'Kristin', codename: '', screen: '', clickable: false, },
-  
 ];
 
 const isDesktop = SCREEN_WIDTH > 600;
@@ -67,7 +66,16 @@ export const ForgeScreen = () => {
       style={[
         styles.card,
         { width: cardSize, height: cardSize * cardHeightMultiplier },
-        !member.clickable && styles.disabledCard
+        !member.clickable && styles.disabledCard,
+        {
+          borderWidth: 2,
+          borderColor: '#ff6b35',
+          backgroundColor: 'rgba(255, 107, 53, 0.15)',
+          shadowColor: '#ff6b35',
+          shadowOpacity: 1,
+          shadowRadius: 16,
+          elevation: 14,
+        },
       ]}
       onPress={() => handleMemberPress(member)}
       disabled={!member.clickable}
@@ -75,8 +83,8 @@ export const ForgeScreen = () => {
       <Image
         source={member.image || require('../../assets/Armor/PlaceHolder.jpg')}
         style={styles.characterImage}
+        resizeMode="cover"
       />
-      <View style={styles.transparentOverlay} />
       <Text style={styles.codename}>{member.codename}</Text>
       <Text style={styles.name}>{member.name}</Text>
     </TouchableOpacity>
@@ -87,13 +95,12 @@ export const ForgeScreen = () => {
       key={member.name}
       style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
       onPress={() => setPreviewMember(null)}
-    >
+      >
       <Image
         source={member.image || require('../../assets/Armor/PlaceHolder.jpg')}
         style={styles.previewImage}
         resizeMode="cover"
       />
-      <View style={styles.transparentOverlay} />
       <Text style={styles.cardName}>
         © {member.codename || 'Unknown'}; William Cummings
       </Text>
@@ -186,11 +193,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     alignItems: 'center',
   },
-  transparentOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1,
-  },
   headerWrapper: {
     width: '100%',
     flexDirection: 'row',
@@ -248,37 +250,37 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   card: {
-    backgroundColor: '#1c1c1c',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 8,
-    padding: 5,
-    shadowColor: 'rgba(255, 174, 66, 0.7)',
-    shadowOpacity: 1,
-    shadowRadius: 20,
-    elevation: 5,
+    borderRadius: 10,
+    overflow: 'hidden',
   },
   disabledCard: {
-    shadowColor: 'transparent',
-    backgroundColor: '#444',
+    opacity: 0.6,
   },
   characterImage: {
     width: '100%',
-    height: '70%',
+    height: '100%',
     resizeMode: 'cover',
   },
   codename: {
-    fontSize: 12,
+    position: 'absolute',
+    bottom: 12,
+    left: 10,
+    fontSize: 14,
     fontWeight: 'bold',
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 5,
+    color: '#ff6b35',
+    textShadowColor: '#ff6b35',
+    textShadowRadius: 14,
+    zIndex: 2,
   },
   name: {
-    fontSize: 10,
-    fontStyle: 'italic',
-    color: '#aaa',
-    textAlign: 'center',
+    position: 'absolute',
+    bottom: 34,
+    left: 10,
+    fontSize: 12,
+    color: '#fff',
+    textShadowColor: '#ff6b35',
+    textShadowRadius: 14,
+    zIndex: 2,
   },
   modalBackground: {
     flex: 1,

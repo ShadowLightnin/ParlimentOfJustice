@@ -144,8 +144,6 @@ export const CobrosScreen = () => {
       description: descriptions[member.name] || 'No description available',
     };
 
-    // console.log('Passing member:', member.name, 'Images:', enhancedMember.images);
-
     return (
       <TouchableOpacity
         key={member.name}
@@ -153,20 +151,25 @@ export const CobrosScreen = () => {
           styles.card,
           { width: cardSize, height: cardSize * cardHeightMultiplier },
           !enhancedMember.clickable && styles.disabledCard,
+          {
+            borderWidth: 2,
+            borderColor: '#e63946',
+            backgroundColor: 'rgba(230, 57, 70, 0.15)',
+            shadowColor: '#e63946',
+            shadowOpacity: 1,
+            shadowRadius: 15,
+            elevation: 12,
+          },
         ]}
         onPress={() => handleMemberPress(enhancedMember)}
         disabled={!enhancedMember.clickable}
       >
-        {enhancedMember.image && (
-          <>
-            <Image
-              source={typeof enhancedMember.image === 'string' ? { uri: enhancedMember.image } : enhancedMember.image}
-              style={[styles.characterImage, { width: '100%', height: cardSize * 1.2 }]}
-              onError={(e) => console.error('Image load error:', e.nativeEvent.error, 'URI:', enhancedMember.image)}
-            />
-            <View style={styles.transparentOverlay} />
-          </>
-        )}
+        <Image
+          source={typeof enhancedMember.image === 'string' ? { uri: enhancedMember.image } : enhancedMember.image}
+          style={styles.characterImage}
+          resizeMode="cover"
+          onError={(e) => console.error('Image load error:', e.nativeEvent.error)}
+        />
         <Text style={styles.codename}>{enhancedMember.codename || ''}</Text>
         <Text style={styles.name}>{enhancedMember.name}</Text>
       </TouchableOpacity>
@@ -185,9 +188,7 @@ export const CobrosScreen = () => {
           source={typeof img.uri === 'string' ? { uri: img.uri } : img.uri}
           style={styles.previewImage}
           resizeMode="cover"
-          onError={(e) => console.error('Image load error:', e.nativeEvent.error, 'URI:', img.uri)}
         />
-        <View style={styles.transparentOverlay} />
         <Text style={styles.cardName}>
           © {img.name || 'Unknown'}; William Cummings
         </Text>
@@ -207,8 +208,6 @@ export const CobrosScreen = () => {
           uri: previewMember.image || require('../../assets/Armor/PlaceHolder.jpg'),
           name: previewMember.name || 'Default Image',
         }];
-
-    console.log('Preview Member:', previewMember.name, 'Images:', images);
 
     return (
       <TouchableOpacity
@@ -333,11 +332,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     alignItems: 'center',
   },
-  transparentOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1,
-  },
   headerWrapper: {
     width: '100%',
     flexDirection: 'row',
@@ -405,37 +399,37 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   card: {
-    backgroundColor: '#1c1c1c',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 8,
-    padding: 5,
-    shadowColor: 'rgba(82, 17, 17, 1)',
-    shadowOpacity: 1.5,
-    shadowRadius: 20,
-    elevation: 5,
+    borderRadius: 10,
+    overflow: 'hidden',
   },
   disabledCard: {
-    shadowColor: 'transparent',
-    backgroundColor: '#444',
+    opacity: 0.6,
   },
   characterImage: {
+    width: '100%',
+    height: '100%',
     resizeMode: 'cover',
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
   },
   codename: {
-    fontSize: 10,
+    position: 'absolute',
+    bottom: 12,
+    left: 10,
+    fontSize: 14,
     fontWeight: 'bold',
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 5,
+    color: '#e63946',
+    textShadowColor: '#e63946',
+    textShadowRadius: 14,
+    zIndex: 2,
   },
   name: {
-    fontSize: 8,
-    fontStyle: 'italic',
-    color: '#aaa',
-    textAlign: 'center',
+    position: 'absolute',
+    bottom: 34,
+    left: 10,
+    fontSize: 12,
+    color: '#fff',
+    textShadowColor: '#e63946',
+    textShadowRadius: 14,
+    zIndex: 2,
   },
   modalBackground: {
     flex: 1,

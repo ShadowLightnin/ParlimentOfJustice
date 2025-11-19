@@ -40,134 +40,69 @@ export const LegionairesScreen = () => {
   const [background, setBackground] = useState(null);
   const [audioFile, setAudioFile] = useState(null);
 
-  // Randomly select background and audio on mount
   useEffect(() => {
-    const selectMedia = () => {
-      const random = Math.random();
-      if (random < 0.4) {
-        // Option 1: Original background and audio
-        setBackground(require('../../assets/BackGround/Legionaires2.jpg'));
-        setAudioFile(require('../../assets/audio/BlueBloodsExtend.mp4'));
-      } else {
-        // Option 2: New background and audio
-        setBackground(require('../../assets/BackGround/AnimatedLegion.gif'));
-        setAudioFile(require('../../assets/audio/Legion2.mp4'));
-      }
-    };
-    selectMedia();
+    const random = Math.random();
+    if (random < 0.4) {
+      setBackground(require('../../assets/BackGround/Legionaires2.jpg'));
+      setAudioFile(require('../../assets/audio/BlueBloodsExtend.mp4'));
+    } else {
+      setBackground(require('../../assets/BackGround/AnimatedLegion.gif'));
+      setAudioFile(require('../../assets/audio/Legion2.mp4'));
+    }
   }, []);
 
-  // Handle music playback
   const playTheme = async () => {
-    if (!audioFile) return; // Wait until audioFile is set
-    if (!currentSound) {
-      try {
-        const { sound } = await Audio.Sound.createAsync(
-          audioFile,
-          { shouldPlay: true, isLooping: true, volume: 1.0 }
-        );
-        setCurrentSound(sound);
-        await sound.playAsync();
-        setIsPlaying(true);
-        console.log('Playing Sound at:', new Date().toISOString());
-      } catch (error) {
-        console.error('Failed to load audio file:', error);
-        Alert.alert('Audio Error', `Failed to load background music. Please check the audio file path: ${audioFile}`);
-      }
-    } else if (!isPlaying) {
-      try {
-        await currentSound.playAsync();
-        setIsPlaying(true);
-        console.log('Audio resumed at:', new Date().toISOString());
-      } catch (error) {
-        console.error('Error resuming sound:', error);
-      }
+    if (!audioFile || currentSound) return;
+    try {
+      const { sound } = await Audio.Sound.createAsync(audioFile, { shouldPlay: true, isLooping: true });
+      setCurrentSound(sound);
+      await sound.playAsync();
+      setIsPlaying(true);
+    } catch (error) {
+      Alert.alert('Audio Error', 'Failed to load background music.');
     }
   };
 
-  // Handle music pause
   const pauseTheme = async () => {
     if (currentSound && isPlaying) {
-      try {
-        await currentSound.pauseAsync();
-        setIsPlaying(false);
-        console.log('Audio paused at:', new Date().toISOString());
-      } catch (error) {
-        console.error('Error pausing sound:', error);
-      }
+      await currentSound.pauseAsync();
+      setIsPlaying(false);
     }
   };
 
-  // Cleanup sound on unmount or navigation
-  useFocusEffect(
-    useCallback(() => {
-      return () => {
-        if (currentSound) {
-          currentSound.stopAsync().catch((error) => console.error('Error stopping sound:', error));
-          currentSound.unloadAsync().catch((error) => console.error('Error unloading sound:', error));
-          setCurrentSound(null);
-          setIsPlaying(false);
-          console.log('Audio stopped and unloaded on unmount');
-        }
-      };
-    }, [currentSound])
-  );
+  const stopSound = async () => {
+    if (currentSound) {
+      await currentSound.stopAsync();
+      await currentSound.unloadAsync();
+      setCurrentSound(null);
+      setIsPlaying(false);
+    }
+  };
+
+  useFocusEffect(useCallback(() => () => stopSound(), [currentSound]));
 
   useEffect(() => {
-    // Listen for real-time updates from Firestore
     const unsubscribe = onSnapshot(collection(db, 'LegionairesMembers'), (snapshot) => {
-      const fetchedMembers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      const updatedMembers = memberCategories.map(category => ({
-        ...category,
+      const fetched = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const updated = memberCategories.map(cat => ({
+        ...cat,
         members: [
-          ...category.members.filter(m => legionImages[m.name]?.hardcoded || !fetchedMembers.some(fm => fm.name === m.name)),
-          ...fetchedMembers.filter(m => m.category === category.category && !m.hardcoded)
+          ...cat.members.filter(m => legionImages[m.name]?.hardcoded || !fetched.some(f => f.name === m.name)),
+          ...fetched.filter(m => m.category === cat.category && !m.hardcoded)
         ]
       }));
-      setMembers(updatedMembers);
-    }, (error) => {
-      console.error('Error fetching members:', error);
+      setMembers(updated);
     });
-
-    return () => {
-      unsubscribe();
-    };
+    return () => unsubscribe();
   }, []);
 
-  const goToChat = async () => {
-    if (currentSound) {
-      try {
-        await currentSound.stopAsync();
-        await currentSound.unloadAsync();
-        setCurrentSound(null);
-        setIsPlaying(false);
-        console.log('Audio stopped and unloaded for TeamChat navigation');
-      } catch (error) {
-        console.error('Error stopping/unloading audio for TeamChat:', error);
-      }
-    }
-    navigation.navigate('TeamChat');
-  };
+  const goToChat = async () => { await stopSound(); navigation.navigate('TeamChat'); };
 
   const handleMemberPress = async (member) => {
-    if (member.clickable) {
-      if (currentSound) {
-        try {
-          await currentSound.stopAsync();
-          await currentSound.unloadAsync();
-          setCurrentSound(null);
-          setIsPlaying(false);
-          console.log('Audio stopped and unloaded for member navigation');
-        } catch (error) {
-          console.error('Error stopping sound for member navigation:', error);
-        }
-      }
-      if (member.screen && member.screen !== '') {
-        navigation.navigate(member.screen);
-      } else {
-        navigation.navigate('LegionairesCharacterDetail', { member });
-      }
-    }
+    if (!member.clickable) return;
+    await stopSound();
+    if (member.screen) navigation.navigate(member.screen);
+    else navigation.navigate('LegionairesCharacterDetail', { member });
   };
 
   const renderMemberCard = (member) => (
@@ -179,37 +114,32 @@ export const LegionairesScreen = () => {
             width: cardSize,
             height: cardSize * cardHeightMultiplier,
             marginHorizontal: horizontalSpacing / 2,
-            ...(member.clickable ? styles.clickableCard : styles.disabledCard),
+          },
+          !member.clickable && styles.disabledCard,
+          {
+            borderWidth: 2,
+            borderColor: '#00b3ff',
+            backgroundColor: 'rgba(0, 179, 255, 0.1)',
+            shadowColor: '#00b3ff',
+            shadowOpacity: 0.8,
+            shadowRadius: 10,
+            elevation: 10,
           },
         ]}
         onPress={() => handleMemberPress(member)}
         disabled={!member.clickable}
       >
-        {member.image && (
-          <>
-            <Image source={member.image} style={styles.characterImage} />
-            <View style={styles.transparentOverlay} />
-          </>
-        )}
+        <Image source={member.image} style={styles.characterImage} resizeMode="cover" />
         <Text style={styles.codename}>{member.codename || ''}</Text>
         <Text style={styles.name}>{member.name}</Text>
       </TouchableOpacity>
+
       {!legionImages[member.name]?.hardcoded && !member.hardcoded && (
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={styles.editButton}
-            onPress={() => setEditingMember(member)}
-          >
+          <TouchableOpacity style={styles.editButton} onPress={() => setEditingMember(member)}>
             <Text style={styles.buttonText}>Edit</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.deleteButton}
-            onPress={() => {
-              if (member.id) {
-                setDeleteModal({ visible: true, member });
-              }
-            }}
-          >
+          <TouchableOpacity style={styles.deleteButton} onPress={() => member.id && setDeleteModal({ visible: true, member })}>
             <Text style={styles.buttonText}>Delete</Text>
           </TouchableOpacity>
         </View>
@@ -217,59 +147,29 @@ export const LegionairesScreen = () => {
     </View>
   );
 
-  const confirmDelete = async (memberId) => {
+  const confirmDelete = async (id) => {
     try {
-      const memberToDelete = members
-        .flatMap(category => category.members)
-        .find(m => m.id === memberId);
-      if (!memberToDelete) {
-        console.error('Member not found for id:', memberId);
-        Alert.alert('Error', 'Member not found for deletion.');
-        setDeleteModal({ visible: false, member: null });
-        return;
-      }
-      await deleteDoc(doc(db, 'LegionairesMembers', memberId));
-      setMembers(prevMembers => prevMembers.map(category => ({
-        ...category,
-        members: category.members.filter(m => m.id !== memberId),
+      await deleteDoc(doc(db, 'LegionairesMembers', id));
+      setMembers(prev => prev.map(cat => ({
+        ...cat,
+        members: cat.members.filter(m => m.id !== id)
       })));
-      setDeleteModal({ visible: false, member: null });
       Alert.alert('Success', 'Member deleted successfully!');
-    } catch (error) {
-      console.error('Delete error:', error.message);
-      Alert.alert('Error', `Failed to delete member: ${error.message}`);
+    } catch (err) {
+      Alert.alert('Error', 'Failed to delete member.');
+    } finally {
+      setDeleteModal({ visible: false, member: null });
     }
-  };
-
-  const onDelete = (member) => {
-    if (!member || !member.id) {
-      console.warn('Invalid member provided to delete');
-      return;
-    }
-    setDeleteModal({ visible: true, member });
   };
 
   return (
     <ImageBackground
-      source={background || require('../../assets/BackGround/Legionaires2.jpg')} // Fallback to original
+      source={background || require('../../assets/BackGround/Legionaires2.jpg')}
       style={styles.background}
     >
       <SafeAreaView style={styles.container}>
         <View style={styles.headerWrapper}>
-          <TouchableOpacity style={styles.backButton} onPress={async () => {
-            if (currentSound) {
-              try {
-                await currentSound.stopAsync();
-                await currentSound.unloadAsync();
-                setCurrentSound(null);
-                setIsPlaying(false);
-                console.log('Audio stopped and unloaded on back press');
-              } catch (error) {
-                console.error('Error stopping/unloading audio on back press:', error);
-              }
-            }
-            navigation.goBack();
-          }}>
+          <TouchableOpacity style={styles.backButton} onPress={async () => { await stopSound(); navigation.goBack(); }}>
             <Text style={styles.backText}>← Back</Text>
           </TouchableOpacity>
           <Text style={styles.header}>Legionnaires</Text>
@@ -290,7 +190,6 @@ export const LegionairesScreen = () => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {members.map((categoryData, categoryIndex) => {
             const rows = Math.ceil(categoryData.members.length / columns);
-
             return (
               <View key={categoryIndex} style={styles.categorySection}>
                 <Text style={styles.categoryHeader}>{categoryData.category}</Text>
@@ -298,22 +197,15 @@ export const LegionairesScreen = () => {
                 {Array.from({ length: rows }).map((_, rowIndex) => (
                   <View key={rowIndex} style={[styles.row, { marginBottom: verticalSpacing }]}>
                     {Array.from({ length: columns }).map((_, colIndex) => {
-                      const memberIndex = rowIndex * columns + colIndex;
-                      const memberObj = categoryData.members[memberIndex];
-                      if (!memberObj || !memberObj.name) return <View key={colIndex} style={styles.cardSpacer} />;
+                      const memberObj = categoryData.members[rowIndex * columns + colIndex];
+                      if (!memberObj?.name) return <View key={colIndex} style={styles.cardSpacer} />;
 
                       const member = {
                         ...memberObj,
                         image: memberObj.imageUrl && memberObj.imageUrl !== 'placeholder'
                           ? { uri: memberObj.imageUrl }
                           : (legionImages[memberObj.name]?.images?.[0]?.uri || require('../../assets/Armor/PlaceHolder.jpg')),
-                        images: legionImages[memberObj.name]?.images || (
-                          memberObj.imageUrl && memberObj.imageUrl !== 'placeholder'
-                            ? [{ uri: memberObj.imageUrl, name: memberObj.name || 'Member Image', clickable: true }]
-                            : [{ uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Placeholder', clickable: true }]
-                        ),
-                        clickable: memberObj.clickable !== undefined ? memberObj.clickable : (legionImages[memberObj.name]?.images?.[0]?.clickable || true),
-                        description: descriptions[memberObj.name] || memberObj.description || 'No description available',
+                        clickable: memberObj.clickable !== undefined ? memberObj.clickable : true,
                       };
 
                       return renderMemberCard(member);
@@ -331,30 +223,19 @@ export const LegionairesScreen = () => {
             hardcodedHero={memberCategories}
             editingHero={editingMember}
             setEditingHero={setEditingMember}
-            onDelete={onDelete}
+            onDelete={(m) => m?.id && setDeleteModal({ visible: true, member: m })}
           />
         </ScrollView>
 
-        <Modal
-          visible={deleteModal.visible}
-          transparent
-          animationType="slide"
-          onRequestClose={() => setDeleteModal({ visible: false, member: null })}
-        >
+        <Modal visible={deleteModal.visible} transparent animationType="slide">
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
               <Text style={styles.modalText}>{`Delete "${deleteModal.member?.name || ''}"?`}</Text>
               <View style={styles.modalButtons}>
-                <TouchableOpacity
-                  style={styles.modalCancel}
-                  onPress={() => setDeleteModal({ visible: false, member: null })}
-                >
+                <TouchableOpacity style={styles.modalCancel} onPress={() => setDeleteModal({ visible: false, member: null })}>
                   <Text style={styles.modalCancelText}>Cancel</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.modalDelete}
-                  onPress={() => deleteModal.member && confirmDelete(deleteModal.member.id)}
-                >
+                <TouchableOpacity style={styles.modalDelete} onPress={() => deleteModal.member?.id && confirmDelete(deleteModal.member.id)}>
                   <Text style={styles.modalDeleteText}>Delete</Text>
                 </TouchableOpacity>
               </View>
@@ -366,7 +247,6 @@ export const LegionairesScreen = () => {
   );
 };
 
-// Styles remain unchanged
 const styles = StyleSheet.create({
   background: {
     width: SCREEN_WIDTH,
@@ -377,11 +257,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     alignItems: 'center',
-  },
-  transparentOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1,
   },
   headerWrapper: {
     width: '100%',
@@ -465,48 +340,42 @@ const styles = StyleSheet.create({
     marginBottom: verticalSpacing,
   },
   card: {
-    backgroundColor: '#1c1c1c',
-    justifyContent: 'center',
-    alignItems: 'center',
     borderRadius: 8,
-    padding: 5,
-    shadowColor: '#00b3ff',
-    shadowOpacity: 1.5,
-    shadowRadius: 10,
-    elevation: 5,
+    overflow: 'hidden',
   },
-  clickableCard: {
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+  characterImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  codename: {
+    position: 'absolute',
+    bottom: 12,
+    left: 10,
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#00b3ff',
+    textShadowColor: '#00b3ff',
+    textShadowRadius: 12,
+    zIndex: 2,
+  },
+  name: {
+    position: 'absolute',
+    bottom: 34,
+    left: 10,
+    fontSize: 12,
+    color: '#fff',
+    textShadowColor: '#00b3ff',
+    textShadowRadius: 12,
+    zIndex: 2,
+  },
+  disabledCard: {
+    opacity: 0.6,
   },
   cardSpacer: {
     width: cardSize,
     height: cardSize * cardHeightMultiplier,
     marginHorizontal: horizontalSpacing / 2,
-  },
-  disabledCard: {
-    backgroundColor: '#444',
-    shadowColor: 'transparent',
-  },
-  characterImage: {
-    width: cardSize,
-    height: '70%',
-    resizeMode: 'cover',
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-  },
-  codename: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 5,
-  },
-  name: {
-    fontSize: 10,
-    fontStyle: 'italic',
-    color: '#aaa',
-    textAlign: 'center',
   },
   buttonContainer: {
     flexDirection: 'row',

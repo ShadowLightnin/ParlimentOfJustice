@@ -12,10 +12,8 @@ import {
 } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 
-// Screen dimensions
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
-// Background Images Array
 const backgroundImages = [
   require('../../../assets/BackGround/ASTC.jpg'),
   require('../../../assets/Halo/26.jpg'),
@@ -49,131 +47,34 @@ const backgroundImages = [
   require('../../../assets/BackGround/ASTC.jpg'),
   require('../../../assets/BackGround/ASTC.jpg'),
   require('../../../assets/BackGround/ASTC.jpg'),
-
 ];
 
-// Member Data
 const members = [
   { name: 'Cam', codename: 'Court Chief', screen: 'Cam', clickable: true, image: require('../../../assets/Armor/Cam4.jpg') },
   { name: 'Ben', codename: 'Chemoshock', screen: 'BenP', clickable: true, image: require('../../../assets/Armor/Benp3.jpg') },
   { name: 'Alex', codename: 'Huntsman', screen: 'Alex', clickable: true, image: require('../../../assets/Armor/Alex3.jpg') },
 ];
 
-// Hardcoded Vehicles
 const HARDCODED_VEHICLES = [
-  {
-    id: 'vehicle-1',
-    name: 'Harbinger',
-    description: 'The Spartans primary ship, good for long away missions, espionage, and infiltration operations.',
-    image: require('../../../assets/ShipYard/Spartan1.jpg'),
-  },
-  {
-    id: 'vehicle-2',
-    name: 'Stalker',
-    description: 'The Spartans secondary ship, used for quick strikes, stealth, and hunting.',
-    image: require('../../../assets/ShipYard/Spartan2.jpg'),
-  },
-  {
-    id: 'vehicle-3',
-    name: 'Warthog',
-    description: 'The Spartans all-terrain vehicle, designed for rapid deployment and versatile combat scenarios.',
-    image: require('../../../assets/ShipYard/Spartan3.jpg'),
-  },
-  {
-    id: 'vehicle-4',
-    name: 'Roadlander',
-    description: 'The Spartans heavy-duty vehicle, built for rugged terrain and heavy loads.',
-    image: require('../../../assets/ShipYard/Spartan4.jpg'),
-  },
-  {
-    id: 'vehicle-5',
-    name: 'Hunterall',
-    description: 'The Spartans heavy assault vehicle, designed for frontline combat and heavy firepower for.',
-    image: require('../../../assets/ShipYard/Spartan5.jpg'),
-  },
-  {
-    id: 'vehicle-6',
-    name: 'Alecoma',
-    description: 'The Spartans tactical support vehicle, equipped for reconnaissance and support operations with a mounted turret.',
-    image: require('../../../assets/ShipYard/Spartan6.jpg'),
-  },
-  {
-    id: 'vehicle-7',
-    name: 'Benshie',
-    description: 'The Spartans big truck with lots of firepower, designed for heavy-duty transport and combat support.',
-    image: require('../../../assets/ShipYard/Spartan7.jpg'),
-  },
-    {
-    id: 'vehicle-8',
-    name: 'Camborghini',
-    description: 'Need to get somewhere fast? The Spartans luxury vehicle, designed for speed and style.',
-    image: require('../../../assets/ShipYard/Camborghini.jpg'),
-  },
-    {
-    id: 'vehicle-9',
-    name: 'Mongoose',
-    description: 'The Spartans light utility vehicle, designed for quick maneuvers and agile operations. And knolls.',
-    image: require('../../../assets/ShipYard/Mongoose.jpg'),
-  },
-    {
-    id: 'vehicle-10',
-    name: 'ATK',
-    description: 'The Spartans ATK vehicle, designed for rapid deployment and heavy dune rides',
-    image: require('../../../assets/ShipYard/ATK.jpg'),
-  },
-    {
-    id: 'vehicle-11',
-    name: 'Camustacge',
-    description: 'The Spartans loud vehicle, designed for sportsman operations and quick insertions.',
-    image: require('../../../assets/ShipYard/Camustacge.jpg'),
-  },
-  // {
-  //   id: 'vehicle-9',
-  //   name: 'Wraith',
-  //   description: 'The Spartans heavy artillery vehicle, capable of delivering devastating firepower from a distance.',
-  //   image: require('../../../assets/ShipYard/Spartan8.jpg'),
-  // },
-  // {
-  //   id: 'vehicle-10',
-  //   name: 'Scorpion',
-  //   description: 'The Spartans main battle tank, designed for frontline combat and heavy armor protection.',
-  //   image: require('../../../assets/ShipYard/Spartan9.jpg'),
-  // },
-  // {
-  //   id: 'vehicle-11',
-  //   name: 'Phantom',
-  //   description: 'The Spartans stealth transport vehicle, used for covert operations and quick insertions.',
-  //   image: require('../../../assets/ShipYard/Spartan10.jpg'),
-  // },
-  // {
-  //   id: 'vehicle-12',
-  //   name: 'Ghost',
-  //   description: 'The Spartans fast attack vehicle, designed for rapid strikes and hit-and-run tactics.',
-  //   image: require('../../../assets/ShipYard/Spartan11.jpg'),
-  // },
-  // {
-  //   id: 'vehicle-13',
-  //   name: 'Banshee',
-  //   description: 'The Spartans aerial assault vehicle, capable of delivering devastating air support.',
-  //   image: require('../../../assets/ShipYard/Spartan12.jpg'),
-  // },
-  // {
-  //   id: 'vehicle-14',
-  //   name: 'Mantis',
-  //   description: 'The Spartans exosuit, designed for enhanced combat capabilities and mobility.',
-  //   image: require('../../../assets/ShipYard/Spartan18.jpg'),
-  // },
+  { id: 'vehicle-1', name: 'Harbinger', description: 'The Spartans primary ship, good for long away missions, espionage, and infiltration operations.', image: require('../../../assets/ShipYard/Spartan1.jpg') },
+  { id: 'vehicle-2', name: 'Stalker', description: 'The Spartans secondary ship, used for quick strikes, stealth, and hunting.', image: require('../../../assets/ShipYard/Spartan2.jpg') },
+  { id: 'vehicle-3', name: 'Warthog', description: 'The Spartans all-terrain vehicle, designed for rapid deployment and versatile combat scenarios.', image: require('../../../assets/ShipYard/Spartan3.jpg') },
+  { id: 'vehicle-4', name: 'Roadlander', description: 'The Spartans heavy-duty vehicle, built for rugged terrain and heavy loads.', image: require('../../../assets/ShipYard/Spartan4.jpg') },
+  { id: 'vehicle-5', name: 'Hunterall', description: 'The Spartans heavy assault vehicle, designed for frontline combat and heavy firepower for.', image: require('../../../assets/ShipYard/Spartan5.jpg') },
+  { id: 'vehicle-6', name: 'Alecoma', description: 'The Spartans tactical support vehicle, equipped for reconnaissance and support operations with a mounted turret.', image: require('../../../assets/ShipYard/Spartan6.jpg') },
+  { id: 'vehicle-7', name: 'Benshie', description: 'The Spartans big truck with lots of firepower, designed for heavy-duty transport and combat support.', image: require('../../../assets/ShipYard/Spartan7.jpg') },
+  { id: 'vehicle-8', name: 'Camborghini', description: 'Need to get somewhere fast? The Spartans luxury vehicle, designed for speed and style.', image: require('../../../assets/ShipYard/Camborghini.jpg') },
+  { id: 'vehicle-9', name: 'Mongoose', description: 'The Spartans light utility vehicle, designed for quick maneuvers and agile operations. And knolls.', image: require('../../../assets/ShipYard/Mongoose.jpg') },
+  { id: 'vehicle-10', name: 'ATK', description: 'The Spartans ATK vehicle, designed for rapid deployment and heavy dune rides', image: require('../../../assets/ShipYard/ATK.jpg') },
+  { id: 'vehicle-11', name: 'Camustacge', description: 'The Spartans loud vehicle, designed for sportsman operations and quick insertions.', image: require('../../../assets/ShipYard/Camustacge.jpg') },
 ];
 
-// Placeholder Image
 const PLACEHOLDER_IMAGE = require('../../../assets/splash-icon.png');
 
 const SpartansScreen = () => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  const [backgroundImage, setBackgroundImage] = useState(
-    backgroundImages[Math.floor(Math.random() * backgroundImages.length)]
-  );
+  const [backgroundImage, setBackgroundImage] = useState(backgroundImages[0]);
   const [currentVehicleIndex, setCurrentVehicleIndex] = useState(0);
 
   useEffect(() => {
@@ -185,16 +86,8 @@ const SpartansScreen = () => {
   const isDesktop = SCREEN_WIDTH > 600;
   const cardSize = isDesktop ? 320 : 100;
   const cardSpacing = isDesktop ? 120 : 30;
-  const horizontalSpacing = isDesktop ? 40 : 20;
-  const verticalSpacing = isDesktop ? 50 : 20;
-  const vehicleCardSizes = {
-    desktop: { width: 400, height: 600 },
-    mobile: { width: SCREEN_WIDTH * 0.7, height: 400 },
-  };
 
-  const goToChat = () => {
-    navigation.navigate('TeamChat');
-  };
+  const goToChat = () => navigation.navigate('TeamChat');
 
   const renderVehicle = (vehicle) => {
     const imageSource = vehicle.image || PLACEHOLDER_IMAGE;
@@ -205,45 +98,31 @@ const SpartansScreen = () => {
           styles.vehicleCard,
           {
             width: SCREEN_WIDTH,
-            height: isDesktop ? vehicleCardSizes.desktop.height : vehicleCardSizes.mobile.height,
-            paddingTop: isDesktop ? 15 : 10,
+            height: isDesktop ? 600 : 400,
+            borderWidth: 2,
+            borderColor: '#00b3ff',
+            backgroundColor: 'rgba(0, 179, 255, 0.1)',
+            shadowColor: '#00b3ff',
+            shadowOpacity: 0.9,
+            shadowRadius: 15,
+            elevation: 12,
           },
         ]}
       >
-        <Image
-          source={imageSource}
-          style={styles.vehicleImage}
-          resizeMode="cover"
-          defaultSource={PLACEHOLDER_IMAGE}
-          fadeDuration={0}
-          cache="force-cache"
-          onError={(e) => console.error("Vehicle image load error:", vehicle.id, "Error:", e.nativeEvent.error, "Source:", JSON.stringify(imageSource))}
-        />
-        <View style={styles.vehicleOverlay} />
-        <Text style={styles.vehicleName}>{vehicle.name || 'Unnamed Vehicle'}</Text>
-        <Text style={styles.vehicleDescription}>{vehicle.description || 'No description available'}</Text>
+        <Image source={imageSource} style={styles.vehicleImage} resizeMode="cover" />
+        <Text style={styles.vehicleName}>{vehicle.name}</Text>
+        <Text style={styles.vehicleDescription}>{vehicle.description}</Text>
       </View>
     );
   };
 
   return (
-    <ImageBackground
-      source={backgroundImage}
-      style={styles.background}
-    >
+    <ImageBackground source={backgroundImage} style={styles.background}>
       <SafeAreaView style={styles.container}>
-        <ScrollView
-          style={styles.verticalScroll}
-          contentContainerStyle={[styles.verticalScrollContent, { paddingBottom: isDesktop ? 20 : 30 }]}
-        >
-          {/* Header Section */}
-          <View style={[styles.headerWrapper, { marginTop: isDesktop ? 5 : 10, marginBottom: isDesktop ? 2 : 5, paddingHorizontal: isDesktop ? 5 : 10 }]}>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => {
-                navigation.goBack();
-              }}
-            >
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          {/* Header */}
+          <View style={styles.headerWrapper}>
+            <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
               <Text style={styles.backText}>← Back</Text>
             </TouchableOpacity>
             <Text style={[styles.header, { padding: isDesktop ? 5 : 8 }]}>The Spartans</Text>
@@ -252,49 +131,37 @@ const SpartansScreen = () => {
             </TouchableOpacity>
           </View>
 
-          {/* Grid Layout */}
-          <View style={[styles.grid, { gap: isDesktop ? 30 : 30 }]}>
-            <View style={[styles.row, { gap: cardSpacing }]}>
-              {members.map((member) => (
-                <TouchableOpacity
-                  key={member.name}
-                  style={[
-                    styles.card,
-                    { width: cardSize, height: cardSize * 1.6, paddingTop: isDesktop ? 10 : 5 },
-                    !member?.clickable && styles.disabledCard,
-                  ]}
-                  onPress={() => {
-                    if (member?.clickable) {
-                      navigation.navigate(member.screen);
-                    }
-                  }}
-                  disabled={!member?.clickable}
-                >
-                  {member?.image && (
-                    <>
-                      <Image
-                        source={member.image}
-                        style={styles.characterImage}
-                        resizeMode="cover"
-                        fadeDuration={0}
-                        cache="force-cache"
-                        onError={(e) => console.error("Member image load error:", member.name, "Error:", e.nativeEvent.error)}
-                      />
-                      <View style={styles.transparentOverlay} />
-                    </>
-                  )}
-                  <Text style={styles.codename}>{member?.codename || ''}</Text>
-                  <Text style={styles.name}>{member?.name || ''}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+          {/* Member Cards - Centered Row */}
+          <View style={styles.memberRow}>
+            {members.map((member) => (
+              <TouchableOpacity
+                key={member.name}
+                style={[
+                  styles.card,
+                  { width: cardSize, height: cardSize * 1.6 },
+                  {
+                    borderWidth: 2,
+                    borderColor: '#00b3ff',
+                    backgroundColor: 'rgba(0, 179, 255, 0.1)',
+                    shadowColor: '#00b3ff',
+                    shadowOpacity: 1,
+                    shadowRadius: 16,
+                    elevation: 14,
+                  },
+                ]}
+                onPress={() => member.clickable && navigation.navigate(member.screen)}
+                disabled={!member.clickable}
+              >
+                <Image source={member.image} style={styles.characterImage} resizeMode="cover" />
+                <Text style={styles.codename}>{member.codename}</Text>
+                <Text style={styles.name}>{member.name}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
 
           {/* Vehicle Bay */}
-          <View style={[styles.vehicleBay, { marginTop: isDesktop ? 2 : 5, marginBottom: isDesktop ? 2 : 5 }]}>
-            <View style={styles.vehicleHeaderWrapper}>
-              <Text style={[styles.vehicleHeader, { padding: isDesktop ? 5 : 8 }]}>Vehicle Bay</Text>
-            </View>
+          <View style={styles.vehicleBay}>
+            <Text style={styles.vehicleHeader}>Vehicle Bay</Text>
             <View style={styles.vehicleWindow}>
               <ScrollView
                 horizontal
@@ -302,18 +169,14 @@ const SpartansScreen = () => {
                 showsHorizontalScrollIndicator={false}
                 onScroll={(e) => setCurrentVehicleIndex(Math.round(e.nativeEvent.contentOffset.x / SCREEN_WIDTH))}
                 scrollEventThrottle={16}
-                contentContainerStyle={styles.vehicleScroll}
               >
-                {HARDCODED_VEHICLES.map((vehicle) => renderVehicle(vehicle))}
+                {HARDCODED_VEHICLES.map(renderVehicle)}
               </ScrollView>
               <View style={styles.dotContainer}>
-                {HARDCODED_VEHICLES.map((_, index) => (
+                {HARDCODED_VEHICLES.map((_, i) => (
                   <View
-                    key={index}
-                    style={[
-                      styles.dot,
-                      { backgroundColor: index === currentVehicleIndex ? '#00b3ff' : '#fff' },
-                    ]}
+                    key={i}
+                    style={[styles.dot, { backgroundColor: i === currentVehicleIndex ? '#00b3ff' : '#666' }]}
                   />
                 ))}
               </View>
@@ -326,176 +189,95 @@ const SpartansScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  background: {
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
-    resizeMode: 'cover',
-  },
-  container: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    paddingHorizontal: 20,
-  },
-  verticalScroll: {
-    flex: 1,
-  },
-  verticalScrollContent: {
-    alignItems: 'center',
-  },
+  background: { width: SCREEN_WIDTH, height: SCREEN_HEIGHT },
+  container: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)' },
+  scrollContent: { flexGrow: 1, alignItems: 'center', paddingVertical: 20 },
   headerWrapper: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
+    alignItems: 'center',
     width: '100%',
+    paddingHorizontal: 15,
+    paddingTop: 10,
   },
-  backButton: {
-    padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 5,
-  },
-  backText: {
-    fontSize: 18,
-    color: '#00b3ff',
-    fontWeight: 'bold',
-  },
+  backButton: { padding: 10, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 8 },
+  backText: { fontSize: 18, color: '#00b3ff', fontWeight: 'bold' },
   header: {
     fontSize: 32,
     fontWeight: 'bold',
     color: '#FFF',
-    textAlign: 'center',
     textShadowColor: 'yellow',
-    textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 15,
-    textShadow: '0px 0px 15px yellow',
-    backgroundColor: 'transparent',
+    flex: 1,
+    textAlign: 'center',
+  },
+  chatButton: { padding: 10, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 8 },
+  chatText: { fontSize: 24, color: '#00b3ff' },
+  memberRow: {
+    flexDirection: 'row',
+    gap: SCREEN_WIDTH > 600 ? 120 : 30,
+    marginVertical: 40,
+    justifyContent: 'center',
+  },
+  card: { borderRadius: 12, overflow: 'hidden' },
+  characterImage: { width: '100%', height: '100%' },
+  codename: {
+    position: 'absolute',
+    bottom: 14,
+    left: 12,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#00b3ff',
+    textShadowColor: '#00b3ff',
+    textShadowRadius: 14,
     zIndex: 2,
   },
-  chatButton: {
-    padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 5,
-  },
-  chatText: {
-    fontSize: 20,
-    color: '#00b3ff',
-  },
-  grid: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  row: {
-    flexDirection: 'row',
-  },
-  card: {
-    backgroundColor: 'rgba(28, 28, 28, 0.9)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 8,
-    padding: 5,
-    borderWidth: 1,
-    borderColor: 'rgba(0, 179, 255, 0.3)',
-  },
-  characterImage: {
-    width: '100%',
-    height: '70%',
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-  },
-  transparentOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1,
-  },
-  codename: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 5,
-  },
   name: {
-    fontSize: 10,
-    fontStyle: 'italic',
-    color: '#aaa',
-    textAlign: 'center',
+    position: 'absolute',
+    bottom: 38,
+    left: 12,
+    fontSize: 15,
+    color: '#fff',
+    textShadowColor: '#00b3ff',
+    textShadowRadius: 14,
+    zIndex: 2,
   },
-  disabledCard: {
-    backgroundColor: '#444',
-    borderColor: 'transparent',
-  },
-  vehicleBay: {
-    width: '100%',
-    alignItems: 'center',
-  },
-  vehicleHeaderWrapper: {
-    backgroundColor: 'transparent',
-    alignItems: 'center',
-    width: '100%',
-  },
+  vehicleBay: { width: '100%', alignItems: 'center', marginTop: 20 },
   vehicleHeader: {
     fontSize: 32,
     fontWeight: 'bold',
     color: '#FFF',
-    textAlign: 'center',
     textShadowColor: 'yellow',
-    textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 15,
-    textShadow: '0px 0px 15px yellow',
-    backgroundColor: 'transparent',
+    marginBottom: 15,
+  },
+  vehicleWindow: { width: '100%' },
+  vehicleCard: { borderRadius: 16, overflow: 'hidden' },
+  vehicleImage: { width: '100%', height: '100%' },
+  vehicleName: {
+    position: 'absolute',
+    bottom: 60,
+    left: 20,
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#00b3ff',
+    textShadowColor: '#00b3ff',
+    textShadowRadius: 16,
     zIndex: 2,
   },
-  vehicleWindow: {
-    width: '100%',
-    overflow: 'hidden',
-  },
-  vehicleScroll: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  vehicleCard: {
-    backgroundColor: 'rgba(28, 28, 28, 0.7)',
-    borderRadius: 15,
-    padding: 15,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(0, 179, 255, 0.3)',
-  },
-  vehicleImage: {
-    width: '100%',
-    height: '70%',
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-  },
-  vehicleOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1,
-  },
-  vehicleName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 10,
-  },
   vehicleDescription: {
-    fontSize: 14,
-    color: '#aaa',
-    textAlign: 'center',
-    marginTop: 5,
-    paddingHorizontal: 10,
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    right: 20,
+    fontSize: 16,
+    color: '#fff',
+    textShadowColor: '#000',
+    textShadowRadius: 8,
+    zIndex: 2,
   },
-  dotContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 10,
-  },
-  dot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    marginHorizontal: 5,
-  },
+  dotContainer: { flexDirection: 'row', justifyContent: 'center', marginTop: 15 },
+  dot: { width: 10, height: 10, borderRadius: 5, marginHorizontal: 6 },
 });
 
 export default SpartansScreen;
