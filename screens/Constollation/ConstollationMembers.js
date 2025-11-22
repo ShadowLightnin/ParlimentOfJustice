@@ -107,6 +107,15 @@ export const memberCategories = [
     ],
   },
   {
+    category: "Jr. High 8th",
+    members: [
+      { name: 'Mrs. Anderson', codename: 'Geography', screen: '', hardcoded: true },
+      { name: 'Mrs. Spinney', codename: 'Math', screen: '', hardcoded: true },
+      { name: 'Mrs. Thompson', codename: 'Math', screen: '', hardcoded: true },
+      { name: 'Mrs. Davis', codename: 'Science', screen: '', hardcoded: true },
+    ],
+  },
+  {
     category: "Jr. High 7th",
     members: [
       { name: 'Chad King', codename: 'Band', screen: '', hardcoded: true },
@@ -118,15 +127,6 @@ export const memberCategories = [
       { name: 'Mrs. Maughan', codename: 'Science', screen: '', hardcoded: true },
       { name: 'Coach Brooks', codename: 'Gym', screen: '', hardcoded: true },
       { name: 'Mr. Hammerschmidt', codename: 'Advisor', screen: '', hardcoded: true },
-    ],
-  },
-  {
-    category: "Jr. High 8th",
-    members: [
-      { name: 'Mrs. Anderson', codename: 'Geography', screen: '', hardcoded: true },
-      { name: 'Mrs. Spinney', codename: 'Math', screen: '', hardcoded: true },
-      { name: 'Mrs. Thompson', codename: 'Math', screen: '', hardcoded: true },
-      { name: 'Mrs. Davis', codename: 'Science', screen: '', hardcoded: true },
     ],
   },
   {
