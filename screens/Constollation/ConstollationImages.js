@@ -1,34 +1,194 @@
-// 🎯 Static mapping of character images and clickable status for Constollation members
 const constollationImages = {
-  'Beckstead': { image: require('../../assets/Armor/DocBeckstead2.jpg'), clickable: true },
-  'Huffaker': { image: require('../../assets/Armor/Huffaker.jpg'), clickable: true },
-  'Misty': { image: require('../../assets/Armor/Misty.jpg'), clickable: true },
-  'Mark': { image: require('../../assets/Armor/MarkApple.jpg'), clickable: true },
-  'George Ray': { image: require('../../assets/Armor/George.jpg'), clickable: true },
-  'Brent Guymon': { image: require('../../assets/Armor/Brent.jpg'), clickable: true },
-  'Claudine Simonsen': { image: require('../../assets/Armor/Claudine.jpg'), clickable: true },
-  'Braiden Pedersen': { image: require('../../assets/Armor/Braiden2.jpg'), clickable: true },
-  'Carey Anson': { image: require('../../assets/Armor/Carey.jpg'), clickable: true },
-  'Sean Fears': { image: require('../../assets/Armor/SeanIT.jpg'), clickable: true },
-  'John Bitter': { image: require('../../assets/Armor/JohnIT.jpg'), clickable: true },
-  'Nathan Meyer': { image: require('../../assets/Armor/NateIT.jpg'), clickable: true },
-  'Sarina Sinatra': { image: require('../../assets/Armor/SarinaIT.jpg'), clickable: true },
-  'Marc Allen': { image: require('../../assets/Armor/Allen.jpg'), clickable: true },
-  'Chad Lythgoe': { image: require('../../assets/Armor/Lythgoe.jpg'), clickable: true },
-  'Zak Erickson': { image: require('../../assets/Armor/Erickson.jpg'), clickable: true },
-  'David Pilkington': { image: require('../../assets/Armor/Pilkington.jpg'), clickable: true },
-  'Sennet Fraughton': { image: require('../../assets/Armor/Fraughton.jpg'), clickable: true },
-  'Weston Kidder': { image: require('../../assets/Armor/Kidder.jpg'), clickable: true },
-  'Bro. Valor': { image: require('../../assets/Armor/Valor.jpg'), clickable: true },
-  'Bro. Perston': { image: require('../../assets/Armor/Perston.jpg'), clickable: true },
-  'Bro. Brodrick': { image: require('../../assets/Armor/Brodrick.jpg'), clickable: true },
-  'Bro. Hedlund': { image: require('../../assets/Armor/Hedlund.jpg'), clickable: true },
-  'Bro. DeYoung': { image: require('../../assets/Armor/DeYoung.jpg'), clickable: true },
-  'Bro. Jenks': { image: require('../../assets/Armor/Jenks.jpg'), clickable: true },
-  'Bro. Mason': { image: require('../../assets/Armor/BroMason.jpg'), clickable: true },
-  'Sister. __': { image: require('../../assets/Armor/Sister.jpg'), clickable: true },
-  'Bro. Combs': { image: require('../../assets/Armor/Combs.jpg'), clickable: true },
+  // Doctors & Mentors
+  'Beckstead': {
+    images: [
+      { uri: require('../../assets/Armor/DocBeckstead2.jpg'), name: 'Beckstead Primary', clickable: true },
+      { uri: require('../../assets/Armor/DocBeckstead.jpg'), name: 'Beckstead Placeholder', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Beckstead Placeholder', clickable: true },
+    ],
+  },
+  'Huffaker': {
+    images: [
+      { uri: require('../../assets/Armor/Huffaker.jpg'), name: 'Huffaker Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Huffaker Placeholder', clickable: true },
+    ],
+  },
+  'Bailey': {
+    images: [
+      // { uri: require('../../assets/Armor/Orthodontist.jpg'), name: 'Bailey Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Bailey Placeholder', clickable: true },
+    ],
+  },
+  'Misty': {
+    images: [
+      { uri: require('../../assets/Armor/Misty.jpg'), name: 'Misty Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Misty Placeholder', clickable: true },
+    ],
+  },
+  'Brittany': {
+    images: [
+      // { uri: require('../../assets/Armor/Brittany.jpg'), name: 'Brittany Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Brittany Placeholder', clickable: true },
+    ],
+  },
+  'Mark': {
+    images: [
+      { uri: require('../../assets/Armor/MarkApple.jpg'), name: 'Mark Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Mark Placeholder', clickable: true },
+    ],
+  },
 
+  // Software — The Builders
+  'George Ray': {
+    images: [
+      { uri: require('../../assets/Armor/George.jpg'), name: 'George Ray Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'George Ray Placeholder', clickable: true },
+    ],
+  },
+  'Brent Guymon': {
+    images: [
+      { uri: require('../../assets/Armor/Brent.jpg'), name: 'Brent Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Brent Placeholder', clickable: true },
+    ],
+  },
+  'Claudine Simonsen': {
+    images: [
+      { uri: require('../../assets/Armor/Claudine.jpg'), name: 'Claudine Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Claudine Placeholder', clickable: true },
+    ],
+  },
+  'Braiden Pedersen': {
+    images: [
+      { uri: require('../../assets/Armor/Braiden2.jpg'), name: 'Braiden Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Braiden Placeholder', clickable: true },
+    ],
+  },
+
+  // IT — Guardians of the Digital Realm
+  'Carey Anson': {
+    images: [
+      { uri: require('../../assets/Armor/Carey.jpg'), name: 'Carey Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Carey Placeholder', clickable: true },
+    ],
+  },
+  'Sean Fears': {
+    images: [
+      { uri: require('../../assets/Armor/SeanIT.jpg'), name: 'Sean Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Sean Placeholder', clickable: true },
+    ],
+  },
+  'John Bitter': {
+    images: [
+      { uri: require('../../assets/Armor/JohnIT.jpg'), name: 'John Bitter Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'John Bitter Placeholder', clickable: true },
+    ],
+  },
+  'Nathan Meyer': {
+    images: [
+      { uri: require('../../assets/Armor/NateIT.jpg'), name: 'Nathan Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Nathan Placeholder', clickable: true },
+    ],
+  },
+  'Sarina Sinatra': {
+    images: [
+      { uri: require('../../assets/Armor/SarinaIT.jpg'), name: 'Sarina Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Sarina Placeholder', clickable: true },
+    ],
+  },
+
+  // High School Teachers & Seminary
+  'David Pilkington': {
+    images: [
+      { uri: require('../../assets/Armor/Pilkington.jpg'), name: 'David Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'David Placeholder', clickable: true },
+    ],
+  },
+  'Sennet Fraughton': {
+    images: [
+      { uri: require('../../assets/Armor/Fraughton.jpg'), name: 'Sennet Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Sennet Placeholder', clickable: true },
+    ],
+  },
+  'Marc Allen': {
+    images: [
+      { uri: require('../../assets/Armor/Allen.jpg'), name: 'Marc Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Marc Placeholder', clickable: true },
+    ],
+  },
+  'Chad Lythgoe': {
+    images: [
+      { uri: require('../../assets/Armor/Lythgoe.jpg'), name: 'Chad Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Chad Placeholder', clickable: true },
+    ],
+  },
+  'Zak Erickson': {
+    images: [
+      { uri: require('../../assets/Armor/Erickson.jpg'), name: 'Zak Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Zak Placeholder', clickable: true },
+    ],
+  },
+  'Weston Kidder': {
+    images: [
+      { uri: require('../../assets/Armor/Kidder.jpg'), name: 'Weston Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Weston Placeholder', clickable: true },
+    ],
+  },
+
+  // Seminary Brothers & Sisters
+  'Bro. Valor': {
+    images: [
+      { uri: require('../../assets/Armor/Valor.jpg'), name: 'Bro. Valor Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Bro. Valor Placeholder', clickable: true },
+    ],
+  },
+  'Bro. Perston': {
+    images: [
+      { uri: require('../../assets/Armor/Perston.jpg'), name: 'Bro. Perston Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Bro. Perston Placeholder', clickable: true },
+    ],
+  },
+  'Bro. Brodrick': {
+    images: [
+      { uri: require('../../assets/Armor/Brodrick.jpg'), name: 'Bro. Brodrick Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Bro. Brodrick Placeholder', clickable: true },
+    ],
+  },
+  'Bro. Hedlund': {
+    images: [
+      { uri: require('../../assets/Armor/Hedlund.jpg'), name: 'Bro. Hedlund Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Bro. Hedlund Placeholder', clickable: true },
+    ],
+  },
+  'Bro. DeYoung': {
+    images: [
+      { uri: require('../../assets/Armor/DeYoung.jpg'), name: 'Bro. DeYoung Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Bro. DeYoung Placeholder', clickable: true },
+    ],
+  },
+  'Bro. Jenks': {
+    images: [
+      { uri: require('../../assets/Armor/Jenks.jpg'), name: 'Bro. Jenks Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Bro. Jenks Placeholder', clickable: true },
+    ],
+  },
+  'Bro. Mason': {
+    images: [
+      { uri: require('../../assets/Armor/BroMason.jpg'), name: 'Bro. Mason Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Bro. Mason Placeholder', clickable: true },
+    ],
+  },
+  'Sister. __': {
+    images: [
+      { uri: require('../../assets/Armor/Sister.jpg'), name: 'Sister Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Sister Placeholder', clickable: true },
+    ],
+  },
+  'Bro. Combs': {
+    images: [
+      { uri: require('../../assets/Armor/Combs.jpg'), name: 'Bro. Combs Primary', clickable: true },
+      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Bro. Combs Placeholder', clickable: true },
+    ],
+  },
 };
 
 export default constollationImages;

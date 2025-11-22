@@ -9,6 +9,7 @@ import AddMemberScreen from '../screens/BludBruhs/AddMemberScreen';
 import TeamChatScreen from "../screens/BludBruhs/TeamChatScreen";
 import UploadCharacter from '../components/UploadCharacter';
 import UploadDesign from '../components/UploadDesign';
+import CharacterDetailScreen from '../screens/BludBruhs/CharacterDetailScreen';
 
 
 // import {  } from '../screens/BludBruhs/';
@@ -52,6 +53,7 @@ export function BludBruhsStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="BludBruhsHome" component={BludBruhsScreen} />
+        <Stack.Screen name="CharacterDetailScreen" component={CharacterDetailScreen} />
         <Stack.Screen name="PowerBorn" component={PowerBorn} />
           <Stack.Screen name="ThunderCharacterDetail" component={ThunderCharacterDetail} />
         <Stack.Screen name="PowerMonke" component={PowerMonke} />

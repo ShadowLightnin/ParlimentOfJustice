@@ -21,7 +21,7 @@ const James = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Gentle Hand", image: require("../../assets/Armor/James.jpg"), clickable: true },
+    { name: "Guardian", image: require("../../assets/Armor/James.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (
@@ -47,7 +47,7 @@ const James = () => {
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Text style={styles.backButtonText}>←</Text>
           </TouchableOpacity>
-          <Text style={styles.title}>Gentle Hand</Text>
+          <Text style={styles.title}>Guardian</Text>
         </View>
 
         <View style={styles.imageContainer}>

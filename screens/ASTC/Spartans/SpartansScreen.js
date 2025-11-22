@@ -60,7 +60,7 @@ const HARDCODED_VEHICLES = [
   { id: 'vehicle-2', name: 'Stalker', description: 'The Spartans secondary ship, used for quick strikes, stealth, and hunting.', image: require('../../../assets/ShipYard/Spartan2.jpg') },
   { id: 'vehicle-3', name: 'Warthog', description: 'The Spartans all-terrain vehicle, designed for rapid deployment and versatile combat scenarios.', image: require('../../../assets/ShipYard/Spartan3.jpg') },
   { id: 'vehicle-4', name: 'Roadlander', description: 'The Spartans heavy-duty vehicle, built for rugged terrain and heavy loads.', image: require('../../../assets/ShipYard/Spartan4.jpg') },
-  { id: 'vehicle-5', name: 'Hunterall', description: 'The Spartans heavy assault vehicle, designed for frontline combat and heavy firepower for.', image: require('../../../assets/ShipYard/Spartan5.jpg') },
+  { id: 'vehicle-5', name: 'Hunterall', description: 'The Spartans heavy assault vehicle, designed for frontline combat and heavy firepower.', image: require('../../../assets/ShipYard/Spartan5.jpg') },
   { id: 'vehicle-6', name: 'Alecoma', description: 'The Spartans tactical support vehicle, equipped for reconnaissance and support operations with a mounted turret.', image: require('../../../assets/ShipYard/Spartan6.jpg') },
   { id: 'vehicle-7', name: 'Benshie', description: 'The Spartans big truck with lots of firepower, designed for heavy-duty transport and combat support.', image: require('../../../assets/ShipYard/Spartan7.jpg') },
   { id: 'vehicle-8', name: 'Camborghini', description: 'Need to get somewhere fast? The Spartans luxury vehicle, designed for speed and style.', image: require('../../../assets/ShipYard/Camborghini.jpg') },
@@ -116,6 +116,43 @@ const SpartansScreen = () => {
     );
   };
 
+  const renderMemberCard = (member) => (
+    <TouchableOpacity
+      key={member.name}
+      style={[
+        styles.card,
+        {
+          width: cardSize,
+          height: cardSize * 1.6,
+          borderWidth: 2,
+          borderColor: '#00b3ff',
+          backgroundColor: 'rgba(0, 179, 255, 0.1)',
+          shadowColor: '#00b3ff',
+          shadowOpacity: 1,
+          shadowRadius: 16,
+          elevation: 14,
+        },
+      ]}
+      onPress={() => member.clickable && navigation.navigate(member.screen)}
+      disabled={!member.clickable}
+    >
+      <Image source={member.image} style={styles.characterImage} resizeMode="cover" />
+
+      {/* YOUR ORIGINAL LOOK — NOW RESPONSIVE */}
+      <View style={styles.textWrapper}>
+        <Text style={[styles.name, isDesktop ? styles.nameDesktop : styles.nameMobile]}>
+          {member.name}
+        </Text>
+        <Text
+          style={[styles.codename, isDesktop ? styles.codenameDesktop : styles.codenameMobile]}
+          numberOfLines={isDesktop ? 1 : 3}
+        >
+          {member.codename}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
     <ImageBackground source={backgroundImage} style={styles.background}>
       <SafeAreaView style={styles.container}>
@@ -123,7 +160,7 @@ const SpartansScreen = () => {
           {/* Header */}
           <View style={styles.headerWrapper}>
             <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-              <Text style={styles.backText}>← Back</Text>
+              <Text style={styles.backText}>Back</Text>
             </TouchableOpacity>
             <Text style={[styles.header, { padding: isDesktop ? 5 : 8 }]}>The Spartans</Text>
             <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
@@ -131,32 +168,9 @@ const SpartansScreen = () => {
             </TouchableOpacity>
           </View>
 
-          {/* Member Cards - Centered Row */}
+          {/* Member Cards */}
           <View style={styles.memberRow}>
-            {members.map((member) => (
-              <TouchableOpacity
-                key={member.name}
-                style={[
-                  styles.card,
-                  { width: cardSize, height: cardSize * 1.6 },
-                  {
-                    borderWidth: 2,
-                    borderColor: '#00b3ff',
-                    backgroundColor: 'rgba(0, 179, 255, 0.1)',
-                    shadowColor: '#00b3ff',
-                    shadowOpacity: 1,
-                    shadowRadius: 16,
-                    elevation: 14,
-                  },
-                ]}
-                onPress={() => member.clickable && navigation.navigate(member.screen)}
-                disabled={!member.clickable}
-              >
-                <Image source={member.image} style={styles.characterImage} resizeMode="cover" />
-                <Text style={styles.codename}>{member.codename}</Text>
-                <Text style={styles.name}>{member.name}</Text>
-              </TouchableOpacity>
-            ))}
+            {members.map(renderMemberCard)}
           </View>
 
           {/* Vehicle Bay */}
@@ -189,9 +203,10 @@ const SpartansScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  background: { width: SCREEN_WIDTH, height: SCREEN_HEIGHT },
+  background: { width: '100%', height: '100%' },
   container: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)' },
   scrollContent: { flexGrow: 1, alignItems: 'center', paddingVertical: 20 },
+
   headerWrapper: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -213,19 +228,27 @@ const styles = StyleSheet.create({
   },
   chatButton: { padding: 10, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 8 },
   chatText: { fontSize: 24, color: '#00b3ff' },
+
   memberRow: {
     flexDirection: 'row',
     gap: SCREEN_WIDTH > 600 ? 120 : 30,
     marginVertical: 40,
     justifyContent: 'center',
   },
-  card: { borderRadius: 12, overflow: 'hidden' },
+
+  card: { borderRadius: 12, overflow: 'hidden', position: 'relative' },
   characterImage: { width: '100%', height: '100%' },
-  codename: {
+
+  // MAGIC TEXT WRAPPER — YOUR STYLE, NOW PERFECT
+  textWrapper: {
     position: 'absolute',
-    bottom: 14,
-    left: 12,
-    fontSize: 18,
+    bottom: 10,
+    left: 10,
+    right: 10,
+    padding: 4,
+  },
+
+  codename: {
     fontWeight: 'bold',
     color: '#00b3ff',
     textShadowColor: '#00b3ff',
@@ -233,15 +256,29 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   name: {
-    position: 'absolute',
-    bottom: 38,
-    left: 12,
-    fontSize: 15,
     color: '#fff',
     textShadowColor: '#00b3ff',
     textShadowRadius: 14,
     zIndex: 2,
   },
+
+  // DESKTOP — 100% YOUR ORIGINAL BADASS LOOK
+  codenameDesktop: { position: 'absolute', bottom: 14, left: 12, fontSize: 18 },
+  nameDesktop:    { position: 'absolute', bottom: 38, left: 12, fontSize: 15 },
+
+  // MOBILE — WRAPS CLEANLY, NAME MOVES UP
+  codenameMobile: {
+    fontSize: 14,
+    lineHeight: 17,
+    textAlign: 'left',
+  },
+  nameMobile: {
+    fontSize: 12,
+    marginBottom: 2,
+    textAlign: 'left',
+  },
+
+  // Vehicle Bay — Untouched & Perfect
   vehicleBay: { width: '100%', alignItems: 'center', marginTop: 20 },
   vehicleHeader: {
     fontSize: 32,

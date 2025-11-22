@@ -66,7 +66,7 @@ const Myran = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Techno Guard", image: require("../../assets/Armor/Myran.jpg"), clickable: true },
+    { name: "Cyber", image: require("../../assets/Armor/Myran.jpg"), clickable: true },
   ];
 
   const kids = [
@@ -112,7 +112,7 @@ const Myran = () => {
           <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
             <Text style={styles.backButtonText}>←</Text>
           </TouchableOpacity>
-          <Text style={styles.title}>Techno Guard</Text>
+          <Text style={styles.title}>Cyber</Text>
         </View>
 
         <View style={styles.imageContainer}>

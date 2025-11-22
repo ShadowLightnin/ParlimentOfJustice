@@ -29,11 +29,10 @@ const verticalSpacing = isDesktop ? 50 : 20;
 export const CobrosScreen = () => {
   const navigation = useNavigation();
   const [previewMember, setPreviewMember] = useState(null);
-  const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // Handle music playback
+  // MUSIC SYSTEM — JUSTICE GANG NEVER DIES
   const playTheme = async () => {
     if (!currentSound) {
       try {
@@ -44,89 +43,47 @@ export const CobrosScreen = () => {
         setCurrentSound(sound);
         await sound.playAsync();
         setIsPlaying(true);
-        console.log('Playing Sound at:', new Date().toISOString());
       } catch (error) {
-        console.error('Failed to load audio file:', error);
-        Alert.alert('Audio Error', 'Failed to load background music. Please check the audio file path: ../../assets/audio/JusticeGang.mp4');
+        console.error('Justice Gang failed to load:', error);
+        Alert.alert('Audio Error', 'Failed to load JusticeGang.mp4');
       }
     } else if (!isPlaying) {
-      try {
-        await currentSound.playAsync();
-        setIsPlaying(true);
-        console.log('Audio resumed at:', new Date().toISOString());
-      } catch (error) {
-        console.error('Error resuming sound:', error);
-      }
+      await currentSound.playAsync();
+      setIsPlaying(true);
     }
   };
 
-  // Handle music pause
   const pauseTheme = async () => {
     if (currentSound && isPlaying) {
-      try {
-        await currentSound.pauseAsync();
-        setIsPlaying(false);
-        console.log('Audio paused at:', new Date().toISOString());
-      } catch (error) {
-        console.error('Error pausing sound:', error);
-      }
+      await currentSound.pauseAsync();
+      setIsPlaying(false);
     }
   };
 
-  // Cleanup sound on unmount or navigation
-  useFocusEffect(
-    useCallback(() => {
-      return () => {
-        if (currentSound) {
-          currentSound.stopAsync().catch((error) => console.error('Error stopping sound:', error));
-          currentSound.unloadAsync().catch((error) => console.error('Error unloading sound:', error));
-          setCurrentSound(null);
-          setIsPlaying(false);
-          console.log('Audio stopped and unloaded on unmount');
-        }
-      };
-    }, [currentSound])
-  );
+  const stopAndUnload = async () => {
+    if (currentSound) {
+      try { await currentSound.stopAsync(); } catch (e) {}
+      try { await currentSound.unloadAsync(); } catch (e) {}
+      setCurrentSound(null);
+      setIsPlaying(false);
+    }
+  };
 
-  useEffect(() => {
-    const updateDimensions = () => {
-      setWindowWidth(Dimensions.get('window').width);
-    };
-    const subscription = Dimensions.addEventListener('change', updateDimensions);
-
-    return () => {
-      subscription?.remove();
-    };
-  }, []);
+  useFocusEffect(useCallback(() => () => stopAndUnload(), [currentSound]));
 
   const goToChat = async () => {
-    if (currentSound) {
-      try {
-        await currentSound.stopAsync();
-        await currentSound.unloadAsync();
-        setCurrentSound(null);
-        setIsPlaying(false);
-        console.log('Audio stopped and unloaded for TeamChat navigation');
-      } catch (error) {
-        console.error('Error stopping/unloading audio for TeamChat:', error);
-      }
-    }
+    await stopAndUnload();
     navigation.navigate('TeamChat');
+  };
+
+  const handleBack = async () => {
+    await stopAndUnload();
+    navigation.goBack();
   };
 
   const handleMemberPress = async (member) => {
     if (member.clickable) {
-      if (currentSound) {
-        try {
-          await currentSound.stopAsync();
-          await currentSound.unloadAsync();
-          setCurrentSound(null);
-          setIsPlaying(false);
-          console.log('Audio stopped and unloaded for member navigation');
-        } catch (error) {
-          console.error('Error stopping sound for member navigation:', error);
-        }
-      }
+      await stopAndUnload();
       if (member.screen && member.screen !== '') {
         navigation.navigate(member.screen);
       } else {
@@ -139,9 +96,7 @@ export const CobrosScreen = () => {
     const enhancedMember = {
       ...member,
       image: member.images?.[0]?.uri || require('../../assets/Armor/PlaceHolder.jpg'),
-      images: member.images || [{ uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Placeholder', clickable: true }],
-      clickable: member.clickable !== undefined ? member.clickable : true,
-      description: descriptions[member.name] || 'No description available',
+      clickable: member.clickable ?? true,
     };
 
     return (
@@ -149,9 +104,9 @@ export const CobrosScreen = () => {
         key={member.name}
         style={[
           styles.card,
-          { width: cardSize, height: cardSize * cardHeightMultiplier },
-          !enhancedMember.clickable && styles.disabledCard,
           {
+            width: cardSize,
+            height: cardSize * cardHeightMultiplier,
             borderWidth: 2,
             borderColor: '#e63946',
             backgroundColor: 'rgba(230, 57, 70, 0.15)',
@@ -160,77 +115,63 @@ export const CobrosScreen = () => {
             shadowRadius: 15,
             elevation: 12,
           },
+          !enhancedMember.clickable && styles.disabledCard,
         ]}
         onPress={() => handleMemberPress(enhancedMember)}
         disabled={!enhancedMember.clickable}
       >
-        <Image
-          source={typeof enhancedMember.image === 'string' ? { uri: enhancedMember.image } : enhancedMember.image}
-          style={styles.characterImage}
-          resizeMode="cover"
-          onError={(e) => console.error('Image load error:', e.nativeEvent.error)}
-        />
-        <Text style={styles.codename}>{enhancedMember.codename || ''}</Text>
-        <Text style={styles.name}>{enhancedMember.name}</Text>
+        <Image source={enhancedMember.image} style={styles.characterImage} resizeMode="cover" />
+
+        {/* THE COBROS TEXT SYSTEM — NOW IMMORTAL */}
+        <View style={styles.textWrapper}>
+          <Text style={[styles.name, isDesktop ? styles.nameDesktop : styles.nameMobile]}>
+            {member.name}
+          </Text>
+          {member.codename ? (
+            <Text
+              style={[styles.codename, isDesktop ? styles.codenameDesktop : styles.codenameMobile]}
+              numberOfLines={isDesktop ? 1 : 3}
+            >
+              {member.codename}
+            </Text>
+          ) : null}
+        </View>
       </TouchableOpacity>
     );
   };
 
-  const renderPreviewCard = (img, index) => {
-    const key = img.uri ? `${typeof img.uri === 'string' ? img.uri : index}-${index}` : `image-${index}`;
-    return (
-      <TouchableOpacity
-        key={key}
-        style={[styles.previewCard(isDesktop, windowWidth), styles.clickable]}
-        onPress={() => setPreviewMember(null)}
-      >
-        <Image
-          source={typeof img.uri === 'string' ? { uri: img.uri } : img.uri}
-          style={styles.previewImage}
-          resizeMode="cover"
-        />
-        <Text style={styles.cardName}>
-          © {img.name || 'Unknown'}; William Cummings
-        </Text>
-      </TouchableOpacity>
-    );
+  const renderGrid = () => {
+    const rows = Math.ceil(cobrosMembers.length / columns);
+    return Array.from({ length: rows }).map((_, i) => (
+      <View key={i} style={[styles.row, { gap: horizontalSpacing, marginBottom: verticalSpacing }]}>
+        {Array.from({ length: columns }).map((_, j) => {
+          const member = cobrosMembers[i * columns + j];
+          return member ? renderMemberCard(member) : <View key={j} style={{ width: cardSize, height: cardSize * cardHeightMultiplier }} />;
+        })}
+      </View>
+    ));
   };
 
-  const renderModalContent = () => {
+  const renderPreviewCard = (img) => (
+    <TouchableOpacity style={[styles.previewCard(isDesktop), styles.clickable]} onPress={() => setPreviewMember(null)}>
+      <Image source={typeof img.uri === 'string' ? { uri: img.uri } : img.uri} style={styles.previewImage} resizeMode="cover" />
+      <Text style={styles.cardName}>© {img.name || 'Unknown'}; William Cummings</Text>
+    </TouchableOpacity>
+  );
+
+  const renderModal = () => {
     if (!previewMember) return null;
-
-    const images = previewMember.images?.length
-      ? previewMember.images.map((img, idx) => ({
-          uri: img.uri,
-          name: img.name || `Image ${idx + 1}`,
-        }))
-      : [{
-          uri: previewMember.image || require('../../assets/Armor/PlaceHolder.jpg'),
-          name: previewMember.name || 'Default Image',
-        }];
-
+    const images = previewMember.images?.length ? previewMember.images : [{ uri: previewMember.image }];
     return (
-      <TouchableOpacity
-        style={styles.modalOuterContainer}
-        activeOpacity={1}
-        onPress={() => setPreviewMember(null)}
-      >
+      <TouchableOpacity style={styles.modalOuter} activeOpacity={1} onPress={() => setPreviewMember(null)}>
         <View style={styles.imageContainer}>
-          <ScrollView
-            horizontal
-            contentContainerStyle={styles.imageScrollContainer}
-            showsHorizontalScrollIndicator={false}
-            snapToAlignment="center"
-            snapToInterval={windowWidth * 0.7 + 20}
-            decelerationRate="fast"
-            centerContent={true}
-          >
-            {images.map(renderPreviewCard)}
+          <ScrollView horizontal contentContainerStyle={styles.imageScroll} showsHorizontalScrollIndicator={false}>
+            {images.map((img, i) => renderPreviewCard({ ...img, name: img.name || `Image ${i + 1}` }))}
           </ScrollView>
         </View>
         <View style={styles.previewAboutSection}>
-          <Text style={styles.previewCodename}>{previewMember?.codename || 'N/A'}</Text>
-          <Text style={styles.previewName}>{previewMember?.name || 'Unknown'}</Text>
+          <Text style={styles.previewCodename}>{previewMember.codename || 'N/A'}</Text>
+          <Text style={styles.previewName}>{previewMember.name}</Text>
           <Text style={styles.previewDescription}>
             {descriptions[previewMember.name] || 'No description available'}
           </Text>
@@ -240,30 +181,11 @@ export const CobrosScreen = () => {
   };
 
   return (
-    <ImageBackground
-      source={require('../../assets/BackGround/Cobros.jpg')}
-      style={styles.background}
-    >
+    <ImageBackground source={require('../../assets/BackGround/Cobros.jpg')} style={styles.background}>
       <SafeAreaView style={styles.container}>
         <View style={styles.headerWrapper}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={async () => {
-              if (currentSound) {
-                try {
-                  await currentSound.stopAsync();
-                  await currentSound.unloadAsync();
-                  setCurrentSound(null);
-                  setIsPlaying(false);
-                  console.log('Audio stopped and unloaded on back press');
-                } catch (error) {
-                  console.error('Error stopping/unloading audio on back press:', error);
-                }
-              }
-              navigation.goBack();
-            }}
-          >
-            <Text style={styles.backText}>← Back</Text>
+          <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+            <Text style={styles.backText}>Back</Text>
           </TouchableOpacity>
           <Text style={styles.header}>Cobros 314</Text>
           <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
@@ -281,39 +203,11 @@ export const CobrosScreen = () => {
         </View>
 
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <View style={styles.membersContainer}>
-            {Array.from({ length: Math.ceil(cobrosMembers.length / columns) }).map((_, rowIndex) => (
-              <View
-                key={rowIndex}
-                style={[styles.row, { marginBottom: verticalSpacing, gap: horizontalSpacing }]}
-              >
-                {Array.from({ length: columns }).map((_, colIndex) => {
-                  const memberIndex = rowIndex * columns + colIndex;
-                  const member = cobrosMembers[memberIndex];
-                  if (!member || !member.name) {
-                    return (
-                      <View
-                        key={colIndex}
-                        style={{ width: cardSize, height: cardSize * cardHeightMultiplier }}
-                      />
-                    );
-                  }
-                  return renderMemberCard(member);
-                })}
-              </View>
-            ))}
-          </View>
+          {renderGrid()}
         </ScrollView>
 
-        <Modal
-          visible={!!previewMember}
-          transparent={true}
-          animationType="fade"
-          onRequestClose={() => setPreviewMember(null)}
-        >
-          <View style={styles.modalBackground}>
-            {renderModalContent()}
-          </View>
+        <Modal visible={!!previewMember} transparent animationType="fade" onRequestClose={() => setPreviewMember(null)}>
+          <View style={styles.modalBackground}>{renderModal()}</View>
         </Modal>
       </SafeAreaView>
     </ImageBackground>
@@ -321,192 +215,57 @@ export const CobrosScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  background: {
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
-    resizeMode: 'cover',
-    justifyContent: 'center',
-  },
-  container: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    alignItems: 'center',
-  },
-  headerWrapper: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingTop: 10,
-  },
-  backButton: {
-    padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 5,
-  },
-  backText: {
-    fontSize: 18,
-    color: '#00b3ff',
-    fontWeight: 'bold',
-  },
-  header: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#7d1a1a',
-    textAlign: 'center',
-    textShadowColor: '#e0cd22',
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 40,
-    flex: 1,
-  },
-  chatButton: {
-    padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 5,
-  },
-  chatText: {
-    fontSize: 24,
-    color: '#fff',
-  },
-  musicControls: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 20,
-  },
-  musicButton: {
-    padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 5,
-    marginHorizontal: 10,
-  },
-  musicButtonText: {
-    fontSize: 12,
-    color: '#00b3ff',
-    fontWeight: 'bold',
-  },
-  scrollContainer: {
-    paddingBottom: 20,
-    width: SCREEN_WIDTH,
-    alignItems: 'center',
-  },
-  membersContainer: {
-    width: '100%',
-    alignItems: 'center',
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-  },
-  card: {
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  disabledCard: {
-    opacity: 0.6,
-  },
-  characterImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  codename: {
-    position: 'absolute',
-    bottom: 12,
-    left: 10,
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#e63946',
-    textShadowColor: '#e63946',
-    textShadowRadius: 14,
-    zIndex: 2,
-  },
-  name: {
-    position: 'absolute',
-    bottom: 34,
-    left: 10,
-    fontSize: 12,
-    color: '#fff',
-    textShadowColor: '#e63946',
-    textShadowRadius: 14,
-    zIndex: 2,
-  },
-  modalBackground: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.9)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalOuterContainer: {
-    width: '90%',
-    height: '80%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  imageContainer: {
-    width: '100%',
-    paddingVertical: 20,
-    backgroundColor: '#111',
-    alignItems: 'center',
-    paddingLeft: 20,
-  },
-  imageScrollContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  previewCard: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.2 : SCREEN_WIDTH * 0.8,
-    height: isDesktop ? SCREEN_HEIGHT * 0.7 : SCREEN_HEIGHT * 0.6,
+  background: { width: '100%', height: '100%' },
+  container: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', alignItems: 'center' },
+
+  headerWrapper: { width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10, paddingTop: 10 },
+  backButton: { padding: 10, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 8 },
+  backText: { fontSize: 18, color: '#00b3ff', fontWeight: 'bold' },
+  header: { fontSize: 32, fontWeight: 'bold', color: '#7d1a1a', textAlign: 'center', flex: 1, textShadowColor: '#e0cd22', textShadowRadius: 40 },
+  chatButton: { padding: 10, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 8 },
+  chatText: { fontSize: 28, color: '#fff' },
+
+  musicControls: { flexDirection: 'row', justifyContent: 'center', marginVertical: 15, gap: 20 },
+  musicButton: { paddingHorizontal: 20, paddingVertical: 10, backgroundColor: 'rgba(230,57,70,0.5)', borderRadius: 10, borderWidth: 2, borderColor: '#e63946' },
+  musicButtonText: { color: '#fff', fontWeight: 'bold', fontSize: 14 },
+
+  scrollContainer: { paddingBottom: 60, alignItems: 'center' },
+  row: { flexDirection: 'row', justifyContent: 'center' },
+
+  card: { borderRadius: 12, overflow: 'hidden', position: 'relative' },
+  disabledCard: { opacity: 0.6 },
+  characterImage: { width: '100%', height: '100%' },
+
+  textWrapper: { position: 'absolute', bottom: 8, left: 8, right: 8, padding: 4 },
+
+  codename: { fontWeight: 'bold', color: '#e63946', textShadowColor: '#e63946', textShadowRadius: 14, zIndex: 2 },
+  name: { color: '#fff', textShadowColor: '#e63946', textShadowRadius: 14, zIndex: 2 },
+
+  codenameDesktop: { position: 'absolute', bottom: 12, left: 10, fontSize: 14 },
+  nameDesktop:    { position: 'absolute', bottom: 34, left: 10, fontSize: 12 },
+
+  codenameMobile: { fontSize: 13, lineHeight: 16, textAlign: 'left' },
+  nameMobile:     { fontSize: 11, marginBottom: 2, textAlign: 'left' },
+
+  modalBackground: { flex: 1, backgroundColor: 'rgba(0,0,0,0.95)', justifyContent: 'center', alignItems: 'center' },
+  modalOuter: { width: '90%', height: '80%', backgroundColor: '#111', borderRadius: 20, overflow: 'hidden' },
+  imageContainer: { flex: 1, paddingLeft: 20 },
+  imageScroll: { alignItems: 'center' },
+  previewCard: (desktop) => ({
+    width: desktop ? SCREEN_WIDTH * 0.2 : SCREEN_WIDTH * 0.8,
+    height: desktop ? SCREEN_HEIGHT * 0.7 : SCREEN_HEIGHT * 0.6,
+    marginRight: 20,
     borderRadius: 15,
     overflow: 'hidden',
-    elevation: 5,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    marginRight: 20,
+    backgroundColor: 'rgba(0,0,0,0.7)',
   }),
-  clickable: {
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  previewImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  cardName: {
-    position: 'absolute',
-    bottom: 10,
-    left: 10,
-    fontSize: 16,
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  previewAboutSection: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#222',
-    borderRadius: 10,
-    width: '100%',
-  },
-  previewCodename: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#00b3ff',
-    textAlign: 'center',
-  },
-  previewName: {
-    fontSize: 16,
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 5,
-  },
-  previewDescription: {
-    fontSize: 14,
-    color: '#aaa',
-    textAlign: 'center',
-    marginTop: 5,
-  },
+  clickable: { borderWidth: 2, borderColor: 'rgba(255,255,255,0.1)' },
+  previewImage: { width: '100%', height: '100%' },
+  cardName: { position: 'absolute', bottom: 10, left: 10, color: '#fff', fontWeight: 'bold', fontSize: 16 },
+  previewAboutSection: { padding: 20, backgroundColor: '#222', borderRadius: 20 },
+  previewCodename: { fontSize: 22, fontWeight: 'bold', color: '#00b3ff', textAlign: 'center' },
+  previewName: { fontSize: 18, color: '#fff', textAlign: 'center', marginTop: 8 },
+  previewDescription: { fontSize: 15, color: '#aaa', textAlign: 'center', marginTop: 10 },
 });
 
 export default CobrosScreen;

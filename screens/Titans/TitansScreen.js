@@ -64,7 +64,7 @@ const TitansScreen = () => {
   const stopSound = async () => {
     if (currentSound) {
       await currentSound.stopAsync();
-      await currentSound.unloadAsync();  // ← FIXED
+      await currentSound.unloadAsync();
       setCurrentSound(null);
       setIsPlaying(false);
     }
@@ -79,6 +79,52 @@ const TitansScreen = () => {
   const isDesktop = SCREEN_WIDTH > 600;
   const cardSize = isDesktop ? 200 : Math.min(120, SCREEN_WIDTH / 3 - 20);
   const cardSpacing = isDesktop ? 30 : Math.min(15, (SCREEN_WIDTH - 3 * cardSize) / 4);
+
+  const renderCard = (m) => (
+    <TouchableOpacity
+      key={m.name}
+      style={[
+        styles.card,
+        {
+          width: cardSize,
+          height: cardSize * 1.6,
+          borderWidth: 2,
+          borderColor: '#00b3ff',
+          backgroundColor: 'rgba(0, 179, 255, 0.1)',
+          shadowColor: '#00b3ff',
+          shadowOpacity: 0.8,
+          shadowRadius: 10,
+          elevation: 10,
+        },
+        !m.clickable && styles.disabledCard,
+      ]}
+      onPress={async () => {
+        if (m.clickable) {
+          await stopSound();
+          navigation.navigate(m.screen);
+        }
+      }}
+      disabled={!m.clickable}
+    >
+      <Image source={m.image} style={styles.characterImage} resizeMode="cover" />
+
+      {/* YOUR ORIGINAL LOOK — BUT NOW SMART ON MOBILE */}
+      <View style={styles.textWrapper}>
+        {/* Real Name — moves up automatically when codename wraps */}
+        <Text style={[styles.name, isDesktop ? styles.nameDesktop : styles.nameMobile]}>
+          {m.name}
+        </Text>
+
+        {/* Codename — wraps cleanly on mobile */}
+        <Text
+          style={[styles.codename, isDesktop ? styles.codenameDesktop : styles.codenameMobile]}
+          numberOfLines={isDesktop ? 1 : 3}
+        >
+          {m.codename}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
 
   return (
     <ImageBackground
@@ -96,7 +142,7 @@ const TitansScreen = () => {
               navigation.navigate('Home');
             }}
           >
-            <Text style={styles.backText}>← Back</Text>
+            <Text style={styles.backText}>Back</Text>
           </TouchableOpacity>
           <Text style={styles.header}>Titans</Text>
           <TouchableOpacity
@@ -120,7 +166,7 @@ const TitansScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Perfectly Centered Content */}
+        {/* Content */}
         <View style={styles.contentCenter}>
           {isDesktop ? (
             <ScrollView
@@ -131,39 +177,9 @@ const TitansScreen = () => {
                 gap: cardSpacing,
                 alignItems: 'center',
                 justifyContent: 'center',
-                minHeight: SCREEN_HEIGHT * 0.7,
               }}
             >
-              {members.map((m, i) => (
-                <TouchableOpacity
-                  key={i}
-                  style={[
-                    styles.card,
-                    { width: cardSize, height: cardSize * 1.6 },
-                    !m.clickable && styles.disabledCard,
-                    {
-                      borderWidth: 2,
-                      borderColor: '#00b3ff',
-                      backgroundColor: 'rgba(0, 179, 255, 0.1)',
-                      shadowColor: '#00b3ff',
-                      shadowOpacity: 0.8,
-                      shadowRadius: 10,
-                      elevation: 10,
-                    },
-                  ]}
-                  onPress={async () => {
-                    if (m.clickable) {
-                      await stopSound();
-                      navigation.navigate(m.screen);
-                    }
-                  }}
-                  disabled={!m.clickable}
-                >
-                  <Image source={m.image} style={styles.characterImage} resizeMode="cover" />
-                  <Text style={styles.codename}>{m.codename}</Text>
-                  <Text style={styles.name}>{m.name}</Text>
-                </TouchableOpacity>
-              ))}
+              {members.map(renderCard)}
             </ScrollView>
           ) : (
             <ScrollView contentContainerStyle={{ padding: 10 }}>
@@ -175,36 +191,7 @@ const TitansScreen = () => {
                         return <View key={col} style={{ width: cardSize, height: cardSize * 1.6 }} />;
                       }
                       const m = getMemberAtPosition(row, col);
-                      return m ? (
-                        <TouchableOpacity
-                          key={col}
-                          style={[
-                            styles.card,
-                            { width: cardSize, height: cardSize * 1.6 },
-                            !m.clickable && styles.disabledCard,
-                            {
-                              borderWidth: 2,
-                              borderColor: '#00b3ff',
-                              backgroundColor: 'rgba(0, 179, 255, 0.1)',
-                              shadowColor: '#00b3ff',
-                              shadowOpacity: 0.8,
-                              shadowRadius: 10,
-                              elevation: 10,
-                            },
-                          ]}
-                          onPress={async () => {
-                            if (m.clickable) {
-                              await stopSound();
-                              navigation.navigate(m.screen);
-                            }
-                          }}
-                          disabled={!m.clickable}
-                        >
-                          <Image source={m.image} style={styles.characterImage} resizeMode="cover" />
-                          <Text style={styles.codename}>{m.codename}</Text>
-                          <Text style={styles.name}>{m.name}</Text>
-                        </TouchableOpacity>
-                      ) : null;
+                      return m ? renderCard(m) : null;
                     })}
                   </View>
                 ))}
@@ -218,19 +205,10 @@ const TitansScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  background: {
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-  },
-  contentCenter: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+  background: { width: '100%', height: '100%' },
+  container: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)' },
+  contentCenter: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+
   headerWrapper: {
     width: '100%',
     flexDirection: 'row',
@@ -239,64 +217,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingTop: 10,
   },
-  backButton: {
-    padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 5,
-  },
-  backText: {
-    fontSize: 18,
-    color: '#00b3ff',
-    fontWeight: 'bold',
-  },
-  header: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#fff',
-    textShadowColor: '#00b3ff',
-    textShadowRadius: 20,
-    textAlign: 'center',
-    flex: 1,
-  },
-  chatButton: {
-    padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 5,
-  },
-  chatText: {
-    fontSize: 20,
-    color: '#00b3ff',
-  },
-  musicControls: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginVertical: 10,
-  },
-  musicButton: {
-    padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 8,
-    marginHorizontal: 10,
-  },
-  musicButtonText: {
-    fontSize: 12,
-    color: '#00b3ff',
-    fontWeight: 'bold',
-  },
-  card: {
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  characterImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  codename: {
+  backButton: { padding: 10, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 5 },
+  backText: { fontSize: 18, color: '#00b3ff', fontWeight: 'bold' },
+  header: { fontSize: 28, fontWeight: 'bold', color: '#fff', textAlign: 'center', flex: 1 },
+  chatButton: { padding: 10, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 5 },
+  chatText: { fontSize: 20, color: '#00b3ff' },
+
+  musicControls: { flexDirection: 'row', justifyContent: 'center', marginVertical: 10 },
+  musicButton: { padding: 10, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 8, marginHorizontal: 10 },
+  musicButtonText: { fontSize: 12, color: '#00b3ff', fontWeight: 'bold' },
+
+  card: { borderRadius: 10, overflow: 'hidden', position: 'relative' },
+  characterImage: { width: '100%', height: '100%' },
+
+  // MAGIC WRAPPER — YOUR EXACT LOOK, BUT RESPONSIVE
+  textWrapper: {
     position: 'absolute',
-    bottom: 12,
-    left: 10,
-    fontSize: 16,
+    bottom: 8,
+    left: 8,
+    right: 8,
+    padding: 4,
+  },
+
+  // BASE STYLES
+  codename: {
     fontWeight: 'bold',
     color: '#00b3ff',
     textShadowColor: '#00b3ff',
@@ -304,18 +248,29 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   name: {
-    position: 'absolute',
-    bottom: 34,
-    left: 10,
-    fontSize: 14,
     color: '#fff',
     textShadowColor: '#00b3ff',
     textShadowRadius: 12,
     zIndex: 2,
   },
-  disabledCard: {
-    opacity: 0.6,
+
+  // DESKTOP — 100% YOUR, 100% your original
+  codenameDesktop: { position: 'absolute', bottom: 12, left: 10, fontSize: 16 },
+  nameDesktop:    { position: 'absolute', bottom: 34, left: 10, fontSize: 14 },
+
+  // MOBILE — WRAPS, PUSHES NAME UP, NO OVERLAP
+  codenameMobile: {
+    fontSize: 13,
+    lineHeight: 16,
+    textAlign: 'left',
   },
+  nameMobile: {
+    fontSize: 11,
+    marginBottom: 2,
+    textAlign: 'left',
+  },
+
+  disabledCard: { opacity: 0.6 },
 });
 
 export default TitansScreen;
