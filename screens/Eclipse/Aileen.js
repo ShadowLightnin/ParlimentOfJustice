@@ -17,10 +17,11 @@ import { Audio } from "expo-av";
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const armor = [
-  { name: "Ariata", image: require("../../assets/Armor/AileenAriata.jpg"), clickable: true },
+  { name: "Ariata Prime", image: require("../../assets/Armor/AileenAriata.jpg"), clickable: true },
   // { name: "Ariata", image: require("../../assets/Armor/Aileen2.jpg"), clickable: true },
   { name: "Legacy", image: require("../../assets/Armor/AileenLegacy.jpg"), clickable: true },
   { name: "Baybayin", image: require("../../assets/Armor/Aileen.jpg"), clickable: true },
+  { name: "Ariata", image: require("../../assets/Armor/Aileen2.jpg"), clickable: true },
   { name: "Luminara", image: require("../../assets/Armor/Aileen3.jpg"), clickable: true },
   { name: "Aileara", image: require("../../assets/Armor/Aileen5.jpg"), clickable: true },
   { name: "Nialla", image: require("../../assets/Armor/Aileen6.jpg"), clickable: true },

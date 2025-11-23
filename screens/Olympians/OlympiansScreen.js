@@ -15,10 +15,8 @@ import {
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { olympiansCategories } from './OlympiansMembers';
 import { Audio } from 'expo-av';
-import descriptions from './OlympiansDescription';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
-
 const isDesktop = SCREEN_WIDTH > 600;
 const columns = isDesktop ? 6 : 3;
 const cardSize = isDesktop ? 160 : 100;
@@ -26,12 +24,19 @@ const cardHeightMultiplier = 1.6;
 const horizontalSpacing = isDesktop ? 40 : 10;
 const verticalSpacing = isDesktop ? 50 : 20;
 
+// Phoenix colors for Olympians (Jennifer keeps her original red)
+const PHOENIX = {
+  fire: '#FF4500',
+  gold: '#FFD700',
+  ember: '#FF8C00',
+};
+
 export const OlympiansScreen = () => {
   const navigation = useNavigation();
-  const [previewMember, setPreviewMember] = useState(null);
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
+  // Audio functions unchanged
   const playTheme = async () => {
     if (!currentSound) {
       try {
@@ -85,6 +90,7 @@ export const OlympiansScreen = () => {
     }
   };
 
+  // Regular Olympian cards — Phoenix fire
   const renderMemberCard = (member) => {
     const enhancedMember = {
       ...member,
@@ -101,12 +107,12 @@ export const OlympiansScreen = () => {
             width: cardSize,
             height: cardSize * cardHeightMultiplier,
             borderWidth: 2,
-            borderColor: '#00b3ff',
-            backgroundColor: 'rgba(0, 179, 255, 0.1)',
-            shadowColor: '#00b3ff',
-            shadowOpacity: 0.8,
-            shadowRadius: 10,
-            elevation: 10,
+            borderColor: PHOENIX.fire,
+            backgroundColor: 'rgba(255, 69, 0, 0.15)',
+            shadowColor: PHOENIX.fire,
+            shadowOpacity: 0.9,
+            shadowRadius: 14,
+            elevation: 12,
           },
           !enhancedMember.clickable && styles.disabledCard,
         ]}
@@ -119,14 +125,10 @@ export const OlympiansScreen = () => {
           resizeMode="cover"
         />
 
-        {/* YOUR ORIGINAL LOOK — BUT NOW SMART ON MOBILE */}
         <View style={styles.textWrapper}>
-          {/* Real Name — sits higher when codename wraps */}
           <Text style={[styles.name, isDesktop ? styles.nameDesktop : styles.nameMobile]}>
             {enhancedMember.name}
           </Text>
-
-          {/* Codename — wraps cleanly on mobile, pushes name up */}
           <Text
             style={[styles.codename, isDesktop ? styles.codenameDesktop : styles.codenameMobile]}
             numberOfLines={isDesktop ? 1 : 3}
@@ -138,6 +140,7 @@ export const OlympiansScreen = () => {
     );
   };
 
+  // Jennifer — 100% original memorial red (untouched)
   const renderJenniferCard = (member) => {
     const enhancedMember = {
       ...member,
@@ -176,7 +179,11 @@ export const OlympiansScreen = () => {
   };
 
   const jenniferMember = olympiansCategories.flatMap(c => c.members).find(m => m.name === 'Jennifer');
-  const allMembers = olympiansCategories.flatMap(c => c.members).filter(m => m.name !== 'Jennifer');
+  const eduriaMembers = olympiansCategories.find(c => c.family === 'Eduria')?.members || [];
+  const nonEduriaMembers = olympiansCategories
+    .filter(c => c.family !== 'Eduria')
+    .flatMap(c => c.members)
+    .filter(m => m.name !== 'Jennifer');
 
   return (
     <ImageBackground source={require('../../assets/BackGround/Olympians.jpg')} style={styles.background} resizeMode="cover">
@@ -199,23 +206,40 @@ export const OlympiansScreen = () => {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           {jenniferMember && <View style={styles.jenniferCardContainer}>{renderJenniferCard(jenniferMember)}</View>}
           <View style={styles.spacingBelowJennifer} />
+
           <View style={styles.membersContainer}>
-            {Array.from({ length: Math.ceil(allMembers.length / columns) }).map((_, rowIndex) => (
+            {Array.from({ length: Math.ceil(nonEduriaMembers.length / columns) }).map((_, rowIndex) => (
               <View key={rowIndex} style={[styles.row, { marginBottom: verticalSpacing, gap: horizontalSpacing }]}>
                 {Array.from({ length: columns }).map((_, colIndex) => {
-                  const member = allMembers[rowIndex * columns + colIndex];
-                  return member ? renderMemberCard(member) : <View key={colIndex} style={{ width: cardSize, height: cardSize * cardHeightMultiplier }} />;
+                  const member = nonEduriaMembers[rowIndex * columns + colIndex];
+                  return member
+                    ? renderMemberCard(member)
+                    : <View key={colIndex} style={{ width: cardSize, height: cardSize * cardHeightMultiplier }} />;
                 })}
               </View>
             ))}
+
+            {/* THE DIWATAS — NOW WITH VISIBLE PHOENIX LINE */}
+            {eduriaMembers.length > 0 && (
+              <>
+                <View style={styles.diwataLine} />
+                <Text style={styles.diwataTitle}>The Diwatas</Text>
+                <View style={styles.diwataLine} />
+
+                {Array.from({ length: Math.ceil(eduriaMembers.length / columns) }).map((_, rowIndex) => (
+                  <View key={`diwata-${rowIndex}`} style={[styles.row, { marginBottom: verticalSpacing, gap: horizontalSpacing }]}>
+                    {Array.from({ length: columns }).map((_, colIndex) => {
+                      const member = eduriaMembers[rowIndex * columns + colIndex];
+                      return member
+                        ? renderMemberCard(member)
+                        : <View key={colIndex} style={{ width: cardSize, height: cardSize * cardHeightMultiplier }} />;
+                    })}
+                  </View>
+                ))}
+              </>
+            )}
           </View>
         </ScrollView>
-
-        <Modal visible={!!previewMember} transparent animationType="fade" onRequestClose={() => setPreviewMember(null)}>
-          <View style={styles.modalBackground}>
-            <Text style={{ color: '#fff', fontSize: 24, marginBottom: 20 }}>Long-press disabled — images protected</Text>
-          </View>
-        </Modal>
       </SafeAreaView>
     </ImageBackground>
   );
@@ -224,69 +248,65 @@ export const OlympiansScreen = () => {
 const styles = StyleSheet.create({
   background: { width: '100%', height: '100%' },
   container: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)' },
-  headerWrapper: { width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10, paddingTop: 10 },
-  backButton: { padding: 10, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 5 },
-  backText: { fontSize: 18, color: '#00b3ff', fontWeight: 'bold' },
-  header: { fontSize: 28, fontWeight: 'bold', color: '#fff', textAlign: 'center', flex: 1 },
-  chatButton: { padding: 10, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 5 },
-  chatText: { fontSize: 20, color: '#00b3ff' },
+
+  // Header & buttons — Phoenix fire
+  headerWrapper: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10, paddingTop: 10 },
+  backButton: { padding: 12, backgroundColor: 'rgba(255,69,0,0.3)', borderRadius: 8, borderWidth: 2, borderColor: PHOENIX.fire },
+  backText: { fontSize: 18, color: PHOENIX.gold, fontWeight: 'bold' },
+  header: { fontSize: 32, fontWeight: '900', color: PHOENIX.gold, textShadowColor: PHOENIX.fire, textShadowRadius: 20, textAlign: 'center', flex: 1 },
+  chatButton: { padding: 12, backgroundColor: 'rgba(255,69,0,0.3)', borderRadius: 8, borderWidth: 2, borderColor: PHOENIX.fire },
+  chatText: { fontSize: 24, color: PHOENIX.gold },
+
   musicControls: { flexDirection: 'row', justifyContent: 'center', marginVertical: 10 },
-  musicButton: { padding: 10, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 8, marginHorizontal: 10 },
-  musicButtonText: { fontSize: 12, color: '#00b3ff', fontWeight: 'bold' },
+  musicButton: { paddingHorizontal: 16, paddingVertical: 10, backgroundColor: 'rgba(255,69,0,0.25)', borderRadius: 30, marginHorizontal: 12, borderWidth: 1, borderColor: PHOENIX.ember },
+  musicButtonText: { fontSize: 13, color: PHOENIX.gold, fontWeight: 'bold' },
+
   scrollContainer: { paddingBottom: 20, alignItems: 'center' },
   membersContainer: { width: '100%', alignItems: 'center' },
   row: { flexDirection: 'row', justifyContent: 'center' },
+
   card: { borderRadius: 10, overflow: 'hidden', position: 'relative' },
   characterImage: { width: '100%', height: '100%', resizeMode: 'cover' },
 
-  // THE MAGIC WRAPPER — KEEPS YOUR EXACT LOOK
-  textWrapper: {
-    position: 'absolute',
-    bottom: 8,
-    left: 8,
-    right: 8,
-    padding: 4,
+  // DIWATAS LINE — NOW VISIBLE AND GLOWING
+  diwataLine: {
+    height: 5,
+    backgroundColor: PHOENIX.fire,
+    marginHorizontal: 60,
+    marginVertical: 25,
+    borderRadius: 3,
+    shadowColor: PHOENIX.fire,
+    shadowOpacity: 1,
+    shadowRadius: 16,
+    elevation: 12,
+  },
+  diwataTitle: {
+    fontSize: 38,
+    fontWeight: '900',
+    color: PHOENIX.gold,
+    textShadowColor: PHOENIX.fire,
+    textShadowRadius: 30,
+    textAlign: 'center',
   },
 
-  // YOUR ORIGINAL STYLES — UNTOUCHED ON DESKTOP
-  codename: {
-    fontWeight: 'bold',
-    color: '#00b3ff',
-    textShadowColor: '#00b3ff',
-    textShadowRadius: 12,
-    zIndex: 2,
-  },
-  name: {
-    color: '#fff',
-    textShadowColor: '#00b3ff',
-    textShadowRadius: 12,
-    zIndex: 2,
-  },
-
-  // DESKTOP — 100% YOUR ORIGINAL LOOK
+  textWrapper: { position: 'absolute', bottom: 8, left: 8, right: 8, padding: 4 },
+  codename: { fontWeight: 'bold', color: PHOENIX.gold, textShadowColor: PHOENIX.fire, textShadowRadius: 14, zIndex: 2 },
+  name: { color: '#fff', textShadowColor: PHOENIX.fire, textShadowRadius: 12, zIndex: 2 },
   codenameDesktop: { position: 'absolute', bottom: 12, left: 10, fontSize: 14 },
-  nameDesktop:    { position: 'absolute', bottom: 34, left: 10, fontSize: 12 },
-
-  // MOBILE — SMART WRAPPING, NAME MOVES UP AUTOMATICALLY
-  codenameMobile: {
-    fontSize: 13,
-    lineHeight: 16,
-    textAlign: 'left',
-  },
-  nameMobile: {
-    fontSize: 11,
-    marginBottom: 2,
-    textAlign: 'left',
-  },
+  nameDesktop: { position: 'absolute', bottom: 34, left: 10, fontSize: 12 },
+  codenameMobile: { fontSize: 13, lineHeight: 16, textAlign: 'left' },
+  nameMobile: { fontSize: 11, marginBottom: 2, textAlign: 'left' },
 
   disabledCard: { opacity: 0.6 },
+
+  // JENNIFER — 100% ORIGINAL MEMORIAL RED (unchanged)
   jenniferCard: { borderRadius: 15, overflow: 'hidden', marginHorizontal: 10 },
   jenniferImage: { width: '100%', height: '100%', resizeMode: 'cover' },
   jenniferCodename: { position: 'absolute', bottom: 20, left: 15, fontSize: 22, fontWeight: 'bold', color: '#ff9999', textShadowColor: '#ff9999', textShadowRadius: 15, zIndex: 2 },
   jenniferName: { position: 'absolute', bottom: 50, left: 15, fontSize: 18, color: '#fff', textShadowColor: '#ff9999', textShadowRadius: 15, zIndex: 2 },
+
   jenniferCardContainer: { alignItems: 'center', marginTop: verticalSpacing },
   spacingBelowJennifer: { height: verticalSpacing * 2 },
-  modalBackground: { flex: 1, backgroundColor: 'rgba(0,0,0,0.95)', justifyContent: 'center', alignItems: 'center' },
 });
 
 export default OlympiansScreen;
