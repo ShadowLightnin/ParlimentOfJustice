@@ -22,6 +22,7 @@ const BenP = () => {
 
   const armors = [
     { name: "Chemoshock", copyright: "William Cummings", image: require("../../../assets/Armor/Benp3.jpg"), clickable: true },
+    { name: "Chemoshock", copyright: "William Cummings", image: require("../../../assets/Armor/Benp4.jpg"), clickable: true },
     { name: "", image: require("../../../assets/Armor/Benp.jpg"), clickable: true },
     { name: "Chemoshock", copyright: "William Cummings", image: require("../../../assets/Armor/Benp2.jpg"), clickable: true },
   ];

@@ -215,9 +215,12 @@ export const LegionairesScreen = () => {
                         image: memberObj.imageUrl && memberObj.imageUrl !== 'placeholder'
                           ? { uri: memberObj.imageUrl }
                           : (legionImages[memberObj.name]?.images?.[0]?.uri || require('../../assets/Armor/PlaceHolder.jpg')),
+
+                        // ⭐ NEW: pass full image array into the member object
+                        images: legionImages[memberObj.name]?.images || memberObj.images || [],
+
                         clickable: memberObj.clickable !== undefined ? memberObj.clickable : true,
                       };
-
                       return renderMemberCard(member);
                     })}
                   </View>

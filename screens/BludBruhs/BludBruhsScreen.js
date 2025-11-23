@@ -21,7 +21,7 @@ const cardSize = isDesktop ? 160 : 100;
 const cardSpacing = isDesktop ? 25 : 10;
 
 const scrollableMembersBase = [
-  { id: 'sam', name: 'Sam', codename: 'Void Walker', screen: 'Sam', clickable: true, image: require('../../assets/Armor/Sam.jpg') },
+  { id: 'sam', name: 'Sam', codename: 'Void Walker', screen: 'Sam', clickable: true, image: require('../../assets/Armor/SamVoidWalker.jpg') },
   { id: 'cole', name: 'Cole', codename: 'Cruiser', screen: 'Cole', clickable: true, image: require('../../assets/Armor/ColeR.jpg') },
   {
     id: 'taylor',
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
   transparentOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.5)' },
   textWrapper: { position: 'absolute', bottom: 8, left: 8, right: 8 },
   name: { fontSize: 12, fontWeight: 'bold', textShadowRadius: 10 },
-  codename: { fontSize: 14, fontWeight: 'bold', textShadowRadius: 10 },
+  codename: { fontSize: 13, fontWeight: 'bold', textShadowRadius: 10 },
   nameDesktop: { bottom: 25, left: 5 },
   codenameDesktop: { bottom: 10, left: 5 },
   nameMobile: { marginBottom: 2 },

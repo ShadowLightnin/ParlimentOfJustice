@@ -213,6 +213,23 @@ export const olympiansCategories = [
     ],
   },
   {
+    family: 'Santa',
+    members: [
+      { name: 'Nicholas', codename: 'Santa Claus', screen: '', images: [
+        { uri: require('../../assets/Armor/Santa.jpg'), name: 'Satna Primary', clickable: true },
+        { uri: require('../../assets/Armor/Santa1.jpg'), name: 'Satna', clickable: true },
+        { uri: require('../../assets/Armor/Santa2.jpg'), name: 'Satna', clickable: true },
+        { uri: require('../../assets/Armor/Santa3.jpg'), name: 'Satna', clickable: true },
+        { uri: require('../../assets/Armor/Santa4.jpg'), name: 'Satna', clickable: true },
+        { uri: require('../../assets/Armor/Santa5.jpg'), name: 'Satna', clickable: true },
+        { uri: require('../../assets/Armor/Santa6.jpg'), name: 'Satna', clickable: true },
+        { uri: require('../../assets/Armor/Santa7.jpg'), name: 'Satna', clickable: true },
+        { uri: require('../../assets/Armor/Santa8.jpg'), name: 'Satna', clickable: true },
+        { uri: require('../../assets/Armor/Santa9.jpg'), name: 'Satna', clickable: true },
+      ]},
+    ],
+  },
+  {
     family: 'Cummings',
     members: [
       { name: 'Sean', codename: 'Vanguard', screen: '', images: [

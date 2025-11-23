@@ -21,7 +21,7 @@ const TomBb = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Thunder Whisperer", image: require("../../../assets/Armor/TomC3_cleanup.jpg"), clickable: true },
+    { name: "Thunder Whisperer", image: require("../../../assets/Armor/TomC3.jpg"), clickable: true },
   ];
 
   const renderArmorCard = (armor) => (

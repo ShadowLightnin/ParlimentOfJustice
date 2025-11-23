@@ -162,8 +162,8 @@ const legionImages = {
   },
   'Spencer': {
     images: [
-      { uri: require('../../assets/Armor/SpencerHen.jpg'), name: 'Spencer Primary', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Spencer Placeholder', clickable: true },
+      { uri: require('../../assets/Armor/SpencerHen2.jpg'), name: 'Spencer Primary', clickable: true },
+      { uri: require('../../assets/Armor/SpencerHen.jpg'), name: 'Spencer Placeholder', clickable: true },
     ],
   },
   'Sanford Duncan': {
@@ -248,14 +248,14 @@ const legionImages = {
   },
   'Adam Leger': {
     images: [
-      { uri: require('../../assets/Armor/Adam.jpg'), name: 'Adam Primary', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Adam Placeholder', clickable: true },
+      { uri: require('../../assets/Armor/Adam2.jpg'), name: 'Adam Primary', clickable: true },
+      { uri: require('../../assets/Armor/Adam.jpg'), name: 'Adam Placeholder', clickable: true },
     ],
   },
   'Sam Phillips': {
     images: [
-      { uri: require('../../assets/Armor/SamPh.jpg'), name: 'Sam Phillips Primary', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Sam Phillips Placeholder', clickable: true },
+      { uri: require('../../assets/Armor/SamPh2.jpg'), name: 'Sam Phillips Primary', clickable: true },
+      { uri: require('../../assets/Armor/SamPh.jpg'), name: 'Sam Phillips Placeholder', clickable: true },
     ],
   },
   'Hayden Perks': {

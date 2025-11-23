@@ -197,11 +197,18 @@ const Sam = () => {
       console.log('Filtered dynamic armors:', filteredDynamic.map(a => ({ id: a.id, name: a.name || a.codename })));
 
       // Filter out excluded armors in Pinnacle Universe
-      const combined = [...validatedArmors, ...filteredDynamic].filter(armor =>
+      // 🔁 Put dynamic (user-added) armors BEFORE hardcoded ones
+      const combined = [...filteredDynamic, ...validatedArmors].filter(armor =>
         isYourUniverse || !pinnacleExclusions.includes(armor.id)
       );
-      console.log('Combined armors (after universe filter):', combined.map(a => ({ id: a.id, name: a.name || a.codename })));
+      
+      console.log(
+        'Combined armors (after universe filter, dynamic first):',
+        combined.map(a => ({ id: a.id, name: a.name || a.codename }))
+      );
+      
       setArmorList(combined);
+
     }, (e) => {
       console.error('Firestore error:', e.code, e.message);
       Alert.alert('Error', `Failed to fetch armors: ${e.message}`);

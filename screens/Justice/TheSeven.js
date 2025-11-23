@@ -1,4 +1,5 @@
 const TheSeven = [
+    { name: 'The Voyager', screen: '', image: require('../../assets/Armor/TheVoyager.jpg'), clickable: true },
     { name: 'The Foundation', screen: '', image: require('../../assets/Armor/TheSeven/Foundation.jpg'), clickable: true },
     { name: 'The Origin', screen: '', image: require('../../assets/Armor/TheSeven/Origin.jpg'), clickable: true },
     { name: 'The Scientist', screen: '', image: require('../../assets/Armor/TheSeven/Scientist.jpg'), clickable: true },

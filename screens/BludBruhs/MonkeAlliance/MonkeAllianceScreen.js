@@ -21,31 +21,33 @@ const cardSpacing = isDesktop ? 25 : 10;
 const members = [
   { id: 'zeke', name: 'Zeke', codename: 'Enderstrike', screen: 'Zeke', clickable: true, image: require('../../../assets/Armor/Zeke.jpg') },
   { id: 'elijah', name: 'Elijah Potter', codename: 'Chaos Wither', screen: 'Elijah', clickable: true, image: require('../../../assets/Armor/Elijah.jpg') },
-  { id: 'tom', name: 'Tom C', codename: 'Thunder Whisperer', screen: 'TomBb', clickable: true, image: require('../../../assets/Armor/TomC3_cleanup.jpg') },
+  { id: 'tom', name: 'Tom C', codename: 'Thunder Whisperer', screen: 'TomBb', clickable: true, image: require('../../../assets/Armor/TomC3.jpg') },
   { id: 'ammon', name: 'Ammon T', codename: 'Quick Wit', screen: 'AmmonT', clickable: true, image: require('../../../assets/Armor/AmmonT.jpg') },
   { id: 'eli', name: 'Eli C', codename: 'Shadow Hunter', screen: 'Eli', clickable: true, image: require('../../../assets/Armor/Eli.jpg') },
   { id: 'ethan', name: 'Ethan T', codename: 'Bolt Watcher', screen: 'EthanT', clickable: true, image: require('../../../assets/Armor/Ethan.jpg') },
-  { id: 'alex', name: 'Alex M', codename: 'Swiftmind', screen: 'AlexM', clickable: true, image: require('../../../assets/Armor/AlexM.jpg') },
-  { id: 'damon', name: 'Damon', codename: 'Pixel Maverick', screen: 'Damon', clickable: true, image: require('../../../assets/Armor/Damon_cleanup.jpg') },
+  { id: 'alex', name: 'Alex M', codename: 'Swiftmind', screen: 'AlexM', clickable: true, image: require('../../../assets/Armor/AlexM2.jpg') },
+  { id: 'damon', name: 'Damon', codename: 'Pixel Maverick', screen: 'Damon', clickable: true, image: require('../../../assets/Armor/Damon2.jpg') },
 
   // MONKE LEGENDS — FULL GALLERY + CUSTOM POSTER IMAGE
   {
     id: 'lauren',
     name: 'Lauren',
-    codename: 'Monke Queen',
+    codename: 'Stealth Queen',
     screen: '',
     clickable: true,
-    posterImage: require('../../../assets/Armor/Lauren.jpg'),
+    posterImage: require('../../../assets/Armor/Lauren3.jpg'),
     images: [
+      require('../../../assets/Armor/Lauren2.jpg'),
+      require('../../../assets/Armor/Lauren4.jpg'),
+      require('../../../assets/Armor/Lauren4.jpg'),
       require('../../../assets/Armor/Lauren.jpg'),
-      require('../../../assets/Armor/PlaceHolder.jpg'),
     ],
     description: 'She rules the jungle with golden fury and unbreakable grace.',
   },
   {
     id: 'lizzie',
     name: 'Lizzie',
-    codename: 'Golden Fury',
+    codename: 'Seriene',
     screen: '',
     clickable: true,
     posterImage: require('../../../assets/Armor/LizzieTB.jpg'),
@@ -58,7 +60,7 @@ const members = [
   {
     id: 'rachel',
     name: 'Rachel',
-    codename: 'Vine Sovereign',
+    codename: 'Neon',
     screen: '',
     clickable: true,
     posterImage: require('../../../assets/Armor/RachelTB.jpg'),
@@ -71,7 +73,7 @@ const members = [
   {
     id: 'keith',
     name: 'Keith',
-    codename: 'Ironback',
+    codename: 'Operative',
     screen: '',
     clickable: true,
     posterImage: require('../../../assets/Armor/Keith.jpg'),
@@ -84,7 +86,7 @@ const members = [
   {
     id: 'sandra',
     name: 'Sandra',
-    codename: 'Earth Mother',
+    codename: 'Informant',
     screen: '',
     clickable: true,
     posterImage: require('../../../assets/Armor/Sandra.jpg'),
@@ -97,7 +99,7 @@ const members = [
   {
     id: 'shadow',
     name: 'Shadow',
-    codename: 'The Silent One',
+    codename: 'Gray Hound',
     screen: '',
     clickable: true,
     posterImage: require('../../../assets/Armor/SamsShadow.jpg'),
@@ -180,16 +182,20 @@ const MonkeAllianceScreen = () => {
       >
         <Image source={cardImage} style={styles.characterImage} resizeMode="cover" />
         <View style={styles.overlay} />
-        <View style={styles.textWrapper}>
-          {member.codename ? (
-            <Text style={[styles.codename, isDesktop ? styles.codenameDesktop : styles.codenameMobile]}>
-              {member.codename}
+          <View style={styles.textWrapper}>
+            {/* Name on top */}
+            <Text style={[styles.name, isDesktop ? styles.nameDesktop : styles.nameMobile]}>
+              {member.name}
             </Text>
-          ) : null}
-          <Text style={[styles.name, isDesktop ? styles.nameDesktop : styles.nameMobile]}>
-            {member.name}
-          </Text>
-        </View>
+
+            {/* Codename on bottom */}
+            {member.codename ? (
+              <Text style={[styles.codename, isDesktop ? styles.codenameDesktop : styles.codenameMobile]}>
+                {member.codename}
+              </Text>
+            ) : null}
+          </View>
+
       </TouchableOpacity>
     );
   };
@@ -261,7 +267,7 @@ const styles = StyleSheet.create({
   characterImage: { width: '100%', height: '100%' },
   overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.5)' },
   textWrapper: { position: 'absolute', bottom: 8, left: 8, right: 8 },
-  codename: { fontSize: 15, fontWeight: 'bold', color: '#FFD700', textShadowColor: '#8B4513', textShadowRadius: 10 },
+  codename: { fontSize: 14, fontWeight: 'bold', color: '#FFD700', textShadowColor: '#8B4513', textShadowRadius: 10 },
   name: { fontSize: 13, color: '#fff', textShadowColor: '#8B4513', textShadowRadius: 10 },
   codenameDesktop: { bottom: 30, left: 6 },
   nameDesktop: { bottom: 10, left: 6 },
