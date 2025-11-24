@@ -65,7 +65,7 @@ const Jared = () => {
       <Image source={kid.image} style={styles.kidImage} />
       <View style={styles.transparentOverlay} />
       <Text style={styles.kidCardName}>
-        © {kid.name || 'Unknown'}; William Cummings
+        © {kid.name || 'Unknown'}
       </Text>
       {!kid.clickable && <Text style={styles.kidDisabledText}> </Text>}
     </TouchableOpacity>

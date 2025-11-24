@@ -80,7 +80,6 @@ export const memberCategories = [
       { name: 'Tana Johnson', codename: 'Math', screen: '', hardcoded: true },
       { name: 'Mrs Perry', codename: 'Advisor', screen: '', hardcoded: true },
       { name: 'Coach Fresques', codename: 'Coach', screen: '', hardcoded: true },
-      { name: 'Mr. Lauscher', codename: 'Biology', screen: '', hardcoded: true },
       { name: 'Coach Simon', codename: 'Coach', screen: '', hardcoded: true },
       { name: 'Mrs. Morfin', codename: 'Welding', screen: '', hardcoded: true },
     ],
@@ -112,7 +111,6 @@ export const memberCategories = [
       { name: 'Mrs. Anderson', codename: 'Geography', screen: '', hardcoded: true },
       { name: 'Mrs. Spinney', codename: 'Math', screen: '', hardcoded: true },
       { name: 'Mrs. Thompson', codename: 'Math', screen: '', hardcoded: true },
-      { name: 'Mrs. Davis', codename: 'Science', screen: '', hardcoded: true },
     ],
   },
   {
@@ -138,6 +136,12 @@ export const memberCategories = [
       { name: 'Mrs. Brown', codename: 'Music Teacher', screen: '', hardcoded: true },
       { name: 'Mrs. Anderson', codename: '6th Grade Teacher', screen: '', hardcoded: true },
       { name: 'Ms. ', codename: '6th Grade Teacher', screen: '', hardcoded: true },
+    ],
+  },
+  {
+    category: "Influences",
+    members: [
+      { name: 'Reese', codename: 'Composess', screen: '', hardcoded: true },
     ],
   },
 ];

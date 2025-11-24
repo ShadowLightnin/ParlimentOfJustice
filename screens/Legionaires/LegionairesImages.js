@@ -112,6 +112,7 @@ const legionImages = {
   'Zack Dustin': {
     images: [
       { uri: require('../../assets/Armor/Zack2_cleanup.jpg'), name: 'Zack Primary', clickable: true },
+      { uri: require('../../assets/Armor/Zack.jpg'), name: 'Zack Primary', clickable: true },
     ],
   },
   'Josh Clark': {
@@ -187,6 +188,16 @@ const legionImages = {
   'Nate Anderson': {
     images: [
       { uri: require('../../assets/Armor/NateA.jpg'), name: 'Nate Anderson Primary', clickable: true },
+    ],
+  },
+  'Teagan': {
+    images: [
+      { uri: require('../../assets/Armor/Teagen.jpg'), name: 'Teagan Primary', clickable: true },
+    ],
+  },
+  'Carter': {
+    images: [
+      { uri: require('../../assets/Armor/Carter.jpg'), name: 'Carter Primary', clickable: true },
     ],
   },
 

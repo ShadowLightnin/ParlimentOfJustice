@@ -66,8 +66,8 @@ const Jennifer = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
+    { name: "Kintsugi Prime", image: require("../../assets/Armor/JenniferLegacy.jpg"), clickable: true },
     { name: "Kintsugi", image: require("../../assets/Armor/Jennifer2.jpg"), clickable: true },
-    { name: "Legacy", image: require("../../assets/Armor/JenniferLegacy.jpg"), clickable: true },
     { name: "Kintsugi", image: require("../../assets/Armor/Jennifer.jpg"), clickable: true },
     { name: "Kintsugi", image: require("../../assets/Armor/Jennifer3.jpg"), clickable: true },
     { name: "Kintsugi", image: require("../../assets/Armor/Jennifer4.jpg"), clickable: true },

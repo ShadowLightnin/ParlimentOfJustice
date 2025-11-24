@@ -21,7 +21,7 @@ const Spencer = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Annihilator", image: require("../../assets/Armor/Spencer5.jpg"), clickable: true },
+    // { name: "Annihilator", image: require("../../assets/Armor/Spencer5.jpg"), clickable: true },
     { name: "Annihilator", image: require("../../assets/Armor/Spencer6.jpg"), clickable: true },
     { name: "Annihilator", image: require("../../assets/Armor/Spencer7.jpg"), clickable: true },
     { name: "Legacy", image: require("../../assets/Armor/SpencerLegacy.jpg"), clickable: true },
