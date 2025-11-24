@@ -63,17 +63,17 @@ const constollationImages = {
   'Bro. Hedlund': { images: [{ uri: require('../../assets/Armor/Hedlund.jpg') }] },
 
   // Jr. High 9th
-  'Mrs. Elysia Butler': { images: [{ uri: require('../../assets/Armor/PlaceHolder.jpg') }] },
-  'Mr. Jackson': { images: [{ uri: require('../../assets/Armor/PlaceHolder.jpg') }] },
+  'Mrs. Elysia Butler': { images: [{ uri: require('../../assets/Armor/Butler.jpg') }] },
+  'Mr. Jackson': { images: [{ uri: require('../../assets/Armor/JacksonPrinciple.jpg') }] },
 
   // NT Seminary 9th
   'Bro. Valor': { images: [{ uri: require('../../assets/Armor/Valor.jpg') }] },
   'Bro. Perston': { images: [{ uri: require('../../assets/Armor/Perston.jpg') }] },
 
   // Jr. High 8th
-  'Mrs. Anderson': { images: [{ uri: require('../../assets/Armor/PlaceHolder.jpg') }] },
-  'Mrs. Spinney': { images: [{ uri: require('../../assets/Armor/PlaceHolder.jpg') }] },
-  'Mrs. Thompson': { images: [{ uri: require('../../assets/Armor/PlaceHolder.jpg') }] },
+  'Mrs. Anderson': { images: [{ uri: require('../../assets/Armor/Anderson.jpg') }] },
+  'Mrs. Spinney': { images: [{ uri: require('../../assets/Armor/Spinney.jpg') }] },
+  'Mrs. Thompson': { images: [{ uri: require('../../assets/Armor/Thompson.jpg') }] },
 
   // Jr. High 7th
   'Chad King': { images: [{ uri: require('../../assets/Armor/PlaceHolder.jpg') }] },

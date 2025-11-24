@@ -38,7 +38,7 @@ const members = [
     posterImage: require('../../../assets/Armor/Lauren3.jpg'),
     images: [
       require('../../../assets/Armor/Lauren2.jpg'),
-      require('../../../assets/Armor/Lauren4.jpg'),
+      require('../../../assets/Armor/Lauren3.jpg'),
       require('../../../assets/Armor/Lauren4.jpg'),
       require('../../../assets/Armor/Lauren.jpg'),
     ],
