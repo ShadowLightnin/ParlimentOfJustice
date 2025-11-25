@@ -21,6 +21,7 @@ const EthanT = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
+    { name: "Bolt Watcher", image: require("../../../assets/Armor/Ethan2.jpg"), clickable: true },
     { name: "Bolt Watcher", image: require("../../../assets/Armor/Ethan.jpg"), clickable: true },
   ];
 

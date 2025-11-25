@@ -90,6 +90,7 @@ export const olympiansCategories = [
         { uri: require('../../assets/Armor/McKinley.jpg'), name: 'McKinley Primary', clickable: true },
       ]},
       { name: 'Whitney', codename: 'Veilweaver', screen: '', images: [
+        { uri: require('../../assets/Armor/Whitney2.jpg'), name: 'Whitney Primary', clickable: true },
         { uri: require('../../assets/Armor/Whitney.jpg'), name: 'Whitney Primary', clickable: true },
       ]},
       { name: 'Vinson', codename: 'Ironchad', screen: '', images: [
@@ -108,6 +109,7 @@ export const olympiansCategories = [
         { uri: require('../../assets/Armor/Melisa.jpg'), name: 'Melissa Primary', clickable: true },
       ]},
       { name: 'Jackson', codename: 'Rhythmic Flux', screen: '', images: [
+        { uri: require('../../assets/Armor/Jackson2.jpg'), name: 'Jackson Primary', clickable: true },
         { uri: require('../../assets/Armor/Jackson.jpg'), name: 'Jackson Primary', clickable: true },
       ]},
       { name: 'Mason', codename: 'Fortress King', screen: '', images: [
@@ -202,12 +204,14 @@ export const olympiansCategories = [
         { uri: require('../../assets/Armor/BrettSmall.jpg'), name: 'Brett Small Primary', clickable: true },
       ]},
       { name: 'Jake', codename: 'Nova Sentinel', screen: '', images: [
+        { uri: require('../../assets/Armor/Jake2.jpg'), name: 'Jake Primary', clickable: true },
         { uri: require('../../assets/Armor/Jake.jpg'), name: 'Jake Primary', clickable: true },
       ]},
       { name: 'Ailey', codename: 'Chromatic Blaze', screen: '', images: [
-        { uri: require('../../assets/Armor/Ailey.jpg'), name: 'Ailey Primary', clickable: true },
+        { uri: require('../../assets/Armor/Ailey2.jpg'), name: 'Ailey Primary', clickable: true },
       ]},
       { name: 'Aubrey', codename: 'Seraphine Dawn', screen: '', images: [
+        { uri: require('../../assets/Armor/Aubrey2.jpg'), name: 'Aubrey Primary', clickable: true },
         { uri: require('../../assets/Armor/Aubrey.jpg'), name: 'Aubrey Primary', clickable: true },
       ]},
       { name: 'James', codename: 'Dreadforge', screen: '', images: [
@@ -242,6 +246,7 @@ export const olympiansCategories = [
     family: 'Cummings',
     members: [
       { name: 'Lora', codename: 'Roseheart', screen: '', images: [
+        { uri: require('../../assets/Armor/Laura2.jpg'), name: 'Lora Primary', clickable: true },
         { uri: require('../../assets/Armor/Laura.jpg'), name: 'Lora Primary', clickable: true },
       ]},
       { name: 'Wayne', codename: 'Sovereign', screen: '', images: [
@@ -320,6 +325,7 @@ export const olympiansCategories = [
         { uri: require('../../assets/Armor/Chad.jpg'), name: 'Chad Primary', clickable: true },
       ]},
       { name: 'Rochelle', codename: 'White Veil', screen: '', images: [
+        { uri: require('../../assets/Armor/Rachel2.jpg'), name: 'Rochelle Primary', clickable: true },
         { uri: require('../../assets/Armor/Rachel.jpg'), name: 'Rochelle Primary', clickable: true },
       ]},
       { name: 'Annabeth', codename: 'Novanna', screen: '', images: [

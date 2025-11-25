@@ -81,6 +81,7 @@ const legionImages = {
   },
   'Kinnley Cline': {
     images: [
+      { uri: require('../../assets/Armor/Kinnley2.jpg'), name: 'Kinnley Primary', clickable: true },
       { uri: require('../../assets/Armor/Kinnley.jpg'), name: 'Kinnley Primary', clickable: true },
     ],
   },
@@ -157,6 +158,7 @@ const legionImages = {
   },
   'John': {
     images: [
+      { uri: require('../../assets/Armor/JohnHS2.jpg'), name: 'John Primary', clickable: true },
       { uri: require('../../assets/Armor/JohnHS.jpg'), name: 'John Primary', clickable: true },
     ],
   },
@@ -177,6 +179,7 @@ const legionImages = {
   },
   'Xavier': {
     images: [
+      { uri: require('../../assets/Armor/Xavier2.jpg'), name: 'Xavier Primary', clickable: true },
       { uri: require('../../assets/Armor/Xavier.jpg'), name: 'Xavier Primary', clickable: true },
     ],
   },
