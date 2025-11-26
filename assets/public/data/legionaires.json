@@ -1,0 +1,2658 @@
+{
+  "team": "Legionaires",
+  "universe": "Prime",
+  "faction_type": "Police Force",
+  "status": "Active",
+  "members": [
+  {
+    "team": "Legionaires",
+    "category": "Alumni",
+    "members": [
+      {
+        "id": "LEGION-ALUMNI-001",
+        "name": "Mason Erickson",
+        "codename": "Might",
+        "team": "Legionaires",
+        "category": "Alumni",
+        "rank": "Legion Leadership – Field Captain",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Might Armor",
+          "variants": ["Standard Deployment Rig"]
+        },
+        "abilities": [
+          "Powered exo-armor granting high-level strength",
+          "Enhanced durability and shock absorption",
+          "Short-burst power surges for melee strikes",
+          "Tactical awareness in close-quarters combat"
+        ],
+        "relationships": {
+          "partner": "Single",
+          "family": [],
+          "faction_connections": ["Legionaires", "Parliament (Support)"]
+        },
+        "bio": "Mason \"Might\" Erickson is one of the founding pillars of the Legionaires. As a college-era friend who stepped into the chaos of the Prime Universe, he naturally took point on the ground, becoming a frontline captain who protects both civilians and fellow heroes.",
+        "history": [
+          "Joined the Legionaires during the college era as one of the first official members",
+          "Helped coordinate early evacuations when Maw activity began to spike near civilian zones",
+          "Served as the primary frontline defender in several joint operations with other Parliament-aligned teams",
+          "Recognized informally as the Legionaires' 'big brother' figure, especially for younger or newer members"
+        ],
+        "notes": "Often leads missions when Will or other faction leaders are occupied. Widely trusted with command in the field."
+      },
+      {
+        "id": "LEGION-ALUMNI-002",
+        "name": "Davis Clark",
+        "codename": "Cyberman",
+        "team": "Legionaires",
+        "category": "Alumni",
+        "rank": "Legion Leadership – Tech & Systems Chief",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Cyberman Rig",
+          "variants": ["Ops Interface Harness"]
+        },
+        "abilities": [
+          "Direct neural interface with arcane-tech systems",
+          "Real-time battlefield data processing and HUD projection",
+          "Remote systems intrusion and defense",
+          "Secure comms routing and network shielding"
+        ],
+        "relationships": {
+          "partner": "Single",
+          "family": [],
+          "faction_connections": ["Legionaires", "Parliament (Tech Support)"]
+        },
+        "bio": "Davis \"Cyberman\" Clark is the Legionaires' systems backbone. While others charge into the fight, he keeps the lights on, the channels clear, and the enemy firewalls screaming. His specialty is bridging normal tech with the strange arcane-tech infrastructure of the Parliament.",
+        "history": [
+          "Helped design and stabilize the Legionaires' comms and data systems",
+          "Provided overwatch and remote hacking support during early Titans and Spartans operations",
+          "Instrumental in detecting and isolating corrupted data traces linked to Maw interference",
+          "Frequently coordinates with other tech-based allies across Prime Universe factions"
+        ],
+        "notes": "Prefers to operate from a command center but can deploy with a compact field rig when needed."
+      },
+      {
+        "id": "LEGION-ALUMNI-003",
+        "name": "Mckain Bailey",
+        "codename": "Vowline",
+        "team": "Legionaires",
+        "category": "Alumni",
+        "rank": "Legion Leadership – Defensive Anchor",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Vowline Armor",
+          "variants": ["Oathbound Guard Configuration"]
+        },
+        "abilities": [
+          "Barrier generation tied to personal vows and promises",
+          "Reinforced kinetic shielding around allies in danger",
+          "Heightened focus and tactical calm under pressure",
+          "Support fields that strengthen nearby teammates’ resilience"
+        ],
+        "relationships": {
+          "partner": "Single",
+          "family": [],
+          "faction_connections": ["Legionaires"]
+        },
+        "bio": "Mckain \"Vowline\" Bailey turns commitment into power. Every promise he makes becomes another line of defense between his friends and the void. As a core member of the Alumni leadership, he specializes in holding ground and keeping people safe when everything else is falling apart.",
+        "history": [
+          "Joined the Legionaires alongside Mason and Davis, forming the Alumni leadership core",
+          "Served as a defensive anchor during multiple evacuations and containment missions",
+          "Frequently positioned at choke points or fallback lines to stall enemy advances",
+          "Known for taking vows to protect specific individuals or locations, then backing those vows with unbreakable defense"
+        ],
+        "notes": "His shields grow stronger the more personally invested he is in the people he’s defending."
+      }
+    ]
+  },
+  {
+    "team": "Legionaires",
+    "category": "Fellowship",
+    "members": [
+      {
+        "id": "LEGION-FELLOWSHIP-001",
+        "name": "Kemerey",
+        "codename": "Seraphine",
+        "team": "Legionaires",
+        "category": "Fellowship",
+        "rank": "Emotional Support Vanguard",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Seraphine Raiment",
+          "variants": ["Radiant Mantle"]
+        },
+        "abilities": [
+          "Light-based shielding that softens damage",
+          "Warm healing radiance that calms emotional distress",
+          "Short-range bursts of radiant energy effective against corrupted entities",
+          "Empathic resonance that stabilizes ally morale"
+        ],
+        "relationships": {
+          "partner": "Single",
+          "family": [],
+          "faction_connections": ["Legionaires"]
+        },
+        "bio": "Kemerey \"Seraphine\" embodies the heart of the Fellowship circle. Her calming radiance and protective nature make her one of the Legionaires' most emotionally stabilizing members, supporting allies during both crises and recovery.",
+        "history": [
+          "Became an early emotional pillar for multiple Legionaires members",
+          "Supported the team through multiple personal and spiritual crises",
+          "Frequently leads non-combat support missions involving displaced civilians"
+        ],
+        "notes": "Her energy signature is uniquely gentle, making her indispensable for morale-critical operations."
+      },
+      {
+        "id": "LEGION-FELLOWSHIP-002",
+        "name": "Sheryl",
+        "codename": "Sage",
+        "team": "Legionaires",
+        "category": "Fellowship",
+        "rank": "Advisor & Strategist",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Sage Mantle",
+          "variants": ["Insight Configuration"]
+        },
+        "abilities": [
+          "Pattern recognition and enhanced tactical intuition",
+          "Projected strategic overlays for allies during missions",
+          "Limited precognitive insight based on emotional and situational cues",
+          "High-stability mental focus that resists panic or confusion"
+        ],
+        "relationships": {
+          "partner": "Single",
+          "family": [],
+          "faction_connections": ["Legionaires"]
+        },
+        "bio": "Sheryl \"Sage\" is the quiet thinker of the Fellowship. Not a frontline fighter, but a steady hand who sees subtle threats, emotional fractures, and strategic opportunities long before others do.",
+        "history": [
+          "Consulted on early Legion deployment patterns and mission safety",
+          "Intervened in several internal disputes to prevent team breakdowns",
+          "Advised multiple cross-faction operations through the Parliament"
+        ],
+        "notes": "Her calm voice during crisis scenarios is treated as a tactical asset."
+      },
+      {
+        "id": "LEGION-FELLOWSHIP-003",
+        "name": "Krystel",
+        "codename": "Prism",
+        "team": "Legionaires",
+        "category": "Fellowship",
+        "rank": "Light Manipulation Specialist",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Prism Harness",
+          "variants": ["Refractor Suit"]
+        },
+        "abilities": [
+          "Creation of multi-spectrum light shields",
+          "Illusion projection by refracting light fields",
+          "Multi-spectrum scanning through visor lenses",
+          "Flashburst techniques for temporary crowd control"
+        ],
+        "relationships": {
+          "partner": "Single",
+          "family": [],
+          "faction_connections": ["Legionaires"]
+        },
+        "bio": "Krystel \"Prism\" bends light into protection, deception, and clarity. Her shifting, crystalline armor reflects both her adaptability and her role as an emotional and tactical shield for the Fellowship.",
+        "history": [
+          "Assisted in concealing evacuation pathways during several crises",
+          "Provided stealth support with illusion veils",
+          "Integral in coordinating rapid relocations during emergencies"
+        ],
+        "notes": "Her armor’s rainbow sheen changes with her emotional intensity."
+      },
+      {
+        "id": "LEGION-FELLOWSHIP-004",
+        "name": "Deb",
+        "codename": "Oracle",
+        "team": "Legionaires",
+        "category": "Fellowship",
+        "rank": "Information Analyst",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Oracle Attire",
+          "variants": ["Data-Linked Mantle"]
+        },
+        "abilities": [
+          "Rapid information synthesis and archival recall",
+          "Predictive analysis via probability trees",
+          "Real-time threat and anomaly detection",
+          "Access to multiple comm-net channels simultaneously"
+        ],
+        "relationships": {
+          "partner": "Single",
+          "family": [],
+          "faction_connections": ["Legionaires", "Parliament (Intel Support)"]
+        },
+        "bio": "Deb \"Oracle\" is the knowledge engine of the Fellowship. She gathers, deciphers, and distributes critical information that keeps the Legion operating with clarity and precision.",
+        "history": [
+          "Identified early patterns linking Maw disturbances to rising cosmic events",
+          "Developed intel bridges between multiple Parliament-aligned factions",
+          "Supports field teams with remote analysis during operations"
+        ],
+        "notes": "Prefers analysis over action, but her intel changes the outcomes of missions."
+      },
+      {
+        "id": "LEGION-FELLOWSHIP-005",
+        "name": "Emma (BYU)",
+        "codename": "Strive",
+        "team": "Legionaires",
+        "category": "Fellowship",
+        "rank": "Inspiration Specialist",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Strive Raiment",
+          "variants": ["Focus Mantle"]
+        },
+        "abilities": [
+          "Enhanced stamina and long-term endurance",
+          "Aura that boosts determination in nearby allies",
+          "Mental clarity projection that helps stabilize chaotic thought patterns",
+          "Emotional encouragement fields during group operations"
+        ],
+        "relationships": {
+          "partner": "Single",
+          "family": [],
+          "faction_connections": ["Legionaires"]
+        },
+        "bio": "Emma \"Strive\" is a quiet but resilient force who strengthens the hearts of those around her. Her abilities push allies past exhaustion and doubt, helping them reach their fullest effort.",
+        "history": [
+          "Supported Legionaires during prolonged missions where morale wavered",
+          "Helped stabilize several emotionally overwhelmed members",
+          "Often assigned to operations requiring long endurance or emotional resilience"
+        ],
+        "notes": "Not flashy, but her presence changes the atmosphere of every mission."
+      },
+      {
+        "id": "LEGION-FELLOWSHIP-006",
+        "name": "Jessica (BYU)",
+        "codename": "Hopestead",
+        "team": "Legionaires",
+        "category": "Fellowship",
+        "rank": "Hope Anchor",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Hopestead Suit",
+          "variants": ["Comfort Mantle"]
+        },
+        "abilities": [
+          "Emotional grounding that stabilizes distressed allies",
+          "Encouragement field reducing panic and fear",
+          "Low-level healing support for stress-related fatigue",
+          "Aura that strengthens trust and team unity"
+        ],
+        "relationships": {
+          "partner": "Single",
+          "family": [],
+          "faction_connections": ["Legionaires"]
+        },
+        "bio": "Jessica \"Hopestead\" is the emotional anchor of the Fellowship. When teams fracture under stress, she pulls them back to center with warmth, reassurance, and gentle strength.",
+        "history": [
+          "Served as emotional mediator during internal Legion conflict moments",
+          "Assisted in recovery after several traumatic missions",
+          "Frequently present during post-mission cooldowns"
+        ],
+        "notes": "Her strength is quiet, but unshakably powerful."
+      },
+      {
+        "id": "LEGION-FELLOWSHIP-007",
+        "name": "Victoria",
+        "codename": "Sari Bloom",
+        "team": "Legionaires",
+        "category": "Fellowship",
+        "rank": "Support Bloom",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Sari Bloom Suit",
+          "variants": ["Petalflare Configuration"]
+        },
+        "abilities": [
+          "Floral-energy shielding and soft stuns",
+          "Field blossoms that relax tension and anxiety",
+          "Light plant-based constructs for cover or mobility",
+          "Environmental harmonization to reduce corruption effects"
+        ],
+        "relationships": {
+          "partner": "Single",
+          "family": [],
+          "faction_connections": ["Legionaires"]
+        },
+        "bio": "Victoria \"Sari Bloom\" brings color, calm, and gentle power to the Legionaires. Her plant-like energy constructs soothe allies and hinder corrupted foes.",
+        "history": [
+          "Helped stabilize corruption-heavy areas with environmental cleansing fields",
+          "Provided cover constructs for evac teams during several crisis missions"
+        ],
+        "notes": "Her armor aesthetics resemble a mix of flower petals and soft energy weaving."
+      }
+    ]
+  },
+  {
+  "team": "Legionaires",
+  "category": "Young Womens",
+  "members": [
+    {
+      "id": "LEGION-YW-001",
+      "name": "Mika",
+      "codename": "Beacon",
+      "team": "Legionaires",
+      "category": "Young Womens",
+      "rank": "Light Support",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Beacon Suit",
+        "variants": ["Guiding Light Configuration"]
+      },
+      "abilities": [
+        "Soft light projection to guide allies in darkness",
+        "Low-intensity barrier fields for basic protection",
+        "Morale-boosting presence that helps calm fear"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Mika \"Beacon\" is a gentle guiding presence for the Young Womens group, offering steady support when others feel lost or overwhelmed.",
+      "history": [
+        "Joined the Legionaires as part of the Young Womens circle",
+        "Frequently assigned to support roles during small-scale operations",
+        "Known for keeping spirits up when missions get tense"
+      ],
+      "notes": "Her armor glow is soft and warm rather than blinding or aggressive."
+    },
+    {
+      "id": "LEGION-YW-002",
+      "name": "Malia",
+      "codename": "Harbor",
+      "team": "Legionaires",
+      "category": "Young Womens",
+      "rank": "Emotional Anchor",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Harbor Suit",
+        "variants": ["Safe Haven Configuration"]
+      },
+      "abilities": [
+        "Emotional grounding aura that reduces panic",
+        "Enhanced resilience when shielding others",
+        "Creates small safe zones where allies can regroup"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Malia \"Harbor\" is a safe place in human form. When everything feels like it’s sinking, she becomes the stable shore others cling to.",
+      "history": [
+        "Provided emotional support during early Legion training and bonding",
+        "Helps younger or less-experienced members process difficult missions",
+        "Often present during debriefs and cooldown time after operations"
+      ],
+      "notes": "Her power focuses more on mental and emotional safety than raw combat."
+    },
+    {
+      "id": "LEGION-YW-003",
+      "name": "Jami",
+      "codename": "Lifeline",
+      "team": "Legionaires",
+      "category": "Young Womens",
+      "rank": "Support Specialist",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Lifeline Rig",
+        "variants": ["Field Support Harness"]
+      },
+      "abilities": [
+        "Quick-response support in tense situations",
+        "Enhanced reflexes for catching or pulling allies out of danger",
+        "Basic first-aid and stabilizing tech in her suit"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Jami \"Lifeline\" is the one who always reaches out first—literally. She’s quick to grab, pull, and steady anyone who’s about to fall, physically or emotionally.",
+      "history": [
+        "Known for stepping in fast when teammates freeze or hesitate",
+        "Assisted in multiple near-accident situations during training and missions",
+        "Became an unofficial first-response point in small ops"
+      ],
+      "notes": "Her instincts lean toward saving people first, fighting second."
+    },
+    {
+      "id": "LEGION-YW-004",
+      "name": "Cami",
+      "codename": "Everbright",
+      "team": "Legionaires",
+      "category": "Young Womens",
+      "rank": "Optimism Vanguard",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Everbright Suit",
+        "variants": ["Radiant Hope Configuration"]
+      },
+      "abilities": [
+        "Aura that lifts mood and restores hope",
+        "Light flare bursts to disrupt minor threats",
+        "Resistant to despair-based or fear-based effects"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Cami \"Everbright\" is the team’s burst of sunshine. She doesn’t ignore darkness—she just refuses to let it win.",
+      "history": [
+        "Helped keep the Young Womens circle bonded through hard personal seasons",
+        "Frequently requested for missions where morale is likely to dip",
+        "Known for turning even heavy moments into something survivable"
+      ],
+      "notes": "Her suit is visually softer but symbolically very strong—meant to remind others there’s still light ahead."
+    },
+    {
+      "id": "LEGION-YW-005",
+      "name": "Kanani",
+      "codename": "Alohaheart",
+      "team": "Legionaires",
+      "category": "Young Womens",
+      "rank": "Cultural & Spiritual Support",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Alohaheart Attire",
+        "variants": ["Harmony Weave"]
+      },
+      "abilities": [
+        "Calming presence rooted in kindness and respect",
+        "Gentle energy fields that promote unity and empathy",
+        "Subtle spiritual resonance that helps people feel seen and valued"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Kanani \"Alohaheart\" brings warmth, culture, and deep kindness into the Legionaires. She reminds the team what they’re fighting for—not just survival, but connection.",
+      "history": [
+        "Served as a bridge-builder between different friend groups and circles",
+        "Helped defuse interpersonal tension more than once with empathy and respect",
+        "Often invited into spaces where reconciliation or soft leadership is needed"
+      ],
+      "notes": "Her presence often shifts the emotional temperature of a room all by itself."
+    }
+  ]
+},
+{
+  "team": "Legionaires",
+  "category": "High School",
+  "members": [
+    {
+      "id": "LEGION-HS-001",
+      "name": "Kenndedy Carman",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Friend & Support",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Civilian Attire",
+        "variants": []
+      },
+      "abilities": [
+        "Emotional support",
+        "Grounding presence"
+      ],
+      "relationships": {
+        "partner": "Unknown",
+        "family": ["Carman"],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Kenndedy Carman is one of the familiar faces in the High School circle, remembered more for her presence than for combat.",
+      "history": [
+        "Attended school alongside multiple Legionaires members",
+        "Provided emotional support during stressful school years"
+      ],
+      "notes": "Non-powered ally who helps keep things normal."
+    },
+    {
+      "id": "LEGION-HS-002",
+      "name": "Jack Clark",
+      "codename": "Blaze",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Fire Combat Specialist",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Blaze Armor",
+        "variants": ["Inferno Configuration"]
+      },
+      "abilities": [
+        "Pyro-field projection from gauntlets",
+        "Heat-resistant armor plating",
+        "Burst mobility using flame jets",
+        "Blinding flare attacks"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": ["Clark"],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Jack \"Blaze\" Clark channels raw fire with surprising discipline. He became one of the High School era’s most recognizable frontliners.",
+      "history": [
+        "Joined the Legionaires during the High School phase",
+        "Used controlled fire to shield civilians from Maw-related threats",
+        "Helped train others in hazardous-environment operations"
+      ],
+      "notes": "Jokes a lot, but switches to deadly serious the second someone’s in danger."
+    },
+    {
+      "id": "LEGION-HS-003",
+      "name": "Emma Bronson",
+      "codename": "Synergy",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Team Amplifier",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Synergy Mantle",
+        "variants": ["Harmonic Weave"]
+      },
+      "abilities": [
+        "Amplifies nearby allies’ powers",
+        "Stabilizes team emotions",
+        "Short-range synergy fields",
+        "Boosts coordination in chaotic fights"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": ["Bronson"],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Emma \"Synergy\" Bronson quietly turns a good team into a great one. Her power boosts others rather than herself, which fits her personality perfectly.",
+      "history": [
+        "Joined Legionaires operations as a core High School member",
+        "Helped keep multiple teams from fracturing under pressure",
+        "Regularly deployed when different factions needed to work together"
+      ],
+      "notes": "Her presence alone raises everyone’s game."
+    },
+    {
+      "id": "LEGION-HS-004",
+      "name": "Ella Duce",
+      "codename": "Big Sister",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Support Guardian",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Big Sister Armor",
+        "variants": ["Guardian Shield Configuration"]
+      },
+      "abilities": [
+        "Personal and group force barriers",
+        "Enhanced durability when defending others",
+        "Short-range kinetic pushes",
+        "High emotional insight"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": ["Duce"],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Ella \"Big Sister\" Duce is the protector archetype of the High School crew, always stepping between danger and the people she cares about.",
+      "history": [
+        "Became known for intercepting attacks aimed at less-experienced members",
+        "Helped calm and protect non-powered friends during crises",
+        "Frequently volunteered for frontline evacuation duty"
+      ],
+      "notes": "She makes people feel safe just by standing next to them."
+    },
+    {
+      "id": "LEGION-HS-005",
+      "name": "Addison Morris",
+      "codename": "Legend",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Momentum Specialist",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Legend Gear",
+        "variants": ["Momentum Core Variant"]
+      },
+      "abilities": [
+        "Builds momentum for massively boosted strikes",
+        "Short bursts of enhanced speed",
+        "Kinetic redirection of incoming force",
+        "Adrenaline-fueled resilience"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": ["Morris"],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Addison \"Legend\" Morris fights like every moment might become a story retold later. Once he gets moving, stopping him is nearly impossible.",
+      "history": [
+        "Known for clutch comebacks once momentum swings in his favor",
+        "Helped break enemy lines during several High School-era engagements",
+        "Often paired with Blaze and Guardinous Rex for strike missions"
+      ],
+      "notes": "He’s at his best when the odds look bad and everyone else is tired."
+    },
+    {
+      "id": "LEGION-HS-006",
+      "name": "Cody Cline",
+      "codename": "Golden Prime",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Energy Vanguard",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Golden Prime Armor",
+        "variants": ["Radiant Core"]
+      },
+      "abilities": [
+        "Golden energy projection",
+        "Empowered strikes and shields",
+        "Short-term self-augmentation",
+        "Beacon-style flare to guide allies"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": ["Cline"],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Cody \"Golden Prime\" Cline manifests bright, focused energy that cuts through darkness—literally and symbolically.",
+      "history": [
+        "Served as a front-line vanguard during multiple High School operations",
+        "Used his beacon flares to guide evacuees through blackouts",
+        "Often coordinated with Synergy and Harmony to stabilize team flow"
+      ],
+      "notes": "When he lights up, everyone else remembers why they’re still fighting."
+    },
+    {
+      "id": "LEGION-HS-007",
+      "name": "Alyssa",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Friend & Support",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Civilian Attire",
+        "variants": []
+      },
+      "abilities": [
+        "Social support",
+        "Moral encouragement"
+      ],
+      "relationships": {
+        "partner": "Unknown",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Alyssa is woven into the High School era’s memory as part of the wider circle of friends.",
+      "history": [
+        "Present around many early Legionaires connections",
+        "Helped maintain a sense of normal life despite rising chaos"
+      ],
+      "notes": "Non-powered, but part of the emotional backbone of the group."
+    },
+    {
+      "id": "LEGION-HS-008",
+      "name": "Justin Platt",
+      "codename": "Echo Wood",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Sound & Terrain Specialist",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Echo Wood Rig",
+        "variants": ["Resonant Grove"]
+      },
+      "abilities": [
+        "Sound-based pulses that ricochet off terrain",
+        "Creates echo-maps of surroundings",
+        "Limited vibration control through surfaces"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": ["Platt"],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Justin \"Echo Wood\" Platt plays with sound and space, turning the battlefield into a resonant maze that favors his allies.",
+      "history": [
+        "Used echo-mapping to guide allies through confusing or obstructed zones",
+        "Helped track threats that couldn’t be seen directly",
+        "In alternate branches of the multiverse, stands with Thunder Born—but here, he’s firmly Legionaires."
+      ],
+      "notes": "His power feels subtle until you realize he’s been steering the whole fight."
+    },
+    {
+      "id": "LEGION-HS-009",
+      "name": "Zack Dustin",
+      "codename": "Carved Echo",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Precision Skirmisher",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Carved Echo Armor",
+        "variants": ["Shard-Line Configuration"]
+      },
+      "abilities": [
+        "Carves precise lines of force through space",
+        "Echoes slashes across short distances",
+        "Exceptional battlefield awareness"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": ["Dustin"],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Zack \"Carved Echo\" Dustin specializes in sharp, surgical strikes that seem to come from impossible angles.",
+      "history": [
+        "Often fights alongside Echo Wood, forming a paired \"echo\" combat style",
+        "Helped neutralize several agile threats with perfectly timed cuts",
+        "In Sam’s universe, he rides with Thunder Born—here, he stands as a Legionaire legend-in-the-making."
+      ],
+      "notes": "He prefers efficient, clean wins over flashy ones."
+    },
+    {
+      "id": "LEGION-HS-010",
+      "name": "Josh Clark",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Friend & Support",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Civilian Attire",
+        "variants": []
+      },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": ["Clark"],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Josh Clark is part of the extended High School network, more observer than combatant.",
+      "history": [
+        "Connected to several core Legionaires through school and social circles"
+      ],
+      "notes": "Non-powered ally."
+    },
+    {
+      "id": "LEGION-HS-011",
+      "name": "Jessica Fisher",
+      "codename": "Aquanora",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Water Operative",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Aquanora Suit",
+        "variants": ["Tidal Weave"]
+      },
+      "abilities": [
+        "Limited water manipulation",
+        "Moisture control in the immediate area",
+        "Hydro-barriers and whiplash strikes"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": ["Fisher"],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Jessica \"Aquanora\" Fisher is a fluid fighter who uses water as both shield and spear.",
+      "history": [
+        "Provided battlefield control in rain, snow, and flood conditions",
+        "Worked well in tandem with Blaze and Golden Prime to balance elements"
+      ],
+      "notes": "Quiet, observant, and unexpectedly fierce when the fight hits the waterline."
+    },
+    {
+      "id": "LEGION-HS-012",
+      "name": "Miles Robinson",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Friend & Support",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Civilian Attire",
+        "variants": []
+      },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": ["Robinson"],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Miles Robinson is part of the wider High School web of connections.",
+      "history": [
+        "Known primarily through shared classes and social overlap"
+      ],
+      "notes": "Non-powered, but part of the history."
+    },
+    {
+      "id": "LEGION-HS-013",
+      "name": "Lizzy",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Friend & Support",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Civilian Attire",
+        "variants": []
+      },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Lizzy is remembered as part of the social backdrop of the Legionaires’ school years.",
+      "history": [],
+      "notes": "Non-powered."
+    },
+    {
+      "id": "LEGION-HS-014",
+      "name": "Sam",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Friend & Shared History",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Civilian Attire",
+        "variants": []
+      },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Sam appears in the High School lineup as part of the shared life history that later feeds into bigger stories.",
+      "history": [],
+      "notes": "This entry reflects the High School-era connection rather than his later, darker paths."
+    },
+    {
+      "id": "LEGION-HS-015",
+      "name": "Spencer",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Friend & Shared History",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Civilian Attire",
+        "variants": []
+      },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Spencer is listed among the High School crew as part of the early, pre-hero chapters of the story.",
+      "history": [],
+      "notes": "Non-powered in this context; Titan Spencer is represented separately in Titans data."
+    },
+    {
+      "id": "LEGION-HS-016",
+      "name": "Dylan",
+      "codename": "Guardinous Rex",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Heavy Vanguard",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Guardinous Rex Armor",
+        "variants": ["Juggernaut Frame"]
+      },
+      "abilities": [
+        "Armored charge attacks",
+        "High durability",
+        "Zone control through sheer presence"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Dylan \"Guardinous Rex\" is a walking tank for the High School squad, built to hold the line when everyone else needs time to recover.",
+      "history": [
+        "Served as a moving wall during several critical retreats",
+        "Often paired with Legend and Blaze to break enemy formations"
+      ],
+      "notes": "His style is simple: take the hit, stay standing, and dare the enemy to try again."
+    },
+    {
+      "id": "LEGION-HS-017",
+      "name": "Kinnley Cline",
+      "codename": "Harmony",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Emotional & Sonic Support",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Harmony Suit",
+        "variants": ["Resonant Aura"]
+      },
+      "abilities": [
+        "Sonic and emotional balancing fields",
+        "Helps stabilize team morale and focus",
+        "Mild sound manipulation"
+      ],
+      "relationships": {
+        "partner": "Alex Croft (Spartans)",
+        "family": ["Cline"],
+        "faction_connections": ["Legionaires", "Spartans"]
+      },
+      "bio": "Kinnley \"Harmony\" Cline tunes the emotional and mental frequency of the battlefield, helping people fight as their best selves instead of their most scared.",
+      "history": [
+        "Provided emotional grounding for multiple High School-era operations",
+        "Later married Alex Croft of the Spartans, tying two teams together through family",
+        "Often requested when missions risked high stress or internal conflict"
+      ],
+      "notes": "Her power and her relationship both literally and symbolically bridge different factions."
+    },
+    {
+      "id": "LEGION-HS-018",
+      "name": "Sanford Duncan",
+      "codename": "Thunderbolt",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Lightning Striker",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Thunderbolt Harness",
+        "variants": ["Stormline Variant"]
+      },
+      "abilities": [
+        "Short-range lightning strikes",
+        "Burst-speed movement",
+        "Electrified melee attacks"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": ["Duncan"],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Sanford \"Thunderbolt\" Duncan brings fast-moving, high-voltage chaos to the field.",
+      "history": [
+        "Used lightning bursts to intercept fast-moving threats",
+        "Helped power emergency systems during blackouts"
+      ],
+      "notes": "Excels in hit-and-run tactics."
+    },
+    {
+      "id": "LEGION-HS-019",
+      "name": "Magic Matt",
+      "codename": "Illusionist",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Illusion Specialist",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Illusionist Cloak",
+        "variants": ["Stagecraft Array"]
+      },
+      "abilities": [
+        "Creates convincing visual illusions",
+        "Minor perception distortion",
+        "Distraction and misdirection tactics"
+      ],
+      "relationships": {
+        "partner": "Unknown",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "\"Magic Matt\" blends stage magician flair with real battlefield misdirection, turning fights into mind games.",
+      "history": [
+        "Ran interference by confusing enemy targeting and lines of sight",
+        "Helped cover retreats and stealth approaches with illusion screens"
+      ],
+      "notes": "Loves the theatrical side of hero work."
+    },
+    {
+      "id": "LEGION-HS-020",
+      "name": "Kanyon",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Friend & Support",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Civilian Attire",
+        "variants": []
+      },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Kanyon is part of the familiar faces of the High School era.",
+      "history": [],
+      "notes": "Non-powered ally."
+    },
+    {
+      "id": "LEGION-HS-021",
+      "name": "John",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Friend & Support",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Civilian Attire",
+        "variants": []
+      },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "John is one of the many classmates tied into the Legionaires’ past.",
+      "history": [],
+      "notes": "Non-powered."
+    },
+    {
+      "id": "LEGION-HS-022",
+      "name": "Quinton",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Friend & Support",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Civilian Attire",
+        "variants": []
+      },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Quinton is noted as part of the extended High School circle.",
+      "history": [],
+      "notes": "Non-powered."
+    },
+    {
+      "id": "LEGION-HS-023",
+      "name": "Emery",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Fallen Friend",
+      "status": "Deceased",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Civilian Attire",
+        "variants": []
+      },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Emery is remembered as one of the casualties from Sam’s corrupted return.",
+      "history": [
+        "Killed during the events known as The Return"
+      ],
+      "notes": "Listed among the fallen High School friends."
+    },
+    {
+      "id": "LEGION-HS-024",
+      "name": "Mason",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Fallen Friend",
+      "status": "Deceased",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Civilian Attire",
+        "variants": []
+      },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Mason appears here not as a fighter, but as one of the friends lost in the crossfire of greater events.",
+      "history": [
+        "Killed during the events surrounding Sam’s corrupted return"
+      ],
+      "notes": "One of several names permanently marked as fallen."
+    },
+    {
+      "id": "LEGION-HS-025",
+      "name": "Xavier",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Fallen Friend",
+      "status": "Deceased",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Civilian Attire",
+        "variants": []
+      },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Xavier’s name is carried forward as part of the cost of The Return.",
+      "history": [
+        "Killed by fallout of Sam’s corrupted actions"
+      ],
+      "notes": "Remembered, even if not powered."
+    },
+    {
+      "id": "LEGION-HS-026",
+      "name": "Josh Davis",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Fallen Friend",
+      "status": "Deceased",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Civilian Attire",
+        "variants": []
+      },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Josh Davis is another name on the list of those lost when Sam returned corrupted.",
+      "history": [
+        "Killed in the wave of violence associated with The Return"
+      ],
+      "notes": "Marked as fallen in Legionaires records."
+    },
+    {
+      "id": "LEGION-HS-027",
+      "name": "Teagan",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Fallen Friend",
+      "status": "Deceased",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Civilian Attire",
+        "variants": []
+      },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Teagan is memorialized as one of the High School-era casualties tied to Sam’s darker chapter.",
+      "history": [
+        "Died during the same series of events that claimed multiple classmates"
+      ],
+      "notes": "Part of the emotional weight carried by surviving Legionaires."
+    },
+    {
+      "id": "LEGION-HS-028",
+      "name": "Carter",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Fallen Friend",
+      "status": "Deceased",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Civilian Attire",
+        "variants": []
+      },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Carter’s record is short but important: another life ended during The Return.",
+      "history": [
+        "Counted among those slain as Sam’s corruption unfolded"
+      ],
+      "notes": "His name is kept in the High School register as a reminder."
+    },
+    {
+      "id": "LEGION-HS-029",
+      "name": "Nate Anderson",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "High School",
+      "rank": "Fallen Friend",
+      "status": "Deceased",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Civilian Attire",
+        "variants": []
+      },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Nate Anderson’s inclusion marks yet another casualty from a time when the cost of heroism was paid by many who never chose the fight.",
+      "history": [
+        "Died during the events attributed to Sam’s corrupted return to Earth"
+      ],
+      "notes": "Recorded among the fallen High School friends."
+    }
+  ]
+},
+{
+  "team": "Legionaires",
+  "category": "Junior High",
+  "members": [
+    {
+      "id": "LEGION-JR-001",
+      "name": "Paxton",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Friend & Early Circle",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": ["Paxton"],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Paxton is part of the early social circle tied to the Junior High years.",
+      "history": [],
+      "notes": "Non-powered ally."
+    },
+    {
+      "id": "LEGION-JR-002",
+      "name": "Spencer Hill",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Friend & Early Circle",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": ["Hill"],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Spencer Hill was part of the early Legionaires environment during foundational years.",
+      "history": [],
+      "notes": "Non-powered."
+    },
+    {
+      "id": "LEGION-JR-003",
+      "name": "Cassidy Cline",
+      "codename": "Protector",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Defensive Specialist (Young Era)",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Protector Guard Suit",
+        "variants": ["Shieldline Variant"]
+      },
+      "abilities": [
+        "Compact defensive barriers",
+        "Short-range force pulses",
+        "Enhanced endurance when shielding others"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": ["Cline"],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Cassidy \"Protector\" Cline was one of the first Junior High members to demonstrate defensive-focused heroic traits.",
+      "history": [
+        "Often took charge of protecting younger or weaker classmates",
+        "First displayed ability during a school emergency drill gone wrong"
+      ],
+      "notes": "A naturally protective presence in the group."
+    },
+    {
+      "id": "LEGION-JR-004",
+      "name": "Adam Leger",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Friend & Support",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": ["Leger"],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Adam Leger was part of the broader Junior High friend network.",
+      "history": [],
+      "notes": "Non-powered ally."
+    },
+    {
+      "id": "LEGION-JR-005",
+      "name": "Sam Phillips",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Friend & Support",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": ["Phillips"],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Sam Phillips was a steady presence during the Junior High era.",
+      "history": [],
+      "notes": "Non-powered ally."
+    },
+    {
+      "id": "LEGION-JR-006",
+      "name": "Will Knight",
+      "codename": "Eagle Master",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Aerial Scout",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Eagle Master Flight Gear",
+        "variants": ["Skybound Variant"]
+      },
+      "abilities": [
+        "Enhanced perception",
+        "Directional wind-glide bursts",
+        "High-accuracy visual tracking"
+      ],
+      "relationships": {
+        "partner": "Unknown",
+        "family": ["Knight"],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Will \"Eagle Master\" Knight brought early aerodynamic talent to the Legionaires’ Junior High roster.",
+      "history": [
+        "Known for spotting threats before anyone else noticed them",
+        "Often acted as lookout during group outings and early missions"
+      ],
+      "notes": "His early scouting instincts foreshadow later frontline heroes."
+    },
+    {
+      "id": "LEGION-JR-007",
+      "name": "Hayden Perks",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Friend & Support",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": ["Perks"],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Hayden Perks was part of the extended Junior High group.",
+      "history": [],
+      "notes": "Non-powered ally."
+    },
+    {
+      "id": "LEGION-JR-008",
+      "name": "Cienna",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Friend & Support",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Cienna was part of the shared Junior High experience with the early Legionaires circle.",
+      "history": [],
+      "notes": "Non-powered."
+    },
+    {
+      "id": "LEGION-JR-009",
+      "name": "Clayton",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Friend & Support",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Clayton was part of the Junior High cohort tied to early friendships.",
+      "history": [],
+      "notes": "Non-powered ally."
+    },
+    {
+      "id": "LEGION-JR-010",
+      "name": "Bridget",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Friend & Support",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Bridget appears as part of the early-phase social circle.",
+      "history": [],
+      "notes": "Non-powered."
+    },
+    {
+      "id": "LEGION-JR-011",
+      "name": "Ryan",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Friend & Support",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": ["Ryan"],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Ryan was involved primarily as part of group camaraderie during Junior High.",
+      "history": [],
+      "notes": "Non-powered."
+    },
+    {
+      "id": "LEGION-JR-012",
+      "name": "Carson",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Friend & Support",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": ["Carson"],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Carson is listed as part of the Junior High-era group ties.",
+      "history": [],
+      "notes": "Non-powered ally."
+    },
+    {
+      "id": "LEGION-JR-013",
+      "name": "Sydney",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Friend & Support",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Sydney was part of the same early environment from which many Legionaires bonds formed.",
+      "history": [],
+      "notes": "Non-powered."
+    },
+    {
+      "id": "LEGION-JR-014",
+      "name": "Natalie",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Friend & Support",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Natalie is listed among the Junior High friend group.",
+      "history": [],
+      "notes": "Non-powered."
+    },
+
+
+    {
+      "id": "LEGION-JR-015",
+      "name": "Carter Olsen",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Fallen Friend",
+      "status": "Deceased",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": ["Olsen"],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Carter Olsen is listed among the Junior High-era fallen during Sam’s corrupted return.",
+      "history": [
+        "Killed during the events known as The Return"
+      ],
+      "notes": "Memorialized in Legionaires records."
+    },
+    {
+      "id": "LEGION-JR-016",
+      "name": "Steven",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Fallen Friend",
+      "status": "Deceased",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Steven is listed among the casualties connected to Sam’s corrupted return.",
+      "history": [
+        "Killed during the fallout of The Return"
+      ],
+      "notes": "Remembered among Junior High fallen."
+    },
+    {
+      "id": "LEGION-JR-017",
+      "name": "Kaden Hansen",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Fallen Friend",
+      "status": "Deceased",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": ["Hansen"],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Kaden Hansen is listed as one of the Junior High-era casualties.",
+      "history": [
+        "Killed during the same period as other fallen Legionaires allies"
+      ],
+      "notes": "One of the several marked lost during The Return."
+    },
+    {
+      "id": "LEGION-JR-018",
+      "name": "Olivia",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Fallen Friend",
+      "status": "Deceased",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Olivia is remembered as part of the lives touched and lost during Sam’s corrupted return.",
+      "history": [
+        "Killed during the events surrounding The Return"
+      ],
+      "notes": "Listed among the fallen Junior High group."
+    },
+    {
+      "id": "LEGION-JR-019",
+      "name": "Quincy",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Fallen Friend",
+      "status": "Deceased",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {
+        "partner": "Unknown",
+        "family": [],
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Quincy is listed among the Junior High names permanently marked as fallen.",
+      "history": [
+        "Died during fallout from Sam’s corrupted return"
+      ],
+      "notes": "Recorded in the fallen registry."
+    },
+
+
+    {
+      "id": "LEGION-JR-020",
+      "name": "Jackson",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Unconfirmed Member",
+      "status": "Optional",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {},
+      "bio": "Listed as optional entry from the Maybe Add list.",
+      "history": [],
+      "notes": ""
+    },
+    {
+      "id": "LEGION-JR-021",
+      "name": "Sami",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Unconfirmed Member",
+      "status": "Optional",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {},
+      "bio": "Listed as optional entry.",
+      "history": [],
+      "notes": ""
+    },
+    {
+      "id": "LEGION-JR-022",
+      "name": "Samuel",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Unconfirmed Member",
+      "status": "Optional",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {},
+      "bio": "",
+      "history": [],
+      "notes": ""
+    },
+    {
+      "id": "LEGION-JR-023",
+      "name": "Jonathan",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Unconfirmed Member",
+      "status": "Optional",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {},
+      "bio": "",
+      "history": [],
+      "notes": ""
+    },
+    {
+      "id": "LEGION-JR-024",
+      "name": "Adam",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Unconfirmed Member",
+      "status": "Optional",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {},
+      "bio": "",
+      "history": [],
+      "notes": ""
+    },
+    {
+      "id": "LEGION-JR-025",
+      "name": "Kendra",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Unconfirmed Member",
+      "status": "Optional",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {},
+      "bio": "",
+      "history": [],
+      "notes": ""
+    },
+    {
+      "id": "LEGION-JR-026",
+      "name": "Charlotte",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Unconfirmed Member",
+      "status": "Optional",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {},
+      "bio": "",
+      "history": [],
+      "notes": ""
+    },
+    {
+      "id": "LEGION-JR-027",
+      "name": "Cheyenne",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Unconfirmed Member",
+      "status": "Optional",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {},
+      "bio": "",
+      "history": [],
+      "notes": ""
+    },
+    {
+      "id": "LEGION-JR-028",
+      "name": "Aaron",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Unconfirmed Member",
+      "status": "Optional",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {},
+      "bio": "",
+      "history": [],
+      "notes": ""
+    },
+    {
+      "id": "LEGION-JR-029",
+      "name": "Marshall",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Unconfirmed Member",
+      "status": "Optional",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {},
+      "bio": "",
+      "history": [],
+      "notes": ""
+    },
+    {
+      "id": "LEGION-JR-030",
+      "name": "Edger",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Unconfirmed Member",
+      "status": "Optional",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {},
+      "bio": "",
+      "history": [],
+      "notes": ""
+    },
+    {
+      "id": "LEGION-JR-031",
+      "name": "Bronwyn",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Unconfirmed Member",
+      "status": "Optional",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {},
+      "bio": "",
+      "history": [],
+      "notes": ""
+    },
+    {
+      "id": "LEGION-JR-032",
+      "name": "Jonas",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Unconfirmed Member",
+      "status": "Optional",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {},
+      "bio": "",
+      "history": [],
+      "notes": ""
+    },
+    {
+      "id": "LEGION-JR-033",
+      "name": "Jorge",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Unconfirmed Member",
+      "status": "Optional",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {},
+      "bio": "",
+      "history": [],
+      "notes": ""
+    },
+    {
+      "id": "LEGION-JR-034",
+      "name": "Jacob", 
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Unconfirmed Member",
+      "status": "Optional",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {},
+      "bio": "",
+      "history": [],
+      "notes": ""
+    },
+    {
+      "id": "LEGION-JR-035",
+      "name": "Marlane",
+      "codename": "",
+      "team": "Legionaires",
+      "category": "Junior High",
+      "rank": "Unconfirmed Member",
+      "status": "Optional",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": { "name": "Civilian Attire", "variants": [] },
+      "abilities": [],
+      "relationships": {},
+      "bio": "",
+      "history": [],
+      "notes": ""
+    }
+  ]
+},
+{
+  "team": "Legionaires",
+  "category": "Elementary",
+  "members": [
+    {
+      "id": "LEG-EL-001",
+      "name": "Josh Noble",
+      "codename": "Golden Caster",
+      "status": "Alive",
+      "role": "Support Caster",
+      "abilities": [
+        "Golden energy constructs",
+        "Long-range support blasts",
+        "Protective wards"
+      ],
+      "relationships": {
+        "partner_status": "Single",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Josh \"Golden Caster\" Noble grew up slinging spells in the schoolyard before he ever knew what the Legionaires were. His golden energy is versatile—part shield, part artillery, part flashlight in the dark.",
+      "notes": "Often imagined as the \"mage\" of the Elementary squad."
+    },
+    {
+      "id": "LEG-EL-002",
+      "name": "Matt Lihpia",
+      "codename": "",
+      "status": "Alive",
+      "role": "Frontline Support",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "Single",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Matt brings stubborn resilience and quiet loyalty. He’s the kid who never leaves anyone behind on the playground or the battlefield.",
+      "notes": ""
+    },
+    {
+      "id": "LEG-EL-003",
+      "name": "Jose Rodriguez",
+      "codename": "",
+      "status": "Alive",
+      "role": "Scout",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "Single",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Jose has always been fast—mentally and physically. He naturally slips into point position when the group is exploring new territory.",
+      "notes": ""
+    },
+    {
+      "id": "LEG-EL-004",
+      "name": "Jorge",
+      "codename": "",
+      "status": "Alive",
+      "role": "All-rounder",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "Single",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Jorge is the glue friend—solid at everything, great at vibes, and always in the middle of the group photo.",
+      "notes": ""
+    },
+    {
+      "id": "LEG-EL-005",
+      "name": "Tayton Baker",
+      "codename": "",
+      "status": "Alive",
+      "role": "Runner / Messenger",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "Single",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Tayton is the sprint-then-laugh type, perfect for relaying info or distracting something bigger than him.",
+      "notes": ""
+    },
+    {
+      "id": "LEG-EL-006",
+      "name": "Michael",
+      "codename": "",
+      "status": "Alive",
+      "role": "Support",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "Single",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Michael isn’t always the loudest, but when he commits to something, everyone feels it.",
+      "notes": ""
+    },
+    {
+      "id": "LEG-EL-007",
+      "name": "Thomas",
+      "codename": "Mr. Dibs",
+      "status": "Alive",
+      "role": "Tactician-in-Training",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "Single",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Thomas \"Mr. Dibs\" always calls his shot first—seats, roles, dares. That instinct to claim responsibility early is what makes him a natural tactician.",
+      "notes": "Nickname sticks in both real life and in-universe."
+    },
+    {
+      "id": "LEG-EL-008",
+      "name": "Veronica Teaford",
+      "codename": "",
+      "status": "Alive",
+      "role": "Team Heart",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "Single",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Veronica anchors the emotional tone of the group and makes sure nobody feels like the odd one out.",
+      "notes": ""
+    },
+    {
+      "id": "LEG-EL-009",
+      "name": "Erica Teaford",
+      "codename": "",
+      "status": "Alive",
+      "role": "Support / Strategist",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "Single",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Erica tends to notice patterns before anyone else, quietly nudging the group away from trouble—or into better opportunities.",
+      "notes": ""
+    },
+    {
+      "id": "LEG-EL-010",
+      "name": "Nate Greene",
+      "codename": "",
+      "status": "Alive",
+      "role": "Support",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "Single",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Nate is that steady background presence who always shows up when it actually matters.",
+      "notes": ""
+    },
+    {
+      "id": "LEG-EL-011",
+      "name": "Ivan Aparicio",
+      "codename": "",
+      "status": "Alive",
+      "role": "Scout / Tech-Curious",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "Single",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Ivan is curious about how everything works, from gadgets to group dynamics.",
+      "notes": ""
+    },
+    {
+      "id": "LEG-EL-012",
+      "name": "Abby",
+      "codename": "The Ghost",
+      "status": "Alive",
+      "role": "Stealth / Observer",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "Single",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Abby \"The Ghost\" is quiet enough to vanish into the edges of a room, but she misses nothing.",
+      "notes": "Her codename reflects how she tends to slip in and out of situations unnoticed."
+    },
+    {
+      "id": "LEG-EL-013",
+      "name": "Lupa",
+      "codename": "",
+      "status": "Alive",
+      "role": "Wild Card",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "Single",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Lupa brings chaotic good energy wherever they go, shaking up routines and expectations.",
+      "notes": ""
+    },
+    {
+      "id": "LEG-EL-014",
+      "name": "Shanna",
+      "codename": "",
+      "status": "Alive",
+      "role": "Support",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "Single",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Shanna is reliable, warm, and often the first to try to cheer someone up.",
+      "notes": ""
+    },
+    {
+      "id": "LEG-EL-015",
+      "name": "Elizabeth",
+      "codename": "",
+      "status": "Alive",
+      "role": "Support / Analyst",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "Single",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Elizabeth tends to hang back, observe, and then land the one question that reframes the whole situation.",
+      "notes": ""
+    },
+    {
+      "id": "LEG-EL-016",
+      "name": "Noah",
+      "codename": "",
+      "status": "Alive",
+      "role": "Frontline",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "Single",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Noah has the natural instincts of someone who’s always ready to defend his friends first and think about it later.",
+      "notes": ""
+    },
+    {
+      "id": "LEG-EL-017",
+      "name": "Elise",
+      "codename": "",
+      "status": "Alive",
+      "role": "Support / Empath",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "Single",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Elise is tuned into how people feel and often steps in as mediator.",
+      "notes": ""
+    },
+    {
+      "id": "LEG-EL-018",
+      "name": "Brigdan",
+      "codename": "",
+      "status": "Alive",
+      "role": "Heavy Hitter",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "Single",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Brigdan brings raw force and stubborn courage, especially when the odds look bad.",
+      "notes": ""
+    },
+    {
+      "id": "LEG-EL-019",
+      "name": "Addie",
+      "codename": "",
+      "status": "Alive",
+      "role": "Heart of the Squad",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "Single",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Addie is pure heart and loyalty, the kind of friend who makes the Legionaires feel like a family.",
+      "notes": ""
+    },
+
+    {
+      "id": "LEG-EL-F01",
+      "name": "Kaden Hansen",
+      "codename": "",
+      "status": "Fallen",
+      "role": "Remembered Legionaire",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "N/A",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "One of the kids lost during Sam’s corrupted Return. His memory is part of why the Legionaires take the Maw so seriously.",
+      "notes": "Fallen by Sam’s hand."
+    },
+    {
+      "id": "LEG-EL-F02",
+      "name": "Nick",
+      "codename": "",
+      "status": "Fallen",
+      "role": "Remembered Legionaire",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "N/A",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Nick’s loss still echoes in the group’s shared history.",
+      "notes": "Fallen by Sam’s hand."
+    },
+    {
+      "id": "LEG-EL-F03",
+      "name": "Jose Chovez",
+      "codename": "",
+      "status": "Fallen",
+      "role": "Remembered Legionaire",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "N/A",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Jose Chovez was part of the early circle of friends before the Maw took everything sideways.",
+      "notes": "Fallen by Sam’s hand."
+    },
+    {
+      "id": "LEG-EL-F04",
+      "name": "Bridger",
+      "codename": "",
+      "status": "Fallen",
+      "role": "Remembered Legionaire",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "N/A",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Bridger is remembered for his energy and willingness to jump into anything with the group.",
+      "notes": "Fallen by Sam’s hand."
+    },
+    {
+      "id": "LEG-EL-F05",
+      "name": "Dustin Khong",
+      "codename": "",
+      "status": "Fallen",
+      "role": "Remembered Legionaire",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "N/A",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Dustin Khong’s memory lives on in the Legionaires’ stories of early days and shared chaos.",
+      "notes": "Fallen by Sam’s hand."
+    },
+    {
+      "id": "LEG-EL-F06",
+      "name": "Kason",
+      "codename": "",
+      "status": "Fallen",
+      "role": "Remembered Legionaire",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "N/A",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "One of the two Kasons remembered in the Legionaires’ rolls, both taken too early.",
+      "notes": "Fallen by Sam’s hand."
+    },
+    {
+      "id": "LEG-EL-F07",
+      "name": "Kody",
+      "codename": "",
+      "status": "Fallen",
+      "role": "Remembered Legionaire",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "N/A",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Kody is remembered as a chaotic, fun presence in the group.",
+      "notes": "Fallen by Sam’s hand."
+    },
+    {
+      "id": "LEG-EL-F08",
+      "name": "Kason",
+      "codename": "",
+      "status": "Fallen",
+      "role": "Remembered Legionaire (Second Kason)",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "N/A",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "A second Kason listed among the fallen, his name kept to honor both kids who shared it.",
+      "notes": "Fallen by Sam’s hand."
+    },
+    {
+      "id": "LEG-EL-F09",
+      "name": "Kaia",
+      "codename": "",
+      "status": "Fallen",
+      "role": "Remembered Legionaire",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "N/A",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Kaia’s loss is one of the quieter scars on the team’s history.",
+      "notes": "Fallen by Sam’s hand."
+    },
+    {
+      "id": "LEG-EL-F10",
+      "name": "Gabe",
+      "codename": "",
+      "status": "Fallen",
+      "role": "Remembered Legionaire",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "N/A",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Gabe is remembered as quick to laugh and quick to defend his friends.",
+      "notes": "Fallen by Sam’s hand."
+    },
+    {
+      "id": "LEG-EL-F11",
+      "name": "Raven",
+      "codename": "",
+      "status": "Fallen",
+      "role": "Remembered Legionaire",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "N/A",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Raven’s name is often spoken quietly when the Legionaires talk about what the Maw cost them.",
+      "notes": "Fallen by Sam’s hand."
+    },
+    {
+      "id": "LEG-EL-F12",
+      "name": "Grace",
+      "codename": "",
+      "status": "Fallen",
+      "role": "Remembered Legionaire",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "N/A",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Grace embodied exactly what her name suggests—kindness and calm, even in chaos.",
+      "notes": "Fallen by Sam’s hand."
+    },
+    {
+      "id": "LEG-EL-F13",
+      "name": "Kalie",
+      "codename": "",
+      "status": "Fallen",
+      "role": "Remembered Legionaire",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "N/A",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Kalie is remembered in flashes of laughter and shared memories.",
+      "notes": "Fallen by Sam’s hand."
+    },
+    {
+      "id": "LEG-EL-F14",
+      "name": "Mikeal",
+      "codename": "",
+      "status": "Fallen",
+      "role": "Remembered Legionaire",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "N/A",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Mikeal’s name sits on the Legionaires’ fallen rolls as another reminder of what went wrong during The Return.",
+      "notes": "Fallen by Sam’s hand."
+    },
+    {
+      "id": "LEG-EL-F15",
+      "name": "Sierra",
+      "codename": "",
+      "status": "Fallen",
+      "role": "Remembered Legionaire",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "N/A",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "Sierra’s memory sticks with the team in small, everyday details they still notice.",
+      "notes": "Fallen by Sam’s hand."
+    },
+    {
+      "id": "LEG-EL-F16",
+      "name": "Jocelyn",
+      "codename": "",
+      "status": "Fallen",
+      "role": "Remembered Legionaire",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "N/A",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "One of two Jocelyns on the list, her name is carried with the same care as the others.",
+      "notes": "Fallen by Sam’s hand."
+    },
+    {
+      "id": "LEG-EL-F17",
+      "name": "Jocelyn",
+      "codename": "",
+      "status": "Fallen",
+      "role": "Remembered Legionaire (Second Jocelyn)",
+      "abilities": [],
+      "relationships": {
+        "partner_status": "N/A",
+        "faction_connections": ["Legionaires"]
+      },
+      "bio": "A second Jocelyn recorded among the fallen, emphasizing how tangled and personal the losses became.",
+      "notes": "Fallen by Sam’s hand."
+    }
+  ]
+},
+{
+  "team": "Legionaires",
+  "category": "Acquaintances",
+  "members": [
+    {
+      "id": "LEGION-AQ-001",
+      "name": "Jack Smith",
+      "codename": "Sentinel",
+      "team": "Legionaires",
+      "category": "Acquaintances",
+      "rank": "Perimeter Guardian",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+
+      "suit": {
+        "name": "Sentinel Armor",
+        "variants": ["Vigilance Protocol"]
+      },
+
+      "abilities": [
+        "Heightened awareness of surroundings",
+        "Instinctive defense reaction to sudden threats",
+        "Good at holding lines and defending positions",
+        "Above-average durability and reaction timing under pressure"
+      ],
+
+      "relationships": {
+        "partner_status": "Single",
+        "family": ["Smith"],
+        "faction_connections": ["Legionaires"]
+      },
+
+      "bio": "Jack \"Sentinel\" Smith wasn’t a core friend group member, but when crises hit, he always seemed to end up standing guard at the edges. Calm under pressure and naturally protective, he became a reliable reinforcement whenever the Legionaires needed another set of steady hands.",
+
+      "history": [
+        "Frequently positioned himself on the perimeter during early disturbances",
+        "Helped guide less-experienced kids out of danger zones",
+        "Developed a reputation for staying level-headed even when others panicked"
+      ],
+
+      "notes": "Not the loudest or the flashiest, but extremely dependable — the classic watcher on the wall."
+    },
+
+    {
+      "id": "LEGION-AQ-002",
+      "name": "Dustin Edmonds",
+      "codename": "Falcon",
+      "team": "Legionaires",
+      "category": "Acquaintances",
+      "rank": "Aerial Scout",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+
+      "suit": {
+        "name": "Falcon Wingpack",
+        "variants": ["Sky Glide Configuration"]
+      },
+
+      "abilities": [
+        "Fast situational scanning and recon",
+        "Natural visual tracking ability",
+        "Enhanced agility in elevated positions",
+        "Uses wingpack jumps/glides for short aerial bursts"
+      ],
+
+      "relationships": {
+        "partner_status": "Single",
+        "family": ["Edmonds"],
+        "faction_connections": ["Legionaires"]
+      },
+
+      "bio": "Dustin \"Falcon\" Edmonds drifted in and out of the friend circles but always carried a sharp observational instinct. When things got messy, he naturally took the high ground — rooftops, ladders, playground structures — giving the Legionaires early warning and quick recon support.",
+
+      "history": [
+        "Accidentally became the group’s first real recon scout",
+        "Often spotted danger before it reached the others",
+        "Participated in several early evacuations by guiding kids to safer paths"
+      ],
+
+      "notes": "Moves best when he has height or momentum — his instincts are tuned for aerial maps rather than ground-level chaos."
+    }
+  ]
+}
+]
+}

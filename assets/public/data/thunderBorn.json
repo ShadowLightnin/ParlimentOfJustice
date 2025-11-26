@@ -1,0 +1,360 @@
+{
+  "team": "Thunder Born",
+  "universe": "Prime",
+  "faction_type": "Anti-hero squad",
+  "status": "Active",
+  "members": [
+    {
+      "id": "TB-001",
+      "name": "Sam Woodwell",
+      "codename": "Void Walker",
+      "team": "Thunder Born",
+      "rank": "Founder / Field Commander",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Void Walker Armor",
+        "variants": [
+          "Void Walker"
+        ]
+      },
+      "abilities": [
+        "Lightning and electrical manipulation",
+        "Limited telekinesis",
+        "Emotional / mind influence (resisted)",
+        "Dark-energy empowered strikes",
+        "Advanced arcane-tech armor and mobility"
+      ],
+      "relationships": {
+        "partner": "Sable",
+        "family": [],
+        "faction_connections": [
+          "Thunder Born",
+          "Parliament of Justice (strained)",
+          "The Enlightened (former pawn)",
+          "Monke Alliance (former ally)"
+        ]
+      },
+      "bio": "Void Walker is the storm at the center of Thunder Born – a redeemed-but-dangerous former pawn of Erevos who now leads a smaller, sharper anti-hero squad. In the Prime universe, he carries the guilt of his Melcornia corruption and the Bludbruhs fall, trying to aim his lightning and void-touched power at Zion City’s real monsters instead of its heroes.",
+      "history": [
+        "Survived the Melcornia mansion incident and Erevos’s corruption",
+        "Led the original Bludbruhs before the schism",
+        "Rejected the Enlightened and rebranded his remnant as Thunder Born",
+        "First major post-corruption clash was against the Titans as 'Evil Sam'",
+        "Now operates on the edges of Parliament jurisdiction as a volatile ally"
+      ],
+      "notes": "Lightning is his core combat power; telekinesis and emotional influence are lingering Maw/Enlightened scars he actively tries not to abuse."
+    },
+
+    {
+      "id": "TB-002",
+      "name": "Cole",
+      "codename": "Cruiser",
+      "team": "Thunder Born",
+      "rank": "Vanguard Bruiser",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Cruiser Armor",
+        "variants": [
+          "Standard Thunder Assault Loadout",
+            "Heavy Breach Configuration",
+            "Arctic Ops Variant"
+        ]
+      },
+      "abilities": [
+        "Heavy close-quarters combat",
+        "Enhanced durability via armor",
+        "Impact shockwave strikes",
+        "Tactical breaching and frontline disruption"
+      ],
+      "relationships": {
+        "partner": "Married",
+        "family": [],
+        "faction_connections": [
+          "Thunder Born",
+          "Formerly Bludbruhs"
+        ]
+      },
+      "bio": "Cruiser is the hammer of Thunder Born – the one who goes in first and leaves dents in everything that shouldn’t be standing. Where Sam brings electricity and drama, Cole brings momentum and stubborn, grounded loyalty.",
+      "history": [
+        "Early ally of Sam and the pre-Parliament crew",
+        "Core frontline member of the Bludbruhs",
+        "Chose to stay with Sam during the split instead of following those who joined the Monke Alliance",
+        "Helped define Thunder Born’s close-range, shock-and-awe combat style"
+      ],
+      "notes": "When Sam’s plans get too abstract or mystical, Cole is the one who says, 'Point me at what needs punching.'"
+    },
+
+    {
+      "id": "TB-003",
+      "name": "Taylor",
+      "codename": "Stellar",
+      "team": "Thunder Born",
+      "rank": "Support Specialist / Cosmic Gunner",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Stellar Armor",
+        "variants": [
+          "Cosmic Marksman Loadout"
+        ]
+      },
+      "abilities": [
+        "Energy-charged ranged weaponry",
+        "Long-range battlefield support",
+        "Tactical target marking and overwatch",
+        "Limited starlight/energy channeling through gear"
+      ],
+      "relationships": {
+        "partner": "In relationship",
+        "family": [],
+        "faction_connections": [
+          "Thunder Born"
+        ]
+      },
+      "bio": "Stellar is Thunder Born’s cosmic-flavored gunner, anchoring their chaos with precise long-range fire and battlefield awareness. While others wade into the storm, he draws constellations of tracer fire across the sky to keep them alive.",
+      "history": [
+        "Joined late Bludbruhs operations as a ranged specialist",
+        "Stayed with Sam’s side through the rebranding into Thunder Born",
+        "Provides overwatch on high-risk missions where Parliament support is absent"
+      ],
+      "notes": "Visually and thematically pairs well with Sam’s storm aesthetic, like stars flickering inside a thunderhead."
+    },
+
+    {
+      "id": "TB-004",
+      "name": "James",
+      "codename": "Shadowmind",
+      "team": "Thunder Born",
+      "rank": "Infiltration / Recon",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Shadowmind Rig",
+        "variants": [
+          "Stealth Recon Loadout"
+        ]
+      },
+      "abilities": [
+        "Stealth and low-light operations",
+        "Advanced battlefield awareness and intel gathering",
+        "Psychological ops and fear-based tactics",
+        "Synergy with Void Walker’s lightning in ambushes"
+      ],
+      "relationships": {
+        "partner": "Single (Prime universe)",
+        "family": [],
+        "faction_connections": [
+          "Thunder Born",
+          "Titan/Eclipse adjacent through family ties (Prime canon)"
+        ]
+      },
+      "bio": "Shadowmind is the quiet one with a brain like a dark room full of red strings. He scouts, listens, and sets the board so that when Thunder Born hits, they hit where it hurts.",
+      "history": [
+        "Part of the friend-group that preceded Bludbruhs and Thunder Born",
+        "Handled recon and stealth operations for the Bludbruhs",
+        "Stayed loyal to Sam after the Monke Alliance split, but watches his choices carefully"
+      ],
+      "notes": "If Sam is the storm and Cole is the hammer, Shadowmind is the whisper before the thunder."
+    },
+
+    {
+      "id": "TB-005",
+      "name": "Tanner",
+      "codename": "Wolff",
+      "team": "Thunder Born",
+      "rank": "Primal Enforcer",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Wolff Armor",
+        "variants": [
+          "Primal Thunder Configuration"
+        ]
+      },
+      "abilities": [
+        "Enhanced strength and aggression in combat",
+        "High mobility and leaping power",
+        "Predator-style tracking and pursuit",
+        "Synergistic boosts when fighting alongside his 'pack'"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": [],
+        "faction_connections": [
+          "Thunder Born",
+          "Formerly Bludbruhs"
+        ]
+      },
+      "bio": "Wolff is the pack-instinct of Thunder Born – a feral, loyal enforcer who sinks his teeth into the worst fights and refuses to let go. His whole vibe is: Sam points, Wolff hunts.",
+      "history": [
+        "Ran with the crew pre-Parliament and pre-Bludbruhs",
+        "Witnessed the Melcornia fallout and Sam’s corruption",
+        "Chose to stay with Sam’s side rather than leave to the Monke Alliance",
+        "Became one of the core faces of the Thunder Born rebrand"
+      ],
+      "notes": "Emotionally, he sees Thunder Born as a pack – Sam, Cole, James, tech support (formerly Joseph), and whoever else earns that trust."
+    },
+
+    {
+      "id": "TB-006",
+      "name": "Adin",
+      "codename": "Aotearoa",
+      "team": "Thunder Born",
+      "rank": "Recon / Cultural Anchor",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Aotearoa Armor",
+        "variants": [
+          "Standard Recon Loadout"
+        ]
+      },
+      "abilities": [
+        "Agile, mid-range combat",
+        "Terrain awareness and traversal",
+        "Support fire and spotter roles",
+        "Symbolic link to distant homelands and cultures"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": [],
+        "faction_connections": [
+          "Thunder Born"
+        ]
+      },
+      "bio": "Aotearoa is the eyes and heartbeat of the squad, carrying the weight of home and identity into a Zion City that often forgets where its heroes come from.",
+      "history": [
+        "Joined Thunder Born after the Bludbruhs era, post-schism",
+        "Helps Thunder Born navigate both urban and off-world environments",
+        "Acts as a grounding presence when Sam’s past threatens to pull the team apart"
+      ],
+      "notes": "Good character to lean on for cultural depth, travel arcs, or missions outside Zion proper."
+    },
+
+    {
+      "id": "TB-007",
+      "name": "Justin Platt",
+      "codename": "Echo Wood",
+      "team": "Legionaires (Primary)",
+      "rank": "Thunder Born Honorary Member",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Echo Wood Armor",
+        "variants": [
+          "Legionaires Standard",
+          "Thunder Born Joint-Ops Variant"
+        ]
+      },
+      "abilities": [
+        "Sound / resonance-themed combat style (echo motif)",
+        "Support caster / mid-range fighter",
+        "Strong synergy with woodland or urban cover"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": [],
+        "faction_connections": [
+          "Legionaires (primary)",
+          "Thunder Born (honorary / guest member)",
+          "Full Thunder Born member in Sam’s universe"
+        ]
+      },
+      "bio": "In your Prime universe, Echo Wood is first and foremost a Legionaire, but he’s earned enough trust with Sam and the crew to be treated as Thunder Born family on joint missions.",
+      "history": [
+        "Recruited into the Legionaires for his potential and heart",
+        "Fought alongside Thunder Born on key operations, earning honorary status",
+        "In Sam’s universe, he’s promoted to full Thunder Born member"
+      ],
+      "notes": "Prime canon: Legionaire with Thunder Born privileges. Pinnacle/Sam universe: straight-up Thunder Born."
+    },
+
+    {
+      "id": "TB-008",
+      "name": "Zack Dustin",
+      "codename": "Carved Echo",
+      "team": "Legionaires (Primary)",
+      "rank": "Thunder Born Honorary Member",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Carved Echo Armor",
+        "variants": [
+          "Legionaires Standard",
+          "Thunder Born Joint-Ops Variant"
+        ]
+      },
+      "abilities": [
+        "Echo / imprint-themed combat techniques",
+        "High-energy striker with stylistic flair",
+        "Synergy with Echo Wood in duo-operations"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": [],
+        "faction_connections": [
+          "Legionaires (primary)",
+          "Thunder Born (honorary / guest member)",
+          "Full Thunder Born member in Sam’s universe"
+        ]
+      },
+      "bio": "Carved Echo is another Legionaire who drifts into Thunder Born orbit when things get wild enough. Where Echo Wood reflects and resonates, Carved Echo hits like a sculptor chiseling through the battlefield.",
+      "history": [
+        "Core Legionaires member in Prime universe",
+        "Frequently called in for high-risk Thunder Born / Legion joint missions",
+        "Recognized as full Thunder Born in Sam’s universe continuity"
+      ],
+      "notes": "Good lever if you want cross-team episodes where Legionaires and Thunder Born crash into the same storyline."
+    },
+
+    {
+      "id": "TB-009",
+      "name": "Joseph Dresher",
+      "codename": "Technoman",
+      "team": "Thunder Born (Former)",
+      "rank": "Tech Specialist",
+      "status": "Terminated",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Technoman Armor",
+        "variants": [
+          "Star-Citizen-Inspired Battle Rig"
+        ]
+      },
+      "abilities": [
+        "High-end tech engineering and gadget creation",
+        "Battlefield drones, turrets, and energy weapons",
+        "On-the-fly upgrades for ally gear",
+        "Advanced analysis and battlefield modeling"
+      ],
+      "relationships": {
+        "partner": "Unknown / Redacted",
+        "family": [],
+        "faction_connections": [
+          "Thunder Born (former)",
+          "Bludbruhs (former)",
+          "Parliament of Justice (indirect support before termination)"
+        ]
+      },
+      "bio": "Technoman was once the brain and toolbox of Sam’s crew – the guy who could build anything out of scrap and a half-charged power cell. In Prime canon, he is no longer an active member of Thunder Born.",
+      "history": [
+        "Served as the primary tech backbone of the Bludbruhs",
+        "Followed Sam into the Thunder Born era and helped define their tech identity",
+        "Official Parliament records list his Thunder Born status as 'terminated'",
+        "Details of his final mission or betrayal are classified or disputed"
+      ],
+      "notes": "In-universe, rumors say Joseph either died in a mission gone catastrophically wrong or turned on the team and paid for it. You can lock this down later once Sam’s book is final."
+    }
+  ]
+}

@@ -1,0 +1,731 @@
+[
+  {
+    "team": "Olympians",
+    "family": "Cummings/Parents",
+    "members": [
+      {
+        "id": "OLY-001",
+        "name": "Angela",
+        "codename": "Celestial Angel",
+        "team": "Olympians",
+        "family_branch": "Cummings/Parents",
+        "rank": "Matriarch",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "role": "Family guardian and spiritual strategist",
+        "abilities": [
+          "Celestial light projection",
+          "Protective warding auras",
+          "Emotional healing and comfort"
+        ],
+        "relationships": {
+          "partner": "Todd (Stellar)",
+          "children": [
+            "Will (Night Hawk)",
+            "Emma (Kintsunera)"
+          ],
+          "pets": [
+            "Molly (Teddy Bear)"
+          ],
+          "faction_connections": [
+            "Titans",
+            "Eclipse",
+            "Olympians",
+            "Parliament of Justice"
+          ]
+        },
+        "bio": "Angela, known as Celestial Angel, is the heart-center of the Olympians and the Cummings clan. Her light shields and quiet strength keep the wider family grounded when the cosmos goes sideways.",
+        "history": [
+          "Stood as an early moral anchor for the future Titans and Olympians",
+          "Sheltered younger cousins during the early threats around Zion City",
+          "Helped Night Hawk and Emma reconcile duty, faith, and hero work"
+        ],
+        "notes": "Often depicted as a calm, radiant presence—if she raises her voice, everyone knows it’s serious."
+      },
+      {
+        "id": "OLY-002",
+        "name": "Todd",
+        "codename": "Stellar",
+        "team": "Olympians",
+        "family_branch": "Cummings/Parents",
+        "rank": "Patriarch",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "role": "Tactical overseer and starship legacy holder",
+        "abilities": [
+          "Stellar-energy channeling",
+          "Long-range battlefield awareness",
+          "Starship command intuition"
+        ],
+        "relationships": {
+          "partner": "Angela (Celestial Angel)",
+          "children": [
+            "Will (Night Hawk)",
+            "Emma (Kintsunera)"
+          ],
+          "starships": [
+            "USS Angel-A (legacy ship)"
+          ],
+          "faction_connections": [
+            "Titans",
+            "Olympians",
+            "Constellation",
+            "Parliament of Justice"
+          ]
+        },
+        "bio": "Todd, called Stellar, carries the legacy of the USS Angel-A and serves as a quiet strategist behind many Parliament-era operations. His counsel guides Night Hawk and the cousins when stakes go cosmic.",
+        "history": [
+          "Supported early Titans operations from the periphery of Zion City",
+          "Passed down the legacy of the Angel-A and exploration values to his children",
+          "Helped unify extended family branches into the Olympians framework"
+        ],
+        "notes": "Seen as both a dad and an admiral figure—rarely out front, but always watching the board."
+      },
+      {
+        "id": "OLY-003",
+        "name": "Molly",
+        "codename": "Teddy Bear",
+        "team": "Olympians",
+        "family_branch": "Cummings/Parents",
+        "rank": "House Guardian",
+        "status": "Active",
+        "species": "Dog",
+        "universe": "Prime",
+        "role": "Emotional support and household sentinel",
+        "abilities": [
+          "Danger sense around the family home",
+          "Morale boosting",
+          "Unconditional loyalty"
+        ],
+        "relationships": {
+          "partner": "None",
+          "family": [
+            "Angela (Celestial Angel)",
+            "Todd (Stellar)",
+            "Will (Night Hawk)",
+            "Emma (Kintsunera)"
+          ],
+          "faction_connections": [
+            "Olympians"
+          ]
+        },
+        "bio": "Molly, the Teddy Bear, is more than a pet—she’s an emotional anchor. When the heroes come home from impossible missions, she’s the first to greet them like nothing could ever take them away.",
+        "history": [
+          "Present through the formative years of Night Hawk and Emma",
+          "Comforted family members after multiple post-Incident losses and scares"
+        ],
+        "notes": "In-universe jokes claim she has a higher emotional-resilience stat than most heroes."
+      }
+    ]
+  },
+
+  {
+    "team": "Olympians",
+    "family": "McNeil",
+    "members": [
+      {
+        "id": "OLY-004",
+        "name": "Mary",
+        "codename": "Auric",
+        "team": "Olympians",
+        "family_branch": "McNeil",
+        "rank": "Matriarch",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "role": "McNeil family matriarch and moral compass",
+        "abilities": [
+          "Golden barrier generation",
+          "Supportive aura that strengthens allies",
+          "Resource-blessing (boosting supplies and logistics)"
+        ],
+        "relationships": {
+          "partner": "Chance (Crimson Crown)",
+          "children": [
+            "Spencer (Annihilator)",
+            "Jared (Spector)",
+            "Jennifer (Kintsugi)"
+          ],
+          "pets": [
+            "Lumi (Fade Shade)"
+          ],
+          "faction_connections": [
+            "Titans",
+            "Eclipse",
+            "Olympians",
+            "Parliament of Justice"
+          ]
+        },
+        "bio": "Mary, known as Auric, is the golden backbone of the McNeil line. Her calm strength and protective nature helped raise three of the core Titans and hold the extended family together.",
+        "history": [
+          "Raised Spencer, Jared, and Jennifer through the pre-Incident era of Zion City",
+          "Protected extended family safe houses during early Maw incursions",
+          "Frequently mediates between fiery personalities in family councils"
+        ],
+        "notes": "Her power theme is ‘golden stewardship’—protecting both people and what sustains them."
+      },
+      {
+        "id": "OLY-005",
+        "name": "Chance",
+        "codename": "Crimson Crown",
+        "team": "Olympians",
+        "family_branch": "McNeil",
+        "rank": "Patriarch",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "role": "Battlefield leader and McNeil patriarch",
+        "abilities": [
+          "Crimson energy greatsword manifestation",
+          "Command auras that sharpen ally focus",
+          "Tactical foresight in chaotic battles"
+        ],
+        "relationships": {
+          "partner": "Mary (Auric)",
+          "children": [
+            "Spencer (Annihilator)",
+            "Jared (Spector)",
+            "Jennifer (Kintsugi)"
+          ],
+          "faction_connections": [
+            "Titans",
+            "Olympians",
+            "Parliament of Justice"
+          ]
+        },
+        "bio": "Crimson Crown is a field-general archetype: stoic, decisive, and fiercely protective of his family and city. His influence helped push Spencer toward leadership and honor instead of bitterness.",
+        "history": [
+          "Encouraged Spencer’s transition from raw power to true leadership as Annihilator",
+          "Helped evacuate civilians during early waves of The Incident",
+          "Occasionally consulted by the Parliament for ground-level perspectives"
+        ],
+        "notes": "His crown motif symbolizes responsibility, not ego—he wears the weight of his choices."
+      },
+      {
+        "id": "OLY-006",
+        "name": "Ava",
+        "codename": "Prismatic Pulse",
+        "team": "Olympians",
+        "family_branch": "McNeil",
+        "rank": "Support Specialist",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "role": "Multi-spectrum support and morale booster",
+        "abilities": [
+          "Prismatic energy bursts that can heal, shield, or stun",
+          "Color-coded signal flares for complex coordination",
+          "Emotional resonance that calms panic in civilians"
+        ],
+        "relationships": {
+          "partner": "Single",
+          "family": [
+            "Mary (Auric)",
+            "Chance (Crimson Crown)",
+            "Spencer (Annihilator)",
+            "Jared (Spector)",
+            "Jennifer (Kintsugi)",
+            "Charlie (Iron Olympian)",
+            "Lumi (Fade Shade)"
+          ],
+          "faction_connections": [
+            "Olympians"
+          ]
+        },
+        "bio": "Ava channels prismatic energy as a flexible support power, switching between roles depending on what the family needs in that moment.",
+        "history": [
+          "Served as a field medic and signal officer for family-led operations",
+          "Helped stabilize injured Legionaires and younger Olympians after Maw skirmishes"
+        ],
+        "notes": "Her color palette and effects often echo the emotional state of the group she’s with."
+      },
+      {
+        "id": "OLY-007",
+        "name": "Charlie",
+        "codename": "Iron Olympian",
+        "team": "Olympians",
+        "family_branch": "McNeil",
+        "rank": "Frontline Guardian",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "role": "Armored defender and physical powerhouse",
+        "abilities": [
+          "Heavy arcane-tech armor",
+          "Superhuman strength and durability",
+          "Shield-based crowd control"
+        ],
+        "relationships": {
+          "partner": "Single",
+          "family": [
+            "Mary (Auric)",
+            "Chance (Crimson Crown)",
+            "Spencer (Annihilator)",
+            "Jared (Spector)",
+            "Jennifer (Kintsugi)",
+            "Ava (Prismatic Pulse)",
+            "Lumi (Fade Shade)"
+          ],
+          "faction_connections": [
+            "Olympians"
+          ]
+        },
+        "bio": "Charlie, the Iron Olympian, is built like a walking fortress—often placed where the line absolutely cannot break.",
+        "history": [
+          "Helped hold defensive lines in the Telestial sector during multiple evacuations",
+          "Often partners with cousins from the Cummings side when heavy support is needed"
+        ],
+        "notes": "Quiet off the field, thunderous on it."
+      },
+      {
+        "id": "OLY-008",
+        "name": "Lumi",
+        "codename": "Fade Shade",
+        "team": "Olympians",
+        "family_branch": "McNeil",
+        "rank": "Shadow Scout",
+        "status": "Active",
+        "species": "Dog",
+        "universe": "Prime",
+        "role": "Stealthy companion and emotional guardian",
+        "abilities": [
+          "Blending into low light and shadowy environments",
+          "Finding isolated or injured family members",
+          "Soothing anxiety through presence"
+        ],
+        "relationships": {
+          "partner": "None",
+          "family": [
+            "Mary (Auric)",
+            "Chance (Crimson Crown)",
+            "Spencer (Annihilator)",
+            "Jared (Spector)",
+            "Jennifer (Kintsugi)",
+            "Ava (Prismatic Pulse)",
+            "Charlie (Iron Olympian)"
+          ],
+          "faction_connections": [
+            "Olympians"
+          ]
+        },
+        "bio": "Lumi is the shadow-pup of the McNeils, often found right beside those who’ve just come back from something traumatic.",
+        "history": [
+          "Frequently present during debriefs after high-risk missions",
+          "Became unofficial mascot of several smaller rescue ops involving younger cousins"
+        ],
+        "notes": "Fans joke that Lumi and Molly have their own secret side-team."
+      }
+    ]
+  },
+
+  {
+    "team": "Olympians",
+    "family": "Briggs",
+    "members": [
+      {
+        "id": "OLY-009",
+        "name": "Heather S",
+        "codename": "Verdant",
+        "team": "Olympians",
+        "family_branch": "Briggs",
+        "rank": "Matriarch",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "role": "Healer, nurturer, and environmental shaper",
+        "abilities": [
+          "Plant and growth manipulation",
+          "Regenerative healing fields",
+          "Environmental shielding with living barriers"
+        ],
+        "relationships": {
+          "partner": "Bobby (Crown Medic)",
+          "children": [
+            "Ben (Nuscus)",
+            "Azure (Mediateir)",
+            "Liberty (Serenity)",
+            "Ammon (Valoron)",
+            "Piper (Jetstrike)"
+          ],
+          "pets": [
+            "Gemma (Slendowg)"
+          ],
+          "faction_connections": [
+            "Titans",
+            "Olympians",
+            "Thunder Born (through Ben and Azure’s network)"
+          ]
+        },
+        "bio": "Heather S, Verdant, is a living greenhouse of protection and calm, providing a literal and emotional safe space for the Briggs and their extended family.",
+        "history": [
+          "Sheltered family and allies in living sanctuaries during Outer Darkness incursions",
+          "Helped Ben and Azure stabilize after high-intensity missions with healing fields"
+        ],
+        "notes": "Her gardens are half battlefield tool, half sacred family refuge."
+      },
+      {
+        "id": "OLY-010",
+        "name": "Bobby",
+        "codename": "Crown Medic",
+        "team": "Olympians",
+        "family_branch": "Briggs",
+        "rank": "Chief Healer",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "role": "Primary combat medic of the Briggs branch",
+        "abilities": [
+          "Advanced medical expertise enhanced by arcane-tech tools",
+          "Stabilizing auras that slow bleeding and dampen pain",
+          "Rapid triage analysis in chaotic situations"
+        ],
+        "relationships": {
+          "partner": "Heather S (Verdant)",
+          "children": [
+            "Ben (Nuscus)",
+            "Azure (Mediateir)",
+            "Liberty (Serenity)",
+            "Ammon (Valoron)",
+            "Piper (Jetstrike)"
+          ],
+          "faction_connections": [
+            "Titans",
+            "Olympians"
+          ]
+        },
+        "bio": "As Crown Medic, Bobby operates on the front lines of disaster, patching up heroes and civilians alike.",
+        "history": [
+          "Provided emergency support during multiple Titan missions gone sideways",
+          "Helped design standard medical response kits used across Olympian branches"
+        ],
+        "notes": "He has a reputation for firm bedside manner: kind, but no nonsense."
+      },
+      {
+        "id": "OLY-011",
+        "name": "Liberty",
+        "codename": "Serenity",
+        "team": "Olympians",
+        "family_branch": "Briggs",
+        "rank": "Peacekeeper",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "role": "Emotional stabilizer and field mediator",
+        "abilities": [
+          "Calming aura fields that reduce aggression",
+          "Light barriers that deflect attacks without harming attackers",
+          "Empathic sensing to read emotional tension"
+        ],
+        "relationships": {
+          "partner": "Single",
+          "family": [
+            "Heather S (Verdant)",
+            "Bobby (Crown Medic)",
+            "Ben (Nuscus)",
+            "Azure (Mediateir)",
+            "Ammon (Valoron)",
+            "Piper (Jetstrike)",
+            "Gemma (Slendowg)"
+          ],
+          "faction_connections": [
+            "Olympians"
+          ]
+        },
+        "bio": "Liberty embodies serenity in motion, often placed between clashing personalities or on the edges of tense negotiations.",
+        "history": [
+          "Helped de-escalate multiple near-fights between different factions and teams",
+          " Frequently deployed when Maw trauma fallout causes panic in safe zones"
+        ],
+        "notes": "Her armor and aura design deliberately evoke peace, not intimidation."
+      },
+      {
+        "id": "OLY-012",
+        "name": "Ammon",
+        "codename": "Valoron",
+        "team": "Olympians",
+        "family_branch": "Briggs",
+        "rank": "Vanguard",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "role": "Courage-focused frontline fighter",
+        "abilities": [
+          "Courage amplification for nearby allies",
+          "High-mobility melee combat",
+          "Energy constructs shaped like shields and banners"
+        ],
+        "relationships": {
+          "partner": "Single",
+          "family": [
+            "Heather S (Verdant)",
+            "Bobby (Crown Medic)",
+            "Ben (Nuscus)",
+            "Azure (Mediateir)",
+            "Liberty (Serenity)",
+            "Piper (Jetstrike)",
+            "Gemma (Slendowg)"
+          ],
+          "faction_connections": [
+            "Olympians"
+          ]
+        },
+        "bio": "Valoron charges where others hesitate, turning fear into momentum.",
+        "history": [
+          "Led several dangerous pushbacks when Telestial forces breached safe perimeters",
+          "Known for refusing to abandon pinned-down allies even against bad odds"
+        ],
+        "notes": "High synergy with Liberty’s calming fields and Heather’s plant shields."
+      },
+      {
+        "id": "OLY-013",
+        "name": "Piper",
+        "codename": "Jetstrike",
+        "team": "Olympians",
+        "family_branch": "Briggs",
+        "rank": "Aerial Specialist",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "role": "Fast-response aerial attacker and scout",
+        "abilities": [
+          "High-speed flight",
+          "Precision strike runs",
+          "Long-range recon and rapid relay"
+        ],
+        "relationships": {
+          "partner": "Single",
+          "family": [
+            "Heather S (Verdant)",
+            "Bobby (Crown Medic)",
+            "Ben (Nuscus)",
+            "Azure (Mediateir)",
+            "Liberty (Serenity)",
+            "Ammon (Valoron)",
+            "Gemma (Slendowg)"
+          ],
+          "faction_connections": [
+            "Olympians"
+          ]
+        },
+        "bio": "Jetstrike is the family’s quickest aerial blade, scouting ahead and hitting hard when needed.",
+        "history": [
+          "Often first on scene for family-based response missions",
+          "Worked joint ops with Titans and Cobros 314 as fast air support"
+        ],
+        "notes": "Probably has the best ‘flybys past Night Hawk’s car’ stories."
+      },
+      {
+        "id": "OLY-014",
+        "name": "Gemma",
+        "codename": "Slendowg",
+        "team": "Olympians",
+        "family_branch": "Briggs",
+        "rank": "Mobile Scout",
+        "status": "Active",
+        "species": "Dog",
+        "universe": "Prime",
+        "role": "Agile family scout and emotional support",
+        "abilities": [
+          "High-speed ground scouting",
+          "Tracking family members by scent even across chaos",
+          "Comic relief and morale restoration"
+        ],
+        "relationships": {
+          "partner": "None",
+          "family": [
+            "Heather S (Verdant)",
+            "Bobby (Crown Medic)",
+            "Ben (Nuscus)",
+            "Azure (Mediateir)",
+            "Liberty (Serenity)",
+            "Ammon (Valoron)",
+            "Piper (Jetstrike)"
+          ],
+          "faction_connections": [
+            "Olympians"
+          ]
+        },
+        "bio": "Gemma, the Slendowg, is the long-legged streak of joy sprinting through the Briggs household and battle lines alike.",
+        "history": [
+          "Known for finding lost kids and cousins during large family events and evacuations",
+          "Unofficial mascot for multiple younger Olympians"
+        ],
+        "notes": "Her codename is as much an inside joke as it is a legend."
+      }
+    ]
+  },
+  {
+  "team": "Olympians",
+  "family": "Jensen",
+  "members": [
+    {
+      "id": "OLYM-JENSEN-001",
+      "name": "Savannah",
+      "codename": "Vivid Spark",
+      "team": "Olympians",
+      "family": "Jensen",
+      "rank": "Matriarch – Creative Anchor",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Vivid Spark Raiment",
+        "variants": ["Inspiration Bloom Configuration"]
+      },
+      "abilities": [
+        "Emotion-linked light auras that brighten ally morale",
+        "Colorfield bursts that disorient hostile forces",
+        "Low-level healing warmth through touch and proximity",
+        "Protective flares that deflect minor projectiles"
+      ],
+      "relationships": {
+        "partner": "Lee (Codeforge)",
+        "family": ["Stillman", "Jensen", "Cummings"],
+        "faction_connections": ["Olympians"]
+      },
+      "bio": "Savannah \"Vivid Spark\" Jensen is the heartlight of her branch of the family, radiating color, warmth, and stability. Her presence keeps the Jensen household emotionally grounded even when cosmic chaos brushes against their lives.",
+      "history": [
+        "Supported younger Olympians through difficult personal and spiritual transitions",
+        "Served as an informal counselor during early Maw disturbances near the family",
+        "Helped host several cross-family gatherings that strengthened Olympian unity"
+      ],
+      "notes": "Her aura tends to brighten and change color based on the emotional state of the room."
+    },
+    {
+      "id": "OLYM-JENSEN-002",
+      "name": "Lee",
+      "codename": "Codeforge",
+      "team": "Olympians",
+      "family": "Jensen",
+      "rank": "Systems Artisan & Tech Support",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Codeforge Rig",
+        "variants": ["Developer’s Forge Harness"]
+      },
+      "abilities": [
+        "On-the-fly scripting of arcane-tech subroutines",
+        "Stabilization of glitching or corrupted systems",
+        "HUD-assisted diagnostics for damaged armor and devices",
+        "Support drones that handle minor repairs mid-mission"
+      ],
+      "relationships": {
+        "partner": "Savannah (Vivid Spark)",
+        "family": ["Jensen", "Stillman (by marriage)"],
+        "faction_connections": ["Olympians", "Parliament (Tech Support – Minor)"]
+      },
+      "bio": "Lee \"Codeforge\" Jensen is the quiet engineer behind many of the family’s tech comforts. He’s less of a frontline warrior and more of a craftsman who keeps critical infrastructure humming.",
+      "history": [
+        "Helped adapt civilian tech to handle emergency Parliament alerts",
+        "Assisted in refurbishing damaged Olympian armor between battles",
+        "Consulted on secure data storage for family records and histories"
+      ],
+      "notes": "Prefers workbenches and terminals to battlefields but will deploy when the family truly needs him."
+    },
+    {
+      "id": "OLYM-JENSEN-003",
+      "name": "Emilee",
+      "codename": "Luminous Aria",
+      "team": "Olympians",
+      "family": "Jensen",
+      "rank": "Support Caster – Sonic & Light",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Luminous Aria Attire",
+        "variants": ["Harmonic Choir Configuration"]
+      },
+      "abilities": [
+        "Voice-linked light waves that can soothe or stun",
+        "Resonant barriers woven from melody and radiance",
+        "Ability to synchronize heartbeats and breathing of nearby allies",
+        "Subtle sonic pulses to disrupt hostile coordination"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": ["Jensen"],
+        "faction_connections": ["Olympians"]
+      },
+      "bio": "Emilee \"Luminous Aria\" Jensen turns song into shield and spotlight. Her harmonies can settle panic, strengthen courage, and—when necessary—drop enemies to their knees with a single sharp note.",
+      "history": [
+        "Provided musical and emotional support during multiple cross-family gatherings",
+        "Assisted in calming civilians during emergency evacuations",
+        "Frequently coordinates with other support-focused Olympians for joint operations"
+      ],
+      "notes": "Her power is at its strongest when she’s protecting people she personally knows."
+    },
+    {
+      "id": "OLYM-JENSEN-004",
+      "name": "Samantha",
+      "codename": "Velocity Vibe",
+      "team": "Olympians",
+      "family": "Jensen",
+      "rank": "Scout & Courier",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Velocity Vibe Gear",
+        "variants": ["Courier Sprint Configuration"]
+      },
+      "abilities": [
+        "Enhanced agility and burst-speed dashes",
+        "Kinetic echo trails that confuse pursuers",
+        "Parkour-level mobility in urban and interior spaces",
+        "Tactical data relays routed through a wrist-comms mesh"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": ["Jensen"],
+        "faction_connections": ["Olympians", "Legionaires (Runner – Occasional Support)"]
+      },
+      "bio": "Samantha \"Velocity Vibe\" Jensen is motion given purpose. She thrives on weaving through tight spaces, delivering data, and scouting paths before others even know there’s a threat.",
+      "history": [
+        "Served as a runner between Olympians, Titans, and Legionaires during early coordination efforts",
+        "Helped map safe routes through Maw-adjacent disturbance zones",
+        "Frequently assigned to quick-response errands that require both speed and trust"
+      ],
+      "notes": "She dislikes staying still and often volunteers for the most mobile roles available."
+    },
+    {
+      "id": "OLYM-JENSEN-005",
+      "name": "Ella",
+      "codename": "Aerial Serenade",
+      "team": "Olympians",
+      "family": "Jensen",
+      "rank": "Aerial Support & Recon",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "suit": {
+        "name": "Aerial Serenade Armor",
+        "variants": ["Skyborne Harmony Configuration"]
+      },
+      "abilities": [
+        "Low-altitude flight with agile maneuvering",
+        "Wind-assisted glides that generate calming ambient tones",
+        "Wide-angle visual scouting from above",
+        "Subtle pressure-wave bursts to disrupt incoming projectiles"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": ["Jensen"],
+        "faction_connections": ["Olympians"]
+      },
+      "bio": "Ella \"Aerial Serenade\" Jensen mixes sky-dancing with soft tactical support. From above, she can both scout ahead and weave gentle sound currents that steady allies’ nerves.",
+      "history": [
+        "Provided overwatch during several extended-family outdoor gatherings and training exercises",
+        "Helped spot early signs of Maw storms encroaching near safe zones",
+        "Frequently paired with ground-based cousins as their personal aerial guardian"
+      ],
+      "notes": "Feels most at peace when she has open sky, music in her head, and family within sight below."
+    }
+  ]
+}
+
+]

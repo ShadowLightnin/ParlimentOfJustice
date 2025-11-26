@@ -1,0 +1,173 @@
+{
+  "team": "Eclipse",
+  "universe": "Prime",
+  "faction_type": "Heroes",
+  "status": "Active",
+  "members": [
+  {
+    "id": "ECLIPSE-001",
+    "name": "Myran Webb",
+    "codename": "Cyber",
+    "team": "Eclipse",
+    "rank": "Tech Ops / Defensive Architect",
+    "status": "Active",
+    "species": "Human",
+    "universe": "Justiceverse Prime",
+    "sector_origin": "Zion City – Terrestrial / Celestial Border",
+    "suit": {
+      "name": "Cyber Armor",
+      "variants": ["Cyber"]
+    },
+    "abilities": [
+      "Techno-interface manipulation (machine & system control)",
+      "Datafield computation & predictive scanning",
+      "Configurable energy shields",
+      "Holographic projections",
+      "Directed energy blasts"
+    ],
+    "relationships": {
+      "partner": "Jennifer McNeil (Kintsugi)",
+      "family": ["Webb", "McNeil (by marriage)", "Briggs (extended)", "Cummings (extended)"],
+      "faction_connections": ["Eclipse", "Titans", "Olympians", "Parliament of Justice"]
+    },
+    "bio": "Myran Webb—codename Cyber—is the engineering mind and battlefield analyst of The Eclipse. His armor enhances his cognition, letting him reshape the environment with shields, drones, and holographic support for Jennifer and the Titans.",
+    "history": [
+      "Grew up near the Celestial border in a family of engineers.",
+      "Met Jennifer during an Outer Darkness raid.",
+      "Developed the Cyber armor as a mental-augmentation defensive rig.",
+      "Joined The Eclipse as their primary tech defender."
+    ],
+    "notes": "Prefers precision over power; often reworks the team's systems without being asked."
+  },
+
+  {
+    "id": "ECLIPSE-002",
+    "name": "Kelsie Tidwell",
+    "codename": "Eliptic-Dancer",
+    "team": "Eclipse",
+    "rank": "Lightweaver / Mobility Support",
+    "status": "Active",
+    "species": "Human",
+    "universe": "Justiceverse Prime",
+    "sector_origin": "Zion City – Terrestrial Sector",
+    "suit": {
+      "name": "Eliptic-Dancer Armor",
+      "variants": ["Eliptic-Dancer", "Performance Variant"]
+    },
+    "abilities": [
+      "Photokinetic movement",
+      "Blinding light bursts",
+      "Illusionary mirages",
+      "Enhanced agility",
+      "Scene-memory recall"
+    ],
+    "relationships": {
+      "partner": "Jared McNeil (Spector)",
+      "family": ["Tidwell", "McNeil (by marriage)", "Briggs", "Cummings"],
+      "faction_connections": ["Eclipse", "Titans", "Olympians", "Parliament of Justice"]
+    },
+    "bio": "Kelsie Tidwell, Eliptic-Dancer, uses motion and light to misdirect enemies and guide allies. Her photokinetic trails synchronize perfectly with Jared's movements, giving the Titans strategic visual advantages.",
+    "history": [
+      "Raised in a family of performers.",
+      "Manifested photokinesis during stage practice.",
+      "Met Jared during a Telestial scouting run.",
+      "Joined The Eclipse to support high-speed operations."
+    ],
+    "notes": "Still canonically married to Jared in base timeline; relationship tension handled in story arcs."
+  },
+
+  {
+    "id": "ECLIPSE-003",
+    "name": "James Connell",
+    "codename": "Guardian",
+    "team": "Eclipse",
+    "rank": "Primary Healer / Emotional Shield",
+    "status": "Active",
+    "species": "Human",
+    "universe": "Justiceverse Prime",
+    "sector_origin": "Zion City – Terrestrial Sector",
+    "suit": {
+      "name": "Guardian Armor",
+      "variants": ["Guardian Standard", "Guardian Field Set"]
+    },
+    "abilities": [
+      "Empathic aura stabilization",
+      "Healing touch (physical & emotional)",
+      "Protective energy shielding",
+      "Low-range telepathic connection",
+      "Conflict de-escalation"
+    ],
+    "relationships": {
+      "partner": "Azure Briggs (Mediateir)",
+      "family": ["Connell", "Briggs (by marriage)", "McNeil", "Cummings"],
+      "faction_connections": ["Eclipse", "Titans", "Olympians", "Parliament of Justice"]
+    },
+    "bio": "James Connell—codename Guardian—is the emotional backbone of The Eclipse. His healing abilities keep Azure grounded, the Titans stabilized, and conflict from spiraling out of control.",
+    "history": [
+      "Raised in a peace-oriented community.",
+      "First discovered his aura stabilizing street conflicts.",
+      "Met Azure during a Telestial-sector riot.",
+      "Joined The Eclipse as their healer."
+    ],
+    "notes": "Feels others' pain deeply; relies on Azure to help him regulate."
+  },
+
+  {
+    "id": "ECLIPSE-004",
+    "name": "Aileen Eduria",
+    "codename": "Ariata",
+    "team": "Eclipse",
+    "rank": "Frontline Duelist / Cultural Vanguard",
+    "status": "Active",
+    "species": "Human",
+    "universe": "Justiceverse Prime",
+    "sector_origin": "Ophir",
+    "suit": {
+      "name": "Heaven's Guard Armor",
+      "variants": ["Ariata Standard", "Heaven's Guard Ceremonial"]
+    },
+    "abilities": [
+      "Martial arts mastery (Arnis/Kali)",
+      "Ancestral endurance",
+      "Solar-flare energy bursts",
+      "Dance-flow agility boosts",
+      "Warrior’s rally call"
+    ],
+    "relationships": {
+      "partner": "Will Cummings (Night Hawk)",
+      "family": ["Eduria", "Cummings (future marriage)"],
+      "faction_connections": ["Eclipse", "Titans", "Olympians", "Parliament of Justice"]
+    },
+    "bio": "Ariata blends Filipino martial tradition with Parliament armor technology, serving as both protector and cultural symbol. She stands beside Will and the Titans with loyalty, grace, and a radiant strength drawn from heritage.",
+    "history": [
+      "Raised in Ophir a Wakanda like city hidden in the Philippines.",
+      "Trained in traditional weapon arts.",
+      "Met Will on a stealth operation.",
+      "Joined The Eclipse to defend the family she chose."
+    ],
+    "notes": "Has a big heart and cares deeply about her team and loved ones."
+  },
+
+  {
+    "id": "ECLIPSE-005",
+    "name": "TBA-1",
+    "codename": "TBA",
+    "team": "Eclipse",
+    "status": "Reserved"
+  },
+  {
+    "id": "ECLIPSE-006",
+    "name": "TBA-2",
+    "codename": "TBA",
+    "team": "Eclipse",
+    "status": "Reserved"
+  },
+  {
+    "id": "ECLIPSE-007",
+    "name": "TBA-3",
+    "codename": "TBA",
+    "team": "Eclipse",
+    "status": "Reserved"
+  }
+]
+}
