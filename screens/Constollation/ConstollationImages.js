@@ -76,8 +76,17 @@ const constollationImages = {
   'Mrs. Thompson': { images: [{ uri: require('../../assets/Armor/Thompson.jpg') }] },
 
   // Jr. High 7th
-  'Chad King': { images: [{ uri: require('../../assets/Armor/PlaceHolder.jpg') }] },
-  'Jeff Wittik': { images: [{ uri: require('../../assets/Armor/PlaceHolder.jpg') }] },
+  'Chad King': { images: [
+    { uri: require('../../assets/Armor/King2.jpg') }, 
+    { uri: require('../../assets/Armor/King.jpg') }, 
+    { uri: require('../../assets/Armor/King3.jpg') }
+    ]
+  },
+  'Jeff Wittik': { images: [
+    { uri: require('../../assets/Armor/Wittik.jpg') },
+    { uri: require('../../assets/Armor/Wittik2.jpg') },
+  ] 
+},
   'Mr. Chandler': { images: [{ uri: require('../../assets/Armor/PlaceHolder.jpg') }] },
   'Mr. Allred': { images: [{ uri: require('../../assets/Armor/PlaceHolder.jpg') }] },
   'Mrs. Cox': { images: [{ uri: require('../../assets/Armor/PlaceHolder.jpg') }] },
@@ -91,7 +100,8 @@ const constollationImages = {
   'Ms. Clawson': { images: [{ uri: require('../../assets/Armor/PlaceHolder.jpg') }] },
   'Mrs. MarryWeither': { images: [{ uri: require('../../assets/Armor/PlaceHolder.jpg') }] },
   'Mrs. Brown': { images: [{ uri: require('../../assets/Armor/PlaceHolder.jpg') }] },
-  'Ms. ': { images: [{ uri: require('../../assets/Armor/PlaceHolder.jpg') }] },
+  'Ms. Anderson': { images: [{ uri: require('../../assets/Armor/PlaceHolder.jpg') }] },
+  'Mrs. ': { images: [{ uri: require('../../assets/Armor/PlaceHolder.jpg') }] },
 
   // Influences
   Reese: { images: [{ uri: require('../../assets/Armor/Reese.jpg') }] },

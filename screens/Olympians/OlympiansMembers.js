@@ -82,11 +82,13 @@ export const olympiansCategories = [
     members: [
       { name: 'Annie', codename: 'Sage Mentor', screen: '', images: [
         { uri: require('../../assets/Armor/Annie.jpg'), name: 'Annie Primary', clickable: true },
+        { uri: require('../../assets/Armor/Annie2.jpg'), name: 'Annie Primary', clickable: true },
       ]},
       { name: 'Paul', codename: 'Iron Law', screen: '', images: [
         { uri: require('../../assets/Armor/Paul.jpg'), name: 'Paul Primary', clickable: true },
       ]},
       { name: 'McKinley', codename: 'Rebuncious', screen: '', images: [
+        { uri: require('../../assets/Armor/McKinley2.jpg'), name: 'McKinley Primary', clickable: true },
         { uri: require('../../assets/Armor/McKinley.jpg'), name: 'McKinley Primary', clickable: true },
       ]},
       { name: 'Whitney', codename: 'Veilweaver', screen: '', images: [
@@ -130,6 +132,8 @@ export const olympiansCategories = [
         { uri: require('../../assets/Armor/David.jpg'), name: 'David Primary', clickable: true },
       ]},
       { name: 'Isaydy', codename: 'Mist Haven', screen: '', images: [
+        { uri: require('../../assets/Armor/Isiade2.jpg'), name: 'Isaydy Primary', clickable: true },
+        { uri: require('../../assets/Armor/Isiade3.jpg'), name: 'Isaydy Primary', clickable: true },
         { uri: require('../../assets/Armor/Isiade.jpg'), name: 'Isaydy Primary', clickable: true },
       ]},
       { name: 'Darron', codename: 'Crag Rock', screen: '', images: [
@@ -153,6 +157,7 @@ export const olympiansCategories = [
         { uri: require('../../assets/Armor/JoshS.jpg'), name: 'Josh Primary', clickable: true },
       ]},
       { name: 'Garden', codename: 'Pharoll', screen: '', images: [
+        { uri: require('../../assets/Armor/Garden2.jpg'), name: 'Garden Primary', clickable: true },
         { uri: require('../../assets/Armor/Garden.jpg'), name: 'Garden Primary', clickable: true },
       ]},
       { name: 'Sophia', codename: 'Chroma Sprint', screen: '', images: [
@@ -162,6 +167,8 @@ export const olympiansCategories = [
         { uri: require('../../assets/Armor/Paisley.jpg'), name: 'Paisley Primary', clickable: true },
       ]},
       { name: 'Ellie', codename: 'Ethereal Flutter', screen: '', images: [
+        { uri: require('../../assets/Armor/Ellie3.jpg'), name: 'Ellie Primary', clickable: true },
+        { uri: require('../../assets/Armor/Ellie2.jpg'), name: 'Ellie Primary', clickable: true },
         { uri: require('../../assets/Armor/Ellie.jpg'), name: 'Ellie Primary', clickable: true },
       ]},
     ],
@@ -273,12 +280,17 @@ export const olympiansCategories = [
         { uri: require('../../assets/Armor/Angie.jpg'), name: 'Angie Primary', clickable: true },
       ]},
       { name: 'Bryce', codename: 'Moesek', screen: '', images: [
+        { uri: require('../../assets/Armor/Bryce2.jpg'), name: 'Bryce Primary', clickable: true },
         { uri: require('../../assets/Armor/Bryce.jpg'), name: 'Bryce Primary', clickable: true },
+        { uri: require('../../assets/Armor/Bryce3.jpg'), name: 'Bryce Primary', clickable: true },
       ]},
       { name: 'Lillie', codename: 'Slick Blade', screen: '', images: [
+        { uri: require('../../assets/Armor/Lillie3.jpg'), name: 'Lillie Primary', clickable: true },
+        { uri: require('../../assets/Armor/Lillie2.jpg'), name: 'Lillie Primary', clickable: true },
         { uri: require('../../assets/Armor/Lillie.jpg'), name: 'Lillie Primary', clickable: true },
       ]},
       { name: 'Addie', codename: 'Prism Voyager', screen: '', images: [
+        { uri: require('../../assets/Armor/Addie2.jpg'), name: 'Addie Primary', clickable: true },
         { uri: require('../../assets/Armor/Addie.jpg'), name: 'Addie Primary', clickable: true },
       ]},
       { name: 'Purdy', codename: 'Old Faithful', screen: '', images: [
@@ -325,6 +337,7 @@ export const olympiansCategories = [
         { uri: require('../../assets/Armor/Chad.jpg'), name: 'Chad Primary', clickable: true },
       ]},
       { name: 'Rochelle', codename: 'White Veil', screen: '', images: [
+        { uri: require('../../assets/Armor/Rachel3.jpg'), name: 'Rochelle Primary', clickable: true },
         { uri: require('../../assets/Armor/Rachel2.jpg'), name: 'Rochelle Primary', clickable: true },
         { uri: require('../../assets/Armor/Rachel.jpg'), name: 'Rochelle Primary', clickable: true },
       ]},

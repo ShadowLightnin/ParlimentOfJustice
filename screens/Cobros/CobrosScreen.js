@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
   codenameDesktop: { position: 'absolute', bottom: 12, left: 10, fontSize: 14 },
   nameDesktop:    { position: 'absolute', bottom: 34, left: 10, fontSize: 12 },
 
-  codenameMobile: { fontSize: 13, lineHeight: 16, textAlign: 'left' },
+  codenameMobile: { fontSize: 12, lineHeight: 16, textAlign: 'left' },
   nameMobile:     { fontSize: 11, marginBottom: 2, textAlign: 'left' },
 
   modalBackground: { flex: 1, backgroundColor: 'rgba(0,0,0,0.95)', justifyContent: 'center', alignItems: 'center' },

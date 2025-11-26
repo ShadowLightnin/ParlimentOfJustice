@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
   name: { color: '#fff', textShadowColor: PHOENIX.fire, textShadowRadius: 12, zIndex: 2 },
   codenameDesktop: { position: 'absolute', bottom: 12, left: 10, fontSize: 14 },
   nameDesktop: { position: 'absolute', bottom: 34, left: 10, fontSize: 12 },
-  codenameMobile: { fontSize: 13, lineHeight: 16, textAlign: 'left' },
+  codenameMobile: { fontSize: 12, lineHeight: 16, textAlign: 'left' },
   nameMobile: { fontSize: 11, marginBottom: 2, textAlign: 'left' },
 
   disabledCard: { opacity: 0.6 },

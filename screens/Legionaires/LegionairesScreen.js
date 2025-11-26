@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
 
   // MOBILE — WRAPS, PUSHES NAME UP, NO OVERLAP
   codenameMobile: {
-    fontSize: 13,
+    fontSize: 12,
     lineHeight: 16,
     textAlign: 'left',
   },

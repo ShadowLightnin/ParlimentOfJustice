@@ -26,10 +26,10 @@ const horizontalSpacing = isDesktop ? 40 : 10;
 const verticalSpacing = isDesktop ? 30 : 20;
 
 const theHammer = forgeMembers.filter(m =>
-  ['Glen', 'Ted', 'Marisela', 'Beau', 'Taylor', 'Angie'].includes(m.name)
+  ['Glen', 'Ted', 'Marisela', 'Beau', 'Taylor', 'Angie', 'Brad'].includes(m.name)
 );
 const theAnvil = forgeMembers.filter(m =>
-  ['Camren', 'Shailey', 'Kaitlyn', 'Emma', 'Mila', 'Karrie', 'Gary', 'Trevor', 'Kristin'].includes(m.name)
+  ['Camren', 'Shailey', 'Kaitlyn', 'Emma', 'Mila', 'Karrie', 'Gary', 'Trevor', 'Kristin', 'Kazia', 'Joe', 'Jim', 'Mike'].includes(m.name)
 );
 
 // const forgeTheme = require('../../assets/audio/ForgeTheme.mp3');

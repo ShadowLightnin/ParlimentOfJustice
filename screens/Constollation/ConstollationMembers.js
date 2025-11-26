@@ -134,8 +134,8 @@ export const memberCategories = [
       { name: 'Ms. Clawson', codename: '3rd Grade Teacher', screen: '', hardcoded: true },
       { name: 'Mrs. MarryWeither', codename: '4th Grade Teacher', screen: '', hardcoded: true },
       { name: 'Mrs. Brown', codename: 'Music Teacher', screen: '', hardcoded: true },
-      { name: 'Mrs. Anderson', codename: '6th Grade Teacher', screen: '', hardcoded: true },
-      { name: 'Ms. ', codename: '6th Grade Teacher', screen: '', hardcoded: true },
+      { name: 'Ms. Anderson', codename: '6th Grade Teacher', screen: '', hardcoded: true },
+      { name: 'Mrs. ', codename: '6th Grade Teacher', screen: '', hardcoded: true },
     ],
   },
   {

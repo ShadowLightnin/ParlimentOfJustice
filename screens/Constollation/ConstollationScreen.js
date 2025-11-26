@@ -222,8 +222,8 @@ const styles = StyleSheet.create({
   codename: { color: '#00ffff', fontWeight: 'bold', textShadowColor: '#000', textShadowRadius: 12 },
   nameDesktop: { fontSize: 16 },
   codenameDesktop: { fontSize: 19 },
-  nameMobile: { fontSize: 12 },
-  codenameMobile: { fontSize: 14 },
+  nameMobile: { fontSize: 11 },
+  codenameMobile: { fontSize: 12 },
   cardSpacer: { width: cardSize, height: cardSize * cardHeightMultiplier },
 });
 
