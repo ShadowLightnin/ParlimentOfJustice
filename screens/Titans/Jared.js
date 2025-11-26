@@ -109,7 +109,7 @@ const Jared = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
             Jared McNeil, known as Spector, is a whirlwind of energy and determination, the second oldest McNeil sibling and a key member of the Titans within the Parliament of Justice. With a lean, athletic build, Jared is the embodiment of speed and precision, a stark contrast to his older brother Spencer’s raw power and nostalgia. Behind his sleek, Red Hood-inspired helmet, Jared is sharp-witted, confident, and fiercely loyal to his family, especially his siblings Spencer and Jennifer, and his cousins Ben, Azure, Will, and Emma. While he respects Spencer’s leadership, he feels the weight of his brother’s fall and sees himself as the one to carry their legacy forward. Jared is married to Kelsie, and their partnership fuels his drive to protect Zion City and prove he can lead when the time comes. Off the battlefield, he’s a strategist and a motivator, always pushing his family to adapt to the modern world while honoring their roots.
@@ -162,7 +162,7 @@ const Jared = () => {
           <Text style={styles.aboutText}>
             In the broader Parliament of Justice, Jared works closely with the extended family—coordinating with Todd (Cummings) on leadership, sparring with Samantha (Jensen) for strength training, and strategizing with Lee (Jensen) on marksmanship. His ultimate goal is to prove he can lead the Titans and Zion City into a new era, honoring Spencer’s legacy while forging his own path.
           </Text>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

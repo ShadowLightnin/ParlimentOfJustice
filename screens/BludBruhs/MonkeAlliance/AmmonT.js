@@ -63,7 +63,7 @@ const AmmonT = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
           Ammon Thomson, known as Quick Wit, is a suave and resourceful healer, a vital pillar of The Monkie Alliance under Zeke “Enderstrike’s” command within Zion City’s chaotic sprawl. His presence is warm yet elusive, a blend of charm and stealth that makes him a soothing yet slippery ally. Behind his yet-to-be-detailed armor, Ammon is empathetic, clever, and deeply loyal to his Monkie Alliance team—Zeke, Alex M “Swiftmind,” Eli “Shadow Hunter,” Tom “Thunder Whisperer,” Damon “Pixel Maverick,” Elijah “Chaos Wither,” and Ethan “Bolt Watcher”—and his spouse, whose support anchors him. He thrives on witty banter and healing, lifting spirits amidst strife. Off the battlefield, he’s a nurturer and a strategist, often tending to his team or plotting with a smile, but his falling out with Will “Night Hawk” over the Titans’ role lingers as a sore spot.          </Text>
@@ -100,7 +100,7 @@ const AmmonT = () => {
           In The Monkie Alliance, Ammon followed Zeke in the Bludbruhs split, rejecting Sam’s dark path for a lighter, agile one. His falling out with Will came when the Parliament stopped the Thunder Born-Monkie feud—Ammon saw Will’s Titan neutrality as siding with Sam, shattering their bond. Though mended, the rift leaves Ammon wary of Titans like Will, Jared, and Spencer. His Melcornia past forged his resilience, and his role bolsters the team against Thunder Born. In Zion City, he connects with the Titans’ healers like Jennifer, sharing their compassion, but his team prioritizes independence. His ultimate goal is to heal Zion City with Monkie Alliance, proving charm and stealth can triumph, while navigating his shaky truce with Will and Sam.          </Text>
           <Text style={styles.aboutText}>
           Ammon sided with Zeke when Sam’s dark surge split the Bludbruhs, joining The Monkie Alliance to defy Thunder Born’s shadow. During their Civil War-style feud, the Parliament’s intervention halted the fighting, but Ammon misread the Titans’ neutrality—led by Will—as support for Sam, sparking a heated falling out. Their bond mended over time, but Ammon’s trust remains fragile, coloring his view of Thunder Born and the Titans.          </Text>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

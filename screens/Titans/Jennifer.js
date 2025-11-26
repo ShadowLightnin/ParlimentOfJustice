@@ -147,7 +147,7 @@ const Jennifer = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
             Jennifer McNeil, known as Kintsugi, is the middle child of the McNeil siblings and a vital member of the Titans within the Parliament of Justice, a woman who has been shattered by loss but reborn stronger through her pain. At 5'8", her presence is both delicate and resolute, her cracked yet golden-mended armor a testament to her resilience. Behind her serene demeanor lies a soul that has fallen from grace, much like her brother Spencer, but where he struggles with nostalgia, Jennifer finds strength in acceptance and healing. She’s married to Myran, whose technological prowess complements her own abilities, and she’s deeply devoted to her brothers, Spencer and Jared, as well as her cousins Ben, Azure, Will, and Emma. Jennifer prefers to mend rather than destroy, drawing inspiration from the beauty of imperfection, but her fallen state leaves her questioning her own worth. Off the battlefield, she’s a nurturer, often found tending to her family’s emotional wounds or crafting art that reflects her journey.
@@ -197,7 +197,7 @@ const Jennifer = () => {
           <Text style={styles.aboutText}>
             In the Parliament of Justice, Jennifer works closely with healers like Angela (Cummings) and Emily (Jensen), drawing on their shared nurturing instincts, while her Kintsugi armor inspires hope in allies like Todd (Cummings) and Mary (McNeil). Her ultimate goal is to restore balance to Zion City and her family, proving that even the most broken can shine with gold, just as her love for Lila and Hope shines eternal.
           </Text>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

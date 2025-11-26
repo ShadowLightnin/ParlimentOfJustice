@@ -70,7 +70,7 @@ const Ben = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
           Ben Briggs, known as Nuscis, is a swift and resolute guardian, the second oldest Briggs sibling and a key member of the Titans within the Parliament of Justice. His presence is both agile and commanding, a blend of metallic precision and crusader honor that marks him as a protector of his family and city. Behind his sleek, metallic armor, Ben is strategic, loyal, and fiercely protective of his sister Azure, his cousins among the Titans (Spencer, Jared, Jennifer, William, and Emma), and the broader Briggs and extended family. He sees himself as a shield against Zion City’s chaos, drawing strength from his crusader heritage and his bond with his family. Off the battlefield, he’s a planner and a mentor, often training with his cousins or reinforcing their defenses, but his drive to uphold justice sometimes makes him rigid.          </Text>
@@ -107,7 +107,7 @@ const Ben = () => {
           <Text style={styles.aboutText}>
           His ultimate goal is to uphold justice in Zion City, proving that tradition and agility can safeguard their future, while ensuring his sister and cousins thrive. He sees himself as a shield for the Titans, but his fear of failure—especially toward Azure and the family—drives him to push his limits.          </Text>
 
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

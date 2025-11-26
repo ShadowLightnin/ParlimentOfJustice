@@ -68,7 +68,7 @@ const Spencer = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
           Spencer McNeil, known as Annihilus, is the eldest of the McNeil siblings and the oldest among the nine oldest cousins, making him a foundational figure in the Titans and the Parliament of Justice. His imposing presence is a mix of authority, nostalgia, and vulnerability, a fallen leader who once united his extended family but now struggles with uncertainty. He’s deeply committed to helping others, especially his siblings Jared and Jennifer, his cousins Ben and Azure (Briggs), Will and Emma (Cummings), and the other oldest cousins like Josh S and Garden. Spencer prefers the simplicity and morality of a bygone era, reminiscent of Christ’s time, where faith, community, and honor guided actions. Despite losing his way, his inherent goodness and love for his family—spanning the McNeil’s, Briggs, Cummings, Jensen’s, Bolander’s, and Stillman families—make him a cherished, if conflicted, patriarch.
@@ -118,7 +118,7 @@ const Spencer = () => {
           <Text style={styles.aboutText}>
           Spencer sees Jared as his successor, a role that both pressures and inspires him. His relationships with the other Titans—Jennifer’s compassion, Ben and Azure’s teamwork, Will and Emma’s innovation—are rooted in shared history, while his interactions with the broader family (like Todd’s leadership from Cummings or Samantha’s strength) remind him of his broader responsibility. His goal is to reclaim his leadership by guiding Jared and the Titans to balance tradition and progress, ensuring Zion City’s safety for all their families.          
           </Text>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

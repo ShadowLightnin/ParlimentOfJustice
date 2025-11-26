@@ -63,7 +63,7 @@ const Zeke = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
           Zeke Workman, known as Enderstrike, is a cunning and resolute leader, the driving force behind The Monkie Alliance, a faction born from the ashes of the Bludbruhs’ schism in Zion City’s fractured world. His presence is sharp and unpredictable, a mix of strategic brilliance and otherworldly power that makes him a formidable commander. Behind his yet-to-be-detailed armor, Zeke is determined, principled, and fiercely loyal to his Monkie Alliance team—Ammon “Quick Wit,” Alex M “Swiftmind,” Eli “Shadow Hunter,” Tom “Thunder Whisperer,” Damon “Pixel Maverick,” Elijah “Chaos Wither,” and Ethan “Bolt Watcher”—seeing them as a brotherhood forged in defiance of Sam’s dark path. He wields Ender-inspired abilities with precision, a legacy of his Melcornia past. Off the battlefield, he’s a tactician and a mediator, often rallying his team or brooding over past rifts, but his rivalry with Sam “Striker” keeps tensions simmering beneath his cool exterior.          </Text>
@@ -99,7 +99,7 @@ const Zeke = () => {
           In The Monkie Alliance, Zeke led the split from the Bludbruhs over Sam’s dark powers, forming a faction that values agility and defiance over shadow. His Melcornia past forged his resolve, and his clash with Thunder Born (when Titans face “Evil Sam”) tests his leadership. In Zion City, he connects with the Titans’ tacticians like Jared and William, sharing their strategic bent, but his team prioritizes independence over grand unity. His ultimate goal is to lead Monkie Alliance to secure Zion City’s future, proving that agility and principle can outshine darkness, while keeping his shaky truce with Sam intact.          </Text>
           <Text style={styles.aboutText}>
           Zeke’s rift with Sam split the Bludbruhs when Sam’s dark surge—rooted in Erevos’s corruption—clashed with Zeke’s rejection of shadow. Leading Ammon, Alex, Eli, Tom, Damon, Elijah, and Ethan away, Zeke formed The Monkie Alliance as a defiant stand against Sam’s path, while Sam, Cole, Joseph, James, and Tanner became Thunder Born. Their Captain America: Civil War-style rivalry erupted in skirmishes, only mending through Parliament mediation, but tensions linger, with Zeke ever-vigilant of Sam’s potential relapse.          </Text>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

@@ -68,7 +68,7 @@ const Azure = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
           Azure Briggs, known as Midigator, is a pillar of order and protection, the oldest Briggs sibling and a crucial member of the Titans within the Parliament of Justice. Her presence is commanding yet calming, a blend of strategic precision and unwavering justice that marks her as a guardian of balance. Behind her sleek, Order-inspired armor, Azure is disciplined, empathetic, and fiercely loyal to her brother Ben, her husband James, and her cousins among the Titans (Spencer, Jared, Jennifer, William, and Emma). She sees herself as the enforcer of harmony in Zion City, drawing strength from her family’s values and her role as a mediator. Off the battlefield, she’s a planner and a peacemaker, often mediating disputes among her cousins or reinforcing their defenses, but her drive for order sometimes makes her inflexible.          </Text>
@@ -105,7 +105,7 @@ const Azure = () => {
           <Text style={styles.aboutText}>
           In the Parliament of Justice, Azure works closely with leaders like Todd (Cummings) and defenders like Samantha (Jensen), using her order to stabilize the group. Her ultimate goal is to restore harmony to Zion City, proving that justice and structure can protect their future, while ensuring her brother and cousins thrive. She sees herself as a cornerstone for the Titans, but her fear of chaos—especially in her family—drives her to push her limits.          </Text>
 
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

@@ -64,7 +64,7 @@ const Damon = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
           Damon, known as Pixel Maverick, is a mischievous and unpredictable disruptor, a vibrant glitch in The Monkie Alliance under Zeke “Enderstrike’s” command within Zion City’s chaotic digital sprawl. His presence is erratic and infectious, a mix of playful chaos and memetic flair that makes him a wild card for his team. Behind his shifting, digital-themed armor, Damon is witty, irreverent, and fiercely loyal to his Monkie Alliance comrades—Zeke, Ammon “Quick Wit,” Alex M “Swiftmind,” Eli “Shadow Hunter,” Tom “Thunder Whisperer,” Elijah “Chaos Wither,” and Ethan “Bolt Watcher”—seeing their agility as a canvas for his randomness. He wields humor and confusion like weapons, turning battles into a game. Off the battlefield, he’s a jokester and a tinkerer, often crafting memes or tweaking his suit, but his chaotic antics can sometimes test his team’s patience.
@@ -111,7 +111,7 @@ const Damon = () => {
           <Text style={styles.aboutText}>
           Damon sided with Zeke when Sam’s dark surge split the Bludbruhs, joining The Monkie Alliance to counter Thunder Born’s shadow with agility and chaos. His pixel tricks baffled Thunder Born in their Civil War-style feud, easing when the Parliament stepped in. Wary of Thunder Born’s electric edge but committed to Zeke’s vision, keeping tensions alive with a smirk.
           </Text>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

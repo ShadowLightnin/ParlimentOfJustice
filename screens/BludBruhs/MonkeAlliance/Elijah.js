@@ -63,7 +63,7 @@ const Elijah = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
           Elijah Potter, known as Chaos Wither, is an unpredictable and shadowy dynamo, a vital wildcard in The Monkie Alliance under Zeke “Enderstrike’s” command within Zion City’s turbulent expanse. His presence is fluid and unsettling, a mix of chaotic energy and stealthy finesse that makes him a disruptive force on the battlefield. Behind his shifting, dark armor, Elijah is enigmatic, adaptable, and fiercely loyal to his Monkie Alliance kin—Zeke, Ammon “Quick Wit,” Alex M “Swiftmind,” Eli “Shadow Hunter,” Tom “Thunder Whisperer,” Damon “Pixel Maverick,” and Ethan “Bolt Watcher”—seeing their agility as a perfect stage for his chaos. He thrives on disorder, wielding his Wither-inspired powers to unravel foes. Off the battlefield, he’s a trickster and a loner, often experimenting with his forms or brooding over his past, but his chaotic nature can sometimes clash with Zeke’s structured leadership.          </Text>
@@ -97,7 +97,7 @@ const Elijah = () => {
           In The Monkie Alliance, Elijah followed Zeke in the Bludbruhs split, rejecting Sam’s dark path for a freer, chaotic one. His Melcornia past forged his powers, and his rivalry with Thunder Born tests his loyalty when the Titans face “Evil Sam.” In Zion City, he connects with the Titans’ wildcards like Emma and Jared, sharing their flair, but his team prioritizes defiance over unity. His ultimate goal is to unleash chaos on Zion City’s threats with Monkie Alliance, proving that disorder can triumph, while navigating his shaky truce with Sam.          </Text>
           <Text style={styles.aboutText}>
           Elijah sided with Zeke when Sam’s dark surge split the Bludbruhs, choosing The Monkie Alliance’s agile defiance over Thunder Born’s shadow-tinged strength. His chaos fueled their Civil War-style feud with Sam, Cole, Joseph, James, and Tanner, a rivalry that eased through Parliament ties but remains tense, with Elijah wary of Sam’s lingering darkness.          </Text>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

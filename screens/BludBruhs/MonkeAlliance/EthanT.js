@@ -64,7 +64,7 @@ const EthanT = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
           Ethan Tuffs, known as Bolt Watcher, is a swift and electrifying sentinel, a dynamic spark in The Monkie Alliance under Zeke “Enderstrike’s” command within Zion City’s volatile expanse. His presence is charged and alert, a blend of lightning-fast agility and keen awareness that makes him a vital scout and striker for his team. Behind his electric-blue armor, Ethan is vigilant, energetic, and fiercely loyal to his Monkie Alliance comrades—Zeke, Ammon “Quick Wit,” Alex M “Swiftmind,” Eli “Shadow Hunter,” Tom “Thunder Whisperer,” Damon “Pixel Maverick,” and Elijah “Chaos Wither”—seeing their agility as a current he can ride. He wields lightning with precision, turning energy into action. Off the battlefield, he’s a restless observer and a tinkerer, often scanning the horizon or tweaking his gear, but his high-voltage nature can sometimes make him impulsive.
@@ -111,7 +111,7 @@ const EthanT = () => {
           <Text style={styles.aboutText}>
           Ethan sided with Zeke when Sam’s dark surge split the Bludbruhs, joining The Monkie Alliance to counter Thunder Born’s shadow with agility and lightning. His bolts rivaled Sam’s electricity in their Civil War-style feud, easing when the Parliament stepped in. Wary of Thunder Born’s electric resonance but committed to Zeke’s vision, keeping tensions alive yet tempered.
           </Text>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

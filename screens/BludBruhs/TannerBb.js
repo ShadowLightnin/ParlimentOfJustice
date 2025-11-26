@@ -63,7 +63,7 @@ const TannerBb = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
           Tanner - Wolff is a primal and ferocious warrior, a vital force within the Thunder Born, reborn from the ashes of the Bludbruhs in Zion City’s tumultuous world. His presence is wild and intimidating, a blend of animalistic strength and unyielding tenacity that makes him a fearsome ally. Behind his wolf-themed armor, Tanner is gruff, instinctive, and fiercely loyal to his Thunder Born comrades—Sam “Striker,” Cole “Cruiser,” Joseph “Techoman,” and James “Shadowmind”—seeing their unit as a pack he’d defend to the death. He thrives on raw power, drawing from his inner beast and the rugged spirit of survival. Off the battlefield, he’s a loner and a hunter, often prowling the wilds or sharpening his skills, but his savage nature can sometimes strain his bonds with the more tactical members of the group.          </Text>
@@ -96,7 +96,7 @@ const TannerBb = () => {
           In the Thunder Born, Tanner stood firm during the Bludbruhs’ rift, choosing to stay with Sam, Cole, Joseph, and James over splitting to the Monkie Alliance, driven by pack loyalty. His Melcornia past forged his resilience, and his presence bolsters the team when the Titans face “Evil Sam.” In Zion City, he connects with the Titans’ fighters like Ben Briggs and Jared, sharing their combat drive, but his squad focuses on survival over heroics. His ultimate goal is to protect Zion City as part of his pack, proving that primal strength and loyalty can thunder through any storm.          </Text>
           <Text style={styles.aboutText}>
           Tanner stayed with Sam when the Bludbruhs dissolved, rejecting the Monkie Alliance split over Sam’s dark powers. He embraced the Thunder Born name as a howl of renewal, shedding the “Bludbruhs” blood-taint for a title that echoes his thunder howl and the group’s electric rebirth, reinforcing his bond with Sam, Cole, Joseph, and James.          </Text>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

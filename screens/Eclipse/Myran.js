@@ -142,7 +142,7 @@ const Myran = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
             Myran Webb, known as Techno Guard, is a brilliant innovator and steadfast protector, the husband of Jennifer McNeil “Kintsugi” and a vital member of The Eclipse, the Titans’ significant others within the Parliament of Justice. His presence is both cerebral and commanding, a fusion of technological mastery and unshakable loyalty that makes him a cornerstone for his wife and her family. Behind his high-tech armor, Myran is analytical, supportive, and deeply committed to Jennifer, seeing her brokenness as a strength he amplifies with his own ingenuity. He extends this devotion to the Titans—Spencer, Jared, William, Emma, Ben, and Azure—and their partners, using his gadgets and intellect to safeguard their mission. Off the battlefield, he’s a thinker and a tinkerer, often found upgrading his tech or strategizing with Jennifer, but his reliance on technology sometimes blinds him to simpler solutions.
@@ -192,7 +192,7 @@ const Myran = () => {
           <Text style={styles.aboutText}>
             In the Parliament of Justice, Myran bridges the Titans and their allies, coordinating with tech-savvy members like William and strategists like Todd (Cummings). His ultimate goal is to protect Zion City’s future alongside Jennifer, proving that technology and heart can mend a fractured world, while ensuring his wife and their children’s legacy—Lila’s memory and Hope’s promise—shine eternal.
           </Text>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

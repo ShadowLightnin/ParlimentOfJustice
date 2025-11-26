@@ -65,7 +65,7 @@ const BenP = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
           Ben Preston, known as Chemoshock, is a brilliant and inventive force, the engineering mind of The Advanced Spartan 3 Corp, a trio of elite warriors operating in Zion City’s chaotic sectors. His presence is both cerebral and formidable, a blend of scientific ingenuity and battlefield creativity that makes him a vital asset to his team. Behind his hybrid Halo-Monster Hunter armor, Ben is analytical, resourceful, and fiercely loyal to his squadmates Cam Paul “Court Chief” and Alex Croft “Huntsman,” viewing their leadership and marksmanship as the perfect complement to his constructs. He draws inspiration from his love of Halo and Monster Hunter, merging their high-tech and rugged aesthetics into his work. Off the battlefield, he’s a chemical scientist, tinkering with formulas and gadgets, but his obsession with perfection can sometimes slow his adaptability.          </Text>
@@ -99,7 +99,7 @@ const BenP = () => {
           Ben is the ingenuity and defense of The Advanced Spartan 3 Corp, supporting Cam’s leadership with his constructs and Alex’s marksmanship with his shields. He’s meticulous, creative, and deeply loyal to his squad, seeing their trio as a perfect blend of strategy and action. His relationship with Cam is one of respect, providing the tools for Cam’s plans, while with Alex, it’s a practical partnership, syncing his defenses with Alex’s offense.          </Text>
           <Text style={styles.aboutText}>
           In Zion City, Ben connects with the Titans’ tech-savvy members like William and Myran, sharing their love for innovation, but his smaller team focuses on precision strikes. His Halo fandom drives his precision, while Monster Hunter fuels his rugged resilience, and his scientist mindset pushes him to “experiment” on the battlefield. His ultimate goal is to fortify Zion City with his constructs, proving that science and teamwork can hold back the chaos, while keeping his squad safe.          </Text>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

@@ -68,7 +68,7 @@ const Cam = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
           Cam Paul, known as Court Chief, is a dynamic and inspiring leader, the heart of The Advanced Spartan 3 Corp, a trio of elite warriors navigating Zion City’s fractured landscape. His presence is energetic and commanding, a blend of athletic prowess and battlefield savvy that makes him a natural captain for his squad. Behind his vibrant pink Halo-inspired armor, Cam is passionate, dependable, and fiercely loyal to his teammates Ben Preston “Chemoshock” and Alex Croft “Huntsman,” seeing their skills as vital to their shared mission. He draws strength from his love of basketball and Halo, infusing his leadership with a competitive spirit and strategic flair. Off duty, he’s a custodian by trade, keeping spaces clean and orderly, and a jumper by talent, always ready to leap into action—literally or figuratively—but his focus on teamwork can sometimes make him overly reliant on his crew.          </Text>
@@ -102,7 +102,7 @@ const Cam = () => {
           Cam is the drive and coordination of The Advanced Spartan 3 Corp, leading with a mix of Halo-inspired strategy and basketball hustle. He’s competitive, upbeat, and deeply loyal to Ben and Alex, seeing their trio as unbeatable when synced. His relationship with Ben is one of trust, relying on his constructs for defense, while with Alex, it’s a brotherly bond, matching his jumps with Alex’s arrows.          </Text>
           <Text style={styles.aboutText}>
           In the broader context of Zion City, Cam connects with the Titans’ leaders like Spencer and Jared, sharing their protective instincts, but his smaller squad operates independently, tackling specific threats. His love for Halo fuels his tactical mind, while his custodian role reflects his desire to “clean up” the city, one leap at a time. His ultimate goal is to unify his team’s strengths to restore order in Zion City, proving that leadership and teamwork can overcome any chaos.          </Text>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

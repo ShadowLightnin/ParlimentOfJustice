@@ -42,7 +42,7 @@ const members = [
       require('../../../assets/Armor/Lauren4.jpg'),
       require('../../../assets/Armor/Lauren.jpg'),
     ],
-    description: 'She rules the jungle with golden fury and unbreakable grace.',
+    // description: 'She rules the jungle with golden fury and unbreakable grace.',
   },
   {
     id: 'lizzie',
@@ -55,7 +55,7 @@ const members = [
       require('../../../assets/Armor/LizzieTB.jpg'),
       require('../../../assets/Armor/PlaceHolder.jpg'),
     ],
-    description: 'Her roar shakes the canopy. Her claws carve destiny.',
+    // description: 'Her roar shakes the canopy. Her claws carve destiny.',
   },
   {
     id: 'rachel',
@@ -68,7 +68,7 @@ const members = [
       require('../../../assets/Armor/RachelTB.jpg'),
       require('../../../assets/Armor/PlaceHolder.jpg'),
     ],
-    description: 'The jungle itself bows to her will.',
+    // description: 'The jungle itself bows to her will.',
   },
   {
     id: 'keith',
@@ -81,7 +81,7 @@ const members = [
       require('../../../assets/Armor/Keith.jpg'),
       require('../../../assets/Armor/PlaceHolder.jpg'),
     ],
-    description: 'Unmovable. Unbreakable. The shield of the Alliance.',
+    // description: 'Unmovable. Unbreakable. The shield of the Alliance.',
   },
   {
     id: 'sandra',
@@ -94,7 +94,7 @@ const members = [
       require('../../../assets/Armor/Sandra.jpg'),
       require('../../../assets/Armor/PlaceHolder.jpg'),
     ],
-    description: 'She speaks and the jungle listens. Wisdom older than the trees.',
+    // description: 'She speaks and the jungle listens. Wisdom older than the trees.',
   },
   {
     id: 'shadow',
@@ -107,7 +107,7 @@ const members = [
       require('../../../assets/Armor/SamsShadow.jpg'),
       require('../../../assets/Armor/PlaceHolder.jpg'),
     ],
-    description: 'He was never here. But his presence lingers like smoke in the canopy.',
+    // description: 'He was never here. But his presence lingers like smoke in the canopy.',
   },
 ];
 

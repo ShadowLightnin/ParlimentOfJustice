@@ -63,7 +63,7 @@ const TomBb = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
           Tom Cochran, known as Thunder Whisperer, is a resonant and subtle maestro, a key harmonizer in The Monkie Alliance under Zeke “Enderstrike’s” command within Zion City’s chaotic sprawl. His presence is calm yet powerful, a blend of sonic control and understated strength that makes him a vital support for his team. Behind his sleek, sound-enhancing armor, Tom is thoughtful, steady, and fiercely loyal to his Monkie Alliance comrades—Zeke, Ammon “Quick Wit,” Alex M “Swiftmind,” Eli “Shadow Hunter,” Damon “Pixel Maverick,” Elijah “Chaos Wither,” and Ethan “Bolt Watcher”—seeing their agility as a rhythm he amplifies. He thrives on manipulating sound, turning whispers into thunder. Off the battlefield, he’s a listener and a tinkerer, often fine-tuning his gear or soothing tensions, but his quiet demeanor can mask his full potential.
@@ -110,7 +110,7 @@ const TomBb = () => {
           <Text style={styles.aboutText}>
           Tom sided with Zeke when Sam’s dark surge split the Bludbruhs, joining The Monkie Alliance to counter Thunder Born’s shadow with agility and harmony. His sonic pulses clashed with Thunder Born’s lightning in their Civil War-style feud, easing when the Parliament stepped in. Wary of Thunder Born’s electric edge but committed to Zeke’s vision, keeping tensions alive yet controlled.
           </Text>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

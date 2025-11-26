@@ -65,7 +65,7 @@ const Alex = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
           Alex Croft, known as Huntsman, is a sharp-eyed and relentless tracker, the precision striker of The Advanced Spartan 3 Corp, a trio of elite warriors operating in Zion City’s turbulent sectors. His presence is focused and predatory, a blend of hunting instinct and mechanical finesse that makes him a deadly asset to his team. Behind his purple Halo-inspired armor, Alex is observant, practical, and fiercely loyal to his squadmates Cam Paul “Court Chief” and Ben Preston “Chemoshock,” viewing their leadership and constructs as the perfect setup for his shots. He draws passion from his love of Monster Hunter, Halo, hunting, guns, and mechanics, merging their rugged and tactical elements into his craft. Off the battlefield, he’s a tinkerer and outdoorsman, often tuning his gear or scouting the wilds, but his lone-wolf tendencies can sometimes distance him from the team.          </Text>
@@ -100,7 +100,7 @@ const Alex = () => {
           Alex is the precision and offense of The Advanced Spartan 3 Corp, complementing Cam’s leadership with his shots and Ben’s constructs with his strikes. He’s quiet, pragmatic, and deeply loyal to his squad, seeing their trio as a hunting pack—Cam the alpha, Ben the trapper, and himself the stalker. His relationship with Cam is one of trust, following his lead while adding his own flair, while with Ben, it’s a practical alliance, syncing his arrows with Ben’s shields.          </Text>
           <Text style={styles.aboutText}>
           In Zion City, Alex connects with the Titans’ combatants like Ben Briggs and Jared, sharing their focus on action, but his smaller team prefers surgical strikes over large-scale battles. His Monster Hunter fandom fuels his rugged tenacity, while Halo sharpens his aim, and his mechanic skills keep them operational. His ultimate goal is to hunt down Zion City’s threats with his team, proving that precision and grit can restore balance, while keeping his squad sharp.          </Text>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

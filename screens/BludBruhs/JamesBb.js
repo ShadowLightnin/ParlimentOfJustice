@@ -63,7 +63,7 @@ const JameBb = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
           James, known as Shadowmind, is a silent and enigmatic operative, the elusive shadow of the Thunder Born, reborn from the fractured Bludbruhs within Zion City’s chaotic realm. His presence is subtle yet unnerving, a blend of stealth and perception that makes him a ghostly asset to his team. Behind his shadowy armor, James is reserved, insightful, and fiercely loyal to his Thunder Born comrades—Sam “Striker,” Cole “Cruiser,” Joseph “Techoman,” and Tanner - Wolff—seeing their unit as a refuge where his dark gifts can serve a purpose. He thrives in the unseen, drawing power from shadows and his keen senses. Off the battlefield, he’s a watcher and a planner, often lurking on the edges or analyzing threats, but his reclusive nature can make him a mystery even to his closest allies.          </Text>
@@ -97,7 +97,7 @@ const JameBb = () => {
           In the Thunder Born, James stayed through the Bludbruhs’ rift, choosing loyalty to Sam, Cole, Joseph, and Tanner over the Monkie Alliance split, drawn by their shared Melcornia scars. His shadow powers proved crucial when the Titans faced “Evil Sam,” revealing his survival alongside the team. In Zion City, he connects with the Titans’ stealth experts like William and Ben Briggs, sharing their subtle approach, but his squad focuses on survival over grand heroics. His ultimate goal is to guard Zion City from the shadows with Thunder Born, proving that darkness can serve light, while keeping his pack intact.          </Text>
           <Text style={styles.aboutText}>
           James stood with Sam during the Bludbruhs’ dissolution, rejecting the Monkie Alliance split over Sam’s dark powers. He embraced the Thunder Born name as a fusion of his shadow roots and their electric renewal, shedding the “Bludbruhs” blood-taint for a title that reflects his subtle synergy with Sam’s lightning, Cole’s charges, Joseph’s tech, and Tanner’s howl, reinforcing their pack’s resilience.          </Text>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

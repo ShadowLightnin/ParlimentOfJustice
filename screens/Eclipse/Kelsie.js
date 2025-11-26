@@ -104,7 +104,7 @@ const Kelsie = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
             Kelsie Tidwell, known as Shutter Dancer, is a luminous blend of grace and power, the wife of Jared McNeil “Spector” and a vital member of The Eclipse within the Parliament of Justice. Her presence is both captivating and elusive, a dance of light and shadow that dazzles allies and confounds enemies. Behind her shimmering armor, Kelsie is artistic, quick-witted, and fiercely supportive of Jared, her speed-loving husband, seeing their partnership as a perfect rhythm of motion and light. She extends this loyalty to the Titans—Spencer, Jennifer, William, Emma, Ben, and Azure—and their partners in The Eclipse, using her photokinetic abilities to illuminate their path. Off the battlefield, she’s a performer and a memory-keeper, often choreographing light displays or recalling details to aid her family, but her flair for the dramatic can sometimes overshadow practical needs.
@@ -154,7 +154,7 @@ const Kelsie = () => {
           <Text style={styles.aboutText}>
             In the Parliament of Justice, Kelsie connects with creatives like Emma and strategists like William, using her photographic memory to support their plans. Her ultimate goal is to illuminate Zion City’s future alongside Jared, proving that beauty and agility can overcome darkness, while ensuring her husband and his family shine.
           </Text>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

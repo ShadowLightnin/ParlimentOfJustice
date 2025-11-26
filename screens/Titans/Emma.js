@@ -97,7 +97,7 @@ const Emma = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
           Emma Cummings, known as Kinsunera, is a radiant force of hope and innovation, the younger Cummings sibling and a vital member of the Titans within the Parliament of Justice. Her presence is both inspiring and dynamic, a blend of angelic grace and mechanical precision that sets her apart among her cousins. Behind her vibrant armor, Emma is creative, empathetic, and fiercely protective of her family, especially her brother William. She sees herself as a beacon for the Titans, bringing light to the darkness of Zion City, and her mechanical angel wings symbolize her desire to rise above the chaos. Off the battlefield, she’s a dreamer and a tinkerer, often working with William on new tech or sketching designs that blend beauty with function, but her optimism hides a fear of failing those she loves.          </Text>
@@ -134,7 +134,7 @@ const Emma = () => {
           As Emma’s younger sister, she looks up to William but also challenges him to embrace hope over caution. Her cousins—Ben and Azure (Briggs), the McNeil siblings—rely on her for aerial support and morale, while she draws strength from their diversity. In a broader sense, Emma connects with creatives like Ava (McNeil) and strategists like Lee (Jensen), using her wings to scout and her energy to inspire.          </Text>
           <Text style={styles.aboutText}>
           In the Parliament of Justice, Emma works to bridge the gap between tradition and progress, often mediating between Spencer’s nostalgia and Jared’s modernity. Her ultimate goal is to ensure Zion City’s future is bright, proving that hope and technology can heal even the deepest wounds.          </Text>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

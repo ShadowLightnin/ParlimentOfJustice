@@ -63,7 +63,7 @@ const Eli = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
           Eli Chase, known as Shadow Hunter, is a silent and relentless stalker, a crucial scout in The Monkie Alliance under Zeke “Enderstrike’s” command within Zion City’s treacherous terrain. His presence is subtle yet unyielding, a blend of stealth and razor-sharp senses that makes him a phantom on the battlefield. Behind his dark, matte-finish armor, Eli is focused, determined, and fiercely loyal to his Monkie Alliance comrades—Zeke, Ammon “Quick Wit,” Alex M “Swiftmind,” Tom “Thunder Whisperer,” Damon “Pixel Maverick,” Elijah “Chaos Wither,” and Ethan “Bolt Watcher”—seeing their agility as a trail he can follow and protect. He tracks threats with unmatched precision, a hunter born of dedication. Off the battlefield, he’s a quiet observer and a planner, often mapping routes or honing his senses, but his single-minded focus can sometimes isolate him from the team’s lighter moments.
@@ -110,7 +110,7 @@ const Eli = () => {
           <Text style={styles.aboutText}>
           Eli sided with Zeke when Sam’s dark surge split the Bludbruhs, joining The Monkie Alliance to counter Thunder Born’s shadow with agility and precision. His tracking shadowed Thunder Born in their Civil War-style feud, easing when the Parliament stepped in. Wary of Thunder Born’s electric volatility but committed to Zeke’s vision, keeping tensions alive yet restrained.
           </Text>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

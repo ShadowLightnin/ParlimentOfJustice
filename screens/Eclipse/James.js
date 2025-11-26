@@ -63,7 +63,7 @@ const James = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
           James Connell, known as Gentle Guardian, is a beacon of calm and compassion, the husband of Azure Briggs “Midigator” and a vital member of The Eclipse within the Parliament of Justice. His presence is soothing yet resolute, a blend of empathy and protection that makes him a stabilizing force for his wife and her family. Behind his flexible armor, James is patient, understanding, and fiercely devoted to Azure, seeing her drive for order as a strength he complements with his own gentleness. He extends this care to the Titans—Spencer, Jared, Jennifer, William, Emma, and Ben—and their partners in The Eclipse, using his abilities to heal and shield them. Off the battlefield, he’s a mediator and a listener, often resolving disputes or comforting his family, but his deep empathy can sometimes leave him vulnerable to their pain.          </Text>
@@ -99,7 +99,7 @@ const James = () => {
           Among The Eclipse, James collaborates with Myran’s tech, Kelsie’s agility, and Aileen’s strength, forming a cohesive support unit for the Titans. He respects Spencer’s strength but shares Azure’s focus on stability, often using his telepathy to ease tensions within the group. His cousins-in-law—Jennifer, Jared, William, Emma, and Ben—rely on his shields and healing, while he draws strength from their resilience.          </Text>
           <Text style={styles.aboutText}>
           In the Parliament of Justice, James connects with healers like Jennifer and mediators like Angela (Cummings), using his aura to support their efforts. His ultimate goal is to bring peace to Zion City alongside Azure, proving that compassion and order can heal a fractured world, while ensuring his wife and her family thrive.          </Text>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

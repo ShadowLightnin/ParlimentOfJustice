@@ -64,7 +64,7 @@ const AlexM = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
           Alex M, known as Swiftmind, is a brilliant and lightning-quick strategist, a vital intellect in The Monkie Alliance under Zeke “Enderstrike’s” command within Zion City’s unpredictable chaos. His presence is sharp and dynamic, a blend of superhuman speed and razor-sharp wit that makes him a mastermind on the battlefield. Behind his yet-to-be-detailed armor, Alex is analytical, empathetic, and fiercely loyal to his Monkie Alliance comrades—Zeke, Ammon “Quick Wit,” Tom “Thunder Whisperer,” Ethan “Bolt Watcher,” Eli “Shadow Hunter,” Damon “Pixel Maverick,” and Elijah “Chaos Wither”—seeing their agility as a puzzle he can solve and enhance. He processes and reacts with unmatched precision, a whirlwind of mind and motion. Off the battlefield, he’s a thinker and a planner, often mapping strategies or observing his team, but his rapid pace can sometimes leave others struggling to keep up.
@@ -120,7 +120,7 @@ const AlexM = () => {
           <Text style={styles.aboutText}>
           Alex sided with Zeke when Sam’s dark surge split the Bludbruhs, joining The Monkie Alliance to counter Thunder Born’s shadow with agility and wit. His swift plans outmaneuvered Thunder Born in their Civil War-style feud, easing when the Parliament stepped in. Wary of Thunder Born’s raw energy but committed to Zeke’s vision, keeping tensions alive yet calculated.
           </Text>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );

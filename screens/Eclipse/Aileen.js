@@ -410,7 +410,7 @@ const Aileen = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
             Aileen Eduria, known as Ariata, is a fierce and resilient warrior, the girlfriend of William Cummings “Night Hawk” and a vital member of The Eclipse within the Parliament of Justice. Her presence is both powerful and graceful, a fusion of Filipino cultural strength and unyielding determination that makes her a formidable ally. Behind her intricately designed armor, Aileen is bold, protective, and deeply connected to her heritage, seeing her bond with William as a dance of shadow and steel. She extends this loyalty to the Titans—Spencer, Jared, Jennifer, Emma, Ben, and Azure—and their partners in The Eclipse, using her martial prowess to defend them. Off the battlefield, she’s a storyteller and a fighter, often sharing tales of her ancestors or sparring with William, but her intensity can sometimes make her stubborn.
@@ -454,7 +454,7 @@ const Aileen = () => {
           <Text style={styles.aboutText}>
             In the Parliament of Justice, Aileen connects with fighters like Samantha (Jensen) and protectors like Ben, using her heritage to bolster their resolve. Her ultimate goal is to defend Zion City’s future alongside William, proving that cultural strength and teamwork can overcome chaos, while ensuring her partner and his family stand tall.
           </Text>
-        </View>
+        </View> */}
       </ScrollView>
 
       {/* Popup Modal for Ariata */}

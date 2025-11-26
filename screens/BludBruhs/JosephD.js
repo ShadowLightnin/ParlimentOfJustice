@@ -63,7 +63,7 @@ const JoesphD = () => {
           </ScrollView>
         </View>
 
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
           Joseph Dresher, known as Techoman, is a visionary and ingenious mind, the technological backbone of the Thunder Born, reborn from the fractured Bludbruhs within Zion City’s chaotic tapestry. His presence is sharp and resourceful, a fusion of scientific brilliance and practical innovation that makes him indispensable to his team. Behind his sleek, Star Citizen-inspired armor, Joseph is meticulous, curious, and steadfastly loyal to his comrades—Sam “Striker,” Cole “Cruiser,” James “Shadowmind,” and Tanner - Wolff—seeing their combined strengths as a canvas for his inventions. He thrives on crafting solutions, from weapons to gadgets, drawing inspiration from his vast knowledge and sci-fi passions. Off the battlefield, he’s a tinkerer and a theorist, often lost in his workshop or debating strategies, but his focus on tech can sometimes distance him from the group’s emotional struggles.          </Text>
@@ -99,7 +99,7 @@ const JoesphD = () => {
           In the Thunder Born, Joseph stayed through the Bludbruhs’ end, rejecting the Monkie Alliance split (unlike some who left), believing in Sam’s redemption and the group’s potential. His Melcornia past ties him to their origins, and his tech proved vital when the Titans faced “Evil Sam.” In Zion City, he connects with the Titans’ innovators like William and Myran, sharing their tech passion, but his squad focuses on precision over grand heroics. His ultimate goal is to innovate Zion City’s future with Thunder Born, proving that science and loyalty can overcome chaos, while keeping his team cutting-edge.          </Text>
           <Text style={styles.aboutText}>
           Joseph backed Sam during the Bludbruhs’ dissolution, seeing the Thunder Born name as a fresh start after the rift over Sam’s dark powers. While some left for the Monkie Alliance, Joseph, Cole, James, and Tanner stayed, embracing a new identity tied to strength and energy—Thunder Born reflecting their collective resilience and his own tech synergy with Sam’s lightning, shedding the “Bludbruhs” stain of blood and corruption.          </Text>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );
