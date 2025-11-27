@@ -49,7 +49,7 @@ export const forgeMembers = [
     codename: 'Countess',
     // description: 'Mother to all, friend to everyone. Her laugh echoes through the shop like a hammer on anvil — pure music.',
     images: [
-      { uri: require('../../assets/Armor/Angie.jpg'), name: 'Heart of the Forge', clickable: true },
+      { uri: require('../../assets/Armor/AngieAccount.jpg'), name: 'Heart of the Forge', clickable: true },
       // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Angie', clickable: true },
     ],
   },
@@ -67,8 +67,8 @@ export const forgeMembers = [
     codename: 'Arcotech',
     // description: 'My brother in iron. We started together, bled together, grew together. The Forge made us men.',
     images: [
-    //   { uri: require('../../assets/Armor/Camren.jpg'), name: 'The Apprentice', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Camren', clickable: true },
+      { uri: require('../../assets/Armor/Camren.jpg'), name: 'The Apprentice', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Camren', clickable: true },
     ],
   },
   {
@@ -130,8 +130,8 @@ export const forgeMembers = [
     codename: 'Hammer',
     // description: 'Loud, proud, and always ready to get the job done. His energy is infectious.',
     images: [
-    //   { uri: require('../../assets/Armor/Gary.jpg'), name: 'Hammer Time', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Gary', clickable: true },
+      { uri: require('../../assets/Armor/GaryCP.jpg'), name: 'Hammer Time', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Gary', clickable: true },
     ],
     },
     {
@@ -139,8 +139,8 @@ export const forgeMembers = [
     codename: 'Fire Lord',
     // description: 'Calm on the outside, fiery within. A master of his craft with a heart of gold.',
     images: [
-    //   { uri: require('../../assets/Armor/Trevor.jpg'), name: 'Molten Core', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Trevor', clickable: true },
+      { uri: require('../../assets/Armor/Trevor.jpg'), name: 'Molten Core', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Trevor', clickable: true },
     ],
     },
     {
@@ -148,8 +148,8 @@ export const forgeMembers = [
     codename: 'General',
     // description: 'Fast, efficient, and always ahead of the curve. She brings a fresh perspective to the forge.',
     images: [
-    //   { uri: require('../../assets/Armor/Kristin.jpg'), name: 'Blaze Runner', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Kristin', clickable: true },
+      { uri: require('../../assets/Armor/Kristin.jpg'), name: 'Blaze Runner', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Kristin', clickable: true },
     ],
     },
     {
@@ -157,8 +157,8 @@ export const forgeMembers = [
     codename: 'Veternan',
     // description: 'Steady, strong, and unbreakable. A pillar of strength in the forge.',
     images: [
-    //   { uri: require('../../assets/Armor/Joe.jpg'), name: 'Iron Giant', clickable: true }, 
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Joe', clickable: true },
+      { uri: require('../../assets/Armor/Joe.jpg'), name: 'Iron Giant', clickable: true }, 
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Joe', clickable: true },
     ],
     },
     {
@@ -166,8 +166,8 @@ export const forgeMembers = [
     codename: 'Foreman',
     // description: 'Fiery, passionate, and relentless. He brings heat to every project he touches.',
     images: [
-    //   { uri: require('../../assets/Armor/Jim.jpg'), name: 'Flame Bringer', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Jim', clickable: true },
+      { uri: require('../../assets/Armor/Jim.jpg'), name: 'Flame Bringer', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Jim', clickable: true },
     ],
     },
     {
@@ -175,8 +175,8 @@ export const forgeMembers = [
     codename: 'Admiral',
     // description: 'Tough as nails and twice as dependable. The backbone of the forge team.',
     images: [
-    //   { uri: require('../../assets/Armor/Mike.jpg'), name: 'Steel Backbone', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Mike', clickable: true },
+      { uri: require('../../assets/Armor/Mike.jpg'), name: 'Steel Backbone', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Mike', clickable: true },
     ],
     },
 ];
