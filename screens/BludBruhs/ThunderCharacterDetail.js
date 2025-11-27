@@ -16,7 +16,7 @@ import {
 import { Video, Audio } from 'expo-av';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { db, storage, auth } from '../../lib/firebase';
-import { collection, addDoc, setDoc, doc, deleteDoc, getDoc } from 'firebase/firestore';
+import { collection, addDoc, setDoc, doc, getDoc } from 'firebase/firestore';
 import { ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
@@ -523,16 +523,22 @@ const ThunderCharacterDetail = () => {
         clickable: true,
       };
       console.log('Saving character data:', charData);
-      let charId = member?.id;
-      if (charId) {
-        console.log(`Updating character with ID: ${charId}`);
-        await setDoc(doc(db, 'powerBornMembers', charId), charData, { merge: true });
-        console.log('Character updated:', { id: charId, name: charData.name, images: charData.images.length, mediaUri: charData.mediaUri });
-      } else {
+      let charId;
+      if (mode === 'add') {
         console.log('Adding new character');
         const charRef = await addDoc(collection(db, 'powerBornMembers'), charData);
         charId = charRef.id;
         console.log('Character added:', { id: charId, name: charData.name, images: charData.images.length, mediaUri: charData.mediaUri });
+      } else {
+        charId = member?.id;
+        if (charId) {
+          console.log(`Updating character with ID: ${charId}`);
+          await setDoc(doc(db, 'powerBornMembers', charId), charData, { merge: true });
+          console.log('Character updated:', { id: charId, name: charData.name, images: charData.images.length, mediaUri: charData.mediaUri });
+        } else {
+          console.error('No charId for update');
+          return false;
+        }
       }
       Alert.alert('Success', `Character ${charId ? 'updated' : 'added'} successfully!`);
       setMode('view');
@@ -618,7 +624,7 @@ const ThunderCharacterDetail = () => {
     });
   };
 
-  const renderImageCard = (img, index) => (
+  const renderImageCard = ({ item: img, index }) => (
     <View key={index} style={styles.armorCont}>
       <TouchableOpacity
         style={[
@@ -808,7 +814,7 @@ const ThunderCharacterDetail = () => {
               snapToInterval={cardWidth + 20}
               decelerationRate="fast"
             >
-              {images.map(renderImageCard)}
+              {images.map((img, index) => renderImageCard({ item: img, index }))}
             </ScrollView>
           </View>
           {mode !== 'view' && (
