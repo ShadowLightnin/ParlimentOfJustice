@@ -1,7 +1,7 @@
 {
   "team": "Thunder Born",
   "universe": "Prime",
-  "faction_type": "Anti-hero squad",
+  "faction_type": "Dark-hero squad/Judgement",
   "status": "Active",
   "members": [
     {
@@ -36,7 +36,10 @@
           "Monke Alliance (former ally)"
         ]
       },
-      "bio": "Void Walker is the storm at the center of Thunder Born – a redeemed-but-dangerous former pawn of Erevos who now leads a smaller, sharper anti-hero squad. In the Prime universe, he carries the guilt of his Melcornia corruption and the Bludbruhs fall, trying to aim his lightning and void-touched power at Zion City’s real monsters instead of its heroes.",
+      "bio": [
+        "Void Walker is the storm at the center of Thunder Born – a redeemed-but-dangerous former pawn of Erevos who now leads a smaller, sharper anti-hero squad.",
+        "In the Prime universe, he carries the guilt of his Melcornia corruption and the Bludbruhs fall, trying to aim his lightning and void-touched power at Zion City’s real monsters instead of its heroes."
+      ],
       "history": [
         "Survived the Melcornia mansion incident and Erevos’s corruption",
         "Led the original Bludbruhs before the schism",
@@ -46,7 +49,6 @@
       ],
       "notes": "Lightning is his core combat power; telekinesis and emotional influence are lingering Maw/Enlightened scars he actively tries not to abuse."
     },
-
     {
       "id": "TB-002",
       "name": "Cole",
@@ -60,8 +62,8 @@
         "name": "Cruiser Armor",
         "variants": [
           "Standard Thunder Assault Loadout",
-            "Heavy Breach Configuration",
-            "Arctic Ops Variant"
+          "Heavy Breach Configuration",
+          "Arctic Ops Variant"
         ]
       },
       "abilities": [
@@ -78,7 +80,10 @@
           "Formerly Bludbruhs"
         ]
       },
-      "bio": "Cruiser is the hammer of Thunder Born – the one who goes in first and leaves dents in everything that shouldn’t be standing. Where Sam brings electricity and drama, Cole brings momentum and stubborn, grounded loyalty.",
+      "bio": [
+        "Cruiser is the hammer of Thunder Born – the one who goes in first and leaves dents in everything that shouldn’t be standing.",
+        "Where Sam brings electricity and drama, Cole brings momentum and stubborn, grounded loyalty."
+      ],
       "history": [
         "Early ally of Sam and the pre-Parliament crew",
         "Core frontline member of the Bludbruhs",
@@ -87,7 +92,6 @@
       ],
       "notes": "When Sam’s plans get too abstract or mystical, Cole is the one who says, 'Point me at what needs punching.'"
     },
-
     {
       "id": "TB-003",
       "name": "Taylor",
@@ -116,7 +120,10 @@
           "Thunder Born"
         ]
       },
-      "bio": "Stellar is Thunder Born’s cosmic-flavored gunner, anchoring their chaos with precise long-range fire and battlefield awareness. While others wade into the storm, he draws constellations of tracer fire across the sky to keep them alive.",
+      "bio": [
+        "Stellar is Thunder Born’s cosmic-flavored gunner, anchoring their chaos with precise long-range fire and battlefield awareness.",
+        "While others wade into the storm, he draws constellations of tracer fire across the sky to keep them alive."
+      ],
       "history": [
         "Joined late Bludbruhs operations as a ranged specialist",
         "Stayed with Sam’s side through the rebranding into Thunder Born",
@@ -124,7 +131,6 @@
       ],
       "notes": "Visually and thematically pairs well with Sam’s storm aesthetic, like stars flickering inside a thunderhead."
     },
-
     {
       "id": "TB-004",
       "name": "James",
@@ -154,7 +160,10 @@
           "Titan/Eclipse adjacent through family ties (Prime canon)"
         ]
       },
-      "bio": "Shadowmind is the quiet one with a brain like a dark room full of red strings. He scouts, listens, and sets the board so that when Thunder Born hits, they hit where it hurts.",
+      "bio": [
+        "Shadowmind is the quiet one with a brain like a dark room full of red strings.",
+        "He scouts, listens, and sets the board so that when Thunder Born hits, they hit where it hurts."
+      ],
       "history": [
         "Part of the friend-group that preceded Bludbruhs and Thunder Born",
         "Handled recon and stealth operations for the Bludbruhs",
@@ -162,7 +171,6 @@
       ],
       "notes": "If Sam is the storm and Cole is the hammer, Shadowmind is the whisper before the thunder."
     },
-
     {
       "id": "TB-005",
       "name": "Tanner",
@@ -192,7 +200,10 @@
           "Formerly Bludbruhs"
         ]
       },
-      "bio": "Wolff is the pack-instinct of Thunder Born – a feral, loyal enforcer who sinks his teeth into the worst fights and refuses to let go. His whole vibe is: Sam points, Wolff hunts.",
+      "bio": [
+        "Wolff is the pack-instinct of Thunder Born – a feral, loyal enforcer who sinks his teeth into the worst fights and refuses to let go.",
+        "His whole vibe is: Sam points, Wolff hunts."
+      ],
       "history": [
         "Ran with the crew pre-Parliament and pre-Bludbruhs",
         "Witnessed the Melcornia fallout and Sam’s corruption",
@@ -201,7 +212,6 @@
       ],
       "notes": "Emotionally, he sees Thunder Born as a pack – Sam, Cole, James, tech support (formerly Joseph), and whoever else earns that trust."
     },
-
     {
       "id": "TB-006",
       "name": "Adin",
@@ -230,7 +240,9 @@
           "Thunder Born"
         ]
       },
-      "bio": "Aotearoa is the eyes and heartbeat of the squad, carrying the weight of home and identity into a Zion City that often forgets where its heroes come from.",
+      "bio": [
+        "Aotearoa is the eyes and heartbeat of the squad, carrying the weight of home and identity into a Zion City that often forgets where its heroes come from."
+      ],
       "history": [
         "Joined Thunder Born after the Bludbruhs era, post-schism",
         "Helps Thunder Born navigate both urban and off-world environments",
@@ -238,7 +250,6 @@
       ],
       "notes": "Good character to lean on for cultural depth, travel arcs, or missions outside Zion proper."
     },
-
     {
       "id": "TB-007",
       "name": "Justin Platt",
@@ -269,7 +280,9 @@
           "Full Thunder Born member in Sam’s universe"
         ]
       },
-      "bio": "In your Prime universe, Echo Wood is first and foremost a Legionaire, but he’s earned enough trust with Sam and the crew to be treated as Thunder Born family on joint missions.",
+      "bio": [
+        "In your Prime universe, Echo Wood is first and foremost a Legionaire, but he’s earned enough trust with Sam and the crew to be treated as Thunder Born family on joint missions."
+      ],
       "history": [
         "Recruited into the Legionaires for his potential and heart",
         "Fought alongside Thunder Born on key operations, earning honorary status",
@@ -277,7 +290,6 @@
       ],
       "notes": "Prime canon: Legionaire with Thunder Born privileges. Pinnacle/Sam universe: straight-up Thunder Born."
     },
-
     {
       "id": "TB-008",
       "name": "Zack Dustin",
@@ -308,7 +320,10 @@
           "Full Thunder Born member in Sam’s universe"
         ]
       },
-      "bio": "Carved Echo is another Legionaire who drifts into Thunder Born orbit when things get wild enough. Where Echo Wood reflects and resonates, Carved Echo hits like a sculptor chiseling through the battlefield.",
+      "bio": [
+        "Carved Echo is another Legionaire who drifts into Thunder Born orbit when things get wild enough.",
+        "Where Echo Wood reflects and resonates, Carved Echo hits like a sculptor chiseling through the battlefield."
+      ],
       "history": [
         "Core Legionaires member in Prime universe",
         "Frequently called in for high-risk Thunder Born / Legion joint missions",
@@ -316,7 +331,6 @@
       ],
       "notes": "Good lever if you want cross-team episodes where Legionaires and Thunder Born crash into the same storyline."
     },
-
     {
       "id": "TB-009",
       "name": "Joseph Dresher",
@@ -347,7 +361,10 @@
           "Parliament of Justice (indirect support before termination)"
         ]
       },
-      "bio": "Technoman was once the brain and toolbox of Sam’s crew – the guy who could build anything out of scrap and a half-charged power cell. In Prime canon, he is no longer an active member of Thunder Born.",
+      "bio": [
+        "Technoman was once the brain and toolbox of Sam’s crew – the guy who could build anything out of scrap and a half-charged power cell.",
+        "In Prime canon, he is no longer an active member of Thunder Born."
+      ],
       "history": [
         "Served as the primary tech backbone of the Bludbruhs",
         "Followed Sam into the Thunder Born era and helped define their tech identity",

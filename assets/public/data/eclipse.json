@@ -30,7 +30,10 @@
       "family": ["Webb", "McNeil (by marriage)", "Briggs (extended)", "Cummings (extended)"],
       "faction_connections": ["Eclipse", "Titans", "Olympians", "Parliament of Justice"]
     },
-    "bio": "Myran Webb—codename Cyber—is the engineering mind and battlefield analyst of The Eclipse. His armor enhances his cognition, letting him reshape the environment with shields, drones, and holographic support for Jennifer and the Titans.",
+    "bio": [
+    "Myran Webb—codename Cyber—is the engineering mind and battlefield analyst of The Eclipse.",
+    "His armor enhances his cognition, letting him reshape the environment with shields, drones, and holographic support for Jennifer and the Titans."
+    ],
     "history": [
       "Grew up near the Celestial border in a family of engineers.",
       "Met Jennifer during an Outer Darkness raid.",
@@ -66,7 +69,11 @@
       "family": ["Tidwell", "McNeil (by marriage)", "Briggs", "Cummings"],
       "faction_connections": ["Eclipse", "Titans", "Olympians", "Parliament of Justice"]
     },
-    "bio": "Kelsie Tidwell, Eliptic-Dancer, uses motion and light to misdirect enemies and guide allies. Her photokinetic trails synchronize perfectly with Jared's movements, giving the Titans strategic visual advantages.",
+    "bio": 
+    [
+    "Kelsie Tidwell, Eliptic-Dancer, uses motion and light to misdirect enemies and guide allies.",
+    "Her photokinetic trails synchronize perfectly with Jared's movements, giving the Titans strategic visual advantages."
+    ],
     "history": [
       "Raised in a family of performers.",
       "Manifested photokinesis during stage practice.",
@@ -102,7 +109,10 @@
       "family": ["Connell", "Briggs (by marriage)", "McNeil", "Cummings"],
       "faction_connections": ["Eclipse", "Titans", "Olympians", "Parliament of Justice"]
     },
-    "bio": "James Connell—codename Guardian—is the emotional backbone of The Eclipse. His healing abilities keep Azure grounded, the Titans stabilized, and conflict from spiraling out of control.",
+    "bio": [
+      "James Connell—codename Guardian—is the emotional backbone of The Eclipse.",
+      "His healing abilities keep Azure grounded, the Titans stabilized, and conflict from spiraling out of control."
+    ],
     "history": [
       "Raised in a peace-oriented community.",
       "First discovered his aura stabilizing street conflicts.",
@@ -138,7 +148,11 @@
       "family": ["Eduria", "Cummings (future marriage)"],
       "faction_connections": ["Eclipse", "Titans", "Olympians", "Parliament of Justice"]
     },
-    "bio": "Ariata blends Filipino martial tradition with Parliament armor technology, serving as both protector and cultural symbol. She stands beside Will and the Titans with loyalty, grace, and a radiant strength drawn from heritage.",
+    "bio": 
+    [
+      "Ariata blends Filipino martial tradition with Parliament armor technology, serving as both protector and cultural symbol.", 
+      "She stands beside Will and the Titans with loyalty, grace, and a radiant strength drawn from heritage."
+    ],
     "history": [
       "Raised in Ophir a Wakanda like city hidden in the Philippines.",
       "Trained in traditional weapon arts.",

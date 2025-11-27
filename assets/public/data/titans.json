@@ -4,245 +4,273 @@
   "faction_type": "Heroes",
   "status": "Active",
   "members": [
-  {
-    "id": "TITAN-001",
-    "name": "Spencer McNeil",
-    "codename": "Annihilator",
-    "team": "Titans",
-    "rank": "Team Leader",
-    "status": "Active",
-    "species": "Human",
-    "universe": "Justiceverse Prime",
-    "suit": {
-      "name": "Annihilator",
-      "variants": ["Annihilator"]
+    {
+      "id": "TITAN-001",
+      "name": "Spencer McNeil",
+      "codename": "Annihilator",
+      "team": "Titans",
+      "rank": "Team Leader",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Justiceverse Prime",
+      "suit": {
+        "name": "Annihilator",
+        "variants": ["Annihilator"]
+      },
+      "abilities": [
+        "Super Strength",
+        "Enhanced Durability",
+        "Fire Aura Projection",
+        "Earthshaking Impact",
+        "Battlefield Command"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": ["McNeil", "Briggs", "Cummings", "Stillman", "Jensen", "Bolander"],
+        "faction_connections": ["Titans", "Olympians", "Parliament of Justice"]
+      },
+      "bio": [
+        "Spencer McNeil, the eldest of the McNeil siblings and the oldest of the seven Titan cousins, fights as Annihilator.",
+        "He’s the original field commander of the Titans, a powerhouse whose burning helm and crushing blows once held the family—and Zion City—together.",
+        "Behind the armor is a protective big brother trying to balance his old-school ideals with a rapidly changing world."
+      ],
+      "history": [
+        "Led family defenses during the early attacks on Zion City.",
+        "Survived The Incident and helped stabilize the Parliament of Justice.",
+        "Began mentoring Jared as a potential successor in field command."
+      ],
+      "notes": "Sees himself as the guardian of all the cousins, even when he’s not sure he still deserves to lead."
     },
-    "abilities": [
-      "Super Strength",
-      "Enhanced Durability",
-      "Fire Aura Projection",
-      "Earthshaking Impact",
-      "Battlefield Command"
-    ],
-    "relationships": {
-      "partner": "Single",
-      "family": ["McNeil", "Briggs", "Cummings", "Stillman", "Jensen", "Bolander"],
-      "faction_connections": ["Titans", "Olympians", "Parliament of Justice"]
+    {
+      "id": "TITAN-002",
+      "name": "Azure Briggs",
+      "codename": "Mediateir",
+      "team": "Titans",
+      "rank": "Support Specialist / Co-Strategist",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Justiceverse Prime",
+      "suit": {
+        "name": "Mediateir",
+        "variants": ["Mediateir"]
+      },
+      "abilities": [
+        "Energy Shields and Barriers",
+        "Area-of-Effect Support Fields",
+        "Limited Flight",
+        "Battlefield Mediation and De-Escalation"
+      ],
+      "relationships": {
+        "partner": "James (Gentle Hand)",
+        "family": ["McNeil", "Briggs", "Cummings", "Stillman", "Jensen", "Bolander"],
+        "faction_connections": ["Titans", "Eclipse", "Olympians", "Parliament of Justice"]
+      },
+      "bio": [
+        "Azure Briggs, Mediateir, is the emotional core and support backbone of the Titans.",
+        "His armor focuses on shields, barrier fields, and keeping the team standing—physically and mentally—when everything is falling apart.",
+        "Where Spencer hits like a meteor, Azure quietly holds the line and keeps everyone talking instead of breaking."
+      ],
+      "history": [
+        "Joined Spencer in formalizing the Titans as a true team, not just a group of cousins.",
+        "Helped maintain cohesion in the aftermath of The Incident.",
+        "Became one of the key links between Titans and Eclipse through his relationship with James.",
+        "Frequently called in to de-escalate conflicts between factions and family branches."
+      ],
+      "notes": "The one most of the cousins go to when they’re hurt, angry, or stuck between loyalty and duty."
     },
-    "bio": "Spencer McNeil, the eldest of the McNeil siblings and the oldest of the seven Titan cousins, fights as Annihilator. He’s the original field commander of the Titans, a powerhouse whose burning helm and crushing blows once held the family—and Zion City—together. Behind the armor is a protective big brother trying to balance his old-school ideals with a rapidly changing world.",
-    "history": [
-      "Led family defenses during the early attacks on Zion City.",
-      "Survived The Incident and helped stabilize the Parliament of Justice.",
-      "Began mentoring Jared as a potential successor in field command."
-    ],
-    "notes": "Sees himself as the guardian of all the cousins, even when he’s not sure he still deserves to lead."
-  },
-  {
-    "id": "TITAN-002",
-    "name": "Azure Briggs",
-    "codename": "Mediateir",
-    "team": "Titans",
-    "rank": "Support Specialist / Co-Strategist",
-    "status": "Active",
-    "species": "Human",
-    "universe": "Justiceverse Prime",
-    "suit": {
-      "name": "Mediateir",
-      "variants": ["Mediateir"]
+    {
+      "id": "TITAN-003",
+      "name": "Jared McNeil",
+      "codename": "Spector",
+      "team": "Titans",
+      "rank": "Recon & Rapid Response",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Justiceverse Prime",
+      "suit": {
+        "name": "Spector",
+        "variants": ["Phase Runner"]
+      },
+      "abilities": [
+        "High-Speed Movement",
+        "Phase-Shift Intangibility (Short Bursts)",
+        "Afterimage Decoys",
+        "Tactical Reconnaissance"
+      ],
+      "relationships": {
+        "partner": "Kelsie (Eliptic-Dancer)",
+        "family": ["McNeil", "Briggs", "Cummings", "Stillman", "Jensen", "Bolander"],
+        "faction_connections": ["Titans", "Eclipse", "Olympians", "Parliament of Justice"]
+      },
+      "bio": [
+        "Jared McNeil, Spector, is the Titans’ blur on the battlefield—part scout, part striker.",
+        "He darts through walls, leaves afterimages to confuse enemies, and gathers intel before anyone realizes he was there.",
+        "Torn between stepping into bigger leadership shoes and staying the team’s fast-moving wildcard, Jared is the cousin most likely to outrun his fears… and then come back when it matters."
+      ],
+      "history": [
+        "Became Spencer’s primary recon and second-wave striker during early Titan missions.",
+        "Played a key role in evacuations and fast response during The Incident.",
+        "Helped map the fractured sectors of Zion City for the Parliament.",
+        "Frequently operates joint missions with Eclipse due to his connection with Kelsie."
+      ],
+      "notes": "Sees Spencer as both mentor and warning sign—determined not to burn out the way his older brother did."
     },
-    "abilities": [
-      "Energy Shields and Barriers",
-      "Area-of-Effect Support Fields",
-      "Limited Flight",
-      "Battlefield Mediation and De-Escalation"
-    ],
-    "relationships": {
-      "partner": "James (Gentle Hand)",
-      "family": ["McNeil", "Briggs", "Cummings", "Stillman", "Jensen", "Bolander"],
-      "faction_connections": ["Titans", "Eclipse", "Olympians", "Parliament of Justice"]
-    },
-    "bio": "Azure Briggs, Mediateir, is the emotional core and support backbone of the Titans. His armor focuses on shields, barrier fields, and keeping the team standing—physically and mentally—when everything is falling apart. Where Spencer hits like a meteor, Azure quietly holds the line and keeps everyone talking instead of breaking.",
-    "history": [
-      "Joined Spencer in formalizing the Titans as a true team, not just a group of cousins.",
-      "Helped maintain cohesion in the aftermath of The Incident.",
-      "Became one of the key links between Titans and Eclipse through his relationship with James.",
-      "Frequently called in to de-escalate conflicts between factions and family branches."
-    ],
-    "notes": "The one most of the cousins go to when they’re hurt, angry, or stuck between loyalty and duty."
-  },
-  {
-    "id": "TITAN-003",
-    "name": "Jared McNeil",
-    "codename": "Spector",
-    "team": "Titans",
-    "rank": "Recon & Rapid Response",
-    "status": "Active",
-    "species": "Human",
-    "universe": "Justiceverse Prime",
-    "suit": {
-      "name": "Spector",
-      "variants": ["Phase Runner"]
-    },
-    "abilities": [
-      "High-Speed Movement",
-      "Phase-Shift Intangibility (Short Bursts)",
-      "Afterimage Decoys",
-      "Tactical Reconnaissance"
-    ],
-    "relationships": {
-      "partner": "Kelsie (Eliptic-Dancer)",
-      "family": ["McNeil", "Briggs", "Cummings", "Stillman", "Jensen", "Bolander"],
-      "faction_connections": ["Titans", "Eclipse", "Olympians", "Parliament of Justice"]
-    },
-    "bio": "Jared McNeil, Spector, is the Titans’ blur on the battlefield—part scout, part striker. He darts through walls, leaves afterimages to confuse enemies, and gathers intel before anyone realizes he was there. Torn between stepping into bigger leadership shoes and staying the team’s fast-moving wildcard, Jared is the cousin most likely to outrun his fears… and then come back when it matters.",
-    "history": [
-      "Became Spencer’s primary recon and second-wave striker during early Titan missions.",
-      "Played a key role in evacuations and fast response during The Incident.",
-      "Helped map the fractured sectors of Zion City for the Parliament.",
-      "Frequently operates joint missions with Eclipse due to his connection with Kelsie."
-    ],
-    "notes": "Sees Spencer as both mentor and warning sign—determined not to burn out the way his older brother did."
-  },
-  {
-    "id": "TITAN-004",
-    "name": "Will Cummings",
-    "codename": "Night Hawk",
-    "team": "Titans",
-    "rank": "Frontline Strategist & Armor Architect",
-    "status": "Active",
-    "species": "Human",
-    "universe": "Justiceverse Prime",
-    "suit": {
-      "name": "Night Hawk",
-      "variants": [
-        "Night Hawk (Base)",
-        "Celestial Variant",
-        "Sentinel Variant",
-        "Defender v1",
-        "Defender v2",
-        "Shadow Storm",
-        "Wrath"
-      ]
-    },
-    "abilities": [
-      "Advanced Arcane-Tech Armor Engineering",
-      "Stealth and Infiltration",
-      "High-Speed Aerial Maneuvering",
-      "Teal Light Energy Projection",
-      "Real-Time Tactical Analysis"
-    ],
-    "relationships": {
-      "partner": "Aileen (Ariata)",
-      "family": ["McNeil", "Briggs", "Cummings", "Stillman", "Jensen", "Bolander"],
-      "faction_connections": ["Titans", "Eclipse", "Olympians", "Thunder Born", "Spartans", "Cobros", "Legionaires", "Constollation", "Parliament of Justice"]
-    },
-    "bio": "Will Cummings, Night Hawk, is the Titans’ armor architect and shadow tactician. Shortest in the armor squad but one of the most dangerous, he swaps between multiple self-designed suits—from sleek Night Hawk stealth modes to brutal Wrath—depending on the mission. He fights to protect his sister Emma, his cousins, and his future with Aileen, constantly tuning his tech to keep them all one step ahead.",
-    "history": [
+    {
+      "id": "TITAN-004",
+      "name": "Will Cummings",
+      "codename": "Night Hawk",
+      "team": "Titans",
+      "rank": "Frontline Strategist & Armor Architect",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Justiceverse Prime",
+      "suit": {
+        "name": "Night Hawk",
+        "variants": [
+          "Night Hawk (Base)",
+          "Celestial Variant",
+          "Sentinel Variant",
+          "Defender v1",
+          "Defender v2",
+          "Shadow Storm",
+          "Wrath"
+        ]
+      },
+      "abilities": [
+        "Advanced Arcane-Tech Armor Engineering",
+        "Stealth and Infiltration",
+        "High-Speed Aerial Maneuvering",
+        "Teal Light Energy Projection",
+        "Real-Time Tactical Analysis"
+      ],
+      "relationships": {
+        "partner": "Aileen (Ariata)",
+        "family": ["McNeil", "Briggs", "Cummings", "Stillman", "Jensen", "Bolander"],
+        "faction_connections": ["Titans", "Eclipse", "Olympians", "Thunder Born", "Spartans", "Cobros", "Legionaires", "Constollation", "Parliament of Justice"]
+      },
+      "bio": [
+        "Will Cummings, Night Hawk, is the Titans’ armor architect and shadow tactician.",
+        "Shortest in the armor squad but one of the most dangerous, he swaps between multiple self-designed suits—from sleek Night Hawk stealth modes to brutal Wrath—depending on the mission.",
+        "He fights to protect his sister Emma, his cousins, and his future with Aileen, constantly tuning his tech to keep them all one step ahead."
+      ],
+      "history": [
         "Founder of the Titans, then the Parliament of Justice after The Incident.",
-      "Designed the Defender, Shadow Storm, and Night Hawk lines of armor.",
-      "Survived The Incident and helped write early Parliament protocols.",
-      "Forged a tactical partnership with Eclipse through Ariata and the rest of the Eclipse team."
-    ],
-    "notes": "Known in-universe as the cousin most likely to show up with a new upgraded suit the moment things get worse."
-  },
-  {
-    "id": "TITAN-005",
-    "name": "Ben Briggs",
-    "codename": "Nuscus",
-    "team": "Titans",
-    "rank": "Heavy Specialist / Experimental Combat",
-    "status": "Active",
-    "species": "Human",
-    "universe": "Justiceverse Prime",
-    "suit": {
-      "name": "Nuscus",
-      "variants": ["Nuscus"]
+        "Designed the Defender, Shadow Storm, and Night Hawk lines of armor.",
+        "Survived The Incident and helped write early Parliament protocols.",
+        "Forged a tactical partnership with Eclipse through Ariata and the rest of the Eclipse team."
+      ],
+      "notes": "Known in-universe as the cousin most likely to show up with a new upgraded suit the moment things get worse."
     },
-    "abilities": [
-      "Experimental Energy and Chemical Weaponry",
-      "Area Denial and Zone Control",
-      "Enhanced Strength via Suit Amplification",
-      "Adaptive Armor Plating"
-    ],
-    "relationships": {
-      "partner": "Ginna (TBA – Eclipse Adjacent)",
-      "family": ["McNeil", "Briggs", "Cummings", "Stillman", "Jensen", "Bolander"],
-      "faction_connections": ["Titans", "Olympians", "Parliament of Justice"]
+    {
+      "id": "TITAN-005",
+      "name": "Ben Briggs",
+      "codename": "Nuscus",
+      "team": "Titans",
+      "rank": "Heavy Specialist / Experimental Combat",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Justiceverse Prime",
+      "suit": {
+        "name": "Nuscus",
+        "variants": ["Nuscus"]
+      },
+      "abilities": [
+        "Experimental Energy and Chemical Weaponry",
+        "Area Denial and Zone Control",
+        "Enhanced Strength via Suit Amplification",
+        "Adaptive Armor Plating"
+      ],
+      "relationships": {
+        "partner": "Ginna (TBA – Eclipse Adjacent)",
+        "family": ["McNeil", "Briggs", "Cummings", "Stillman", "Jensen", "Bolander"],
+        "faction_connections": ["Titans", "Olympians", "Parliament of Justice"]
+      },
+      "bio": [
+        "Ben Briggs, Nuscus, is the Titans’ walking lab experiment—in a good way (usually).",
+        "His armor channels experimental energy systems and payloads that most people would be afraid to even power on.",
+        "Under the chaos is a careful mind, constantly tweaking formulas and firepower to keep his cousins safe… even if it means the battlefield gets a little wild."
+      ],
+      "history": [
+        "Joined Spencer and Azure in forming the core seven-cousin Titan roster.",
+        "Tested early Parliament-grade weapon systems on live missions.",
+        "Provided heavy support during multiple Maw-related and demon incursions.",
+        "Began collaborating with tech-focused allies in the Forge and Parliament R&D."
+      ],
+      "notes": "Half of his reputation is raw power; the other half is everyone waiting to see what he builds next."
     },
-    "bio": "Ben Briggs, Nuscus, is the Titans’ walking lab experiment—in a good way (usually). His armor channels experimental energy systems and payloads that most people would be afraid to even power on. Under the chaos is a careful mind, constantly tweaking formulas and firepower to keep his cousins safe… even if it means the battlefield gets a little wild.",
-    "history": [
-      "Joined Spencer and Azure in forming the core seven-cousin Titan roster.",
-      "Tested early Parliament-grade weapon systems on live missions.",
-      "Provided heavy support during multiple Maw-related and demon incursions.",
-      "Began collaborating with tech-focused allies in the Forge and Parliament R&D."
-    ],
-    "notes": "Half of his reputation is raw power; the other half is everyone waiting to see what he builds next."
-  },
-  {
-    "id": "TITAN-006",
-    "name": "Jennifer McNeil",
-    "codename": "Kintsugi",
-    "team": "Titans",
-    "rank": "Field Medic & Emotional Anchor",
-    "status": "Active",
-    "species": "Human",
-    "universe": "Justiceverse Prime",
-    "suit": {
-      "name": "Kintsugi ",
-      "variants": ["Restoration"]
+    {
+      "id": "TITAN-006",
+      "name": "Jennifer McNeil",
+      "codename": "Kintsugi",
+      "team": "Titans",
+      "rank": "Field Medic & Emotional Anchor",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Justiceverse Prime",
+      "suit": {
+        "name": "Kintsugi",
+        "variants": ["Restoration"]
+      },
+      "abilities": [
+        "Restorative Energy (Kintsugi-Style Healing)",
+        "Armor and Structure Repair",
+        "Emotional Stabilization Auras",
+        "Protective Light Barriers"
+      ],
+      "relationships": {
+        "partner": "Myran (Techno Guard)",
+        "family": ["McNeil", "Briggs", "Cummings", "Stillman", "Jensen", "Bolander"],
+        "faction_connections": ["Titans", "Eclipse", "Olympians", "Parliament of Justice"]
+      },
+      "bio": [
+        "Jennifer McNeil, Kintsugi, is the healer who refuses to let broken things stay broken.",
+        "Her armor channels golden, crack-line energy that mends armor, stabilizes allies, and reminds the Titans they’re still a family even after everything they’ve survived.",
+        "Soft-spoken but unshakable, she’s the one who stands between total collapse and one more chance."
+      ],
+      "history": [
+        "Joined the Titans as their primary medic and emotional anchor.",
+        "Helped keep the team alive through The Incident’s worst hours.",
+        "Forged a powerful partnership with Myran, blending healing and tech.",
+        "Frequently mediates conflicts between cousins when loyalties and factions clash."
+      ],
+      "notes": "The person most of the Titans are secretly trying to live up to."
     },
-    "abilities": [
-      "Restorative Energy (Kintsugi-Style Healing)",
-      "Armor and Structure Repair",
-      "Emotional Stabilization Auras",
-      "Protective Light Barriers"
-    ],
-    "relationships": {
-      "partner": "Myran (Techno Guard)",
-      "family": ["McNeil", "Briggs", "Cummings", "Stillman", "Jensen", "Bolander"],
-      "faction_connections": ["Titans", "Eclipse", "Olympians", "Parliament of Justice"]
-    },
-    "bio": "Jennifer McNeil, Kintsugi, is the healer who refuses to let broken things stay broken. Her armor channels golden, crack-line energy that mends armor, stabilizes allies, and reminds the Titans they’re still a family even after everything they’ve survived. Soft-spoken but unshakable, she’s the one who stands between total collapse and one more chance.",
-    "history": [
-      "Joined the Titans as their primary medic and emotional anchor.",
-      "Helped keep the team alive through The Incident’s worst hours.",
-      "Forged a powerful partnership with Myran, blending healing and tech.",
-      "Frequently mediates conflicts between cousins when loyalties and factions clash."
-    ],
-    "notes": "The person most of the Titans are secretly trying to live up to."
-  },
-  {
-    "id": "TITAN-007",
-    "name": "Emma Cummings",
-    "codename": "Kintsunera",
-    "team": "Titans",
-    "rank": "Aerial Support & Scout",
-    "status": "Active",
-    "species": "Human",
-    "universe": "Justiceverse Prime",
-    "suit": {
-      "name": "Kintsunera Flight Suit",
-      "variants": ["Standard Wings"]
-    },
-    "abilities": [
-      "Powered Flight via Mechanical Wings",
-      "Aerial Reconnaissance",
-      "Mid-Air Support Fire",
-      "High Agility and Evasive Maneuvers"
-    ],
-    "relationships": {
-      "partner": "Single",
-      "family": ["McNeil", "Briggs", "Cummings", "Stillman", "Jensen", "Bolander"],
-      "faction_connections": ["Titans", "Olympians", "Legionaires", "Cobros", "Spartans", "Parliament of Justice"]
-    },
-    "bio": "Emma Cummings, Kintsunera, is the youngest of the Titans and Will’s little sister, soaring overhead with custom mechanical wings. She blends Kintsugi-inspired design with high-energy flight, watching over the cousins from above and diving in when they need her most. Still growing into her place on a team of older cousins, she’s determined to prove she belongs in the front lines of their story.",
-    "history": [
-      "Joined the Titans as the seventh and youngest of the oldest cousins.",
-      "Provided aerial recon during late-stage conflicts tied to The Incident.",
-      "Worked closely with Will to refine her wings and flight systems.",
-      "Became a symbol of the family’s future in the Parliament era."
-    ],
-    "notes": "No outdated relationships here—Emma is single in current canon and focused on flying, family, and the mission."
-  }
-]
+    {
+      "id": "TITAN-007",
+      "name": "Emma Cummings",
+      "codename": "Kintsunera",
+      "team": "Titans",
+      "rank": "Aerial Support & Scout",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Justiceverse Prime",
+      "suit": {
+        "name": "Kintsunera Flight Suit",
+        "variants": ["Standard Wings"]
+      },
+      "abilities": [
+        "Powered Flight via Mechanical Wings",
+        "Aerial Reconnaissance",
+        "Mid-Air Support Fire",
+        "High Agility and Evasive Maneuvers"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "family": ["McNeil", "Briggs", "Cummings", "Stillman", "Jensen", "Bolander"],
+        "faction_connections": ["Titans", "Olympians", "Legionaires", "Cobros", "Spartans", "Parliament of Justice"]
+      },
+      "bio": [
+        "Emma Cummings, Kintsunera, is the youngest of the Titans and Will’s little sister, soaring overhead with custom mechanical wings.",
+        "She blends Kintsugi-inspired design with high-energy flight, watching over the cousins from above and diving in when they need her most.",
+        "Still growing into her place on a team of older cousins, she’s determined to prove she belongs in the front lines of their story."
+      ],
+      "history": [
+        "Joined the Titans as the seventh and youngest of the oldest cousins.",
+        "Provided aerial recon during late-stage conflicts tied to The Incident.",
+        "Worked closely with Will to refine her wings and flight systems.",
+        "Became a symbol of the family’s future in the Parliament era."
+      ],
+      "notes": "No outdated relationships here—Emma is single in current canon and focused on flying, family, and the mission."
+    }
+  ]
 }

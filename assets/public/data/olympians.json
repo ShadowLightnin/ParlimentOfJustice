@@ -1,731 +1,3414 @@
 [
   {
     "team": "Olympians",
-    "family": "Cummings/Parents",
+    "universe": "Prime",
+    "faction_type": "Social Work",
+    "status": "Active",
+    "members": [
+        {
+          "id": "OLY-001",
+          "name": "Angela",
+          "codename": "Celestial Angel",
+          "team": "Olympians",
+          "family_branch": "Cummings/Parents",
+          "rank": "Matriarch",
+          "status": "Active",
+          "species": "Human",
+          "universe": "Prime",
+          "role": "Family guardian and spiritual strategist",
+          "abilities": [
+            "Celestial light projection",
+            "Protective warding auras",
+            "Emotional healing and comfort"
+          ],
+          "relationships": {
+            "partner": "Todd (Stellar)",
+            "children": [
+              "Will (Night Hawk)",
+              "Emma (Kintsunera)"
+            ],
+            "pets": [
+              "Molly (Teddy Bear)"
+            ],
+            "faction_connections": [
+              "Titans",
+              "Eclipse",
+              "Olympians",
+              "Parliament of Justice"
+            ]
+          },
+          "bio": "Angela, known as Celestial Angel, is the heart-center of the Olympians and the Cummings clan. Her light shields and quiet strength keep the wider family grounded when the cosmos goes sideways.",
+          "history": [
+            "Stood as an early moral anchor for the future Titans and Olympians",
+            "Sheltered younger cousins during the early threats around Zion City",
+            "Helped Night Hawk and Emma reconcile duty, faith, and hero work"
+          ],
+          "notes": "Often depicted as a calm, radiant presence—if she raises her voice, everyone knows it’s serious."
+        },
+        {
+          "id": "OLY-002",
+          "name": "Todd",
+          "codename": "Stellar",
+          "team": "Olympians",
+          "family_branch": "Cummings/Parents",
+          "rank": "Patriarch",
+          "status": "Active",
+          "species": "Human",
+          "universe": "Prime",
+          "role": "Tactical overseer and starship legacy holder",
+          "abilities": [
+            "Stellar-energy channeling",
+            "Long-range battlefield awareness",
+            "Starship command intuition"
+          ],
+          "relationships": {
+            "partner": "Angela (Celestial Angel)",
+            "children": [
+              "Will (Night Hawk)",
+              "Emma (Kintsunera)"
+            ],
+            "starships": [
+              "USS Angel-A (legacy ship)"
+            ],
+            "faction_connections": [
+              "Titans",
+              "Olympians",
+              "Constellation",
+              "Parliament of Justice"
+            ]
+          },
+          "bio": "Todd, called Stellar, carries the legacy of the USS Angel-A and serves as a quiet strategist behind many Parliament-era operations. His counsel guides Night Hawk and the cousins when stakes go cosmic.",
+          "history": [
+            "Supported early Titans operations from the periphery of Zion City",
+            "Passed down the legacy of the Angel-A and exploration values to his children",
+            "Helped unify extended family branches into the Olympians framework"
+          ],
+          "notes": "Seen as both a dad and an admiral figure—rarely out front, but always watching the board."
+        },
+        {
+          "id": "OLY-003",
+          "name": "Molly",
+          "codename": "Teddy Bear",
+          "team": "Olympians",
+          "family_branch": "Cummings/Parents",
+          "rank": "House Guardian",
+          "status": "Active",
+          "species": "Dog",
+          "universe": "Prime",
+          "role": "Emotional support and household sentinel",
+          "abilities": [
+            "Danger sense around the family home",
+            "Morale boosting",
+            "Unconditional loyalty"
+          ],
+          "relationships": {
+            "partner": "None",
+            "family": [
+              "Angela (Celestial Angel)",
+              "Todd (Stellar)",
+              "Will (Night Hawk)",
+              "Emma (Kintsunera)"
+            ],
+            "faction_connections": [
+              "Olympians"
+            ]
+          },
+          "bio": "Molly, the Teddy Bear, is more than a pet—she’s an emotional anchor. When the heroes come home from impossible missions, she’s the first to greet them like nothing could ever take them away.",
+          "history": [
+            "Present through the formative years of Night Hawk and Emma",
+            "Comforted family members after multiple post-Incident losses and scares"
+          ],
+          "notes": "In-universe jokes claim she has a higher emotional-resilience stat than most heroes."
+        }
+      ]
+    },
+
+    {
+      "team": "Olympians",
+      "family": "McNeil",
+      "members": [
+        {
+          "id": "OLY-004",
+          "name": "Mary",
+          "codename": "Auric",
+          "team": "Olympians",
+          "family_branch": "McNeil",
+          "rank": "Matriarch",
+          "status": "Active",
+          "species": "Human",
+          "universe": "Prime",
+          "role": "McNeil family matriarch and moral compass",
+          "abilities": [
+            "Golden barrier generation",
+            "Supportive aura that strengthens allies",
+            "Resource-blessing (boosting supplies and logistics)"
+          ],
+          "relationships": {
+            "partner": "Chance (Crimson Crown)",
+            "children": [
+              "Spencer (Annihilator)",
+              "Jared (Spector)",
+              "Jennifer (Kintsugi)",
+              "Ava (Prismatic Pulse)",
+              "Charlie (Iron Olympian)"
+            ],
+            "pets": [
+              "Lumi (Fade Shade)"
+            ],
+            "faction_connections": [
+              "Titans",
+              "Eclipse",
+              "Olympians",
+              "Parliament of Justice"
+            ]
+          },
+          "bio": "Mary, known as Auric, is the golden backbone of the McNeil line. Her calm strength and protective nature helped raise three of the core Titans and hold the extended family together.",
+          "history": [
+            "Raised Spencer, Jared, and Jennifer through the pre-Incident era of Zion City",
+            "Protected extended family safe houses during early Maw incursions",
+            "Frequently mediates between fiery personalities in family councils"
+          ],
+          "notes": "Her power theme is ‘golden stewardship’—protecting both people and what sustains them."
+        },
+        {
+          "id": "OLY-005",
+          "name": "Chance",
+          "codename": "Crimson Crown",
+          "team": "Olympians",
+          "family_branch": "McNeil",
+          "rank": "Patriarch",
+          "status": "Active",
+          "species": "Human",
+          "universe": "Prime",
+          "role": "Battlefield leader and McNeil patriarch",
+          "abilities": [
+            "Crimson energy greatsword manifestation",
+            "Command auras that sharpen ally focus",
+            "Tactical foresight in chaotic battles"
+          ],
+          "relationships": {
+            "partner": "Mary (Auric)",
+            "children": [
+              "Spencer (Annihilator)",
+              "Jared (Spector)",
+              "Jennifer (Kintsugi)",
+              "Ava (Prismatic Pulse)",
+              "Charlie (Iron Olympian)"
+            ],
+            "faction_connections": [
+              "Titans",
+              "Olympians",
+              "Parliament of Justice"
+            ]
+          },
+          "bio": "Crimson Crown is a field-general archetype: stoic, decisive, and fiercely protective of his family and city. His influence helped push Spencer toward leadership and honor instead of bitterness.",
+          "history": [
+            "Encouraged Spencer’s transition from raw power to true leadership as Annihilator",
+            "Helped evacuate civilians during early waves of The Incident",
+            "Occasionally consulted by the Parliament for ground-level perspectives"
+          ],
+          "notes": "His crown motif symbolizes responsibility, not ego—he wears the weight of his choices."
+        },
+        {
+          "id": "OLY-006",
+          "name": "Ava",
+          "codename": "Prismatic Pulse",
+          "team": "Olympians",
+          "family_branch": "McNeil",
+          "rank": "Support Specialist",
+          "status": "Active",
+          "species": "Human",
+          "universe": "Prime",
+          "role": "Multi-spectrum support and morale booster",
+          "abilities": [
+            "Prismatic energy bursts that can heal, shield, or stun",
+            "Color-coded signal flares for complex coordination",
+            "Emotional resonance that calms panic in civilians"
+          ],
+          "relationships": {
+            "partner": "Single",
+            "family": [
+              "Mary (Auric)",
+              "Chance (Crimson Crown)",
+              "Spencer (Annihilator)",
+              "Jared (Spector)",
+              "Jennifer (Kintsugi)",
+              "Charlie (Iron Olympian)",
+              "Lumi (Fade Shade)"
+            ],
+            "faction_connections": [
+              "Olympians"
+            ]
+          },
+          "bio": "Ava channels prismatic energy as a flexible support power, switching between roles depending on what the family needs in that moment.",
+          "history": [
+            "Served as a field medic and signal officer for family-led operations",
+            "Helped stabilize injured Legionaires and younger Olympians after Maw skirmishes"
+          ],
+          "notes": "Her color palette and effects often echo the emotional state of the group she’s with."
+        },
+        {
+          "id": "OLY-007",
+          "name": "Charlie",
+          "codename": "Iron Olympian",
+          "team": "Olympians",
+          "family_branch": "McNeil",
+          "rank": "Frontline Guardian",
+          "status": "Active",
+          "species": "Human",
+          "universe": "Prime",
+          "role": "Armored defender and physical powerhouse",
+          "abilities": [
+            "Heavy arcane-tech armor",
+            "Superhuman strength and durability",
+            "Shield-based crowd control"
+          ],
+          "relationships": {
+            "partner": "Single",
+            "family": [
+              "Mary (Auric)",
+              "Chance (Crimson Crown)",
+              "Spencer (Annihilator)",
+              "Jared (Spector)",
+              "Jennifer (Kintsugi)",
+              "Ava (Prismatic Pulse)",
+              "Lumi (Fade Shade)"
+            ],
+            "faction_connections": [
+              "Olympians"
+            ]
+          },
+          "bio": "Charlie, the Iron Olympian, is built like a walking fortress—often placed where the line absolutely cannot break.",
+          "history": [
+            "Helped hold defensive lines in the Telestial sector during multiple evacuations",
+            "Often partners with cousins from the Cummings side when heavy support is needed"
+          ],
+          "notes": "Quiet off the field, thunderous on it."
+        },
+        {
+          "id": "OLY-008",
+          "name": "Lumi",
+          "codename": "Fade Shade",
+          "team": "Olympians",
+          "family_branch": "McNeil",
+          "rank": "Shadow Scout",
+          "status": "Active",
+          "species": "Dog",
+          "universe": "Prime",
+          "role": "Stealthy companion and emotional guardian",
+          "abilities": [
+            "Blending into low light and shadowy environments",
+            "Finding isolated or injured family members",
+            "Soothing anxiety through presence"
+          ],
+          "relationships": {
+            "partner": "None",
+            "family": [
+              "Mary (Auric)",
+              "Chance (Crimson Crown)",
+              "Spencer (Annihilator)",
+              "Jared (Spector)",
+              "Jennifer (Kintsugi)",
+              "Ava (Prismatic Pulse)",
+              "Charlie (Iron Olympian)"
+            ],
+            "faction_connections": [
+              "Olympians"
+            ]
+          },
+          "bio": "Lumi is the shadow-pup of the McNeils, often found right beside those who’ve just come back from something traumatic.",
+          "history": [
+            "Frequently present during debriefs after high-risk missions",
+            "Became unofficial mascot of several smaller rescue ops involving younger cousins"
+          ],
+          "notes": "Fans joke that Lumi and Molly have their own secret side-team."
+        }
+      ]
+    },
+
+    {
+      "team": "Olympians",
+      "family": "Briggs",
+      "members": [
+        {
+          "id": "OLY-009",
+          "name": "Heather S",
+          "codename": "Verdant",
+          "team": "Olympians",
+          "family_branch": "Briggs",
+          "rank": "Matriarch",
+          "status": "Active",
+          "species": "Human",
+          "universe": "Prime",
+          "role": "Healer, nurturer, and environmental shaper",
+          "abilities": [
+            "Plant and growth manipulation",
+            "Regenerative healing fields",
+            "Environmental shielding with living barriers"
+          ],
+          "relationships": {
+            "partner": "Bobby (Crown Medic)",
+            "children": [
+              "Ben (Nuscus)",
+              "Azure (Mediateir)",
+              "Liberty (Serenity)",
+              "Ammon (Valoron)",
+              "Piper (Jetstrike)"
+            ],
+            "pets": [
+              "Gemma (Slendowg)"
+            ],
+            "faction_connections": [
+              "Titans",
+              "Olympians",
+              "Thunder Born (through Ben and Azure’s network)"
+            ]
+          },
+          "bio": "Heather S, Verdant, is a living greenhouse of protection and calm, providing a literal and emotional safe space for the Briggs and their extended family.",
+          "history": [
+            "Sheltered family and allies in living sanctuaries during Outer Darkness incursions",
+            "Helped Ben and Azure stabilize after high-intensity missions with healing fields"
+          ],
+          "notes": "Her gardens are half battlefield tool, half sacred family refuge."
+        },
+        {
+          "id": "OLY-010",
+          "name": "Bobby",
+          "codename": "Crown Medic",
+          "team": "Olympians",
+          "family_branch": "Briggs",
+          "rank": "Chief Healer",
+          "status": "Active",
+          "species": "Human",
+          "universe": "Prime",
+          "role": "Primary combat medic of the Briggs branch",
+          "abilities": [
+            "Advanced medical expertise enhanced by arcane-tech tools",
+            "Stabilizing auras that slow bleeding and dampen pain",
+            "Rapid triage analysis in chaotic situations"
+          ],
+          "relationships": {
+            "partner": "Heather S (Verdant)",
+            "children": [
+              "Ben (Nuscus)",
+              "Azure (Mediateir)",
+              "Liberty (Serenity)",
+              "Ammon (Valoron)",
+              "Piper (Jetstrike)"
+            ],
+            "faction_connections": [
+              "Titans",
+              "Olympians"
+            ]
+          },
+          "bio": "As Crown Medic, Bobby operates on the front lines of disaster, patching up heroes and civilians alike.",
+          "history": [
+            "Provided emergency support during multiple Titan missions gone sideways",
+            "Helped design standard medical response kits used across Olympian branches"
+          ],
+          "notes": "He has a reputation for firm bedside manner: kind, but no nonsense."
+        },
+        {
+          "id": "OLY-011",
+          "name": "Liberty",
+          "codename": "Serenity",
+          "team": "Olympians",
+          "family_branch": "Briggs",
+          "rank": "Peacekeeper",
+          "status": "Active",
+          "species": "Human",
+          "universe": "Prime",
+          "role": "Emotional stabilizer and field mediator",
+          "abilities": [
+            "Calming aura fields that reduce aggression",
+            "Light barriers that deflect attacks without harming attackers",
+            "Empathic sensing to read emotional tension"
+          ],
+          "relationships": {
+            "partner": "Single",
+            "family": [
+              "Heather S (Verdant)",
+              "Bobby (Crown Medic)",
+              "Ben (Nuscus)",
+              "Azure (Mediateir)",
+              "Ammon (Valoron)",
+              "Piper (Jetstrike)",
+              "Gemma (Slendowg)"
+            ],
+            "faction_connections": [
+              "Olympians"
+            ]
+          },
+          "bio": "Liberty embodies serenity in motion, often placed between clashing personalities or on the edges of tense negotiations.",
+          "history": [
+            "Helped de-escalate multiple near-fights between different factions and teams",
+            " Frequently deployed when Maw trauma fallout causes panic in safe zones"
+          ],
+          "notes": "Her armor and aura design deliberately evoke peace, not intimidation."
+        },
+        {
+          "id": "OLY-012",
+          "name": "Ammon",
+          "codename": "Valoron",
+          "team": "Olympians",
+          "family_branch": "Briggs",
+          "rank": "Vanguard",
+          "status": "Active",
+          "species": "Human",
+          "universe": "Prime",
+          "role": "Courage-focused frontline fighter",
+          "abilities": [
+            "Courage amplification for nearby allies",
+            "High-mobility melee combat",
+            "Energy constructs shaped like shields and banners"
+          ],
+          "relationships": {
+            "partner": "Single",
+            "family": [
+              "Heather S (Verdant)",
+              "Bobby (Crown Medic)",
+              "Ben (Nuscus)",
+              "Azure (Mediateir)",
+              "Liberty (Serenity)",
+              "Piper (Jetstrike)",
+              "Gemma (Slendowg)"
+            ],
+            "faction_connections": [
+              "Olympians"
+            ]
+          },
+          "bio": "Valoron charges where others hesitate, turning fear into momentum.",
+          "history": [
+            "Led several dangerous pushbacks when Telestial forces breached safe perimeters",
+            "Known for refusing to abandon pinned-down allies even against bad odds"
+          ],
+          "notes": "High synergy with Liberty’s calming fields and Heather’s plant shields."
+        },
+        {
+          "id": "OLY-013",
+          "name": "Piper",
+          "codename": "Jetstrike",
+          "team": "Olympians",
+          "family_branch": "Briggs",
+          "rank": "Aerial Specialist",
+          "status": "Active",
+          "species": "Human",
+          "universe": "Prime",
+          "role": "Fast-response aerial attacker and scout",
+          "abilities": [
+            "High-speed flight",
+            "Precision strike runs",
+            "Long-range recon and rapid relay"
+          ],
+          "relationships": {
+            "partner": "Single",
+            "family": [
+              "Heather S (Verdant)",
+              "Bobby (Crown Medic)",
+              "Ben (Nuscus)",
+              "Azure (Mediateir)",
+              "Liberty (Serenity)",
+              "Ammon (Valoron)",
+              "Gemma (Slendowg)"
+            ],
+            "faction_connections": [
+              "Olympians"
+            ]
+          },
+          "bio": "Jetstrike is the family’s quickest aerial blade, scouting ahead and hitting hard when needed.",
+          "history": [
+            "Often first on scene for family-based response missions",
+            "Worked joint ops with Titans and Cobros 314 as fast air support"
+          ],
+          "notes": "Probably has the best ‘flybys past Night Hawk’s car’ stories."
+        },
+        {
+          "id": "OLY-014",
+          "name": "Gemma",
+          "codename": "Slendowg",
+          "team": "Olympians",
+          "family_branch": "Briggs",
+          "rank": "Mobile Scout",
+          "status": "Active",
+          "species": "Dog",
+          "universe": "Prime",
+          "role": "Agile family scout and emotional support",
+          "abilities": [
+            "High-speed ground scouting",
+            "Tracking family members by scent even across chaos",
+            "Comic relief and morale restoration"
+          ],
+          "relationships": {
+            "partner": "None",
+            "family": [
+              "Heather S (Verdant)",
+              "Bobby (Crown Medic)",
+              "Ben (Nuscus)",
+              "Azure (Mediateir)",
+              "Liberty (Serenity)",
+              "Ammon (Valoron)",
+              "Piper (Jetstrike)"
+            ],
+            "faction_connections": [
+              "Olympians"
+            ]
+          },
+          "bio": "Gemma, the Slendowg, is the long-legged streak of joy sprinting through the Briggs household and battle lines alike.",
+          "history": [
+            "Known for finding lost kids and cousins during large family events and evacuations",
+            "Unofficial mascot for multiple younger Olympians"
+          ],
+          "notes": "Her codename is as much an inside joke as it is a legend."
+        }
+      ]
+    },
+    {
+    "team": "Olympians",
+    "family": "Jensen",
     "members": [
       {
-        "id": "OLY-001",
-        "name": "Angela",
-        "codename": "Celestial Angel",
+        "id": "OLYM-JENSEN-001",
+        "name": "Savannah",
+        "codename": "Vivid Spark",
         "team": "Olympians",
-        "family_branch": "Cummings/Parents",
-        "rank": "Matriarch",
+        "family": "Jensen",
+        "rank": "Matriarch – Creative Anchor",
         "status": "Active",
         "species": "Human",
         "universe": "Prime",
-        "role": "Family guardian and spiritual strategist",
+        "suit": {
+          "name": "Vivid Spark Raiment",
+          "variants": ["Inspiration Bloom Configuration"]
+        },
         "abilities": [
-          "Celestial light projection",
-          "Protective warding auras",
-          "Emotional healing and comfort"
+          "Emotion-linked light auras that brighten ally morale",
+          "Colorfield bursts that disorient hostile forces",
+          "Low-level healing warmth through touch and proximity",
+          "Protective flares that deflect minor projectiles"
         ],
         "relationships": {
-          "partner": "Todd (Stellar)",
-          "children": [
-            "Will (Night Hawk)",
-            "Emma (Kintsunera)"
-          ],
-          "pets": [
-            "Molly (Teddy Bear)"
-          ],
-          "faction_connections": [
-            "Titans",
-            "Eclipse",
-            "Olympians",
-            "Parliament of Justice"
-          ]
+          "partner": "Lee (Codeforge)",
+          "family": ["Stillman", "Jensen", "Cummings"],
+          "faction_connections": ["Olympians"]
         },
-        "bio": "Angela, known as Celestial Angel, is the heart-center of the Olympians and the Cummings clan. Her light shields and quiet strength keep the wider family grounded when the cosmos goes sideways.",
+        "bio": "Savannah \"Vivid Spark\" Jensen is the heartlight of her branch of the family, radiating color, warmth, and stability. Her presence keeps the Jensen household emotionally grounded even when cosmic chaos brushes against their lives.",
         "history": [
-          "Stood as an early moral anchor for the future Titans and Olympians",
-          "Sheltered younger cousins during the early threats around Zion City",
-          "Helped Night Hawk and Emma reconcile duty, faith, and hero work"
+          "Supported younger Olympians through difficult personal and spiritual transitions",
+          "Served as an informal counselor during early Maw disturbances near the family",
+          "Helped host several cross-family gatherings that strengthened Olympian unity"
         ],
-        "notes": "Often depicted as a calm, radiant presence—if she raises her voice, everyone knows it’s serious."
+        "notes": "Her aura tends to brighten and change color based on the emotional state of the room."
       },
       {
-        "id": "OLY-002",
-        "name": "Todd",
-        "codename": "Stellar",
+        "id": "OLYM-JENSEN-002",
+        "name": "Lee",
+        "codename": "Codeforge",
         "team": "Olympians",
-        "family_branch": "Cummings/Parents",
-        "rank": "Patriarch",
+        "family": "Jensen",
+        "rank": "Systems Artisan & Tech Support",
         "status": "Active",
         "species": "Human",
         "universe": "Prime",
-        "role": "Tactical overseer and starship legacy holder",
+        "suit": {
+          "name": "Codeforge Rig",
+          "variants": ["Developer’s Forge Harness"]
+        },
         "abilities": [
-          "Stellar-energy channeling",
-          "Long-range battlefield awareness",
-          "Starship command intuition"
+          "On-the-fly scripting of arcane-tech subroutines",
+          "Stabilization of glitching or corrupted systems",
+          "HUD-assisted diagnostics for damaged armor and devices",
+          "Support drones that handle minor repairs mid-mission"
         ],
         "relationships": {
-          "partner": "Angela (Celestial Angel)",
-          "children": [
-            "Will (Night Hawk)",
-            "Emma (Kintsunera)"
-          ],
-          "starships": [
-            "USS Angel-A (legacy ship)"
-          ],
-          "faction_connections": [
-            "Titans",
-            "Olympians",
-            "Constellation",
-            "Parliament of Justice"
-          ]
+          "partner": "Savannah (Vivid Spark)",
+          "family": ["Jensen", "Stillman (by marriage)"],
+          "faction_connections": ["Olympians", "Parliament (Tech Support – Minor)"]
         },
-        "bio": "Todd, called Stellar, carries the legacy of the USS Angel-A and serves as a quiet strategist behind many Parliament-era operations. His counsel guides Night Hawk and the cousins when stakes go cosmic.",
+        "bio": "Lee \"Codeforge\" Jensen is the quiet engineer behind many of the family’s tech comforts. He’s less of a frontline warrior and more of a craftsman who keeps critical infrastructure humming.",
         "history": [
-          "Supported early Titans operations from the periphery of Zion City",
-          "Passed down the legacy of the Angel-A and exploration values to his children",
-          "Helped unify extended family branches into the Olympians framework"
+          "Helped adapt civilian tech to handle emergency Parliament alerts",
+          "Assisted in refurbishing damaged Olympian armor between battles",
+          "Consulted on secure data storage for family records and histories"
         ],
-        "notes": "Seen as both a dad and an admiral figure—rarely out front, but always watching the board."
+        "notes": "Prefers workbenches and terminals to battlefields but will deploy when the family truly needs him."
       },
       {
-        "id": "OLY-003",
-        "name": "Molly",
-        "codename": "Teddy Bear",
+        "id": "OLYM-JENSEN-003",
+        "name": "Emilee",
+        "codename": "Luminous Aria",
         "team": "Olympians",
-        "family_branch": "Cummings/Parents",
-        "rank": "House Guardian",
+        "family": "Jensen",
+        "rank": "Support Caster – Sonic & Light",
         "status": "Active",
-        "species": "Dog",
+        "species": "Human",
         "universe": "Prime",
-        "role": "Emotional support and household sentinel",
+        "suit": {
+          "name": "Luminous Aria Attire",
+          "variants": ["Harmonic Choir Configuration"]
+        },
         "abilities": [
-          "Danger sense around the family home",
-          "Morale boosting",
-          "Unconditional loyalty"
+          "Voice-linked light waves that can soothe or stun",
+          "Resonant barriers woven from melody and radiance",
+          "Ability to synchronize heartbeats and breathing of nearby allies",
+          "Subtle sonic pulses to disrupt hostile coordination"
         ],
         "relationships": {
-          "partner": "None",
-          "family": [
+          "partner": "Single",
+          "family": ["Jensen"],
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Emilee \"Luminous Aria\" Jensen turns song into shield and spotlight. Her harmonies can settle panic, strengthen courage, and—when necessary—drop enemies to their knees with a single sharp note.",
+        "history": [
+          "Provided musical and emotional support during multiple cross-family gatherings",
+          "Assisted in calming civilians during emergency evacuations",
+          "Frequently coordinates with other support-focused Olympians for joint operations"
+        ],
+        "notes": "Her power is at its strongest when she’s protecting people she personally knows."
+      },
+      {
+        "id": "OLYM-JENSEN-004",
+        "name": "Samantha",
+        "codename": "Velocity Vibe",
+        "team": "Olympians",
+        "family": "Jensen",
+        "rank": "Scout & Courier",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Velocity Vibe Gear",
+          "variants": ["Courier Sprint Configuration"]
+        },
+        "abilities": [
+          "Enhanced agility and burst-speed dashes",
+          "Kinetic echo trails that confuse pursuers",
+          "Parkour-level mobility in urban and interior spaces",
+          "Tactical data relays routed through a wrist-comms mesh"
+        ],
+        "relationships": {
+          "partner": "Single",
+          "family": ["Jensen"],
+          "faction_connections": ["Olympians", "Legionaires (Runner – Occasional Support)"]
+        },
+        "bio": "Samantha \"Velocity Vibe\" Jensen is motion given purpose. She thrives on weaving through tight spaces, delivering data, and scouting paths before others even know there’s a threat.",
+        "history": [
+          "Served as a runner between Olympians, Titans, and Legionaires during early coordination efforts",
+          "Helped map safe routes through Maw-adjacent disturbance zones",
+          "Frequently assigned to quick-response errands that require both speed and trust"
+        ],
+        "notes": "She dislikes staying still and often volunteers for the most mobile roles available."
+      },
+      {
+        "id": "OLYM-JENSEN-005",
+        "name": "Ella",
+        "codename": "Aerial Serenade",
+        "team": "Olympians",
+        "family": "Jensen",
+        "rank": "Aerial Support & Recon",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Aerial Serenade Armor",
+          "variants": ["Skyborne Harmony Configuration"]
+        },
+        "abilities": [
+          "Low-altitude flight with agile maneuvering",
+          "Wind-assisted glides that generate calming ambient tones",
+          "Wide-angle visual scouting from above",
+          "Subtle pressure-wave bursts to disrupt incoming projectiles"
+        ],
+        "relationships": {
+          "partner": "Single",
+          "family": ["Jensen"],
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Ella \"Aerial Serenade\" Jensen mixes sky-dancing with soft tactical support. From above, she can both scout ahead and weave gentle sound currents that steady allies’ nerves.",
+        "history": [
+          "Provided overwatch during several extended-family outdoor gatherings and training exercises",
+          "Helped spot early signs of Maw storms encroaching near safe zones",
+          "Frequently paired with ground-based cousins as their personal aerial guardian"
+        ],
+        "notes": "Feels most at peace when she has open sky, music in her head, and family within sight below."
+      }
+    ]
+  },
+  {
+    "team": "Olympians",
+    "family": "Bolander",
+    "members": [
+      {
+        "id": "OLY-BOL-001",
+        "name": "Annie",
+        "codename": "Sage Mentor",
+        "role": "Family Counselor & Heart of the Bolanders",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Paul",
+          "children": ["McKinley", "Whitney", "Vinson"],
+          "family_branch": "Bolander",
+          "faction_connections": ["Olympians"]
+        },
+        "powers": [
+          "Emotional Shielding",
+          "Insightful Foresight (short-term emotional reading)",
+          "Calming Aura",
+          "Supportive Barrier Fields"
+        ],
+        "bio": "Annie \"Sage Mentor\" Bolander is the quiet backbone of the Bolander branch. She is the one everyone calls when life is collapsing, when emotions are raw, and when hard decisions have to be made. Her gift is not just power, but presence: she listens, steadies, and then gently points people back toward hope.",
+        "history": [
+          "Helped mediate early tensions between multiple Olympian branches when powers and responsibility first awakened",
+          "Frequently called into Parliament debriefs as an unofficial counselor for shaken heroes",
+          "Served as an emotional anchor during The Incident’s aftermath for several Titans and Legionaires",
+          "Became known as \"Sage Mentor\" after repeatedly guiding younger cousins back from burnout and despair"
+        ],
+        "notes": "Her powers grow stronger the more trust the other person has in her. She rarely fights on the front line, but no major family gathering or crisis is complete without her."
+      },
+      {
+        "id": "OLY-BOL-002",
+        "name": "Paul",
+        "codename": "Iron Law",
+        "role": "Tactician & Defensive Enforcer",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Annie",
+          "children": ["McKinley", "Whitney", "Vinson"],
+          "family_branch": "Bolander",
+          "faction_connections": ["Olympians"]
+        },
+        "powers": [
+          "Kinetic Armor Plating",
+          "Hard-Light Shield Constructs",
+          "Impact Redirection",
+          "Battlefield Rule Imposition (zone-based control fields)"
+        ],
+        "bio": "Paul \"Iron Law\" Bolander is the shield that stands beside Sage Mentor. Where Annie mends hearts, Paul locks down the field and lays down unbreakable boundaries. He specializes in creating zones where his rules apply—slowing projectiles, dampening powers, and forcing enemies to play fair.",
+        "history": [
+          "Helped design several Parliament-approved engagement protocols for defending civilians during urban conflicts",
+          "Served as a defensive pillar during multiple Maw-related incursions, holding choke points alone until reinforcements arrived",
+          "Frequently assigned to protect key family members and non-combatants during major crises",
+          "Earned the codename \"Iron Law\" for his unyielding adherence to justice and protective codes"
+        ],
+        "notes": "His hard-light shields become stronger when defending his family, especially Annie and their kids."
+      },
+      {
+        "id": "OLY-BOL-003",
+        "name": "McKinley",
+        "codename": "Rebuncious",
+        "role": "Skirmisher & Morale Booster",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Annie", "Paul"],
+          "siblings": ["Whitney", "Vinson"],
+          "family_branch": "Bolander",
+          "faction_connections": ["Olympians"]
+        },
+        "powers": [
+          "Agility Surges",
+          "Momentum-Boosted Strikes",
+          "Adrenaline Aura (buffs allies' speed and confidence)",
+          "Unpredictable Evasion"
+        ],
+        "bio": "McKinley \"Rebuncious\" Bolander is pure kinetic energy in human form. Loud, chaotic, and impossible to ignore, he thrives in the middle of moving battles where his momentum-based powers let him ricochet through enemy lines and keep morale high.",
+        "history": [
+          "Known for charging into danger to draw fire away from more vulnerable cousins",
+          "Turned the tide of several training simulations with aggressive flanking runs and improvised tactics",
+          "Often deployed as a distraction unit, forcing enemies to break formation",
+          "Developed a reputation for never giving up, even when badly outnumbered"
+        ],
+        "notes": "The more fun he’s having, the stronger and faster he becomes—something that drives tacticians crazy and delights frontline fighters."
+      },
+      {
+        "id": "OLY-BOL-004",
+        "name": "Whitney",
+        "codename": "Veilweaver",
+        "role": "Infiltration & Illusion Support",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Annie", "Paul"],
+          "siblings": ["McKinley", "Vinson"],
+          "family_branch": "Bolander",
+          "faction_connections": ["Olympians"]
+        },
+        "powers": [
+          "Light-Bending Veils (visual cloaking and mirages)",
+          "Sound-Dampening Fields",
+          "Decoy Projection",
+          "Subtle Emotion Masking"
+        ],
+        "bio": "Whitney \"Veilweaver\" Bolander is the subtle one in a loud branch. Where her brothers crash through walls, she rearranges the room so enemies never realize they’re already flanked. She weaves layers of light and sound into illusions that hide allies, misdirect foes, and protect civilians.",
+        "history": [
+          "Provided stealth cover for several covert evacuations when open combat wasn’t an option",
+          "Frequently partners with Legionaires and Titans who specialize in precision strikes",
+          "Helped design training scenarios that simulate Maw-like disorientation using her illusions",
+          "Relied on by younger cousins who feel safer fighting under her cloaking veils"
+        ],
+        "notes": "Her illusions are most effective when she has time to plan the environment, but she’s learned to improvise under fire."
+      },
+      {
+        "id": "OLY-BOL-005",
+        "name": "Vinson",
+        "codename": "Ironchad",
+        "role": "Bruiser & Frontline Enforcer",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Annie", "Paul"],
+          "siblings": ["McKinley", "Whitney"],
+          "family_branch": "Bolander",
+          "faction_connections": ["Olympians"]
+        },
+        "powers": [
+          "Impact-Boosted Strength",
+          "Shockwave Punches",
+          "Ground Stabilization (resists knockback and quakes)",
+          "Armor Reinforcement Aura (buffs nearby allies’ durability)"
+        ],
+        "bio": "Vinson \"Ironchad\" Bolander is the youngest Bolander sibling and the hammer of the family. He hits like a freight train, shrugs off impacts that would flatten vehicles, and specializes in breaking enemy momentum with well-placed shockwaves.",
+        "history": [
+          "Joined structured operations later than his siblings but quickly became a core frontline asset",
+          "Known for stepping in front of danger when cousins are overwhelmed or pinned down",
+          "Participated in training with Titans heavy-hitters to refine control over his shockwaves",
+          "Once held a collapsing corridor long enough for an entire squad of Legionaires to escape"
+        ],
+        "notes": "He jokes a lot and leans into the \"Ironchad\" nickname, but under the bravado he takes protecting family extremely seriously."
+      }
+    ]
+  },
+  {
+    "team": "Olympians",
+    "family": "Stillman – Wesley Branch",
+    "members": [
+      {
+        "id": "OLYM-STIL-001",
+        "name": "Wesley",
+        "codename": "Steelframe",
+        "role": "Heavy Defender & Anchor",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Steelframe Armor",
+          "variants": ["Bulwark Mode", "Brace Configuration"]
+        },
+        "abilities": [
+          "Reinforced metallic body plating",
+          "High-impact damage absorption",
+          "Grounded stance that resists knockback and quakes",
+          "Support auras that harden nearby allies’ defenses"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Melissa (Auric Skyweaver)",
+          "children": ["Jackson (Rhythmic Flux)", "Mason (Fortress King)", "Rylie (Star Gleam)", "Sammy (Swift Pack)"],
+          "family_branch": "Stillman – Wesley Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Wesley \"Steelframe\" Stillman is the physical and emotional anchor of his branch of the family. Calm, steady, and stubbornly unmovable when it counts, he stands between danger and those he loves, turning his entire body into a living barrier.",
+        "history": [
+          "First of the Wesley branch to actively join Olympian operations as a dedicated defender",
+          "Held structural lines during early Maw Echo tremors to prevent collapses around civilians and cousins",
+          "Frequently assigned to guard ingress and evacuation routes during Parliament emergencies",
+          "Helped train younger Olympians in basic durability, stance, and holding the line under pressure"
+        ],
+        "notes": "He rarely rushes in, but once he plants his feet, almost nothing can push him back."
+      },
+      {
+        "id": "OLYM-STIL-002",
+        "name": "Melissa",
+        "codename": "Auric Skyweaver",
+        "role": "Lightweaver & Support Specialist",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Auric Skyweaver Attire",
+          "variants": ["Aurora Loom", "Halo Weave"]
+        },
+        "abilities": [
+          "Gold-white light constructs that form ribbons, veils, and shields",
+          "Soothing light fields that ease fear and worry",
+          "Sky-thread bridges of hard light for crossing gaps or reaching height",
+          "Radiant beacons that signal and guide allies through smoke or darkness"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Wesley (Steelframe)",
+          "children": ["Jackson (Rhythmic Flux)", "Mason (Fortress King)", "Rylie (Star Gleam)", "Sammy (Swift Pack)"],
+          "family_branch": "Stillman – Wesley Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Melissa \"Auric Skyweaver\" Stillman shapes light into living patterns—bridges, banners, and shields that protect and guide the family. Where Steelframe locks the line down, she paints hope across the sky above it.",
+        "history": [
+          "Created emergency light paths during blackouts so younger cousins could navigate safely",
+          "Frequently accompanies Wesley on defense-heavy missions to add flexible shielding and visibility",
+          "Helped restore morale after difficult battles by filling the night sky with auric patterns and quiet lightshows",
+          "Known for weaving protective veils around children and non-combatants during crises"
+        ],
+        "notes": "Her auric weaves subtly reflect her emotions—calm patterns when at peace, sharp angles when she’s worried."
+      },
+      {
+        "id": "OLYM-STIL-003",
+        "name": "Jackson",
+        "codename": "Rhythmic Flux",
+        "role": "Agile Skirmisher",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Rhythmic Flux Gear",
+          "variants": ["Tempo Burst", "Beatstep Mode"]
+        },
+        "abilities": [
+          "Momentum-based speed boosts triggered by rhythm and motion",
+          "Impact strikes that hit harder when timed to a beat",
+          "Short dash-blinks in sync with his internal tempo",
+          "Minor kinetic redirection that lets him roll with hits instead of taking them full force"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Wesley (Steelframe)", "Melissa (Auric Skyweaver)"],
+          "siblings": ["Mason (Fortress King)", "Rylie (Star Gleam)", "Sammy (Swift Pack)"],
+          "family_branch": "Stillman – Wesley Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Jackson \"Rhythmic Flux\" Stillman moves like a walking playlist—every feint, step, and strike flows in time. When he’s locked into a rhythm, he becomes a blur on the battlefield, slipping through openings and creating them for others.",
+        "history": [
+          "Often serves as a vanguard runner, drawing attention away from less mobile cousins",
+          "Helped test timing-based training drills used by younger Olympians to improve coordination",
+          "Turned several chaotic skirmishes by syncing with other speed-focused allies to create combo attacks"
+        ],
+        "notes": "He fights noticeably better when there’s actual music playing, but he can keep tempo in his head if he has to."
+      },
+      {
+        "id": "OLYM-STIL-004",
+        "name": "Mason",
+        "codename": "Fortress King",
+        "role": "Zone Control & Field Commander",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Fortress King Armor",
+          "variants": ["Citadel Mode", "Rampart Crown"]
+        },
+        "abilities": [
+          "Summons partial energy-fortifications (walls, cover, ramparts)",
+          "Territory auras that strengthen allies inside his \"domain\"",
+          "Heavy guard stance that protects groups clustered behind him",
+          "Symbolic standard projection that rallies morale and focus"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Wesley (Steelframe)", "Melissa (Auric Skyweaver)"],
+          "siblings": ["Jackson (Rhythmic Flux)", "Rylie (Star Gleam)", "Sammy (Swift Pack)"],
+          "family_branch": "Stillman – Wesley Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Mason \"Fortress King\" Stillman turns any ground he stands on into defended territory. His power isn’t about ruling people—it’s about claiming space so others can stand, heal, and fight without being overwhelmed.",
+        "history": [
+          "Helped design temporary fallback fortifications for large family gatherings in case of attack",
+          "Stood as a rear-guard commander during several evacuation drills, ensuring no one was left behind",
+          "Frequently paired with cousins who excel in ranged attacks, giving them secure positions to work from"
+        ],
+        "notes": "He takes responsibility seriously and doesn’t like abandoning a position others are relying on."
+      },
+      {
+        "id": "OLYM-STIL-005",
+        "name": "Rylie",
+        "codename": "Star Gleam",
+        "role": "Inspirational Support & Light Scout",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Star Gleam Raiment",
+          "variants": ["Hopeflare Mode"]
+        },
+        "abilities": [
+          "Soft starlight auras that ease fear and doubt",
+          "Directional light beams to highlight threats or safe paths",
+          "Short-range light-based levitation hops",
+          "Burst gleams that briefly blind or distract enemies"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Wesley (Steelframe)", "Melissa (Auric Skyweaver)"],
+          "siblings": ["Jackson (Rhythmic Flux)", "Mason (Fortress King)", "Sammy (Swift Pack)"],
+          "family_branch": "Stillman – Wesley Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Rylie \"Star Gleam\" Stillman embodies quiet hope. She doesn’t overpower the battlefield with blazing light; instead, she shines just enough to remind people they’re not alone and there is still a way forward.",
+        "history": [
+          "Often assigned to stay close to younger or more anxious family members during tense missions",
+          "Helped guide groups through darkened corridors during power failures",
+          "Known for steadying people with a simple touch and gentle glow"
+        ],
+        "notes": "Her light is softest but most persistent—the kind that lingers after others fade."
+      },
+      {
+        "id": "OLYM-STIL-006",
+        "name": "Sammy",
+        "codename": "Swift Pack",
+        "role": "Mobile Support & Team Runner",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Swift Pack Suit",
+          "variants": ["Relay Mode", "Courier Form"]
+        },
+        "abilities": [
+          "High-speed sprinting tuned for carrying gear or people",
+          "Short-range blink dashes to weave through crowded spaces",
+          "Momentum-sharing bursts that briefly speed up nearby allies",
+          "Pack-sense awareness that lets him track friendly positions instinctively"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Wesley (Steelframe)", "Melissa (Auric Skyweaver)"],
+          "siblings": ["Jackson (Rhythmic Flux)", "Mason (Fortress King)", "Rylie (Star Gleam)"],
+          "family_branch": "Stillman – Wesley Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Sammy \"Swift Pack\" Stillman is built for running with others in mind—hauling supplies, ferrying messages, and physically carrying those who can’t keep up. He’s the one who’ll go back for someone, even if it means doubling the distance.",
+        "history": [
+          "Served as a primary courier between Parliament wings during simulated lockdowns",
+          "Carried injured cousins out of training mishaps more than once",
+          "Often the first to volunteer for runs that require stamina and trust"
+        ],
+        "notes": "She’s at her best when she feels like part of a moving group, not a solo hero."
+      }
+    ]
+  },
+  {
+    "team": "Olympians",
+    "family": "Stillman – David Branch",
+    "members": [
+      {
+        "id": "OLYM-STILB-001",
+        "name": "David",
+        "codename": "Ironforge",
+        "role": "Tactical Support & Reinforcement Specialist",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Ironforge Armament",
+          "variants": ["Hammerguard Mode", "Molten Brace"]
+        },
+        "abilities": [
+          "Generates metallic armoring around himself or allies",
+          "Can forge temporary equipment or barriers using conjured metal",
+          "Weight-stabilizing stance that prevents knockback",
+          "Metal shaping under battlefield stress (plates, braces, anchors)"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Isaydy (Mist Haven)",
+          "children": ["Darron (Crag Rock)", "Isabel (Breezestrom)"],
+          "family_branch": "Stillman – David Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "David \"Ironforge\" Stillman is a battlefield craftsman—steady, methodical, and impossible to rush. Where chaos rises, he creates structure, forming shields, braces, and anchors that keep his loved ones steady. A quiet protector, his metalwork is as dependable as his presence.",
+        "history": [
+          "Developed improvised armor plates for younger Olympians during early Maw tremors",
+          "Frequently reinforces defensive positions created by other family members",
+          "Known for calmly stabilizing collapsing structures long enough for evacuations",
+          "Taught several cousins basic metal-forming discipline as a grounding exercise"
+        ],
+        "notes": "His conjured metal always reflects his mood—smooth and orderly on calm days, jagged and heavy when danger rises."
+      },
+      {
+        "id": "OLYM-STILB-002",
+        "name": "Isaydy",
+        "codename": "Mist Haven",
+        "role": "Fog Manipulator & Field Concealment Specialist",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Mist Haven Wrap",
+          "variants": ["Fogwall Mode", "Soft Veil"]
+        },
+        "abilities": [
+          "Creates blankets of mist that obscure vision but not ally sensors",
+          "Localized fog shelters to hide or calm stressed family members",
+          "Moisture shaping to create slippery terrain or soften falls",
+          "Brief mirage-like illusions formed from water vapor"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "David (Ironforge)",
+          "children": ["Darron (Crag Rock)", "Isabel (Breezestrom)"],
+          "family_branch": "Stillman – David Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Isaydy \"Mist Haven\" Stillman is the quiet refuge of her branch. She forms soft fog shelters where those she loves can breathe, regroup, and feel safe. In chaos, her mist shields protect sightlines, slow enemies, and give allies breathing room.",
+        "history": [
+          "Created fog barriers during rescue drills to reduce panic in tight spaces",
+          "Used mist veils to guide children away from danger without overwhelming them",
+          "Often deployed alongside ranged or defensive cousins to soften enemy approaches",
+          "Known for dissolving tense situations with literally cooling air"
+        ],
+        "notes": "Her mist carries subtle calm—those standing within often feel their heartbeat slow and mind clear."
+      },
+      {
+        "id": "OLYM-STILB-003",
+        "name": "Darron",
+        "codename": "Crag Rock",
+        "role": "Earthshaper & Immovable Tank",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Crag Rock Armor",
+          "variants": ["Granite Form", "Faultline Stance"]
+        },
+        "abilities": [
+          "Forms rock plating around limbs for powerful strikes",
+          "Rooted stance that blends perfectly with natural ground",
+          "Shockwave stomps that destabilize enemy positions",
+          "Can raise small rocky shields or platforms beneath himself"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["David (Ironforge)", "Isaydy (Mist Haven)"],
+          "siblings": ["Isabel (Breezestrom)"],
+          "family_branch": "Stillman – David Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Darron \"Crag Rock\" Stillman embodies raw steadfastness. When he plants his feet, he becomes an obstacle that even enhanced foes struggle to move. His rock-forged plating turns him into a walking bulwark capable of absorbing enormous force.",
+        "history": [
+          "Served as a frontline battering ram during training exercises",
+          "Helped stabilize shifting ground during several earthquakes and Maw disturbances",
+          "Often stationed near younger cousins to act as a literal wall against threats",
+          "Works well with energy-based allies who need a grounded shield"
+        ],
+        "notes": "Despite his rugged power, he’s gentle with smaller family members—always careful where he steps."
+      },
+      {
+        "id": "OLYM-STILB-004",
+        "name": "Isabel",
+        "codename": "Breezestrom",
+        "role": "Wind Scout & Messenger Runner",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Breezestrom Gear",
+          "variants": ["Wind Step", "Skyglide Mode"]
+        },
+        "abilities": [
+          "Short wind bursts for rapid movement",
+          "Directional air currents that redirect projectiles",
+          "Soft landing control when leaping from height",
+          "Can amplify the voices of allies across distance"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["David (Ironforge)", "Isaydy (Mist Haven)"],
+          "siblings": ["Darron (Crag Rock)"],
+          "family_branch": "Stillman – David Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Isabel \"Breezestrom\" Stillman is a swift-moving scout who glides along the battlefield like a passing wind. Light on her feet and perceptive, she specializes in relaying messages, spotting openings, and helping guide others with gentle streams of air.",
+        "history": [
+          "Often used to relay battlefield signals when coms are disrupted",
+          "Assisted with rooftop evacuations by controlling allies' landings",
+          "Used wind currents to clear smoke for cousins who rely on visibility",
+          "Has guided younger Olympians through obstacle courses using airflow cues"
+        ],
+        "notes": "Her movements often come with a faint breeze, even indoors."
+      }
+    ]
+  },
+  {
+    "team": "Olympians",
+    "family": "Stillman – Gary Jr. Branch",
+    "members": [
+      {
+        "id": "OLYM-STILC-001",
+        "name": "Gary Jr.",
+        "codename": "Legacy Shield",
+        "role": "Family Guardian & Impact Defender",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Legacy Shield Armor",
+          "variants": ["Fortress Crest", "Guardian Stand"]
+        },
+        "abilities": [
+          "Generates broad, shimmering shield barriers",
+          "Can project personal shields to protect individual allies",
+          "Absorbs kinetic force and redistributes it safely into the ground",
+          "Forms temporary crest-shaped wards when anchoring a defensive line"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Sarah (Hope)",
+          "children": ["Josh (Defention)", "Garden (Pharoll)", "Sophia (Chroma Sprint)", "Paisley (Prism Weaver)", "Ellie (Ethereal Flutter)"],
+          "family_branch": "Stillman – Gary Jr. Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Gary Jr. \"Legacy Shield\" Stillman carries on the protective strength of his parents’ generation. Calm, grounded, and durable under pressure, he acts as the first wall between danger and his loved ones. His shields don’t just block attacks—they inspire confidence.",
+        "history": [
+          "Has acted as the primary defensive anchor for major family gatherings during high alerts",
+          "Helped create emergency shield corridors to guide younger members through smoke-filled areas",
+          "Often deployed to reinforce Parliament personnel during sudden ruptures or Maw echoes",
+          "Trains his children in defensive posture and emotional discipline"
+        ],
+        "notes": "When he focuses fully, his shields briefly take on the geometric shape of the Stillman family crest."
+      },
+      {
+        "id": "OLYM-STILC-002",
+        "name": "Sarah",
+        "codename": "Hope",
+        "role": "Emotional Stabilizer & Light Support",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Hopewoven Garments",
+          "variants": ["Gentle Dawn", "Calm Horizon"]
+        },
+        "abilities": [
+          "Radiates warm emotional fields that dissolve panic and fear",
+          "Creates soft zones of safety where tension cannot take root",
+          "Amplifies allies’ mental resilience through supportive auras",
+          "Projects beams of clarity that cut through confusion or illusions"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Gary Jr. (Legacy Shield)",
+          "children": ["Josh (Defention)", "Garden (Pharoll)", "Sophia (Chroma Sprint)", "Paisley (Prism Weaver)", "Ellie (Ethereal Flutter)"],
+          "family_branch": "Stillman – Gary Jr. Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Sarah \"Hope\" Stillman is the emotional backbone of her branch. Her calm radiance helps family members breathe easier during stress, sharpening their focus and strengthening their resolve. Her presence alone softens fear and strengthens unity.",
+        "history": [
+          "Provided emotional stabilization during several Parliament evacuations",
+          "Known for helping younger cousins through trauma after Maw encounters",
+          "Supported defenders like Gary Jr. by amplifying their morale and clarity",
+          "Creates refuge zones during long missions for rest and regrouping"
+        ],
+        "notes": "Her aura adapts subtly to the needs of those near her—warm for comfort, bright for courage."
+      },
+      {
+        "id": "OLYM-STILC-003",
+        "name": "Josh",
+        "codename": "Defention",
+        "role": "Shieldbearer & Frontline Protector",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Defention Gear",
+          "variants": ["Aegis Mode", "Guardline"]
+        },
+        "abilities": [
+          "Projects medium-style tactical shields",
+          "Can link shields to form multi-person cover",
+          "Holds positions even under overwhelming pressure",
+          "Redirects incoming force sideways to protect allies behind him"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Gary Jr. (Legacy Shield)", "Sarah (Hope)"],
+          "siblings": ["Garden (Pharoll)", "Sophia (Chroma Sprint)", "Paisley (Prism Weaver)", "Ellie (Ethereal Flutter)"],
+          "family_branch": "Stillman – Gary Jr. Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Josh \"Defention\" Stillman follows directly in his father's footsteps, specializing in tactical shield deployment and frontline protection. Less ceremonial than Gary Jr.’s crest-like shields, Josh’s barriers are compact, efficient, and built for rapid combat use.",
+        "history": [
+          "Frequently volunteers for security posts during high-risk operations",
+          "Helped protect evacuation groups during sudden Maw flickers",
+          "Worked alongside Fortress King to create combined fortification grids",
+          "Trains younger cousins in basic shield stances and emergency protection maneuvers"
+        ],
+        "notes": "He’s direct, brave, and often the first to step between danger and others."
+      },
+      {
+        "id": "OLYM-STILC-004",
+        "name": "Garden",
+        "codename": "Pharoll",
+        "role": "Nature Attuner & Lifeflow Conduit",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Pharoll Attire",
+          "variants": ["Lifeweave", "Greenward Mode"]
+        },
+        "abilities": [
+          "Channels the life-force of nearby plants to empower abilities",
+          "Can create sudden bursts of growth (vines, roots, blossoms)",
+          "Uses bioenergy pulses to stabilize injured allies",
+          "Senses lifeforms and natural patterns across an area"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Gary Jr. (Legacy Shield)", "Sarah (Hope)"],
+          "siblings": ["Josh (Defention)", "Sophia (Chroma Sprint)", "Paisley (Prism Weaver)", "Ellie (Ethereal Flutter)"],
+          "family_branch": "Stillman – Gary Jr. Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Garden \"Pharoll\" Stillman channels nature’s rhythm into her movements and abilities. She brings restorative energy to the battlefield, using vines and roots to redirect threats while nourishing allies with quiet, stabilizing pulses.",
+        "history": [
+          "Helped regrow damaged terrain following multiple small Maw ruptures",
+          "Often paired with light-based cousins to create complementary healing fields",
+          "Protected younger family members using fast-growing vine barriers",
+          "Trained extensively to control her power’s emotional sensitivity"
+        ],
+        "notes": "Near plants, her energy strengthens; in forests, she is a force of nature."
+      },
+      {
+        "id": "OLYM-STILC-005",
+        "name": "Sophia",
+        "codename": "Chroma Sprint",
+        "role": "Color-Dash Scout & Speed Adapter",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Chroma Sprint Attire",
+          "variants": ["Hue Shift", "Prismatic Dash"]
+        },
+        "abilities": [
+          "Bursts forward in streaks of shifting color",
+          "Changes color trails depending on terrain and tactical needs",
+          "Can rebound off surfaces using kinetic color bursts",
+          "Creates chromatic flares that briefly distract enemies"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Gary Jr. (Legacy Shield)", "Sarah (Hope)"],
+          "siblings": ["Josh (Defention)", "Garden (Pharoll)", "Paisley (Prism Weaver)", "Ellie (Ethereal Flutter)"],
+          "family_branch": "Stillman – Gary Jr. Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Sophia \"Chroma Sprint\" Stillman races across battlefields trailing ribbons of color. Her speed is unpredictable—she shifts hue and intensity based on momentum, creating dazzling patterns that confuse enemies and guide allies.",
+        "history": [
+          "Served as a rapid messenger during Parliament drills",
+          "Helped simulate unpredictable enemy movement during training exercises",
+          "Used chromatic bursts to signal pathfinding for younger Olympians",
+          "Often assists scouts with fast forward recon"
+        ],
+        "notes": "Her color trails subtly echo the emotional tone of the battlefield."
+      },
+      {
+        "id": "OLYM-STILC-006",
+        "name": "Paisley",
+        "codename": "Prism Weaver",
+        "role": "Light-Shifter & Visual Support",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Prism Weaver Suit",
+          "variants": ["Spectrum Net", "Radiance Arc"]
+        },
+        "abilities": [
+          "Splits light into prismatic bands for illusion or distraction",
+          "Creates soft-spectrum shields that distort perception",
+          "Can weave colored lines into visual signals for coordinated attacks",
+          "Briefly blinds enemies with flarebursts when needed"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Gary Jr. (Legacy Shield)", "Sarah (Hope)"],
+          "siblings": ["Josh (Defention)", "Garden (Pharoll)", "Sophia (Chroma Sprint)", "Ellie (Ethereal Flutter)"],
+          "family_branch": "Stillman – Gary Jr. Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Paisley \"Prism Weaver\" Stillman bends light into patterns—some defensive, some artistic, all effective. She creates illusions, decoys, and color-coded signals that help coordinate family movements.",
+        "history": [
+          "Designed prismatic patterns used in several Parliament emergency signals",
+          "Blinded enemies to protect cousins during ambush conditions",
+          "Crafted distraction arrays for rescue teams",
+          "Known for her artistic displays after stressful missions"
+        ],
+        "notes": "Her prismatic weaves often resemble family symbols when she focuses."
+      },
+      {
+        "id": "OLYM-STILC-007",
+        "name": "Ellie",
+        "codename": "Ethereal Flutter",
+        "role": "Lightweight Scout & Lift Specialist",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Ethereal Flutter Gear",
+          "variants": ["Floatstep", "Airwhisper"]
+        },
+        "abilities": [
+          "Light gliding jumps supported by faint ethereal wings",
+          "Soft-impact movement ideal for sneaking and scouting",
+          "Gentle pulses that lift objects or help allies reach higher ground",
+          "Can temporarily lighten herself or others"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Gary Jr. (Legacy Shield)", "Sarah (Hope)"],
+          "siblings": ["Josh (Defention)", "Garden (Pharoll)", "Sophia (Chroma Sprint)", "Paisley (Prism Weaver)"],
+          "family_branch": "Stillman – Gary Jr. Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Ellie \"Ethereal Flutter\" Stillman is gentle motion personified. She moves softly, glides effortlessly, and helps others navigate challenging terrain. Her lifting pulses offer both utility and comfort to those around her.",
+        "history": [
+          "Helped lift debris during recovery missions",
+          "Served as a mobility aid for younger Olympians during vertical exercises",
+          "Used gliding leaps to thread through tight spaces during rescues",
+          "Often scouts high ground quietly before others arrive"
+        ],
+        "notes": "Her movement is so soft that she sometimes seems like a drifting light."
+      }
+    ]
+  },
+  {
+    "team": "Olympians",
+    "family": "Stillman – Memorial",
+    "members": [
+      {
+        "id": "OLYM-STILM-001",
+        "name": "Jennifer",
+        "codename": "Eternal Guardian",
+        "role": "Memorial Member – Symbol of Protection, Legacy, and Love",
+        "status": "Fallen (Honored Forever)",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Eternal Guardian Mantle",
+          "variants": ["Remembrance Form"]
+        },
+        "abilities": [
+          "Symbolic presence that strengthens family unity",
+          "Inspires courage in the face of hardship",
+          "Serves as a spiritual anchor for the Stillman heritage"
+        ],
+        "relationships": {
+          "relationship_status": "N/A",
+          "family_branch": "Stillman – Memorial",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Jennifer \"Eternal Guardian\" Stillman represents the heart of the Stillman legacy. Though departed, her memory remains deeply woven into the family’s strength, unity, and compassion. She watches over the Olympians as a reminder of resilience and the importance of holding each other close.",
+        "history": [
+          "Honored by multiple Olympian families during the establishment of the memorial wing",
+          "Inspired countless acts of courage and support among her cousins and extended family",
+          "Serves as a spiritual reminder of sacrifice, love, and enduring presence"
+        ],
+        "notes": "The Stillman children frequently place symbols near her memorial stone. Her presence continues to guide the family through hardship."
+      }
+    ]
+  },
+  {
+    "team": "Olympians",
+    "family": "Stillman – Grandparents",
+    "members": [
+      {
+        "id": "OLYM-STILG-001",
+        "name": "Gary",
+        "codename": "Entrpatorial",
+        "role": "Grand Patriarch & Tactical Overseer",
+        "status": "Active (Elder)",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Entrpatorial Regalia",
+          "variants": ["Command Mantle"]
+        },
+        "abilities": [
+          "High-level strategic awareness",
+          "Energetic presence that steadies allies’ focus",
+          "Authority field that strengthens resolve in his presence",
+          "Guides family through complex moral and tactical decisions"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Jeanine (Hearth Matron)",
+          "children": [
             "Angela (Celestial Angel)",
-            "Todd (Stellar)",
-            "Will (Night Hawk)",
-            "Emma (Kintsunera)"
+            "Heather",
+            "Wesley",
+            "David",
+            "Savannah",
+            "Mary",
+            "Gary Jr."
           ],
-          "faction_connections": [
-            "Olympians"
-          ]
+          "family_branch": "Stillman – Grandparents",
+          "faction_connections": ["Olympians"]
         },
-        "bio": "Molly, the Teddy Bear, is more than a pet—she’s an emotional anchor. When the heroes come home from impossible missions, she’s the first to greet them like nothing could ever take them away.",
+        "bio": "Gary \"Entrpatorial\" Stillman is the steady-handed patriarch of the Stillman line. With unmatched intuition and wisdom earned through guiding a sprawling heroic family, he offers structure, discipline, and clarity when the Olympians falter. His presence is a stabilizing force in both crises and everyday life.",
         "history": [
-          "Present through the formative years of Night Hawk and Emma",
-          "Comforted family members after multiple post-Incident losses and scares"
+          "Acted as a key advisor during the founding of early Parliament protocols",
+          "Guided multiple generations of Olympians through hardships and transitions",
+          "Known for providing tactical insight during high-stakes family missions",
+          "Served as the central bonding figure for the entire Stillman legacy"
         ],
-        "notes": "In-universe jokes claim she has a higher emotional-resilience stat than most heroes."
+        "notes": "Even when silent, his presence shapes the tone of any room he enters."
+      },
+      {
+        "id": "OLYM-STILG-002",
+        "name": "Jeanine",
+        "codename": "Hearth Matron",
+        "role": "Family Matriarch & Emotional Pillar",
+        "status": "Active (Elder)",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Hearth Matron Garb",
+          "variants": ["Warmthweave"]
+        },
+        "abilities": [
+          "Generates fields of emotional warmth and safety",
+          "Calms conflict through gentle harmonizing energy",
+          "Strengthens family bonds during stressful or chaotic moments",
+          "Serves as a spiritual centerpoint for Olympian gatherings"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Gary (Entrpatorial)",
+          "children": [
+            "Angela (Celestial Angel)",
+            "Heather",
+            "Wesley",
+            "David",
+            "Savannah",
+            "Mary",
+            "Gary Jr."
+          ],
+          "family_branch": "Stillman – Grandparents",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Jeanine \"Hearth Matron\" Stillman is the warm heart of the Olympians. She provides comfort, stability, and emotional resilience to the entire family. Her presence creates an atmosphere of safety where wounds—physical or emotional—can begin to heal.",
+        "history": [
+          "Helped unify the Olympians during several early-family rifts",
+          "Known for her comforting presence during post-Incident recovery",
+          "Played a major role in raising and supporting multiple generations",
+          "Holds the family together through empathy, wisdom, and quiet strength"
+        ],
+        "notes": "Her aura feels like coming home, giving even the strongest heroes a sense of peace."
       }
     ]
   },
-
   {
     "team": "Olympians",
-    "family": "McNeil",
+    "family": "Santa",
     "members": [
       {
-        "id": "OLY-004",
-        "name": "Mary",
-        "codename": "Auric",
-        "team": "Olympians",
-        "family_branch": "McNeil",
-        "rank": "Matriarch",
+        "id": "OLYM-SANTA-001",
+        "name": "Santa Claus",
+        "codename": "Saint Nicholas",
+        "role": "Mythic Guardian of Joy & Winter Protector",
+        "status": "Active",
+        "species": "Enhanced Human / Mythic Origin",
+        "universe": "Prime",
+        "suit": {
+          "name": "Saint Nicholas Armor",
+          "variants": ["Winter Paladin", "Aurora Crusader", "North Star Form"]
+        },
+        "abilities": [
+          "Mythic winter-based power",
+          "Gift-essence projection (hope, joy, warmth)",
+          "Frost-forging weaponry",
+          "Superhuman resilience and strength",
+          "Seasonal environmental manipulation"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Mrs. Claus",
+          "family_branch": "Santa Line",
+          "faction_connections": ["Olympians", "Seasonal Guardians"]
+        },
+        "bio": "Santa Claus, known to the Olympians as Saint Nicholas, is a mythic winter guardian who stands as a symbol of joy, protection, and warmth. His armor channels celestial holiday energy—hope, generosity, and unity—making him one of the most beloved protectors in the Parliament's extended mythic registry.",
+        "history": [
+          "Assisted in stabilizing Zion City's climate shield during the first Maw cold surge",
+          "Provided humanitarian relief during numerous winter crises",
+          "Formed alliance with the Olympians during early Parliament goodwill missions",
+          "Maintains ancient treaties with elemental winter spirits"
+        ],
+        "notes": "Though mostly ceremonial, his winter powers are REAL and significantly potent when hope is in danger."
+      }
+    ]
+  },
+  {
+    "team": "Olympians",
+    "family": "Cummings – Sean Branch",
+    "members": [
+      {
+        "id": "OLYM-CUM-SEAN-001",
+        "name": "Sean",
+        "codename": "Vanguard",
+        "role": "Frontline Coordinator & Tactical Vanguard",
         "status": "Active",
         "species": "Human",
         "universe": "Prime",
-        "role": "McNeil family matriarch and moral compass",
+        "suit": {
+          "name": "Vanguard Armor",
+          "variants": ["Forward Guard", "Momentum Crest"]
+        },
         "abilities": [
-          "Golden barrier generation",
-          "Supportive aura that strengthens allies",
-          "Resource-blessing (boosting supplies and logistics)"
+          "High-durability frontline defense",
+          "Momentum-enhancing charge fields",
+          "Force redirection through controlled stances",
+          "Ally morale amplification"
         ],
         "relationships": {
-          "partner": "Chance (Crimson Crown)",
+          "relationship_status": "Married",
+          "partner": "Heather C (Sylvara)",
           "children": [
-            "Spencer (Annihilator)",
-            "Jared (Spector)",
-            "Jennifer (Kintsugi)"
+            "Brett (Aegis)",
+            "Jake (Nova Sentinel)",
+            "Ailey (Chromatic Blaze)",
+            "Aubrey (Seraphine Dawn)",
+            "James (Dreadforge)"
           ],
-          "pets": [
-            "Lumi (Fade Shade)"
-          ],
-          "faction_connections": [
-            "Titans",
-            "Eclipse",
-            "Olympians",
-            "Parliament of Justice"
-          ]
+          "family_branch": "Cummings – Sean Branch",
+          "faction_connections": ["Olympians"]
         },
-        "bio": "Mary, known as Auric, is the golden backbone of the McNeil line. Her calm strength and protective nature helped raise three of the core Titans and hold the extended family together.",
+        "bio": "Sean \"Vanguard\" Cummings leads from the front with unwavering courage. He shields his family and allies by transforming momentum into protective force, becoming the pillar every formation relies on.",
         "history": [
-          "Raised Spencer, Jared, and Jennifer through the pre-Incident era of Zion City",
-          "Protected extended family safe houses during early Maw incursions",
-          "Frequently mediates between fiery personalities in family councils"
+          "Organized evacuation corridors during Maw echoes",
+          "Defended collapsing structures to protect civilians",
+          "Served as a frontline reinforcement during Titan deployments",
+          "Developed standardized vanguard tactics used by Olympians"
         ],
-        "notes": "Her power theme is ‘golden stewardship’—protecting both people and what sustains them."
+        "notes": "Never retreats unless pulling allies to safety."
       },
       {
-        "id": "OLY-005",
-        "name": "Chance",
-        "codename": "Crimson Crown",
-        "team": "Olympians",
-        "family_branch": "McNeil",
-        "rank": "Patriarch",
+        "id": "OLYM-CUM-SEAN-002",
+        "name": "Heather C",
+        "codename": "Sylvara",
+        "role": "Nature Resonance Specialist & Emotional Stabilizer",
         "status": "Active",
         "species": "Human",
         "universe": "Prime",
-        "role": "Battlefield leader and McNeil patriarch",
+        "suit": {
+          "name": "Sylvara Attire",
+          "variants": ["Evergreen Form", "Harmony Bloom"]
+        },
         "abilities": [
-          "Crimson energy greatsword manifestation",
-          "Command auras that sharpen ally focus",
-          "Tactical foresight in chaotic battles"
+          "Life-energy resonance",
+          "Emotional calming fields",
+          "Subtle terrain influence",
+          "Low-level restorative pulses"
         ],
         "relationships": {
-          "partner": "Mary (Auric)",
+          "relationship_status": "Married",
+          "partner": "Sean (Vanguard)",
           "children": [
-            "Spencer (Annihilator)",
-            "Jared (Spector)",
-            "Jennifer (Kintsugi)"
+            "Brett (Aegis)",
+            "Jake (Nova Sentinel)",
+            "Ailey (Chromatic Blaze)",
+            "Aubrey (Seraphine Dawn)",
+            "James (Dreadforge)"
           ],
-          "faction_connections": [
-            "Titans",
-            "Olympians",
-            "Parliament of Justice"
-          ]
+          "family_branch": "Cummings – Sean Branch",
+          "faction_connections": ["Olympians"]
         },
-        "bio": "Crimson Crown is a field-general archetype: stoic, decisive, and fiercely protective of his family and city. His influence helped push Spencer toward leadership and honor instead of bitterness.",
+        "bio": "Heather \"Sylvara\" Cummings grounds the entire branch with emotional stability and peaceful clarity. Her nature resonance keeps panic at bay and allows others to act with purpose.",
         "history": [
-          "Encouraged Spencer’s transition from raw power to true leadership as Annihilator",
-          "Helped evacuate civilians during early waves of The Incident",
-          "Occasionally consulted by the Parliament for ground-level perspectives"
+          "Stabilized distressed Olympians during early Maw events",
+          "Assisted recovery teams with emotional regulation",
+          "Created calm zones during chaotic evacuations"
         ],
-        "notes": "His crown motif symbolizes responsibility, not ego—he wears the weight of his choices."
+        "notes": "Her energy feels like standing in a quiet forest."
       },
       {
-        "id": "OLY-006",
-        "name": "Ava",
-        "codename": "Prismatic Pulse",
-        "team": "Olympians",
-        "family_branch": "McNeil",
-        "rank": "Support Specialist",
+        "id": "OLYM-CUM-SEAN-003",
+        "name": "Bret, aka Small Bret",
+        "codename": "Aegis",
+        "role": "Guardian Shieldbearer & Heavy Defender",
         "status": "Active",
         "species": "Human",
         "universe": "Prime",
-        "role": "Multi-spectrum support and morale booster",
+        "suit": {
+          "name": "Aegis Armor",
+          "variants": ["Sentinel Mode", "Barrier Crest"]
+        },
         "abilities": [
-          "Prismatic energy bursts that can heal, shield, or stun",
-          "Color-coded signal flares for complex coordination",
-          "Emotional resonance that calms panic in civilians"
+          "Wide-area shielding",
+          "Personal barrier reinforcement",
+          "High-impact defensive stances",
+          "Shock absorption"
         ],
         "relationships": {
-          "partner": "Single",
-          "family": [
-            "Mary (Auric)",
-            "Chance (Crimson Crown)",
-            "Spencer (Annihilator)",
-            "Jared (Spector)",
-            "Jennifer (Kintsugi)",
-            "Charlie (Iron Olympian)",
-            "Lumi (Fade Shade)"
+          "relationship_status": "Married",
+          "partner": "Rebecca",
+          "parents": ["Sean (Vanguard)", "Heather C (Sylvara)"],
+          "siblings": [
+            "Jake (Nova Sentinel)",
+            "Ailey (Chromatic Blaze)",
+            "Aubrey (Seraphine Dawn)",
+            "James (Dreadforge)"
           ],
-          "faction_connections": [
-            "Olympians"
-          ]
+          "family_branch": "Cummings – Sean Branch",
+          "faction_connections": ["Olympians"]
         },
-        "bio": "Ava channels prismatic energy as a flexible support power, switching between roles depending on what the family needs in that moment.",
+        "bio": "Bret \"Aegis\" Cummings embodies defense. His shields protect entire squads, allowing others to act fearlessly behind him.",
         "history": [
-          "Served as a field medic and signal officer for family-led operations",
-          "Helped stabilize injured Legionaires and younger Olympians after Maw skirmishes"
+          "Stabilized structures during tremor events",
+          "Trains younger Olympians in defensive combat",
+          "Acts as anchor in multi-layered defensive lines"
         ],
-        "notes": "Her color palette and effects often echo the emotional state of the group she’s with."
+        "notes": "His shields shine brightest when shielding family."
       },
       {
-        "id": "OLY-007",
-        "name": "Charlie",
-        "codename": "Iron Olympian",
-        "team": "Olympians",
-        "family_branch": "McNeil",
-        "rank": "Frontline Guardian",
+        "id": "OLYM-CUM-SEAN-004",
+        "name": "Jake",
+        "codename": "Nova Sentinel",
+        "role": "Energy Burst Defender & Midline Protector",
         "status": "Active",
         "species": "Human",
         "universe": "Prime",
-        "role": "Armored defender and physical powerhouse",
+        "suit": {
+          "name": "Nova Sentinel Suit",
+          "variants": ["Starline Barrier", "Supernova Pulse"]
+        },
         "abilities": [
-          "Heavy arcane-tech armor",
-          "Superhuman strength and durability",
-          "Shield-based crowd control"
+          "Star-charged energy bursts",
+          "Refractive energy shields",
+          "Precision energy knockbacks",
+          "Energy field stabilization"
         ],
         "relationships": {
-          "partner": "Single",
-          "family": [
-            "Mary (Auric)",
-            "Chance (Crimson Crown)",
-            "Spencer (Annihilator)",
-            "Jared (Spector)",
-            "Jennifer (Kintsugi)",
-            "Ava (Prismatic Pulse)",
-            "Lumi (Fade Shade)"
-          ],
-          "faction_connections": [
-            "Olympians"
-          ]
+          "relationship_status": "Married",
+          "parents": ["Sean (Vanguard)", "Heather C (Sylvara)"],
+          "siblings": ["Brett", "Ailey", "Aubrey", "James"],
+          "family_branch": "Cummings – Sean Branch",
+          "faction_connections": ["Olympians"]
         },
-        "bio": "Charlie, the Iron Olympian, is built like a walking fortress—often placed where the line absolutely cannot break.",
+        "bio": "Jake \"Nova Sentinel\" Cummings balances offense and defense with stellar energy bursts and refractive shields.",
         "history": [
-          "Helped hold defensive lines in the Telestial sector during multiple evacuations",
-          "Often partners with cousins from the Cummings side when heavy support is needed"
+          "Supports midline defenses during family operations",
+          "Clears debris with controlled blasts",
+          "Provides range cover for heavy defenders"
         ],
-        "notes": "Quiet off the field, thunderous on it."
+        "notes": "His pulses glow brighter with focus or emotion."
       },
       {
-        "id": "OLY-008",
-        "name": "Lumi",
-        "codename": "Fade Shade",
-        "team": "Olympians",
-        "family_branch": "McNeil",
-        "rank": "Shadow Scout",
+        "id": "OLYM-CUM-SEAN-005",
+        "name": "Ailey",
+        "codename": "Chromatic Blaze",
+        "role": "Firelight Striker & Momentum Fighter",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Chromatic Blaze Gear",
+          "variants": ["Flare Runner", "Heatflare Mode"]
+        },
+        "abilities": [
+          "Color-shifting fire",
+          "Heat-propelled dashes",
+          "Burst-flame melee",
+          "Heat wave crowd control"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Sean (Vanguard)", "Heather C (Sylvara)"],
+          "siblings": ["Brett", "Jake", "Aubrey", "James"],
+          "family_branch": "Cummings – Sean Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Ailey \"Chromatic Blaze\" Cummings fights with fire shaped by emotion, every flame a streak of color tied to her heart.",
+        "history": [
+          "Cleared frozen zones after Maw cold surges",
+          "Often supports speed-based fighters",
+          "Developed emotional flame control techniques"
+        ],
+        "notes": "Her flames resemble brushstrokes when she moves."
+      },
+      {
+        "id": "OLYM-CUM-SEAN-006",
+        "name": "Aubrey",
+        "codename": "Seraphine Dawn",
+        "role": "Radiant Healer & Dawnlight Support",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Seraphine Dawn Attire",
+          "variants": ["Horizon Bloom", "Celestial Rise"]
+        },
+        "abilities": [
+          "Healing radiance",
+          "Soft levitation",
+          "Dawnlight cleansing",
+          "Morale reinforcement"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "parents": ["Sean (Vanguard)", "Heather C (Sylvara)"],
+          "siblings": ["Brett", "Jake", "Ailey", "James"],
+          "family_branch": "Cummings – Sean Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Aubrey \"Seraphine Dawn\" Cummings heals with radiant serenity. Her dawnlight calms distress and restores hope.",
+        "history": [
+          "Stabilized injured Olympians during field operations",
+          "Supports emotional recovery missions",
+          "Works closely with other light-based healers"
+        ],
+        "notes": "Her light resembles early sunrise."
+      },
+      {
+        "id": "OLYM-CUM-SEAN-007",
+        "name": "James",
+        "codename": "Dreadforge",
+        "role": "Molten Striker & Heavy Combat Specialist",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Dreadforge Armor",
+          "variants": ["Brimsteel Mode", "Dark Ember"]
+        },
+        "abilities": [
+          "Molten energy channels",
+          "Explosive melee strikes",
+          "Controlled rage amplification",
+          "Heat-impact shockwaves"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Sean (Vanguard)", "Heather C (Sylvara)"],
+          "siblings": ["Brett", "Jake", "Ailey", "Aubrey"],
+          "family_branch": "Cummings – Sean Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "James \"Dreadforge\" Cummings is raw power forged through discipline. His molten strikes break obstacles with overwhelming force.",
+        "history": [
+          "Cleared debris fields during crises",
+          "Trains with heavy hitters to refine control",
+          "Acts as the family’s breakthrough specialist"
+        ],
+        "notes": "His molten channels glow brightest under stress."
+      }
+    ]
+  },
+  {
+    "team": "Olympians",
+    "family": "Cummings – Ryan Branch",
+    "members": [
+      {
+        "id": "OLYM-CUM-RYAN-001",
+        "name": "Ryan",
+        "codename": "Managerial",
+        "role": "Operations Coordinator & Strategic Overseer",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Managerial Armor",
+          "variants": ["Command Ledger", "Directive Mode"]
+        },
+        "abilities": [
+          "Real-time battlefield oversight and planning",
+          "Priority-tagging threats and objectives",
+          "Boosts ally efficiency through coordination fields",
+          "Calm, highly analytical decision-making under pressure"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Maren (Luminary Veil)",
+          "children": [
+            "Sasha (Codex)",
+            "Ian (Sparous)",
+            "Riker (Ironstrike)",
+            "Dakota (Shadow Cipher)"
+          ],
+          "family_branch": "Cummings – Ryan Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Ryan \"Managerial\" Cummings runs missions like clockwork. He doesn’t just fight—he organizes, prioritizes, and optimizes, making sure every family member is where they’re needed most.",
+        "history": [
+          "Coordinated multiple Olympian responses during early Maw flare-ups",
+          "Helped design safe deployment procedures for younger members",
+          "Frequently assigned to high-complexity operations requiring tight timing"
+        ],
+        "notes": "He’s the one you want on comms when everything is going sideways."
+      },
+      {
+        "id": "OLYM-CUM-RYAN-002",
+        "name": "Maren",
+        "codename": "Luminary Veil",
+        "role": "Protective Lightcaster & Emotional Guardian",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Luminary Veil Attire",
+          "variants": ["Halo Shroud", "Calmglow"]
+        },
+        "abilities": [
+          "Creates soft light veils that shield allies from harm",
+          "Calms emotional turbulence with radiant auras",
+          "Dampens fear and panic in hostile environments",
+          "Marks safe paths with gentle guiding light"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Ryan (Managerial)",
+          "children": [
+            "Sasha (Codex)",
+            "Ian (Sparous)",
+            "Riker (Ironstrike)",
+            "Dakota (Shadow Cipher)"
+          ],
+          "family_branch": "Cummings – Ryan Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Maren \"Luminary Veil\" Cummings wraps her family in light—literally and emotionally. Her glow shields bodies and hearts at the same time.",
+        "history": [
+          "Provided emotional and spiritual support after major Parliament incidents",
+          "Stood alongside healers as a stabilizing presence",
+          "Guided disoriented allies out of danger with beacon-like light"
+        ],
+        "notes": "Her light always feels like a warm, safe room after a long day."
+      },
+      {
+        "id": "OLYM-CUM-RYAN-003",
+        "name": "Sasha",
+        "codename": "Codex",
+        "role": "Knowledge Specialist & Tactical Archivist",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Codex Rig",
+          "variants": ["Data Archive", "Insight Sync"]
+        },
+        "abilities": [
+          "Stores and recalls massive amounts of tactical information",
+          "Analyzes enemy patterns and weak points rapidly",
+          "Projects holo-diagrams of maps, routes, and plans",
+          "Offers real-time intel updates mid-mission"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Ryan (Managerial)", "Maren (Luminary Veil)"],
+          "siblings": ["Ian (Sparous)", "Riker (Ironstrike)", "Dakota (Shadow Cipher)"],
+          "family_branch": "Cummings – Ryan Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Sasha \"Codex\" Cummings is the walking library of the branch. She remembers details others miss and turns information into survival.",
+        "history": [
+          "Mapped safe routes during unstable Maw zones",
+          "Assisted Titans and Thunder Born with threat dossiers",
+          "Helps younger cousins understand enemy tactics and history"
+        ],
+        "notes": "She usually knows the plan… and the backup plan… and the backup for the backup."
+      },
+      {
+        "id": "OLYM-CUM-RYAN-004",
+        "name": "Ian",
+        "codename": "Sparous",
+        "role": "Aerial Scout & Sparkline Skirmisher",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Sparous Gear",
+          "variants": ["Skyline Glide", "Sparktrail"]
+        },
+        "abilities": [
+          "Short-range flight or long gliding jumps",
+          "Leaves faint spark trails that can signal allies",
+          "Fast hit-and-run strikes from above",
+          "High mobility in vertical environments"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Ryan (Managerial)", "Maren (Luminary Veil)"],
+          "siblings": ["Sasha (Codex)", "Riker (Ironstrike)", "Dakota (Shadow Cipher)"],
+          "family_branch": "Cummings – Ryan Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Ian \"Sparous\" Cummings dances through the air, a scouting streak of light and motion. He’s most at home where the battlefield goes vertical.",
+        "history": [
+          "Scouted high-rise zones around Zion during crises",
+          "Provided overwatch for ground-based cousins",
+          "Delivered rapid messages when comms were down"
+        ],
+        "notes": "He tends to perch on high ledges even when he doesn’t need to."
+      },
+      {
+        "id": "OLYM-CUM-RYAN-005",
+        "name": "Riker",
+        "codename": "Ironstrike",
+        "role": "Midline Enforcer & Melee Specialist",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Ironstrike Armor",
+          "variants": ["Steel Pulse", "Hammerline"]
+        },
+        "abilities": [
+          "Channeling kinetic force into melee attacks",
+          "Reinforced armor for brawling at close range",
+          "Can anchor himself to the ground to resist knockback",
+          "Delivers high-impact strikes that crack enemy defenses"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Ryan (Managerial)", "Maren (Luminary Veil)"],
+          "siblings": ["Sasha (Codex)", "Ian (Sparous)", "Dakota (Shadow Cipher)"],
+          "family_branch": "Cummings – Ryan Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Riker \"Ironstrike\" Cummings hits like a freight train. He’s the one who steps in when a wall—or a monster—needs breaking.",
+        "history": [
+          "Helped breach sealed doors during evacuation missions",
+          "Often pairs with defensive cousins on the frontline",
+          "Known for stubbornly refusing to fall back once engaged"
+        ],
+        "notes": "He fights like a tank but laughs easily off the battlefield."
+      },
+      {
+        "id": "OLYM-CUM-RYAN-006",
+        "name": "Dakota",
+        "codename": "Shadow Cipher",
+        "role": "Stealth Analyst & Darkfield Controller",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Shadow Cipher Suit",
+          "variants": ["Noir Pattern", "Encrypted Shade"]
+        },
+        "abilities": [
+          "Blends into shadows and low light",
+          "Creates encrypted shadow-fields that hide ally signatures",
+          "Analyzes movement in darkness better than normal sight",
+          "Can briefly distort enemy perception in dim areas"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Ryan (Managerial)", "Maren (Luminary Veil)"],
+          "siblings": ["Sasha (Codex)", "Ian (Sparous)", "Riker (Ironstrike)"],
+          "family_branch": "Cummings – Ryan Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Dakota \"Shadow Cipher\" Cummings turns darkness into data. Where others see black, they see patterns, routes, and opportunities.",
+        "history": [
+          "Assisted stealth-based missions in low-light regions",
+          "Helped track enemies who thought they were hidden",
+          "Supports Thunder Born–adjacent ops that require subtlety"
+        ],
+        "notes": "Despite the shadow theme, they’re not broody—just observant and clever."
+      }
+    ]
+  },
+  {
+    "team": "Olympians",
+    "family": "Cummings – Lora Branch",
+    "members": [
+      {
+        "id": "OLYM-CUM-LORA-001",
+        "name": "Lora",
+        "codename": "Roseheart",
+        "role": "Compassion Shield & Emotional Anchor",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Roseheart Attire",
+          "variants": ["Bloomguard", "Petal Crest"]
+        },
+        "abilities": [
+          "Emotion-based shielding that strengthens when protecting loved ones",
+          "Generates soft barriers infused with calm energy",
+          "Soothing aura that reduces panic and stress",
+          "Creates rose-shaped light pulses for gentle crowd control"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Wayne (Sovereign)",
+          "children": [
+            "Elizabeth (Harmony Warden)",
+            "Christopher (Steel)",
+            "Tom (Stormforge)"
+          ],
+          "family_branch": "Cummings – Lora Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Lora \"Roseheart\" Cummings radiates warmth, compassion, and strength. She is the emotional center of her branch, offering comfort through powerful, heart-rooted energy shields.",
+        "history": [
+          "Provided relief and emotional stability during Parliament crisis evacuations",
+          "Frequently supports younger Olympians with quiet, grounding reassurance",
+          "Keeps morale high during long relief missions"
+        ],
+        "notes": "Her rose-shaped shields are iconic among the Olympians."
+      },
+      {
+        "id": "OLYM-CUM-LORA-002",
+        "name": "Wayne",
+        "codename": "Sovereign",
+        "role": "Authority Field Commander & Noble Wardcaster",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Sovereign Regalia",
+          "variants": ["Crown Mode", "Imperial Guard"]
+        },
+        "abilities": [
+          "Generates golden authority fields that enhance nearby allies",
+          "Creates hardlight constructs shaped like royal insignia",
+          "Superb battlefield leadership—commands enhance morale and order",
+          "Personal shield that adapts to protect those he claims under his 'sovereign guard'"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Lora (Roseheart)",
+          "children": [
+            "Elizabeth (Harmony Warden)",
+            "Christopher (Steel)",
+            "Tom (Stormforge)"
+          ],
+          "family_branch": "Cummings – Lora Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Wayne \"Sovereign\" Cummings brings commanding presence to the Olympians. His noble-light abilities reinforce order, protection, and unity on the battlefield.",
+        "history": [
+          "Helped maintain order during chaotic Maw-border evacuations",
+          "Often leads medium-sized Olympian deployments",
+          "Constructs royal insignia barriers to inspire and protect"
+        ],
+        "notes": "His presence makes allies stand taller without realizing it."
+      },
+      {
+        "id": "OLYM-CUM-LORA-003",
+        "name": "Elizabeth",
+        "codename": "Harmony Warden",
+        "role": "Sound-Weaver Defender & Resonance Guardian",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Harmony Warden Suit",
+          "variants": ["Resonance Crest", "Toneguard"]
+        },
+        "abilities": [
+          "Uses harmonic frequencies to stabilize allies",
+          "Creates resonance shields that vibrate to deflect attacks",
+          "Sound pulses that disorient enemies without harming them",
+          "Can harmonize with other energy users to boost their abilities"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Tom ",
+          "parents": ["Lora (Roseheart)", "Wayne (Sovereign)"],
+          "siblings": ["Christopher (Steel)", "Tom (Stormforge)"],
+          "family_branch": "Cummings – Lora Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Elizabeth \"Harmony Warden\" Cummings manipulates harmonic waves to protect and empower her family. Her resonant shields are as beautiful as they are effective.",
+        "history": [
+          "Assisted healers by stabilizing emotional and physical rhythms",
+          "Created resonance zones during crisis shelter operations",
+          "Helped calm large groups during high-stress Parliament incidents"
+        ],
+        "notes": "Her shields emit a soft musical hum."
+      },
+      {
+        "id": "OLYM-CUM-LORA-004",
+        "name": "Christopher",
+        "codename": "Steel",
+        "role": "Metal Manipulator & Reinforcement Specialist",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Steel Armor",
+          "variants": ["Ironplate", "Silver Current"]
+        },
+        "abilities": [
+          "Manipulates metal in controlled quantities",
+          "Forms armor plates around allies in the moment",
+          "Creates reinforced paths or braces structures",
+          "Enhances his own durability with metal fusion"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Lora (Roseheart)", "Wayne (Sovereign)"],
+          "siblings": ["Elizabeth (Harmony Warden)", "Tom (Stormforge)"],
+          "family_branch": "Cummings – Lora Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Christopher \"Steel\" Cummings is a living alloy of loyalty and strength. His metal manipulation skills make him a cornerstone in rescue and reinforcement missions.",
+        "history": [
+          "Reinforced buildings near collapse during Maw tremors",
+          "Often pairs with StoneWreck and Ironstrike for heavy operations",
+          "Built barricades that protected families during emergencies"
+        ],
+        "notes": "His metal constructs always have clean angles and smooth surfaces."
+      },
+      {
+        "id": "OLYM-CUM-LORA-005",
+        "name": "Tom",
+        "codename": "Stormforge",
+        "role": "Thunder-Infused Forge Fighter",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Stormforge Gear",
+          "variants": ["Thunderplate", "Forge Tempest"]
+        },
+        "abilities": [
+          "Channels thunder energy into weapons and tools",
+          "Forges temporary battlefield enhancements",
+          "Strikes with electrified melee force",
+          "Can overload machinery with controlled lightning surges"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Elizabeth (Harmony Warden)",
+          "parents": ["Lora (Roseheart)", "Wayne (Sovereign)"],
+          "siblings": ["Elizabeth (Harmony Warden)", "Christopher (Steel)"],
+          "family_branch": "Cummings – Lora Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Tom \"Stormforge\" Cummings mixes craftsmanship with thunder. Every swing of his electrified tools is part weapon, part forgework, reshaping the battlefield in sparks.",
+        "history": [
+          "Reactivated damaged Parliament tech with lightning infusions",
+          "Helped defend supply lines during regional storms",
+          "Crafted temporary bridgeworks using thunder-forged material"
+        ],
+        "notes": "His forged tools crackle faintly even when dormant."
+      }
+    ]
+  },
+  {
+    "team": "Olympians",
+    "family": "Cummings – Brett Branch",
+    "members": [
+      {
+        "id": "OLYM-CUM-BRETT-001",
+        "name": "Bret",
+        "codename": "Doctoral",
+        "role": "Analytical Strategist & Knowledge Guardian",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Doctoral Attire",
+          "variants": ["Thesis Mode", "Lecture Guard"]
+        },
+        "abilities": [
+          "High-level pattern recognition and analysis",
+          "Translates complex data into simple, usable plans",
+          "Creates \"study fields\" that boost ally focus and clarity",
+          "Enhances team performance through calm guidance and insight"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Angie (Ethereal Guardian)",
+          "children": [
+            "Bryce (Moesek)",
+            "Lillie (Slick Blade)",
+            "Addie (Prism Voyager)"
+          ],
+          "companions": ["Purdy (Old Faithful)"],
+          "family_branch": "Cummings – Brett Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Bret \"Doctoral\" Cummings approaches everything like a living research project—calm, curious, and thorough. His strength is in understanding systems, people, and problems so deeply that the best solution feels obvious once he explains it.",
+        "history": [
+          "Helped the Olympians document and organize early Parliament encounters",
+          "Supported younger family members with long-term planning and life guidance",
+          "Often acts as an advisor when missions require layered strategy instead of brute force"
+        ],
+        "notes": "He’s the one people go to when they say, \"I just need to talk this through.\""
+      },
+      {
+        "id": "OLYM-CUM-BRETT-002",
+        "name": "Angie",
+        "codename": "Ethereal Guardian",
+        "role": "Spiritual Protector & Gentle Wardbearer",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Ethereal Guardian Vestments",
+          "variants": ["Sanctuary Veil", "Quiet Watch"]
+        },
+        "abilities": [
+          "Creates soft, almost invisible protective fields",
+          "Amplifies feelings of safety and being watched over",
+          "Can sense emotional distress among family within a short range",
+          "Subtly redirects danger away from those she’s guarding"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Brett (Doctoral)",
+          "children": [
+            "Bryce (Moesek)",
+            "Lillie (Slick Blade)",
+            "Addie (Prism Voyager)"
+          ],
+          "companions": ["Purdy (Old Faithful)"],
+          "family_branch": "Cummings – Brett Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Angie \"Ethereal Guardian\" Cummings protects in ways most people never see. Her presence is felt as warmth, reassurance, and the quiet certainty that someone has your back even when you feel alone.",
+        "history": [
+          "Held emotional space for family members after difficult Parliament events",
+          "Frequently assigned near children or non-combatants during crises",
+          "Known for staying calm and kind when everyone else is fraying at the edges"
+        ],
+        "notes": "Her power feels less like a shield and more like a hug that nothing can break through."
+      },
+      {
+        "id": "OLYM-CUM-BRETT-003",
+        "name": "Bryce",
+        "codename": "Moesek",
+        "role": "Kinetic Rhythm Fighter & Beatline Striker",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Moesek Rig",
+          "variants": ["Bassline Drive", "Echo Step"]
+        },
+        "abilities": [
+          "Channels rhythm and movement into amplified strikes",
+          "Fights best when moving to a beat—literal or imagined",
+          "Can sync ally movements into a loose \"combat rhythm\" for better coordination",
+          "Briefly disorients enemies with impact pulses timed like drum hits"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Brett (Doctoral)", "Angie (Ethereal Guardian)"],
+          "siblings": ["Lillie (Slick Blade)", "Addie (Prism Voyager)"],
+          "companions": ["Purdy (Old Faithful)"],
+          "family_branch": "Cummings – Brett Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Bryce \"Moesek\" Cummings fights like a walking playlist—every swing, dodge, and strike lands on beat. His style looks chaotic until you realize everyone around him is being pulled into his rhythm.",
+        "history": [
+          "Helped coordinate younger cousins during training games and mock battles",
+          "Turned chaotic scrambles into surprisingly well-timed group maneuvers",
+          "Known for lightening tension, even in heavier moments"
+        ],
+        "notes": "He’s almost always tapping his foot or fingers to some internal rhythm."
+      },
+      {
+        "id": "OLYM-CUM-BRETT-004",
+        "name": "Lillie",
+        "codename": "Slick Blade",
+        "role": "Agile Duelist & Precision Striker",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Slick Blade Gear",
+          "variants": ["Edge Runner", "Slide Strike"]
+        },
+        "abilities": [
+          "High agility in close-quarters combat",
+          "Uses momentum slides and quick dashes to reposition",
+          "Channels energy into lightweight blades for precise cuts",
+          "Can weave through crowded areas without losing balance or focus"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Brett (Doctoral)", "Angie (Ethereal Guardian)"],
+          "siblings": ["Bryce (Moesek)", "Addie (Prism Voyager)"],
+          "companions": ["Purdy (Old Faithful)"],
+          "family_branch": "Cummings – Brett Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Lillie \"Slick Blade\" Cummings is stylish, sharp, and quick on her feet. She prefers precision over brute force and rarely swings twice where one clean strike will do.",
+        "history": [
+          "Often volunteers for close-quarters escort roles",
+          "Helps keep rowdy cousins in line during sparring matches",
+          "Participated in controlled training ops to refine fast-response tactics"
+        ],
+        "notes": "She hates unnecessary mess—on the battlefield and in life."
+      },
+      {
+        "id": "OLYM-CUM-BRETT-005",
+        "name": "Addie",
+        "codename": "Prism Voyager",
+        "role": "Lightway Explorer & Portal-Style Pathfinder",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Prism Voyager Suit",
+          "variants": ["Spectrum Trail", "Refraction Gate"]
+        },
+        "abilities": [
+          "Manipulates beams of colored light into paths and trails",
+          "Can briefly bend light to create illusionary duplicates or misleading angles",
+          "Marks safe routes with visible light patterns only allies recognize",
+          "Uses prismatic bursts to disorient or distract threats without harming them"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Brett (Doctoral)", "Angie (Ethereal Guardian)"],
+          "siblings": ["Bryce (Moesek)", "Lillie (Slick Blade)"],
+          "companions": ["Purdy (Old Faithful)"],
+          "family_branch": "Cummings – Brett Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Addie \"Prism Voyager\" Cummings sees the world in angles, color, and possibility. She’s the one who finds the unexpected way through—never straight, but always right.",
+        "history": [
+          "Guided cousins through confusing urban layouts using light trails",
+          "Assisted in non-lethal distraction tactics during tense standoffs",
+          "Loves exploring new places and mapping safe, clever routes"
+        ],
+        "notes": "Her prismatic effects look gorgeous in photos—whether she likes it or not."
+      },
+      {
+        "id": "OLYM-CUM-BRETT-006",
+        "name": "Purdy",
+        "codename": "Old Faithful",
+        "role": "Family Guardian & Emotional Support Companion",
         "status": "Active",
         "species": "Dog",
         "universe": "Prime",
-        "role": "Stealthy companion and emotional guardian",
+        "suit": {
+          "name": "Old Faithful Harness",
+          "variants": ["Family Guard Mode"]
+        },
         "abilities": [
-          "Blending into low light and shadowy environments",
-          "Finding isolated or injured family members",
-          "Soothing anxiety through presence"
+          "Unshakable loyalty",
+          "Early warning barks when something feels off",
+          "Comforts stressed or sad family members",
+          "Refuses to leave anyone behind if they’re hurting"
         ],
         "relationships": {
-          "partner": "None",
-          "family": [
-            "Mary (Auric)",
-            "Chance (Crimson Crown)",
-            "Spencer (Annihilator)",
-            "Jared (Spector)",
-            "Jennifer (Kintsugi)",
-            "Ava (Prismatic Pulse)",
-            "Charlie (Iron Olympian)"
-          ],
-          "faction_connections": [
-            "Olympians"
-          ]
+          "relationship_status": "N/A",
+          "owners": ["Brett (Doctoral)", "Angie (Ethereal Guardian)"],
+          "family_branch": "Cummings – Brett Branch",
+          "faction_connections": ["Olympians"]
         },
-        "bio": "Lumi is the shadow-pup of the McNeils, often found right beside those who’ve just come back from something traumatic.",
+        "bio": "Purdy \"Old Faithful\" is more than a family dog—she’s a constant. When the world feels unstable, she’s a warm presence, a wagging tail, and the reminder that home still exists.",
         "history": [
-          "Frequently present during debriefs after high-risk missions",
-          "Became unofficial mascot of several smaller rescue ops involving younger cousins"
+          "Stayed close to family after difficult emotional events",
+          "Known to curl up by anyone who’s having a hard time",
+          "Has unofficially attended more family councils than some Olympians"
         ],
-        "notes": "Fans joke that Lumi and Molly have their own secret side-team."
+        "notes": "Her power is simple: she’s always there when it counts."
       }
     ]
   },
-
   {
     "team": "Olympians",
-    "family": "Briggs",
+    "family": "Cummings – Matt Branch",
     "members": [
       {
-        "id": "OLY-009",
-        "name": "Heather S",
-        "codename": "Verdant",
-        "team": "Olympians",
-        "family_branch": "Briggs",
-        "rank": "Matriarch",
+        "id": "OLYM-CUM-MATT-001",
+        "name": "Matt",
+        "codename": "CareTechnial",
+        "role": "Support Engineer & Systems Stabilizer",
         "status": "Active",
         "species": "Human",
         "universe": "Prime",
-        "role": "Healer, nurturer, and environmental shaper",
+        "suit": {
+          "name": "CareTechnial Rig",
+          "variants": ["Diagnostic Array", "Field Support Mode"]
+        },
         "abilities": [
-          "Plant and growth manipulation",
-          "Regenerative healing fields",
-          "Environmental shielding with living barriers"
+          "Rapid analysis of malfunctioning equipment or tech",
+          "Generates small support drones that repair, scan, or stabilize",
+          "Creates temporary safety barriers to protect wounded allies",
+          "Boosts device efficiency through micro-adjustment fields"
         ],
         "relationships": {
-          "partner": "Bobby (Crown Medic)",
+          "relationship_status": "Married",
+          "partner": "Jessica (Shadowcore)",
           "children": [
-            "Ben (Nuscus)",
-            "Azure (Mediateir)",
-            "Liberty (Serenity)",
-            "Ammon (Valoron)",
-            "Piper (Jetstrike)"
+            "Kyle (Steelth)",
+            "Daisy (Floral)",
+            "Rose (Prism)",
+            "Prairie (Flowertwister)",
+            "Ryan kid (Ven-noir)",
+            "Liam (Veteran)"
           ],
-          "pets": [
-            "Gemma (Slendowg)"
-          ],
-          "faction_connections": [
-            "Titans",
-            "Olympians",
-            "Thunder Born (through Ben and Azure’s network)"
-          ]
+          "family_branch": "Cummings – Matt Branch",
+          "faction_connections": ["Olympians"]
         },
-        "bio": "Heather S, Verdant, is a living greenhouse of protection and calm, providing a literal and emotional safe space for the Briggs and their extended family.",
+        "bio": "Matt \"CareTechnial\" Cummings specializes in keeping missions from falling apart—literally. His engineering intuition and calming presence bring order to chaos, repairing what breaks and supporting those who need help in the moment.",
         "history": [
-          "Sheltered family and allies in living sanctuaries during Outer Darkness incursions",
-          "Helped Ben and Azure stabilize after high-intensity missions with healing fields"
+          "Performed emergency tech fixes during Parliament instability waves",
+          "Assisted healers by stabilizing life-support gear",
+          "Frequently assigned to tech-heavy rescue missions"
         ],
-        "notes": "Her gardens are half battlefield tool, half sacred family refuge."
+        "notes": "He strives to be helpful before being heroic."
       },
       {
-        "id": "OLY-010",
-        "name": "Bobby",
-        "codename": "Crown Medic",
-        "team": "Olympians",
-        "family_branch": "Briggs",
-        "rank": "Chief Healer",
+        "id": "OLYM-CUM-MATT-002",
+        "name": "Jessica",
+        "codename": "Shadowcore",
+        "role": "Darkfield Sentinel & Protective Anchor",
         "status": "Active",
         "species": "Human",
         "universe": "Prime",
-        "role": "Primary combat medic of the Briggs branch",
+        "suit": {
+          "name": "Shadowcore Suit",
+          "variants": ["Core Shade", "Silent Guard"]
+        },
         "abilities": [
-          "Advanced medical expertise enhanced by arcane-tech tools",
-          "Stabilizing auras that slow bleeding and dampen pain",
-          "Rapid triage analysis in chaotic situations"
+          "Creates shadow pockets that hide allies from detection",
+          "Can neutralize overly chaotic energy fields",
+          "Maintains emotional stability for those near her",
+          "Generates protective darklight constructs"
         ],
         "relationships": {
-          "partner": "Heather S (Verdant)",
+          "relationship_status": "Married",
+          "partner": "Matt (CareTechnial)",
           "children": [
-            "Ben (Nuscus)",
-            "Azure (Mediateir)",
-            "Liberty (Serenity)",
-            "Ammon (Valoron)",
-            "Piper (Jetstrike)"
+            "Kyle (Steelth)",
+            "Daisy (Floral)",
+            "Rose (Prism)",
+            "Prairie (Flowertwister)",
+            "Ryan kid (Ven-noir)",
+            "Liam (Veteran)"
           ],
-          "faction_connections": [
-            "Titans",
-            "Olympians"
-          ]
+          "family_branch": "Cummings – Matt Branch",
+          "faction_connections": ["Olympians"]
         },
-        "bio": "As Crown Medic, Bobby operates on the front lines of disaster, patching up heroes and civilians alike.",
+        "bio": "Jessica \"Shadowcore\" Cummings is quiet strength personified. Her darklight shielding protects family members from threats both physical and emotional.",
         "history": [
-          "Provided emergency support during multiple Titan missions gone sideways",
-          "Helped design standard medical response kits used across Olympian branches"
+          "Guided younger Olympians through high-stress emergency drills",
+          "Protected teams during rescue operations at night",
+          "Serves as emotional backup for overwhelmed cousins"
         ],
-        "notes": "He has a reputation for firm bedside manner: kind, but no nonsense."
+        "notes": "Her shadows feel safe, not scary."
       },
       {
-        "id": "OLY-011",
-        "name": "Liberty",
-        "codename": "Serenity",
-        "team": "Olympians",
-        "family_branch": "Briggs",
-        "rank": "Peacekeeper",
+        "id": "OLYM-CUM-MATT-003",
+        "name": "Kyle",
+        "codename": "Steelth",
+        "role": "Stealth Recon & Alloy Striker",
         "status": "Active",
         "species": "Human",
         "universe": "Prime",
-        "role": "Emotional stabilizer and field mediator",
+        "suit": {
+          "name": "Steelth Gear",
+          "variants": ["Silent Alloy", "Metal Veil"]
+        },
         "abilities": [
-          "Calming aura fields that reduce aggression",
-          "Light barriers that deflect attacks without harming attackers",
-          "Empathic sensing to read emotional tension"
+          "Combines metal manipulation with stealth movement",
+          "Can mask his metallic sounds to move silently",
+          "Creates razor-thin alloy blades for quick strikes",
+          "Good at slipping past defenses unnoticed"
         ],
         "relationships": {
-          "partner": "Single",
-          "family": [
-            "Heather S (Verdant)",
-            "Bobby (Crown Medic)",
-            "Ben (Nuscus)",
-            "Azure (Mediateir)",
-            "Ammon (Valoron)",
-            "Piper (Jetstrike)",
-            "Gemma (Slendowg)"
-          ],
-          "faction_connections": [
-            "Olympians"
-          ]
+          "relationship_status": "Single",
+          "parents": ["Matt (CareTechnial)", "Jessica (Shadowcore)"],
+          "siblings": ["Daisy (Floral)", "Rose (Prism)", "Prairie (Flowertwister)", "Ryan kid (Ven-noir)", "Liam (Veteran)"],
+          "family_branch": "Cummings – Matt Branch",
+          "faction_connections": ["Olympians"]
         },
-        "bio": "Liberty embodies serenity in motion, often placed between clashing personalities or on the edges of tense negotiations.",
+        "bio": "Kyle \"Steelth\" Cummings is sharp, quiet, and precise—his style favors slipping into place and striking before anyone notices.",
         "history": [
-          "Helped de-escalate multiple near-fights between different factions and teams",
-          " Frequently deployed when Maw trauma fallout causes panic in safe zones"
+          "Often pairs with stealth cousins during infiltration operations",
+          "Helped secure safe corridors in Parliament sectors",
+          "Provides recon during tense family missions"
         ],
-        "notes": "Her armor and aura design deliberately evoke peace, not intimidation."
+        "notes": "Moves like a whisper, hits like a hammer."
       },
       {
-        "id": "OLY-012",
-        "name": "Ammon",
-        "codename": "Valoron",
-        "team": "Olympians",
-        "family_branch": "Briggs",
-        "rank": "Vanguard",
+        "id": "OLYM-CUM-MATT-004",
+        "name": "Daisy",
+        "codename": "Floral",
+        "role": "Nature Empath & Growth Shaper",
         "status": "Active",
         "species": "Human",
         "universe": "Prime",
-        "role": "Courage-focused frontline fighter",
+        "suit": {
+          "name": "Floral Attire",
+          "variants": ["Blossomguard", "Petal Drift"]
+        },
         "abilities": [
-          "Courage amplification for nearby allies",
-          "High-mobility melee combat",
-          "Energy constructs shaped like shields and banners"
+          "Stimulates plant growth in small, controlled amounts",
+          "Creates small blossoms that release calming scents",
+          "Uses vines and petals to guide or support allies",
+          "Sensitive to emotional changes in those around her"
         ],
         "relationships": {
-          "partner": "Single",
-          "family": [
-            "Heather S (Verdant)",
-            "Bobby (Crown Medic)",
-            "Ben (Nuscus)",
-            "Azure (Mediateir)",
-            "Liberty (Serenity)",
-            "Piper (Jetstrike)",
-            "Gemma (Slendowg)"
-          ],
-          "faction_connections": [
-            "Olympians"
-          ]
+          "relationship_status": "Single",
+          "parents": ["Matt (CareTechnial)", "Jessica (Shadowcore)"],
+          "siblings": ["Kyle (Steelth)", "Rose (Prism)", "Prairie (Flowertwister)", "Ryan kid (Ven-noir)", "Liam (Veteran)"],
+          "family_branch": "Cummings – Matt Branch",
+          "faction_connections": ["Olympians"]
         },
-        "bio": "Valoron charges where others hesitate, turning fear into momentum.",
+        "bio": "Daisy \"Floral\" Cummings is gentle but surprisingly resilient. Her botanical powers offer comfort and subtle battlefield utility.",
         "history": [
-          "Led several dangerous pushbacks when Telestial forces breached safe perimeters",
-          "Known for refusing to abandon pinned-down allies even against bad odds"
+          "Assisted healers with botanical calming fields",
+          "Helped restore damaged community gardens",
+          "Supports emotional healing after stressful events"
         ],
-        "notes": "High synergy with Liberty’s calming fields and Heather’s plant shields."
+        "notes": "Her flowers bloom brighter when she’s happy."
       },
       {
-        "id": "OLY-013",
-        "name": "Piper",
-        "codename": "Jetstrike",
-        "team": "Olympians",
-        "family_branch": "Briggs",
-        "rank": "Aerial Specialist",
+        "id": "OLYM-CUM-MATT-005",
+        "name": "Rose",
+        "codename": "Prism",
+        "role": "Light-Bender & Illumination Artist",
         "status": "Active",
         "species": "Human",
         "universe": "Prime",
-        "role": "Fast-response aerial attacker and scout",
+        "suit": {
+          "name": "Prism Suit",
+          "variants": ["Spectrum Guard", "Refractline"]
+        },
         "abilities": [
-          "High-speed flight",
-          "Precision strike runs",
-          "Long-range recon and rapid relay"
+          "Bends beams of light to create illusions or signals",
+          "Creates color-coded communication flashes",
+          "Generates small prismatic shields",
+          "Can brighten dark areas without blinding allies"
         ],
         "relationships": {
-          "partner": "Single",
-          "family": [
-            "Heather S (Verdant)",
-            "Bobby (Crown Medic)",
-            "Ben (Nuscus)",
-            "Azure (Mediateir)",
-            "Liberty (Serenity)",
-            "Ammon (Valoron)",
-            "Gemma (Slendowg)"
-          ],
-          "faction_connections": [
-            "Olympians"
-          ]
+          "relationship_status": "Single",
+          "parents": ["Matt (CareTechnial)", "Jessica (Shadowcore)"],
+          "siblings": ["Kyle (Steelth)", "Daisy (Floral)", "Prairie (Flowertwister)", "Ryan kid (Ven-noir)", "Liam (Veteran)"],
+          "family_branch": "Cummings – Matt Branch",
+          "faction_connections": ["Olympians"]
         },
-        "bio": "Jetstrike is the family’s quickest aerial blade, scouting ahead and hitting hard when needed.",
+        "bio": "Rose \"Prism\" Cummings brings light to any mission—literally. Her refracted light effects are beautiful, useful, and instantly recognizable.",
         "history": [
-          "Often first on scene for family-based response missions",
-          "Worked joint ops with Titans and Cobros 314 as fast air support"
+          "Helped guide teams through low-visibility areas",
+          "Created prismatic decoys during rescue extractions",
+          "Designed symbolic light displays for major family events"
         ],
-        "notes": "Probably has the best ‘flybys past Night Hawk’s car’ stories."
+        "notes": "Her prisms sparkle more when she feels proud."
       },
       {
-        "id": "OLY-014",
-        "name": "Gemma",
-        "codename": "Slendowg",
-        "team": "Olympians",
-        "family_branch": "Briggs",
-        "rank": "Mobile Scout",
+        "id": "OLYM-CUM-MATT-006",
+        "name": "Prairie",
+        "codename": "Flowertwister",
+        "role": "Whirlwind Dancer & Bloom Cycler",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Flowertwister Attire",
+          "variants": ["Petalstorm", "Bloom Frenzy"]
+        },
+        "abilities": [
+          "Creates small controlled whirlwinds of petals",
+          "Moves with dancer-like agility",
+          "Uses spinning motion for evasive defense",
+          "Creates swirling zones that confuse enemies"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Matt (CareTechnial)", "Jessica (Shadowcore)"],
+          "siblings": ["Kyle (Steelth)", "Daisy (Floral)", "Rose (Prism)", "Ryan kid (Ven-noir)", "Liam (Veteran)"],
+          "family_branch": "Cummings – Matt Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Prairie \"Flowertwister\" Cummings mixes movement and nature into a graceful, swirling combat style.",
+        "history": [
+          "Helped clear smoke-filled areas with controlled whirlwinds",
+          "Frequently performs during family celebrations",
+          "Provides distraction support during light combat training"
+        ],
+        "notes": "She calls her petals her \"dance partners.\""
+      },
+      {
+        "id": "OLYM-CUM-MATT-007",
+        "name": "Ryan kid",
+        "codename": "Ven-noir",
+        "role": "Shadow Venomist & Fluid Movement Fighter",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Ven-noir Armor",
+          "variants": ["Inkwave", "Dark Viper"]
+        },
+        "abilities": [
+          "Creates dark liquid-like shadows that distract or obscure",
+          "Extremely quick reflexes",
+          "Can slip through densely packed spaces easily",
+          "Uses low-visibility areas to his advantage"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Matt (CareTechnial)", "Jessica (Shadowcore)"],
+          "siblings": ["Kyle (Steelth)", "Daisy (Floral)", "Rose (Prism)", "Prairie (Flowertwister)", "Liam (Veteran)"],
+          "family_branch": "Cummings – Matt Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Ryan \"Ven-noir\" Cummings moves like ink in water—smooth, quick, and unpredictable.",
+        "history": [
+          "Supported stealth recon during internal Parliament drills",
+          "Helped younger cousins navigate dark areas safely",
+          "Practices shadow movement with Dakota (Shadow Cipher)"
+        ],
+        "notes": "He’s sneaky, but not malicious—just playful."
+      },
+      {
+        "id": "OLYM-CUM-MATT-008",
+        "name": "Liam",
+        "codename": "Veteran",
+        "role": "Steadfast Protector & Family Sentinel",
         "status": "Active",
         "species": "Dog",
         "universe": "Prime",
-        "role": "Agile family scout and emotional support",
+        "suit": {
+          "name": "Veteran Harness",
+          "variants": ["Shield Pup Mode"]
+        },
         "abilities": [
-          "High-speed ground scouting",
-          "Tracking family members by scent even across chaos",
-          "Comic relief and morale restoration"
+          "Unwavering loyalty",
+          "Senses tension before people notice it",
+          "Guards children instinctively",
+          "Growls at danger even before it’s visible"
         ],
         "relationships": {
-          "partner": "None",
-          "family": [
-            "Heather S (Verdant)",
-            "Bobby (Crown Medic)",
-            "Ben (Nuscus)",
-            "Azure (Mediateir)",
-            "Liberty (Serenity)",
-            "Ammon (Valoron)",
-            "Piper (Jetstrike)"
-          ],
-          "faction_connections": [
-            "Olympians"
-          ]
+          "relationship_status": "N/A",
+          "owners": ["Matt (CareTechnial)", "Jessica (Shadowcore)"],
+          "family_branch": "Cummings – Matt Branch",
+          "faction_connections": ["Olympians"]
         },
-        "bio": "Gemma, the Slendowg, is the long-legged streak of joy sprinting through the Briggs household and battle lines alike.",
+        "bio": "Liam \"Veteran\" is the brave guardian of the younger Cummings. He stands watch when others relax, always ready to protect.",
         "history": [
-          "Known for finding lost kids and cousins during large family events and evacuations",
-          "Unofficial mascot for multiple younger Olympians"
+          "Stayed close to Prairie during her recovery from a minor injury",
+          "Known for breaking up sibling arguments with stern dog energy",
+          "Participates in family outings as the unofficial patrol leader"
         ],
-        "notes": "Her codename is as much an inside joke as it is a legend."
+        "notes": "He thinks every child is his responsibility."
       }
     ]
   },
   {
-  "team": "Olympians",
-  "family": "Jensen",
-  "members": [
-    {
-      "id": "OLYM-JENSEN-001",
-      "name": "Savannah",
-      "codename": "Vivid Spark",
-      "team": "Olympians",
-      "family": "Jensen",
-      "rank": "Matriarch – Creative Anchor",
-      "status": "Active",
-      "species": "Human",
-      "universe": "Prime",
-      "suit": {
-        "name": "Vivid Spark Raiment",
-        "variants": ["Inspiration Bloom Configuration"]
+    "team": "Olympians",
+    "family": "Cummings – Chad Branch",
+    "members": [
+      {
+        "id": "OLYM-CUM-CHAD-001",
+        "name": "Chad",
+        "codename": "Codester",
+        "role": "Tech Tactician & Codefield Operator",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Codester Rig",
+          "variants": ["Debug Mode", "Overclock Pattern"]
+        },
+        "abilities": [
+          "Analyzes digital systems and battlefield comms in real time",
+          "Deploys code-based hardlight panels for cover or routing",
+          "Can temporarily \"patch\" unstable environments or tech glitches",
+          "Reads patterns in chaos like a living debugger"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Rochelle (White Veil)",
+          "children": [
+            "Annabeth (Novanna)",
+            "Levi (StoneWreck)",
+            "Child 3 (TBA)",
+            "Child 4 (TBA)",
+            "Child 5 (TBA)"
+          ],
+          "family_branch": "Cummings – Chad Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Chad \"Codester\" Cummings treats reality a bit like a complex program—something you can understand, stabilize, and improve with the right logic. He’s calm under pressure and great at seeing the next three moves ahead.",
+        "history": [
+          "Helped standardize communication protocols for Olympian operations",
+          "Advised Titans and Legionaires on secure data handling",
+          "Frequently manages mission logs and post-op debrief summaries"
+        ],
+        "notes": "He’s the cousin people go to when their tech is acting cursed."
       },
-      "abilities": [
-        "Emotion-linked light auras that brighten ally morale",
-        "Colorfield bursts that disorient hostile forces",
-        "Low-level healing warmth through touch and proximity",
-        "Protective flares that deflect minor projectiles"
-      ],
-      "relationships": {
-        "partner": "Lee (Codeforge)",
-        "family": ["Stillman", "Jensen", "Cummings"],
-        "faction_connections": ["Olympians"]
+      {
+        "id": "OLYM-CUM-CHAD-002",
+        "name": "Rochelle",
+        "codename": "White Veil",
+        "role": "Protective Shroudcaster & Quiet Sentinel",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "White Veil Attire",
+          "variants": ["Still Shroud", "Halo Screen"]
+        },
+        "abilities": [
+          "Generates soft, pale veils that conceal allies from sight and scanners",
+          "Calms emotional noise in tense situations",
+          "Can mute sound in a controlled radius for stealth or focus",
+          "Specializes in keeping vulnerable or overwhelmed people safe"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Chad (Codester)",
+          "children": [
+            "Annabeth (Novanna)",
+            "Levi (StoneWreck)",
+            "Child 3 (TBA)",
+            "Child 4 (TBA)",
+            "Child 5 (TBA)"
+          ],
+          "family_branch": "Cummings – Chad Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Rochelle \"White Veil\" Cummings is subtle protection personified. She doesn’t draw attention to herself—but everyone under her veil feels safer.",
+        "history": [
+          "Shielded younger cousins during large family gatherings in unstable times",
+          "Provided quiet zones for debriefs and emotional cooldowns",
+          "Assisted in stealth extractions where calm and silence were critical"
+        ],
+        "notes": "Her veil fields feel like stepping into a quiet, softly lit room."
       },
-      "bio": "Savannah \"Vivid Spark\" Jensen is the heartlight of her branch of the family, radiating color, warmth, and stability. Her presence keeps the Jensen household emotionally grounded even when cosmic chaos brushes against their lives.",
-      "history": [
-        "Supported younger Olympians through difficult personal and spiritual transitions",
-        "Served as an informal counselor during early Maw disturbances near the family",
-        "Helped host several cross-family gatherings that strengthened Olympian unity"
-      ],
-      "notes": "Her aura tends to brighten and change color based on the emotional state of the room."
-    },
-    {
-      "id": "OLYM-JENSEN-002",
-      "name": "Lee",
-      "codename": "Codeforge",
-      "team": "Olympians",
-      "family": "Jensen",
-      "rank": "Systems Artisan & Tech Support",
-      "status": "Active",
-      "species": "Human",
-      "universe": "Prime",
-      "suit": {
-        "name": "Codeforge Rig",
-        "variants": ["Developer’s Forge Harness"]
+      {
+        "id": "OLYM-CUM-CHAD-003",
+        "name": "Annabeth",
+        "codename": "Novanna",
+        "role": "Starlight Channeler & Hopecaster",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Novanna Suit",
+          "variants": ["Starseed", "Aurora Crest"]
+        },
+        "abilities": [
+          "Channels faint starlight into gentle beams and pulses",
+          "Boosts morale with radiant, hopeful energy",
+          "Creates constellation-marked markers to guide allies",
+          "Can briefly brighten dark zones without blinding anyone"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Chad (Codester)", "Rochelle (White Veil)"],
+          "siblings": ["Levi (StoneWreck)", "Child 3 (TBA)", "Child 4 (TBA)", "Child 5 (TBA)"],
+          "family_branch": "Cummings – Chad Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Annabeth \"Novanna\" Cummings fights with quiet, star-colored hope. Her light doesn’t roar; it reassures.",
+        "history": [
+          "Helped guide cousins through blackouts with constellation trails",
+          "Supports healers and guardians with calming light",
+          "Known for sitting with people who feel lost or overwhelmed"
+        ],
+        "notes": "She likes tracing constellations on windows when she’s thinking."
       },
-      "abilities": [
-        "On-the-fly scripting of arcane-tech subroutines",
-        "Stabilization of glitching or corrupted systems",
-        "HUD-assisted diagnostics for damaged armor and devices",
-        "Support drones that handle minor repairs mid-mission"
-      ],
-      "relationships": {
-        "partner": "Savannah (Vivid Spark)",
-        "family": ["Jensen", "Stillman (by marriage)"],
-        "faction_connections": ["Olympians", "Parliament (Tech Support – Minor)"]
+      {
+        "id": "OLYM-CUM-CHAD-004",
+        "name": "Levi",
+        "codename": "StoneWreck",
+        "role": "Heavy Impact Brawler & Terrain Shifter",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "StoneWreck Armor",
+          "variants": ["Quakefist", "Rubble Crown"]
+        },
+        "abilities": [
+          "Channels force into the ground to cause localized tremors",
+          "Uses heavy, stone-like armor for frontline brawling",
+          "Breaks obstacles, debris, or barriers when needed",
+          "Protects others by drawing enemy focus to himself"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Chad (Codester)", "Rochelle (White Veil)"],
+          "siblings": ["Annabeth (Novanna)", "Child 3 (TBA)", "Child 4 (TBA)", "Child 5 (TBA)"],
+          "family_branch": "Cummings – Chad Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Levi \"StoneWreck\" Cummings is a moving landslide—loud, heavy, and absolutely on your side. He’s built for smashing obstacles that block the family’s way.",
+        "history": [
+          "Cleared blocked paths during localized disasters",
+          "Frequently teams up with Steel, Ironstrike, and other heavy-hitters",
+          "Known for laughing off impacts that would drop most fighters"
+        ],
+        "notes": "He’s surprisingly gentle with small kids and animals."
       },
-      "bio": "Lee \"Codeforge\" Jensen is the quiet engineer behind many of the family’s tech comforts. He’s less of a frontline warrior and more of a craftsman who keeps critical infrastructure humming.",
-      "history": [
-        "Helped adapt civilian tech to handle emergency Parliament alerts",
-        "Assisted in refurbishing damaged Olympian armor between battles",
-        "Consulted on secure data storage for family records and histories"
-      ],
-      "notes": "Prefers workbenches and terminals to battlefields but will deploy when the family truly needs him."
-    },
-    {
-      "id": "OLYM-JENSEN-003",
-      "name": "Emilee",
-      "codename": "Luminous Aria",
-      "team": "Olympians",
-      "family": "Jensen",
-      "rank": "Support Caster – Sonic & Light",
-      "status": "Active",
-      "species": "Human",
-      "universe": "Prime",
-      "suit": {
-        "name": "Luminous Aria Attire",
-        "variants": ["Harmonic Choir Configuration"]
+      {
+        "id": "OLYM-CUM-CHAD-005",
+        "name": "Child 3",
+        "codename": "TBA",
+        "role": "To be determined",
+        "status": "Placeholder",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "TBA",
+          "variants": []
+        },
+        "abilities": [],
+        "relationships": {
+          "relationship_status": "Unknown",
+          "parents": ["Chad (Codester)", "Rochelle (White Veil)"],
+          "siblings": ["Annabeth (Novanna)", "Levi (StoneWreck)", "Child 4 (TBA)", "Child 5 (TBA)"],
+          "family_branch": "Cummings – Chad Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Reserved placeholder for a future member of the Chad Cummings branch.",
+        "history": [],
+        "notes": "Details to be added as canon develops."
       },
-      "abilities": [
-        "Voice-linked light waves that can soothe or stun",
-        "Resonant barriers woven from melody and radiance",
-        "Ability to synchronize heartbeats and breathing of nearby allies",
-        "Subtle sonic pulses to disrupt hostile coordination"
-      ],
-      "relationships": {
-        "partner": "Single",
-        "family": ["Jensen"],
-        "faction_connections": ["Olympians"]
+      {
+        "id": "OLYM-CUM-CHAD-006",
+        "name": "Child 4",
+        "codename": "TBA",
+        "role": "To be determined",
+        "status": "Placeholder",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "TBA",
+          "variants": []
+        },
+        "abilities": [],
+        "relationships": {
+          "relationship_status": "Unknown",
+          "parents": ["Chad (Codester)", "Rochelle (White Veil)"],
+          "siblings": ["Annabeth (Novanna)", "Levi (StoneWreck)", "Child 3 (TBA)", "Child 5 (TBA)"],
+          "family_branch": "Cummings – Chad Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Reserved placeholder for a future member of the Chad Cummings branch.",
+        "history": [],
+        "notes": "Details to be added as canon develops."
       },
-      "bio": "Emilee \"Luminous Aria\" Jensen turns song into shield and spotlight. Her harmonies can settle panic, strengthen courage, and—when necessary—drop enemies to their knees with a single sharp note.",
-      "history": [
-        "Provided musical and emotional support during multiple cross-family gatherings",
-        "Assisted in calming civilians during emergency evacuations",
-        "Frequently coordinates with other support-focused Olympians for joint operations"
-      ],
-      "notes": "Her power is at its strongest when she’s protecting people she personally knows."
-    },
-    {
-      "id": "OLYM-JENSEN-004",
-      "name": "Samantha",
-      "codename": "Velocity Vibe",
-      "team": "Olympians",
-      "family": "Jensen",
-      "rank": "Scout & Courier",
-      "status": "Active",
-      "species": "Human",
-      "universe": "Prime",
-      "suit": {
-        "name": "Velocity Vibe Gear",
-        "variants": ["Courier Sprint Configuration"]
+      {
+        "id": "OLYM-CUM-CHAD-007",
+        "name": "Child 5",
+        "codename": "TBA",
+        "role": "To be determined",
+        "status": "Placeholder",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "TBA",
+          "variants": []
+        },
+        "abilities": [],
+        "relationships": {
+          "relationship_status": "Unknown",
+          "parents": ["Chad (Codester)", "Rochelle (White Veil)"],
+          "siblings": ["Annabeth (Novanna)", "Levi (StoneWreck)", "Child 3 (TBA)", "Child 4 (TBA)"],
+          "family_branch": "Cummings – Chad Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Reserved placeholder for a future member of the Chad Cummings branch.",
+        "history": [],
+        "notes": "Details to be added as canon develops."
+      }
+    ]
+  },
+  {
+    "team": "Olympians",
+    "family": "Cummings – Troy Branch",
+    "members": [
+      {
+        "id": "OLYM-CUM-TROY-001",
+        "name": "Troy",
+        "codename": "Foreman",
+        "role": "Battlefield Foreman & Structural Commander",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Foreman Rig",
+          "variants": ["Site Command Mode", "Load Bearing"]
+        },
+        "abilities": [
+          "Reads terrain, structures, and layouts at a glance",
+          "Quickly assigns roles and positions to make a team more effective",
+          "Strengthens existing structures with temporary reinforcement fields",
+          "Calls out weak points in enemy positions or fortifications"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "family_branch": "Cummings – Troy Branch",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Troy \"Foreman\" Cummings treats every mission like a job site: who’s on which crew, what needs shored up, and how to keep everyone safe while getting it done. He’s practical, grounded, and very good at turning chaos into a workable plan.",
+        "history": [
+          "Helped coordinate structural reinforcement during Maw-adjacent tremors",
+          "Assigned cousins to defensive positions that held far longer than projected",
+          "Frequently consulted when operations involve buildings, bridges, or crowded spaces"
+        ],
+        "notes": "He’s not flashy, but teams run smoother when he’s in charge of placement and flow."
+      }
+    ]
+  },
+  {
+    "team": "Olympians",
+    "family": "Cummings – Grandparents",
+    "members": [
+      {
+        "id": "OLYM-CUM-GP-001",
+        "name": "Sharrel",
+        "codename": "Airrow",
+        "role": "Windway Pathfinder & Family Scoutmaster",
+        "status": "Active Elder",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Airrow Mantle",
+          "variants": ["Windstride", "Skywarden"]
+        },
+        "abilities": [
+          "Creates soft guiding drafts of air to lead others safely",
+          "Senses changes in weather, mood, and environment instantly",
+          "Can lighten her steps or glide short distances",
+          "Expert at navigating terrain and keeping family groups together"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Dorthy (Star Keeper)",
+          "children": [
+            "The Cummings siblings and their families (multiple branches)"
+          ],
+          "family_branch": "Cummings – Grandparents",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Sharrel \"Airrow\" Cummings is the gentle guidance at the center of the Cummings family. Calm, warm, and always aware of her surroundings, she leads with intuition and patience.",
+        "history": [
+          "Guided younger cousins during large reunions and emergencies",
+          "Provided wind signals during early Titan search parties",
+          "Known for stepping in quietly whenever someone is lost or overwhelmed"
+        ],
+        "notes": "Her presence has a soothing, fresh-air feel that everyone notices but can’t quite describe."
       },
-      "abilities": [
-        "Enhanced agility and burst-speed dashes",
-        "Kinetic echo trails that confuse pursuers",
-        "Parkour-level mobility in urban and interior spaces",
-        "Tactical data relays routed through a wrist-comms mesh"
-      ],
-      "relationships": {
-        "partner": "Single",
-        "family": ["Jensen"],
-        "faction_connections": ["Olympians", "Legionaires (Runner – Occasional Support)"]
+      {
+        "id": "OLYM-CUM-GP-002",
+        "name": "Dorthy",
+        "codename": "Star Keeper",
+        "role": "Family Archivist & Celestial Memory Holder",
+        "status": "Active Elder",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Star Keeper Robes",
+          "variants": ["Constellation Weave", "Memory Light"]
+        },
+        "abilities": [
+          "Preserves memories and family stories with near-perfect clarity",
+          "Creates small points of starlight that replay recollections",
+          "Soothing presence that calms chaos in emotional situations",
+          "Acts as a living archive for the family’s history"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Sharrel (Airrow)",
+          "children": [
+            "The Cummings siblings and their families (multiple branches)"
+          ],
+          "family_branch": "Cummings – Grandparents",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Dorthy \"Star Keeper\" Cummings is the heart of the Cummings story. She safeguards the memories, traditions, and emotional threads that hold everyone together.",
+        "history": [
+          "Recorded early Titan events into the family archive",
+          "Created star-memory rooms for younger cousins to learn their legacy",
+          "Comforted countless family members after stressful events"
+        ],
+        "notes": "Her starlight projections are famous in family gatherings."
       },
-      "bio": "Samantha \"Velocity Vibe\" Jensen is motion given purpose. She thrives on weaving through tight spaces, delivering data, and scouting paths before others even know there’s a threat.",
-      "history": [
-        "Served as a runner between Olympians, Titans, and Legionaires during early coordination efforts",
-        "Helped map safe routes through Maw-adjacent disturbance zones",
-        "Frequently assigned to quick-response errands that require both speed and trust"
-      ],
-      "notes": "She dislikes staying still and often volunteers for the most mobile roles available."
-    },
-    {
-      "id": "OLYM-JENSEN-005",
-      "name": "Ella",
-      "codename": "Aerial Serenade",
-      "team": "Olympians",
-      "family": "Jensen",
-      "rank": "Aerial Support & Recon",
-      "status": "Active",
-      "species": "Human",
-      "universe": "Prime",
-      "suit": {
-        "name": "Aerial Serenade Armor",
-        "variants": ["Skyborne Harmony Configuration"]
+      {
+        "id": "OLYM-CUM-GP-003",
+        "name": "GMA Parker",
+        "codename": "Eternal Archon",
+        "role": "Matriarchal Guardian & Timeless Overseer",
+        "status": "Eternal (Honored Matriarch)",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Archon Vestments",
+          "variants": ["Remembrance Aura"]
+        },
+        "abilities": [
+          "Symbolic guardian presence over the entire Cummings lineage",
+          "Represents endurance, unity, and ancestral strength",
+          "Serves as a rallying point in moments of crisis or family hardship",
+          "Her memory empowers younger Olympians with clarity and resolve"
+        ],
+        "relationships": {
+          "relationship_status": "Widowed (Honored)",
+          "family_branch": "Cummings – Grandparents",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "GMA Parker \"Eternal Archon\" stands as the eternal matriarch of the family. Her influence shapes generations, both in legacy and in spirit. Her memory is invoked during major decisions, rites, and reunions.",
+        "history": [
+          "Honored during the founding of the Olympians",
+          "Her principles guide many cousin branches to this day",
+          "Stories of her life are used to inspire courage, empathy, and resilience"
+        ],
+        "notes": "Her presence is felt even when not spoken of—an ancestral light that never truly dims."
+      }
+    ]
+  },
+  {
+    "team": "Olympians",
+    "family": "Eduria – The Diwatas",
+    "members": [
+      {
+        "id": "OLYM-EDU-001",
+        "name": "Marlyn",
+        "codename": "Sky Weaver",
+        "role": "Aerial Guardian & Weatherflow Guide",
+        "status": "Active Elder",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Sky Weaver Mantle",
+          "variants": ["Cloudsong", "Aerial Crest"]
+        },
+        "abilities": [
+          "Airflow manipulation for flight-like movement",
+          "Creates calming breezes that reduce tension",
+          "Navigates storms and weather shifts with ease",
+          "Can lift or support others using wind currents"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Robert (Iron Sentinel)",
+          "children": [
+            "Arlene (Flame Guardian)",
+            "Kris (Techno Spirit)",
+            "Aileen (Ariata)",
+            "Carlo (Goldenmind)"
+          ],
+          "family_branch": "Eduria – The Diwatas",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Marlyn \"Sky Weaver\" Eduria embodies grace, compassion, and quiet power. Her wind-woven abilities provide protection and guidance, making her one of the spiritual pillars of the Diwata lineage.",
+        "history": [
+          "Guided younger family members through storms and uncertainty",
+          "Helped secure travel routes during Maw disturbances",
+          "Acts as a calming presence in family and Olympian gatherings"
+        ],
+        "notes": "Her movements are so fluid many say she looks like she’s floating."
       },
-      "abilities": [
-        "Low-altitude flight with agile maneuvering",
-        "Wind-assisted glides that generate calming ambient tones",
-        "Wide-angle visual scouting from above",
-        "Subtle pressure-wave bursts to disrupt incoming projectiles"
-      ],
-      "relationships": {
-        "partner": "Single",
-        "family": ["Jensen"],
-        "faction_connections": ["Olympians"]
+      {
+        "id": "OLYM-EDU-002",
+        "name": "Robert",
+        "codename": "Iron Sentinel",
+        "role": "Defensive Vanguard & Iron Wall Protector",
+        "status": "Active Elder",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Iron Sentinel Armor",
+          "variants": ["Bulwark Form", "Titan Guard"]
+        },
+        "abilities": [
+          "Summons iron-like armor and shields at will",
+          "Extremely durable under physical or energy attacks",
+          "Protects groups behind layered iron barriers",
+          "Can create vibrating shields that disrupt impacts"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Marlyn (Sky Weaver)",
+          "children": [
+            "Arlene (Flame Guardian)",
+            "Kris (Techno Spirit)",
+            "Aileen (Ariata)",
+            "Carlo (Goldenmind)"
+          ],
+          "family_branch": "Eduria – The Diwatas",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Robert \"Iron Sentinel\" Eduria is the steadfast shield of the Diwata family. Calm, strong, and unmovable, he anchors the household with reliability and discipline.",
+        "history": [
+          "Served as the primary guardian during multiple Diwata gatherings",
+          "Constructed protective iron structures during emergencies",
+          "Assisted Parliament defenders during structural collapse events"
+        ],
+        "notes": "Despite his strength, he’s gentle and mindful around children."
       },
-      "bio": "Ella \"Aerial Serenade\" Jensen mixes sky-dancing with soft tactical support. From above, she can both scout ahead and weave gentle sound currents that steady allies’ nerves.",
-      "history": [
-        "Provided overwatch during several extended-family outdoor gatherings and training exercises",
-        "Helped spot early signs of Maw storms encroaching near safe zones",
-        "Frequently paired with ground-based cousins as their personal aerial guardian"
-      ],
-      "notes": "Feels most at peace when she has open sky, music in her head, and family within sight below."
-    }
-  ]
-}
-
+      {
+        "id": "OLYM-EDU-003",
+        "name": "Arlene Hendricks",
+        "codename": "Flame Guardian",
+        "role": "Heatcaster & Family Protector",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Flame Guardian Attire",
+          "variants": ["Kindle Flare", "Hearthfire"]
+        },
+        "abilities": [
+          "Generates warm, non-destructive flame for comfort and protection",
+          "Can turn heat into controlled bursts for defense",
+          "Creates light in dark or uncertain situations",
+          "Can redirect harmful fire away from others"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Nate (Wind Striker)",
+          "siblings": ["Kris (Techno Spirit)", "Aileen (Ariata)", "Carlo (Goldenmindt)"],
+          "children": [],
+          "family_branch": "Eduria – The Diwatas",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Arlene \"Flame Guardian\" Hendricks protects not with destruction, but warmth. Her fire symbolizes care, guidance, and resilience.",
+        "history": [
+          "Provided warmth and protection during cold-weather evacuations",
+          "Calmed frightened children with safe, glowing fire shapes",
+          "Assisted in lighting disaster areas when power was down"
+        ],
+        "notes": "Her flames always feel safe — never threatening."
+      },
+      {
+        "id": "OLYM-EDU-004",
+        "name": "Nate Hendricks",
+        "codename": "Wind Striker",
+        "role": "Directional Scout & Galecaster",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Wind Striker Gear",
+          "variants": ["Gustline", "Strike Gale"]
+        },
+        "abilities": [
+          "Uses sharp, quick wind bursts for defense and offense",
+          "Extremely fast reaction time with wind-assisted motion",
+          "Can scout ahead using airflow sensors",
+          "Works well pairing wind with Arlene’s controlled fire"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "partner": "Arlene (Flame Guardian)",
+          "family_branch": "Eduria – The Diwatas",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Nate \"Wind Striker\" Hendricks is swift, precise, and reliable. His wind bursts are controlled and tactical, making him one of the family's most effective scouts.",
+        "history": [
+          "Helped guide rescue teams through smoke-filled areas",
+          "Fanned dangerous fires away during emergencies",
+          "Assisted in high-speed message relays during outages"
+        ],
+        "notes": "Nate’s winds always feel focused — never chaotic."
+      },
+      {
+        "id": "OLYM-EDU-005",
+        "name": "Kris",
+        "codename": "Techno Spirit",
+        "role": "Cyber-Soul Interface Expert",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Techno Spirit Suit",
+          "variants": ["Cyberweave", "Pulse Link"]
+        },
+        "abilities": [
+          "Interfaces emotionally with technology",
+          "Can translate machine feedback into intuitive cues",
+          "Stabilizes malfunctioning devices by touch",
+          "Creates small hologram spirits for guidance"
+        ],
+        "relationships": {
+          "relationship_status": "Married",
+          "parents in laws": ["Marlyn (Sky Weaver)", "Robert (Iron Sentinel)"],
+          "siblings": ["Arlene (Flame Guardian)", "Carlo (Goldenmindt)", "Aileen (Ariata)"],
+          "children": ["Cham Cham Kaleigha (Star Vortex)"],
+          "family_branch": "Eduria – The Diwatas",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Kris \"Techno Spirit\" Eduria blends heart and circuitry. He acts as a bridge between emotion and machinery, grounding unstable tech with remarkable empathy.",
+        "history": [
+          "Stabilized malfunctioning Parliament drones during a storm surge",
+          "Helped build hologram guides for community centers",
+          "Supports younger cousins with comforting tech-based apparitions"
+        ],
+        "notes": "His hologram spirits often act like little AI pets."
+      },
+      {
+        "id": "OLYM-EDU-006",
+        "name": "Carlo",
+        "codename": "Goldenmind",
+        "role": "Mental Luminarch & Focus Amplifier",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Goldenmind Attire",
+          "variants": ["Focus Halo", "Mindflare"]
+        },
+        "abilities": [
+          "Generates golden mental clarity fields",
+          "Helps people focus under stress",
+          "Can create harmonic sound pulses that reset emotional balance",
+          "Naturally gifted at calming conflict"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "parents": ["Marlyn (Sky Weaver)", "Robert (Iron Sentinel)"],
+          "siblings": ["Arlene (Flame Guardian)", "Kris (Techno Spirit)", "Aileen (Ariata)"],
+          "family_branch": "Eduria – The Diwatas",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Carlo \"Goldenmind\" Eduria radiates focus and calm. His golden clarity fields soothe the mind and help others think straight in chaotic situations.",
+        "history": [
+          "Assisted Titans with mental stabilization exercises",
+          "Helped resolve emotional conflicts between younger relatives",
+          "Created harmonic zones for meditation and recovery"
+        ],
+        "notes": "Everyone thinks better when Carlo is around."
+      },
+      {
+        "id": "OLYM-EDU-007",
+        "name": "Cham Cham Kaleigha",
+        "codename": "Star Vortex",
+        "role": "Gravity Twister & Cosmic Pulse Caster",
+        "status": "Active Youth",
+        "species": "Human",
+        "universe": "Prime",
+        "suit": {
+          "name": "Star Vortex Suit",
+          "variants": ["Nebula Spin", "Cosmic Burst"]
+        },
+        "abilities": [
+          "Creates small localized gravity swirls",
+          "Summons faint star-patterned pulses",
+          "Can pull small objects into controlled orbits",
+          "Energetic and unpredictable but full of heart"
+        ],
+        "relationships": {
+          "relationship_status": "Single",
+          "grand parents": ["Marlyn (Sky Weaver)", "Robert (Iron Sentinel)"],
+          "parents": ["Kris (Techno Spirit)"],
+          "family_branch": "Eduria – The Diwatas",
+          "faction_connections": ["Olympians"]
+        },
+        "bio": "Cham \"Star Vortex\" Kaleigha is the youngest spark of the Diwata line. Her powers are energetic, cosmic, and full of excitement — she’s the shooting star of the family.",
+        "history": [
+          "Created swirling gravity orbs during training displays",
+          "Often impresses cousins with spontaneous star pulses",
+          "Once accidentally orbited her own shoes for an hour"
+        ],
+        "notes": "Her laughter is as bright as her cosmic pulses."
+      }
+    ]
+  }
 ]

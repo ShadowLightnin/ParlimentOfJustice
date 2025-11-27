@@ -1,0 +1,615 @@
+{
+  "team": "Cobros 314",
+  "universe": "Prime",
+  "faction_type": "Rangers",
+  "status": "Active",
+  "members": [
+    {
+      "id": "COBROS-001",
+      "name": "Tanner Despain",
+      "codename": "Titanium",
+      "role_on_team": "Frontline Tank / Trail Leader",
+      "relationship_status": "Unspecified",
+      "status": "Killed in The Return",
+      "species": "Human",
+      "universe": "Prime",
+      "armor": {
+        "name": "Titanium Armor",
+        "style": "Heavily plated scout-armor built for rough terrain, impacts, and shield wall formations",
+        "variants": []
+      },
+      "abilities": [
+        "High durability and damage resistance",
+        "Anchor-point defense, holding lines under pressure",
+        "Protecting younger Cobros during retreats or evacuations"
+      ],
+      "personality": "Steady, responsible, and very protective of the younger guys.",
+      "bio": [
+        "As one of the adult leaders of Cobros 314, Tanner acted as their walking shield.",
+        "During The Return, he died standing between Sam’s corrupted power and the youth he once led."
+      ],
+      "relationships": {},
+      "connections": {
+        "teams": ["Cobros 314"],
+        "close_allies": ["Ethan Workman", "Josh Larson", "Nick Larsen"]
+      },
+      "notes": "Remembered as the wall that refused to move—even when it cost him everything."
+    },
+    {
+      "id": "COBROS-002",
+      "name": "Ethan Workman",
+      "codename": "Schriker",
+      "role_on_team": "Speed Vanguard / Flank Disruptor",
+      "relationship_status": "Unspecified",
+      "status": "Killed in The Return",
+      "species": "Human",
+      "universe": "Prime",
+      "armor": {
+        "name": "Schriker Rig",
+        "style": "Light, angular armor with avian and sonic-mobility design cues",
+        "variants": []
+      },
+      "abilities": [
+        "Burst-speed charges and rapid flanking",
+        "High-intensity battle cries that disorient enemies",
+        "Hit-and-run tactics to peel pressure off teammates"
+      ],
+      "personality": "Loud, brave, and always the first into danger if it meant helping someone else.",
+      "bio": [
+        "Ethan turned aggression into protection.",
+        "In The Return, he tried to redirect Void-twisted fire away from the Cobros youth and was killed in the attempt."
+      ],
+      "relationships": {},
+      "connections": {
+        "teams": ["Cobros 314"],
+        "close_allies": ["Tanner Despain", "Josh Larson"]
+      },
+      "notes": "His absence is still felt whenever the team needs someone to make the crazy first move."
+    },
+    {
+      "id": "COBROS-003",
+      "name": "Wesley Holbrook",
+      "codename": "Warlock",
+      "role_on_team": "Arcane Support / Utility Caster",
+      "relationship_status": "Unspecified",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "armor": {
+        "name": "Warlock Gear",
+        "style": "Cloaked armor with rune-like energy channels and support modules",
+        "variants": []
+      },
+      "abilities": [
+        "Deploys buff fields to strengthen allies",
+        "Short-range portals and reposition tools",
+        "Mystic-style blasts adapted from Parliament tech"
+      ],
+      "personality": "Thoughtful, a little dramatic, and always experimenting with new tricks.",
+      "bio": [
+        "Wesley turned support into an art form, weaving strange energy effects around the more physical Cobros fighters."
+      ],
+      "relationships": {},
+      "connections": {
+        "teams": ["Cobros 314"],
+        "close_allies": ["Joseph Slack", "Jonah Gray"]
+      },
+      "notes": "Known for shouting spell names that are way more theatrical than necessary."
+    },
+    {
+      "id": "COBROS-004",
+      "name": "Josh Larson",
+      "codename": "Juggernaut",
+      "role_on_team": "Heavy Hitter / Line Breaker",
+      "relationship_status": "Unspecified",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "armor": {
+        "name": "Juggernaut Armor",
+        "style": "Bulky power-armor with reinforced shoulders and kinetic dampeners",
+        "variants": []
+      },
+      "abilities": [
+        "Charging through enemy lines and barriers",
+        "Absorbing and redirecting kinetic force",
+        "Protecting allies by drawing fire and attention"
+      ],
+      "personality": "Big-hearted, stubborn, and surprisingly gentle when he’s not smashing something.",
+      "bio": [
+        "Josh was one of the adult Cobros leaders who survived The Return.",
+        "Carrying grief and survivor’s guilt, he became a living reminder of what the troop lost—and what still needs protecting."
+      ],
+      "relationships": {},
+      "connections": {
+        "teams": ["Cobros 314"],
+        "close_allies": ["Tanner Despain", "Ethan Workman", "Nick Larsen"]
+      },
+      "notes": "He visits the memorial sites of the fallen Cobros regularly."
+    },
+    {
+      "id": "COBROS-005",
+      "name": "Jonah Gray",
+      "codename": "Echo Song",
+      "role_on_team": "Sound Support / Morale Anchor",
+      "relationship_status": "Unspecified",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "armor": {
+        "name": "Echo Song Attire",
+        "style": "Light armor with audio-channel plating and harmonic nodes",
+        "variants": []
+      },
+      "abilities": [
+        "Creates echoing sound fields that confuse enemies",
+        "Uses music and rhythm to stabilize allies emotionally",
+        "Subtle sonic shields that soften incoming impacts"
+      ],
+      "personality": "Calm, steady, and more observant than people realize.",
+      "bio": [
+        "Jonah keeps Cobros grounded, giving them something solid to listen to when the world feels like it’s tearing apart."
+      ],
+      "relationships": {},
+      "connections": {
+        "teams": ["Cobros 314"],
+        "close_allies": ["Josh Larson", "Johnathon Gray"]
+      },
+      "notes": "Often the one who starts singing quietly around campfires after missions."
+    },
+    {
+      "id": "COBROS-006",
+      "name": "Joseph Slack",
+      "codename": "Caster",
+      "role_on_team": "Ranged Support / Tactical Caster",
+      "relationship_status": "Unspecified",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "armor": {
+        "name": "Caster Rig",
+        "style": "Mid-range armor with focus gauntlets and modular spell-emitters",
+        "variants": []
+      },
+      "abilities": [
+        "Mid-range energy bolts and snares",
+        "Deployable wards that mark safe or dangerous zones",
+        "Combos with Warlock and Echo Song for layered effects"
+      ],
+      "personality": "Analytical, nerdy, and very good at reading the flow of a fight.",
+      "bio": [
+        "Joseph became Cobros’ ‘tactical mage,’ covering gaps and reinforcing whoever was getting overwhelmed."
+      ],
+      "relationships": {},
+      "connections": {
+        "teams": ["Cobros 314"],
+        "close_allies": ["Wesley Holbrook", "Jaden Boyer"]
+      },
+      "notes": "Loves drawing diagrams of ideal battlefield layouts in his spare time."
+    },
+    {
+      "id": "COBROS-007",
+      "name": "Jaden Boyer",
+      "codename": "Aether Blaze",
+      "role_on_team": "Elemental Striker / Ranged DPS",
+      "relationship_status": "Unspecified",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "armor": {
+        "name": "Aether Blaze Armor",
+        "style": "Sleek energy-channel suit with glowing vents and arcing flames",
+        "variants": []
+      },
+      "abilities": [
+        "Launches focused streams of aether-fire",
+        "Charges up finishers when allies pin targets down",
+        "Can briefly overclock his own armor at personal risk"
+      ],
+      "personality": "Passionate, intense, and sometimes a bit reckless.",
+      "bio": [
+        "Jaden is Cobros’ living artillery, bringing big fire when the team commits fully to a push."
+      ],
+      "relationships": {},
+      "connections": {
+        "teams": ["Cobros 314"],
+        "close_allies": ["Joseph Slack", "Jonas Boyer"]
+      },
+      "notes": "He and Jonas have an unofficial competition over who can land the flashiest plays."
+    },
+    {
+      "id": "COBROS-008",
+      "name": "Jonas Boyer",
+      "codename": "Sports Master",
+      "role_on_team": "Mobility Specialist / Improvised Weapons",
+      "relationship_status": "Unspecified",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "armor": {
+        "name": "Sports Master Gear",
+        "style": "Agile armor with kinetic braces and multi-tool sports-weapon systems",
+        "variants": []
+      },
+      "abilities": [
+        "Turns anything into a precision projectile",
+        "High agility, leaps, and rolls",
+        "Reads angles and bounces like a living physics engine"
+      ],
+      "personality": "Energetic, competitive, and fun to be around.",
+      "bio": [
+        "Jonas takes the spirit of pick-up games and welds it onto real battles, turning Cobros skirmishes into something fast, fluid, and weirdly fun."
+      ],
+      "relationships": {},
+      "connections": {
+        "teams": ["Cobros 314"],
+        "close_allies": ["Jaden Boyer", "Andrew DeDen"]
+      },
+      "notes": "Will absolutely call ‘trick shot’ before doing something insane."
+    },
+    {
+      "id": "COBROS-009",
+      "name": "Andrew DeDen",
+      "codename": "Loneman",
+      "role_on_team": "Scout / Long-Range Support",
+      "relationship_status": "Unspecified",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "armor": {
+        "name": "Loneman Armor",
+        "style": "Camouflage-capable armor tuned for solo ops and overwatch",
+        "variants": []
+      },
+      "abilities": [
+        "Long-range targeting and precision shots",
+        "Operating alone behind or ahead of lines",
+        "Quietly feeding intel back to the squad"
+      ],
+      "personality": "Reserved, observant, and comfortable on the edges of the group.",
+      "bio": [
+        "Andrew keeps a watchful eye over the others from a distance, making sure they don’t get blindsided."
+      ],
+      "relationships": {},
+      "connections": {
+        "teams": ["Cobros 314"],
+        "close_allies": ["Jonas Boyer"]
+      },
+      "notes": "Usually knows what’s coming five minutes before everyone else."
+    },
+    {
+      "id": "COBROS-010",
+      "name": "Jimmy Larson",
+      "codename": "Renaissance",
+      "role_on_team": "Versatile Support / Jack-of-All-Trades",
+      "relationship_status": "Unspecified",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "armor": {
+        "name": "Renaissance Suit",
+        "style": "Adaptive armor with modular tool slots and interchangeable plates",
+        "variants": []
+      },
+      "abilities": [
+        "Can plug into multiple combat and utility roles",
+        "Field repairs to armor and gear",
+        "Creative problem-solving under pressure"
+      ],
+      "personality": "Curious, inventive, and always tinkering.",
+      "bio": [
+        "Jimmy fills gaps.",
+        "If Cobros needs a medic, a mechanic, or a backup fighter, he steps into it."
+      ],
+      "relationships": {},
+      "connections": {
+        "teams": ["Cobros 314"],
+        "close_allies": ["Josh Larson", "Trent Cook"]
+      },
+      "notes": "The kind of guy who always has the one tool nobody thought to pack."
+    },
+    {
+      "id": "COBROS-011",
+      "name": "Johnathon Gray",
+      "codename": "Vocalnought",
+      "role_on_team": "Sonic Vanguard / Disruption",
+      "relationship_status": "Unspecified",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "armor": {
+        "name": "Vocalnought Armor",
+        "style": "Reinforced chest and throat modules, shock-absorbing helm",
+        "variants": []
+      },
+      "abilities": [
+        "Devastating powered shouts and sonic bursts",
+        "Breaking enemy lines and formations with sound",
+        "Drowning out enemy comms and panic-noise"
+      ],
+      "personality": "Loud in power, but not always in personality—he can be surprisingly mellow off the field.",
+      "bio": [
+        "Johnathon is Cobros’ sonic battering ram, clearing paths when physical barriers won’t budge."
+      ],
+      "relationships": {},
+      "connections": {
+        "teams": ["Cobros 314"],
+        "close_allies": ["Jonah Gray", "Vanner Johnson"]
+      },
+      "notes": "Carries ear protection for allies as part of his standard loadout."
+    },
+    {
+      "id": "COBROS-012",
+      "name": "Nick Larsen",
+      "codename": "Iron Guard",
+      "role_on_team": "Shield Specialist / Adult Leader",
+      "relationship_status": "Unspecified",
+      "status": "Killed in The Return",
+      "species": "Human",
+      "universe": "Prime",
+      "armor": {
+        "name": "Iron Guard Armor",
+        "style": "Shield-focused armor with large plating and deployable barriers",
+        "variants": []
+      },
+      "abilities": [
+        "Creates layered overlapping shields",
+        "Bodyguard-style protection for key allies",
+        "Holding chokepoints almost single-handedly"
+      ],
+      "personality": "Quietly kind, thinking of others first almost by reflex.",
+      "bio": [
+        "Another of the adult Cobros leaders, Nick died in The Return shielding youth from Sam’s corrupted assault.",
+        "His barriers bought them seconds that turned into survival."
+      ],
+      "relationships": {},
+      "connections": {
+        "teams": ["Cobros 314"],
+        "close_allies": ["Josh Larson", "Tanner Despain"]
+      },
+      "notes": "His name is often spoken in the same breath as ‘sacrifice’ when Cobros tell their story."
+    },
+    {
+      "id": "COBROS-013",
+      "name": "Vanner Johnson",
+      "codename": "Viral",
+      "role_on_team": "Tech Saboteur / Debuff Specialist",
+      "relationship_status": "Unspecified",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "armor": {
+        "name": "Viral Rig",
+        "style": "Sleek armor with hacking spikes and EMP nodes",
+        "variants": []
+      },
+      "abilities": [
+        "Disrupts enemy tech and armor systems",
+        "Spreads disabling ‘virus’ effects through linked devices",
+        "Softens targets before big pushes"
+      ],
+      "personality": "Clever, a bit snarky, and proud of every system he bricks.",
+      "bio": [
+        "Vanner makes sure Cobros never fights a fair fight—he stacks the odds in their favor by tearing the enemy’s tools apart."
+      ],
+      "relationships": {},
+      "connections": {
+        "teams": ["Cobros 314"],
+        "close_allies": ["Johnathon Gray", "Trent Cook"]
+      },
+      "notes": "He considers it a personal insult if enemy armor actually works properly."
+    },
+    {
+      "id": "COBROS-014",
+      "name": "Tommy Holbrook",
+      "codename": "Swift Shadow",
+      "role_on_team": "Stealth Runner / Hit-and-Fade Specialist",
+      "relationship_status": "Unspecified",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "armor": {
+        "name": "Swift Shadow Armor",
+        "style": "Dark, flexible scout armor with muted plating and speed-channel seams",
+        "variants": []
+      },
+      "abilities": [
+        "Silent high-speed movement",
+        "Shadow-based engagement and disengagement",
+        "Strikes from blind spots with precise timing"
+      ],
+      "personality": "Quiet, efficient, and focused — moves like a ghost when the mission demands it.",
+      "bio": [
+        "Tommy is Cobros’ infiltration edge, slipping through the battlefield unseen and delivering quick disabling hits."
+      ],
+      "relationships": {},
+      "connections": {
+        "teams": ["Cobros 314"],
+        "close_allies": ["Wesley Holbrook", "Andrew DeDen"]
+      },
+      "notes": "He's often mistaken for an illusion because of how little noise he makes."
+    },
+    {
+      "id": "COBROS-015",
+      "name": "Rick Holly",
+      "codename": "Valor Knight",
+      "role_on_team": "Courage Tank / Frontline Defender",
+      "relationship_status": "Unspecified",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "armor": {
+        "name": "Valor Knight Armor",
+        "style": "Knight-inspired armor with strong moral-themed sigils and defensive anchoring systems",
+        "variants": []
+      },
+      "abilities": [
+        "Generates morale-boosting auras",
+        "Holds defensive positions under heavy fire",
+        "Shields allies through sheer force of will"
+      ],
+      "personality": "Noble, dependable, and impossible to intimidate.",
+      "bio": [
+        "Rick embodies the idea of standing firm no matter the odds, giving Cobros a frontline they can always anchor to."
+      ],
+      "relationships": {},
+      "connections": {
+        "teams": ["Cobros 314"],
+        "close_allies": ["Trent Cook", "Micheal"]
+      },
+      "notes": "His armor design is intentionally reminiscent of medieval knights — by his own request."
+    },
+    {
+      "id": "COBROS-016",
+      "name": "Trent Cook",
+      "codename": "Captain",
+      "role_on_team": "Field Commander / Squad Coordinator",
+      "relationship_status": "Unspecified",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "armor": {
+        "name": "Captain’s Armor",
+        "style": "Command-grade armor with expanded HUD visibility and coordination channels",
+        "variants": []
+      },
+      "abilities": [
+        "On-the-fly battlefield command",
+        "Reading teammate strengths and reallocating them fast",
+        "Keeping Cobros formations stable under fire"
+      ],
+      "personality": "Calm, focused, and empathetic — the kind of leader people want to follow.",
+      "bio": [
+        "Trent rose as the natural commander after the adult leaders fell, helping the remaining Cobros reorganize after The Return."
+      ],
+      "relationships": {},
+      "connections": {
+        "teams": ["Cobros 314"],
+        "close_allies": ["Jimmy Larson", "Rick Holly", "Robbie Petersen"]
+      },
+      "notes": "Not the loudest, but absolutely the backbone of any Cobros formation."
+    },
+    {
+      "id": "COBROS-017",
+      "name": "Robbie Petersen",
+      "codename": "Quickstrike",
+      "role_on_team": "Assassin-Style Skirmisher",
+      "relationship_status": "Unspecified",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "armor": {
+        "name": "Quickstrike Armor",
+        "style": "Lightweight, aerodynamic armor for sudden melee dashes and flurries",
+        "variants": []
+      },
+      "abilities": [
+        "High-speed melee combos",
+        "Ambush-style takedowns",
+        "Precision hit confirmation on weakened targets"
+      ],
+      "personality": "Quick-talking, cocky, but surprisingly thoughtful when it counts.",
+      "bio": [
+        "Robbie specializes in finishing moves and rapid engagements — the guy who hits before enemies know it started."
+      ],
+      "relationships": {},
+      "connections": {
+        "teams": ["Cobros 314"],
+        "close_allies": ["Trent Cook", "Jaden Boyer"]
+      },
+      "notes": "Known for calling his shots before making them — and then landing them perfectly."
+    },
+    {
+      "id": "COBROS-018",
+      "name": "Alex Wood",
+      "codename": "Vortex Flash",
+      "role_on_team": "Speed / Storm Skirmisher / Adult Leader",
+      "relationship_status": "Unspecified",
+      "status": "Killed in The Return",
+      "species": "Human",
+      "universe": "Prime",
+      "armor": {
+        "name": "Vortex Flash Armor",
+        "style": "Whirlwind-themed armor with electric and wind-channel design",
+        "variants": []
+      },
+      "abilities": [
+        "High-speed vortex dashes that knock enemies off balance",
+        "Combining wind and motion to redirect projectiles",
+        "Creating brief safe corridors through chaotic battlefields"
+      ],
+      "personality": "Encouraging, high-energy, and loved by the youth he led.",
+      "bio": [
+        "Another of the Cobros adult leaders, Alex died in The Return trying to spin a path out of the storm Sam had become.",
+        "He pulled as many as he could out of the blast radius."
+      ],
+      "relationships": {},
+      "connections": {
+        "teams": ["Cobros 314"],
+        "close_allies": ["Tanner Despain", "Ethan Workman", "Josh Larson"]
+      },
+      "notes": "The idea of ‘running into the storm for others’ is now tied to his name."
+    },
+    {
+      "id": "COBROS-019",
+      "name": "Micheal",
+      "codename": "Guardian Sentinel",
+      "role_on_team": "Faith-Based Defender / Moral Anchor",
+      "relationship_status": "Unspecified",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Prime",
+      "armor": {
+        "name": "Guardian Sentinel Armor",
+        "style": "Knight-paladin hybrid armor with radiant shield emitters",
+        "variants": []
+      },
+      "abilities": [
+        "Projecting powerful shield barriers",
+        "Resisting corruption and fear-based attacks",
+        "Providing emotional stability to teammates"
+      ],
+      "personality": "Sincere, steady, and deeply protective.",
+      "bio": [
+        "Micheal is one of Cobros’ emotional pillars, grounded in faith and able to calm even the most shaken members."
+      ],
+      "relationships": {},
+      "connections": {
+        "teams": ["Cobros 314"],
+        "close_allies": ["Kyle", "Josh Larson"]
+      },
+      "notes": "Carries quiet spiritual weight in the squad — everyone feels safer when he’s around."
+    },
+    {
+      "id": "COBROS-020",
+      "name": "Kyle",
+      "codename": "Jugridge",
+      "role_on_team": "Heavy Terrain Tank / Adult Leader",
+      "relationship_status": "Unspecified",
+      "status": "Killed in The Return",
+      "species": "Human",
+      "universe": "Prime",
+      "armor": {
+        "name": "Jugridge Armor",
+        "style": "Mountain-themed fortress armor with high-ground stabilizers",
+        "variants": []
+      },
+      "abilities": [
+        "Holding elevated positions against overwhelming numbers",
+        "Absorbing tremendous damage",
+        "Creating choke points the enemy cannot break"
+      ],
+      "personality": "Calm, dependable, and immovable in every sense.",
+      "bio": [
+        "Kyle died holding a ridge alone so the younger Cobros could escape.",
+        "His stand is now legendary across the troop and Parliament records."
+      ],
+      "relationships": {},
+      "connections": {
+        "teams": ["Cobros 314"],
+        "close_allies": ["Micheal", "Trent Cook"]
+      },
+      "notes": "Remembered as the last line of defense — literally."
+    }
+  ]
+}

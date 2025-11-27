@@ -1,0 +1,499 @@
+{
+  "team": "Monke Alliance",
+  "universe": "Prime",
+  "faction_type": "Anti-Heroes",
+  "status": "Active",
+  "members": [
+  {
+    "team": "Monke Alliance",
+    "category": "Core",
+    "members": [
+      {
+        "id": "MONKE-CORE-001",
+        "name": "Zeke Workman",
+        "codename": "Enderstrike",
+        "role_on_team": "Field Leader / Teleport Assault",
+        "relationship_status": "Unspecified",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "armor": {
+          "name": "Enderstrike Armor",
+          "style": "Agile black-and-purple strike suit with Ender-inspired energy motifs and teleport nodes",
+          "variants": []
+        },
+        "abilities": [
+          "Short-range Ender-style teleportation bursts",
+          "Summoning shadowy duplicates as decoys or skirmishers",
+          "Adaptive combat tactics, reading and countering enemy patterns",
+          "Coordinating Monke Alliance attacks with precise timing"
+        ],
+        "relationships": {
+        "partner": "",
+        "faction_connections": [
+          "Thunder Born (strained)",
+          "Parliament of Justice"
+        ]
+      },
+        "personality": "Strategic, stubborn, loyal to his crew, always thinking three moves ahead while quietly carrying the weight of the Bludbruhs split.",
+        "lore_summary": "After Melcornia and the Bludbruhs Civil War-style split, Zeke rejected Sam’s darker path and led the nimble, rebellious Monke Alliance as a counter-force to Thunder Born, operating at the edges of Parliament control.",
+        "connections": {
+          "teams": ["Monke Alliance", "Former Bludbruhs"],
+          "rivals": ["Thunder Born"],
+          "close_allies": ["Ammon T", "Alex M", "Eli C", "Tom C", "Damon", "Elijah Potter", "Ethan T"]
+        },
+        "notes": "If there’s a truce between Monke and Thunder Born, Zeke is usually the one who negotiated it—and the first to break it if Sam crosses a line."
+      },
+            {
+        "id": "MONKE-CORE-007",
+        "name": "Elijah Potter",
+        "codename": "Chaos Wither",
+        "role_on_team": "Chaos Caster / Disruption",
+        "relationship_status": "Unspecified",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "armor": {
+          "name": "Chaos Wither Armor",
+          "style": "Jagged, dark armor with unstable energy veins and wither-styled sigils",
+          "variants": []
+        },
+        "abilities": [
+          "Unstable energy blasts that corrode or weaken structures",
+          "Localized entropy fields that break enemy formations",
+          "High-risk, high-reward attacks that alter the terrain",
+          "Channeling chaotic power while relying on Monke to keep him grounded"
+        ],
+        "relationships": {
+        "partner": "Married to Lauren",
+        "faction_connections": [
+          "Thunder Born (strained)",
+          "Parliament of Justice"
+        ]
+      },
+        "personality": "Intense, a bit volatile, but fiercely loyal when he decides someone is worth his chaos.",
+        "lore_summary": "Elijah walked the line between destructive power and control; in Monke Alliance, that raw chaos became a weapon pointed away from friends and straight at anyone threatening them.",
+        "connections": {
+          "teams": ["Monke Alliance"],
+          "rivals": ["Thunder Born"],
+          "close_allies": ["Damon", "Zeke Workman"]
+        },
+        "notes": "When Zeke calls for a ‘wither play,’ everyone knows things are about to get messy."
+      },
+            {
+        "id": "MONKE-CORE-005",
+        "name": "Tom C",
+        "codename": "Thunder Whisperer",
+        "role_on_team": "Sonic Support / Crowd Control",
+        "relationship_status": "Unspecified",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "armor": {
+          "name": "Thunder Whisperer Armor",
+          "style": "Resonant plating with audio-channel conduits, tuned for precise sonic pulses and shockwaves",
+          "variants": []
+        },
+        "abilities": [
+          "Sonic control—from barely audible tones to room-shaking blasts",
+          "Sound dampening fields to cloak allies or mute explosions",
+          "Harmonic pulses that can destabilize terrain or enemy formations",
+          "Subtle resonance waves that help calm teammates under stress"
+        ],
+        "relationships": {
+        "partner": "",
+        "faction_connections": [
+          "Thunder Born (strained)",
+          "Parliament of Justice"
+        ]
+      },
+        "personality": "Soft-spoken but powerful, Tom is the steady beat underneath Monke’s chaos.",
+        "lore_summary": "Tom’s sonic gifts grew out of Melcornia’s echoes, and when he followed Zeke into Monke Alliance, his sound waves became the rhythm that keeps the team in sync and opponents off-balance.",
+        "connections": {
+          "teams": ["Monke Alliance", "Former Bludbruhs"],
+          "rivals": ["Thunder Born"],
+          "close_allies": ["Ammon T", "Damon"]
+        },
+        "notes": "If a fight suddenly feels eerily quiet or overwhelmingly loud, that’s Tom reshaping the soundstage."
+      },
+      {
+        "id": "MONKE-CORE-002",
+        "name": "Ammon T",
+        "codename": "Quick Wit",
+        "role_on_team": "Support Specialist / Face of the Alliance",
+        "relationship_status": "Unspecified",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "armor": {
+          "name": "Quick Wit Armor",
+          "style": "Lightweight, expressive armor tuned for agility, non-lethal tools, and rapid response",
+          "variants": []
+        },
+        "abilities": [
+          "Enhanced reaction time and combat reflexes",
+          "De-escalation and diplomacy under fire",
+          "On-the-fly tactical improvisation",
+          "Specialized gear focused on non-lethal takedowns and crowd control"
+        ],
+        "relationships": {
+        "partner": "Married",
+        "faction_connections": [
+          "Thunder Born (strained)",
+          "Parliament of Justice"
+        ]
+      },
+        "personality": "Charming, empathetic, and fast on his feet—both in banter and in battle.",
+        "lore_summary": "Ammon became the emotional bridge of the Monke Alliance, using humor and heart to hold the squad together as they stepped away from Thunder Born and tried to define their own brand of heroism.",
+        "connections": {
+          "teams": ["Monke Alliance"],
+          "rivals": ["Thunder Born"],
+          "close_allies": ["Zeke Workman", "Tom C", "Ethan T"]
+        },
+        "notes": "Often the first to crack a joke and the first to notice when someone else is not okay."
+      },
+      {
+        "id": "MONKE-CORE-004",
+        "name": "Eli C",
+        "codename": "Shadow Hunter",
+        "role_on_team": "Stealth / Recon",
+        "relationship_status": "Unspecified",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "armor": {
+          "name": "Shadow Hunter Armor",
+          "style": "Dark, predator-like suit built for silent movement, tracking, and ambush strikes",
+          "variants": []
+        },
+        "abilities": [
+          "Near-silent movement and advanced tracking",
+          "Shadow-based camouflage and low-light sight",
+          "Marking and tailing high-value targets",
+          "Coordinating ambushes with Zeke’s teleportation plays"
+        ],
+        "relationships": {
+        "partner": "",
+        "faction_connections": [
+          "Thunder Born (strained)",
+          "Parliament of Justice"
+        ]
+      },
+        "personality": "Calm, focused, and a little spooky—Eli is the one you don’t see until he wants you to.",
+        "lore_summary": "Eli turned his knack for vanishing into Monke’s recon backbone, the first into hostile zones and the last one enemies notice before the team hits.",
+        "connections": {
+          "teams": ["Monke Alliance"],
+          "rivals": ["Thunder Born"],
+          "close_allies": ["Alex M", "Zeke Workman"]
+        },
+        "notes": "Shadow Hunter and Shadow (the dog) are an unspoken duo—if you see one, the other isn’t far."
+      },
+            {
+        "id": "MONKE-CORE-008",
+        "name": "Ethan T",
+        "codename": "Bolt Watcher",
+        "role_on_team": "Scout / Lightning Striker",
+        "relationship_status": "Unspecified",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "armor": {
+          "name": "Bolt Watcher Armor",
+          "style": "Blue-white lightning-trim armor built for speed, aerial slides, and high-voltage hits",
+          "variants": []
+        },
+        "abilities": [
+          "Lightning generation and precise bolt projection",
+          "Superhuman agility and rapid repositioning",
+          "Enhanced perception for spotting threats early",
+          "Channeling electricity into allies’ gear or Monke tech"
+        ],
+        "relationships": {
+        "partner": "",
+        "faction_connections": [
+          "Thunder Born (strained)",
+          "Parliament of Justice"
+        ]
+      },
+        "personality": "High-energy, vigilant, always scanning the horizon for the next storm.",
+        "lore_summary": "Struck by the fallout of Sam’s corruption, Ethan turned that spark into a disciplined, high-speed support role—now racing ahead of Monke Alliance to keep them one step ahead of disaster.",
+        "connections": {
+          "teams": ["Monke Alliance", "Former Bludbruhs"],
+          "rivals": ["Thunder Born"],
+          "close_allies": ["Zeke Workman", "Ammon T", "Tom C"]
+        },
+        "notes": "When the hair on your arms stands up, Ethan has already seen what’s coming."
+      },
+      {
+        "id": "MONKE-CORE-003",
+        "name": "Alex M",
+        "codename": "Swiftmind",
+        "role_on_team": "Analyst / Tactician",
+        "relationship_status": "Unspecified",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "armor": {
+          "name": "Swiftmind Armor",
+          "style": "Streamlined data-driven suit with HUD overlays and predictive targeting systems",
+          "variants": []
+        },
+        "abilities": [
+          "High-speed data analysis and battle forecasting",
+          "HUD-based threat mapping and AoE risk calculation",
+          "Coordinating flanks and ambushes for the team",
+          "On-field intel relay to Zeke and the others"
+        ],
+        "relationships": {
+        "partner": "",
+        "faction_connections": [
+          "Thunder Born (strained)",
+          "Parliament of Justice"
+        ]
+      },
+        "personality": "Quietly sharp, observant, and a bit sarcastic, Alex prefers to let results speak for him.",
+        "lore_summary": "When the Monke Alliance splintered off, Alex became their living battle-computer, turning chaos into patterns that Zeke could actually command and the others could trust.",
+        "connections": {
+          "teams": ["Monke Alliance"],
+          "rivals": ["Thunder Born"],
+          "close_allies": ["Zeke Workman", "Eli C", "Damon"]
+        },
+        "notes": "If Monke pulls off something that looks impossible, odds are Alex ran the numbers first."
+      },
+      {
+        "id": "MONKE-CORE-006",
+        "name": "Damon",
+        "codename": "Pixel Maverick",
+        "role_on_team": "Tech / Illusion Specialist",
+        "relationship_status": "Unspecified",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "armor": {
+          "name": "Pixel Maverick Armor",
+          "style": "Glitchy, hologram-lined armor with pixel-flare emitters and AR trick-projectors",
+          "variants": []
+        },
+        "abilities": [
+          "Hard-light and holographic projections for misdirection",
+          "‘Glitch-step’ movement that mimics teleportation visually",
+          "Digital overwatch and battlefield UI scrambling",
+          "Projecting false Monke positions or fake Thunder Born signatures"
+        ],
+        "relationships": {
+        "partner": "",
+        "faction_connections": [
+          "Thunder Born (strained)",
+          "Parliament of Justice"
+        ]
+      },
+        "personality": "Playful, chaotic, and creative in a way that drives enemies—and sometimes teammates—crazy.",
+        "lore_summary": "Damon turned Monke Alliance into a walking magic trick, using illusions and glitches to help them fight much bigger, heavier factions on their own terms.",
+        "connections": {
+          "teams": ["Monke Alliance"],
+          "rivals": ["Thunder Born"],
+          "close_allies": ["Alex M", "Tom C", "Elijah Potter"]
+        },
+        "notes": "Loves turning serious showdowns into visual chaos that only Monke can read correctly."
+      },
+      {
+        "id": "MONKE-LEG-001",
+        "name": "Lauren",
+        "codename": "Stealth Queen",
+        "role_on_team": "Stealth Operative / Social Intel",
+        "relationship_status": "Unspecified",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "armor": {
+          "name": "Stealth Queen Armor",
+          "style": "Gold-accented jungle-stealth suit blending elegance with ambush capability",
+          "variants": []
+        },
+        "abilities": [
+          "High-level infiltration and disguise work",
+          "Reading social dynamics and extracting intel quietly",
+          "Coordinating low-profile missions away from Parliament eyes"
+        ],
+        "relationships": {
+        "partner": "Married to Elijah",
+        "faction_connections": [
+          "Thunder Born (strained)",
+          "Parliament of Justice"
+        ]
+      },
+        "personality": "Calm, composed, and hard to rattle—she moves like she already knows how the scene ends.",
+        "lore_summary": "Lauren earned ‘Legend’ status by slipping in and out of situations that should have been impossible, bringing back intel Monke shouldn’t have survived without.",
+        "connections": {
+          "teams": ["Monke Alliance"],
+          "close_allies": ["Lizzie", "Rachel"]
+        },
+        "notes": "Her ops rarely make it into official records, which is exactly how she likes it."
+      },
+      {
+        "id": "MONKE-LEG-002",
+        "name": "Lizzie",
+        "codename": "Seriene",
+        "role_on_team": "Moral Center / Field Support",
+        "relationship_status": "Unspecified",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "armor": {
+          "name": "Seriene Suit",
+          "style": "Soft-lit armor with calm neon lines and subtle shielding fields",
+          "variants": []
+        },
+        "abilities": [
+          "Emotional grounding and de-escalation in the field",
+          "Low-key defensive barriers and personal shields",
+          "Keeping Monke from tipping too far into reckless chaos"
+        ],
+        "relationships": {
+        "partner": "",
+        "faction_connections": [
+          "Thunder Born (strained)",
+          "Parliament of Justice"
+        ]
+      },
+        "personality": "Gentle but firm, the one who reminds everyone why they fight in the first place.",
+        "lore_summary": "Lizzie’s presence turns Monke missions from ‘barely-held-together chaos’ into something with a heart and a direction, making her a quiet legend in the squad.",
+        "connections": {
+          "teams": ["Monke Alliance"],
+          "close_allies": ["Lauren", "Rachel", "Ammon T"]
+        },
+        "notes": "If she tells Zeke a line is too far, he actually listens."
+      },
+      {
+        "id": "MONKE-LEG-003",
+        "name": "Rachel",
+        "codename": "Neon",
+        "role_on_team": "Light Runner / Morale Boost",
+        "relationship_status": "Unspecified",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "armor": {
+          "name": "Neon Armor",
+          "style": "Bright, glowing suit with speed lines and festival-energy color pops",
+          "variants": []
+        },
+        "abilities": [
+          "Light-trail movement that confuses enemies",
+          "Blinding flares and visual disruption",
+          "High morale impact—lifting team energy in long campaigns"
+        ],
+        "relationships": {
+        "partner": "",
+        "faction_connections": [
+          "Thunder Born (strained)",
+          "Parliament of Justice"
+        ]
+      },
+        "personality": "Bright, energetic, and unapologetically loud—in color and in spirit.",
+        "lore_summary": "Rachel turned light itself into a weapon and a celebration, earning a ‘Legend’ slot by keeping Monke moving when everything else felt dark.",
+        "connections": {
+          "teams": ["Monke Alliance"],
+          "close_allies": ["Lauren", "Lizzie", "Damon"]
+        },
+        "notes": "Her arrival usually means the battlefield is about to look like an EDM concert with a body count."
+      },
+      {
+        "id": "MONKE-LEG-004",
+        "name": "Keith",
+        "codename": "Operative",
+        "role_on_team": "Logistics / Ground Shield",
+        "relationship_status": "Unspecified",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "armor": {
+          "name": "Operative Armor",
+          "style": "Heavy-duty urban ops armor focused on durability and tactical gear",
+          "variants": []
+        },
+        "abilities": [
+          "Coordinating gear, drops, and extraction routes",
+          "Holding the line when everyone else needs to fall back",
+          "Acting as Monke’s quiet shield in worst-case scenarios"
+        ],
+        "relationships": {
+        "partner": "Married to Sandra",
+        "faction_connections": [
+          "Thunder Born (strained)",
+          "Parliament of Justice"
+        ]
+      },
+        "personality": "Low-key, practical, and unshakably dependable.",
+        "lore_summary": "Keith doesn’t chase spotlight or codex entries—he just shows up where Monke is about to break and refuses to let the line fall.",
+        "connections": {
+          "teams": ["Monke Alliance"],
+          "close_allies": ["Zeke Workman", "Tom C"]
+        },
+        "notes": "When plans collapse, Zeke’s first question is usually, ‘Where’s Keith?’"
+      },
+      {
+        "id": "MONKE-LEG-005",
+        "name": "Sandra",
+        "codename": "Informant",
+        "role_on_team": "Intel / Network Runner",
+        "relationship_status": "Unspecified",
+        "status": "Active",
+        "species": "Human",
+        "universe": "Prime",
+        "armor": {
+          "name": "Informant Gear",
+          "style": "Low-profile urban rig designed to blend in and record everything",
+          "variants": []
+        },
+        "abilities": [
+          "Maintaining a web of contacts beyond Parliament’s reach",
+          "Information trading, rumor filtering, and tip verification",
+          "Feeding Monke just enough intel to stay ahead without burning sources"
+        ],
+        "relationships": {
+        "partner": "Married to Keith",
+        "faction_connections": [
+          "Thunder Born (strained)",
+          "Parliament of Justice"
+        ]
+      },
+        "personality": "Careful, observant, and guarded—trust is earned on her timeline.",
+        "lore_summary": "Sandra’s intel built the routes Monke used to survive post-Bludbruhs, making her a legend to anyone who’s ever relied on a safe alley or a quiet contact in Zion.",
+        "connections": {
+          "teams": ["Monke Alliance"],
+          "close_allies": ["Keith", "Lauren"]
+        },
+        "notes": "If Sandra doesn’t want to be found, not even Legion or Thunder Born will spot her."
+      },
+      {
+        "id": "MONKE-LEG-006",
+        "name": "Shadow",
+        "codename": "Gray Hound",
+        "role_on_team": "Mascot / Tracker",
+        "relationship_status": "Good Boy",
+        "status": "Active",
+        "species": "Canine",
+        "universe": "Prime",
+        "armor": {
+          "name": "Gray Hound Harness",
+          "style": "Light combat harness with trackers and small camera mounts",
+          "variants": []
+        },
+        "abilities": [
+          "Tracking scents across sectors and rubble",
+          "Sensing danger and warning the team",
+          "Keeping morale up just by existing"
+        ],
+        "personality": "Loyal, brave, and sharper than half the people who underestimate him.",
+        "lore_summary": "Originally Sam’s dog, Shadow stayed tied to the wider circle through Monke and Thunder Born both, becoming a living reminder of who they all used to be—and who they might still be again.",
+        "connections": {
+          "teams": ["Monke Alliance", "Thunder Born (historical)"],
+          "close_allies": ["Eli C", "Zeke Workman", "Sam"]
+        },
+        "notes": "Everyone agrees on one ceasefire rule: you don’t fire near Shadow."
+      }
+    ]
+  }
+]
+}

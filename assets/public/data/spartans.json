@@ -4,91 +4,101 @@
   "faction_type": "Elite Commando Unit",
   "status": "Active",
   "members": [
-  {
-    "id": "SPARTAN-001",
-    "name": "Cam Paul",
-    "codename": "Court Chief",
-    "team": "Advanced Spartan Corp",
-    "rank": "Squad Leader / Mobility Vanguard",
-    "status": "Active",
-    "species": "Human",
-    "universe": "Justiceverse Prime",
-    "suit": {
-      "name": "Court Chief Armor",
-      "color": "Pink armor with Halo influence",
-      "variants": ["Court Chief Mk I", "Court Chief Mk II"]
+    {
+      "id": "SPARTAN-001",
+      "name": "Cam Paul",
+      "codename": "Court Chief",
+      "team": "Advanced Spartan Corp",
+      "rank": "Squad Leader / Mobility Vanguard",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Justiceverse Prime",
+      "suit": {
+        "name": "Court Chief Armor",
+        "color": "Pink armor with Halo influence",
+        "variants": ["Court Chief Mk I", "Court Chief Mk II"]
+      },
+      "abilities": [
+        "Enhanced jumping and aerial maneuvering",
+        "Energy slam shockwaves",
+        "Tactical battlefield command",
+        "High-speed momentum bursts"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "squadmates": ["Chemoshock", "Huntsman", "Night Hawk"],
+        "faction_connections": ["Titans", "Eclipse", "Parliament of Justice"]
+      },
+      "bio": [
+        "Cam Paul—codename Court Chief—is the agile, high-energy leader of the Advanced Spartan Corp.",
+        "His pink Spartan armor is inspired by Halo with personal flair, emphasizing mobility, team synergy, and explosive aerial strikes.",
+        "Cam's leadership holds the trio together, directing Chemoshock's constructs and Huntsman's precision shots."
+      ],
+      "notes": "Shortest only compared to Ben; height equal to Alex."
     },
-    "abilities": [
-      "Enhanced jumping and aerial maneuvering",
-      "Energy slam shockwaves",
-      "Tactical battlefield command",
-      "High-speed momentum bursts"
-    ],
-    "relationships": {
-        "Partner": "Single",
-      "squadmates": ["Chemoshock", "Huntsman", "Night Hawk"],
-      "faction_connections": ["Titans", "Eclipse", "Parliament of Justice"]
+    {
+      "id": "SPARTAN-002",
+      "name": "Ben Preston",
+      "codename": "Chemoshock",
+      "team": "Advanced Spartan Corp",
+      "rank": "Energy-Construct Engineer",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Justiceverse Prime",
+      "suit": {
+        "name": "Chemoshock Armor",
+        "color": "Green armor with nuclear/scientific accents",
+        "variants": ["Chemoshock Mk I", "Chemoshock Mk II"]
+      },
+      "abilities": [
+        "Solid energy construct creation",
+        "Chemical manipulation of construct properties",
+        "Energy pulse shockwaves",
+        "Tactical defensive shaping"
+      ],
+      "relationships": {
+        "partner": "Single",
+        "squadmates": ["Court Chief", "Huntsman", "Night Hawk"],
+        "faction_connections": ["Titans", "Eclipse", "Olympians"]
+      },
+      "bio": [
+        "Ben Preston—codename Chemoshock—is the intellect and engineering backbone of the Spartan trio.",
+        "His neon green armor blends Halo tech with scientific, chemical inspirations.",
+        "He shapes solid-energy constructs into shields, weapons, tools, and environmental structures that support his squad."
+      ],
+      "notes": "The tallest of the Spartan three."
     },
-    "bio": "Cam Paul—codename Court Chief—is the agile, high-energy leader of the Advanced Spartan Corp. His pink Spartan armor is inspired by Halo with personal flair, emphasizing mobility, team synergy, and explosive aerial strikes. Cam's leadership holds the trio together, directing Chemoshock's constructs and Huntsman's precision shots.",
-    "notes": "Shortest only compared to Ben; height equal to Alex."
-  },
-
-  {
-    "id": "SPARTAN-002",
-    "name": "Ben Preston",
-    "codename": "Chemoshock",
-    "team": "Advanced Spartan Corp",
-    "rank": "Energy-Construct Engineer",
-    "status": "Active",
-    "species": "Human",
-    "universe": "Justiceverse Prime",
-    "suit": {
-      "name": "Chemoshock Armor",
-      "color": "Green armor with nuclear/scientific accents",
-      "variants": ["Chemoshock Mk I", "Chemoshock Mk II"]
-    },
-    "abilities": [
-      "Solid energy construct creation",
-      "Chemical manipulation of construct properties",
-      "Energy pulse shockwaves",
-      "Tactical defensive shaping"
-    ],
-    "relationships": {
-        "Partner": "Single",
-      "squadmates": ["Chemoshock", "Huntsman", "Night Hawk"],
-      "faction_connections": ["Titans", "Eclipse", "Olympians"]
-    },
-    "bio": "Ben Preston—codename Chemoshock—is the intellect and engineering backbone of the Spartan trio. His neon green armor blends Halo tech with scientific, chemical inspirations. He shapes solid-energy constructs into shields, weapons, tools, and environmental structures that support his squad.",
-    "notes": "The tallest of the Spartan three."
-  },
-
-  {
-    "id": "SPARTAN-003",
-    "name": "Alex Croft",
-    "codename": "Huntsman",
-    "team": "Advanced Spartan Corp",
-    "rank": "Precision Marksman / Recon Hunter",
-    "status": "Active",
-    "species": "Human",
-    "universe": "Justiceverse Prime",
-    "suit": {
-      "name": "Huntsman Armor",
-      "color": "Purple Halo-inspired armor with Monster Hunter influence",
-      "variants": ["Huntsman Mk I", "Huntsman Mk II"]
-    },
-    "abilities": [
-      "Energy arrow projection",
-      "Sharpshooter accuracy",
-      "Heightened tracking instincts",
-      "Mechanical intuition for gear repair"
-    ],
-    "relationships": {
-        "Partner": "Married to Kinnley",
-      "squadmates": ["Chemoshock", "Huntsman", "Night Hawk"],
-      "faction_connections": ["Titans", "Olympians"]
-    },
-    "bio": "Alex Croft—codename Huntsman—is the silent, lethal precision shooter of the Spartan team. His purple Spartan armor carries Monster Hunter and Halo influences, making him a perfect long-range specialist. His hunting skills and mechanical instincts make him deadly and adaptable.",
-    "notes": "Same height as Cam; taller only than Night Hawk."
-  }
-]
+    {
+      "id": "SPARTAN-003",
+      "name": "Alex Croft",
+      "codename": "Huntsman",
+      "team": "Advanced Spartan Corp",
+      "rank": "Precision Marksman / Recon Hunter",
+      "status": "Active",
+      "species": "Human",
+      "universe": "Justiceverse Prime",
+      "suit": {
+        "name": "Huntsman Armor",
+        "color": "Purple Halo-inspired armor with Monster Hunter influence",
+        "variants": ["Huntsman Mk I", "Huntsman Mk II"]
+      },
+      "abilities": [
+        "Energy arrow projection",
+        "Sharpshooter accuracy",
+        "Heightened tracking instincts",
+        "Mechanical intuition for gear repair"
+      ],
+      "relationships": {
+        "partner": "Married to Kinnley",
+        "squadmates": ["Court Chief", "Chemoshock", "Night Hawk"],
+        "faction_connections": ["Titans", "Olympians"]
+      },
+      "bio": [
+        "Alex Croft—codename Huntsman—is the silent, lethal precision shooter of the Spartan team.",
+        "His purple Spartan armor carries Monster Hunter and Halo influences, making him a perfect long-range specialist.",
+        "His hunting skills and mechanical instincts make him deadly and adaptable."
+      ],
+      "notes": "Same height as Cam; taller only than Night Hawk."
+    }
+  ]
 }
