@@ -76,8 +76,8 @@ export const forgeMembers = [
     codename: 'DPR',
     // description: 'Works twice as hard as anyone, complains half as much. A rare soul who makes hard work look beautiful.',
     images: [
-    //   { uri: require('../../assets/Armor/Shailey.jpg'), name: 'Fire & Grace', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Shailey', clickable: true },
+      { uri: require('../../assets/Armor/Shailey.jpg'), name: 'Fire & Grace', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Shailey', clickable: true },
     ],
   },
     {
@@ -85,8 +85,8 @@ export const forgeMembers = [
     codename: 'Numearal',
     // description: 'Calm under pressure, precise in her craft. She has a way with metal that’s almost magical.',
     images: [
-    //   { uri: require('../../assets/Armor/Kaitlyn.jpg'), name: 'Steel Whisperer', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Kaitlyn', clickable: true },
+      { uri: require('../../assets/Armor/Kaitlyn.jpg'), name: 'Steel Whisperer', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Kaitlyn', clickable: true },
     ],
   },
     {
@@ -94,8 +94,8 @@ export const forgeMembers = [
     codename: 'Count Slayer',
     // description: 'Strong, determined, and unyielding. A force of nature in the forge and beyond.',
     images: [
-    //   { uri: require('../../assets/Armor/Emma.jpg'), name: 'Iron Maiden', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Emma', clickable: true },
+      { uri: require('../../assets/Armor/EmmaCP.jpg'), name: 'Iron Maiden', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Emma', clickable: true },
     ],
     },
     {
@@ -103,8 +103,8 @@ export const forgeMembers = [
     codename: 'DPR',
     // description: 'Her energy lights up the forge. Quick with a joke and quicker with her work.',
     images: [
-    //   { uri: require('../../assets/Armor/Mila.jpg'), name: 'Blazing Star', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Mila', clickable: true },
+      { uri: require('../../assets/Armor/Mila.jpg'), name: 'Blazing Star', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Mila', clickable: true },
     ],
     },
     {   
@@ -112,8 +112,8 @@ export const forgeMembers = [
     codename: 'Pay Roll',
     // description: 'Steadfast and reliable. The rock of the forge, always there when you need her.',
     images: [
-    //   { uri: require('../../assets/Armor/Karrie.jpg'), name: 'The Anvil', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Karrie', clickable: true },
+      { uri: require('../../assets/Armor/Karrie.jpg'), name: 'The Anvil', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Karrie', clickable: true },
     ],
     },
     {
@@ -121,8 +121,8 @@ export const forgeMembers = [
     codename: 'Dutchess',
     // description: 'Sleek, agile, and deadly with a welding torch. She moves through the forge like a dancer.',
     images: [
-    //   { uri: require('../../assets/Armor/Kazia.jpg'), name: 'Steel Serpent', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Kazia', clickable: true },
+      { uri: require('../../assets/Armor/Kazia.jpg'), name: 'Steel Serpent', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Kazia', clickable: true },
     ],
     },
     {
