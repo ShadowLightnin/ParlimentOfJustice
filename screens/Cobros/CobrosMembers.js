@@ -4,8 +4,8 @@ export const cobrosMembers = [
     codename: 'Titanium',
     screen: '',
     images: [
-      { uri: require('../../assets/Armor/TannerD.jpg'), name: 'Tanner Primary', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Tanner Placeholder', clickable: true },
+      { uri: require('../../assets/Armor/TannerD.jpg'), name: '', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: '', clickable: true },
     ],
   },
   {
@@ -13,8 +13,8 @@ export const cobrosMembers = [
     codename: 'Schriker',
     screen: '',
     images: [
-      { uri: require('../../assets/Armor/EthanW.jpg'), name: 'Ethan Primary', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Ethan Placeholder', clickable: true },
+      { uri: require('../../assets/Armor/EthanW.jpg'), name: '', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: '', clickable: true },
     ],
   },
   {
@@ -22,8 +22,8 @@ export const cobrosMembers = [
     codename: 'Warlock',
     screen: '',
     images: [
-      { uri: require('../../assets/Armor/WesleyH.jpg'), name: 'Wesley Primary', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Wesley Placeholder', clickable: true },
+      { uri: require('../../assets/Armor/WesleyH.jpg'), name: '', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: '', clickable: true },
     ],
   },
   {
@@ -31,8 +31,8 @@ export const cobrosMembers = [
     codename: 'Juggernaut',
     screen: '',
     images: [
-      { uri: require('../../assets/Armor/JoshL.jpg'), name: 'Josh Primary', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Josh Placeholder', clickable: true },
+      { uri: require('../../assets/Armor/JoshL.jpg'), name: '', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: '', clickable: true },
     ],
   },
   {
@@ -40,8 +40,8 @@ export const cobrosMembers = [
     codename: 'Echo Song',
     screen: '',
     images: [
-      { uri: require('../../assets/Armor/Jonah.jpg'), name: 'Jonah Primary', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Jonah Placeholder', clickable: true },
+      { uri: require('../../assets/Armor/Jonah.jpg'), name: '', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: '', clickable: true },
     ],
   },
   {
@@ -49,8 +49,8 @@ export const cobrosMembers = [
     codename: 'Caster',
     screen: '',
     images: [
-      { uri: require('../../assets/Armor/JosephS_cleanup.jpg'), name: 'Joseph Primary', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Joseph Placeholder', clickable: true },
+      { uri: require('../../assets/Armor/JosephS_cleanup.jpg'), name: '', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: '', clickable: true },
     ],
   },
   {
@@ -58,9 +58,9 @@ export const cobrosMembers = [
     codename: 'Aether Blaze',
     screen: '',
     images: [
-      { uri: require('../../assets/Armor/Jaden3.jpg'), name: 'Jaden Primary', clickable: true },
-      { uri: require('../../assets/Armor/Jaden2.jpg'), name: 'Jaden', clickable: true },
-      { uri: require('../../assets/Armor/Jaden.jpg'), name: 'Socialation', clickable: true },
+      { uri: require('../../assets/Armor/Jaden3.jpg'), name: '', clickable: true },
+      { uri: require('../../assets/Armor/Jaden2.jpg'), name: '', clickable: true },
+      { uri: require('../../assets/Armor/Jaden.jpg'), name: '', clickable: true },
     ],
   },
   {
@@ -68,9 +68,9 @@ export const cobrosMembers = [
     codename: 'Sports Master',
     screen: '',
     images: [
-      { uri: require('../../assets/Armor/Jonas3.jpg'), name: 'Jonas Primary', clickable: true },
-      { uri: require('../../assets/Armor/Jonas2.jpg'), name: 'Jonas', clickable: true },
-      { uri: require('../../assets/Armor/Jonas.jpg'), name: 'Spiltz', clickable: true },
+      { uri: require('../../assets/Armor/Jonas3.jpg'), name: '', clickable: true },
+      { uri: require('../../assets/Armor/Jonas2.jpg'), name: '', clickable: true },
+      { uri: require('../../assets/Armor/Jonas.jpg'), name: '', clickable: true },
     ],
   },
   {
@@ -78,8 +78,8 @@ export const cobrosMembers = [
     codename: 'Loneman',
     screen: '',
     images: [
-      { uri: require('../../assets/Armor/AndrewD.jpg'), name: 'Andrew Primary', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Andrew Placeholder', clickable: true },
+      { uri: require('../../assets/Armor/AndrewD.jpg'), name: '', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: '', clickable: true },
     ],
   },
   {
@@ -87,8 +87,8 @@ export const cobrosMembers = [
     codename: 'Renaissance',
     screen: '',
     images: [
-      { uri: require('../../assets/Armor/Jimmy.jpg'), name: 'Jimmy Primary', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Jimmy Placeholder', clickable: true },
+      { uri: require('../../assets/Armor/Jimmy.jpg'), name: '', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: '', clickable: true },
     ],
   },
   {
@@ -96,8 +96,8 @@ export const cobrosMembers = [
     codename: 'Vocalnought',
     screen: '',
     images: [
-      { uri: require('../../assets/Armor/Johnathon3.jpg'), name: 'Johnathon Primary', clickable: true },
-      { uri: require('../../assets/Armor/Johnathon_cleanup.jpg'), name: 'Voice Fry', clickable: true },
+      { uri: require('../../assets/Armor/Johnathon3.jpg'), name: '', clickable: true },
+      { uri: require('../../assets/Armor/Johnathon_cleanup.jpg'), name: '', clickable: true },
     ],
   },
   {
@@ -105,8 +105,8 @@ export const cobrosMembers = [
     codename: 'Iron Guard',
     screen: '',
     images: [
-      { uri: require('../../assets/Armor/Nick2.jpg'), name: 'Nick Primary', clickable: true },
-      { uri: require('../../assets/Armor/Nick.jpg'), name: 'Nick', clickable: true },
+      { uri: require('../../assets/Armor/Nick2.jpg'), name: '', clickable: true },
+      { uri: require('../../assets/Armor/Nick.jpg'), name: '', clickable: true },
     ],
   },
   {
@@ -114,9 +114,9 @@ export const cobrosMembers = [
     codename: 'Viral',
     screen: '',
     images: [
-      { uri: require('../../assets/Armor/Vanner.jpg'), name: 'Vanner Primary', clickable: true },
-      { uri: require('../../assets/Armor/Vanner2.jpg'), name: 'Vanner', clickable: true },
-      { uri: require('../../assets/Armor/Vanner3.jpg'), name: 'Meme Master', clickable: true },
+      { uri: require('../../assets/Armor/Vanner.jpg'), name: '', clickable: true },
+      { uri: require('../../assets/Armor/Vanner2.jpg'), name: '', clickable: true },
+      { uri: require('../../assets/Armor/Vanner3.jpg'), name: '', clickable: true },
     ],
   },
   {
@@ -124,8 +124,8 @@ export const cobrosMembers = [
     codename: 'Swift Shadow',
     screen: '',
     images: [
-      { uri: require('../../assets/Armor/TommyH.jpg'), name: 'Tommy Primary', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Tommy Placeholder', clickable: true },
+      { uri: require('../../assets/Armor/TommyH.jpg'), name: '', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: '', clickable: true },
     ],
   },
   {
@@ -133,8 +133,8 @@ export const cobrosMembers = [
     codename: 'Vortex Flash',
     screen: '',
     images: [
-      { uri: require('../../assets/Armor/AlexW.jpg'), name: 'Alex Primary', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Alex Placeholder', clickable: true },
+      { uri: require('../../assets/Armor/AlexW.jpg'), name: '', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: '', clickable: true },
     ],
   },
   {
@@ -142,8 +142,8 @@ export const cobrosMembers = [
     codename: 'Valor Knight',
     screen: '',
     images: [
-      { uri: require('../../assets/Armor/Rick.jpg'), name: 'Rick Primary', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Rick Placeholder', clickable: true },
+      { uri: require('../../assets/Armor/Rick.jpg'), name: '', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: '', clickable: true },
     ],
   },
   {
@@ -151,8 +151,8 @@ export const cobrosMembers = [
     codename: 'Captain',
     screen: '',
     images: [
-      { uri: require('../../assets/Armor/Trent.jpg'), name: 'Trent Primary', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Trent Placeholder', clickable: true },
+      { uri: require('../../assets/Armor/Trent.jpg'), name: '', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: '', clickable: true },
     ],
   },
   {
@@ -160,8 +160,8 @@ export const cobrosMembers = [
     codename: 'Quickstike',
     screen: '',
     images: [
-      { uri: require('../../assets/Armor/Robbie.jpg'), name: 'Robbie Primary', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Robbie Placeholder', clickable: true },
+      { uri: require('../../assets/Armor/Robbie.jpg'), name: '', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: '', clickable: true },
     ],
   },
   {
@@ -169,8 +169,8 @@ export const cobrosMembers = [
     codename: 'Guardian Sentinel',
     screen: '',
     images: [
-      { uri: require('../../assets/Armor/Micheal.jpg'), name: 'Micheal Primary', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Micheal Placeholder', clickable: true },
+      { uri: require('../../assets/Armor/Micheal.jpg'), name: '', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: '', clickable: true },
     ],
   },
   {
@@ -178,8 +178,8 @@ export const cobrosMembers = [
     codename: 'Jugridge',
     screen: '',
     images: [
-      { uri: require('../../assets/Armor/KyleP.jpg'), name: 'Kyle Primary', clickable: true },
-      { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Kyle Placeholder', clickable: true },
+      { uri: require('../../assets/Armor/KyleP.jpg'), name: '', clickable: true },
+      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: '', clickable: true },
     ],
   },
 ];

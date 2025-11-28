@@ -166,15 +166,21 @@ const LegionairesCharacterDetail = () => {
     );
   };
 
-  const images = member?.images?.length
-    ? member.images.map((img, idx) => ({
-        uri: img.uri,
-        name: img.name || `Image ${idx + 1}`,
-      }))
-    : [{
-        uri: member?.image || require('../../assets/Armor/PlaceHolder.jpg'),
-        name: member?.name || 'Default Image',
-      }];
+const copyrightText = member?.codename 
+  ? `© ${member.codename}; William Cummings`
+  : '© William Cummings';
+
+const images = member?.images?.length
+  ? member.images.map((img) => ({
+      uri: img.uri,
+      name: copyrightText,
+      clickable: img.clickable ?? true,
+    }))
+  : [{
+      uri: member?.image || require('../../assets/Armor/PlaceHolder.jpg'),
+      name: copyrightText,
+      clickable: true,
+    }];
 
   // Debug log to inspect images
   console.log('Member:', member?.name, 'Images:', images);
