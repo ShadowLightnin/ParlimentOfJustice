@@ -83,6 +83,7 @@ export const HomeScreen = () => {
   const navigation = useNavigation();
   const authCtx = useContext(AuthContext);
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const titlePulse = useRef(new Animated.Value(0)).current;   // <- title pulsing anim
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [universeModalVisible, setUniverseModalVisible] = useState(false);
@@ -90,6 +91,26 @@ export const HomeScreen = () => {
   const [isYourUniverse, setIsYourUniverse] = useState(null);
 
   const numColumns = isDesktop ? 3 : 2;
+
+  // Title pulse: only for "Parliament of Justice / Power" header
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(titlePulse, {
+          toValue: 1,
+          duration: 1800,
+          useNativeDriver: true, // opacity + scale only
+        }),
+        Animated.timing(titlePulse, {
+          toValue: 0,
+          duration: 1800,
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [titlePulse]);
 
   // Load universe preference on mount, default to Prime (Justice)
   useEffect(() => {
@@ -115,7 +136,7 @@ export const HomeScreen = () => {
       }).start();
 
       const userRules = mirrorRules[userEmail] || {};
-      Object.entries(userRules).forEach(([sourceFaction, { targetCollection }]) => {
+      const unsubscribes = Object.entries(userRules).map(([sourceFaction, { targetCollection }]) => {
         const sourceRef = collection(db, `${userEmail.split('@')[0]}_${sourceFaction}`);
         const unsubscribe = onSnapshot(sourceRef, (snap) => {
           snap.docChanges().forEach(change => {
@@ -130,8 +151,12 @@ export const HomeScreen = () => {
             }
           });
         });
-        return () => unsubscribe();
+        return unsubscribe;
       });
+
+      return () => {
+        unsubscribes.forEach(unsub => unsub && unsub());
+      };
     }
   }, [fadeAnim, isYourUniverse, userEmail]);
 
@@ -232,7 +257,14 @@ export const HomeScreen = () => {
 
   const renderFaction = ({ item }) => (
     <Animated.View style={{ opacity: fadeAnim }}>
-      <Text style={[styles.factionTitle, { textShadowColor: isYourUniverse ? '#00b3ff' : '#800080', textShadowRadius: 10 }]}>{item.name || ''}</Text>
+      <Text
+        style={[
+          styles.factionTitle,
+          { textShadowColor: isYourUniverse ? '#00b3ff' : '#800080', textShadowRadius: 10 }
+        ]}
+      >
+        {item.name || ''}
+      </Text>
       <TouchableOpacity
         style={[
           styles.card,
@@ -313,9 +345,29 @@ export const HomeScreen = () => {
             <Text style={styles.logoutText}>🚪</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={toggleUniverse} style={styles.headerButton}>
-            <Text style={[styles.header, { textShadowColor: isYourUniverse ? '#00b3ff' : '#da1cda', textShadowRadius: 10 }]}>
+            <Animated.Text
+              style={[
+                styles.header,
+                {
+                  textShadowColor: isYourUniverse ? '#00b3ff' : '#da1cda',
+                  textShadowRadius: 10,
+                  opacity: titlePulse.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [1, 0.7], // gentle fade
+                  }),
+                  transform: [
+                    {
+                      scale: titlePulse.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [1, 1.015], // tiny, professional scale
+                      }),
+                    },
+                  ],
+                },
+              ]}
+            >
               {isYourUniverse ? 'The Parliament of Justice' : 'Shadows of Montrose: \nThe Parliament of Power'}
-            </Text>
+            </Animated.Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
             <Text style={styles.chatText}>🗨️</Text>

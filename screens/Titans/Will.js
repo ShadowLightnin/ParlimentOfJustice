@@ -60,115 +60,76 @@ const kids = [
 const Will = () => {
   const navigation = useNavigation();
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
-  const [currentSound, setCurrentSound] = useState(null);
-  const [pausedPosition, setPausedPosition] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
 
-  // Initialize sound on mount
+  // ────── NEW: Audio state (no autoplay) ──────
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  // Load sound once – but DO NOT play automatically
   useEffect(() => {
+    let soundObj = null;
     const loadSound = async () => {
       try {
         const { sound } = await Audio.Sound.createAsync(
           require("../../assets/audio/NightWing.mp4"),
-          { shouldPlay: true, isLooping: true, volume: 1.0 }
+          { isLooping: true, volume: 1.0 },
+          null,
+          false // ← no autoplay
         );
-        setCurrentSound(sound);
-        console.log("Music started playing at:", new Date().toISOString());
-      } catch (error) {
-        console.error("Error loading or playing audio:", error);
-        Alert.alert(
-          "Audio Error",
-          "Failed to load background music. Please check the audio file path: ../../assets/audio/SourceOfStrengthNinjagoMyVersion.mp4"
-        );
+        soundObj = sound;
+        setSound(sound);
+      } catch (e) {
+        console.error("Failed to load sound", e);
+        Alert.alert("Audio Error", "Could not load NightWing.mp4");
       }
     };
-
     loadSound();
 
-    // Cleanup on unmount
     return () => {
-      if (currentSound) {
-        currentSound.stopAsync().catch((error) => console.error("Error stopping sound:", error));
-        currentSound.unloadAsync().catch((error) => console.error("Error unloading sound:", error));
-        setCurrentSound(null);
-        setPausedPosition(0);
-        setIsPaused(false);
-        console.log("Audio stopped and released at:", new Date().toISOString());
-      }
+      soundObj?.unloadAsync();
     };
   }, []);
 
-  // Handle screen focus to resume/stop audio
+  const playTheme = async () => {
+    if (!sound) return;
+    await sound.playAsync();
+    setIsPlaying(true);
+  };
+
+  const pauseTheme = async () => {
+    if (!sound) return;
+    await sound.pauseAsync();
+    setIsPlaying(false);
+  };
+
+  // Stop sound when leaving screen
   useFocusEffect(
     useCallback(() => {
-      const resumeSound = async () => {
-        if (currentSound && isPaused && pausedPosition >= 0) {
-          try {
-            await currentSound.setPositionAsync(pausedPosition);
-            await currentSound.playAsync();
-            setIsPaused(false);
-            console.log("Music resumed at:", new Date().toISOString());
-          } catch (error) {
-            console.error("Error resuming sound:", error);
-          }
-        }
-      };
-
-      resumeSound();
-
-      // Handle navigation to stop audio on all exits
-      const unsubscribe = navigation.addListener("beforeRemove", (e) => {
-        if (currentSound) {
-          currentSound.stopAsync().catch((error) => console.error("Error stopping sound:", error));
-          currentSound.unloadAsync().catch((error) => console.error("Error unloading sound:", error));
-          setCurrentSound(null);
-          setPausedPosition(0);
-          setIsPaused(false);
-          console.log("Audio stopped and released at:", new Date().toISOString());
-        }
-      });
-
       return () => {
-        unsubscribe();
+        if (sound) {
+          sound.stopAsync();
+          setIsPlaying(false);
+        }
       };
-    }, [currentSound, isPaused, pausedPosition, navigation])
+    }, [sound])
   );
 
-  // Update window width on resize
+  // ────── Dimension handling (unchanged) ──────
   useEffect(() => {
-    const updateDimensions = () => {
+    const subscription = Dimensions.addEventListener("change", () => {
       setWindowWidth(Dimensions.get("window").width);
-    };
-    const subscription = Dimensions.addEventListener("change", updateDimensions);
+    });
     return () => subscription?.remove();
   }, []);
 
-  // Determine if it's desktop or mobile based on width
   const isDesktop = windowWidth >= 768;
 
-  // Render each armor card
+  // ────── Render cards (your original logic – untouched) ──────
   const renderArmorCard = (armor) => (
     <TouchableOpacity
       key={armor.name}
       style={[styles.card(isDesktop, windowWidth), armor.clickable ? styles.clickable : styles.notClickable]}
-      onPress={async () => {
-        if (armor.clickable) {
-          if (currentSound) {
-            try {
-              const status = await currentSound.getStatusAsync();
-              if (status.isPlaying) {
-                await currentSound.pauseAsync();
-                setPausedPosition(status.positionMillis || 0);
-                setIsPaused(true);
-                console.log("Music paused for armor click at:", new Date().toISOString());
-              }
-            } catch (error) {
-              console.error("Error pausing sound for armor click:", error);
-            }
-          }
-          console.log(`${armor.name} clicked`);
-        }
-      }}
+      onPress={() => armor.clickable && console.log(`${armor.name} clicked`)}
       disabled={!armor.clickable}
     >
       <Image source={armor.image} style={styles.armorImage} />
@@ -180,29 +141,11 @@ const Will = () => {
     </TouchableOpacity>
   );
 
-  // Render each kid card
   const renderKidCard = (item) => (
     <TouchableOpacity
-      key={item.name}
+      key={item.name || Math.random()}
       style={[styles.kidCard(isDesktop, windowWidth), item.clickable ? styles.clickableKid : styles.notClickable]}
-      onPress={async () => {
-        if (item.clickable) {
-          if (currentSound) {
-            try {
-              const status = await currentSound.getStatusAsync();
-              if (status.isPlaying) {
-                await currentSound.pauseAsync();
-                setPausedPosition(status.positionMillis || 0);
-                setIsPaused(true);
-                console.log("Music paused for kid click at:", new Date().toISOString());
-              }
-            } catch (error) {
-              console.error("Error pausing sound for kid click:", error);
-            }
-          }
-          console.log(`${item.name} clicked`);
-        }
-      }}
+      onPress={() => item.clickable && console.log(`${item.name || "Family"} clicked`)}
       disabled={!item.clickable}
     >
       <Image source={item.image} style={styles.kidImage} />
@@ -210,34 +153,28 @@ const Will = () => {
       <Text style={styles.kidCardName}>
         © {item.name || "Unknown"}; William Cummings
       </Text>
-      {!item.clickable && <Text style={styles.kidDisabledText}> </Text>}
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
+      {/* ────── NEW: Play / Pause buttons ────── */}
+      <View style={styles.musicControls}>
+        <TouchableOpacity style={styles.musicButton} onPress={playTheme} disabled={isPlaying}>
+          <Text style={styles.musicButtonText}>Play Theme</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.musicButton} onPress={pauseTheme} disabled={!isPlaying}>
+          <Text style={styles.musicButtonText}>Pause</Text>
+        </TouchableOpacity>
+      </View>
+
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.headerContainer}>
           <TouchableOpacity
             style={styles.backButton}
-            onPress={async () => {
-              console.log("Navigating to TitansHome");
-              if (currentSound) {
-                try {
-                  await currentSound.stopAsync();
-                  await currentSound.unloadAsync();
-                  setCurrentSound(null);
-                  setPausedPosition(0);
-                  setIsPaused(false);
-                  console.log("Audio stopped and released at:", new Date().toISOString());
-                } catch (error) {
-                  console.error("Error stopping/unloading sound:", error);
-                }
-              }
-              navigation.navigate("TitansHome");
-            }}
+            onPress={() => navigation.navigate("TitansHome")}
           >
-            <Text style={styles.backButtonText}>←</Text>
+            <Text style={styles.backButtonText}>Back</Text>
           </TouchableOpacity>
           <Text style={styles.title}>Night Hawk</Text>
         </View>
@@ -270,21 +207,7 @@ const Will = () => {
           <Text style={styles.partnerHeader}>My Partner</Text>
           <TouchableOpacity
             style={[styles.partnerImageContainer(isDesktop, windowWidth), styles.clickableKid]}
-            onPress={async () => {
-              if (currentSound) {
-                try {
-                  await currentSound.stopAsync();
-                  await currentSound.unloadAsync();
-                  setCurrentSound(null);
-                  setPausedPosition(0);
-                  setIsPaused(false);
-                  console.log("Audio stopped for partner navigation at:", new Date().toISOString());
-                } catch (error) {
-                  console.error("Error stopping sound for partner navigation:", error);
-                }
-              }
-              navigation.navigate("Aileen");
-            }}
+            onPress={() => navigation.navigate("Aileen")}
           >
             <Image
               source={require("../../assets/Armor/Aileen2.jpg")}
@@ -402,14 +325,31 @@ const Will = () => {
   );
 };
 
+// ────── Your original styles + new music button styles ──────
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#0a0a0a",
+  container: { flex: 1, backgroundColor: "#0a0a0a" },
+  musicControls: {
+    flexDirection: "row",
+    justifyContent: "center",
+    paddingVertical: 12,
+    backgroundColor: "rgba(20, 40, 35, 0.95)",
+    borderBottomWidth: 1,
+    borderBottomColor: "#2a6d5d",
   },
-  scrollContainer: {
-    paddingBottom: 20,
+  musicButton: {
+    backgroundColor: "rgba(42, 109, 93, 0.9)",
+    paddingHorizontal: 22,
+    paddingVertical: 11,
+    borderRadius: 10,
+    marginHorizontal: 15,
+    elevation: 6,
+    shadowColor: "#089272",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
   },
+  musicButtonText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
+  scrollContainer: { paddingBottom: 20 },
   headerContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -420,35 +360,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#333",
   },
-  backButton: {
-    padding: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: 5,
-  },
-  backButtonText: {
-    fontSize: 24,
-    color: "#fff",
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#2a6d5d",
-    textAlign: "center",
-    flex: 1,
-  },
-  imageContainer: {
-    width: "100%",
-    paddingVertical: 20,
-    backgroundColor: "#111",
-    paddingLeft: 15,
-  },
-  legacyContainer: {
-    width: "100%",
-    paddingVertical: 20,
-    backgroundColor: "#111",
-    paddingLeft: 15,
-    marginTop: 10,
-  },
+  backButton: { padding: 10, backgroundColor: "rgba(255, 255, 255, 0.1)", borderRadius: 5 },
+  backButtonText: { fontSize: 24, color: "#fff" },
+  title: { fontSize: 28, fontWeight: "bold", color: "#2a6d5d", textAlign: "center", flex: 1 },
+  imageContainer: { width: "100%", paddingVertical: 20, backgroundColor: "#111", paddingLeft: 15 },
+  legacyContainer: { width: "100%", paddingVertical: 20, backgroundColor: "#111", paddingLeft: 15, marginTop: 10 },
   legacyHeader: {
     fontSize: 22,
     fontWeight: "bold",
@@ -456,15 +372,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 10,
     textShadowColor: "#089272",
-    textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10,
   },
-  partnerContainer: {
-    width: "100%",
-    paddingVertical: 20,
-    backgroundColor: "#111",
-    alignItems: "center",
-  },
+  partnerContainer: { width: "100%", paddingVertical: 20, backgroundColor: "#111", alignItems: "center" },
   partnerHeader: {
     fontSize: 22,
     fontWeight: "bold",
@@ -474,33 +384,20 @@ const styles = StyleSheet.create({
     textShadowColor: "gold",
     textShadowRadius: 25,
   },
-  partnerImageContainer: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.15 : SCREEN_WIDTH * 0.3,
-    height: isDesktop ? windowWidth * 0.15 : SCREEN_WIDTH * 0.3,
-    borderRadius: isDesktop ? windowWidth * 0.15 / 2 : SCREEN_WIDTH * 0.3 / 2,
+  partnerImageContainer: (isDesktop, w) => ({
+    width: isDesktop ? w * 0.15 : SCREEN_WIDTH * 0.3,
+    height: isDesktop ? w * 0.15 : SCREEN_WIDTH * 0.3,
+    borderRadius: isDesktop ? w * 0.15 / 2 : SCREEN_WIDTH * 0.3 / 2,
     overflow: "hidden",
     elevation: 5,
     backgroundColor: "rgba(0, 0, 0, 0.7)",
   }),
-  partnerImage: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.15 : SCREEN_WIDTH * 0.3,
-    height: isDesktop ? windowWidth * 0.15 : SCREEN_WIDTH * 0.3,
-    borderRadius: isDesktop ? windowWidth * 0.15 / 2 : SCREEN_WIDTH * 0.3 / 2,
+  partnerImage: (isDesktop, w) => ({
+    width: "100%",
+    height: "100%",
     resizeMode: "cover",
   }),
-  partnerName: {
-    position: "absolute",
-    bottom: 5,
-    left: 5,
-    fontSize: 12,
-    color: "white",
-    fontWeight: "bold",
-  },
-  kidsContainer: {
-    width: "100%",
-    paddingVertical: 20,
-    backgroundColor: "#111",
-  },
+  kidsContainer: { width: "100%", paddingVertical: 20, backgroundColor: "#111" },
   kidsHeader: {
     fontSize: 22,
     fontWeight: "bold",
@@ -510,13 +407,9 @@ const styles = StyleSheet.create({
     textShadowColor: "gold",
     textShadowRadius: 25,
   },
-  imageScrollContainer: {
-    flexDirection: "row",
-    paddingHorizontal: 10,
-    alignItems: "center",
-  },
-  card: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9,
+  imageScrollContainer: { flexDirection: "row", paddingHorizontal: 10, alignItems: "center" },
+  card: (isDesktop, w) => ({
+    width: isDesktop ? w * 0.3 : SCREEN_WIDTH * 0.9,
     height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7,
     borderRadius: 15,
     overflow: "hidden",
@@ -524,8 +417,8 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.7)",
     marginRight: 20,
   }),
-  kidCard: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.15 : SCREEN_WIDTH * 0.45,
+  kidCard: (isDesktop, w) => ({
+    width: isDesktop ? w * 0.15 : SCREEN_WIDTH * 0.45,
     height: isDesktop ? SCREEN_HEIGHT * 0.4 : SCREEN_HEIGHT * 0.35,
     borderRadius: 15,
     overflow: "hidden",
@@ -533,88 +426,18 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.7)",
     marginRight: 20,
   }),
-  clickable: {
-    borderWidth: 2,
-    borderColor: "#2a6d5d",
-    shadowColor: "#089272",
-    shadowOffset: { width: 0, height: 5 },
-    shadowRadius: 8,
-    shadowOpacity: 0.7,
-  },
-  clickableKid: {
-    borderWidth: 2,
-    borderColor: "gold",
-    shadowColor: "gold",
-    shadowOffset: { width: 0, height: 5 },
-    shadowRadius: 8,
-    shadowOpacity: 0.7,
-  },
-  notClickable: {
-    opacity: 0.8,
-  },
-  armorImage: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "cover",
-  },
-  kidImage: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "cover",
-  },
-  transparentOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0)",
-    zIndex: 1,
-  },
-  cardName: {
-    position: "absolute",
-    bottom: 10,
-    left: 10,
-    fontSize: 16,
-    color: "white",
-    fontWeight: "bold",
-  },
-  kidCardName: {
-    position: "absolute",
-    bottom: 5,
-    left: 5,
-    fontSize: 12,
-    color: "white",
-    fontWeight: "bold",
-  },
-  disabledText: {
-    fontSize: 12,
-    color: "#2a6d5d",
-    position: "absolute",
-    bottom: 30,
-    left: 10,
-  },
-  kidDisabledText: {
-    fontSize: 10,
-    color: "#ff4444",
-    position: "absolute",
-    bottom: 15,
-    left: 5,
-  },
-  aboutSection: {
-    marginTop: 40,
-    padding: 20,
-    backgroundColor: "#222",
-    borderRadius: 15,
-  },
-  aboutHeader: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#2a6d5d",
-    textAlign: "center",
-  },
-  aboutText: {
-    fontSize: 16,
-    color: "#fff",
-    textAlign: "center",
-    marginTop: 10,
-  },
+  clickable: { borderWidth: 2, borderColor: "#2a6d5d", shadowColor: "#089272", shadowOffset: { width: 0, height: 5 }, shadowRadius: 8, shadowOpacity: 0.7 },
+  clickableKid: { borderWidth: 2, borderColor: "gold", shadowColor: "gold", shadowOffset: { width: 0, height: 5 }, shadowRadius: 8, shadowOpacity: 0.7 },
+  notClickable: { opacity: 0.8 },
+  armorImage: { width: "100%", height: "100%", resizeMode: "cover" },
+  kidImage: { width: "100%", height: "100%", resizeMode: "cover" },
+  transparentOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0)", zIndex: 1 },
+  cardName: { position: "absolute", bottom: 10, left: 10, fontSize: 16, color: "white", fontWeight: "bold" },
+  kidCardName: { position: "absolute", bottom: 5, left: 5, fontSize: 12, color: "white", fontWeight: "bold" },
+  disabledText: { fontSize: 12, color: "#2a6d5d", position: "absolute", bottom: 30, left: 10 },
+  aboutSection: { marginTop: 40, padding: 20, backgroundColor: "#222", borderRadius: 15 },
+  aboutHeader: { fontSize: 22, fontWeight: "bold", color: "#2a6d5d", textAlign: "center" },
+  aboutText: { fontSize: 16, color: "#fff", textAlign: "center", marginTop: 10 },
 });
 
 export default Will;

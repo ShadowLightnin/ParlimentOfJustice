@@ -47,10 +47,29 @@ const ConstollationCharacterDetail = () => {
     };
   }, []);
 
-  // THIS IS THE KEY: GET ALL IMAGES + DESCRIPTION FROM THE MEMBER OBJECT
-  const memberImages = member?.images || 
-    constollationImages[member?.name]?.images || 
-    [{ uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Unknown Star' }];
+  // CORRECT COPYRIGHT TEXT
+  const copyrightText = member?.codename
+    ? `© ${member.codename}; William Cummings`
+    : '© William Cummings';
+
+  // BUILD IMAGES ARRAY WITH COPYRIGHT APPLIED TO EVERY IMAGE
+  const images = member?.images?.length > 0
+    ? member.images.map((img) => ({
+        uri: img.uri,
+        name: copyrightText,        // This is what shows under each image
+        clickable: img.clickable ?? true,
+      }))
+    : constollationImages[member?.name]?.images?.length > 0
+      ? constollationImages[member.name].images.map((img) => ({
+          uri: img.uri,
+          name: copyrightText,
+          clickable: img.clickable ?? true,
+        }))
+      : [{
+          uri: member?.image || require('../../assets/Armor/PlaceHolder.jpg'),
+          name: copyrightText,
+          clickable: true,
+        }];
 
   const memberDescription = member?.description || 
     ConstollationDescription[member?.name] || 
@@ -62,7 +81,7 @@ const ConstollationCharacterDetail = () => {
       <TouchableOpacity
         key={index}
         style={[styles.card(isDesktop, windowWidth), img.clickable !== false && styles.clickable]}
-        onPress={() => console.log(`${img.name || 'Armor'} clicked`)}
+        onPress={() => console.log(`${copyrightText} clicked`)}
       >
         <Image source={source} style={styles.armorImage} resizeMode="cover" />
         <View style={styles.transparentOverlay} />
@@ -112,7 +131,7 @@ const ConstollationCharacterDetail = () => {
           </Text>
         </View>
 
-        {/* Horizontal Image Gallery — ALL IMAGES FROM ConstollationImages.js */}
+        {/* Horizontal Image Gallery — NOW USING THE CORRECT IMAGES ARRAY */}
         <View style={styles.imageContainer}>
           <ScrollView
             horizontal
@@ -121,11 +140,11 @@ const ConstollationCharacterDetail = () => {
             snapToInterval={cardWidth + 20}
             decelerationRate="fast"
           >
-            {memberImages.map(renderImageCard)}
+            {images.map(renderImageCard)}
           </ScrollView>
         </View>
 
-        {/* About Section — WITH REAL DESCRIPTION */}
+        {/* About Section */}
         <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>
             {member?.codename || 'Eternal Light'}
@@ -150,6 +169,7 @@ const ConstollationCharacterDetail = () => {
   );
 };
 
+// Styles remain unchanged...
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#0a0a0a' },
   scrollContainer: { paddingBottom: 60 },

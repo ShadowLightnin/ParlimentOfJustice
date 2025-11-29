@@ -1,88 +1,145 @@
-import React, { useState, useEffect } from "react";
-import { 
-  View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions 
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+  Alert,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { Audio } from 'expo-av'; // Import expo-av for audio
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { Audio } from "expo-av";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
+
+const armors = [
+  { name: "Kintsunera Prime", image: require("../../assets/Armor/EmmaLegacy.jpg"), clickable: true },
+  { name: "Kintsunera", image: require("../../assets/Armor/Emma.jpg"), clickable: true },
+  { name: "Kintsunera", image: require("../../assets/Armor/Emma2.jpg"), clickable: true },
+  { name: "Symbol", image: require("../../assets/Armor/EmmasSymbol.jpg"), clickable: true },
+];
 
 const Emma = () => {
   const navigation = useNavigation();
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
-  const [sound, setSound] = useState(null); // State to manage audio object
 
+  // Audio state — exactly like Will & Aileen
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  // Load BlueBloods.mp4 once — NO autoplay
   useEffect(() => {
-    const updateDimensions = () => {
-      setWindowWidth(Dimensions.get("window").width);
+    let soundObj = null;
+    const loadSound = async () => {
+      try {
+        const { sound } = await Audio.Sound.createAsync(
+          require("../../assets/audio/BlueBloods.mp4"),
+          { isLooping: true, volume: 0.9 },
+          null,
+          false // no autoplay
+        );
+        soundObj = sound;
+        setSound(sound);
+      } catch (e) {
+        console.error("Failed to load BlueBloods.mp4", e);
+        Alert.alert("Audio Error", "Could not load BlueBloods.mp4");
+      }
     };
-    const subscription = Dimensions.addEventListener("change", updateDimensions);
-    return () => subscription?.remove();
-  }, []);
-
-  // Load and play background music
-  useEffect(() => {
-    async function loadSound() {
-      console.log('Loading Sound at:', new Date().toISOString());
-      const { sound } = await Audio.Sound.createAsync(
-        require('../../assets/audio/BlueBloods.mp4'), // Replace with your audio file path
-        { shouldPlay: true, isLooping: false }
-      );
-      setSound(sound);
-      console.log('Playing Sound at:', new Date().toISOString());
-      await sound.playAsync();
-    }
     loadSound();
 
     return () => {
-      if (sound) {
-        console.log('Unloading Sound at:', new Date().toISOString());
-        sound.unloadAsync();
-      }
+      soundObj?.unloadAsync();
     };
+  }, []);
+
+  const playTheme = async () => {
+    if (!sound) return;
+    await sound.playAsync();
+    setIsPlaying(true);
+  };
+
+  const pauseTheme = async () => {
+    if (!sound) return;
+    await sound.pauseAsync();
+    setIsPlaying(false);
+  };
+
+  // Stop music when leaving the screen (same as Will & Aileen)
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        if (sound) {
+          sound.stopAsync();
+          setIsPlaying(false);
+        }
+      };
+    }, [sound])
+  );
+
+  // Dimension handling
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener("change", () => {
+      setWindowWidth(Dimensions.get("window").width);
+    });
+    return () => subscription?.remove();
   }, []);
 
   const isDesktop = windowWidth >= 768;
 
-  const armors = [
-    { name: "Kintsunera Prime", copyright: "William Cummings", image: require("../../assets/Armor/EmmaLegacy.jpg"), clickable: true },
-    { name: "Kintsunera", copyright: "William Cummings", image: require("../../assets/Armor/Emma.jpg"), clickable: true },
-    { name: "Kintsunera", copyright: "William Cummings", image: require("../../assets/Armor/Emma2.jpg"), clickable: true },
-    { name: "", image: require("../../assets/Armor/EmmasSymbol.jpg"), clickable: true },
-  ];
-
-  const renderArmorCard = (armor, index) => (
+  const renderArmorCard = (armor) => (
     <TouchableOpacity
-      key={`${armor.name}-${armor.copyright || index}`} // Unique key using name, copyright, or index
+      key={armor.name}
       style={[styles.card(isDesktop, windowWidth), armor.clickable ? styles.clickable : styles.notClickable]}
-      onPress={() => armor.clickable && console.log(`${armor.name || 'Unnamed'} clicked`)}
+      onPress={() => armor.clickable && console.log(`${armor.name} clicked`)}
       disabled={!armor.clickable}
     >
       <Image source={armor.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
       <Text style={styles.cardName}>
-        {armor.copyright ? `© ${armor.name || 'Unknown'}; ${armor.copyright}` : (armor.name)}
+        © {armor.name || "Kintsunera"}; William Cummings
       </Text>
-      {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
+      {/* SAME MUSIC CONTROLS AS WILL & AILEEN — now in Kintsunera blue-gold */}
+      <View style={styles.musicControls}>
+        <TouchableOpacity
+          style={styles.musicButton}
+          onPress={playTheme}
+          disabled={isPlaying}
+        >
+          <Text style={styles.musicButtonText}>Play Theme</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.musicButton}
+          onPress={pauseTheme}
+          disabled={!isPlaying}
+        >
+          <Text style={styles.musicButtonText}>Pause</Text>
+        </TouchableOpacity>
+      </View>
+
       <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {/* Header */}
         <View style={styles.headerContainer}>
-          <TouchableOpacity style={styles.backButton} onPress={() => {
-            if (sound) {
-              sound.stopAsync();
-              sound.unloadAsync();
-            }
-            navigation.goBack();
-          }}>
-            <Text style={styles.backButtonText}>←</Text>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => {
+              if (sound) sound.stopAsync();
+              navigation.goBack();
+            }}
+          >
+            <Text style={styles.backButtonText}>Back</Text>
           </TouchableOpacity>
           <Text style={styles.title}>Kintsunera</Text>
+          <View style={{ width: 50 }} /> {/* Spacer for symmetry */}
         </View>
 
+        {/* Armor Gallery */}
         <View style={styles.imageContainer}>
           <ScrollView
             horizontal
@@ -141,13 +198,32 @@ const Emma = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#0a0a0a",
+  container: { flex: 1, backgroundColor: "#0a0a0a" },
+
+  // SAME EXACT MUSIC BAR STYLE AS WILL (green) — but now blue-gold for Emma
+  musicControls: {
+    flexDirection: "row",
+    justifyContent: "center",
+    paddingVertical: 12,
+    backgroundColor: "rgba(10, 20, 40, 0.95)",
+    borderBottomWidth: 1,
+    borderBottomColor: "#4169e1",
   },
-  scrollContainer: {
-    paddingBottom: 20,
+  musicButton: {
+    backgroundColor: "rgba(65, 105, 225, 0.9)",
+    paddingHorizontal: 26,
+    paddingVertical: 12,
+    borderRadius: 12,
+    marginHorizontal: 16,
+    elevation: 8,
+    shadowColor: "#00bfff",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.9,
+    shadowRadius: 12,
   },
+  musicButtonText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
+
+  scrollContainer: { paddingBottom: 30 },
   headerContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -161,19 +237,19 @@ const styles = StyleSheet.create({
   backButton: {
     padding: 10,
     backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: 5,
+    borderRadius: 8,
   },
-  backButtonText: {
-    fontSize: 24,
-    color: "#fff",
-  },
+  backButtonText: { fontSize: 24, color: "#87CEEB", fontWeight: "bold" },
   title: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: "bold",
-    color: "#00b3ff",
+    color: "#00BFFF",
     textAlign: "center",
     flex: 1,
+    textShadowColor: "#87CEEB",
+    textShadowRadius: 15,
   },
+
   imageContainer: {
     width: "100%",
     paddingVertical: 20,
@@ -185,63 +261,38 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     alignItems: "center",
   },
-  card: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9,
+  card: (isDesktop, w) => ({
+    width: isDesktop ? w * 0.3 : SCREEN_WIDTH * 0.9,
     height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7,
     borderRadius: 15,
     overflow: "hidden",
-    elevation: 5,
+    elevation: 8,
     backgroundColor: "rgba(0, 0, 0, 0.7)",
     marginRight: 20,
   }),
   clickable: {
-    borderWidth: 2,
+    borderWidth: 3,
+    borderColor: "#87CEEB",
+    shadowColor: "#00BFFF",
+    shadowOpacity: 0.9,
   },
-  notClickable: {
-    opacity: 0.8,
-  },
-  armorImage: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "cover",
-  },
+  notClickable: { opacity: 0.7 },
+  armorImage: { width: "100%", height: "100%", resizeMode: "cover" },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0)",
+    backgroundColor: "rgba(0,0,0,0)",
     zIndex: 1,
   },
   cardName: {
     position: "absolute",
-    bottom: 10,
-    left: 10,
-    fontSize: 16,
-    color: "white",
+    bottom: 12,
+    left: 12,
+    fontSize: 17,
+    color: "#E0FFFF",
     fontWeight: "bold",
-  },
-  disabledText: {
-    fontSize: 12,
-    color: "#ff4444",
-    position: "absolute",
-    bottom: 30,
-    left: 10,
-  },
-  aboutSection: {
-    marginTop: 40,
-    padding: 20,
-    backgroundColor: "#222",
-    borderRadius: 15,
-  },
-  aboutHeader: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#00b3ff",
-    textAlign: "center",
-  },
-  aboutText: {
-    fontSize: 16,
-    color: "#fff",
-    textAlign: "center",
-    marginTop: 10,
+    textShadowColor: "#000080",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 6,
   },
 });
 

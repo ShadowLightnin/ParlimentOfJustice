@@ -1,55 +1,66 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { View, ImageBackground, StyleSheet, Dimensions, TouchableOpacity, Text, ScrollView, TextInput, Image, Alert, Modal } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  ImageBackground,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+  Text,
+  ScrollView,
+  TextInput,
+  Image,
+  Alert,
+  Modal,
+} from "react-native";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { db, storage, auth } from "../../../lib/firebase";
-import { collection, addDoc, onSnapshot, deleteDoc, doc, setDoc, getDoc, getDocs } from "firebase/firestore";
-import { ref as storageRef, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
+import {
+  collection,
+  addDoc,
+  onSnapshot,
+  deleteDoc,
+  doc,
+  setDoc,
+  getDoc,
+  getDocs,
+} from "firebase/firestore";
+import {
+  ref as storageRef,
+  uploadBytesResumable,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
-import { Audio } from 'expo-av';
-
-let backgroundSound = null;
+import { Audio } from "expo-av";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const isDesktop = SCREEN_WIDTH > 600;
-const ALLOWED_EMAILS = ["samuelp.woodwell@gmail.com", "cummingsnialla@gmail.com", "will@test.com", "c1wcummings@gmail.com", "aileen@test.com"];
+const ALLOWED_EMAILS = [
+  "samuelp.woodwell@gmail.com",
+  "cummingsnialla@gmail.com",
+  "will@test.com",
+  "c1wcummings@gmail.com",
+  "aileen@test.com",
+];
 const RESTRICT_ACCESS = false;
 const RESTRICT_IMAGE_UPLOAD = true;
 const PLACEHOLDER_IMAGE = require("../../../assets/Armor/PlaceHolder.jpg");
 const HARDCODED_BOOKS = [
-  { id: "hardcoded-1", title: "Montrose Manor", coverImage: require("../../../assets/TheMontroseManor.jpg"), hardcoded: true },
+  {
+    id: "hardcoded-1",
+    title: "Montrose Manor",
+    coverImage: require("../../../assets/TheMontroseManor.jpg"),
+    hardcoded: true,
+  },
 ];
-
-const playBackgroundMusic = async () => {
-  if (!backgroundSound) {
-    try {
-      const { sound } = await Audio.Sound.createAsync(
-        require("../../../assets/audio/MontroseDoom.mp4"),
-        { shouldPlay: true, isLooping: true, volume: 0.7 }
-      );
-      backgroundSound = sound;
-      await sound.playAsync();
-    } catch (error) {
-      console.error('Audio loading error:', error.message);
-      Alert.alert("Audio Error", "Failed to load background music: " + error.message);
-    }
-  }
-};
-
-const stopBackgroundMusic = async () => {
-  if (backgroundSound) {
-    try {
-      await backgroundSound.stopAsync();
-      await backgroundSound.unloadAsync();
-      backgroundSound = null;
-    } catch (error) {
-      console.error('Error stopping/unloading sound:', error);
-    }
-  }
-};
 
 const MontroseManorTab = () => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
+
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
   const [books, setBooks] = useState([]);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -60,6 +71,48 @@ const MontroseManorTab = () => {
   const [canUploadImage, setCanUploadImage] = useState(!RESTRICT_IMAGE_UPLOAD);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);
+
+  // Load sound once – no autoplay
+  useEffect(() => {
+    let soundObj = null;
+    const loadSound = async () => {
+      try {
+        const { sound } = await Audio.Sound.createAsync(
+          require("../../../assets/audio/MontroseDoom.mp4"),
+          { isLooping: true, volume: 0.7 }
+        );
+        soundObj = sound;
+        setSound(sound);
+      } catch (error) {
+        console.error("Audio loading error:", error.message);
+        Alert.alert("Audio Error", "Failed to load background music: " + error.message);
+      }
+    };
+    loadSound();
+
+    return () => {
+      soundObj?.unloadAsync();
+    };
+  }, []);
+
+  const playTheme = async () => {
+    if (!sound) return;
+    await sound.playAsync();
+    setIsPlaying(true);
+  };
+
+  const pauseTheme = async () => {
+    if (!sound) return;
+    await sound.pauseAsync();
+    setIsPlaying(false);
+  };
+
+  useEffect(() => {
+    if (!isFocused && sound && isPlaying) {
+      sound.stopAsync();
+      setIsPlaying(false);
+    }
+  }, [isFocused, sound, isPlaying]);
 
   useEffect(() => {
     const checkAuth = () => {
@@ -106,17 +159,6 @@ const MontroseManorTab = () => {
       console.log("Form reset for new book");
     }
   }, [editingBook]);
-
-  useEffect(() => {
-    if (isFocused && !backgroundSound) {
-      playBackgroundMusic();
-    }
-    return () => {
-      if (navigation.getState().routes[navigation.getState().index].name === 'Home') {
-        stopBackgroundMusic();
-      }
-    };
-  }, [isFocused, navigation]);
 
   const pickImage = async () => {
     if (!canUploadImage) {
@@ -174,6 +216,7 @@ const MontroseManorTab = () => {
       throw new Error(`Image upload failed: ${e.message}`);
     }
   };
+
 
   const deleteOldImage = async (imageUrl) => {
     if (!imageUrl || imageUrl === "placeholder") return;
@@ -388,10 +431,11 @@ const MontroseManorTab = () => {
 
   return (
     <ImageBackground source={require("../../../assets/TheMaw.jpg")} style={styles.bg}>
+      {/* Escape & Home buttons – now 100% visible and untouched */}
       <TouchableOpacity
         onPress={async () => {
           console.log("Navigating to EvilMontrose, stopping music");
-          await stopBackgroundMusic();
+          if (sound) await sound.stopAsync();
           navigation.navigate("EvilMontrose");
         }}
         style={styles.back}
@@ -401,16 +445,28 @@ const MontroseManorTab = () => {
       <TouchableOpacity
         onPress={async () => {
           console.log("Navigating to BludBruhsHome, stopping music");
-          await stopBackgroundMusic();
+          if (sound) await sound.stopAsync();
           navigation.navigate("BludBruhsHome");
         }}
         style={styles.home}
       >
         <Text>📖</Text>
       </TouchableOpacity>
+
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.overlay}>
           <Text style={styles.header}>Montrose Manor</Text>
+
+          {/* MUSIC CONTROLS NOW UNDER TITLE – NO MORE OVERLAP */}
+          <View style={styles.musicControls}>
+            <TouchableOpacity style={styles.musicButton} onPress={playTheme} disabled={isPlaying}>
+              <Text style={styles.musicButtonText}>Play Doom</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.musicButton} onPress={pauseTheme} disabled={!isPlaying}>
+              <Text style={styles.musicButtonText}>Silence</Text>
+            </TouchableOpacity>
+          </View>
+
           <View style={styles.form}>
             <Text style={styles.formHeader}>{editingBook ? "Edit Book" : "Add New Book"}</Text>
             <TextInput
@@ -478,6 +534,7 @@ const MontroseManorTab = () => {
           </ScrollView>
         </View>
       </ScrollView>
+
       <Modal visible={deleteModalVisible} transparent animationType="slide">
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
@@ -510,6 +567,43 @@ const MontroseManorTab = () => {
 const styles = StyleSheet.create({
   bg: { flex: 1, width: Dimensions.get("window").width, height: Dimensions.get("window").height, position: "absolute" },
   scroll: { paddingBottom: 20 },
+
+  // MUSIC CONTROLS — NOW INSIDE THE SCROLLVIEW, UNDER THE TITLE
+  musicControls: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 14,
+    marginVertical: 10,
+    backgroundColor: "rgba(50, 0, 0, 0.97)",
+    borderWidth: 2,
+    borderColor: "#8B0000",
+    borderRadius: 12,
+    alignSelf: "center",
+    shadowColor: "#8B0000",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 1,
+    shadowRadius: 12,
+    elevation: 12,
+  },
+  musicButton: {
+    backgroundColor: "rgba(139, 0, 0, 0.9)",
+    paddingHorizontal: 28,
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginHorizontal: 12,
+    borderWidth: 1,
+    borderColor: "#DC143C",
+  },
+  musicButtonText: {
+    color: "#FFF",
+    fontWeight: "bold",
+    fontSize: 16,
+    textShadowColor: "#8B0000",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
+
   overlay: { backgroundColor: "rgba(0,0,0,0.3)", paddingTop: 80 },
   header: { fontSize: 28, fontWeight: "bold", color: "#FFF", textAlign: "center", marginVertical: 20 },
   back: { position: "absolute", top: 40, left: 20, backgroundColor: "rgba(118,11,11,0.6)", padding: 10, borderRadius: 8, zIndex: 10 },
@@ -549,7 +643,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   imagePickerText: {
-    color: "#FFF",
+    rebirth: "#FFF",
     fontSize: 16,
     fontWeight: "bold",
   },

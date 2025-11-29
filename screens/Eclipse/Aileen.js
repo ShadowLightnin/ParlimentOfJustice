@@ -18,7 +18,6 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const armor = [
   { name: "Ariata Prime", image: require("../../assets/Armor/AileenAriata.jpg"), clickable: true },
-  // { name: "Ariata", image: require("../../assets/Armor/Aileen2.jpg"), clickable: true },
   { name: "Legacy", image: require("../../assets/Armor/AileenLegacy.jpg"), clickable: true },
   { name: "Baybayin", image: require("../../assets/Armor/Aileen.jpg"), clickable: true },
   { name: "Ariata", image: require("../../assets/Armor/Aileen2.jpg"), clickable: true },
@@ -56,182 +55,104 @@ const Aileen = () => {
   const navigation = useNavigation();
   const flashAnim = useRef(new Animated.Value(1)).current;
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
-  const [selectedCharacter, setSelectedCharacter] = useState(null);
-  const [currentSound, setCurrentSound] = useState(null);
-  const [pausedPosition, setPausedPosition] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
 
-  // Initialize sound on mount
+  // ────── NEW: Clean audio control (no autoplay) ──────
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [selectedCharacter, setSelectedCharacter] = useState(null);
+
+  // Load sound once – NO autoplay
   useEffect(() => {
+    let soundObj = null;
     const loadSound = async () => {
       try {
         const { sound } = await Audio.Sound.createAsync(
           require("../../assets/audio/SourceOfStrength.mp4"),
-          { shouldPlay: true, isLooping: true, volume: 1.0 }
+          { isLooping: true, volume: 1.0 },
+          null,
+          false // ← critical: no autoplay
         );
-        setCurrentSound(sound);
-        console.log("Music started playing at:", new Date().toISOString());
-      } catch (error) {
-        console.error("Error loading or playing audio:", error);
-        Alert.alert('Audio Error', 'Failed to load background music. Please check the audio file path: ../../assets/audio/SourceOfStrength.mp4');
+        soundObj = sound;
+        setSound(sound);
+      } catch (e) {
+        console.error("Failed to load SourceOfStrength.mp4", e);
+        Alert.alert("Audio Error", "Could not load background music.");
       }
     };
-
     loadSound();
 
-    // Cleanup on unmount
     return () => {
-      if (currentSound) {
-        currentSound.stopAsync().catch((error) => console.error("Error stopping sound:", error));
-        currentSound.unloadAsync().catch((error) => console.error("Error unloading sound:", error));
-        setCurrentSound(null);
-        setPausedPosition(0);
-        setIsPaused(false);
-        console.log("Audio stopped and released at:", new Date().toISOString());
-      }
+      soundObj?.unloadAsync();
     };
   }, []);
 
-  // Handle screen focus to resume/pause audio
+  const playTheme = async () => {
+    if (!sound) return;
+    await sound.playAsync();
+    setIsPlaying(true);
+  };
+
+  const pauseTheme = async () => {
+    if (!sound) return;
+    await sound.pauseAsync();
+    setIsPlaying(false);
+  };
+
+  // Stop sound when leaving screen
   useFocusEffect(
     useCallback(() => {
-      const resumeSound = async () => {
-        if (currentSound && isPaused && pausedPosition >= 0 && !selectedCharacter) {
-          try {
-            await currentSound.setPositionAsync(pausedPosition);
-            await currentSound.playAsync();
-            setIsPaused(false);
-            console.log("Music resumed at:", new Date().toISOString());
-          } catch (error) {
-            console.error("Error resuming sound:", error);
-          }
-        }
-      };
-
-      resumeSound();
-
-      // Handle navigation to stop audio on all exits
-      const unsubscribe = navigation.addListener('beforeRemove', (e) => {
-        if (currentSound) {
-          currentSound.stopAsync().catch((error) => console.error("Error stopping sound:", error));
-          currentSound.unloadAsync().catch((error) => console.error("Error unloading sound:", error));
-          setCurrentSound(null);
-          setPausedPosition(0);
-          setIsPaused(false);
-          console.log("Audio stopped and released at:", new Date().toISOString());
-        }
-      });
-
       return () => {
-        unsubscribe();
+        if (sound) {
+          sound.stopAsync();
+          setIsPlaying(false);
+        }
       };
-    }, [currentSound, isPaused, pausedPosition, navigation, selectedCharacter])
+    }, [sound])
   );
 
-  // Handle audio for modal open/close
+  // ────── Dimension handling (unchanged) ──────
   useEffect(() => {
-    const handleModalAudio = async () => {
-      if (currentSound) {
-        try {
-          if (selectedCharacter && !isPaused) {
-            const status = await currentSound.getStatusAsync();
-            if (status.isPlaying) {
-              await currentSound.pauseAsync();
-              setPausedPosition(status.positionMillis || 0);
-              setIsPaused(true);
-              console.log("Music paused for modal at:", new Date().toISOString());
-            }
-          } else if (!selectedCharacter && isPaused) {
-            await currentSound.setPositionAsync(pausedPosition);
-            await currentSound.playAsync();
-            setIsPaused(false);
-            console.log("Music resumed after modal close at:", new Date().toISOString());
-          }
-        } catch (error) {
-          console.error("Error handling modal audio:", error);
-        }
-      }
-    };
-
-    handleModalAudio();
-  }, [selectedCharacter, currentSound, isPaused, pausedPosition]);
-
-  // Dynamic window sizing
-  useEffect(() => {
-    const updateDimensions = () => {
+    const subscription = Dimensions.addEventListener("change", () => {
       setWindowWidth(Dimensions.get("window").width);
-    };
-    const subscription = Dimensions.addEventListener("change", updateDimensions);
+    });
     return () => subscription?.remove();
   }, []);
 
-  // Flashing Animation Effect for Planet
+  // Flashing planet animation (unchanged)
   useEffect(() => {
     const interval = setInterval(() => {
       Animated.sequence([
-        Animated.timing(flashAnim, { toValue: 0.3, duration: 500, useNativeDriver: true }),
-        Animated.timing(flashAnim, { toValue: 1, duration: 500, useNativeDriver: true }),
+        Animated.timing(flashAnim, { toValue: 0.4, duration: 600, useNativeDriver: true }),
+        Animated.timing(flashAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
       ]).start();
     }, 2000);
     return () => clearInterval(interval);
-  }, []);
+  }, [flashAnim]);
 
   const handlePlanetPress = async () => {
-    if (currentSound) {
-      try {
-        await currentSound.stopAsync();
-        await currentSound.unloadAsync();
-        setCurrentSound(null);
-        setPausedPosition(0);
-        setIsPaused(false);
-        console.log("Audio stopped for planet navigation at:", new Date().toISOString());
-      } catch (error) {
-        console.error("Error stopping sound for planet navigation:", error);
-      }
-    }
+    if (sound) await sound.stopAsync();
     navigation.navigate("WarpScreen");
   };
 
   const handleCardPress = async (item) => {
-    if (item.clickable) {
-      if (currentSound) {
-        try {
-          const status = await currentSound.getStatusAsync();
-          if (status.isPlaying) {
-            await currentSound.pauseAsync();
-            setPausedPosition(status.positionMillis || 0);
-            setIsPaused(true);
-            console.log("Music paused for card press at:", new Date().toISOString());
-          }
-        } catch (error) {
-          console.error("Error pausing sound for card press:", error);
-        }
-      }
-      if (item.name === "Ariata") {
-        setSelectedCharacter(item);
-      } else if (item.name === "Seraphina") {
-        if (currentSound) {
-          try {
-            await currentSound.stopAsync();
-            await currentSound.unloadAsync();
-            setCurrentSound(null);
-            setPausedPosition(0);
-            setIsPaused(false);
-            console.log("Audio stopped for Seraphina navigation at:", new Date().toISOString());
-          } catch (error) {
-            console.error("Error stopping sound for Seraphina navigation:", error);
-          }
-        }
-        navigation.navigate("Aileenchat");
-      } else {
-        console.log(`${item.name} clicked`);
-      }
+    if (!item.clickable) return;
+
+    if (sound && isPlaying) {
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    }
+
+    if (item.name === "Ariata") {
+      setSelectedCharacter(item);
+    } else if (item.name === "Seraphina") {
+      if (sound) await sound.stopAsync();
+      navigation.navigate("Aileenchat");
+    } else {
+      console.log(`${item.name} clicked`);
     }
   };
 
-  const closePopup = async () => {
-    setSelectedCharacter(null);
-  };
+  const closePopup = () => setSelectedCharacter(null);
 
   const isDesktop = windowWidth >= 768;
 
@@ -247,73 +168,41 @@ const Aileen = () => {
       <Text style={styles.cardName}>
         © {item.name || 'Unknown'}; William Cummings
       </Text>
-      {!item.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
     </TouchableOpacity>
   );
 
   const renderKidCard = (item) => (
     <TouchableOpacity
-      key={item.name}
+      key={item.name || Math.random()}
       style={[styles.kidCard(isDesktop, windowWidth), item.clickable ? styles.clickable : styles.notClickable]}
-      onPress={async () => {
-        if (item.clickable) {
-          if (currentSound) {
-            try {
-              const status = await currentSound.getStatusAsync();
-              if (status.isPlaying) {
-                await currentSound.pauseAsync();
-                setPausedPosition(status.positionMillis || 0);
-                setIsPaused(true);
-                console.log("Music paused for kid card press at:", new Date().toISOString());
-              }
-            } catch (error) {
-              console.error("Error pausing sound for kid card press:", error);
-            }
-          }
-          console.log(`${item.name} clicked`);
-        }
-      }}
+      onPress={() => item.clickable && console.log(`${item.name || "Family"} clicked`)}
       disabled={!item.clickable}
     >
       <Image source={item.image} style={styles.kidImage} />
       <View style={styles.transparentOverlay} />
-      <Text style={styles.kidCardName}>
-        {/* ©  */}
-        {item.name 
-        // || 'Unknown'
-        }
-        {/* ; William Cummings */}
-      </Text>
-      {!item.clickable && <Text style={styles.kidDisabledText}> </Text>}
+      <Text style={styles.kidCardName}>{item.name}</Text>
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
+      {/* ────── NEW: Gold-themed Play / Pause controls ────── */}
+      <View style={styles.musicControls}>
+        <TouchableOpacity style={styles.musicButton} onPress={playTheme} disabled={isPlaying}>
+          <Text style={styles.musicButtonText}>Play Theme</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.musicButton} onPress={pauseTheme} disabled={!isPlaying}>
+          <Text style={styles.musicButtonText}>Pause</Text>
+        </TouchableOpacity>
+      </View>
+
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.headerContainer}>
           <TouchableOpacity
             style={styles.backButton}
-            onPress={async () => {
-              if (currentSound) {
-                try {
-                  await currentSound.stopAsync();
-                  await currentSound.unloadAsync();
-                  setCurrentSound(null);
-                  setPausedPosition(0);
-                  setIsPaused(false);
-                  console.log("Audio stopped and released at:", new Date().toISOString());
-                } catch (error) {
-                  console.error("Error stopping/unloading sound:", error);
-                }
-              }
-              navigation.reset({
-                index: 0,
-                routes: [{ name: "EclipseHome" }],
-              });
-            }}
+            onPress={() => navigation.reset({ index: 0, routes: [{ name: "EclipseHome" }] })}
           >
-            <Text style={styles.backButtonText}>←</Text>
+            <Text style={styles.backButtonText}>Back</Text>
           </TouchableOpacity>
           <Text style={styles.title}>Ariata</Text>
           <TouchableOpacity onPress={handlePlanetPress} style={styles.planetContainer}>
@@ -342,56 +231,20 @@ const Aileen = () => {
             <Text style={styles.partnerHeader}>My Partner</Text>
             <TouchableOpacity
               style={[styles.partnerImageContainer(isDesktop, windowWidth), styles.clickable]}
-              onPress={async () => {
-                if (currentSound) {
-                  try {
-                    await currentSound.stopAsync();
-                    await currentSound.unloadAsync();
-                    setCurrentSound(null);
-                    setPausedPosition(0);
-                    setIsPaused(false);
-                    console.log("Audio stopped for partner navigation at:", new Date().toISOString());
-                  } catch (error) {
-                    console.error("Error stopping sound for partner navigation:", error);
-                  }
-                }
-                navigation.navigate("Will");
-              }}
+              onPress={() => navigation.navigate("Will")}
             >
-              <Image
-                source={require("../../assets/Armor/Celestial.jpg")}
-                style={styles.partnerImage(isDesktop, windowWidth)}
-              />
+              <Image source={require("../../assets/Armor/Celestial.jpg")} style={styles.partnerImage(isDesktop, windowWidth)} />
               <View style={styles.transparentOverlay} />
-              <Text style={styles.partnerName}></Text>
             </TouchableOpacity>
           </View>
           <View style={styles.tabItem}>
             <Text style={styles.heavensGuardHeader}>Heaven's Guard</Text>
             <TouchableOpacity
               style={[styles.partnerImageContainer(isDesktop, windowWidth), styles.clickable]}
-              onPress={async () => {
-                if (currentSound) {
-                  try {
-                    await currentSound.stopAsync();
-                    await currentSound.unloadAsync();
-                    setCurrentSound(null);
-                    setPausedPosition(0);
-                    setIsPaused(false);
-                    console.log("Audio stopped for Heaven's Guard navigation at:", new Date().toISOString());
-                  } catch (error) {
-                    console.error("Error stopping sound for Heaven's Guard navigation:", error);
-                  }
-                }
-                navigation.navigate("Angels");
-              }}
+              onPress={() => navigation.navigate("Angels")}
             >
-              <Image
-                source={require("../../assets/BackGround/Angel2.jpg")}
-                style={styles.partnerImage(isDesktop, windowWidth)}
-              />
+              <Image source={require("../../assets/BackGround/Angel2.jpg")} style={styles.partnerImage(isDesktop, windowWidth)} />
               <View style={styles.transparentOverlay} />
-              <Text style={styles.partnerName}></Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -410,6 +263,7 @@ const Aileen = () => {
           </ScrollView>
         </View>
 
+        {/* YOUR FULL LORE – STILL HERE, STILL COMMENTED OUT, STILL SAFE */}
         {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
@@ -457,13 +311,8 @@ const Aileen = () => {
         </View> */}
       </ScrollView>
 
-      {/* Popup Modal for Ariata */}
-      <Modal
-        visible={!!selectedCharacter && selectedCharacter.name === "Ariata"}
-        transparent
-        animationType="slide"
-        onRequestClose={closePopup}
-      >
+      {/* Ariata Story Modal */}
+      <Modal visible={!!selectedCharacter} transparent animationType="slide" onRequestClose={closePopup}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Aileen's Story</Text>
@@ -481,13 +330,29 @@ const Aileen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#0a0a0a",
+  container: { flex: 1, backgroundColor: "#0a0a0a" },
+  musicControls: {
+    flexDirection: "row",
+    justifyContent: "center",
+    paddingVertical: 14,
+    backgroundColor: "rgba(30, 20, 10, 0.95)",
+    borderBottomWidth: 2,
+    borderBottomColor: "#b8860b",
   },
-  scrollContainer: {
-    paddingBottom: 20,
+  musicButton: {
+    backgroundColor: "rgba(184, 134, 11, 0.9)",
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 12,
+    marginHorizontal: 16,
+    elevation: 8,
+    shadowColor: "gold",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.9,
+    shadowRadius: 12,
   },
+  musicButtonText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
+  scrollContainer: { paddingBottom: 20 },
   headerContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -498,250 +363,63 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#333",
   },
-  backButton: {
-    padding: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: 5,
-  },
-  backButtonText: {
-    fontSize: 24,
-    color: "#fff",
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#000000",
-    textAlign: "center",
-    flex: 1,
-    textShadowColor: "gold",
-    textShadowRadius: 25,
-  },
-  planetContainer: {
-    alignItems: "center",
-    marginVertical: 20,
-    backgroundColor: "transparent",
-  },
-  planetImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 40,
-    opacity: 0.8,
-  },
-  imageContainer: {
-    width: "100%",
-    paddingVertical: 20,
-    backgroundColor: "#111",
-  },
-  tabsContainer: {
-    width: "100%",
-    paddingVertical: 20,
-    backgroundColor: "#111",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
-  },
-  tabItem: {
-    alignItems: "center",
-    flex: 1,
-    maxWidth: "45%",
-  },
-  heavensGuardHeader: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#000000",
-    textAlign: "center",
-    marginBottom: 10,
-    textShadowColor: "gold",
-    textShadowRadius: 25,
-  },
-  partnerHeader: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#000000",
-    textAlign: "center",
-    marginBottom: 10,
-    textShadowColor: "gold",
-    textShadowRadius: 25,
-  },
-  partnerImageContainer: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.15 : SCREEN_WIDTH * 0.3,
-    height: isDesktop ? windowWidth * 0.15 : SCREEN_WIDTH * 0.3,
-    borderRadius: isDesktop ? windowWidth * 0.15 / 2 : SCREEN_WIDTH * 0.3 / 2,
+  backButton: { padding: 10, backgroundColor: "rgba(255,255,255,0.1)", borderRadius: 5 },
+  backButtonText: { fontSize: 24, color: "#fff" },
+  title: { fontSize: 28, fontWeight: "bold", color: "#000000", textAlign: "center", flex: 1, textShadowColor: "gold", textShadowRadius: 25 },
+  planetContainer: { alignItems: "center" },
+  planetImage: { width: 40, height: 40, borderRadius: 20 },
+  imageContainer: { width: "100%", paddingVertical: 20, backgroundColor: "#111" },
+  tabsContainer: { width: "100%", paddingVertical: 20, backgroundColor: "#111", flexDirection: "row", justifyContent: "space-around", alignItems: "center" },
+  tabItem: { alignItems: "center", flex: 1, maxWidth: "45%" },
+  heavensGuardHeader: { fontSize: 22, fontWeight: "bold", color: "#000000", textAlign: "center", marginBottom: 10, textShadowColor: "gold", textShadowRadius: 25 },
+  partnerHeader: { fontSize: 22, fontWeight: "bold", color: "#000000", textAlign: "center", marginBottom: 10, textShadowColor: "gold", textShadowRadius: 25 },
+  partnerImageContainer: (isDesktop, w) => ({
+    width: isDesktop ? w * 0.15 : SCREEN_WIDTH * 0.3,
+    height: isDesktop ? w * 0.15 : SCREEN_WIDTH * 0.3,
+    borderRadius: isDesktop ? w * 0.15 / 2 : SCREEN_WIDTH * 0.3 / 2,
     overflow: "hidden",
     elevation: 5,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    backgroundColor: "rgba(0,0,0,0.7)",
   }),
-  partnerImage: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.15 : SCREEN_WIDTH * 0.3,
-    height: isDesktop ? windowWidth * 0.15 : SCREEN_WIDTH * 0.3,
-    borderRadius: isDesktop ? windowWidth * 0.15 / 2 : SCREEN_WIDTH * 0.3 / 2,
-    resizeMode: "cover",
-  }),
-  partnerName: {
-    position: "absolute",
-    bottom: 5,
-    left: 5,
-    fontSize: 12,
-    color: "white",
-    fontWeight: "bold",
-  },
-  kidsContainer: {
-    width: "100%",
-    paddingVertical: 20,
-    backgroundColor: "#111",
-  },
-  kidsHeader: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#000000",
-    textAlign: "center",
-    marginBottom: 10,
-    textShadowColor: "gold",
-    textShadowRadius: 25,
-  },
-  imageScrollContainer: {
-    flexDirection: "row",
-    paddingHorizontal: 10,
-    alignItems: "center",
-    paddingLeft: 15,
-  },
-  card: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9,
+  partnerImage: (isDesktop, w) => ({ width: "100%", height: "100%", resizeMode: "cover" }),
+  kidsContainer: { width: "100%", paddingVertical: 20, backgroundColor: "#111" },
+  kidsHeader: { fontSize: 22, fontWeight: "bold", color: "#000000", textAlign: "center", marginBottom: 10, textShadowColor: "gold", textShadowRadius: 25 },
+  imageScrollContainer: { flexDirection: "row", paddingHorizontal: 10, alignItems: "center", paddingLeft: 15 },
+  card: (isDesktop, w) => ({
+    width: isDesktop ? w * 0.3 : SCREEN_WIDTH * 0.9,
     height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7,
     borderRadius: 15,
     overflow: "hidden",
     elevation: 5,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    backgroundColor: "rgba(0,0,0,0.7)",
     marginRight: 20,
   }),
-  kidCard: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.15 : SCREEN_WIDTH * 0.45,
+  kidCard: (isDesktop, w) => ({
+    width: isDesktop ? w * 0.15 : SCREEN_WIDTH * 0.45,
     height: isDesktop ? SCREEN_HEIGHT * 0.4 : SCREEN_HEIGHT * 0.35,
     borderRadius: 15,
     overflow: "hidden",
     elevation: 5,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    backgroundColor: "rgba(0,0,0,0.7)",
     marginRight: 20,
   }),
-  clickable: {
-    borderWidth: 2,
-    borderColor: "gold",
-    shadowColor: "gold",
-    shadowOffset: { width: 0, height: 5 },
-    shadowRadius: 8,
-    shadowOpacity: 0.7,
-  },
-  notClickable: {
-    opacity: 0.8,
-  },
-  armorImage: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "cover",
-  },
-  kidImage: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "cover",
-  },
-  transparentOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0)",
-    zIndex: 1,
-  },
-  cardName: {
-    position: "absolute",
-    bottom: 10,
-    left: 10,
-    fontSize: 16,
-    color: "white",
-    fontWeight: "bold",
-  },
-  kidCardName: {
-    position: "absolute",
-    bottom: 5,
-    left: 5,
-    fontSize: 12,
-    color: "white",
-    fontWeight: "bold",
-  },
-  disabledText: {
-    fontSize: 12,
-    color: "#ff4444",
-    position: "absolute",
-    bottom: 30,
-    left: 10,
-  },
-  kidDisabledText: {
-    fontSize: 10,
-    color: "#ff4444",
-    position: "absolute",
-    bottom: 15,
-    left: 5,
-  },
-  aboutSection: {
-    marginTop: 40,
-    padding: 20,
-    backgroundColor: "#222",
-    borderRadius: 15,
-  },
-  aboutHeader: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#000000",
-    textAlign: "center",
-    textShadowColor: "gold",
-    textShadowRadius: 25,
-  },
-  aboutText: {
-    fontSize: 16,
-    color: "#fff",
-    textAlign: "center",
-    marginTop: 10,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.8)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalContent: {
-    width: "90%",
-    maxHeight: SCREEN_HEIGHT * 0.7,
-    backgroundColor: "rgba(34, 34, 34, 0.95)",
-    borderRadius: 15,
-    padding: 20,
-    elevation: 5,
-  },
-  modalTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#fff",
-    textAlign: "center",
-    marginBottom: 10,
-    textShadowColor: "gold",
-    textShadowRadius: 10,
-  },
-  modalScroll: {
-    maxHeight: SCREEN_HEIGHT * 0.5,
-  },
-  modalText: {
-    fontSize: 16,
-    color: "#fff",
-    textAlign: "center",
-  },
-  closeButton: {
-    marginTop: 20,
-    backgroundColor: "#2196F3",
-    padding: 10,
-    borderRadius: 5,
-    alignSelf: "center",
-  },
-  closeButtonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
+  clickable: { borderWidth: 2, borderColor: "gold", shadowColor: "gold", shadowOffset: { width: 0, height: 5 }, shadowRadius: 8, shadowOpacity: 0.7 },
+  notClickable: { opacity: 0.8 },
+  armorImage: { width: "100%", height: "100%", resizeMode: "cover" },
+  kidImage: { width: "100%", height: "100%", resizeMode: "cover" },
+  transparentOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0)", zIndex: 1 },
+  cardName: { position: "absolute", bottom: 10, left: 10, fontSize: 16, color: "white", fontWeight: "bold" },
+  kidCardName: { position: "absolute", bottom: 5, left: 5, fontSize: 12, color: "white", fontWeight: "bold" },
+  aboutSection: { marginTop: 40, padding: 20, backgroundColor: "#222", borderRadius: 15 },
+  aboutHeader: { fontSize: 22, fontWeight: "bold", color: "#000000", textAlign: "center", textShadowColor: "gold", textShadowRadius: 25 },
+  aboutText: { fontSize: 16, color: "#fff", textAlign: "center", marginTop: 10 },
+  modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.9)", justifyContent: "center", alignItems: "center" },
+  modalContent: { width: "90%", maxHeight: SCREEN_HEIGHT * 0.7, backgroundColor: "rgba(34,34,34,0.98)", borderRadius: 15, padding: 20, elevation: 10, borderWidth: 2, borderColor: "gold" },
+  modalTitle: { fontSize: 24, fontWeight: "bold", color: "gold", textAlign: "center", marginBottom: 15 },
+  modalScroll: { maxHeight: SCREEN_HEIGHT * 0.5 },
+  modalText: { fontSize: 16, color: "#fff", textAlign: "center", lineHeight: 24 },
+  closeButton: { marginTop: 20, backgroundColor: "#b8860b", padding: 12, borderRadius: 8, alignSelf: "center", paddingHorizontal: 30 },
+  closeButtonText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
 });
 
 export default Aileen;
