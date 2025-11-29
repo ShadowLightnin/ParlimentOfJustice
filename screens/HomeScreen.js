@@ -51,21 +51,103 @@ const desktopPinnacleHomageFactions = [
   { name: 'Legionaires', screen: 'Legionaires', clickable: true, image: require('../assets/BackGround/Legionaires.jpg') },
 ];
 
+/**
+ * WORLD BUILDING
+ * Prime:   1,2,1,2  = [Guardians] / [Planets, Ship Yard] / [Zion] / [Infantry, Villains]
+ * Pinnacle:1,2,1,2  = [Guardians] / [Villains, Planets] / [Zion] / [Ship Yard, Infantry]
+ */
+
 const worldBuildingFactions = [
-  { name: 'Guardians of Justice', screen: 'JusticeScreen', clickable: true, image: require('../assets/BackGround/Justice.jpg') },
-  { name: 'Ship Yard', screen: 'ShipYardScreen', clickable: true, image: require('../assets/BackGround/ShipYard.jpg') },
-  { name: 'Zion Metropolitan', screen: '', clickable: true, image: require('../assets/ParliamentTower.jpg') },
-  { name: 'Infantry', screen: 'Infantry', clickable: true, image: require('../assets/BackGround/Soldiers.jpg') },
-  { name: 'Villains', screen: 'VillainsScreen', clickable: true, image: require('../assets/BackGround/VillainsHub.jpg') },
+  // Row 1 → 1 card
+  { 
+    name: 'Guardians of Justice', 
+    screen: 'JusticeScreen', 
+    clickable: true, 
+    image: require('../assets/BackGround/Justice.jpg') 
+  },
+
+  // Row 2 → 2 cards
+  {
+    name: 'Worlds & Planets',
+    screen: 'PlanetsScreen', // make sure this exists in your navigator
+    clickable: true,
+    image: require('../assets/Space/ExoPlanet.jpg'), // update path/asset name if needed
+  },
+  { 
+    name: 'Ship Yard', 
+    screen: 'ShipYardScreen', 
+    clickable: true, 
+    image: require('../assets/BackGround/ShipYard.jpg') 
+  },
+
+  // Row 3 → 1 card
+  { 
+    name: 'Zion Metropolitan', 
+    screen: '', // or 'ZionScreen' if/when you have one
+    clickable: true, 
+    image: require('../assets/ParliamentTower.jpg') 
+  },
+
+  // Row 4 → 2 cards
+  { 
+    name: 'Infantry', 
+    screen: 'Infantry', 
+    clickable: true, 
+    image: require('../assets/BackGround/Soldiers.jpg') 
+  },
+  { 
+    name: 'Villains', 
+    screen: 'VillainsScreen', 
+    clickable: true, 
+    image: require('../assets/BackGround/VillainsHub.jpg') 
+  },
 ];
 
 // Reorder worldBuildingFactions for Pinnacle Universe
 const getPinnacleWorldBuildingFactions = () => [
-  { name: 'Guardians of Justice', screen: 'JusticeScreen', clickable: true, image: require('../assets/BackGround/Justice.jpg') },
-  { name: 'Villains', screen: 'VillainsScreen', clickable: true, image: require('../assets/BackGround/VillainsHub.jpg') },
-  { name: 'Zion Metropolitan', screen: '', clickable: true, image: require('../assets/ParliamentTower.jpg') },
-  { name: 'Ship Yard', screen: 'ShipYardScreen', clickable: true, image: require('../assets/BackGround/ShipYard.jpg') },
-  { name: 'Infantry', screen: 'Infantry', clickable: true, image: require('../assets/BackGround/Soldiers.jpg') },
+  // Row 1 → 1 card
+  {
+    name: 'Worlds & Planets',
+    screen: 'PlanetsScreen',
+    clickable: true,
+    image: require('../assets/Space/ExoPlanet.jpg'),
+  },
+
+  // Row 2 → 2 cards (Villains higher, Planets with it)
+  { 
+    name: 'Villains', 
+    screen: 'VillainsScreen', 
+    clickable: true, 
+    image: require('../assets/BackGround/VillainsHub.jpg') 
+  },
+  { 
+    name: 'Guardians of Justice', 
+    screen: 'JusticeScreen', 
+    clickable: true, 
+    image: require('../assets/BackGround/Justice.jpg') 
+  },
+
+  // Row 3 → 1 card
+  { 
+    name: 'Zion Metropolitan', 
+    screen: '', 
+    clickable: true, 
+    image: require('../assets/ParliamentTower.jpg') 
+  },
+
+  // Row 4 → 2 cards
+  { 
+    name: 'Ship Yard', 
+    screen: 'ShipYardScreen', 
+    clickable: true, 
+    image: require('../assets/BackGround/ShipYard.jpg') 
+  },
+  { 
+    name: 'Infantry', 
+    screen: 'Infantry', 
+    clickable: true, 
+    image: require('../assets/BackGround/Soldiers.jpg') 
+  },
 ];
 
 const otherFactions = [
@@ -299,33 +381,63 @@ export const HomeScreen = () => {
     </Animated.View>
   );
 
+  /**
+   * WORLD BUILDING GRID
+   * Now truly 1,2,1,2 based on index:
+   * row1: [0]
+   * row2: [1,2]
+   * row3: [3]
+   * row4: [4,5]
+   */
   const renderWorldBuildingGrid = () => {
     const factionsToShow = isYourUniverse ? worldBuildingFactions : getPinnacleWorldBuildingFactions();
-    const topFactions = factionsToShow.slice(0, 2);
-    const middleFaction = factionsToShow[2] || null;
-    const bottomFactions = factionsToShow.slice(3, 5);
+
+    const row1 = factionsToShow[0] ? [factionsToShow[0]] : [];
+    const row2 = factionsToShow.slice(1, 3);
+    const row3 = factionsToShow[3] ? [factionsToShow[3]] : [];
+    const row4 = factionsToShow.slice(4, 6);
 
     return (
       <View style={styles.gridContainer}>
-        <View style={styles.row}>
-          {topFactions.map((item) => (
-            <View key={item.name} style={styles.gridItem}>
-              {renderFaction({ item })}
-            </View>
-          ))}
-        </View>
-        {middleFaction && (
-          <View style={styles.middleRow}>
-            {renderFaction({ item: middleFaction })}
+        {row1.length > 0 && (
+          <View style={styles.row}>
+            {row1.map(item => (
+              <View key={item.name} style={styles.gridItem}>
+                {renderFaction({ item })}
+              </View>
+            ))}
           </View>
         )}
-        <View style={styles.row}>
-          {bottomFactions.map((item) => (
-            <View key={item.name} style={styles.gridItem}>
-              {renderFaction({ item })}
-            </View>
-          ))}
-        </View>
+
+        {row2.length > 0 && (
+          <View style={styles.row}>
+            {row2.map(item => (
+              <View key={item.name} style={styles.gridItem}>
+                {renderFaction({ item })}
+              </View>
+            ))}
+          </View>
+        )}
+
+        {row3.length > 0 && (
+          <View style={styles.row}>
+            {row3.map(item => (
+              <View key={item.name} style={styles.gridItem}>
+                {renderFaction({ item })}
+              </View>
+            ))}
+          </View>
+        )}
+
+        {row4.length > 0 && (
+          <View style={styles.row}>
+            {row4.map(item => (
+              <View key={item.name} style={styles.gridItem}>
+                {renderFaction({ item })}
+              </View>
+            ))}
+          </View>
+        )}
       </View>
     );
   };
