@@ -30,9 +30,9 @@ const NateScreen = () => {
   const spawnImageHeight = isDesktop ? SCREEN_HEIGHT * 0.3 : SCREEN_HEIGHT * 0.5;
 
   const nateCharacters = [
-    { name: "Demon Lord Nate", image: require('../../../assets/Villains/Nate.jpg'), clickable: true },
-    { name: "Skinwalker Nate", image: require('../../../assets/Villains/Nate2.jpg'), clickable: true },
-    { name: "Nate", image: require('../../../assets/Villains/Nate3.jpg'), clickable: true },
+    { name: "Demon Lord Naq'thul", image: require('../../../assets/Villains/Nate.jpg'), clickable: true },
+    { name: "Skinwalker Naq'thul", image: require('../../../assets/Villains/Nate2.jpg'), clickable: true },
+    { name: "Naq'thul", image: require('../../../assets/Villains/Nate3.jpg'), clickable: true },
   ];
 
   const spawnCharacters = [
@@ -76,11 +76,11 @@ const NateScreen = () => {
           
           {/* Title */}
           <Text style={isDesktop ? styles.desktopTitle : styles.mobileTitle}>
-            🔥 Demon Lord Nate 🔥
+            🔥 Demon Lord Naq'thul 🔥
           </Text>
 
           {/* Nate's Image (Horizontal Scroll Container) */}
-          <Text style={styles.nateTitle}>Nate Variants</Text>
+          <Text style={styles.nateTitle}>Naq'thul Variants</Text>
           <ScrollView
             horizontal={true}
             style={styles.horizontalImageContainer}
@@ -94,7 +94,7 @@ const NateScreen = () => {
           </ScrollView>
 
           {/* Spawn's Image (Horizontal Scroll Container) */}
-          <Text style={styles.spawnTitle}>Nate's Spawn</Text>
+          <Text style={styles.spawnTitle}>Naq'thul's Spawn</Text>
           <ScrollView
             horizontal={true}
             style={styles.horizontalImageContainer}
@@ -109,7 +109,7 @@ const NateScreen = () => {
 
           {/* Description */}
           <Text style={isDesktop ? styles.desktopDescription : styles.mobileDescription}>
-            The mighty Demon Lord Nate reigns supreme, feared by all who cross his path. 
+            The mighty Demon Lord Naq'thul reigns supreme, feared by all who cross his path. 
             Legends speak of him commanding the infernal legions and wielding a blade forged 
             in the heart of a dying star. Beware his wrath!
           </Text>

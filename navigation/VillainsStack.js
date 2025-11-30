@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 // Villains Screens
 import VillainsScreen from '../screens/Villains/VillainsScreen';
+import EnlightenedCharacterDetail from '../screens/Villains/EnlightenedCharacterDetail';
 import VillainsTab from '../screens/Villains/VillainsTab';
 import Villainy from '../screens/Villains/Villainy';
   import PowerVillains from '../screens/Villains/PowerVillains';
@@ -103,6 +104,7 @@ const VillainsStack = () => {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {/* Base Screens */}
       <Stack.Screen name="Villains" component={VillainsScreen} />
+      <Stack.Screen name="EnlightenedCharacterDetail" component={EnlightenedCharacterDetail} />
       <Stack.Screen name="VillainsTab" component={VillainsTab} />
         <Stack.Screen name="Villainy" component={Villainy} />
           <Stack.Screen name="PowerVillains" component={PowerVillains} />

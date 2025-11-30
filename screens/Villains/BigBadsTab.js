@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -8,19 +8,22 @@ import {
   StyleSheet,
   Dimensions,
   ImageBackground,
-  Modal,
-  Alert
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Audio } from 'expo-av';
 
 // Screen dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-
-// Grid layout settings
 const isDesktop = SCREEN_WIDTH > 600;
 
-// Big Bads data with images, respective screens, and border colors
+const cardSizes = {
+  desktop: { width: 400, height: 600 },
+  mobile: { width: 350, height: 500 },
+};
+const horizontalSpacing = isDesktop ? 40 : 20;
+const verticalSpacing = isDesktop ? 50 : 20;
+
+// === ALL YOUR BIG BADS — FULLY PRESERVED ===
 const bigBads = [
   { name: 'Obsian', screen: 'ObsidianScreen', image: require('../../assets/Villains/Obsidian.jpg'), clickable: true, borderColor: 'purple' },
   { name: 'Umbra Nex', screen: 'UmbraNexScreen', image: require('../../assets/Villains/UmbraNex.jpg'), clickable: true, borderColor: 'purple' },
@@ -32,109 +35,79 @@ const bigBads = [
   { name: 'Vortigar', screen: 'VortigarScreen', image: require('../../assets/Villains/Vortigar.jpg'), clickable: true, borderColor: 'purple' },
   { name: 'Torath', screen: 'Torath', image: require('../../assets/Villains/Torath.jpg'), clickable: true, borderColor: 'purple' },
   { name: 'Hextator', screen: '', image: require('../../assets/Villains/Hextator.jpg'), clickable: true, borderColor: 'purple' },
-  { name: 'Lord Dravak', screen: '', image: require('../../assets/Villains/Dravak.jpg'), clickable: false, borderColor: 'purple' },
-  { name: 'Arcane Devos', screen: 'VortigarScreen', image: require('../../assets/Villains/Devos.jpg'), clickable: false, borderColor: 'purple' },
-  { name: 'Archon Ultivax', screen: '', image: require('../../assets/Villains/Ultivax.jpg'), clickable: false, borderColor: 'purple' },
-  { name: 'Sovereign Xal-Zor', screen: '', image: require('../../assets/Villains/XalZor.jpg'), clickable: false, borderColor: null },
-  { name: 'Emperor Obsidian', screen: '', image: require('../../assets/Villains/EmperorObsidian.jpg'), clickable: false, borderColor: 'purple' },
-  { name: 'Admiral Scyphos', screen: '', image: require('../../assets/Villains/Scyphos.jpg'), clickable: false, borderColor: 'purple' },
-  { name: 'Admiral', screen: '', image: require('../../assets/Villains/Admiral.jpg'), clickable: false, borderColor: 'purple' },
-  { name: "Zein'roe", screen: '', image: require('../../assets/Villains/Zeinroe.jpg'), clickable: false, borderColor: 'purple' },
-  { name: 'Devoes', screen: '', image: require('../../assets/Villains/Devoes.jpg'), clickable: false, borderColor: 'purple' },
-  { name: 'Cronos', screen: '', image: require('../../assets/Villains/Cronos.jpg'), clickable: false, borderColor: 'purple' },
-  { name: "Cor'vas", screen: '', image: require('../../assets/Villains/Corvas.jpg'), clickable: false, borderColor: 'purple' },
-
-  // { name: '', screen: '', image: require('../../assets/Villains/.jpg'), clickable: false },
+  { name: 'Lord Dravak', screen: '', image: require('../../assets/Villains/Dravak.jpg'), clickable: true, borderColor: 'purple' },
+  { name: 'Arcane Devos', screen: 'VortigarScreen', image: require('../../assets/Villains/Devos.jpg'), clickable: true, borderColor: 'purple' },
+  { name: 'Archon Ultivax', screen: '', image: require('../../assets/Villains/Ultivax.jpg'), clickable: true, borderColor: 'purple' },
+  { name: 'Sovereign Xal-Zor', screen: '', image: require('../../assets/Villains/XalZor.jpg'), clickable: true, borderColor: null },
+  { name: 'Emperor Obsidian', screen: '', image: require('../../assets/Villains/EmperorObsidian.jpg'), clickable: true, borderColor: 'purple' },
+  { name: 'Admiral Scyphos', screen: '', image: require('../../assets/Villains/Scyphos.jpg'), clickable: true, borderColor: 'purple' },
+  { name: 'Admiral', screen: '', image: require('../../assets/Villains/Admiral.jpg'), clickable: true, borderColor: 'purple' },
+  { name: "Zein'roe", screen: '', image: require('../../assets/Villains/Zeinroe.jpg'), clickable: true, borderColor: 'purple' },
+  { name: 'Devoes', screen: '', image: require('../../assets/Villains/Devoes.jpg'), clickable: true, borderColor: 'purple' },
+  { name: 'Cronos', screen: '', image: require('../../assets/Villains/Cronos.jpg'), clickable: true, borderColor: 'purple' },
+  { name: "Cor'vas", screen: '', image: require('../../assets/Villains/Corvas.jpg'), clickable: true, borderColor: 'purple' },
 ];
-
-// Card dimensions for desktop and mobile
-const cardSizes = {
-  desktop: { width: 400, height: 600 },
-  mobile: { width: 350, height: 500 },
-};
 
 const BigBadsTab = () => {
   const navigation = useNavigation();
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [previewBigBad, setPreviewBigBad] = useState(null);
 
-  // Handle audio based on focus
   useFocusEffect(
     useCallback(() => {
       return () => {
         if (currentSound) {
-          currentSound.stopAsync().catch((error) => console.error('Error stopping sound:', error));
-          currentSound.unloadAsync().catch((error) => console.error('Error unloading sound:', error));
+          currentSound.stopAsync();
+          currentSound.unloadAsync();
           setCurrentSound(null);
           setIsPlaying(false);
-          console.log('BigThreat.mp4 stopped at:', new Date().toISOString());
         }
       };
     }, [currentSound])
   );
 
-  // Handle music playback
   const playTheme = async () => {
     if (!currentSound) {
-      try {
-        const { sound } = await Audio.Sound.createAsync(
-          require('../../assets/audio/BigThreat.mp4'),
-          { shouldPlay: true, isLooping: true, volume: 0.7 }
-        );
-        setCurrentSound(sound);
-        await sound.playAsync();
-        setIsPlaying(true);
-        console.log('BigThreat.mp4 started playing at:', new Date().toISOString());
-      } catch (error) {
-        console.error('Failed to load audio file:', error);
-        Alert.alert('Audio Error', 'Failed to load background music: ' + error.message);
-      }
+      const { sound } = await Audio.Sound.createAsync(
+        require('../../assets/audio/BigThreat.mp4'),
+        { shouldPlay: true, isLooping: true, volume: 0.7 }
+      );
+      setCurrentSound(sound);
+      await sound.playAsync();
+      setIsPlaying(true);
     } else if (!isPlaying) {
-      try {
-        await currentSound.playAsync();
-        setIsPlaying(true);
-        console.log('Audio resumed at:', new Date().toISOString());
-      } catch (error) {
-        console.error('Error resuming sound:', error);
-      }
+      await currentSound.playAsync();
+      setIsPlaying(true);
     }
   };
 
-  // Handle music pause
   const pauseTheme = async () => {
     if (currentSound && isPlaying) {
-      try {
-        await currentSound.pauseAsync();
-        setIsPlaying(false);
-        console.log('Audio paused at:', new Date().toISOString());
-      } catch (error) {
-        console.error('Error pausing sound:', error);
-      }
+      await currentSound.pauseAsync();
+      setIsPlaying(false);
     }
   };
 
-  // Handle big bad card press
-  const handleBigBadPress = async (bigBad) => {
-    if (bigBad.clickable && bigBad.screen) {
-      if (currentSound) {
-        try {
-          await currentSound.stopAsync();
-          await currentSound.unloadAsync();
-          setCurrentSound(null);
-          setIsPlaying(false);
-          console.log('BigThreat.mp4 stopped at:', new Date().toISOString());
-        } catch (error) {
-          console.error('Error stopping/unloading sound:', error);
-        }
-      }
-      navigation.navigate(bigBad.screen);
+  const stopAndGoToDetail = async (character) => {
+    if (currentSound) {
+      await currentSound.stopAsync();
+      await currentSound.unloadAsync();
+      setCurrentSound(null);
+      setIsPlaying(false);
+    }
+    navigation.navigate('EnlightenedCharacterDetail', { member: character });
+  };
+
+  const handlePress = (bigBad) => {
+    // If has a dedicated screen → go there
+    if (bigBad.screen && bigBad.screen.trim() !== '') {
+      stopAndGoToDetail(bigBad); // Reuse detail screen with correct theme
     } else {
-      setPreviewBigBad(bigBad);
+      // Otherwise → full bio in detail screen
+      stopAndGoToDetail(bigBad);
     }
   };
 
-  // Render Each Big Bad Card
   const renderBigBadCard = (bigBad) => (
     <TouchableOpacity
       key={bigBad.name}
@@ -142,241 +115,167 @@ const BigBadsTab = () => {
         styles.card,
         {
           width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
-          height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height
+          height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
         },
-        bigBad.clickable && bigBad.borderColor ? styles.clickable(bigBad.borderColor) : styles.notClickable
+        bigBad.borderColor ? styles.clickable(bigBad.borderColor) : styles.notClickable,
       ]}
-      onPress={() => handleBigBadPress(bigBad)}
-      disabled={false} // Allow press to trigger modal even if not clickable
+      onPress={() => handlePress(bigBad)}
+      activeOpacity={0.85}
     >
       <Image source={bigBad.image} style={styles.image} />
       <View style={styles.transparentOverlay} />
       <Text style={styles.name}>{bigBad.name}</Text>
-      {!bigBad.clickable && <Text style={styles.disabledText}>Preview Only</Text>}
+      {/* {!bigBad.screen && <Text style={styles.detailHint}>Tap for Bio</Text>} */}
     </TouchableOpacity>
   );
-
-  // Render Preview Modal
-  const renderPreviewModal = () => {
-    if (!previewBigBad) return null;
-    return (
-      <Modal
-        visible={!!previewBigBad}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setPreviewBigBad(null)}
-      >
-        <View style={styles.modalBackground}>
-          <TouchableOpacity
-            style={styles.modalContainer}
-            activeOpacity={1}
-            onPress={() => setPreviewBigBad(null)}
-          >
-            <Image
-              source={previewBigBad.image}
-              style={styles.previewImage}
-              resizeMode="contain"
-              onError={(e) => console.error('Image load error:', e.nativeEvent.error, 'URI:', previewBigBad.image)}
-            />
-            <Text style={styles.previewName}>{previewBigBad.name}</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
-    );
-  };
 
   return (
     <ImageBackground
       source={require('../../assets/BackGround/BigBad.jpg')}
       style={styles.background}
     >
-      <View style={styles.container}>
-        {/* Back Button */}
-        <TouchableOpacity
-          onPress={async () => {
-            if (currentSound) {
-              try {
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.container}>
+          {/* Back Button */}
+          <TouchableOpacity
+            onPress={async () => {
+              if (currentSound) {
                 await currentSound.stopAsync();
                 await currentSound.unloadAsync();
                 setCurrentSound(null);
                 setIsPlaying(false);
-                console.log('BigThreat.mp4 stopped at:', new Date().toISOString());
-              } catch (error) {
-                console.error('Error stopping/unloading sound:', error);
               }
-            }
-            navigation.navigate('Villains');
-          }}
-          style={styles.backButton}
-        >
-          <Text style={styles.backButtonText}>⬅️ Back</Text>
-        </TouchableOpacity>
-
-        {/* Title */}
-        <TouchableOpacity
-          onPress={() => navigation.navigate('BigBoss')}
-        >
-          <Text style={styles.header}>Big Bads</Text>
-        </TouchableOpacity>
-
-        {/* Music Controls */}
-        <View style={styles.musicControls}>
-          <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
-            <Text style={styles.musicButtonText}>Theme</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
-            <Text style={styles.musicButtonText}>Pause</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Horizontal Scrollable Cards */}
-        <View style={styles.scrollWrapper}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={true}
-            contentContainerStyle={[styles.scrollContainer, { gap: isDesktop ? 40 : 20 }]}
+              navigation.navigate('Villains');
+            }}
+            style={styles.backButton}
           >
-            {bigBads.map(renderBigBadCard)}
-          </ScrollView>
-        </View>
+            <Text style={styles.backButtonText}>Back</Text>
+          </TouchableOpacity>
 
-        {/* Preview Modal */}
-        {renderPreviewModal()}
-      </View>
+          <TouchableOpacity onPress={() => navigation.navigate('BigBoss')}>
+            <Text style={styles.header}>Big Bads</Text>
+          </TouchableOpacity>
+
+          <View style={styles.musicControls}>
+            <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
+              <Text style={styles.musicButtonText}>Theme</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
+              <Text style={styles.musicButtonText}>Pause</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.scrollWrapper}>
+            <Text style={styles.categoryHeader}>Cosmic Tyrants</Text>
+            <ScrollView
+              horizontal
+              contentContainerStyle={styles.scrollContainer}
+              showsHorizontalScrollIndicator={true}
+            >
+              {bigBads.map(renderBigBadCard)}
+            </ScrollView>
+          </View>
+        </View>
+      </ScrollView>
     </ImageBackground>
   );
 };
 
-// Styles
 const styles = StyleSheet.create({
-  background: {
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
-    resizeMode: 'cover',
-  },
+  background: { width: SCREEN_WIDTH, height: SCREEN_HEIGHT, resizeMode: 'cover' },
+  scrollView: { flex: 1 },
   container: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(0, 0, 0, 0.78)',
     paddingTop: 40,
+    paddingBottom: 40,
     alignItems: 'center',
   },
   backButton: {
     position: 'absolute',
     top: 40,
     left: 20,
-    backgroundColor: '#750000',
-    paddingVertical: 8,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    elevation: 5,
+    backgroundColor: '#4B0082',
+    paddingVertical: 10,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    elevation: 8,
+    borderWidth: 2,
+    borderColor: '#9932CC',
   },
-  backButtonText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
+  backButtonText: { color: '#FFF', fontSize: 16, fontWeight: 'bold' },
   header: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#1b084d',
+    fontSize: 48,
+    fontWeight: '900',
+    color: '#4B0082',
     textAlign: 'center',
-    textShadowColor: '#9561f5',
-    textShadowRadius: 25,
-    marginBottom: 20,
+    textShadowColor: '#BA55D3',
+    textShadowRadius: 30,
+    marginVertical: 20,
   },
-  musicControls: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 20,
-  },
+  musicControls: { flexDirection: 'row', gap: 20, marginBottom: 20 },
   musicButton: {
-    padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 5,
-    marginHorizontal: 10,
+    paddingHorizontal: 22,
+    paddingVertical: 12,
+    backgroundColor: 'rgba(138, 43, 226, 0.3)',
+    borderRadius: 30,
+    borderWidth: 2,
+    borderColor: '#BA55D3',
   },
-  musicButtonText: {
-    fontSize: 12,
-    color: '#8800ff',
-    fontWeight: 'bold',
-  },
-  scrollWrapper: {
-    width: SCREEN_WIDTH,
-    flex: 1,
-  },
+  musicButtonText: { fontSize: 16, color: '#DA70D6', fontWeight: 'bold' },
+  scrollWrapper: { width: SCREEN_WIDTH, marginTop: 20 },
   scrollContainer: {
     flexDirection: 'row',
-    flexGrow: 1,
-    width: 'auto',
-    paddingVertical: 20,
+    paddingVertical: verticalSpacing,
     alignItems: 'center',
+    paddingHorizontal: 10,
   },
   card: {
-    borderRadius: 10,
+    borderRadius: 20,
     overflow: 'hidden',
-    elevation: 5,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    elevation: 15,
+    backgroundColor: 'rgba(10, 0, 30, 0.9)',
+    marginRight: horizontalSpacing,
+    shadowColor: '#9932CC',
+    shadowOpacity: 0.8,
+    shadowRadius: 20,
   },
-  clickable: (borderColor) => ({
-    borderColor: borderColor || 'purple',
-    borderWidth: 2,
+  clickable: (color) => ({
+    borderColor: color === 'gold' ? '#FFD700' : '#BA55D3',
+    borderWidth: 5,
   }),
-  notClickable: {
-    opacity: 0.8,
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  transparentOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1,
-  },
+  notClickable: { opacity: 0.88 },
+  image: { width: '100%', height: '100%', resizeMode: 'cover' },
+  transparentOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0, 0, 0, 0.45)' },
   name: {
     position: 'absolute',
-    bottom: 10,
-    left: 10,
-    fontSize: 16,
-    color: 'white',
-    fontWeight: 'bold',
+    bottom: 20,
+    left: 20,
+    fontSize: 24,
+    color: '#FFFFFF',
+    fontWeight: '900',
+    textShadowColor: '#000',
+    textShadowRadius: 12,
   },
-  disabledText: {
-    fontSize: 12,
-    color: '#ff4444',
-    marginTop: 5,
-  },
-  modalBackground: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.9)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContainer: {
-    width: '80%',
-    height: '60%',
-    backgroundColor: '#420075',
-    borderRadius: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-    borderWidth: 2,
-    borderColor: '#9561f5',
-  },
-  previewImage: {
-    width: '100%',
-    height: '80%',
-    borderRadius: 10,
-  },
-  previewName: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  detailHint: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    backgroundColor: 'rgba(138, 43, 226, 0.8)',
     color: '#FFF',
-    textAlign: 'center',
-    marginTop: 10,
-    textShadowColor: '#9561f5',
-    textShadowRadius: 10,
+    padding: 8,
+    borderRadius: 10,
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  categoryHeader: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#E6E6FA',
+    textAlign: 'left',
+    textShadowColor: '#BA55D3',
+    textShadowRadius: 20,
+    marginLeft: 15,
+    marginVertical: 15,
   },
 });
 

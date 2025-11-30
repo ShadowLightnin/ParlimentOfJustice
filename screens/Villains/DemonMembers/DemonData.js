@@ -1,7 +1,7 @@
 // DemonData.js
 export const demonLords = [
   { 
-    name: 'Demon Lord Nate', 
+    name: "Demon Lord Naq'thul", 
     screen: 'NateScreen', 
     image: require('../../../assets/Villains/Nate.jpg'), 
     audio: require('../../../assets/audio/NateSound.mp4'),

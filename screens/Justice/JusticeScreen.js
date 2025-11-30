@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
+// JusticeScreen.js
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -8,627 +9,320 @@ import {
   Dimensions,
   ImageBackground,
   Modal,
-  Alert,
   ScrollView,
+  FlatList,
+  Alert,
 } from 'react-native';
-import { FlatList } from 'react-native';
-import { useNavigation, useIsFocused, useFocusEffect } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Audio } from 'expo-av';
+
 import Guardians from './Guardians';
 import Elementals from './Elementals';
 import JusticeLeague from './JusticeLeague';
 import TheSeven from './TheSeven';
 
-// Screen dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-
-// Grid layout settings
 const isDesktop = SCREEN_WIDTH > 600;
 
-// Card dimensions for desktop and mobile
 const cardSizes = {
-  desktop: { width: 400, height: 600 },
-  mobile: { width: 350, height: 500 },
+  desktop: { width: 420, height: 620 },
+  mobile: { width: 360, height: 540 },
 };
-const horizontalSpacing = isDesktop ? 40 : 20;
-const verticalSpacing = isDesktop ? 50 : 20;
+const horizontalSpacing = isDesktop ? 50 : 25;
 
-// Background music (shared across screens)
-let backgroundSound = null;
+let currentSound = null;
 
-const playBackgroundMusic = async () => {
-  if (!backgroundSound) {
+const JusticeScreen = () => {
+  const navigation = useNavigation();
+  const [previewHero, setPreviewHero] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const playTheme = async () => {
+    if (currentSound) {
+      await currentSound.playAsync();
+      setIsPlaying(true);
+      return;
+    }
     try {
       const { sound } = await Audio.Sound.createAsync(
         require('../../assets/audio/Superman.mp4'),
         { shouldPlay: true, isLooping: true, volume: 1.0 }
       );
-      backgroundSound = sound;
-      await sound.playAsync();
-    } catch (error) {
-      console.error('Failed to load audio file:', error);
-      Alert.alert('Audio Error', 'Failed to load background music. Please check the audio file path: ../../assets/audio/Superman.mp4');
-    }
-  }
-};
-
-const stopBackgroundMusic = async () => {
-  if (backgroundSound) {
-    try {
-      await backgroundSound.stopAsync();
-      await backgroundSound.unloadAsync();
-      backgroundSound = null;
-    } catch (error) {
-      console.error('Error stopping/unloading sound:', error);
-    }
-  }
-};
-
-const JusticeScreen = () => {
-  const navigation = useNavigation();
-  const isFocused = useIsFocused();
-  const [previewHero, setPreviewHero] = useState(null);
-  const [currentSound, setCurrentSound] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  // Handle music playback
-  const playTheme = async () => {
-    if (!currentSound) {
-      try {
-        const { sound } = await Audio.Sound.createAsync(
-          require('../../assets/audio/Superman.mp4'),
-          { shouldPlay: true, isLooping: true, volume: 1.0 }
-        );
-        setCurrentSound(sound);
-        await sound.playAsync();
-        setIsPlaying(true);
-        console.log('Superman.mp4 started playing at:', new Date().toISOString());
-      } catch (error) {
-        console.error('Failed to load audio file:', error);
-        Alert.alert('Audio Error', 'Failed to load background music. Please check the audio file path: ../../assets/audio/Superman.mp4');
-      }
-    } else if (!isPlaying) {
-      try {
-        const status = await currentSound.getStatusAsync();
-        if (status.isLoaded) {
-          await currentSound.playAsync();
-          setIsPlaying(true);
-          console.log('Audio resumed at:', new Date().toISOString());
-        } else {
-          console.warn('Cannot resume: Sound is not loaded');
-        }
-      } catch (error) {
-        console.error('Error resuming sound:', error);
-      }
+      currentSound = sound;
+      setIsPlaying(true);
+    } catch (e) {
+      Alert.alert('Audio Error', 'Could not play theme.');
     }
   };
 
-  // Handle music pause
   const pauseTheme = async () => {
     if (currentSound && isPlaying) {
-      try {
-        const status = await currentSound.getStatusAsync();
-        if (status.isLoaded) {
-          await currentSound.pauseAsync();
-          setIsPlaying(false);
-          console.log('Audio paused at:', new Date().toISOString());
-        } else {
-          console.warn('Cannot pause: Sound is not loaded');
-        }
-      } catch (error) {
-        console.error('Error pausing sound:', error);
-      }
+      await currentSound.pauseAsync();
+      setIsPlaying(false);
     }
   };
 
-  // Handle screen focus for audio cleanup
+  const stopAndUnload = async () => {
+    if (currentSound) {
+      try { await currentSound.stopAsync(); await currentSound.unloadAsync(); } catch (e) {}
+      currentSound = null;
+      setIsPlaying(false);
+    }
+  };
+
   useFocusEffect(
     useCallback(() => {
-      return () => {
-        if (currentSound) {
-          currentSound.getStatusAsync().then((status) => {
-            if (status.isLoaded) {
-              currentSound.stopAsync().catch((error) => console.error('Error stopping sound:', error));
-              currentSound.unloadAsync().catch((error) => console.error('Error unloading sound:', error));
-            } else {
-              console.warn('Cannot stop/unload: Sound is not loaded');
-            }
-            setCurrentSound(null);
-            setIsPlaying(false);
-            console.log('Superman.mp4 stopped at:', new Date().toISOString());
-          }).catch((error) => {
-            console.error('Error checking sound status:', error);
-            setCurrentSound(null);
-            setIsPlaying(false);
-            console.log('Superman.mp4 stopped at:', new Date().toISOString());
-          });
-        }
-      };
-    }, [currentSound])
+      return () => stopAndUnload();
+    }, [])
   );
 
-  const handleHeroPress = async (hero) => {
-    if (hero.clickable) {
-      if (!hero.screen) {
-        if (currentSound) {
-          try {
-            const status = await currentSound.getStatusAsync();
-            if (status.isLoaded) {
-              await currentSound.stopAsync();
-              await currentSound.unloadAsync();
-              setCurrentSound(null);
-              setIsPlaying(false);
-              console.log('Superman.mp4 stopped at:', new Date().toISOString());
-            } else {
-              console.warn('Cannot stop/unload: Sound is not loaded');
-              setCurrentSound(null);
-              setIsPlaying(false);
-            }
-          } catch (error) {
-            console.error('Error stopping/unloading sound:', error);
-            setCurrentSound(null);
-            setIsPlaying(false);
-          }
-        }
-        setPreviewHero(hero);
-      } else {
-        console.log('Navigating to screen:', hero.screen);
-        navigation.navigate(hero.screen);
-      }
-    }
+  const goToDetail = async (hero) => {
+    await stopAndUnload();
+    navigation.navigate('JusticeCharacterDetail', { member: hero });
   };
 
-  const renderHeroCard = ({ item }) => (
-    <TouchableOpacity
-      key={item.name || item.image.toString()}
-      style={[
-        styles.card,
-        {
-          width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
-          height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
-        },
-        item.clickable ? styles.clickable : styles.notClickable,
-      ]}
-      onPress={() => handleHeroPress(item)}
-      disabled={!item.clickable}
-    >
-      {item?.image && (
-        <>
-          <Image source={item.image} style={styles.image} resizeMode="cover" />
-          <View style={styles.transparentOverlay} />
-        </>
-      )}
-      <Text style={styles.name}>{item.name || item.codename || 'Unknown'}</Text>
-      {!item.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
-    </TouchableOpacity>
-  );
+  const goToHeroes = async () => {
+    await stopAndUnload();
+    navigation.navigate('Heroes');
+  };
 
-  const renderPreviewCard = (hero) => (
-    <TouchableOpacity
-      style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
-      onPress={async () => {
-        if (currentSound) {
-          try {
-            const status = await currentSound.getStatusAsync();
-            if (status.isLoaded) {
-              await currentSound.stopAsync();
-              await currentSound.unloadAsync();
-              setCurrentSound(null);
-              setIsPlaying(false);
-              console.log('Superman.mp4 stopped at:', new Date().toISOString());
-            } else {
-              console.warn('Cannot stop/unload: Sound is not loaded');
-              setCurrentSound(null);
-              setIsPlaying(false);
-            }
-          } catch (error) {
-            console.error('Error stopping/unloading sound:', error);
-            setCurrentSound(null);
-            setIsPlaying(false);
-          }
-        }
-        await playTheme();
-        setPreviewHero(null);
-      }}
-    >
-      <Image
-        source={hero.image || require('../../assets/Armor/LoneRanger.jpg')}
-        style={styles.previewImage}
-        resizeMode="cover"
-      />
-      <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>
-        © {hero.name || hero.codename || 'Unknown'}; William Cummings
-      </Text>
-    </TouchableOpacity>
-  );
+  const openPreview = (hero) => setPreviewHero(hero);
+  const closePreview = async () => {
+    await stopAndUnload();
+    await playTheme();
+    setPreviewHero(null);
+  };
+
+  const renderHeroCard = ({ item }) => {
+    const clickable = item.clickable !== false;
+
+    return (
+      <TouchableOpacity
+        style={[
+          styles.card,
+          {
+            width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
+            height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
+          },
+          clickable ? styles.clickable : styles.notClickable,
+        ]}
+        onPress={() => clickable ? goToDetail(item) : openPreview(item)}
+      >
+        <Image
+          source={item.image || require('../../assets/Armor/PlaceHolder.jpg')}
+          style={styles.heroImage}
+          resizeMode="cover"
+        />
+        <View style={styles.overlay} />
+        <Text style={styles.heroName}>{item.name || item.codename || 'Unknown'}</Text>
+        {!clickable && <Text style={styles.comingSoon}>Coming Soon</Text>}
+      </TouchableOpacity>
+    );
+  };
+
+  const renderPreviewCard = () => {
+    if (!previewHero) return null;
+    return (
+      <TouchableOpacity style={styles.previewCard} onPress={closePreview}>
+        <Image
+          source={previewHero.image || require('../../assets/Armor/LoneRanger.jpg')}
+          style={styles.previewImage}
+          resizeMode="cover"
+        />
+        <View style={styles.overlay} />
+        <Text style={styles.cardName}>
+          © {previewHero.name || previewHero.codename || 'Unknown'} — William Cummings
+        </Text>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <ImageBackground
       source={require('../../assets/BackGround/Justice.jpg')}
       style={styles.background}
+      resizeMode="cover"           // Ensures full coverage on desktop & mobile
     >
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.container}>
-          <TouchableOpacity onPress={() => {
-            console.log('Navigating to Heroes, currentSound:', currentSound, 'isPlaying:', isPlaying);
-            navigation.navigate('Heroes');
-          }}>
-            <Text style={[styles.header, { marginTop: 20, marginBottom: 20 }]}>Guardians of Justice</Text>
-          </TouchableOpacity>
-          <View style={styles.musicControls}>
-            <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
-              <Text style={styles.musicButtonText}>Theme</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
-              <Text style={styles.musicButtonText}>Pause</Text>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity
-            onPress={async () => {
-              if (currentSound) {
-                try {
-                  const status = await currentSound.getStatusAsync();
-                  if (status.isLoaded) {
-                    await currentSound.stopAsync();
-                    await currentSound.unloadAsync();
-                    setCurrentSound(null);
-                    setIsPlaying(false);
-                    console.log('Superman.mp4 stopped at:', new Date().toISOString());
-                  } else {
-                    console.warn('Cannot stop/unload: Sound is not loaded');
-                    setCurrentSound(null);
-                    setIsPlaying(false);
-                  }
-                } catch (error) {
-                  console.error('Error stopping/unloading sound:', error);
-                  setCurrentSound(null);
-                  setIsPlaying(false);
-                }
-              }
-              navigation.navigate('Home');
-            }}
-            style={styles.backButton}
-          >
-            <Text style={styles.backButtonText}>⬅️</Text>
+      <View style={styles.overlayContainer}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+
+          {/* Clickable Title → Heroes Screen */}
+          <TouchableOpacity onPress={goToHeroes} activeOpacity={0.8}>
+            <Text style={styles.mainTitle}>Guardians of Justice</Text>
           </TouchableOpacity>
 
+          {/* Music Controls */}
+          <View style={styles.musicControls}>
+            <TouchableOpacity style={styles.musicBtn} onPress={playTheme}>
+              <Text style={styles.musicText}>Play Theme</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.musicBtn} onPress={pauseTheme}>
+              <Text style={styles.musicText}>Pause</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Back Button */}
           <TouchableOpacity
+            style={styles.backButton}
             onPress={async () => {
-              if (currentSound) {
-                try {
-                  const status = await currentSound.getStatusAsync();
-                  if (status.isLoaded) {
-                    await currentSound.stopAsync();
-                    await currentSound.unloadAsync();
-                    setCurrentSound(null);
-                    setIsPlaying(false);
-                    console.log('Superman.mp4 stopped at:', new Date().toISOString());
-                  } else {
-                    console.warn('Cannot stop/unload: Sound is not loaded');
-                    setCurrentSound(null);
-                    setIsPlaying(false);
-                  }
-                } catch (error) {
-                  console.error('Error stopping/unloading sound:', error);
-                  setCurrentSound(null);
-                  setIsPlaying(false);
-                }
-              }
+              await stopAndUnload();
+              navigation.navigate('Home');
+            }}
+          >
+            <Text style={styles.backText}>Back</Text>
+          </TouchableOpacity>
+
+          {/* Vigilante Button */}
+          <TouchableOpacity
+            style={styles.vigilanteButton}
+            onPress={async () => {
+              await stopAndUnload();
               navigation.navigate('VigilanteScreen');
             }}
-            style={styles.vigilanteButton}
           >
             <Image
               source={require('../../assets/BackGround/Vigilantes.jpg')}
-              style={styles.vigilanteImage}
+              style={styles.vigilanteImg}
               resizeMode="contain"
             />
           </TouchableOpacity>
 
-          <View style={styles.scrollWrapper}>
-            <Text style={styles.categoryHeader}>Guardians</Text>
+          {/* Hero Sections */}
+          <View style={styles.sections}>
+
+            <Text style={styles.sectionTitle}>Guardians</Text>
             <FlatList
               horizontal
               data={Guardians}
               renderItem={renderHeroCard}
-              keyExtractor={(item) => item.name || item.image.toString()}
-              showsHorizontalScrollIndicator={true}
-              contentContainerStyle={styles.scrollContainer}
+              keyExtractor={(_, i) => `g-${i}`}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.list}
             />
-            <Text style={styles.categoryHeader}>Elementals</Text>
+
+            <Text style={styles.sectionTitle}>Elemental Masters</Text>
             <FlatList
               horizontal
               data={Elementals}
               renderItem={renderHeroCard}
-              keyExtractor={(item) => item.name || item.image.toString()}
-              showsHorizontalScrollIndicator={true}
-              contentContainerStyle={styles.scrollContainer}
+              keyExtractor={(_, i) => `e-${i}`}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.list}
             />
-            <Text style={styles.categoryHeader}>Justice League</Text>
+
+            <Text style={styles.sectionTitle}>Justice League</Text>
             <FlatList
               horizontal
               data={JusticeLeague}
               renderItem={renderHeroCard}
-              keyExtractor={(item) => item.name || item.image.toString()}
-              showsHorizontalScrollIndicator={true}
-              contentContainerStyle={styles.scrollContainer}
+              keyExtractor={(_, i) => `jl-${i}`}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.list}
             />
-            <Text style={styles.categoryHeader}>Omni Jumpers</Text>
+
+            <Text style={styles.sectionTitle}>Omni Jumpers</Text>
             <FlatList
               horizontal
               data={TheSeven}
               renderItem={renderHeroCard}
-              keyExtractor={(item) => item.name || item.image.toString()}
-              showsHorizontalScrollIndicator={true}
-              contentContainerStyle={styles.scrollContainer}
+              keyExtractor={(_, i) => `ts-${i}`}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.list}
             />
           </View>
 
-          <Modal
-            visible={!!previewHero}
-            transparent={true}
-            animationType="fade"
-            onRequestClose={async () => {
-              if (currentSound) {
-                try {
-                  const status = await currentSound.getStatusAsync();
-                  if (status.isLoaded) {
-                    await currentSound.stopAsync();
-                    await currentSound.unloadAsync();
-                    setCurrentSound(null);
-                    setIsPlaying(false);
-                    console.log('Superman.mp4 stopped at:', new Date().toISOString());
-                  } else {
-                    console.warn('Cannot stop/unload: Sound is not loaded');
-                    setCurrentSound(null);
-                    setIsPlaying(false);
-                  }
-                } catch (error) {
-                  console.error('Error stopping/unloading sound:', error);
-                  setCurrentSound(null);
-                  setIsPlaying(false);
-                }
-              }
-              await playTheme();
-              setPreviewHero(null);
-            }}
-          >
-            <View style={styles.modalBackground}>
-              <TouchableOpacity
-                style={styles.modalOuterContainer}
-                activeOpacity={1}
-                onPress={async () => {
-                  if (currentSound) {
-                    try {
-                      const status = await currentSound.getStatusAsync();
-                      if (status.isLoaded) {
-                        await currentSound.stopAsync();
-                        await currentSound.unloadAsync();
-                        setCurrentSound(null);
-                        setIsPlaying(false);
-                        console.log('Superman.mp4 stopped at:', new Date().toISOString());
-                      } else {
-                        console.warn('Cannot stop/unload: Sound is not loaded');
-                        setCurrentSound(null);
-                        setIsPlaying(false);
-                      }
-                    } catch (error) {
-                      console.error('Error stopping/unloading sound:', error);
-                      setCurrentSound(null);
-                      setIsPlaying(false);
-                    }
-                  }
-                  await playTheme();
-                  setPreviewHero(null);
-                }}
-              >
-                <View style={styles.imageContainer}>
-                  {previewHero && (
-                    <FlatList
-                      horizontal
-                      data={[previewHero]}
-                      renderItem={({ item }) => renderPreviewCard(item)}
-                      keyExtractor={(item) => item.name || item.image.toString()}
-                      showsHorizontalScrollIndicator={false}
-                      contentContainerStyle={styles.imageScrollContainer}
-                    />
-                  )}
-                </View>
-                <View style={styles.previewAboutSection}>
-                  <Text style={styles.previewName}>{previewHero?.name || previewHero?.codename || 'Unknown'}</Text>
-                </View>
-              </TouchableOpacity>
+        </ScrollView>
+      </View>
+
+      {/* Preview Modal */}
+      <Modal visible={!!previewHero} transparent animationType="fade" onRequestClose={closePreview}>
+        <TouchableOpacity style={styles.modalBg} activeOpacity={1} onPress={closePreview}>
+          <View style={styles.modalContent}>
+            {renderPreviewCard()}
+            <View style={styles.previewFooter}>
+              <Text style={styles.previewName}>
+                {previewHero?.name || previewHero?.codename || 'Unknown Hero'}
+              </Text>
             </View>
-          </Modal>
-        </View>
-      </ScrollView>
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  background: {
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
-    resizeMode: 'cover',
+  background: { width: '100%', height: '100%' },
+  overlayContainer: { flex: 1, backgroundColor: 'rgba(0,0,0,0.75)' },
+  scrollContainer: { paddingBottom: 120, alignItems: 'center' },
+
+  mainTitle: {
+    fontSize: isDesktop ? 56 : 40,
+    fontWeight: '900',
+    color: '#FFF',
+    textAlign: 'center',
+    marginTop: isDesktop ? 60 : 80,
+    marginBottom: 20,
+    textShadowColor: '#FFD700',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 20,
   },
-  scrollView: {
-    flex: 1,
+
+  musicControls: { flexDirection: 'row', gap: 30, marginBottom: 30 },
+  musicBtn: {
+    backgroundColor: 'rgba(0,179,255,0.25)',
+    paddingHorizontal: 32,
+    paddingVertical: 14,
+    borderRadius: 30,
+    borderWidth: 2,
+    borderColor: '#00B3FF',
   },
-  container: {
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    paddingTop: 40,
-    alignItems: 'center',
-    paddingBottom: 20,
-  },
-  transparentOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1,
-  },
+  musicText: { color: '#00FFFF', fontSize: 18, fontWeight: 'bold' },
+
   backButton: {
     position: 'absolute',
-    top: 100,
+    top: isDesktop ? 60 : 30,
     left: 20,
-    backgroundColor: 'rgba(17, 25, 40, 0.6)',
-    paddingVertical: 15,
-    borderRadius: 8,
-    elevation: 5,
-  },
-  backButtonText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  header: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#FFF',
-    textAlign: 'center',
-    textShadowColor: 'yellow',
-    textShadowRadius: 15,
-  },
-  musicControls: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 20,
-  },
-  musicButton: {
-    padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 5,
-    marginHorizontal: 10,
-  },
-  musicButtonText: {
-    fontSize: 12,
-    color: '#00b3ff',
-    fontWeight: 'bold',
-  },
-  categoryHeader: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFF',
-    textAlign: 'left',
-    textShadowColor: 'yellow',
-    textShadowRadius: 15,
-  },
-  vigilanteButton: {
-    position: 'absolute',
-    top: 100,
-    right: 20,
-    padding: 5,
-    borderRadius: 5,
-  },
-  vigilanteImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    opacity: 1,
-  },
-  scrollWrapper: {
-    width: SCREEN_WIDTH,
-    marginTop: 20,
-  },
-  scrollContainer: {
-    flexDirection: 'row',
-    flexGrow: 1,
-    width: 'auto',
-    paddingVertical: verticalSpacing,
-    alignItems: 'center',
-  },
-  card: {
-    borderRadius: 15,
-    overflow: 'hidden',
-    elevation: 5,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    marginRight: horizontalSpacing,
-  },
-  clickable: {
-    borderColor: 'yellow',
+    backgroundColor: 'rgba(17,25,40,0.9)',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 12,
     borderWidth: 2,
+    borderColor: '#FFF',
   },
-  notClickable: {
-    opacity: 0.7,
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  name: {
-    position: 'absolute',
-    bottom: 10,
-    left: 10,
-    fontSize: 16,
-    color: 'white',
+  backText: { color: '#FFF', fontSize: 14, fontWeight: 'bold' },
+
+  vigilanteButton: { position: 'absolute', top: isDesktop ? 60 : 20, right: 20 },
+  vigilanteImg: { width: 65, height: 65, borderRadius: 40, borderWidth: 4, borderColor: '#FFD700' },
+
+  sections: { width: '100%', marginTop: 20 },
+  sectionTitle: {
+    fontSize: 32,
+    color: '#FFD',
     fontWeight: 'bold',
+    marginLeft: 25,
+    marginTop: 40,
+    marginBottom: 15,
+    textShadowColor: '#FFD700',
+    textShadowRadius: 12,
   },
-  disabledText: {
-    fontSize: 12,
-    color: 'yellow',
-    marginTop: 5,
-  },
-  modalBackground: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.9)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalOuterContainer: {
-    width: '90%',
-    height: '80%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  imageContainer: {
-    width: '100%',
-    paddingVertical: 20,
-    backgroundColor: '#111',
-    alignItems: 'center',
-    paddingLeft: 20,
-  },
-  imageScrollContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  previewCard: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.2 : SCREEN_WIDTH * 0.8,
-    height: isDesktop ? SCREEN_HEIGHT * 0.7 : SCREEN_HEIGHT * 0.6,
-    borderRadius: 15,
-    overflow: 'hidden',
-    elevation: 5,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    marginRight: 20,
-  }),
-  previewImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  cardName: {
-    position: 'absolute',
-    bottom: 10,
-    left: 10,
-    fontSize: 16,
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  previewAboutSection: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#222',
-    borderRadius: 10,
-    width: '100%',
-  },
-  previewName: {
-    fontSize: 16,
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 5,
-  },
+  list: { paddingLeft: 20, paddingRight: 40 },
+
+  card: { borderRadius: 22, overflow: 'hidden', marginRight: horizontalSpacing, elevation: 20 },
+  clickable: { borderWidth: 5, borderColor: '#FFD700' },
+  notClickable: { opacity: 0.65 },
+  heroImage: { width: '100%', height: '100%' },
+  overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.55)' },
+  heroName: { position: 'absolute', bottom: 25, left: 25, fontSize: 24, color: '#FFF', fontWeight: 'bold', textShadowColor: '#000', textShadowRadius: 10 },
+  comingSoon: { position: 'absolute', top: 15, right: 15, backgroundColor: 'rgba(220,0,0,0.8)', color: '#FFF', padding: 8, borderRadius: 10, fontSize: 13 },
+
+  modalBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.97)', justifyContent: 'center', alignItems: 'center' },
+  modalContent: { alignItems: 'center' },
+  previewCard: { width: SCREEN_WIDTH * 0.88, height: SCREEN_HEIGHT * 0.72, borderRadius: 28, overflow: 'hidden', elevation: 25 },
+  previewImage: { width: '100%', height: '100%' },
+  cardName: { position: 'absolute', bottom: 35, left: 35, fontSize: 22, color: '#FFF', fontWeight: 'bold', textShadowColor: '#000', textShadowRadius: 12 },
+  previewFooter: { marginTop: 35, padding: 22, backgroundColor: 'rgba(255,215,0,0.25)', borderRadius: 18, borderWidth: 3, borderColor: '#FFD700' },
+  previewName: { fontSize: 30, color: '#FFD700', fontWeight: 'bold', textAlign: 'center' },
 });
 
 export default JusticeScreen;
