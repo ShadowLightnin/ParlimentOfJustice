@@ -57,7 +57,6 @@ const villains = [
   { name: 'The Blind Witch', screen: '', image: require('../../assets/Villains/IMG_4325.webp'), clickable: true, borderColor: 'red' },
   { name: 'Elick', screen: '', image: require('../../assets/Villains/IMG_4343.webp'), clickable: true, borderColor: 'red' },
   { name: 'Void Consumer', screen: '', image: require('../../assets/Villains/VoidConsumer.jpg'), clickable: true, borderColor: 'red' },
-  // ALL YOUR COMMENTED LINES STILL HERE
 ];
 
 const enlightened = [
@@ -90,44 +89,60 @@ const VillainsTab = () => {
   );
 
   const playTheme = async () => {
-    if (!currentSound) {
-      const { sound } = await Audio.Sound.createAsync(
-        require('../../assets/audio/BlackHoleBomb.mp4'),
-        { shouldPlay: true, isLooping: true, volume: 0.7 }
-      );
-      setCurrentSound(sound);
-      await sound.playAsync();
-      setIsPlaying(true);
-    } else if (!isPlaying) {
-      await currentSound.playAsync();
-      setIsPlaying(true);
+    try {
+      if (!currentSound) {
+        const { sound } = await Audio.Sound.createAsync(
+          require('../../assets/audio/BlackHoleBomb.mp4'),
+          { shouldPlay: true, isLooping: true, volume: 0.7 }
+        );
+        setCurrentSound(sound);
+        await sound.playAsync();
+        setIsPlaying(true);
+      } else if (!isPlaying) {
+        await currentSound.playAsync();
+        setIsPlaying(true);
+      }
+    } catch (e) {
+      console.error('Error playing villains theme:', e);
     }
   };
 
   const pauseTheme = async () => {
-    if (currentSound && isPlaying) {
-      await currentSound.pauseAsync();
-      setIsPlaying(false);
+    try {
+      if (currentSound && isPlaying) {
+        await currentSound.pauseAsync();
+        setIsPlaying(false);
+      }
+    } catch (e) {
+      console.error('Error pausing villains theme:', e);
     }
   };
 
-  const stopAndGoToDetail = async (villain) => {
-    if (currentSound) {
-      await currentSound.stopAsync();
-      await currentSound.unloadAsync();
-      setCurrentSound(null);
-      setIsPlaying(false);
+  const stopAudioIfNeeded = async () => {
+    try {
+      if (currentSound) {
+        await currentSound.stopAsync();
+        await currentSound.unloadAsync();
+        setCurrentSound(null);
+        setIsPlaying(false);
+      }
+    } catch (e) {
+      console.error('Error stopping villains theme:', e);
     }
-    navigation.navigate('EnlightenedCharacterDetail', { member: villain });
+  };
+
+  const goToScreen = async (screenName, params) => {
+    await stopAudioIfNeeded();
+    navigation.navigate(screenName, params);
   };
 
   const handlePress = (villain) => {
-    // If it has a dedicated screen → go there
     if (villain.screen && villain.screen.trim() !== '') {
-      navigation.navigate(villain.screen);
+      // Dedicated screen
+      goToScreen(villain.screen, { member: villain });
     } else {
-      // Otherwise → go to full detail with description
-      stopAndGoToDetail(villain);
+      // Fallback to shared EnlightenedCharacterDetail
+      goToScreen('EnlightenedCharacterDetail', { member: villain });
     }
   };
 
@@ -140,7 +155,9 @@ const VillainsTab = () => {
           width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
           height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
         },
-        villain.borderColor ? styles.clickable(villain.borderColor) : styles.notClickable,
+        villain.borderColor
+          ? styles.clickable(villain.borderColor)
+          : styles.notClickable,
       ]}
       onPress={() => handlePress(villain)}
       activeOpacity={0.85}
@@ -148,7 +165,6 @@ const VillainsTab = () => {
       <Image source={villain.image} style={styles.image} />
       <View style={styles.transparentOverlay} />
       <Text style={styles.name}>{villain.name}</Text>
-      {/* {!villain.screen && <Text style={styles.detailHint}>Tap for Bio</Text>} */}
     </TouchableOpacity>
   );
 
@@ -159,29 +175,39 @@ const VillainsTab = () => {
     >
       <ScrollView style={styles.scrollView}>
         <View style={styles.container}>
-          {/* Back Button */}
-          <TouchableOpacity
-            onPress={async () => {
-              if (currentSound) {
-                await currentSound.stopAsync();
-                await currentSound.unloadAsync();
-                setCurrentSound(null);
-                setIsPlaying(false);
-              }
-              navigation.navigate('Villains');
-            }}
-            style={styles.backButton}
-          >
-            <Text style={styles.backButtonText}>Back</Text>
-          </TouchableOpacity>
+          {/* Header (matching VillainyScreen style) */}
+          <View style={styles.headerWrapper}>
+            <TouchableOpacity
+              onPress={async () => {
+                await stopAudioIfNeeded();
+                navigation.navigate('Villains');
+              }}
+              style={styles.back}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.backText}>⬅️ Back</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => navigation.navigate('Villainy')}>
-            <Text style={styles.header}>Villains</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Villainy')}
+              style={styles.headerTitle}
+              activeOpacity={0.9}
+            >
+              <View style={styles.headerGlass}>
+                <Text style={styles.header}>Villains</Text>
+                <Text style={styles.headerSub}>
+                  Prime & Pinnacle rogues gallery
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
 
+          {/* Music controls under header */}
           <View style={styles.musicControls}>
             <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
-              <Text style={styles.musicButtonText}>Theme</Text>
+              <Text style={styles.musicButtonText}>
+                {isPlaying ? 'Playing…' : 'Theme'}
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
               <Text style={styles.musicButtonText}>Pause</Text>
@@ -190,12 +216,20 @@ const VillainsTab = () => {
 
           <View style={styles.scrollWrapper}>
             <Text style={styles.categoryHeader}>Villains</Text>
-            <ScrollView horizontal contentContainerStyle={styles.scrollContainer} showsHorizontalScrollIndicator>
+            <ScrollView
+              horizontal
+              contentContainerStyle={styles.scrollContainer}
+              showsHorizontalScrollIndicator
+            >
               {villains.map(renderVillainCard)}
             </ScrollView>
 
             <Text style={styles.categoryHeader}>The Enlightened</Text>
-            <ScrollView horizontal contentContainerStyle={styles.scrollContainer} showsHorizontalScrollIndicator>
+            <ScrollView
+              horizontal
+              contentContainerStyle={styles.scrollContainer}
+              showsHorizontalScrollIndicator
+            >
               {enlightened.map(renderVillainCard)}
             </ScrollView>
           </View>
@@ -206,29 +240,139 @@ const VillainsTab = () => {
 };
 
 const styles = StyleSheet.create({
-  background: { width: SCREEN_WIDTH, height: SCREEN_HEIGHT, resizeMode: 'cover' },
-  scrollView: { flex: 1 },
-  container: { backgroundColor: 'rgba(0,0,0,0.7)', paddingTop: 40, paddingBottom: 40, alignItems: 'center' },
-  backButton: {
-    position: 'absolute', top: 40, left: 20,
-    backgroundColor: '#750000', paddingVertical: 10, paddingHorizontal: 24,
-    borderRadius: 12, elevation: 8, borderWidth: 2, borderColor: '#ff3333',
+  background: {
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT,
+    resizeMode: 'cover',
   },
-  backButtonText: { color: '#FFF', fontSize: 18, fontWeight: 'bold' },
-  header: { fontSize: 42, fontWeight: '900', color: '#8B0000', textAlign: 'center', textShadowColor: '#ff3333', textShadowRadius: 25, marginVertical: 20 },
+  scrollView: { flex: 1 },
+  container: {
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    paddingTop: 40,
+    paddingBottom: 40,
+    alignItems: 'center',
+  },
+
+  /* HEADER copied/adapted from VillainyScreen */
+  headerWrapper: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingTop: 10,
+    marginBottom: 10,
+  },
+  headerTitle: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  headerGlass: {
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 18,
+    backgroundColor: 'rgba(0,0,0,0.35)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,50,50,0.4)',
+  },
+  header: {
+    fontSize: isDesktop ? 32 : 26,
+    fontWeight: 'bold',
+    color: '#fff',
+    textAlign: 'center',
+    textShadowColor: '#ff4d4dff',
+    textShadowRadius: 20,
+  },
+  headerSub: {
+    marginTop: 3,
+    fontSize: isDesktop ? 12 : 10,
+    color: 'rgba(255,200,200,0.8)',
+    textAlign: 'center',
+    letterSpacing: 0.5,
+  },
+  back: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: 'rgba(120,0,0,0.85)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(255,80,80,0.5)',
+  },
+  backText: {
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+
+  /* REST */
   musicControls: { flexDirection: 'row', gap: 20, marginBottom: 20 },
-  musicButton: { paddingHorizontal: 20, paddingVertical: 12, backgroundColor: 'rgba(255,0,0,0.3)', borderRadius: 30, borderWidth: 2, borderColor: '#ff3333' },
+  musicButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    backgroundColor: 'rgba(255,0,0,0.3)',
+    borderRadius: 30,
+    borderWidth: 2,
+    borderColor: '#ff3333',
+  },
   musicButtonText: { fontSize: 16, color: '#ff3333', fontWeight: 'bold' },
-  scrollWrapper: { width: SCREEN_WIDTH, marginTop: 20 },
-  scrollContainer: { flexDirection: 'row', paddingVertical: verticalSpacing, alignItems: 'center', paddingHorizontal: 10 },
-  card: { borderRadius: 20, overflow: 'hidden', elevation: 12, backgroundColor: 'rgba(0,0,0,0.8)', marginRight: horizontalSpacing, shadowColor: '#ff0000', shadowOpacity: 0.6, shadowRadius: 15 },
-  clickable: (color) => ({ borderColor: color === 'gold' ? '#FFD700' : '#ff0000', borderWidth: 4 }),
+  scrollWrapper: { width: SCREEN_WIDTH, marginTop: 10 },
+  scrollContainer: {
+    flexDirection: 'row',
+    paddingVertical: verticalSpacing,
+    alignItems: 'center',
+    paddingHorizontal: 10,
+  },
+  card: {
+    borderRadius: 20,
+    overflow: 'hidden',
+    elevation: 12,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    marginRight: horizontalSpacing,
+    shadowColor: '#ff0000',
+    shadowOpacity: 0.6,
+    shadowRadius: 15,
+  },
+  clickable: (color) => ({
+    borderColor: color === 'gold' ? '#FFD700' : '#ff0000',
+    borderWidth: 4,
+  }),
   notClickable: { opacity: 0.85 },
   image: { width: '100%', height: '100%', resizeMode: 'cover' },
-  transparentOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.4)' },
-  name: { position: 'absolute', bottom: 18, left: 18, fontSize: 22, color: '#FFF', fontWeight: '900', textShadowColor: '#000', textShadowRadius: 10 },
-  detailHint: { position: 'absolute', top: 15, right: 15, backgroundColor: 'rgba(100,0,0,0.8)', color: '#FFF', padding: 6, borderRadius: 8, fontSize: 11, fontWeight: 'bold' },
-  categoryHeader: { fontSize: 28, fontWeight: 'bold', color: '#FFF', textAlign: 'left', textShadowColor: '#ff3333', textShadowRadius: 20, marginLeft: 15, marginVertical: 10 },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
+  name: {
+    position: 'absolute',
+    bottom: 18,
+    left: 18,
+    fontSize: 22,
+    color: '#FFF',
+    fontWeight: '900',
+    textShadowColor: '#000',
+    textShadowRadius: 10,
+  },
+  detailHint: {
+    position: 'absolute',
+    top: 15,
+    right: 15,
+    backgroundColor: 'rgba(100,0,0,0.8)',
+    color: '#FFF',
+    padding: 6,
+    borderRadius: 8,
+    fontSize: 11,
+    fontWeight: 'bold',
+  },
+  categoryHeader: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#FFF',
+    textAlign: 'left',
+    textShadowColor: '#ff3333',
+    textShadowRadius: 20,
+    marginLeft: 15,
+    marginVertical: 10,
+  },
 });
 
 export default VillainsTab;

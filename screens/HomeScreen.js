@@ -69,9 +69,9 @@ const worldBuildingFactions = [
   // Row 2 → 2 cards
   {
     name: 'Worlds & Planets',
-    screen: 'PlanetsScreen', // make sure this exists in your navigator
+    screen: 'PlanetsScreen',
     clickable: true,
-    image: require('../assets/Space/ExoPlanet.jpg'), // update path/asset name if needed
+    image: require('../assets/Space/ExoPlanet.jpg'),
   },
   { 
     name: 'Ship Yard', 
@@ -83,7 +83,7 @@ const worldBuildingFactions = [
   // Row 3 → 1 card
   { 
     name: 'Zion Metropolitan', 
-    screen: '', // or 'ZionScreen' if/when you have one
+    screen: '', 
     clickable: true, 
     image: require('../assets/ParliamentTower.jpg') 
   },
@@ -113,7 +113,7 @@ const getPinnacleWorldBuildingFactions = () => [
     image: require('../assets/Space/ExoPlanet.jpg'),
   },
 
-  // Row 2 → 2 cards (Villains higher, Planets with it)
+  // Row 2 → 2 cards
   { 
     name: 'Villains', 
     screen: 'VillainsScreen', 
@@ -165,7 +165,7 @@ export const HomeScreen = () => {
   const navigation = useNavigation();
   const authCtx = useContext(AuthContext);
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const titlePulse = useRef(new Animated.Value(0)).current;   // <- title pulsing anim
+  const titlePulse = useRef(new Animated.Value(0)).current;
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [universeModalVisible, setUniverseModalVisible] = useState(false);
@@ -174,14 +174,14 @@ export const HomeScreen = () => {
 
   const numColumns = isDesktop ? 3 : 2;
 
-  // Title pulse: only for "Parliament of Justice / Power" header
+  // Title pulse animation
   useEffect(() => {
     const loop = Animated.loop(
       Animated.sequence([
         Animated.timing(titlePulse, {
           toValue: 1,
           duration: 1800,
-          useNativeDriver: true, // opacity + scale only
+          useNativeDriver: true,
         }),
         Animated.timing(titlePulse, {
           toValue: 0,
@@ -194,7 +194,7 @@ export const HomeScreen = () => {
     return () => loop.stop();
   }, [titlePulse]);
 
-  // Load universe preference on mount, default to Prime (Justice)
+  // Load universe preference on mount
   useEffect(() => {
     const loadUniversePreference = async () => {
       try {
@@ -208,7 +208,7 @@ export const HomeScreen = () => {
     loadUniversePreference();
   }, [userEmail]);
 
-  // Initialize animation and mirroring
+  // Fade-in + mirroring
   useEffect(() => {
     if (isYourUniverse !== null) {
       Animated.timing(fadeAnim, {
@@ -242,7 +242,7 @@ export const HomeScreen = () => {
     }
   }, [fadeAnim, isYourUniverse, userEmail]);
 
-  // Handle music playback
+  // Music playback
   const playTheme = async () => {
     const soundFile = isYourUniverse 
       ? require('../assets/audio/StarTrekEnterprise.mp4')
@@ -270,7 +270,6 @@ export const HomeScreen = () => {
     }
   };
 
-  // Handle music pause
   const pauseTheme = async () => {
     if (currentSound && isPlaying) {
       try {
@@ -282,7 +281,6 @@ export const HomeScreen = () => {
     }
   };
 
-  // Cleanup sound when navigating away
   const stopAndUnloadAudio = async () => {
     if (currentSound) {
       try {
@@ -296,7 +294,6 @@ export const HomeScreen = () => {
     }
   };
 
-  // Cleanup sound on focus change
   useFocusEffect(
     useCallback(() => {
       return () => {
@@ -321,6 +318,7 @@ export const HomeScreen = () => {
   };
 
   const toggleUniverse = () => setUniverseModalVisible(true);
+
   const switchUniverse = async (isYour) => {
     setIsYourUniverse(isYour);
     try {
@@ -353,12 +351,14 @@ export const HomeScreen = () => {
           { width: cardWidth, height: cardHeight, margin: cardSpacing / 2 },
           !item.clickable && styles.disabledCard,
           {
-            borderWidth: 2,
-            borderColor: isYourUniverse ? '#00b3ff35' : '#800080',
-            backgroundColor: isYourUniverse ? 'rgba(0, 179, 255, 0.1)' : 'rgba(128, 0, 128, 0.1)',
-            shadowColor: isYourUniverse ? '#00b3ff35' : '#800080',
-            shadowOpacity: 0.8,
-            shadowRadius: 10,
+            borderWidth: 1,
+            borderColor: isYourUniverse ? 'rgba(0,179,255,0.45)' : 'rgba(128,0,128,0.45)',
+            backgroundColor: isYourUniverse
+              ? 'rgba(5, 20, 35, 0.65)'
+              : 'rgba(25, 5, 35, 0.65)',
+            shadowColor: isYourUniverse ? '#00b3ff55' : '#80008077',
+            shadowOpacity: 0.9,
+            shadowRadius: 14,
           },
         ]}
         onPress={async () => {
@@ -372,23 +372,23 @@ export const HomeScreen = () => {
           }
         }}
         disabled={!item.clickable || !item.screen}
+        activeOpacity={0.9}
       >
-        <ImageBackground source={item.image} style={styles.imageBackground} imageStyle={styles.imageOverlay}>
-          <View style={styles.transparentOverlay} />
-          {!item.clickable && <Text style={styles.disabledText}>Not Clickable at the moment</Text>}
+        <ImageBackground
+          source={item.image}
+          style={styles.imageBackground}
+          imageStyle={styles.imageOverlay}
+        >
+          <View style={styles.cardGlassOverlay} />
+          {!item.clickable && (
+            <Text style={styles.disabledText}>Not Clickable at the moment</Text>
+          )}
         </ImageBackground>
       </TouchableOpacity>
     </Animated.View>
   );
 
-  /**
-   * WORLD BUILDING GRID
-   * Now truly 1,2,1,2 based on index:
-   * row1: [0]
-   * row2: [1,2]
-   * row3: [3]
-   * row4: [4,5]
-   */
+  // World Building grid
   const renderWorldBuildingGrid = () => {
     const factionsToShow = isYourUniverse ? worldBuildingFactions : getPinnacleWorldBuildingFactions();
 
@@ -443,55 +443,84 @@ export const HomeScreen = () => {
   };
 
   // Use desktop-specific order for Pinnacle Universe on desktop
-  const filteredHomageFactions = isYourUniverse ? homageFactions : (isDesktop ? desktopPinnacleHomageFactions : pinnacleHomageFactions);
+  const filteredHomageFactions = isYourUniverse
+    ? homageFactions
+    : (isDesktop ? desktopPinnacleHomageFactions : pinnacleHomageFactions);
+
   const filteredOtherFactions = isYourUniverse ? otherFactions : [];
 
   return (
     <ImageBackground 
-      source={isYourUniverse ? require('../assets/BackGround/Parliament.jpg') : require('../assets/BackGround/Power.jpg')}
+      source={
+        isYourUniverse
+          ? require('../assets/BackGround/Parliament.jpg')
+          : require('../assets/BackGround/Power.jpg')
+      }
       style={styles.background}
     >
       <View style={styles.container}>
         <View style={styles.topBar}>
-          <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-            <Text style={styles.logoutText}>🚪</Text>
+          <TouchableOpacity onPress={handleLogout} style={styles.iconButton}>
+            <Text style={styles.iconText}>🚪</Text>
           </TouchableOpacity>
+
+          {/* CENTER TITLE + SUBTEXT (tap to jump universes) */}
           <TouchableOpacity onPress={toggleUniverse} style={styles.headerButton}>
-            <Animated.Text
-              style={[
-                styles.header,
-                {
-                  textShadowColor: isYourUniverse ? '#00b3ff' : '#da1cda',
-                  textShadowRadius: 10,
-                  opacity: titlePulse.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [1, 0.7], // gentle fade
-                  }),
-                  transform: [
-                    {
-                      scale: titlePulse.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [1, 1.015], // tiny, professional scale
-                      }),
-                    },
-                  ],
-                },
-              ]}
-            >
-              {isYourUniverse ? 'The Parliament of Justice' : 'Shadows of Montrose: \nThe Parliament of Power'}
-            </Animated.Text>
+            <View style={styles.titleBlock}>
+              <Animated.Text
+                style={[
+                  styles.header,
+                  {
+                    textShadowColor: isYourUniverse ? '#00b3ff' : '#da1cda',
+                    textShadowRadius: 10,
+                    opacity: titlePulse.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [1, 0.7],
+                    }),
+                    transform: [
+                      {
+                        scale: titlePulse.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [1, 1.015],
+                        }),
+                      },
+                    ],
+                  },
+                ]}
+              >
+                {isYourUniverse
+                  ? 'The Parliament of Justice'
+                  : 'Shadows of Montrose:\nThe Parliament of Power'}
+              </Animated.Text>
+              <Text style={styles.tapHint}>Tap to jump universes</Text>
+            </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
-            <Text style={styles.chatText}>🗨️</Text>
+
+          <TouchableOpacity onPress={goToChat} style={styles.iconButton}>
+            <Text style={styles.iconText}>🗨️</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.musicControls}>
           <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
-            <Text style={[styles.musicButtonText, { color: isYourUniverse ? '#00b3ff' : '#800080' }]}>Theme</Text>
+            <Text
+              style={[
+                styles.musicButtonText,
+                { color: isYourUniverse ? '#00b3ff' : '#c08ae8' },
+              ]}
+            >
+              Theme
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
-            <Text style={[styles.musicButtonText, { color: isYourUniverse ? '#00b3ff' : '#800080' }]}>Pause</Text>
+            <Text
+              style={[
+                styles.musicButtonText,
+                { color: isYourUniverse ? '#00b3ff' : '#c08ae8' },
+              ]}
+            >
+              Pause
+            </Text>
           </TouchableOpacity>
         </View>
 
@@ -503,14 +532,33 @@ export const HomeScreen = () => {
               renderItem={renderFaction}
               numColumns={numColumns}
               contentContainerStyle={styles.listContainer}
-              key={isYourUniverse ? 'prime' : 'pinnacle'} // Force re-render on universe change
+              key={isYourUniverse ? 'prime' : 'pinnacle'}
             />
           </View>
 
           <View style={styles.sectionContainer}>
             <View style={styles.headerContainer}>
-              <Text style={[styles.sectionHeader, { textShadowColor: isYourUniverse ? '#00b3ff' : '#800080', textShadowRadius: 10 }]}>World Building</Text>
-              <View style={[styles.separatorLine, { borderBottomColor: isYourUniverse ? '#79cbee77' : '#c553c577' }]} />
+              <Text
+                style={[
+                  styles.sectionHeader,
+                  {
+                    textShadowColor: isYourUniverse ? '#00b3ff' : '#800080',
+                    textShadowRadius: 10,
+                  },
+                ]}
+              >
+                World Building
+              </Text>
+              <View
+                style={[
+                  styles.separatorLine,
+                  {
+                    borderBottomColor: isYourUniverse
+                      ? 'rgba(121, 203, 238, 0.55)'
+                      : 'rgba(197, 83, 197, 0.55)',
+                  },
+                ]}
+              />
             </View>
             {renderWorldBuildingGrid()}
           </View>
@@ -518,8 +566,23 @@ export const HomeScreen = () => {
           {isYourUniverse && (
             <View style={styles.sectionContainer}>
               <View style={styles.headerContainer}>
-                <Text style={[styles.sectionHeader, { textShadowColor: isYourUniverse ? '#00b3ff' : '#800080', textShadowRadius: 10 }]}>Others</Text>
-                <View style={[styles.separatorLine, { borderBottomColor: isYourUniverse ? '#79cbee77' : '#c553c577' }]} />
+                <Text
+                  style={[
+                    styles.sectionHeader,
+                    {
+                      textShadowColor: '#00b3ff',
+                      textShadowRadius: 10,
+                    },
+                  ]}
+                >
+                  Others
+                </Text>
+                <View
+                  style={[
+                    styles.separatorLine,
+                    { borderBottomColor: 'rgba(121, 203, 238, 0.55)' },
+                  ]}
+                />
               </View>
               <FlatList
                 data={filteredOtherFactions}
@@ -551,21 +614,27 @@ export const HomeScreen = () => {
                   <TouchableOpacity
                     style={styles.quadrantTopLeft}
                     onPress={() => handleQuadrantPress(true)}
+                    activeOpacity={0.85}
                   >
                     <View style={styles.transparentOverlay} />
                   </TouchableOpacity>
                   {/* Top Right Quadrant: Prime Universe Text */}
                   <View style={styles.quadrantTopRight}>
-                    <Text style={[styles.universeText, styles.primeText]}>Prime Universe</Text>
+                    <Text style={[styles.universeText, styles.primeText]}>
+                      Prime Universe
+                    </Text>
                   </View>
                   {/* Bottom Left Quadrant: Pinnacle Universe Text */}
                   <View style={styles.quadrantBottomLeft}>
-                    <Text style={[styles.universeText, styles.pinnacleText]}>Pinnacle Universe</Text>
+                    <Text style={[styles.universeText, styles.pinnacleText]}>
+                      Pinnacle Universe
+                    </Text>
                   </View>
                   {/* Bottom Right Quadrant: Pinnacle Universe (Clickable) */}
                   <TouchableOpacity
                     style={styles.quadrantBottomRight}
                     onPress={() => handleQuadrantPress(false)}
+                    activeOpacity={0.85}
                   >
                     <View style={styles.transparentOverlay} />
                   </TouchableOpacity>
@@ -596,7 +665,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: SCREEN_WIDTH,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    backgroundColor: 'rgba(0, 0, 0, 0.55)',
   },
   scrollContainer: {
     padding: 20,
@@ -607,13 +676,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
     paddingHorizontal: 10,
     paddingTop: 20,
+    paddingBottom: 10,
   },
   headerButton: {
     flex: 1,
     alignItems: 'center',
+  },
+  titleBlock: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 16,
+    backgroundColor: 'rgba(0, 0, 0, 0.35)',
   },
   header: {
     fontSize: isDesktop ? 28 : 18,
@@ -622,6 +699,13 @@ const styles = StyleSheet.create({
     textShadowRadius: 10,
     textAlign: 'center',
     flexShrink: 1,
+  },
+  tapHint: {
+    marginTop: 4,
+    fontSize: isDesktop ? 12 : 10,
+    color: 'rgba(255,255,255,0.7)',
+    textAlign: 'center',
+    letterSpacing: 0.5,
   },
   sectionContainer: {
     marginBottom: 30,
@@ -639,7 +723,7 @@ const styles = StyleSheet.create({
   },
   separatorLine: {
     width: SCREEN_WIDTH - 40,
-    borderBottomWidth: 2,
+    borderBottomWidth: 1,
     marginBottom: 10,
   },
   listContainer: {
@@ -657,12 +741,6 @@ const styles = StyleSheet.create({
     width: cardWidth * 2 + cardSpacing * 2,
     marginVertical: cardSpacing / 2,
   },
-  middleRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    width: cardWidth * 2 + cardSpacing * 2,
-    marginVertical: cardSpacing / 2,
-  },
   gridItem: {
     width: cardWidth + cardSpacing,
     height: cardHeight + cardSpacing + 30,
@@ -670,9 +748,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   card: {
-    borderRadius: 10,
+    borderRadius: 16,
     overflow: 'hidden',
-    elevation: 5,
+    elevation: 6,
   },
   imageBackground: {
     flex: 1,
@@ -682,12 +760,15 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   imageOverlay: {
-    opacity: 0.9,
+    opacity: 0.95,
+  },
+  cardGlassOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.25)',
   },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1,
+    backgroundColor: 'transparent',
   },
   factionTitle: {
     fontSize: isDesktop ? 20 : 14,
@@ -698,12 +779,21 @@ const styles = StyleSheet.create({
     textShadowRadius: 10,
   },
   disabledCard: {
-    backgroundColor: '#555',
+    opacity: 0.6,
   },
   disabledText: {
     fontSize: 12,
-    color: '#ff4444',
+    color: '#ff8888',
     marginTop: 5,
+  },
+  iconButton: {
+    padding: 8,
+    borderRadius: 999,
+    backgroundColor: 'rgba(0,0,0,0.35)',
+  },
+  iconText: {
+    fontSize: 20,
+    color: 'white',
   },
   chatButton: {
     padding: 10,
@@ -725,12 +815,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     marginBottom: 5,
+    gap: 10,
   },
   musicButton: {
-    padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 8,
-    marginHorizontal: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.18)',
   },
   musicButtonText: {
     fontSize: 12,
@@ -743,19 +836,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: 'rgba(33, 32, 32, 0.9)',
+    backgroundColor: 'rgba(20, 20, 20, 0.92)',
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 16,
     alignItems: 'center',
     width: '90%',
     maxWidth: 600,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.16)',
   },
   modalTitle: {
     fontSize: isDesktop ? 24 : 18,
     fontWeight: 'bold',
     color: '#FFF',
     textAlign: 'center',
-    marginBottom: 5,
+    marginBottom: 8,
     textShadowColor: 'rgba(0, 0, 0, 0.5)',
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 5,
@@ -846,7 +941,7 @@ const styles = StyleSheet.create({
   modalCancel: {
     backgroundColor: '#F44336',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 8,
     marginTop: 10,
     width: 200,
     alignItems: 'center',

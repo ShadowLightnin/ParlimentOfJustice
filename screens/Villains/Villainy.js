@@ -32,13 +32,19 @@ const cardSizes = {
 const horizontalSpacing = isDesktop ? 50 : 30;
 const verticalSpacing = isDesktop ? 60 : 30;
 
-// Hardcoded villains data with images, red border color
+// Hardcoded villains data
 const hardcodedVillains = [
-  // { id: 'villain-1', name: 'BlackOut', screen: '', image: require('../../assets/Villains/BlackOut.jpg'), clickable: true, borderColor: 'red', hardcoded: true, description: "Red Murcury's personal assassin." },
+  // { id: 'villain-1', name: 'BlackOut', screen: '', image: require('../../assets/Villains/BlackOut.jpg'), clickable: true, borderColor: 'red', hardcoded: true, description: "Red Mercury's personal assassin." },
   // { id: 'villain-2', name: 'Void Consumer', screen: '', image: require('../../assets/Villains/VoidConsumer.jpg'), clickable: true, borderColor: 'red', hardcoded: true, description: "Her hunger is endless." },
 ];
 
-const ALLOWED_EMAILS = ['samuelp.woodwell@gmail.com', 'cummingsnialla@gmail.com', 'will@test.com', 'c1wcummings@gmail.com', 'aileen@test.com'];
+const ALLOWED_EMAILS = [
+  'samuelp.woodwell@gmail.com',
+  'cummingsnialla@gmail.com',
+  'will@test.com',
+  'c1wcummings@gmail.com',
+  'aileen@test.com',
+];
 const RESTRICT_ACCESS = true; // Restrict edit/delete to ALLOWED_EMAILS
 
 const VillainyScreen = () => {
@@ -46,55 +52,79 @@ const VillainyScreen = () => {
   const [previewVillain, setPreviewVillain] = useState(null);
   const [villains, setVillains] = useState(hardcodedVillains);
   const [montroseVillains, setMontroseVillains] = useState([]);
-  const [deleteModal, setDeleteModal] = useState({ visible: false, villain: null, collection: 'villain' });
-  const unsubscribeRef = useRef({ villain: null, powerVillainsMembers: null });
-  const canMod = auth.currentUser && RESTRICT_ACCESS ? ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
+  const [deleteModal, setDeleteModal] = useState({
+    visible: false,
+    villain: null,
+    collection: 'villain',
+  });
+
+  const unsubscribeRef = useRef({
+    villain: null,
+    powerVillainsMembers: null,
+  });
+
+  const canMod =
+    auth.currentUser && RESTRICT_ACCESS
+      ? ALLOWED_EMAILS.includes(auth.currentUser.email)
+      : true;
 
   // Fetch dynamic villains from Firestore
   useEffect(() => {
     const checkAuthAndFetch = () => {
       const user = auth.currentUser;
+
       if (unsubscribeRef.current.villain) unsubscribeRef.current.villain();
-      if (unsubscribeRef.current.powerVillainsMembers) unsubscribeRef.current.powerVillainsMembers();
+      if (unsubscribeRef.current.powerVillainsMembers)
+        unsubscribeRef.current.powerVillainsMembers();
 
-      // Fetch from villain collection
-      unsubscribeRef.current.villain = onSnapshot(collection(db, 'villain'), (snap) => {
-        const dynamicVillains = snap.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data(),
-          clickable: true,
-          borderColor: doc.data().borderColor || 'gold',
-          hardcoded: false,
-        }));
-        console.log('Fetched dynamic villains (villain collection):', dynamicVillains);
-        setVillains([...hardcodedVillains, ...dynamicVillains]);
-      }, (e) => {
-        console.error('Firestore error (villain collection):', e.message);
-        Alert.alert('Error', `Failed to fetch villains: ${e.message}`);
-      });
-
-      // Fetch from powerVillainsMembers collection
-      if (user) {
-        unsubscribeRef.current.powerVillainsMembers = onSnapshot(collection(db, 'powerVillainsMembers'), (snap) => {
-          const dynamicMontroseVillains = snap.docs.map(doc => ({
-            id: doc.id,
-            name: doc.data().name || 'Unnamed Villain',
-            description: doc.data().description || '',
-            screen: 'VillainCharacterDetail',
-            images: doc.data().images || [],
-            image: doc.data().images?.[0]?.uri ? { uri: doc.data().images[0].uri } : require('../../assets/Armor/PlaceHolder.jpg'),
+      // Main villain collection
+      unsubscribeRef.current.villain = onSnapshot(
+        collection(db, 'villain'),
+        snap => {
+          const dynamicVillains = snap.docs.map(d => ({
+            id: d.id,
+            ...d.data(),
             clickable: true,
-            borderColor: 'red',
+            borderColor: d.data().borderColor || 'gold',
             hardcoded: false,
-            mediaUri: doc.data().mediaUri || null,
-            mediaType: doc.data().mediaType || null,
           }));
-          console.log('Fetched dynamic villains (powerVillainsMembers):', dynamicMontroseVillains);
-          setMontroseVillains(dynamicMontroseVillains);
-        }, (e) => {
-          console.error('Firestore error (powerVillainsMembers):', e.message);
-          Alert.alert('Error', `Failed to fetch Montrose villains: ${e.message}`);
-        });
+          console.log('Fetched dynamic villains (villain collection):', dynamicVillains);
+          setVillains([...hardcodedVillains, ...dynamicVillains]);
+        },
+        e => {
+          console.error('Firestore error (villain collection):', e.message);
+          Alert.alert('Error', `Failed to fetch villains: ${e.message}`);
+        }
+      );
+
+      // Pinnacle Montrose villains
+      if (user) {
+        unsubscribeRef.current.powerVillainsMembers = onSnapshot(
+          collection(db, 'powerVillainsMembers'),
+          snap => {
+            const dynamicMontroseVillains = snap.docs.map(d => ({
+              id: d.id,
+              name: d.data().name || 'Unnamed Villain',
+              description: d.data().description || '',
+              screen: 'VillainCharacterDetail',
+              images: d.data().images || [],
+              image: d.data().images?.[0]?.uri
+                ? { uri: d.data().images[0].uri }
+                : require('../../assets/Armor/PlaceHolder.jpg'),
+              clickable: true,
+              borderColor: 'red',
+              hardcoded: false,
+              mediaUri: d.data().mediaUri || null,
+              mediaType: d.data().mediaType || null,
+            }));
+            console.log('Fetched dynamic villains (powerVillainsMembers):', dynamicMontroseVillains);
+            setMontroseVillains(dynamicMontroseVillains);
+          },
+          e => {
+            console.error('Firestore error (powerVillainsMembers):', e.message);
+            Alert.alert('Error', `Failed to fetch Montrose villains: ${e.message}`);
+          }
+        );
       } else {
         setMontroseVillains([]);
         console.warn('No authenticated user. Skipping powerVillainsMembers fetch.');
@@ -106,7 +136,8 @@ const VillainyScreen = () => {
 
     return () => {
       if (unsubscribeRef.current.villain) unsubscribeRef.current.villain();
-      if (unsubscribeRef.current.powerVillainsMembers) unsubscribeRef.current.powerVillainsMembers();
+      if (unsubscribeRef.current.powerVillainsMembers)
+        unsubscribeRef.current.powerVillainsMembers();
       unsubscribeAuth();
     };
   }, []);
@@ -115,7 +146,11 @@ const VillainyScreen = () => {
   useFocusEffect(
     useCallback(() => {
       const unsubscribe = navigation.addListener('focus', () => {
-        const newMember = navigation.getState().routes.find(r => r.params?.member)?.params?.member;
+        const routeWithMember = navigation
+          .getState()
+          .routes.find(r => r.params?.member);
+
+        const newMember = routeWithMember?.params?.member;
         if (newMember && newMember.id) {
           console.log('Received new/updated member from VillainCharacterDetail:', newMember);
           setMontroseVillains(prev => {
@@ -129,7 +164,9 @@ const VillainyScreen = () => {
                       description: newMember.description,
                       screen: 'VillainCharacterDetail',
                       images: newMember.images || [],
-                      image: newMember.images?.[0]?.uri ? { uri: newMember.images[0].uri } : m.image,
+                      image: newMember.images?.[0]?.uri
+                        ? { uri: newMember.images[0].uri }
+                        : m.image,
                       mediaUri: newMember.mediaUri || null,
                       mediaType: newMember.mediaType || null,
                       clickable: true,
@@ -147,7 +184,9 @@ const VillainyScreen = () => {
                   description: newMember.description,
                   screen: 'VillainCharacterDetail',
                   images: newMember.images || [],
-                  image: newMember.images?.[0]?.uri ? { uri: newMember.images[0].uri } : require('../../assets/Armor/PlaceHolder.jpg'),
+                  image: newMember.images?.[0]?.uri
+                    ? { uri: newMember.images[0].uri }
+                    : require('../../assets/Armor/PlaceHolder.jpg'),
                   clickable: true,
                   borderColor: 'red',
                   hardcoded: false,
@@ -165,17 +204,17 @@ const VillainyScreen = () => {
   );
 
   const handleVillainPress = (villain, isMontrose = false) => {
-    if (villain.clickable) {
-      if (isMontrose && villain.screen) {
-        console.log('Navigating to VillainCharacterDetail for:', villain.name);
-        navigation.navigate('VillainCharacterDetail', { member: villain, mode: 'view' });
-      } else if (villain.screen) {
-        console.log('Navigating to screen:', villain.screen);
-        navigation.navigate(villain.screen);
-      } else {
-        console.log('Showing preview for villain:', villain.name || villain.codename || 'Unknown');
-        setPreviewVillain(villain);
-      }
+    if (!villain.clickable) return;
+
+    if (isMontrose && villain.screen) {
+      console.log('Navigating to VillainCharacterDetail for:', villain.name);
+      navigation.navigate('VillainCharacterDetail', { member: villain, mode: 'view' });
+    } else if (villain.screen) {
+      console.log('Navigating to screen:', villain.screen);
+      navigation.navigate(villain.screen);
+    } else {
+      console.log('Showing preview for villain:', villain.name || villain.codename || 'Unknown');
+      setPreviewVillain(villain);
     }
   };
 
@@ -190,26 +229,34 @@ const VillainyScreen = () => {
   };
 
   const confirmDelete = async (id, collection) => {
-    if (!auth.currentUser || (RESTRICT_ACCESS && !ALLOWED_EMAILS.includes(auth.currentUser.email))) {
+    if (
+      !auth.currentUser ||
+      (RESTRICT_ACCESS && !ALLOWED_EMAILS.includes(auth.currentUser.email))
+    ) {
       console.log('Delete blocked: unauthorized user');
       Alert.alert('Access Denied', 'Only authorized users can delete villains.');
       return;
     }
+
     try {
       const isMontrose = collection === 'powerVillainsMembers';
       const villainList = isMontrose ? montroseVillains : villains;
       const villain = villainList.find(v => v.id === id);
-      if (villain.hardcoded) {
+
+      if (villain?.hardcoded) {
         console.log('Delete blocked: attempted to delete hardcoded villain:', id);
         Alert.alert('Error', 'Cannot delete hardcoded villains!');
         return;
       }
+
       const villainRef = doc(db, collection, id);
       const snap = await getDoc(villainRef);
+
       if (!snap.exists()) {
         Alert.alert('Error', 'Villain not found');
         return;
       }
+
       const { imageUrl, images, mediaUri } = snap.data();
       const mediaDeletionPromises = [];
 
@@ -226,6 +273,7 @@ const VillainyScreen = () => {
             );
           }
         });
+
         if (mediaUri && mediaUri.startsWith('http')) {
           const path = decodeURIComponent(mediaUri.split('/o/')[1].split('?')[0]);
           console.log('Attempting to delete video:', path);
@@ -252,11 +300,13 @@ const VillainyScreen = () => {
       await Promise.all(mediaDeletionPromises);
       await deleteDoc(villainRef);
       console.log(`Villain deleted from ${collection}:`, id);
+
       if (isMontrose) {
-        setMontroseVillains(montroseVillains.filter(v => v.id !== id));
+        setMontroseVillains(prev => prev.filter(v => v.id !== id));
       } else {
-        setVillains(villains.filter(v => v.id !== id));
+        setVillains(prev => prev.filter(v => v.id !== id));
       }
+
       setDeleteModal({ visible: false, villain: null, collection: 'villain' });
       Alert.alert('Success', 'Villain deleted successfully!');
     } catch (e) {
@@ -265,7 +315,7 @@ const VillainyScreen = () => {
     }
   };
 
-  // Render Each Villain Card
+  // Render each villain card
   const renderVillainCard = ({ item, isMontrose = false }) => {
     console.log(`Rendering card for ${isMontrose ? 'Montrose' : 'Regular'} villain:`, {
       name: item.name,
@@ -274,51 +324,94 @@ const VillainyScreen = () => {
       canMod: canMod,
       collection: isMontrose ? 'powerVillainsMembers' : 'villain',
     });
+
+    const cardWidth =
+      isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width;
+    const cardHeight =
+      isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height;
+
     return (
-      <View key={item.id || item.name || item.codename || (item.image && item.image.toString()) || Math.random()} style={styles.villainCont}>
+      <View
+        key={
+          item.id ||
+          item.name ||
+          item.codename ||
+          (item.image && item.image.toString()) ||
+          Math.random()
+        }
+        style={styles.villainCont}
+      >
         <TouchableOpacity
           style={[
             styles.villainCard,
-            {
-              width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
-              height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
-            },
-            item.clickable && item.borderColor ? styles.clickable(item.borderColor) : styles.notClickable,
+            { width: cardWidth, height: cardHeight },
+            item.clickable && item.borderColor
+              ? styles.clickable(item.borderColor)
+              : styles.notClickable,
           ]}
           onPress={() => handleVillainPress(item, isMontrose)}
           disabled={!item.clickable}
+          activeOpacity={0.9}
         >
           <Image
             source={
               isMontrose
-                ? (item.image || (item.images?.[0]?.uri && item.images[0].uri !== 'placeholder' ? { uri: item.images[0].uri } : require('../../assets/Armor/PlaceHolder.jpg')))
-                : (item.image || (item.imageUrl && item.imageUrl !== 'placeholder' ? { uri: item.imageUrl } : require('../../assets/Armor/PlaceHolder.jpg')))
+                ? item.image ||
+                  (item.images?.[0]?.uri && item.images[0].uri !== 'placeholder'
+                    ? { uri: item.images[0].uri }
+                    : require('../../assets/Armor/PlaceHolder.jpg'))
+                : item.image ||
+                  (item.imageUrl && item.imageUrl !== 'placeholder'
+                    ? { uri: item.imageUrl }
+                    : require('../../assets/Armor/PlaceHolder.jpg'))
             }
             style={{ width: '100%', height: '100%' }}
             resizeMode="cover"
-            onError={(e) => {
-              console.error('Image load error:', e.nativeEvent.error, 'URI:', isMontrose ? item.images?.[0]?.uri : item.imageUrl);
+            onError={e => {
+              console.error(
+                'Image load error:',
+                e.nativeEvent.error,
+                'URI:',
+                isMontrose ? item.images?.[0]?.uri : item.imageUrl
+              );
             }}
           />
-          <View style={styles.overlay} />
-          <Text style={styles.villainName}>{item.name || item.codename || 'Unknown'}</Text>
+          <View style={styles.cardOverlay} />
+          <Text style={styles.villainName}>
+            {item.name || item.codename || 'Unknown'}
+          </Text>
           {!item.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
         </TouchableOpacity>
+
         {!item.hardcoded && (
-          <View style={[styles.buttons, { width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width }]}>
+          <View
+            style={[
+              styles.buttons,
+              { width: cardWidth },
+            ]}
+          >
             <TouchableOpacity
               onPress={() => handleEdit(item, isMontrose)}
-              style={[styles.edit, !canMod && styles.disabled, isMontrose && { backgroundColor: '#FFC107' }]}
+              style={[
+                styles.edit,
+                !canMod && styles.disabled,
+                isMontrose && { backgroundColor: '#FFC107' },
+              ]}
               disabled={!canMod}
             >
               <Text style={styles.buttonText}>Edit</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => setDeleteModal({
-                visible: true,
-                villain: { id: item.id, name: item.name || item.codename || 'Unknown' },
-                collection: isMontrose ? 'powerVillainsMembers' : 'villain'
-              })}
+              onPress={() =>
+                setDeleteModal({
+                  visible: true,
+                  villain: {
+                    id: item.id,
+                    name: item.name || item.codename || 'Unknown',
+                  },
+                  collection: isMontrose ? 'powerVillainsMembers' : 'villain',
+                })
+              }
               style={[styles.delete, !canMod && styles.disabled]}
               disabled={!canMod}
             >
@@ -330,17 +423,25 @@ const VillainyScreen = () => {
     );
   };
 
-  // Render Preview Card
-  const renderPreviewCard = (villain) => (
+  const renderPreviewCard = villain => (
     <TouchableOpacity
-      style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable(villain.borderColor || 'gold')]}
+      style={[
+        styles.previewCard(isDesktop, SCREEN_WIDTH),
+        styles.clickable(villain.borderColor || 'gold'),
+      ]}
       onPress={() => {
         console.log('Closing preview modal');
         setPreviewVillain(null);
       }}
+      activeOpacity={0.95}
     >
       <Image
-        source={villain.image || (villain.imageUrl && villain.imageUrl !== 'placeholder' ? { uri: villain.imageUrl } : require('../../assets/Armor/PlaceHolder.jpg'))}
+        source={
+          villain.image ||
+          (villain.imageUrl && villain.imageUrl !== 'placeholder'
+            ? { uri: villain.imageUrl }
+            : require('../../assets/Armor/PlaceHolder.jpg'))
+        }
         style={{ width: '100%', height: '100%' }}
         resizeMode="cover"
       />
@@ -356,33 +457,42 @@ const VillainyScreen = () => {
       source={require('../../assets/BackGround/Villains.jpg')}
       style={styles.bg}
     >
-      <View style={styles.overlay}>
+      <View style={styles.screenOverlay}>
+        {/* Header */}
         <View style={styles.headerWrapper}>
           <TouchableOpacity
             onPress={() => {
-              console.log('Navigating to Home');
+              console.log('Navigating to VillainsTab');
               navigation.navigate('VillainsTab');
             }}
             style={styles.back}
+            activeOpacity={0.85}
           >
             <Text style={styles.backText}>⬅️ Back</Text>
           </TouchableOpacity>
+
           <TouchableOpacity
             onPress={() => {
               console.log('Navigating to VillainsTab');
               navigation.navigate('VillainsTab');
             }}
             style={styles.headerTitle}
+            activeOpacity={0.9}
           >
-            <Text style={styles.header}>Villains</Text>
+            <View style={styles.headerGlass}>
+              <Text style={styles.header}>Villains</Text>
+              <Text style={styles.headerSub}>Prime & Pinnacle rogues gallery</Text>
+            </View>
           </TouchableOpacity>
         </View>
+
         <ScrollView
           contentContainerStyle={styles.scroll}
           onContentSizeChange={(width, height) => {
             console.log('ScrollView content size:', { width, height });
           }}
         >
+          {/* PRIME VILLAINS */}
           <View style={styles.scrollWrapper}>
             {villains.length === 0 ? (
               <Text style={styles.noVillainsText}>No villains available</Text>
@@ -390,13 +500,18 @@ const VillainyScreen = () => {
               <FlatList
                 horizontal
                 data={villains}
-                renderItem={({ item }) => renderVillainCard({ item, isMontrose: false })}
-                keyExtractor={(item) => item.id || item.name || item.codename || Math.random().toString()}
-                showsHorizontalScrollIndicator={true}
+                renderItem={({ item }) =>
+                  renderVillainCard({ item, isMontrose: false })
+                }
+                keyExtractor={item =>
+                  item.id || item.name || item.codename || Math.random().toString()
+                }
+                showsHorizontalScrollIndicator={false}
                 contentContainerStyle={[styles.hScroll, { gap: horizontalSpacing }]}
               />
             )}
           </View>
+
           <EnlightenedInvite
             collectionPath="villain"
             placeholderImage={require('../../assets/Armor/PlaceHolder.jpg')}
@@ -406,7 +521,10 @@ const VillainyScreen = () => {
             editingVillain={previewVillain?.isEditing ? previewVillain : null}
             setEditingVillain={setPreviewVillain}
           />
+
+          {/* PINNACLE SECTION */}
           <Text style={styles.sectionHeader}>Pinnacle: Shadows of Zardionine</Text>
+
           <View style={styles.plusButtonContainer}>
             <TouchableOpacity
               onPress={() => {
@@ -414,11 +532,13 @@ const VillainyScreen = () => {
                 navigation.navigate('VillainCharacterDetail', { mode: 'add' });
               }}
               style={styles.plusButton}
+              activeOpacity={0.9}
             >
               <Text style={styles.plusText}>+</Text>
               <Text style={styles.plusLabel}>Add Villain</Text>
             </TouchableOpacity>
           </View>
+
           <View style={styles.scrollWrapper}>
             {montroseVillains.length === 0 ? (
               <Text style={styles.noVillainsText}>No Montrose villains available</Text>
@@ -426,13 +546,17 @@ const VillainyScreen = () => {
               <FlatList
                 horizontal
                 data={montroseVillains}
-                renderItem={({ item }) => renderVillainCard({ item, isMontrose: true })}
-                keyExtractor={(item) => item.id}
-                showsHorizontalScrollIndicator={true}
+                renderItem={({ item }) =>
+                  renderVillainCard({ item, isMontrose: true })
+                }
+                keyExtractor={item => item.id}
+                showsHorizontalScrollIndicator={false}
                 contentContainerStyle={[styles.hScroll, { gap: horizontalSpacing }]}
               />
             )}
           </View>
+
+          {/* PREVIEW MODAL */}
           <Modal
             visible={!!previewVillain && !previewVillain.isEditing}
             transparent
@@ -457,14 +581,21 @@ const VillainyScreen = () => {
                   </View>
                 </View>
                 <View style={styles.previewAboutSection}>
-                  <Text style={styles.previewName}>{previewVillain?.name || previewVillain?.codename || 'Unknown'}</Text>
-                  <Text style={styles.previewDesc}>{previewVillain?.description || 'No description available'}</Text>
+                  <Text style={styles.previewName}>
+                    {previewVillain?.name ||
+                      previewVillain?.codename ||
+                      'Unknown'}
+                  </Text>
+                  <Text style={styles.previewDesc}>
+                    {previewVillain?.description || 'No description available'}
+                  </Text>
                   <TouchableOpacity
                     onPress={() => {
                       console.log('Closing preview modal');
                       setPreviewVillain(null);
                     }}
                     style={styles.close}
+                    activeOpacity={0.85}
                   >
                     <Text style={styles.buttonText}>Close</Text>
                   </TouchableOpacity>
@@ -472,25 +603,46 @@ const VillainyScreen = () => {
               </TouchableOpacity>
             </View>
           </Modal>
+
+          {/* DELETE CONFIRM MODAL */}
           <Modal
             visible={deleteModal.visible}
             transparent
             animationType="slide"
-            onRequestClose={() => setDeleteModal({ visible: false, villain: null, collection: 'villain' })}
+            onRequestClose={() =>
+              setDeleteModal({
+                visible: false,
+                villain: null,
+                collection: 'villain',
+              })
+            }
           >
             <View style={styles.modalOverlay}>
               <View style={styles.modalContent}>
-                <Text style={styles.modalText}>{`Delete "${deleteModal.villain?.name || ''}" and its associated media?`}</Text>
+                <Text style={styles.modalText}>
+                  {`Delete "${deleteModal.villain?.name || ''}" and its associated media?`}
+                </Text>
                 <View style={styles.modalButtons}>
                   <TouchableOpacity
                     style={styles.modalCancel}
-                    onPress={() => setDeleteModal({ visible: false, villain: null, collection: 'villain' })}
+                    onPress={() =>
+                      setDeleteModal({
+                        visible: false,
+                        villain: null,
+                        collection: 'villain',
+                      })
+                    }
+                    activeOpacity={0.85}
                   >
                     <Text style={styles.modalCancelText}>Cancel</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.modalDelete}
-                    onPress={() => deleteModal.villain && confirmDelete(deleteModal.villain.id, deleteModal.collection)}
+                    onPress={() =>
+                      deleteModal.villain &&
+                      confirmDelete(deleteModal.villain.id, deleteModal.collection)
+                    }
+                    activeOpacity={0.85}
                   >
                     <Text style={styles.modalDeleteText}>Delete</Text>
                   </TouchableOpacity>
@@ -512,9 +664,9 @@ const styles = StyleSheet.create({
     height: SCREEN_HEIGHT,
     resizeMode: 'cover',
   },
-  overlay: {
+  screenOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(5, 0, 0, 0.78)',
     paddingTop: 40,
     alignItems: 'center',
   },
@@ -523,57 +675,83 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    paddingHorizontal: 12,
     paddingTop: 10,
+    marginBottom: 10,
   },
   headerTitle: {
     flex: 1,
+    alignItems: 'center',
+  },
+  headerGlass: {
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 18,
+    backgroundColor: 'rgba(0,0,0,0.35)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,50,50,0.4)',
   },
   header: {
-    fontSize: 32,
+    fontSize: isDesktop ? 32 : 26,
     fontWeight: 'bold',
-    color: 'rgba(63, 0, 0, 0.897)',
+    color: '#fff',
     textAlign: 'center',
     textShadowColor: '#ff4d4dff',
     textShadowRadius: 20,
-    marginBottom: 20,
+  },
+  headerSub: {
+    marginTop: 3,
+    fontSize: isDesktop ? 12 : 10,
+    color: 'rgba(255,200,200,0.8)',
+    textAlign: 'center',
+    letterSpacing: 0.5,
   },
   sectionHeader: {
-    fontSize: 28,
+    fontSize: isDesktop ? 24 : 20,
     fontWeight: 'bold',
-    color: '#630404',
+    color: '#ffb3b3',
     textAlign: 'center',
     textShadowColor: '#ff1c1c',
     textShadowRadius: 15,
-    marginVertical: 20,
+    marginVertical: 16,
   },
   back: {
-    padding: 10,
-    backgroundColor: '#750000',
-    borderRadius: 8,
-    elevation: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: 'rgba(120,0,0,0.85)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(255,80,80,0.5)',
   },
   backText: {
     color: '#FFF',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 'bold',
   },
   plusButtonContainer: {
     alignItems: 'center',
+    marginBottom: 4,
   },
   plusButton: {
-    padding: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 18,
+    borderRadius: 999,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,80,80,0.6)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   plusText: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#ff1c1c',
+    color: '#ff6666',
   },
   plusLabel: {
     fontSize: 14,
-    color: '#ff1c1c',
-    fontWeight: 'bold',
-    marginTop: 5,
+    color: '#ffd6d6',
+    fontWeight: '600',
   },
   scroll: {
     paddingBottom: 40,
@@ -581,7 +759,7 @@ const styles = StyleSheet.create({
   scrollWrapper: {
     width: SCREEN_WIDTH,
     flex: 1,
-    marginBottom: 20,
+    marginBottom: 16,
   },
   hScroll: {
     flexDirection: 'row',
@@ -595,44 +773,50 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     alignItems: 'center',
     flexGrow: 1,
-    minHeight: isDesktop ? cardSizes.desktop.height + 80 : cardSizes.mobile.height + 80,
+    minHeight: isDesktop
+      ? cardSizes.desktop.height + 80
+      : cardSizes.mobile.height + 80,
   },
   villainCard: {
-    borderRadius: 15,
+    borderRadius: 18,
     overflow: 'hidden',
     backgroundColor: 'rgba(0,0,0,0.7)',
-    elevation: 5,
+    elevation: 6,
   },
-  clickable: (borderColor) => ({
+  clickable: borderColor => ({
     borderColor: borderColor || 'gold',
-    borderWidth: 2,
+    borderWidth: 1.5,
+    shadowColor: borderColor === 'red' ? '#ff4444aa' : '#ffdd55aa',
+    shadowOpacity: 0.9,
+    shadowRadius: 12,
   }),
   notClickable: {
     opacity: 0.7,
   },
-  overlay: {
+  cardOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(0,0,0,0.45)',
     zIndex: 1,
-    backgroundColor: 'rgba(0,0,0,0.7)',
-
   },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
     zIndex: 1,
   },
   villainName: {
     position: 'absolute',
-    bottom: 10,
-    left: 10,
-    fontSize: 16,
+    bottom: 12,
+    left: 12,
+    fontSize: 18,
     color: 'white',
     fontWeight: 'bold',
+    textShadowColor: 'rgba(0,0,0,0.8)',
+    textShadowRadius: 8,
+    zIndex: 2,
   },
   disabledText: {
     fontSize: 12,
-    color: 'yellow',
+    color: '#ffea70',
     marginTop: 5,
     textAlign: 'center',
   },
@@ -645,28 +829,27 @@ const styles = StyleSheet.create({
   buttons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
-    marginTop: 20,
+    marginTop: 14,
     zIndex: 2,
   },
   edit: {
-    backgroundColor: '#5913bc',
+    backgroundColor: '#7b3bed',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 999,
     flex: 1,
-    marginRight: 5,
+    marginRight: 6,
     alignItems: 'center',
   },
   delete: {
     backgroundColor: '#F44336',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 999,
     flex: 1,
-    marginLeft: 5,
+    marginLeft: 6,
     alignItems: 'center',
   },
   disabled: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#555',
     opacity: 0.6,
   },
   buttonText: {
@@ -689,8 +872,12 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: '100%',
     paddingVertical: 20,
-    backgroundColor: '#111',
+    backgroundColor: 'rgba(10,10,10,0.9)',
     alignItems: 'center',
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255,80,80,0.4)',
   },
   imageScrollContainer: {
     flexDirection: 'row',
@@ -701,9 +888,9 @@ const styles = StyleSheet.create({
   previewCard: (isDesktop, windowWidth) => ({
     width: isDesktop ? windowWidth * 0.25 : SCREEN_WIDTH * 0.85,
     height: isDesktop ? SCREEN_HEIGHT * 0.75 : SCREEN_HEIGHT * 0.65,
-    borderRadius: 15,
+    borderRadius: 18,
     overflow: 'hidden',
-    elevation: 5,
+    elevation: 6,
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
     marginRight: 20,
   }),
@@ -715,30 +902,40 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     zIndex: 2,
+    textShadowColor: 'rgba(0,0,0,0.8)',
+    textShadowRadius: 8,
   },
   previewAboutSection: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#222',
-    borderRadius: 10,
-    width: '90%',
+    marginTop: 0,
+    padding: 14,
+    backgroundColor: 'rgba(15,15,15,0.95)',
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
+    width: '100%',
+    borderWidth: 1,
+    borderTopWidth: 0,
+    borderColor: 'rgba(255,80,80,0.4)',
   },
   previewName: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#fff',
     textAlign: 'center',
+    fontWeight: 'bold',
+    marginBottom: 4,
   },
   previewDesc: {
-    fontSize: 16,
-    color: '#fff7f7',
+    fontSize: 14,
+    color: '#ffeaea',
     textAlign: 'center',
     marginVertical: 10,
   },
   close: {
     backgroundColor: '#2196F3',
-    padding: 10,
-    borderRadius: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    borderRadius: 999,
     alignSelf: 'center',
+    marginTop: 6,
   },
   modalOverlay: {
     flex: 1,
@@ -747,28 +944,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: 'rgba(255,255,255,0.9)',
+    backgroundColor: 'rgba(20,20,20,0.95)',
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 14,
     alignItems: 'center',
+    width: '85%',
+    borderWidth: 1,
+    borderColor: 'rgba(255,100,100,0.4)',
   },
   modalText: {
-    fontSize: 18,
-    color: '#000',
+    fontSize: 16,
+    color: '#fff',
     marginBottom: 20,
     textAlign: 'center',
   },
   modalButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '80%',
+    width: '100%',
+    gap: 10,
   },
   modalCancel: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#444',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 999,
     flex: 1,
-    marginRight: 10,
   },
   modalCancelText: {
     color: '#FFF',
@@ -778,9 +978,8 @@ const styles = StyleSheet.create({
   modalDelete: {
     backgroundColor: '#F44336',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 999,
     flex: 1,
-    marginLeft: 10,
   },
   modalDeleteText: {
     color: '#FFF',

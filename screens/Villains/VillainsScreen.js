@@ -30,10 +30,10 @@ const villainsFactions = [
     image: require('../../assets/BackGround/Villains.jpg'),
     mobileWidth: 140,
     mobileHeight: 160,
-    desktopWidth: 290,
-    desktopHeight: 300,
-    primeShadowColor: '#800080', // Purple for card shadow in Prime
-    pinnacleShadowColor: '#4b0082', // Corrupted purple for card shadow in Pinnacle
+    desktopWidth: 260,
+    desktopHeight: 260,
+    primeShadowColor: '#800080',      // Purple for card shadow in Prime
+    pinnacleShadowColor: '#4b0082',   // Corrupted purple for card shadow in Pinnacle
   },
   {
     name: 'Big Bads',
@@ -44,34 +44,34 @@ const villainsFactions = [
     image: require('../../assets/BackGround/BigBad.jpg'),
     mobileWidth: 140,
     mobileHeight: 160,
-    desktopWidth: 290,
-    desktopHeight: 300,
-    primeShadowColor: '#b8860b', // Ominous gold for card shadow in Prime
-    pinnacleShadowColor: '#4b0082', // Corrupted purple for card shadow in Pinnacle
+    desktopWidth: 260,
+    desktopHeight: 260,
+    primeShadowColor: '#b8860b',      // Ominous gold for card shadow in Prime
+    pinnacleShadowColor: '#4b0082',   // Corrupted purple for card shadow in Pinnacle
   },
   {
     name: 'Villain Fleet',
     screen: 'VillainFleet',
     clickable: true,
     image: require('../../assets/BackGround/VillainShipYard.jpg'),
-    mobileWidth: 140,
-    mobileHeight: 160,
-    desktopWidth: 290,
-    desktopHeight: 300,
-    primeShadowColor: '#ff0000', // Red for card shadow in Prime
-    pinnacleShadowColor: '#4b0082', // Corrupted purple for card shadow in Pinnacle
+    mobileWidth: 160,
+    mobileHeight: 170,
+    desktopWidth: 320,
+    desktopHeight: 260,
+    primeShadowColor: '#ff0000',      // Red for card shadow in Prime
+    pinnacleShadowColor: '#4b0082',   // Corrupted purple for card shadow in Pinnacle
   },
   {
     name: 'Demons Section',
     screen: 'DemonsSection',
     clickable: true,
     image: require('../../assets/BackGround/NateEmblem.jpg'),
-    mobileWidth: 180,
-    mobileHeight: 160,
+    mobileWidth: 190,
+    mobileHeight: 180,
     desktopWidth: 340,
-    desktopHeight: 400,
-    primeShadowColor: '#ff4500', // Fiery orange-red for card shadow in Prime
-    pinnacleShadowColor: '#4b0082', // Corrupted purple for card shadow in Pinnacle
+    desktopHeight: 280,
+    primeShadowColor: '#ff4500',      // Fiery orange-red for card shadow in Prime
+    pinnacleShadowColor: '#4b0082',   // Corrupted purple for card shadow in Pinnacle
   },
 ];
 
@@ -93,31 +93,44 @@ const VillainsScreen = () => {
     loadUniversePreference();
   }, []);
 
+  const goHome = () => {
+    navigation.navigate('Home');
+  };
+
   return (
     <ImageBackground
       source={require('../../assets/BackGround/VillainsHub.jpg')}
       style={styles.background}
     >
-      <View style={styles.container}>
+      {/* Dim + glass overlay */}
+      <View style={styles.overlay}>
         <ScrollView
           contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={true}
+          showsVerticalScrollIndicator={false}
         >
           {/* Header and Back Button Row */}
           <View style={styles.headerRow}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Home')}
-              style={styles.backButton}
-            >
+            <TouchableOpacity onPress={goHome} style={styles.backButton}>
               <Text style={styles.backButtonText}>⬅️</Text>
             </TouchableOpacity>
-            <Text style={styles.header}>
-              {isYourUniverse ? 'The Enlightened' : 'The Darkness'}
-            </Text>
+
+            <View style={styles.titleBlock}>
+              <Text style={styles.titleLabel}>
+                {isYourUniverse ? 'Prime Universe' : 'Pinnacle Universe'}
+              </Text>
+              <Text style={styles.header}>
+                {isYourUniverse ? 'The Enlightened' : 'The Darkness'}
+              </Text>
+            </View>
+
+            {/* Spacer to balance back button width */}
             <View style={styles.headerSpacer} />
           </View>
 
-          {/* Three-Row Layout */}
+          {/* Subtle divider */}
+          <View style={styles.headerDivider} />
+
+          {/* Cards Layout */}
           <View style={styles.cardContainer}>
             {/* Top Row: Villains and Big Bads */}
             <View style={styles.topRow}>
@@ -127,7 +140,9 @@ const VillainsScreen = () => {
                   image={item.image}
                   name={isYourUniverse || !item.pinnacleName ? item.name : item.pinnacleName}
                   onPress={() => {
-                    navigation.navigate(isYourUniverse || !item.pinnacleScreen ? item.screen : item.pinnacleScreen);
+                    navigation.navigate(
+                      isYourUniverse || !item.pinnacleScreen ? item.screen : item.pinnacleScreen
+                    );
                   }}
                   mobileWidth={item.mobileWidth}
                   mobileHeight={item.mobileHeight}
@@ -139,7 +154,7 @@ const VillainsScreen = () => {
               ))}
             </View>
 
-            {/* Middle Row: Ships */}
+            {/* Middle Row: Villain Fleet */}
             <View style={styles.middleRow}>
               <Card
                 image={villainsFactions[2].image}
@@ -149,12 +164,16 @@ const VillainsScreen = () => {
                 mobileHeight={villainsFactions[2].mobileHeight}
                 desktopWidth={villainsFactions[2].desktopWidth}
                 desktopHeight={villainsFactions[2].desktopHeight}
-                shadowColor={isYourUniverse ? villainsFactions[2].primeShadowColor : villainsFactions[2].pinnacleShadowColor}
+                shadowColor={
+                  isYourUniverse
+                    ? villainsFactions[2].primeShadowColor
+                    : villainsFactions[2].pinnacleShadowColor
+                }
                 isYourUniverse={isYourUniverse}
               />
             </View>
 
-            {/* Bottom Row: Demons */}
+            {/* Bottom Row: Demons Section */}
             <View style={styles.bottomRow}>
               <Card
                 image={villainsFactions[3].image}
@@ -164,7 +183,11 @@ const VillainsScreen = () => {
                 mobileHeight={villainsFactions[3].mobileHeight}
                 desktopWidth={villainsFactions[3].desktopWidth}
                 desktopHeight={villainsFactions[3].desktopHeight}
-                shadowColor={isYourUniverse ? villainsFactions[3].primeShadowColor : villainsFactions[3].pinnacleShadowColor}
+                shadowColor={
+                  isYourUniverse
+                    ? villainsFactions[3].primeShadowColor
+                    : villainsFactions[3].pinnacleShadowColor
+                }
                 isYourUniverse={isYourUniverse}
               />
             </View>
@@ -175,7 +198,7 @@ const VillainsScreen = () => {
   );
 };
 
-// Card Component with Name Above
+// Card Component with Name Above + glass styling
 const Card = ({
   image,
   name,
@@ -192,26 +215,32 @@ const Card = ({
 
   return (
     <View style={styles.cardWrapper}>
-      <Text style={[styles.factionTitle, { textShadowColor: isYourUniverse ? '#00b3ff' : '#800080' }]}>{name}</Text>
+      <Text
+        style={[
+          styles.factionTitle,
+          {
+            textShadowColor: isYourUniverse ? '#00b3ff' : '#da1cda',
+          },
+        ]}
+      >
+        {name}
+      </Text>
+
       <TouchableOpacity
         style={[
           styles.card,
-          { 
-            width: cardWidth, 
-            height: cardHeight, 
-            borderColor: shadowColor, 
+          {
+            width: cardWidth,
+            height: cardHeight,
+            borderColor: shadowColor,
             shadowColor: shadowColor,
-            backgroundColor: `rgba(${parseInt(shadowColor.slice(1, 3), 16)}, ${parseInt(shadowColor.slice(3, 5), 16)}, ${parseInt(shadowColor.slice(5, 7), 16)}, 0.1)`,
-            borderWidth: 2,
-            shadowOffset: { width: 0, height: 0 },
-            shadowOpacity: 0.8,
-            shadowRadius: 10,
-          }
+          },
         ]}
         onPress={onPress}
+        activeOpacity={0.9}
       >
         <Image source={image} style={styles.cardImage} />
-        <View style={styles.transparentOverlay} />
+        <View style={styles.cardGradientOverlay} />
       </TouchableOpacity>
     </View>
   );
@@ -222,59 +251,85 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
     resizeMode: 'cover',
-  },
-  container: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.78)',
     alignItems: 'center',
-    paddingTop: IS_DESKTOP ? 20 : 30,
+    paddingTop: IS_DESKTOP ? 10 : 20,
   },
   scrollContent: {
-    paddingBottom: 20,
+    paddingBottom: 30,
     alignItems: 'center',
+    width: '100%',
   },
+
+  // HEADER
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     marginTop: HEADER_MARGIN_TOP,
   },
   backButton: {
-    backgroundColor: '#750000',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
     paddingVertical: 8,
-    paddingHorizontal: 15,
-    borderRadius: 8,
-    elevation: 5,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.18)',
   },
   backButtonText: {
     color: '#FFF',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '600',
+  },
+  titleBlock: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 2,
+  },
+  titleLabel: {
+    fontSize: 11,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+    color: 'rgba(255,255,255,0.7)',
   },
   header: {
-    flex: 1,
-    fontSize: 32,
-    fontWeight: 'bold',
+    fontSize: IS_DESKTOP ? 30 : 24,
+    fontWeight: '900',
     color: '#630404',
     textAlign: 'center',
     textShadowColor: '#ff1c1c',
-    textShadowRadius: 30,
+    textShadowRadius: 26,
+    textShadowOffset: { width: 0, height: 0 },
   },
   headerSpacer: {
-    width: 60, // Matches back button width for symmetry
+    width: 40, // visual balance with back button
   },
+  headerDivider: {
+    width: '80%',
+    height: 1,
+    backgroundColor: 'rgba(255,255,255,0.18)',
+    marginTop: 12,
+    marginBottom: 10,
+  },
+
+  // CARD GRID
   cardContainer: {
     width: '100%',
     alignItems: 'center',
     gap: 20,
-    marginTop: 20,
+    marginTop: 10,
   },
   topRow: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 20,
+    gap: 18,
+    flexWrap: 'wrap',
   },
   middleRow: {
     alignItems: 'center',
@@ -284,32 +339,38 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 5,
   },
+
+  // CARD
   cardWrapper: {
     alignItems: 'center',
     marginBottom: 10,
   },
+  factionTitle: {
+    fontSize: IS_DESKTOP ? 18 : 14,
+    fontWeight: '800',
+    color: '#fff',
+    textAlign: 'center',
+    marginBottom: 6,
+    textShadowRadius: 10,
+  },
   card: {
-    borderRadius: 10,
+    borderRadius: 18,
     overflow: 'hidden',
-    elevation: 5,
+    elevation: 6,
+    backgroundColor: 'rgba(10, 10, 10, 0.78)', // glassy dark
+    borderWidth: 1.5,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.7,
+    shadowRadius: 16,
   },
   cardImage: {
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
   },
-  transparentOverlay: {
+  cardGradientOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0)', // No overlay color, just for interaction
-    zIndex: 1,
-  },
-  factionTitle: {
-    fontSize: IS_DESKTOP ? 20 : 14,
-    fontWeight: 'bold',
-    color: '#fff',
-    textAlign: 'center',
-    marginBottom: 5,
-    textShadowRadius: 10,
+    backgroundColor: 'rgba(0,0,0,0.25)',
   },
 });
 

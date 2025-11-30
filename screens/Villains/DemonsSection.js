@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Dimensions,
   ImageBackground,
-  Alert, // <-- you referenced Alert in playTheme errors
+  Alert,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Audio } from 'expo-av';
@@ -16,9 +16,9 @@ import { Audio } from 'expo-av';
 // Screen dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-// Grid layout settings
+// Layout
 const isDesktop = SCREEN_WIDTH > 600;
-const cardSize = isDesktop ? 400 : 300;
+const cardSize = isDesktop ? 360 : 280;
 
 // Demon factions data
 const demonLords = [
@@ -137,23 +137,25 @@ const DemonsSectionScreen = () => {
       key={faction.name}
       style={[
         styles.factionCard,
-        { width: cardSize, height: cardSize * 1.2 + 60 },
-        faction.clickable ? styles.clickable : styles.notClickable
+        faction.clickable ? styles.cardClickable : styles.cardNotClickable,
       ]}
       onPress={() => handleFactionPress(faction)}
       disabled={!faction.clickable || !faction.screen}
+      activeOpacity={0.9}
     >
       <Image
         source={faction.image}
-        style={[styles.factionImage, { width: cardSize, height: cardSize * 1.2 }]}
+        style={[styles.factionImage, { width: cardSize, height: cardSize * 1.25 }]}
       />
 
-      {/* Transparent overlay that IGNORES touches */}
-      <View pointerEvents="none" style={styles.transparentOverlay} />
+      {/* Dark gradient overlay on image */}
+      <View style={styles.cardOverlay} />
 
       <View style={styles.textContainer}>
         <Text style={styles.factionName}>{faction.name}</Text>
-        {!faction.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+        {!faction.clickable && (
+          <Text style={styles.disabledText}>Not Clickable</Text>
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -163,22 +165,22 @@ const DemonsSectionScreen = () => {
       source={require('../../assets/BackGround/NateEmblem.jpg')}
       style={styles.background}
     >
-      {/* Back Button */}
-      <TouchableOpacity
-        onPress={handleBackPress}
-        style={styles.backButton}
-      >
-        <Text style={styles.backButtonText}>⬅️</Text>
-      </TouchableOpacity>
+      {/* Dim + glass overlay over background */}
+      <View style={styles.screenDimOverlay}>
+        {/* Top bar */}
+        <View style={styles.topBar}>
+          <TouchableOpacity
+            onPress={handleBackPress}
+            style={styles.iconButton}
+          >
+            <Text style={styles.iconButtonText}>⬅️</Text>
+          </TouchableOpacity>
 
-      {/* Vertical ScrollView for entire content */}
-      <ScrollView
-        contentContainerStyle={styles.scrollContentContainer}
-        showsVerticalScrollIndicator={true}
-      >
-        <View style={styles.container}>
-          {/* Demon Lords Section */}
-          <Text style={styles.header}>⚡️ Demon Lords ⚡️</Text>
+          <View style={styles.titleBlock}>
+            <Text style={styles.titleLabel}>Maw Factions</Text>
+            <Text style={styles.mainTitle}>Demon Legions</Text>
+          </View>
+
           <View style={styles.musicControls}>
             <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
               <Text style={styles.musicButtonText}>Theme</Text>
@@ -187,29 +189,52 @@ const DemonsSectionScreen = () => {
               <Text style={styles.musicButtonText}>Pause</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.scrollWrapper}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={true}
-              contentContainerStyle={[styles.scrollContainer, { gap: isDesktop ? 40 : 20 }]}
-            >
-              {demonLords.map(renderFactionCard)}
-            </ScrollView>
-          </View>
-
-          {/* Dark Forces Section */}
-          <Text style={styles.header}> Dark Forces </Text>
-          <View style={styles.scrollWrapper}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={true}
-              contentContainerStyle={[styles.scrollContainer, { gap: isDesktop ? 40 : 20 }]}
-            >
-              {otherEvilThreats.map(renderFactionCard)}
-            </ScrollView>
-          </View>
         </View>
-      </ScrollView>
+
+        {/* Vertical ScrollView for sections */}
+        <ScrollView
+          contentContainerStyle={styles.scrollContentContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.container}>
+            {/* Demon Lords Section */}
+            <View style={styles.section}>
+              <Text style={styles.sectionHeader}>⚡️ Demon Lords ⚡️</Text>
+              <View style={styles.sectionLine} />
+              <View style={styles.scrollWrapper}>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={[
+                    styles.scrollContainer,
+                    { gap: isDesktop ? 32 : 18 },
+                  ]}
+                >
+                  {demonLords.map(renderFactionCard)}
+                </ScrollView>
+              </View>
+            </View>
+
+            {/* Dark Forces Section */}
+            <View style={styles.section}>
+              <Text style={styles.sectionHeader}>Dark Forces</Text>
+              <View style={styles.sectionLine} />
+              <View style={styles.scrollWrapper}>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={[
+                    styles.scrollContainer,
+                    { gap: isDesktop ? 32 : 18 },
+                  ]}
+                >
+                  {otherEvilThreats.map(renderFactionCard)}
+                </ScrollView>
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+      </View>
     </ImageBackground>
   );
 };
@@ -220,107 +245,170 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
     resizeMode: 'cover',
+    flex: 1,
   },
-  container: {
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    paddingTop: 20,
+  screenDimOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.78)',
+  },
+
+  // TOP BAR
+  topBar: {
+    flexDirection: 'row',
     alignItems: 'center',
-    paddingBottom: 20,
+    paddingTop: 40,
+    paddingHorizontal: 16,
+    justifyContent: 'space-between',
   },
-  scrollContentContainer: {
-    paddingTop: 80, // Space for back button
-    paddingBottom: 40, // Extra padding at bottom
-  },
-  backButton: {
-    position: 'absolute',
-    top: 40,
-    left: 20,
-    backgroundColor: '#750000',
+  iconButton: {
     paddingVertical: 8,
-    paddingHorizontal: 10,
-    borderRadius: 8,
-    elevation: 5,
-    zIndex: 1,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.16)',
   },
-  backButtonText: {
+  iconButtonText: {
     color: '#FFF',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
-  header: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: 'rgba(107, 9, 9, 1)',
+  titleBlock: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 2,
+  },
+  titleLabel: {
+    fontSize: 11,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
+    color: 'rgba(255,255,255,0.7)',
+  },
+  mainTitle: {
+    fontSize: isDesktop ? 26 : 22,
+    fontWeight: '900',
+    color: '#f1632b',
     textAlign: 'center',
-    textShadowColor: 'rgba(241, 99, 43, 1)',
-    textShadowRadius: 20,
-    marginBottom: 20,
-    marginTop: 20,
+    textShadowColor: 'rgba(241, 99, 43, 0.9)',
+    textShadowRadius: 16,
+    textShadowOffset: { width: 0, height: 0 },
   },
+
   musicControls: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 20,
+    alignItems: 'center',
+    gap: 8,
   },
   musicButton: {
-    padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 5,
-    marginHorizontal: 10,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(241, 99, 43, 0.6)',
   },
   musicButtonText: {
-    fontSize: 12,
-    color: '#ff5e00',
-    fontWeight: 'bold',
+    fontSize: 11,
+    color: '#ffb36b',
+    fontWeight: '700',
   },
+
+  // MAIN SCROLL
+  scrollContentContainer: {
+    paddingTop: 10,
+    paddingBottom: 40,
+  },
+
+  container: {
+    paddingHorizontal: 12,
+  },
+
+  section: {
+    marginTop: 20,
+    marginBottom: 10,
+    padding: 14,
+    borderRadius: 20,
+    backgroundColor: 'rgba(15, 15, 15, 0.78)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    shadowColor: '#000',
+    shadowOpacity: 0.45,
+    shadowOffset: { width: 0, height: 8 },
+    shadowRadius: 18,
+  },
+  sectionHeader: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: 'rgba(255,255,255,0.92)',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  sectionLine: {
+    height: 1,
+    width: '35%',
+    alignSelf: 'center',
+    backgroundColor: 'rgba(241, 99, 43, 0.65)',
+    marginBottom: 10,
+  },
+
   scrollWrapper: {
-    width: SCREEN_WIDTH,
-    height: cardSize * 1.2 + 100, // Adjusted for original card height + text
+    width: '100%',
+    height: cardSize * 1.25 + 80,
   },
   scrollContainer: {
     flexDirection: 'row',
-    flexGrow: 1,
-    width: 'auto',
-    paddingVertical: 20,
+    paddingVertical: 16,
+    paddingHorizontal: 8,
     alignItems: 'center',
   },
+
   factionCard: {
-    borderRadius: 15,
+    borderRadius: 20,
     overflow: 'hidden',
-    elevation: 5,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
+    backgroundColor: 'rgba(0, 0, 0, 0.75)',
     alignItems: 'center',
-    marginRight: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.6,
+    shadowOffset: { width: 0, height: 10 },
+    shadowRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
   },
-  clickable: {
-    borderColor: 'transparent',
-    borderWidth: 4,
+  cardClickable: {
+    borderColor: 'rgba(226, 88, 34, 0.9)',
   },
-  notClickable: {
-    opacity: 0.7,
+  cardNotClickable: {
+    opacity: 0.65,
   },
   factionImage: {
-    borderRadius: 15,
-    resizeMode: 'contain',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
-  transparentOverlay: {
+  cardOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    // zIndex removed so it doesn't sit above and catch touches
+    borderRadius: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.25)',
   },
   textContainer: {
+    position: 'absolute',
+    bottom: 10,
+    left: 0,
+    right: 0,
     alignItems: 'center',
-    paddingTop: 10,
+    paddingHorizontal: 10,
   },
   factionName: {
     color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight: '800',
+    textShadowColor: 'rgba(0,0,0,0.9)',
+    textShadowRadius: 10,
   },
   disabledText: {
-    marginTop: 5,
-    color: '#ff4444',
-    fontSize: 14,
+    marginTop: 4,
+    color: '#ff8888',
+    fontSize: 12,
+    fontWeight: '600',
   },
 });
 

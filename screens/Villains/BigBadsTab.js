@@ -67,45 +67,52 @@ const BigBadsTab = () => {
   );
 
   const playTheme = async () => {
-    if (!currentSound) {
-      const { sound } = await Audio.Sound.createAsync(
-        require('../../assets/audio/BigThreat.mp4'),
-        { shouldPlay: true, isLooping: true, volume: 0.7 }
-      );
-      setCurrentSound(sound);
-      await sound.playAsync();
-      setIsPlaying(true);
-    } else if (!isPlaying) {
-      await currentSound.playAsync();
-      setIsPlaying(true);
+    try {
+      if (!currentSound) {
+        const { sound } = await Audio.Sound.createAsync(
+          require('../../assets/audio/BigThreat.mp4'),
+          { shouldPlay: true, isLooping: true, volume: 0.7 }
+        );
+        setCurrentSound(sound);
+        await sound.playAsync();
+        setIsPlaying(true);
+      } else if (!isPlaying) {
+        await currentSound.playAsync();
+        setIsPlaying(true);
+      }
+    } catch (e) {
+      console.error('Error playing theme:', e);
     }
   };
 
   const pauseTheme = async () => {
-    if (currentSound && isPlaying) {
-      await currentSound.pauseAsync();
-      setIsPlaying(false);
+    try {
+      if (currentSound && isPlaying) {
+        await currentSound.pauseAsync();
+        setIsPlaying(false);
+      }
+    } catch (e) {
+      console.error('Error pausing theme:', e);
     }
   };
 
   const stopAndGoToDetail = async (character) => {
-    if (currentSound) {
-      await currentSound.stopAsync();
-      await currentSound.unloadAsync();
-      setCurrentSound(null);
-      setIsPlaying(false);
+    try {
+      if (currentSound) {
+        await currentSound.stopAsync();
+        await currentSound.unloadAsync();
+        setCurrentSound(null);
+        setIsPlaying(false);
+      }
+    } catch (e) {
+      console.error('Error stopping theme:', e);
     }
     navigation.navigate('EnlightenedCharacterDetail', { member: character });
   };
 
   const handlePress = (bigBad) => {
-    // If has a dedicated screen → go there
-    if (bigBad.screen && bigBad.screen.trim() !== '') {
-      stopAndGoToDetail(bigBad); // Reuse detail screen with correct theme
-    } else {
-      // Otherwise → full bio in detail screen
-      stopAndGoToDetail(bigBad);
-    }
+    // Either way, we send them into the shared detail screen
+    stopAndGoToDetail(bigBad);
   };
 
   const renderBigBadCard = (bigBad) => (
@@ -117,15 +124,16 @@ const BigBadsTab = () => {
           width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
           height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
         },
-        bigBad.borderColor ? styles.clickable(bigBad.borderColor) : styles.notClickable,
+        bigBad.borderColor
+          ? styles.clickable(bigBad.borderColor)
+          : styles.notClickable,
       ]}
       onPress={() => handlePress(bigBad)}
-      activeOpacity={0.85}
+      activeOpacity={0.88}
     >
       <Image source={bigBad.image} style={styles.image} />
-      <View style={styles.transparentOverlay} />
+      <View style={styles.cardOverlay} />
       <Text style={styles.name}>{bigBad.name}</Text>
-      {/* {!bigBad.screen && <Text style={styles.detailHint}>Tap for Bio</Text>} */}
     </TouchableOpacity>
   );
 
@@ -134,148 +142,226 @@ const BigBadsTab = () => {
       source={require('../../assets/BackGround/BigBad.jpg')}
       style={styles.background}
     >
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.container}>
-          {/* Back Button */}
-          <TouchableOpacity
-            onPress={async () => {
-              if (currentSound) {
-                await currentSound.stopAsync();
-                await currentSound.unloadAsync();
-                setCurrentSound(null);
-                setIsPlaying(false);
-              }
-              navigation.navigate('Villains');
-            }}
-            style={styles.backButton}
-          >
-            <Text style={styles.backButtonText}>Back</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => navigation.navigate('BigBoss')}>
-            <Text style={styles.header}>Big Bads</Text>
-          </TouchableOpacity>
-
-          <View style={styles.musicControls}>
-            <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
-              <Text style={styles.musicButtonText}>Theme</Text>
+      <View style={styles.screenOverlay}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+        >
+          {/* HEADER ROW */}
+          <View style={styles.headerWrapper}>
+            <TouchableOpacity
+              onPress={async () => {
+                try {
+                  if (currentSound) {
+                    await currentSound.stopAsync();
+                    await currentSound.unloadAsync();
+                    setCurrentSound(null);
+                    setIsPlaying(false);
+                  }
+                } catch (e) {
+                  console.error('Error stopping theme on back:', e);
+                }
+                // Match your original back target:
+                navigation.navigate('Villains');
+              }}
+              style={styles.backButton}
+              activeOpacity={0.9}
+            >
+              <Text style={styles.backButtonText}>⬅️ Back</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
+
+            <TouchableOpacity
+              onPress={() => navigation.navigate('BigBoss')}
+              style={styles.headerTitle}
+              activeOpacity={0.9}
+            >
+              <View style={styles.headerGlass}>
+                <Text style={styles.header}>Big Bads</Text>
+                <Text style={styles.headerSub}>
+                  Cosmic tyrants, reality-breakers, and endgame threats
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          {/* MUSIC CONTROLS */}
+          <View style={styles.musicControls}>
+            <TouchableOpacity
+              style={styles.musicButton}
+              onPress={playTheme}
+              activeOpacity={0.9}
+            >
+              <Text style={styles.musicButtonText}>
+                {isPlaying ? 'Playing…' : 'Theme'}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.musicButton}
+              onPress={pauseTheme}
+              activeOpacity={0.9}
+            >
               <Text style={styles.musicButtonText}>Pause</Text>
             </TouchableOpacity>
           </View>
 
+          {/* CATEGORY + SCROLLER */}
           <View style={styles.scrollWrapper}>
             <Text style={styles.categoryHeader}>Cosmic Tyrants</Text>
             <ScrollView
               horizontal
               contentContainerStyle={styles.scrollContainer}
-              showsHorizontalScrollIndicator={true}
+              showsHorizontalScrollIndicator={false}
             >
               {bigBads.map(renderBigBadCard)}
             </ScrollView>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  background: { width: SCREEN_WIDTH, height: SCREEN_HEIGHT, resizeMode: 'cover' },
-  scrollView: { flex: 1 },
-  container: {
-    backgroundColor: 'rgba(0, 0, 0, 0.78)',
-    paddingTop: 40,
+  background: {
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT,
+    resizeMode: 'cover',
+    flex: 1,
+  },
+  screenOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(6, 0, 18, 0.85)',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
     paddingBottom: 40,
+  },
+  headerWrapper: {
+    width: '100%',
+    flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingTop: 40,
+    marginBottom: 10,
   },
   backButton: {
-    position: 'absolute',
-    top: 40,
-    left: 20,
-    backgroundColor: '#4B0082',
-    paddingVertical: 10,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    elevation: 8,
-    borderWidth: 2,
-    borderColor: '#9932CC',
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    backgroundColor: 'rgba(70,0,100,0.9)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(200,120,255,0.7)',
   },
-  backButtonText: { color: '#FFF', fontSize: 16, fontWeight: 'bold' },
+  backButtonText: {
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  headerTitle: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  headerGlass: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: 'rgba(0,0,0,0.35)',
+    borderWidth: 1,
+    borderColor: 'rgba(180,60,255,0.7)',
+  },
   header: {
-    fontSize: 48,
+    fontSize: isDesktop ? 32 : 26,
     fontWeight: '900',
-    color: '#4B0082',
+    color: '#f4e6ff',
     textAlign: 'center',
-    textShadowColor: '#BA55D3',
-    textShadowRadius: 30,
-    marginVertical: 20,
+    textShadowColor: '#d06bff',
+    textShadowRadius: 20,
   },
-  musicControls: { flexDirection: 'row', gap: 20, marginBottom: 20 },
+  headerSub: {
+    marginTop: 2,
+    fontSize: isDesktop ? 12 : 10,
+    color: 'rgba(240,220,255,0.85)',
+    textAlign: 'center',
+    letterSpacing: 0.4,
+  },
+  musicControls: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 16,
+    marginBottom: 8,
+    marginTop: 8,
+  },
   musicButton: {
-    paddingHorizontal: 22,
-    paddingVertical: 12,
-    backgroundColor: 'rgba(138, 43, 226, 0.3)',
-    borderRadius: 30,
-    borderWidth: 2,
-    borderColor: '#BA55D3',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    backgroundColor: 'rgba(138, 43, 226, 0.28)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(186,85,211,0.9)',
   },
-  musicButtonText: { fontSize: 16, color: '#DA70D6', fontWeight: 'bold' },
-  scrollWrapper: { width: SCREEN_WIDTH, marginTop: 20 },
+  musicButtonText: {
+    fontSize: 14,
+    color: '#f0d0ff',
+    fontWeight: 'bold',
+  },
+  scrollWrapper: {
+    width: SCREEN_WIDTH,
+    marginTop: 16,
+  },
   scrollContainer: {
     flexDirection: 'row',
     paddingVertical: verticalSpacing,
     alignItems: 'center',
-    paddingHorizontal: 10,
+    paddingHorizontal: 16,
   },
   card: {
     borderRadius: 20,
     overflow: 'hidden',
-    elevation: 15,
-    backgroundColor: 'rgba(10, 0, 30, 0.9)',
+    elevation: 12,
+    backgroundColor: 'rgba(10, 0, 30, 0.95)',
     marginRight: horizontalSpacing,
     shadowColor: '#9932CC',
-    shadowOpacity: 0.8,
+    shadowOpacity: 0.9,
     shadowRadius: 20,
   },
   clickable: (color) => ({
-    borderColor: color === 'gold' ? '#FFD700' : '#BA55D3',
-    borderWidth: 5,
+    borderColor: color === 'gold' ? '#f7d259' : '#BA55D3',
+    borderWidth: 2,
+    shadowColor: color === 'gold' ? '#f7d259aa' : '#BA55D3aa',
   }),
-  notClickable: { opacity: 0.88 },
-  image: { width: '100%', height: '100%', resizeMode: 'cover' },
-  transparentOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0, 0, 0, 0.45)' },
+  notClickable: {
+    opacity: 0.88,
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  cardOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.42)',
+  },
   name: {
     position: 'absolute',
-    bottom: 20,
-    left: 20,
-    fontSize: 24,
+    bottom: 18,
+    left: 16,
+    fontSize: 22,
     color: '#FFFFFF',
     fontWeight: '900',
     textShadowColor: '#000',
     textShadowRadius: 12,
   },
-  detailHint: {
-    position: 'absolute',
-    top: 16,
-    right: 16,
-    backgroundColor: 'rgba(138, 43, 226, 0.8)',
-    color: '#FFF',
-    padding: 8,
-    borderRadius: 10,
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
   categoryHeader: {
-    fontSize: 32,
+    fontSize: isDesktop ? 26 : 22,
     fontWeight: 'bold',
     color: '#E6E6FA',
     textAlign: 'left',
     textShadowColor: '#BA55D3',
-    textShadowRadius: 20,
-    marginLeft: 15,
-    marginVertical: 15,
+    textShadowRadius: 18,
+    marginLeft: 18,
+    marginVertical: 10,
   },
 });
 
