@@ -233,7 +233,7 @@ const InfantryScreen = () => {
           style={styles.infantryImg}
           resizeMode="cover"
         />
-        <View style={styles.overlay} />
+        <View style={styles.cardOverlay} />
         <Text style={styles.infantryName}>{infantryItem.name}</Text>
         {!infantryItem.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
       </TouchableOpacity>
@@ -296,7 +296,7 @@ const InfantryScreen = () => {
       source={require('../../assets/BackGround/Soldiers.jpg')}
       style={styles.bg}
     >
-      <View style={styles.overlay}>
+      <View style={styles.screenOverlay}>
         <TouchableOpacity
           onPress={() => {
             console.log('Navigating back');
@@ -473,53 +473,68 @@ const styles = StyleSheet.create({
     height: SCREEN_HEIGHT,
     resizeMode: 'cover',
   },
-  overlay: {
+
+  // Full-screen dark glass overlay
+  screenOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    backgroundColor: 'rgba(3, 7, 18, 0.8)', // deep navy glass
     paddingTop: 50,
   },
+
   scroll: {
     paddingBottom: 20,
   },
+
   back: {
     position: 'absolute',
     top: 10,
     left: 10,
-    backgroundColor: 'rgba(17,25,40,0.6)',
+    backgroundColor: 'rgba(15, 23, 42, 0.9)',
     padding: 10,
-    borderRadius: 8,
+    borderRadius: 999,
     zIndex: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(148, 163, 184, 0.7)',
   },
   backText: {
-    color: '#FFF',
+    color: '#E5F2FF',
     fontSize: 16,
     fontWeight: 'bold',
   },
+
   header: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#FFF',
+    fontSize: 30,
+    fontWeight: '900',
+    color: '#F9FAFB',
     textAlign: 'center',
     marginVertical: 20,
-    textShadowColor: '#FFD700', // Gold to match hardcoded border
-    textShadowRadius: 15,
+    textShadowColor: '#FACC15', // warm gold glow
+    textShadowRadius: 22,
+    letterSpacing: 1,
   },
+
+  // Music buttons – glassy pills
   musicControls: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: 16,
+    gap: 10,
   },
   musicButton: {
-    padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 5,
-    marginHorizontal: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 18,
+    backgroundColor: 'rgba(15, 23, 42, 0.85)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(250, 204, 21, 0.65)', // soft gold
   },
   musicButtonText: {
     fontSize: 12,
-    color: '#00b3ff',
+    color: '#FACC15',
     fontWeight: 'bold',
+    letterSpacing: 0.5,
   },
+
   scrollWrapper: {
     width: SCREEN_WIDTH,
   },
@@ -527,58 +542,79 @@ const styles = StyleSheet.create({
     paddingHorizontal: horizontalSpacing,
     paddingVertical: verticalSpacing,
   },
+
   infantryCont: {
     marginHorizontal: 10,
     alignItems: 'center',
   },
+
+  // Glassy infantry card
   infantryCard: {
-    borderRadius: 15,
+    borderRadius: 18,
     overflow: 'hidden',
-    backgroundColor: 'rgba(0,0,0,0.7)',
-    elevation: 5,
+    backgroundColor: 'rgba(15, 23, 42, 0.9)', // navy glass
+    elevation: 12,
+    shadowColor: '#FACC15',
+    shadowOpacity: 0.45,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 10 },
   },
+
   clickable: (borderColor) => ({
-    borderColor: borderColor || '#FFD700', // Default to gold
+    borderColor: borderColor || '#FACC15', // default gold
     borderWidth: 2,
   }),
+
   notClickable: {
-    opacity: 0.7,
+    opacity: 0.6,
   },
+
   infantryImg: {
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
   },
-  overlay: {
+
+  // Soft overlay on the card image so text pops
+  cardOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(15, 23, 42, 0.35)',
+    zIndex: 1,
+  },
+
+  transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'transparent',
     zIndex: 1,
   },
-  transparentOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1,
-  },
+
   infantryName: {
     position: 'absolute',
     bottom: 10,
     left: 10,
+    right: 10,
     fontSize: 16,
-    color: 'white',
-    fontWeight: 'bold',
+    color: '#F9FAFB',
+    fontWeight: '700',
+    textShadowColor: 'rgba(0,0,0,0.9)',
+    textShadowRadius: 8,
+    zIndex: 2,
   },
+
   disabledText: {
     fontSize: 12,
-    color: '#FFD700', // Gold to match hardcoded border
+    color: '#FACC15',
     marginTop: 5,
     textAlign: 'center',
   },
+
   noInfantryText: {
     fontSize: 16,
-    color: '#FFF',
+    color: '#E5F2FF',
     textAlign: 'center',
     padding: 20,
   },
+
   buttons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -586,33 +622,35 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   edit: {
-    backgroundColor: '#FFC107',
-    padding: 5,
-    borderRadius: 5,
+    backgroundColor: 'rgba(234, 179, 8, 0.95)', // amber
+    padding: 6,
+    borderRadius: 999,
     flex: 1,
-    marginRight: 5,
+    marginRight: 6,
     alignItems: 'center',
   },
   delete: {
-    backgroundColor: '#F44336',
-    padding: 5,
-    borderRadius: 5,
+    backgroundColor: 'rgba(239, 68, 68, 0.95)',
+    padding: 6,
+    borderRadius: 999,
     flex: 1,
-    marginLeft: 5,
+    marginLeft: 6,
     alignItems: 'center',
   },
   disabled: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#9CA3AF',
     opacity: 0.6,
   },
   buttonText: {
-    color: '#FFF',
-    fontWeight: 'bold',
-    fontSize: 14,
+    color: '#F9FAFB',
+    fontWeight: '700',
+    fontSize: 13,
   },
+
+  // Preview modal – dark glass
   modalBackground: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    backgroundColor: 'rgba(15, 23, 42, 0.95)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -625,8 +663,10 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: '100%',
     paddingVertical: 10,
-    backgroundColor: '#111',
+    backgroundColor: 'rgba(15, 23, 42, 0.95)',
     alignItems: 'center',
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
   },
   imageScrollContainer: {
     flexDirection: 'row',
@@ -634,70 +674,92 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  previewCard: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.5 : SCREEN_WIDTH * 0.8,
-    height: isDesktop ? SCREEN_HEIGHT * 0.6 : SCREEN_HEIGHT * 0.3,
-    borderRadius: 15,
+
+  // Glassy preview card
+  previewCard: (isDesktopValue, windowWidth) => ({
+    width: isDesktopValue ? windowWidth * 0.5 : SCREEN_WIDTH * 0.8,
+    height: isDesktopValue ? SCREEN_HEIGHT * 0.6 : SCREEN_HEIGHT * 0.35,
+    borderRadius: 18,
     overflow: 'hidden',
-    elevation: 5,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    elevation: 16,
+    backgroundColor: 'rgba(15, 23, 42, 0.95)',
     marginRight: 20,
+    borderWidth: 1.5,
+    borderColor: 'rgba(250, 204, 21, 0.85)', // soft gold frame
   }),
+
   previewImage: {
     width: '100%',
     height: '100%',
     resizeMode: 'contain',
   },
+
   cardName: {
     position: 'absolute',
     bottom: 10,
     left: 10,
-    fontSize: 16,
-    color: 'white',
-    fontWeight: 'bold',
+    right: 10,
+    fontSize: 15,
+    color: '#F9FAFB',
+    fontWeight: '700',
     zIndex: 2,
+    textShadowColor: 'rgba(0,0,0,0.9)',
+    textShadowRadius: 8,
   },
+
   previewAboutSection: {
     marginTop: 10,
-    padding: 10,
-    backgroundColor: '#222',
-    borderRadius: 10,
+    padding: 12,
+    backgroundColor: 'rgba(15, 23, 42, 0.98)',
+    borderRadius: 18,
     width: '90%',
+    borderWidth: 1,
+    borderColor: 'rgba(148, 163, 184, 0.7)',
   },
   previewName: {
-    fontSize: 16,
-    color: '#fff',
+    fontSize: 18,
+    color: '#E5F2FF',
     textAlign: 'center',
+    fontWeight: '700',
   },
   previewDesc: {
-    fontSize: 16,
-    color: '#fff7f7',
+    fontSize: 14,
+    color: '#E5E7EB',
     textAlign: 'center',
     marginVertical: 10,
   },
   close: {
-    backgroundColor: '#2196F3',
-    padding: 10,
-    borderRadius: 5,
+    backgroundColor: '#0EA5E9',
+    paddingVertical: 8,
+    paddingHorizontal: 22,
+    borderRadius: 999,
     alignSelf: 'center',
+    marginTop: 6,
   },
+
+  // Delete confirmation modal
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    backgroundColor: 'rgba(15, 23, 42, 0.9)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: 'rgba(255,255,255,0.9)',
+    backgroundColor: 'rgba(248, 250, 252, 0.98)',
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 16,
     alignItems: 'center',
+    width: '85%',
+    maxWidth: 420,
+    borderWidth: 1,
+    borderColor: 'rgba(148, 163, 184, 0.7)',
   },
   modalText: {
     fontSize: 18,
-    color: '#000',
+    color: '#0F172A',
     marginBottom: 20,
     textAlign: 'center',
+    fontWeight: '600',
   },
   modalButtons: {
     flexDirection: 'row',
@@ -705,26 +767,26 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   modalCancel: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#0EA5E9',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 999,
     flex: 1,
     marginRight: 10,
   },
   modalCancelText: {
-    color: '#FFF',
+    color: '#F9FAFB',
     fontWeight: 'bold',
     textAlign: 'center',
   },
   modalDelete: {
-    backgroundColor: '#F44336',
+    backgroundColor: '#EF4444',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 999,
     flex: 1,
     marginLeft: 10,
   },
   modalDeleteText: {
-    color: '#FFF',
+    color: '#F9FAFB',
     fontWeight: 'bold',
     textAlign: 'center',
   },

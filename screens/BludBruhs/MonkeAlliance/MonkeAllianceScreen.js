@@ -15,8 +15,17 @@ import { Audio } from 'expo-av';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const isDesktop = SCREEN_WIDTH > 600;
-const cardSize = isDesktop ? 160 : 100;
-const cardSpacing = isDesktop ? 25 : 10;
+const cardSize = isDesktop ? 160 : 110;
+const cardSpacing = isDesktop ? 25 : 12;
+
+// Jungle / tribal gold palette
+const JUNGLE = {
+  bark: '#4A2A14',
+  barkDark: '#2a160a',
+  gold: '#FFD700',
+  ember: '#DAA520',
+  leafGlow: '#9ACD32',
+};
 
 const members = [
   { id: 'zeke', name: 'Zeke', codename: 'Enderstrike', screen: 'Zeke', clickable: true, image: require('../../../assets/Armor/Zeke.jpg') },
@@ -42,7 +51,6 @@ const members = [
       require('../../../assets/Armor/Lauren4.jpg'),
       require('../../../assets/Armor/Lauren.jpg'),
     ],
-    // description: 'She rules the jungle with golden fury and unbreakable grace.',
   },
   {
     id: 'lizzie',
@@ -55,7 +63,6 @@ const members = [
       require('../../../assets/Armor/LizzieTB.jpg'),
       require('../../../assets/Armor/PlaceHolder.jpg'),
     ],
-    // description: 'Her roar shakes the canopy. Her claws carve destiny.',
   },
   {
     id: 'rachel',
@@ -68,7 +75,6 @@ const members = [
       require('../../../assets/Armor/RachelTB.jpg'),
       require('../../../assets/Armor/PlaceHolder.jpg'),
     ],
-    // description: 'The jungle itself bows to her will.',
   },
   {
     id: 'keith',
@@ -81,7 +87,6 @@ const members = [
       require('../../../assets/Armor/Keith.jpg'),
       require('../../../assets/Armor/PlaceHolder.jpg'),
     ],
-    // description: 'Unmovable. Unbreakable. The shield of the Alliance.',
   },
   {
     id: 'sandra',
@@ -94,7 +99,6 @@ const members = [
       require('../../../assets/Armor/Sandra.jpg'),
       require('../../../assets/Armor/PlaceHolder.jpg'),
     ],
-    // description: 'She speaks and the jungle listens. Wisdom older than the trees.',
   },
   {
     id: 'shadow',
@@ -107,7 +111,6 @@ const members = [
       require('../../../assets/Armor/SamsShadow.jpg'),
       require('../../../assets/Armor/PlaceHolder.jpg'),
     ],
-    // description: 'He was never here. But his presence lingers like smoke in the canopy.',
   },
 ];
 
@@ -125,10 +128,18 @@ const MonkeAllianceScreen = () => {
     }
   };
 
-  useFocusEffect(useCallback(() => () => killMonke(), [currentSound]));
+  useFocusEffect(
+    useCallback(() => {
+      return () => killMonke();
+    }, [currentSound])
+  );
 
   const playTheme = async () => {
-    if (currentSound) { await currentSound.playAsync(); setIsPlaying(true); return; }
+    if (currentSound) {
+      await currentSound.playAsync();
+      setIsPlaying(true);
+      return;
+    }
     try {
       const { sound } = await Audio.Sound.createAsync(
         require('../../../assets/audio/monke.m4a'),
@@ -156,7 +167,11 @@ const MonkeAllianceScreen = () => {
       navigation.navigate('CharacterDetailScreen', {
         member: {
           ...member,
-          images: member.images || (member.image ? [member.image] : [require('../../../assets/Armor/PlaceHolder.jpg')]),
+          images:
+            member.images ||
+            (member.image
+              ? [member.image]
+              : [require('../../../assets/Armor/PlaceHolder.jpg')]),
           universe: 'monke',
         },
       });
@@ -164,10 +179,11 @@ const MonkeAllianceScreen = () => {
   };
 
   const renderCard = (member) => {
-    const cardImage = member.posterImage 
-      || (member.images ? member.images[0] : null)
-      || member.image 
-      || require('../../../assets/Armor/PlaceHolder.jpg');
+    const cardImage =
+      member.posterImage ||
+      (member.images ? member.images[0] : null) ||
+      member.image ||
+      require('../../../assets/Armor/PlaceHolder.jpg');
 
     return (
       <TouchableOpacity
@@ -179,23 +195,40 @@ const MonkeAllianceScreen = () => {
         ]}
         onPress={() => handleMemberPress(member)}
         disabled={!member.clickable}
+        activeOpacity={0.9}
       >
-        <Image source={cardImage} style={styles.characterImage} resizeMode="cover" />
+        <Image
+          source={cardImage}
+          style={styles.characterImage}
+          resizeMode="cover"
+        />
         <View style={styles.overlay} />
-          <View style={styles.textWrapper}>
-            {/* Name on top */}
-            <Text style={[styles.name, isDesktop ? styles.nameDesktop : styles.nameMobile]}>
-              {member.name}
+
+        <View style={styles.textWrapper}>
+          {/* Name on top */}
+          <Text
+            style={[
+              styles.name,
+              isDesktop ? styles.nameDesktop : styles.nameMobile,
+            ]}
+            numberOfLines={1}
+          >
+            {member.name}
+          </Text>
+
+          {/* Codename below */}
+          {member.codename ? (
+            <Text
+              style={[
+                styles.codename,
+                isDesktop ? styles.codenameDesktop : styles.codenameMobile,
+              ]}
+              numberOfLines={isDesktop ? 1 : 3}
+            >
+              {member.codename}
             </Text>
-
-            {/* Codename on bottom */}
-            {member.codename ? (
-              <Text style={[styles.codename, isDesktop ? styles.codenameDesktop : styles.codenameMobile]}>
-                {member.codename}
-              </Text>
-            ) : null}
-          </View>
-
+          ) : null}
+        </View>
       </TouchableOpacity>
     );
   };
@@ -206,18 +239,45 @@ const MonkeAllianceScreen = () => {
   }
 
   return (
-    <ImageBackground source={require('../../../assets/BackGround/Monke.jpg')} style={styles.background}>
+    <ImageBackground
+      source={require('../../../assets/BackGround/Monke.jpg')}
+      style={styles.background}
+      resizeMode="cover"
+    >
       <SafeAreaView style={styles.container}>
+        {/* Header */}
         <View style={styles.headerWrapper}>
-          <TouchableOpacity style={styles.backButton} onPress={() => { killMonke(); navigation.goBack(); }}>
-            <Text style={styles.backText}>Back</Text>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => {
+              killMonke();
+              navigation.goBack();
+            }}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.backText}>⬅️ Back</Text>
           </TouchableOpacity>
-          <Text style={styles.header}>Monke Alliance</Text>
-          <TouchableOpacity onPress={() => { killMonke(); navigation.navigate('TeamChat'); }} style={styles.chatButton}>
+
+          <View style={styles.headerCenter}>
+            <View style={styles.headerGlass}>
+              <Text style={styles.header}>Monke Alliance</Text>
+              <Text style={styles.headerSubtitle}>The Anti-heroes of The Parliament</Text>
+            </View>
+          </View>
+
+          <TouchableOpacity
+            onPress={() => {
+              killMonke();
+              navigation.navigate('TeamChat');
+            }}
+            style={styles.chatButton}
+            activeOpacity={0.85}
+          >
             <Text style={styles.chatText}>🛡️</Text>
           </TouchableOpacity>
         </View>
 
+        {/* Music controls */}
         <View style={styles.musicControls}>
           {!isPlaying ? (
             <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
@@ -230,14 +290,24 @@ const MonkeAllianceScreen = () => {
           )}
         </View>
 
+        {/* Grid */}
         <ScrollView contentContainerStyle={styles.scrollContent}>
           <View style={[styles.grid, { gap: cardSpacing }]}>
             {rows.map((row, rowIndex) => (
-              <View key={`row-${rowIndex}`} style={[styles.row, { gap: cardSpacing }]}>
+              <View
+                key={`row-${rowIndex}`}
+                style={[styles.row, { gap: cardSpacing }]}
+              >
                 {row.map(renderCard)}
-                {row.length < 3 && Array(3 - row.length).fill().map((_, k) => (
-                  <View key={`empty-${rowIndex}-${k}`} style={{ width: cardSize, height: cardSize * 1.6 }} />
-                ))}
+                {row.length < 3 &&
+                  Array(3 - row.length)
+                    .fill()
+                    .map((_, k) => (
+                      <View
+                        key={`empty-${rowIndex}-${k}`}
+                        style={{ width: cardSize, height: cardSize * 1.6 }}
+                      />
+                    ))}
               </View>
             ))}
           </View>
@@ -249,30 +319,140 @@ const MonkeAllianceScreen = () => {
 
 const styles = StyleSheet.create({
   background: { width: '100%', height: '100%' },
-  container: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)' },
-  headerWrapper: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 15, paddingTop: 10, backgroundColor: 'rgba(0,0,0,0.6)' },
-  backButton: { padding: 10 },
-  backText: { fontSize: 18, color: '#fff', fontWeight: 'bold' },
-  header: { fontSize: 32, fontWeight: 'bold', color: '#8B4513', textShadowColor: '#FFD700', textShadowRadius: 20, flex: 1, textAlign: 'center' },
-  chatButton: { padding: 10 },
-  chatText: { fontSize: 24 },
+  container: { flex: 1, backgroundColor: 'rgba(0,0,0,0.65)' },
+
+  // HEADER
+  headerWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingTop: 10,
+    paddingBottom: 8,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+  },
+  backButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(255,215,0,0.8)',
+    backgroundColor: 'rgba(40,20,8,0.95)',
+  },
+  backText: { fontSize: 13, color: '#fff7df', fontWeight: 'bold' },
+
+  headerCenter: { flex: 1, alignItems: 'center' },
+  headerGlass: {
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 22,
+    backgroundColor: 'rgba(20,10,3,0.9)',
+    borderWidth: 1,
+    borderColor: 'rgba(218,165,32,0.9)',
+  },
+  header: {
+    fontSize: isDesktop ? 28 : 24,
+    fontWeight: '900',
+    color: JUNGLE.gold,
+    textAlign: 'center',
+    textShadowColor: '#000',
+    textShadowRadius: 18,
+  },
+  headerSubtitle: {
+    fontSize: 11,
+    marginTop: 2,
+    textAlign: 'center',
+    color: '#ffeebb',
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
+  },
+
+  chatButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+  },
+  chatText: { fontSize: 22, color: '#fff' },
+
+  // MUSIC
   musicControls: { flexDirection: 'row', justifyContent: 'center', marginVertical: 10 },
-  musicButton: { paddingHorizontal: 24, paddingVertical: 12, backgroundColor: 'rgba(139,69,19,0.8)', borderRadius: 12, borderWidth: 2, borderColor: '#DAA520' },
-  musicButtonText: { color: '#FFD700', fontWeight: 'bold', fontSize: 14 },
-  scrollContent: { padding: 10 },
+  musicButton: {
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+    backgroundColor: 'rgba(74,42,20,0.9)',
+    borderRadius: 999,
+    borderWidth: 2,
+    borderColor: JUNGLE.ember,
+  },
+  musicButtonText: {
+    color: JUNGLE.gold,
+    fontWeight: 'bold',
+    fontSize: 13,
+  },
+
+  // GRID
+  scrollContent: { paddingVertical: 8, paddingHorizontal: 10 },
   grid: { flexDirection: 'column', alignItems: 'center' },
   row: { flexDirection: 'row', justifyContent: 'center' },
-  card: { borderRadius: 12, overflow: 'hidden', borderWidth: 3, borderColor: '#DAA520', shadowColor: '#FFD700', shadowOpacity: 1, shadowRadius: 15, elevation: 12 },
+
+  // CARDS
+  card: {
+    borderRadius: 14,
+    overflow: 'hidden',
+    borderWidth: 2,
+    borderColor: JUNGLE.ember,
+    shadowColor: JUNGLE.gold,
+    shadowOpacity: 0.9,
+    shadowRadius: 14,
+    elevation: 10,
+    backgroundColor: 'rgba(0,0,0,0.75)',
+  },
   disabledCard: { opacity: 0.6 },
   characterImage: { width: '100%', height: '100%' },
-  overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.5)' },
-  textWrapper: { position: 'absolute', bottom: 8, left: 8, right: 8 },
-  codename: { fontSize: 12, fontWeight: 'bold', color: '#FFD700', textShadowColor: '#8B4513', textShadowRadius: 10 },
-  name: { fontSize: 11, color: '#fff', textShadowColor: '#8B4513', textShadowRadius: 10 },
-  codenameDesktop: { bottom: 30, left: 6 },
-  nameDesktop: { bottom: 10, left: 6 },
-  codenameMobile: { marginBottom: 2 },
-  nameMobile: { lineHeight: 16 },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+
+  // TEXT WRAPPER
+  textWrapper: {
+    position: 'absolute',
+    bottom: 8,
+    left: 8,
+    right: 8,
+    padding: 2,
+  },
+
+  // BASE TEXT
+  codename: {
+    fontWeight: 'bold',
+    color: JUNGLE.gold,
+    textShadowColor: JUNGLE.bark,
+    textShadowRadius: 10,
+  },
+  name: {
+    color: '#fff',
+    textShadowColor: JUNGLE.bark,
+    textShadowRadius: 10,
+  },
+
+  // DESKTOP LAYOUT (overlay stays in bottom band)
+  codenameDesktop: {
+    fontSize: 13,
+    lineHeight: 17,
+  },
+  nameDesktop: {
+    fontSize: 11,
+    marginBottom: 2,
+  },
+
+  // MOBILE LAYOUT — wraps cleanly
+  codenameMobile: {
+    fontSize: 12,
+    lineHeight: 16,
+  },
+  nameMobile: {
+    fontSize: 11,
+    marginBottom: 2,
+  },
 });
 
 export default MonkeAllianceScreen;

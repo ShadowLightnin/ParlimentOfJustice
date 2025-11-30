@@ -51,44 +51,57 @@ const hardcodedShips = [
   { id: 'basktion', name: 'Basktion', screen: '', image: require('../../assets/ShipYard/Starship13.jpg'), clickable: true, borderColor: 'yellow', hardcoded: true, description: '' },
 ];
 
-const ALLOWED_EMAILS = ["will@test.com", "c1wcummings@gmail.com"];
+const ALLOWED_EMAILS = ['will@test.com', 'c1wcummings@gmail.com'];
 const RESTRICT_ACCESS = true; // Enforce authentication and email check
+
+// Simple helper for card border styles
+const getBorderStyle = (borderColor) => ({
+  borderColor: borderColor || 'yellow',
+  borderWidth: 2,
+});
 
 const ShipYardScreen = () => {
   const navigation = useNavigation();
   const [previewShip, setPreviewShip] = useState(null);
   const [ships, setShips] = useState(hardcodedShips);
   const [deleteModal, setDeleteModal] = useState({ visible: false, ship: null });
-  const canMod = RESTRICT_ACCESS ? auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
+
+  const canMod = RESTRICT_ACCESS
+    ? auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email)
+    : true;
 
   // Fetch dynamic ships from Firestore
   useEffect(() => {
-    const unsub = onSnapshot(collection(db, 'ships'), (snap) => {
-      const dynamicShips = snap.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        clickable: true,
-        borderColor: doc.data().borderColor || 'blue',
-        hardcoded: false,
-      }));
-      console.log('Fetched dynamic ships:', dynamicShips);
-      setShips([...hardcodedShips, ...dynamicShips]);
-    }, (e) => {
-      console.error('Firestore error:', e.message);
-      Alert.alert('Error', 'Failed to fetch ships: ' + e.message);
-    });
+    const unsub = onSnapshot(
+      collection(db, 'ships'),
+      (snap) => {
+        const dynamicShips = snap.docs.map((docSnap) => ({
+          id: docSnap.id,
+          ...docSnap.data(),
+          clickable: true,
+          borderColor: docSnap.data().borderColor || 'blue',
+          hardcoded: false,
+        }));
+        console.log('Fetched dynamic ships:', dynamicShips);
+        setShips([...hardcodedShips, ...dynamicShips]);
+      },
+      (e) => {
+        console.error('Firestore error:', e.message);
+        Alert.alert('Error', 'Failed to fetch ships: ' + e.message);
+      }
+    );
     return () => unsub();
   }, []);
 
   const handleShipPress = (ship) => {
-    if (ship.clickable) {
-      if (ship.screen) {
-        console.log('Navigating to screen:', ship.screen);
-        navigation.navigate(ship.screen);
-      } else {
-        setPreviewShip(ship);
-        console.log('Preview ship:', ship);
-      }
+    if (!ship.clickable) return;
+
+    if (ship.screen) {
+      console.log('Navigating to screen:', ship.screen);
+      navigation.navigate(ship.screen);
+    } else {
+      setPreviewShip(ship);
+      console.log('Preview ship:', ship);
     }
   };
 
@@ -97,48 +110,64 @@ const ShipYardScreen = () => {
       Alert.alert('Access Denied', 'Only authorized users can delete ships.');
       return;
     }
+
     try {
-      const ship = ships.find(s => s.id === id);
+      const ship = ships.find((s) => s.id === id);
       if (ship.hardcoded) {
         Alert.alert('Error', 'Cannot delete hardcoded ships!');
         return;
       }
+
       const shipRef = doc(db, 'ships', id);
       const snap = await getDoc(shipRef);
+
       if (!snap.exists()) {
         Alert.alert('Error', 'Ship not found');
         return;
       }
+
       const { imageUrl } = snap.data();
+
       if (imageUrl && imageUrl !== 'placeholder') {
         let path = '';
         try {
-          console.log('Raw imageUrl:', imageUrl); // Debug raw URL
+          console.log('Raw imageUrl:', imageUrl);
           const urlParts = imageUrl.split('/o/');
           if (urlParts.length > 1) {
             path = decodeURIComponent(urlParts[1].split('?')[0]);
           }
+
           if (!path) {
             console.warn('No valid path extracted from imageUrl:', imageUrl);
           } else {
             console.log('Attempting to delete image:', path);
-            await deleteObject(ref(storage, path)).catch(e => {
+            await deleteObject(ref(storage, path)).catch((e) => {
               if (e.code !== 'storage/object-not-found') {
-                throw e; // Rethrow errors except "not found"
+                throw e;
               }
               console.warn('Image not found in storage:', path);
             });
             console.log('Image deleted or not found:', path);
           }
         } catch (e) {
-          console.error('Delete image error:', e.message, 'Path:', path, 'URL:', imageUrl);
-          Alert.alert('Warning', `Failed to delete image from storage: ${e.message}. Ship will still be deleted.`);
-          // Continue with Firestore deletion even if image deletion fails
+          console.error(
+            'Delete image error:',
+            e.message,
+            'Path:',
+            path,
+            'URL:',
+            imageUrl
+          );
+          Alert.alert(
+            'Warning',
+            `Failed to delete image from storage: ${e.message}. Ship will still be deleted.`
+          );
         }
       }
+
       await deleteDoc(shipRef);
       console.log('Ship deleted from Firestore:', id);
-      setShips(ships.filter(s => s.id !== id));
+      setShips((prev) => prev.filter((s) => s.id !== id));
       setDeleteModal({ visible: false, ship: null });
       Alert.alert('Success', 'Ship deleted successfully!');
     } catch (e) {
@@ -148,77 +177,90 @@ const ShipYardScreen = () => {
   };
 
   // Render Each Ship Card
-  const renderShipCard = (ship) => (
-    <View key={ship.id || ship.name} style={styles.shipCont}>
-      <TouchableOpacity
-        style={[
-          styles.shipCard,
-          {
-            width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
-            height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
-          },
-          ship.clickable && ship.borderColor ? styles.clickable(ship.borderColor) : styles.notClickable,
-        ]}
-        onPress={() => handleShipPress(ship)}
-        disabled={!ship.clickable}
-      >
-        <Image
-          source={ship.image || (ship.imageUrl && ship.imageUrl !== 'placeholder' ? { uri: ship.imageUrl } : require('../../assets/ShipYard/PlaceHolder.jpg'))}
-          style={styles.shipImg}
-          resizeMode="cover"
-        />
-        <View style={styles.overlay} />
-        <Text style={styles.shipName}>{ship.name}</Text>
-        {!ship.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
-      </TouchableOpacity>
-      {!ship.hardcoded && (
-        <View style={styles.buttons}>
-          <TouchableOpacity
-            onPress={() => setPreviewShip({ ...ship, isEditing: true })}
-            style={[styles.edit, !canMod && styles.disabled]}
-            disabled={!canMod}
-          >
-            <Text style={styles.buttonText}>Edit</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setDeleteModal({ visible: true, ship: { id: ship.id, name: ship.name } })}
-            style={[styles.delete, !canMod && styles.disabled]}
-            disabled={!canMod}
-          >
-            <Text style={styles.buttonText}>Delete</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-    </View>
-  );
+  const renderShipCard = (ship) => {
+    const imageSource =
+      ship.image ||
+      (ship.imageUrl && ship.imageUrl !== 'placeholder'
+        ? { uri: ship.imageUrl }
+        : require('../../assets/ShipYard/PlaceHolder.jpg'));
+
+    return (
+      <View key={ship.id || ship.name} style={styles.shipCont}>
+        <TouchableOpacity
+          style={[
+            styles.shipCard,
+            {
+              width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
+              height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
+            },
+            ship.clickable ? getBorderStyle(ship.borderColor) : styles.notClickable,
+          ]}
+          onPress={() => handleShipPress(ship)}
+          disabled={!ship.clickable}
+          activeOpacity={0.9}
+        >
+          <Image source={imageSource} style={styles.shipImg} resizeMode="cover" />
+          <View style={styles.cardOverlay} />
+          <Text style={styles.shipName}>{ship.name}</Text>
+          {!ship.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+        </TouchableOpacity>
+
+        {!ship.hardcoded && (
+          <View style={styles.buttons}>
+            <TouchableOpacity
+              onPress={() => setPreviewShip({ ...ship, isEditing: true })}
+              style={[styles.edit, !canMod && styles.disabled]}
+              disabled={!canMod}
+            >
+              <Text style={styles.buttonText}>Edit</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                setDeleteModal({ visible: true, ship: { id: ship.id, name: ship.name } })
+              }
+              style={[styles.delete, !canMod && styles.disabled]}
+              disabled={!canMod}
+            >
+              <Text style={styles.buttonText}>Delete</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+    );
+  };
 
   // Render Preview Card
-  const renderPreviewCard = (ship) => (
-    <TouchableOpacity
-      style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable]}
-      onPress={() => {
-        console.log('Closing preview modal');
-        setPreviewShip(null);
-      }}
-    >
-      <Image
-        source={ship.image || (ship.imageUrl && ship.imageUrl !== 'placeholder' ? { uri: ship.imageUrl } : require('../../assets/ShipYard/PlaceHolder.jpg'))}
-        style={styles.previewImage}
-        resizeMode="contain"
-      />
-      <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>
-        © {ship.name || 'Unknown'}; William Cummings
-      </Text>
-    </TouchableOpacity>
-  );
+  const renderPreviewCard = (ship) => {
+    const imageSource =
+      ship.image ||
+      (ship.imageUrl && ship.imageUrl !== 'placeholder'
+        ? { uri: ship.imageUrl }
+        : require('../../assets/ShipYard/PlaceHolder.jpg'));
+
+    return (
+      <TouchableOpacity
+        style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.previewBorder]}
+        onPress={() => {
+          console.log('Closing preview modal');
+          setPreviewShip(null);
+        }}
+        activeOpacity={0.9}
+      >
+        <Image source={imageSource} style={styles.previewImage} resizeMode="contain" />
+        <View style={styles.transparentOverlay} />
+        <Text style={styles.cardName}>
+          © {ship.name || 'Unknown'}; William Cummings
+        </Text>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <ImageBackground
       source={require('../../assets/BackGround/ShipYard.jpg')}
       style={styles.bg}
     >
-      <View style={styles.overlay}>
+      <View style={styles.screenOverlay}>
         <TouchableOpacity
           onPress={() => {
             console.log('Navigating back');
@@ -228,8 +270,10 @@ const ShipYardScreen = () => {
         >
           <Text style={styles.backText}>⬅️</Text>
         </TouchableOpacity>
+
         <ScrollView contentContainerStyle={styles.scroll}>
           <Text style={styles.header}>Ship Yard</Text>
+
           <View style={styles.scrollWrapper}>
             <ScrollView
               horizontal
@@ -243,6 +287,7 @@ const ShipYardScreen = () => {
               )}
             </ScrollView>
           </View>
+
           <AddShipForm
             collectionPath="ships"
             placeholderImage={require('../../assets/ShipYard/PlaceHolder.jpg')}
@@ -252,6 +297,8 @@ const ShipYardScreen = () => {
             editingShip={previewShip?.isEditing ? previewShip : null}
             setEditingShip={setPreviewShip}
           />
+
+          {/* Preview Modal */}
           <Modal
             visible={!!previewShip && !previewShip.isEditing}
             transparent
@@ -278,14 +325,18 @@ const ShipYardScreen = () => {
                     snapToAlignment="center"
                     snapToInterval={SCREEN_WIDTH * 0.8 + 20}
                     decelerationRate="fast"
-                    centerContent={true}
+                    centerContent
                   >
                     {previewShip && renderPreviewCard(previewShip)}
                   </ScrollView>
                 </View>
                 <View style={styles.previewAboutSection}>
-                  <Text style={styles.previewName}>{previewShip?.name || 'Unknown'}</Text>
-                  <Text style={styles.previewDesc}>{previewShip?.description || 'No description available'}</Text>
+                  <Text style={styles.previewName}>
+                    {previewShip?.name || 'Unknown'}
+                  </Text>
+                  <Text style={styles.previewDesc}>
+                    {previewShip?.description || 'No description available'}
+                  </Text>
                   <TouchableOpacity
                     onPress={() => {
                       console.log('Closing preview modal');
@@ -299,6 +350,8 @@ const ShipYardScreen = () => {
               </TouchableOpacity>
             </View>
           </Modal>
+
+          {/* Delete Modal */}
           <Modal
             visible={deleteModal.visible}
             transparent
@@ -307,7 +360,9 @@ const ShipYardScreen = () => {
           >
             <View style={styles.modalOverlay}>
               <View style={styles.modalContent}>
-                <Text style={styles.modalText}>{`Delete "${deleteModal.ship?.name || ''}" and its image?`}</Text>
+                <Text style={styles.modalText}>
+                  {`Delete "${deleteModal.ship?.name || ''}" and its image?`}
+                </Text>
                 <View style={styles.modalButtons}>
                   <TouchableOpacity
                     style={styles.modalCancel}
@@ -317,7 +372,9 @@ const ShipYardScreen = () => {
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.modalDelete}
-                    onPress={() => deleteModal.ship && confirmDelete(deleteModal.ship.id)}
+                    onPress={() =>
+                      deleteModal.ship && confirmDelete(deleteModal.ship.id)
+                    }
                   >
                     <Text style={styles.modalDeleteText}>Delete</Text>
                   </TouchableOpacity>
@@ -339,242 +396,314 @@ const styles = StyleSheet.create({
     height: SCREEN_HEIGHT,
     resizeMode: 'cover',
   },
-  overlay: {
+
+  // Full-screen dark glass overlay
+  screenOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    backgroundColor: 'rgba(3, 7, 18, 0.78)', // deep navy glass
     paddingTop: 50,
   },
+
   scroll: {
     paddingBottom: 20,
   },
+
   back: {
     position: 'absolute',
     top: 10,
     left: 10,
-    backgroundColor: 'rgba(17,25,40,0.6)',
+    backgroundColor: 'rgba(15, 23, 42, 0.9)',
     padding: 10,
-    borderRadius: 8,
+    borderRadius: 999,
     zIndex: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(148, 163, 184, 0.7)',
   },
   backText: {
-    color: '#FFF',
+    color: '#E5F2FF',
     fontSize: 16,
     fontWeight: 'bold',
   },
+
   header: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#FFF',
+    fontSize: 30,
+    fontWeight: '900',
+    color: '#F9FAFB',
     textAlign: 'center',
     marginVertical: 20,
-    textShadowColor: 'yellow',
-    textShadowRadius: 15,
+    textShadowColor: '#FACC15',
+    textShadowRadius: 20,
+    letterSpacing: 1,
   },
+
   scrollWrapper: {
     width: SCREEN_WIDTH,
   },
+
   hScroll: {
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
+
   shipCont: {
     marginHorizontal: 10,
     alignItems: 'center',
   },
+
+  // Glassy ship card
   shipCard: {
-    borderRadius: 15,
+    borderRadius: 18,
     overflow: 'hidden',
-    backgroundColor: 'rgba(0,0,0,0.7)',
-    elevation: 5,
+    backgroundColor: 'rgba(15, 23, 42, 0.85)', // navy glass
+    elevation: 12,
+    shadowColor: '#0EA5E9',
+    shadowOpacity: 0.4,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 10 },
   },
-  clickable: (borderColor) => ({
-    borderColor: borderColor || 'yellow',
-    borderWidth: 2,
-  }),
+
   notClickable: {
-    opacity: 0.7,
+    opacity: 0.6,
   },
+
   shipImg: {
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
   },
-  overlay: {
+
+  // Soft dark overlay so text pops
+  cardOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(15, 23, 42, 0.35)',
+    zIndex: 1,
+  },
+
+  transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'transparent',
     zIndex: 1,
   },
-  transparentOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1,
-  },
+
   shipName: {
     position: 'absolute',
-    bottom: 10,
-    left: 10,
+    bottom: 12,
+    left: 12,
+    right: 12,
     fontSize: 16,
-    color: 'white',
-    fontWeight: 'bold',
+    color: '#F9FAFB',
+    fontWeight: '700',
+    textShadowColor: 'rgba(0,0,0,0.8)',
+    textShadowRadius: 8,
+    zIndex: 2,
   },
+
   disabledText: {
     fontSize: 12,
-    color: 'yellow',
+    color: '#FACC15',
     marginTop: 5,
     textAlign: 'center',
   },
+
   noShipsText: {
     fontSize: 16,
-    color: '#FFF',
+    color: '#E5F2FF',
     textAlign: 'center',
     padding: 20,
   },
+
   buttons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
     marginTop: 10,
   },
+
   edit: {
-    backgroundColor: '#FFC107',
-    padding: 5,
-    borderRadius: 5,
+    backgroundColor: 'rgba(234, 179, 8, 0.95)',
+    padding: 6,
+    borderRadius: 999,
     flex: 1,
-    marginRight: 5,
+    marginRight: 6,
     alignItems: 'center',
   },
+
   delete: {
-    backgroundColor: '#F44336',
-    padding: 5,
-    borderRadius: 5,
+    backgroundColor: 'rgba(239, 68, 68, 0.95)',
+    padding: 6,
+    borderRadius: 999,
     flex: 1,
-    marginLeft: 5,
+    marginLeft: 6,
     alignItems: 'center',
   },
+
   disabled: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#9CA3AF',
     opacity: 0.6,
   },
+
   buttonText: {
-    color: '#FFF',
-    fontWeight: 'bold',
-    fontSize: 14,
+    color: '#F9FAFB',
+    fontWeight: '700',
+    fontSize: 13,
   },
+
+  // Preview modal background
   modalBackground: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    backgroundColor: 'rgba(15, 23, 42, 0.95)',
     justifyContent: 'center',
     alignItems: 'center',
   },
+
   modalOuterContainer: {
     width: '90%',
     height: '80%',
     justifyContent: 'center',
     alignItems: 'center',
   },
+
   imageContainer: {
     width: '100%',
     paddingVertical: 10,
-    backgroundColor: '#111',
+    backgroundColor: 'rgba(15, 23, 42, 0.9)',
     alignItems: 'center',
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
   },
+
   imageScrollContainer: {
     flexDirection: 'row',
     paddingHorizontal: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  previewCard: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.5 : SCREEN_WIDTH * 0.8,
-    height: isDesktop ? SCREEN_HEIGHT * 0.6 : SCREEN_HEIGHT * 0.3,
-    borderRadius: 15,
+
+  // Glassy preview card
+  previewCard: (isDesktopValue, windowWidth) => ({
+    width: isDesktopValue ? windowWidth * 0.5 : SCREEN_WIDTH * 0.8,
+    height: isDesktopValue ? SCREEN_HEIGHT * 0.6 : SCREEN_HEIGHT * 0.35,
+    borderRadius: 18,
     overflow: 'hidden',
-    elevation: 5,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    elevation: 16,
+    backgroundColor: 'rgba(15, 23, 42, 0.9)',
     marginRight: 20,
   }),
+
+  previewBorder: {
+    borderWidth: 1.5,
+    borderColor: 'rgba(250, 204, 21, 0.85)', // softer yellow
+  },
+
   previewImage: {
     width: '100%',
     height: '100%',
     resizeMode: 'contain',
   },
+
   cardName: {
     position: 'absolute',
-    bottom: 10,
-    left: 10,
-    fontSize: 16,
-    color: 'white',
-    fontWeight: 'bold',
+    bottom: 12,
+    left: 12,
+    right: 12,
+    fontSize: 15,
+    color: '#F9FAFB',
+    fontWeight: '700',
+    textShadowColor: 'rgba(0,0,0,0.8)',
+    textShadowRadius: 8,
     zIndex: 2,
   },
+
   previewAboutSection: {
     marginTop: 10,
-    padding: 10,
-    backgroundColor: '#222',
-    borderRadius: 10,
+    padding: 12,
+    backgroundColor: 'rgba(15, 23, 42, 0.95)',
+    borderRadius: 18,
     width: '90%',
+    borderWidth: 1,
+    borderColor: 'rgba(148, 163, 184, 0.6)',
   },
+
   previewName: {
-    fontSize: 16,
-    color: '#fff',
+    fontSize: 18,
+    color: '#E5F2FF',
     textAlign: 'center',
+    fontWeight: '700',
   },
+
   previewDesc: {
-    fontSize: 16,
-    color: '#fff7f7',
+    fontSize: 14,
+    color: '#E5E7EB',
     textAlign: 'center',
     marginVertical: 10,
   },
+
   close: {
-    backgroundColor: '#2196F3',
-    padding: 10,
-    borderRadius: 5,
+    backgroundColor: '#0EA5E9',
+    paddingVertical: 8,
+    paddingHorizontal: 22,
+    borderRadius: 999,
     alignSelf: 'center',
+    marginTop: 6,
   },
+
+  // Delete modal
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    backgroundColor: 'rgba(15, 23, 42, 0.9)',
     justifyContent: 'center',
     alignItems: 'center',
   },
+
   modalContent: {
-    backgroundColor: 'rgba(255,255,255,0.9)',
+    backgroundColor: 'rgba(248, 250, 252, 0.98)',
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 16,
     alignItems: 'center',
+    width: '85%',
+    maxWidth: 420,
+    borderWidth: 1,
+    borderColor: 'rgba(148, 163, 184, 0.7)',
   },
+
   modalText: {
     fontSize: 18,
-    color: '#000',
+    color: '#0F172A',
     marginBottom: 20,
     textAlign: 'center',
+    fontWeight: '600',
   },
+
   modalButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '80%',
   },
+
   modalCancel: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#0EA5E9',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 999,
     flex: 1,
     marginRight: 10,
   },
+
   modalCancelText: {
-    color: '#FFF',
+    color: '#F9FAFB',
     fontWeight: 'bold',
     textAlign: 'center',
   },
+
   modalDelete: {
-    backgroundColor: '#F44336',
+    backgroundColor: '#EF4444',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 999,
     flex: 1,
     marginLeft: 10,
   },
+
   modalDeleteText: {
-    color: '#FFF',
+    color: '#F9FAFB',
     fontWeight: 'bold',
     textAlign: 'center',
   },

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -28,7 +28,7 @@ const members = [
 
 const isEmpty = (row, col) => (row === 0 && col === 1) || (row === 2 && col === 1);
 const getMemberAtPosition = (row, col) =>
-  members.find((member) => member.position[0] === row && member.position[1] === col);
+  members.find(m => m.position[0] === row && m.position[1] === col);
 
 const EclipseScreen = () => {
   const navigation = useNavigation();
@@ -46,10 +46,9 @@ const EclipseScreen = () => {
         await sound.playAsync();
         setIsPlaying(true);
       } catch (error) {
-        console.error('Failed to load audio file:', error);
         Alert.alert('Audio Error', 'Failed to load background music.');
       }
-    } else if (!isPlaying) {
+    } else if (!isPlaying && currentSound) {
       await currentSound.playAsync();
       setIsPlaying(true);
     }
@@ -64,8 +63,10 @@ const EclipseScreen = () => {
 
   const stopSound = async () => {
     if (currentSound) {
-      await currentSound.stopAsync();
-      await currentSound.unloadAsync();
+      try {
+        await currentSound.stopAsync();
+        await currentSound.unloadAsync();
+      } catch {}
       setCurrentSound(null);
       setIsPlaying(false);
     }
@@ -83,45 +84,49 @@ const EclipseScreen = () => {
   };
 
   const isDesktop = SCREEN_WIDTH > 600;
-  const cardSize = isDesktop ? 200 : Math.min(120, SCREEN_WIDTH / 3 - 20);
-  const cardSpacing = isDesktop ? 35 : Math.min(15, (SCREEN_WIDTH - 3 * cardSize) / 4);
+  const cardSize = isDesktop ? 210 : Math.min(130, SCREEN_WIDTH / 3 - 20);
+  const cardSpacing = isDesktop ? 35 : Math.min(18, (SCREEN_WIDTH - 3 * cardSize) / 4);
 
-  const renderCard = (member) => (
+  const renderCard = member => (
     <TouchableOpacity
       key={`${member.position[0]}-${member.position[1]}`}
       style={[
         styles.card,
-        {
-          width: cardSize,
-          height: cardSize * 1.6,
-          borderWidth: 2,
-          borderColor: '#00b3ff',
-          backgroundColor: 'rgba(0, 179, 255, 0.1)',
-          shadowColor: '#00b3ff',
-          shadowOpacity: 0.8,
-          shadowRadius: 10,
-          elevation: 10,
-        },
+        { width: cardSize, height: cardSize * 1.6 },
         !member.clickable && styles.disabledCard,
       ]}
-      onPress={() => member.clickable && navigation.navigate(member.screen)}
+      onPress={async () => {
+        if (member.clickable && member.screen) {
+          await stopSound();
+          navigation.navigate(member.screen);
+        }
+      }}
       disabled={!member.clickable}
+      activeOpacity={0.9}
     >
       <Image source={member.image} style={styles.characterImage} resizeMode="cover" />
 
-      {/* YOUR ORIGINAL LOOK — NOW RESPONSIVE & PERFECT */}
+      <View style={styles.cardOverlay} />
+
       <View style={styles.textWrapper}>
-        {/* Real Name — moves up when codename wraps */}
-        <Text style={[styles.name, isDesktop ? styles.nameDesktop : styles.nameMobile]}>
-          {member.name || ''}
+        <Text
+          style={[
+            styles.name,
+            isDesktop ? styles.nameDesktop : styles.nameMobile,
+          ]}
+          numberOfLines={1}
+        >
+          {member.name}
         </Text>
 
-        {/* Codename — wraps cleanly on mobile */}
         <Text
-          style={[styles.codename, isDesktop ? styles.codenameDesktop : styles.codenameMobile]}
+          style={[
+            styles.codename,
+            isDesktop ? styles.codenameDesktop : styles.codenameMobile,
+          ]}
           numberOfLines={isDesktop ? 1 : 3}
         >
-          {member.codename || 'TBA'}
+          {member.codename}
         </Text>
       </View>
     </TouchableOpacity>
@@ -133,133 +138,246 @@ const EclipseScreen = () => {
       style={styles.background}
       resizeMode="cover"
     >
-      <SafeAreaView style={styles.container}>
-        {/* Header */}
-        <View style={styles.headerWrapper}>
-          <TouchableOpacity style={styles.backButton} onPress={async () => { await stopSound(); navigation.goBack(); }}>
-            <Text style={styles.backText}>Back</Text>
-          </TouchableOpacity>
-          <Text style={styles.header}>Eclipse</Text>
-          <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
-            <Text style={styles.chatText}>🛡️</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Music Controls */}
-        <View style={styles.musicControls}>
-          <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
-            <Text style={styles.musicButtonText}>Theme</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
-            <Text style={styles.musicButtonText}>Pause</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Content */}
-        <View style={styles.contentCenter}>
-          {isDesktop ? (
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{
-                padding: 20,
-                gap: cardSpacing,
-                alignItems: 'center',
-                justifyContent: 'center',
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.overlay}>
+          {/* HEADER */}
+          <View style={styles.headerWrapper}>
+            <TouchableOpacity
+              style={styles.back}
+              onPress={async () => {
+                await stopSound();
+                navigation.goBack();
               }}
+              activeOpacity={0.85}
             >
-              {members.map(renderCard)}
-            </ScrollView>
-          ) : (
-            <ScrollView contentContainerStyle={{ padding: 10 }}>
-              <View style={{ gap: cardSpacing, alignItems: 'center' }}>
-                {[0, 1, 2].map((row) => (
-                  <View key={row} style={{ flexDirection: 'row', gap: cardSpacing }}>
-                    {[0, 1, 2].map((col) => {
-                      if (isEmpty(row, col)) {
-                        return <View key={col} style={{ width: cardSize, height: cardSize * 1.6 }} />;
-                      }
-                      const member = getMemberAtPosition(row, col);
-                      return member ? renderCard(member) : null;
-                    })}
-                  </View>
-                ))}
+              <Text style={styles.backText}>⬅️ Back</Text>
+            </TouchableOpacity>
+
+            <View style={styles.headerTitle}>
+              <View style={styles.headerGlass}>
+                <Text style={styles.header}>Eclipse</Text>
+                <Text style={styles.headerSub}>The Hearts of the Titans</Text>
               </View>
-            </ScrollView>
-          )}
+            </View>
+
+            <TouchableOpacity
+              onPress={goToChat}
+              style={styles.chatButton}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.chatText}>💬</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* MUSIC */}
+          <View style={styles.musicControls}>
+            <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
+              <Text style={styles.musicButtonText}>
+                {isPlaying ? 'Playing…' : 'Theme'}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.musicButtonSecondary}
+              onPress={pauseTheme}
+            >
+              <Text style={styles.musicButtonTextSecondary}>Pause</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* CONTENT */}
+          <View style={styles.contentCenter}>
+            {isDesktop ? (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{
+                  padding: 24,
+                  gap: cardSpacing,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {members.map(renderCard)}
+              </ScrollView>
+            ) : (
+              <ScrollView contentContainerStyle={{ padding: 14 }}>
+                <View style={{ gap: cardSpacing, alignItems: 'center' }}>
+                  {[0, 1, 2].map(row => (
+                    <View key={row} style={{ flexDirection: 'row', gap: cardSpacing }}>
+                      {[0, 1, 2].map(col => {
+                        if (isEmpty(row, col)) {
+                          return (
+                            <View
+                              key={col}
+                              style={{ width: cardSize, height: cardSize * 1.6 }}
+                            />
+                          );
+                        }
+                        const member = getMemberAtPosition(row, col);
+                        return member ? renderCard(member) : null;
+                      })}
+                    </View>
+                  ))}
+                </View>
+              </ScrollView>
+            )}
+          </View>
         </View>
       </SafeAreaView>
     </ImageBackground>
   );
 };
 
-const styles = StyleSheet.create({
-  background: { width: '100%', height: '100%' },
-  container: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)' },
-  contentCenter: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+const SILVER = 'rgba(200, 200, 220, 0.95)';
+const BLUE = '#00c6ff';
+const BLUE_GLOW = 'rgba(0,180,255,0.7)';
+const DARK_GLASS = 'rgba(10,15,25,0.65)';
 
+const styles = StyleSheet.create({
+  background: { width: SCREEN_WIDTH, height: SCREEN_HEIGHT },
+  safeArea: { flex: 1 },
+  overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.75)' },
+
+  /* HEADER (Silver + Blue) -------------------- */
   headerWrapper: {
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingTop: 10,
+    paddingHorizontal: 12,
+    paddingTop: 8,
+    marginBottom: 10,
+    justifyContent: 'space-between',
   },
-  backButton: { padding: 10, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 5 },
-  backText: { fontSize: 18, color: '#00b4ff', fontWeight: 'bold' },
-  header: { fontSize: 28, fontWeight: 'bold', color: 'rgba(107,107,107,1)', textAlign: 'center', flex: 1, textShadowColor: '#00b3ff', textShadowRadius: 35 },
-  chatButton: { padding: 10, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 5 },
-  chatText: { fontSize: 20, color: '#00b3ff' },
+  back: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: 'rgba(30,40,55,0.85)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(120,160,200,0.9)',
+  },
+  backText: {
+    color: SILVER,
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  headerTitle: { flex: 1, alignItems: 'center' },
+  headerGlass: {
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 20,
+    backgroundColor: DARK_GLASS,
+    borderWidth: 1,
+    borderColor: 'rgba(160,200,240,0.7)',
+  },
+  header: {
+    fontSize: SCREEN_WIDTH > 600 ? 30 : 24,
+    fontWeight: 'bold',
+    color: SILVER,
+    textAlign: 'center',
+    textShadowColor: BLUE,
+    textShadowRadius: 15,
+  },
+  headerSub: {
+    marginTop: 2,
+    fontSize: SCREEN_WIDTH > 600 ? 12 : 10,
+    color: 'rgba(180,220,255,0.9)',
+    textAlign: 'center',
+  },
+  chatButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    backgroundColor: 'rgba(30,40,55,0.85)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(120,160,200,0.9)',
+  },
+  chatText: { fontSize: 16, color: SILVER },
 
-  musicControls: { flexDirection: 'row', justifyContent: 'center', marginVertical: 10 },
-  musicButton: { padding: 10, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 8, marginHorizontal: 10 },
-  musicButtonText: { fontSize: 12, color: '#00b3ff', fontWeight: 'bold' },
+  /* MUSIC BUTTONS ----------------------------- */
+  musicControls: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
+  musicButton: {
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 999,
+    backgroundColor: 'rgba(30,40,55,0.85)',
+    borderWidth: 1,
+    borderColor: BLUE,
+    marginHorizontal: 6,
+  },
+  musicButtonSecondary: {
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 999,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    borderWidth: 1,
+    borderColor: 'rgba(120,160,200,0.6)',
+    marginHorizontal: 6,
+  },
+  musicButtonText: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    color: BLUE,
+  },
+  musicButtonTextSecondary: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    color: 'rgba(200,220,255,0.9)',
+  },
 
-  card: { borderRadius: 10, overflow: 'hidden', position: 'relative' },
+  /* CONTENT ------------------------------- */
+  contentCenter: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+
+  /* CARDS -------------------------------- */
+  card: {
+    borderRadius: 18,
+    overflow: 'hidden',
+    position: 'relative',
+    backgroundColor: 'rgba(15,20,30,0.9)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(200,200,220,0.9)',
+    shadowColor: BLUE_GLOW,
+    shadowOpacity: 0.75,
+    shadowRadius: 12,
+    elevation: 10,
+  },
+  disabledCard: { opacity: 0.5 },
   characterImage: { width: '100%', height: '100%' },
+  cardOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
 
-  // MAGIC WRAPPER — KEEPS YOUR EXACT STYLE
+  /* TEXT -------------------------------- */
   textWrapper: {
     position: 'absolute',
     bottom: 8,
     left: 8,
     right: 8,
-    padding: 4,
-  },
-
-  // BASE TEXT STYLES
-  codename: {
-    fontWeight: 'bold',
-    color: '#00b3ff',
-    textShadowColor: '#00b3ff',
-    textShadowRadius: 12,
-    zIndex: 2,
   },
   name: {
-    color: '#fff',
-    textShadowColor: '#00b3ff',
+    color: SILVER,
+    textShadowColor: BLUE,
+    textShadowRadius: 10,
+  },
+  codename: {
+    fontWeight: 'bold',
+    color: BLUE,
+    textShadowColor: BLUE_GLOW,
     textShadowRadius: 12,
-    zIndex: 2,
   },
 
-  // DESKTOP — 100% YOUR ORIGINAL EPIC LOOK
-  codenameDesktop: { position: 'absolute', bottom: 12, left: 10, fontSize: 16 },
-  nameDesktop:    { position: 'absolute', bottom: 34, left: 10, fontSize: 14 },
+  /* DESKTOP VS MOBILE -------------------- */
+  nameDesktop: { fontSize: 14, marginBottom: 2 },
+  codenameDesktop: { fontSize: 16 },
 
-  // MOBILE — WRAPS BEAUTIFULLY, NAME MOVES UP
-  codenameMobile: {
-    fontSize: 13,
-    lineHeight: 16,
-    textAlign: 'left',
-  },
-  nameMobile: {
-    fontSize: 11,
-    marginBottom: 2,
-    textAlign: 'left',
-  },
-
-  disabledCard: { opacity: 0.6 },
+  nameMobile: { fontSize: 11, marginBottom: 2 },
+  codenameMobile: { fontSize: 13, lineHeight: 16 },
 });
 
 export default EclipseScreen;

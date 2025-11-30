@@ -68,10 +68,10 @@ const worldBuildingFactions = [
 
   // Row 2 → 2 cards
   {
-    name: 'Worlds & Planets',
+    name: 'Planets',
     screen: 'PlanetsScreen',
     clickable: true,
-    image: require('../assets/Space/ExoPlanet.jpg'),
+    image: require('../assets/BackGround/Earth.jpg'),
   },
   { 
     name: 'Ship Yard', 
@@ -103,31 +103,23 @@ const worldBuildingFactions = [
   },
 ];
 
-// Reorder worldBuildingFactions for Pinnacle Universe
+// Reorder worldBuildingFactions for Pinnacle Universe (2,1,2)
 const getPinnacleWorldBuildingFactions = () => [
-  // Row 1 → 1 card
-  {
-    name: 'Worlds & Planets',
-    screen: 'PlanetsScreen',
-    clickable: true,
-    image: require('../assets/Space/ExoPlanet.jpg'),
-  },
-
-  // Row 2 → 2 cards
+  // Row 1 → 2 cards
   { 
     name: 'Villains', 
     screen: 'VillainsScreen', 
     clickable: true, 
     image: require('../assets/BackGround/VillainsHub.jpg') 
   },
-  { 
-    name: 'Guardians of Justice', 
-    screen: 'JusticeScreen', 
-    clickable: true, 
-    image: require('../assets/BackGround/Justice.jpg') 
+  {
+    name: 'Planets',
+    screen: 'PlanetsScreen',
+    clickable: true,
+    image: require('../assets/BackGround/Melcornia.jpg'),
   },
 
-  // Row 3 → 1 card
+  // Row 2 → 1 card
   { 
     name: 'Zion Metropolitan', 
     screen: '', 
@@ -135,7 +127,7 @@ const getPinnacleWorldBuildingFactions = () => [
     image: require('../assets/ParliamentTower.jpg') 
   },
 
-  // Row 4 → 2 cards
+  // Row 3 → 2 cards
   { 
     name: 'Ship Yard', 
     screen: 'ShipYardScreen', 
@@ -149,6 +141,7 @@ const getPinnacleWorldBuildingFactions = () => [
     image: require('../assets/BackGround/Soldiers.jpg') 
   },
 ];
+
 
 const otherFactions = [
   { name: 'Designs', screen: 'Designs', clickable: true, image: require('../assets/BackGround/donut_hologram.png') },
@@ -389,9 +382,14 @@ export const HomeScreen = () => {
   );
 
   // World Building grid
-  const renderWorldBuildingGrid = () => {
-    const factionsToShow = isYourUniverse ? worldBuildingFactions : getPinnacleWorldBuildingFactions();
+// World Building grid
+const renderWorldBuildingGrid = () => {
+  const factionsToShow = isYourUniverse
+    ? worldBuildingFactions
+    : getPinnacleWorldBuildingFactions();
 
+  if (isYourUniverse) {
+    // PRIME → 1,2,1,2
     const row1 = factionsToShow[0] ? [factionsToShow[0]] : [];
     const row2 = factionsToShow.slice(1, 3);
     const row3 = factionsToShow[3] ? [factionsToShow[3]] : [];
@@ -440,7 +438,48 @@ export const HomeScreen = () => {
         )}
       </View>
     );
-  };
+  }
+
+  // PINNACLE → 2,1,2
+  // expected order: [Villains, Planets, Zion, Ship Yard, Infantry]
+  const row1 = factionsToShow.slice(0, 2);          // 2 cards
+  const row2 = factionsToShow[2] ? [factionsToShow[2]] : []; // 1 card
+  const row3 = factionsToShow.slice(3, 5);          // 2 cards
+
+  return (
+    <View style={styles.gridContainer}>
+      {row1.length > 0 && (
+        <View style={styles.row}>
+          {row1.map(item => (
+            <View key={item.name} style={styles.gridItem}>
+              {renderFaction({ item })}
+            </View>
+          ))}
+        </View>
+      )}
+
+      {row2.length > 0 && (
+        <View style={styles.row}>
+          {row2.map(item => (
+            <View key={item.name} style={styles.gridItem}>
+              {renderFaction({ item })}
+            </View>
+          ))}
+        </View>
+      )}
+
+      {row3.length > 0 && (
+        <View style={styles.row}>
+          {row3.map(item => (
+            <View key={item.name} style={styles.gridItem}>
+              {renderFaction({ item })}
+            </View>
+          ))}
+        </View>
+      )}
+    </View>
+  );
+};
 
   // Use desktop-specific order for Pinnacle Universe on desktop
   const filteredHomageFactions = isYourUniverse

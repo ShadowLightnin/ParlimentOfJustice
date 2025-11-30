@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   Text,
@@ -17,23 +17,25 @@ import { Audio } from 'expo-av';
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const members = [
-  { name: 'Spencer McNeil', codename: 'Annihilator', screen: 'Spencer', clickable: true, position: [0, 0], image: require('../../assets/Armor/Spencer5.jpg') },
-  { name: 'Azure Briggs', codename: 'Mediateir', screen: 'Azure', clickable: true, position: [0, 2], image: require('../../assets/Armor/Azure3.jpg') },
-  { name: 'Jared McNeil', codename: 'Spector', screen: 'Jared', clickable: true, position: [1, 0], image: require('../../assets/Armor/Jared3.jpg') },
-  { name: 'Will Cummings', codename: 'Night Hawk', screen: 'Will', clickable: true, position: [1, 1], image: require('../../assets/Armor/WillNightHawk3.jpg') },
-  { name: 'Ben Briggs', codename: 'Nuscus', screen: 'Ben', clickable: true, position: [1, 2], image: require('../../assets/Armor/Ben4.jpg') },
-  { name: 'Jennifer McNeil', codename: 'Kintsugi', screen: 'Jennifer', clickable: true, position: [2, 0], image: require('../../assets/Armor/JenniferLegacy.jpg') },
-  { name: 'Emma Cummings', codename: 'Kintsunera', screen: 'Emma', clickable: true, position: [2, 2], image: require('../../assets/Armor/EmmaLegacy.jpg') },
+  { name: 'Spencer McNeil', codename: 'Annihilator', screen: 'Spencer', clickable: true, position: [0, 0], image: require('../../assets/Armor/Spencer5.jpg'), },
+  { name: 'Azure Briggs', codename: 'Mediateir', screen: 'Azure', clickable: true, position: [0, 2], image: require('../../assets/Armor/Azure3.jpg'),},
+  { name: 'Jared McNeil', codename: 'Spector', screen: 'Jared', clickable: true, position: [1, 0], image: require('../../assets/Armor/Jared3.jpg'), },
+  { name: 'Will Cummings', codename: 'Night Hawk', screen: 'Will', clickable: true, position: [1, 1], image: require('../../assets/Armor/WillNightHawk3.jpg'), },
+  { name: 'Ben Briggs', codename: 'Nuscus', screen: 'Ben', clickable: true, position: [1, 2], image: require('../../assets/Armor/Ben4.jpg'), },
+  { name: 'Jennifer McNeil', codename: 'Kintsugi', screen: 'Jennifer', clickable: true, position: [2, 0], image: require('../../assets/Armor/JenniferLegacy.jpg'), },
+  { name: 'Emma Cummings', codename: 'Kintsunera', screen: 'Emma', clickable: true, position: [2, 2], image: require('../../assets/Armor/EmmaLegacy.jpg'), },
 ];
 
-const isEmpty = (row, col) => (row === 0 && col === 1) || (row === 2 && col === 1);
+const isEmpty = (row, col) =>
+  (row === 0 && col === 1) || (row === 2 && col === 1);
+
 const getMemberAtPosition = (row, col) =>
   members.find(m => m.position[0] === row && m.position[1] === col);
 
 const TitansScreen = () => {
   const navigation = useNavigation();
-  const [currentSound, setCurrentSound] = React.useState(null);
-  const [isPlaying, setIsPlaying] = React.useState(false);
+  const [currentSound, setCurrentSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const playTheme = async () => {
     if (!currentSound) {
@@ -48,7 +50,7 @@ const TitansScreen = () => {
       } catch (error) {
         Alert.alert('Audio Error', 'Failed to load background music.');
       }
-    } else if (!isPlaying) {
+    } else if (!isPlaying && currentSound) {
       await currentSound.playAsync();
       setIsPlaying(true);
     }
@@ -63,8 +65,12 @@ const TitansScreen = () => {
 
   const stopSound = async () => {
     if (currentSound) {
-      await currentSound.stopAsync();
-      await currentSound.unloadAsync();
+      try {
+        await currentSound.stopAsync();
+        await currentSound.unloadAsync();
+      } catch (e) {
+        // ignore audio errors on cleanup
+      }
       setCurrentSound(null);
       setIsPlaying(false);
     }
@@ -72,15 +78,17 @@ const TitansScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
-      return () => stopSound();
+      return () => {
+        stopSound();
+      };
     }, [currentSound])
   );
 
   const isDesktop = SCREEN_WIDTH > 600;
-  const cardSize = isDesktop ? 200 : Math.min(120, SCREEN_WIDTH / 3 - 20);
-  const cardSpacing = isDesktop ? 30 : Math.min(15, (SCREEN_WIDTH - 3 * cardSize) / 4);
+  const cardSize = isDesktop ? 210 : Math.min(130, SCREEN_WIDTH / 3 - 20);
+  const cardSpacing = isDesktop ? 30 : Math.min(18, (SCREEN_WIDTH - 3 * cardSize) / 4);
 
-  const renderCard = (m) => (
+  const renderCard = m => (
     <TouchableOpacity
       key={m.name}
       style={[
@@ -88,13 +96,6 @@ const TitansScreen = () => {
         {
           width: cardSize,
           height: cardSize * 1.6,
-          borderWidth: 2,
-          borderColor: '#00b3ff',
-          backgroundColor: 'rgba(0, 179, 255, 0.1)',
-          shadowColor: '#00b3ff',
-          shadowOpacity: 0.8,
-          shadowRadius: 10,
-          elevation: 10,
         },
         !m.clickable && styles.disabledCard,
       ]}
@@ -105,20 +106,31 @@ const TitansScreen = () => {
         }
       }}
       disabled={!m.clickable}
+      activeOpacity={0.9}
     >
       <Image source={m.image} style={styles.characterImage} resizeMode="cover" />
 
-      {/* YOUR ORIGINAL LOOK — BUT NOW SMART ON MOBILE */}
+      {/* Glass overlay */}
+      <View style={styles.cardOverlay} />
+
+      {/* Text wrapper */}
       <View style={styles.textWrapper}>
-        {/* Real Name — moves up automatically when codename wraps */}
-        <Text style={[styles.name, isDesktop ? styles.nameDesktop : styles.nameMobile]}>
+        <Text
+          style={[
+            styles.name,
+            isDesktop ? styles.nameDesktop : styles.nameMobile,
+          ]}
+          numberOfLines={1}
+        >
           {m.name}
         </Text>
 
-        {/* Codename — wraps cleanly on mobile */}
         <Text
-          style={[styles.codename, isDesktop ? styles.codenameDesktop : styles.codenameMobile]}
-          numberOfLines={isDesktop ? 1 : 3}
+          style={[
+            styles.codename,
+            isDesktop ? styles.codenameDesktop : styles.codenameMobile,
+          ]}
+          numberOfLines={isDesktop ? 1 : 2}
         >
           {m.codename}
         </Text>
@@ -132,72 +144,93 @@ const TitansScreen = () => {
       style={styles.background}
       resizeMode="cover"
     >
-      <SafeAreaView style={styles.container}>
-        {/* Header */}
-        <View style={styles.headerWrapper}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={async () => {
-              await stopSound();
-              navigation.navigate('Home');
-            }}
-          >
-            <Text style={styles.backText}>Back</Text>
-          </TouchableOpacity>
-          <Text style={styles.header}>Titans</Text>
-          <TouchableOpacity
-            onPress={async () => {
-              await stopSound();
-              navigation.navigate('TeamChat');
-            }}
-            style={styles.chatButton}
-          >
-            <Text style={styles.chatText}>🛡️</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Music Controls */}
-        <View style={styles.musicControls}>
-          <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
-            <Text style={styles.musicButtonText}>Theme</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
-            <Text style={styles.musicButtonText}>Pause</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Content */}
-        <View style={styles.contentCenter}>
-          {isDesktop ? (
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{
-                padding: 20,
-                gap: cardSpacing,
-                alignItems: 'center',
-                justifyContent: 'center',
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.overlay}>
+          {/* Glassy Header */}
+          <View style={styles.headerWrapper}>
+            <TouchableOpacity
+              style={styles.back}
+              onPress={async () => {
+                await stopSound();
+                navigation.navigate('Home');
               }}
+              activeOpacity={0.85}
             >
-              {members.map(renderCard)}
-            </ScrollView>
-          ) : (
-            <ScrollView contentContainerStyle={{ padding: 10 }}>
-              <View style={{ gap: cardSpacing, alignItems: 'center' }}>
-                {[0, 1, 2].map(row => (
-                  <View key={row} style={{ flexDirection: 'row', gap: cardSpacing }}>
-                    {[0, 1, 2].map(col => {
-                      if (isEmpty(row, col)) {
-                        return <View key={col} style={{ width: cardSize, height: cardSize * 1.6 }} />;
-                      }
-                      const m = getMemberAtPosition(row, col);
-                      return m ? renderCard(m) : null;
-                    })}
-                  </View>
-                ))}
+              <Text style={styles.backText}>⬅️ Back</Text>
+            </TouchableOpacity>
+
+            <View style={styles.headerTitle}>
+              <View style={styles.headerGlass}>
+                <Text style={styles.header}>Titans</Text>
+                <Text style={styles.headerSub}>Prime Parliament hero team</Text>
               </View>
-            </ScrollView>
-          )}
+            </View>
+
+            <TouchableOpacity
+              onPress={async () => {
+                await stopSound();
+                navigation.navigate('TeamChat');
+              }}
+              style={styles.chatButton}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.chatText}>💬</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Music Controls */}
+          <View style={styles.musicControls}>
+            <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
+              <Text style={styles.musicButtonText}>
+                {isPlaying ? 'Playing…' : 'Theme'}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.musicButtonSecondary} onPress={pauseTheme}>
+              <Text style={styles.musicButtonTextSecondary}>Pause</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Content */}
+          <View style={styles.contentCenter}>
+            {isDesktop ? (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{
+                  padding: 24,
+                  gap: cardSpacing,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {members.map(renderCard)}
+              </ScrollView>
+            ) : (
+              <ScrollView contentContainerStyle={{ padding: 14 }}>
+                <View style={{ gap: cardSpacing, alignItems: 'center' }}>
+                  {[0, 1, 2].map(row => (
+                    <View
+                      key={row}
+                      style={{ flexDirection: 'row', gap: cardSpacing }}
+                    >
+                      {[0, 1, 2].map(col => {
+                        if (isEmpty(row, col)) {
+                          return (
+                            <View
+                              key={col}
+                              style={{ width: cardSize, height: cardSize * 1.6 }}
+                            />
+                          );
+                        }
+                        const m = getMemberAtPosition(row, col);
+                        return m ? renderCard(m) : null;
+                      })}
+                    </View>
+                  ))}
+                </View>
+              </ScrollView>
+            )}
+          </View>
         </View>
       </SafeAreaView>
     </ImageBackground>
@@ -205,72 +238,191 @@ const TitansScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  background: { width: '100%', height: '100%' },
-  container: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)' },
-  contentCenter: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  background: {
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT,
+  },
+  safeArea: {
+    flex: 1,
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 5, 15, 0.78)',
+  },
 
+  // HEADER
   headerWrapper: {
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingTop: 10,
+    paddingHorizontal: 12,
+    paddingTop: 8,
+    marginBottom: 10,
+    justifyContent: 'space-between',
   },
-  backButton: { padding: 10, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 5 },
-  backText: { fontSize: 18, color: '#00b3ff', fontWeight: 'bold' },
-  header: { fontSize: 28, fontWeight: 'bold', color: '#fff', textAlign: 'center', flex: 1 },
-  chatButton: { padding: 10, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 5 },
-  chatText: { fontSize: 20, color: '#00b3ff' },
+  back: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: 'rgba(0, 40, 80, 0.85)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 200, 255, 0.6)',
+  },
+  backText: {
+    color: '#E6F7FF',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  headerTitle: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  headerGlass: {
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.35)',
+    borderWidth: 1,
+    borderColor: 'rgba(0, 200, 255, 0.4)',
+  },
+  header: {
+    fontSize: SCREEN_WIDTH > 600 ? 30 : 24,
+    fontWeight: 'bold',
+    color: '#EFFFFF',
+    textAlign: 'center',
+    textShadowColor: '#00c8ff',
+    textShadowRadius: 18,
+  },
+  headerSub: {
+    marginTop: 2,
+    fontSize: SCREEN_WIDTH > 600 ? 12 : 10,
+    color: 'rgba(190, 240, 255, 0.9)',
+    textAlign: 'center',
+    letterSpacing: 0.4,
+  },
+  chatButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    backgroundColor: 'rgba(0, 40, 80, 0.85)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 200, 255, 0.6)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  chatText: {
+    fontSize: 16,
+    color: '#E6F7FF',
+  },
 
-  musicControls: { flexDirection: 'row', justifyContent: 'center', marginVertical: 10 },
-  musicButton: { padding: 10, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 8, marginHorizontal: 10 },
-  musicButtonText: { fontSize: 12, color: '#00b3ff', fontWeight: 'bold' },
+  // MUSIC CONTROLS
+  musicControls: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 8,
+    paddingHorizontal: 10,
+  },
+  musicButton: {
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 999,
+    backgroundColor: 'rgba(0, 30, 70, 0.8)',
+    borderWidth: 1,
+    borderColor: 'rgba(0, 200, 255, 0.7)',
+    marginHorizontal: 6,
+  },
+  musicButtonSecondary: {
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 999,
+    backgroundColor: 'rgba(0, 0, 0, 0.45)',
+    borderWidth: 1,
+    borderColor: 'rgba(120, 180, 200, 0.5)',
+    marginHorizontal: 6,
+  },
+  musicButtonText: {
+    fontSize: 13,
+    color: '#CFF6FF',
+    fontWeight: 'bold',
+  },
+  musicButtonTextSecondary: {
+    fontSize: 13,
+    color: '#A9C7D6',
+    fontWeight: 'bold',
+  },
 
-  card: { borderRadius: 10, overflow: 'hidden', position: 'relative' },
-  characterImage: { width: '100%', height: '100%' },
+  contentCenter: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 
-  // MAGIC WRAPPER — YOUR EXACT LOOK, BUT RESPONSIVE
+  // CARDS
+  card: {
+    borderRadius: 18,
+    overflow: 'hidden',
+    position: 'relative',
+    backgroundColor: 'rgba(3, 10, 25, 0.9)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(0, 200, 255, 0.7)',
+    shadowColor: '#00c8ff',
+    shadowOpacity: 0.75,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 10,
+  },
+  characterImage: {
+    width: '100%',
+    height: '100%',
+  },
+  cardOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.35)',
+  },
+
   textWrapper: {
     position: 'absolute',
     bottom: 8,
     left: 8,
     right: 8,
-    padding: 4,
   },
 
-  // BASE STYLES
+  name: {
+    color: '#EFFFFF',
+    textShadowColor: 'rgba(0, 0, 0, 0.9)',
+    textShadowRadius: 10,
+    zIndex: 2,
+  },
   codename: {
     fontWeight: 'bold',
-    color: '#00b3ff',
-    textShadowColor: '#00b3ff',
-    textShadowRadius: 12,
-    zIndex: 2,
-  },
-  name: {
-    color: '#fff',
+    color: '#27E0FF',
     textShadowColor: '#00b3ff',
     textShadowRadius: 12,
     zIndex: 2,
   },
 
-  // DESKTOP — 100% YOUR, 100% your original
-  codenameDesktop: { position: 'absolute', bottom: 12, left: 10, fontSize: 16 },
-  nameDesktop:    { position: 'absolute', bottom: 34, left: 10, fontSize: 14 },
-
-  // MOBILE — WRAPS, PUSHES NAME UP, NO OVERLAP
-  codenameMobile: {
-    fontSize: 13,
-    lineHeight: 16,
-    textAlign: 'left',
+  // Desktop sizing
+  nameDesktop: {
+    fontSize: 14,
+    marginBottom: 2,
   },
+  codenameDesktop: {
+    fontSize: 16,
+  },
+
+  // Mobile sizing / wrapping
   nameMobile: {
     fontSize: 11,
     marginBottom: 2,
-    textAlign: 'left',
+  },
+  codenameMobile: {
+    fontSize: 13,
+    lineHeight: 16,
   },
 
-  disabledCard: { opacity: 0.6 },
+  disabledCard: {
+    opacity: 0.6,
+  },
 });
 
 export default TitansScreen;

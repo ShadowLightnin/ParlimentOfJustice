@@ -79,13 +79,15 @@ const SpartansScreen = () => {
 
   useEffect(() => {
     if (isFocused) {
-      setBackgroundImage(backgroundImages[Math.floor(Math.random() * backgroundImages.length)]);
+      setBackgroundImage(
+        backgroundImages[Math.floor(Math.random() * backgroundImages.length)]
+      );
     }
   }, [isFocused]);
 
   const isDesktop = SCREEN_WIDTH > 600;
-  const cardSize = isDesktop ? 320 : 100;
-  const cardSpacing = isDesktop ? 120 : 30;
+  const cardSize = isDesktop ? 320 : 110;
+  const cardSpacing = isDesktop ? 80 : 20;
 
   const goToChat = () => navigation.navigate('TeamChat');
 
@@ -97,19 +99,13 @@ const SpartansScreen = () => {
         style={[
           styles.vehicleCard,
           {
-            width: SCREEN_WIDTH,
-            height: isDesktop ? 600 : 400,
-            borderWidth: 2,
-            borderColor: '#00b3ff',
-            backgroundColor: 'rgba(0, 179, 255, 0.1)',
-            shadowColor: '#00b3ff',
-            shadowOpacity: 0.9,
-            shadowRadius: 15,
-            elevation: 12,
+            width: SCREEN_WIDTH * (isDesktop ? 0.9 : 1),
+            height: isDesktop ? 520 : 380,
           },
         ]}
       >
         <Image source={imageSource} style={styles.vehicleImage} resizeMode="cover" />
+        <View style={styles.vehicleGlassOverlay} />
         <Text style={styles.vehicleName}>{vehicle.name}</Text>
         <Text style={styles.vehicleDescription}>{vehicle.description}</Text>
       </View>
@@ -124,27 +120,24 @@ const SpartansScreen = () => {
         {
           width: cardSize,
           height: cardSize * 1.6,
-          borderWidth: 2,
-          borderColor: '#00b3ff',
-          backgroundColor: 'rgba(0, 179, 255, 0.1)',
-          shadowColor: '#00b3ff',
-          shadowOpacity: 1,
-          shadowRadius: 16,
-          elevation: 14,
         },
       ]}
       onPress={() => member.clickable && navigation.navigate(member.screen)}
       disabled={!member.clickable}
+      activeOpacity={0.9}
     >
       <Image source={member.image} style={styles.characterImage} resizeMode="cover" />
+      <View style={styles.memberOverlay} />
 
-      {/* YOUR ORIGINAL LOOK — NOW RESPONSIVE */}
       <View style={styles.textWrapper}>
         <Text style={[styles.name, isDesktop ? styles.nameDesktop : styles.nameMobile]}>
           {member.name}
         </Text>
         <Text
-          style={[styles.codename, isDesktop ? styles.codenameDesktop : styles.codenameMobile]}
+          style={[
+            styles.codename,
+            isDesktop ? styles.codenameDesktop : styles.codenameMobile,
+          ]}
           numberOfLines={isDesktop ? 1 : 3}
         >
           {member.codename}
@@ -154,26 +147,41 @@ const SpartansScreen = () => {
   );
 
   return (
-    <ImageBackground source={backgroundImage} style={styles.background}>
+    <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover">
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
-          {/* Header */}
+          {/* HEADER */}
           <View style={styles.headerWrapper}>
-            <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-              <Text style={styles.backText}>Back</Text>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => navigation.goBack()}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.backText}>⬅️ Back</Text>
             </TouchableOpacity>
-            <Text style={[styles.header, { padding: isDesktop ? 5 : 8 }]}>The Spartans</Text>
-            <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
+
+            <View style={styles.headerCenter}>
+              <View style={styles.headerGlass}>
+                <Text style={styles.headerTitle}>The Spartans</Text>
+                <Text style={styles.headerSubtitle}>The Elite Commandos of The Parliament</Text>
+              </View>
+            </View>
+
+            <TouchableOpacity
+              onPress={goToChat}
+              style={styles.chatButton}
+              activeOpacity={0.85}
+            >
               <Text style={styles.chatText}>🛡️</Text>
             </TouchableOpacity>
           </View>
 
-          {/* Member Cards */}
-          <View style={styles.memberRow}>
+          {/* MEMBER CARDS */}
+          <View style={[styles.memberRow, { gap: cardSpacing }]}>
             {members.map(renderMemberCard)}
           </View>
 
-          {/* Vehicle Bay */}
+          {/* VEHICLE BAY */}
           <View style={styles.vehicleBay}>
             <Text style={styles.vehicleHeader}>Vehicle Bay</Text>
             <View style={styles.vehicleWindow}>
@@ -181,7 +189,14 @@ const SpartansScreen = () => {
                 horizontal
                 pagingEnabled
                 showsHorizontalScrollIndicator={false}
-                onScroll={(e) => setCurrentVehicleIndex(Math.round(e.nativeEvent.contentOffset.x / SCREEN_WIDTH))}
+                onScroll={(e) =>
+                  setCurrentVehicleIndex(
+                    Math.round(
+                      e.nativeEvent.contentOffset.x /
+                        (SCREEN_WIDTH * (isDesktop ? 0.9 : 1))
+                    )
+                  )
+                }
                 scrollEventThrottle={16}
               >
                 {HARDCODED_VEHICLES.map(renderVehicle)}
@@ -190,7 +205,10 @@ const SpartansScreen = () => {
                 {HARDCODED_VEHICLES.map((_, i) => (
                   <View
                     key={i}
-                    style={[styles.dot, { backgroundColor: i === currentVehicleIndex ? '#00b3ff' : '#666' }]}
+                    style={[
+                      styles.dot,
+                      { backgroundColor: i === currentVehicleIndex ? '#00e1ff' : '#555' },
+                    ]}
                   />
                 ))}
               </View>
@@ -204,117 +222,189 @@ const SpartansScreen = () => {
 
 const styles = StyleSheet.create({
   background: { width: '100%', height: '100%' },
-  container: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)' },
-  scrollContent: { flexGrow: 1, alignItems: 'center', paddingVertical: 20 },
+  container: { flex: 1, backgroundColor: 'rgba(0,0,0,0.7)' },
+  scrollContent: { flexGrow: 1, alignItems: 'center', paddingVertical: 20, paddingHorizontal: 6 },
 
+  // HEADER
   headerWrapper: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    paddingHorizontal: 15,
-    paddingTop: 10,
+    paddingHorizontal: 8,
+    marginBottom: 24,
   },
-  backButton: { padding: 10, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 8 },
-  backText: { fontSize: 18, color: '#00b3ff', fontWeight: 'bold' },
-  header: {
-    fontSize: 32,
+  backButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(0,240,255,0.9)',
+    backgroundColor: 'rgba(5,15,25,0.95)',
+  },
+  backText: {
+    fontSize: 13,
+    color: '#e8fcff',
     fontWeight: 'bold',
-    color: '#FFF',
-    textShadowColor: 'yellow',
-    textShadowRadius: 15,
-    flex: 1,
-    textAlign: 'center',
   },
-  chatButton: { padding: 10, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 8 },
-  chatText: { fontSize: 24, color: '#00b3ff' },
+  headerCenter: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  headerGlass: {
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 999,
+    backgroundColor: 'rgba(5,20,40,0.9)',
+    borderWidth: 1,
+    borderColor: 'rgba(0,240,255,0.9)',
+  },
+  headerTitle: {
+    fontSize: 22,
+    fontWeight: '900',
+    color: '#e6fbff',
+    textAlign: 'center',
+    letterSpacing: 0.8,
+  },
+  headerSubtitle: {
+    fontSize: 11,
+    marginTop: 2,
+    textAlign: 'center',
+    color: '#7be9ff',
+    textTransform: 'uppercase',
+    letterSpacing: 1.2,
+  },
+  chatButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(0,240,255,0.9)',
+    backgroundColor: 'rgba(5,15,25,0.95)',
+  },
+  chatText: { fontSize: 18, color: '#00e1ff' },
 
+  // MEMBERS
   memberRow: {
     flexDirection: 'row',
-    gap: SCREEN_WIDTH > 600 ? 120 : 30,
-    marginVertical: 40,
+    marginVertical: 20,
     justifyContent: 'center',
   },
-
-  card: { borderRadius: 12, overflow: 'hidden', position: 'relative' },
+  card: {
+    borderRadius: 16,
+    overflow: 'hidden',
+    position: 'relative',
+    borderWidth: 2,
+    borderColor: '#00e1ff',
+    backgroundColor: 'rgba(0, 179, 255, 0.08)',
+    shadowColor: '#00e1ff',
+    shadowOpacity: 0.9,
+    shadowRadius: 18,
+    elevation: 14,
+  },
   characterImage: { width: '100%', height: '100%' },
-
-  // MAGIC TEXT WRAPPER — YOUR STYLE, NOW PERFECT
-  textWrapper: {
-    position: 'absolute',
-    bottom: 10,
-    left: 10,
-    right: 10,
-    padding: 4,
+  memberOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.45)',
   },
 
+  // Text overlay for members
+  textWrapper: {
+    position: 'absolute',
+    bottom: 8,
+    left: 8,
+    right: 8,
+    padding: 4,
+  },
   codename: {
     fontWeight: 'bold',
-    color: '#00b3ff',
-    textShadowColor: '#00b3ff',
+    color: '#00e1ff',
+    textShadowColor: '#00e1ff',
     textShadowRadius: 14,
     zIndex: 2,
   },
   name: {
-    color: '#fff',
-    textShadowColor: '#00b3ff',
+    color: '#ffffff',
+    textShadowColor: '#00e1ff',
     textShadowRadius: 14,
     zIndex: 2,
   },
-
-  // DESKTOP — 100% YOUR ORIGINAL BADASS LOOK
-  codenameDesktop: { position: 'absolute', bottom: 14, left: 12, fontSize: 18 },
-  nameDesktop:    { position: 'absolute', bottom: 38, left: 12, fontSize: 15 },
-
-  // MOBILE — WRAPS CLEANLY, NAME MOVES UP
+  // Desktop: fixed stacking
+  codenameDesktop: { position: 'absolute', bottom: 10, left: 10, fontSize: 16 },
+  nameDesktop: { position: 'absolute', bottom: 32, left: 10, fontSize: 14 },
+  // Mobile: wraps & flows
   codenameMobile: {
-    fontSize: 14,
+    fontSize: 13,
     lineHeight: 17,
     textAlign: 'left',
   },
   nameMobile: {
-    fontSize: 12,
+    fontSize: 11,
     marginBottom: 2,
     textAlign: 'left',
   },
 
-  // Vehicle Bay — Untouched & Perfect
-  vehicleBay: { width: '100%', alignItems: 'center', marginTop: 20 },
+  // VEHICLE BAY
+  vehicleBay: { width: '100%', alignItems: 'center', marginTop: 10 },
   vehicleHeader: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#FFF',
-    textShadowColor: 'yellow',
-    textShadowRadius: 15,
-    marginBottom: 15,
+    fontSize: 24,
+    fontWeight: '900',
+    color: '#e6fbff',
+    textShadowColor: '#00e1ff',
+    textShadowRadius: 18,
+    marginBottom: 10,
+    textTransform: 'uppercase',
+    letterSpacing: 1.4,
   },
-  vehicleWindow: { width: '100%' },
-  vehicleCard: { borderRadius: 16, overflow: 'hidden' },
+  vehicleWindow: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  vehicleCard: {
+    borderRadius: 20,
+    overflow: 'hidden',
+    alignSelf: 'center',
+    borderWidth: 1.5,
+    borderColor: 'rgba(0,240,255,0.9)',
+    backgroundColor: 'rgba(5,15,25,0.95)',
+    shadowColor: '#00e1ff',
+    shadowOpacity: 0.9,
+    shadowRadius: 22,
+    elevation: 16,
+    marginHorizontal: SCREEN_WIDTH * 0.05,
+  },
   vehicleImage: { width: '100%', height: '100%' },
+  vehicleGlassOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.55)',
+  },
   vehicleName: {
     position: 'absolute',
-    bottom: 60,
+    top: 22,
     left: 20,
-    fontSize: 24,
+    right: 20,
+    fontSize: 22,
     fontWeight: 'bold',
-    color: '#00b3ff',
-    textShadowColor: '#00b3ff',
-    textShadowRadius: 16,
-    zIndex: 2,
+    color: '#00e1ff',
+    textShadowColor: '#000',
+    textShadowRadius: 10,
   },
   vehicleDescription: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 26,
     left: 20,
     right: 20,
-    fontSize: 16,
-    color: '#fff',
+    fontSize: 15,
+    color: '#eaf8ff',
     textShadowColor: '#000',
     textShadowRadius: 8,
-    zIndex: 2,
   },
-  dotContainer: { flexDirection: 'row', justifyContent: 'center', marginTop: 15 },
-  dot: { width: 10, height: 10, borderRadius: 5, marginHorizontal: 6 },
+  dotContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 12,
+    marginBottom: 4,
+  },
+  dot: { width: 8, height: 8, borderRadius: 4, marginHorizontal: 5 },
 });
 
 export default SpartansScreen;

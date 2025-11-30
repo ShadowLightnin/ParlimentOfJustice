@@ -11,8 +11,6 @@ import {
   Dimensions,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { collection, onSnapshot } from 'firebase/firestore';
-import { db } from '../../lib/firebase';
 import { memberCategories } from './ConstollationMembers';
 import constollationImages from './ConstollationImages';
 import ConstollationDescription from './ConstollationDescription';
@@ -43,6 +41,7 @@ export const ConstollationScreen = () => {
       return;
     }
     try {
+      // NOTE: themeAudio is still commented out above, so this will be a no-op
       const { sound } = await Audio.Sound.createAsync(themeAudio, {
         shouldPlay: true,
         isLooping: true,
@@ -50,7 +49,9 @@ export const ConstollationScreen = () => {
       });
       setCurrentSound(sound);
       setIsPlaying(true);
-    } catch (e) {}
+    } catch (e) {
+      // silent fail to avoid crashes if themeAudio is not wired
+    }
   };
 
   const pauseTheme = async () => {
@@ -62,8 +63,12 @@ export const ConstollationScreen = () => {
 
   const stopSound = async () => {
     if (currentSound) {
-      await currentSound.stopAsync();
-      await currentSound.unloadAsync();
+      try {
+        await currentSound.stopAsync();
+      } catch {}
+      try {
+        await currentSound.unloadAsync();
+      } catch {}
       setCurrentSound(null);
       setIsPlaying(false);
     }
@@ -76,8 +81,12 @@ export const ConstollationScreen = () => {
     const updated = memberCategories.map(cat => {
       const processed = cat.members.map(m => {
         const imgData = constollationImages[m.name];
+
+        // ⬇️ This is your original, working image structure
         const images = imgData?.images || [{ uri: require('../../assets/Armor/PlaceHolder.jpg') }];
-        const description = ConstollationDescription[m.name] || 'A star whose light speaks for itself.';
+
+        const description =
+          ConstollationDescription[m.name] || 'A star whose light speaks for itself.';
 
         return {
           ...m,
@@ -106,6 +115,7 @@ export const ConstollationScreen = () => {
   const renderStar = (member) => {
     if (!member) return <View key={Math.random()} style={styles.cardSpacer} />;
 
+    // ⬇️ ORIGINAL logic: expects images entries like { uri: require(...) }
     const primaryImage = member.images?.[0]?.uri || require('../../assets/Armor/PlaceHolder.jpg');
 
     return (
@@ -122,7 +132,13 @@ export const ConstollationScreen = () => {
             {member.name}
           </Text>
           {member.codename && (
-            <Text style={[styles.codename, isDesktop ? styles.codenameDesktop : styles.codenameMobile]} numberOfLines={3}>
+            <Text
+              style={[
+                styles.codename,
+                isDesktop ? styles.codenameDesktop : styles.codenameMobile,
+              ]}
+              numberOfLines={3}
+            >
               {member.codename}
             </Text>
           )}
@@ -136,10 +152,23 @@ export const ConstollationScreen = () => {
       <SafeAreaView style={styles.container}>
         {/* Header */}
         <View style={styles.headerWrapper}>
-          <TouchableOpacity style={styles.backButton} onPress={async () => { await stopSound(); navigation.goBack(); }}>
-            <Text style={styles.backText}>Back</Text>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={async () => {
+              await stopSound();
+              navigation.goBack();
+            }}
+          >
+            <Text style={styles.backText}>⬅️ Back</Text>
           </TouchableOpacity>
-          <Text style={styles.header}>Constollation</Text>
+
+          <View style={styles.headerCenter}>
+            <View style={styles.headerGlass}>
+              <Text style={styles.headerTitle}>Constollation</Text>
+              <Text style={styles.headerSubtitle}>The Social Workers of The Parliament</Text>
+            </View>
+          </View>
+
           <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
             <Text style={styles.chatText}>🛡️</Text>
           </TouchableOpacity>
@@ -165,10 +194,20 @@ export const ConstollationScreen = () => {
                 <View style={styles.divider} />
 
                 {Array.from({ length: rows }).map((_, i) => (
-                  <View key={i} style={[styles.row, { gap: horizontalSpacing, marginBottom: verticalSpacing }]}>
+                  <View
+                    key={i}
+                    style={[
+                      styles.row,
+                      { gap: horizontalSpacing, marginBottom: verticalSpacing },
+                    ]}
+                  >
                     {Array.from({ length: columns }).map((_, j) => {
                       const member = cat.members[i * columns + j];
-                      return <View key={j} style={styles.starWrapper}>{renderStar(member)}</View>;
+                      return (
+                        <View key={j} style={styles.starWrapper}>
+                          {renderStar(member)}
+                        </View>
+                      );
                     })}
                   </View>
                 ))}
@@ -183,26 +222,110 @@ export const ConstollationScreen = () => {
 
 const styles = StyleSheet.create({
   background: { width: '100%', height: '100%' },
-  container: { flex: 1, backgroundColor: 'rgba(0,0,0,0.7)' },
+  container: { flex: 1, backgroundColor: 'rgba(0,0,0,0.75)' },
 
-  headerWrapper: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 15, paddingTop: 10 },
-  backButton: { padding: 12, backgroundColor: 'rgba(0,179,255,0.25)', borderRadius: 12, borderWidth: 1, borderColor: '#00b3ff' },
-  backText: { fontSize: 18, color: '#00ffff', fontWeight: 'bold' },
-  header: { fontSize: 38, fontWeight: '900', color: '#00ffff', textAlign: 'center', flex: 1, textShadowColor: '#00b3ff', textShadowRadius: 20 },
-  chatButton: { padding: 12, backgroundColor: 'rgba(0,179,255,0.25)', borderRadius: 12, borderWidth: 1, borderColor: '#00b3ff' },
-  chatText: { fontSize: 22, color: '#00ffff', fontWeight: 'bold' },
+  // HEADER
+  headerWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingTop: 10,
+  },
+  backButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    backgroundColor: 'rgba(0, 40, 80, 0.8)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: '#7de1ff',
+  },
+  backText: { fontSize: 14, color: '#e6fbff', fontWeight: 'bold' },
 
-  musicControls: { flexDirection: 'row', justifyContent: 'center', gap: 20, marginVertical: 15 },
-  musicButton: { paddingHorizontal: 28, paddingVertical: 12, backgroundColor: 'rgba(0,179,255,0.3)', borderRadius: 30, borderWidth: 1, borderColor: '#00b3ff' },
-  musicButtonText: { color: '#00ffff', fontWeight: 'bold', fontSize: 15 },
+  headerCenter: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  headerGlass: {
+    paddingHorizontal: 20,
+    paddingVertical: 6,
+    borderRadius: 999,
+    backgroundColor: 'rgba(5, 15, 35, 0.95)',
+    borderWidth: 1,
+    borderColor: '#7de1ff',
+  },
+  headerTitle: {
+    fontSize: 26,
+    fontWeight: '900',
+    color: '#f7fdff',
+    textAlign: 'center',
+    textShadowColor: '#00b3ff',
+    textShadowRadius: 18,
+    letterSpacing: 0.8,
+  },
+  headerSubtitle: {
+    fontSize: 11,
+    textAlign: 'center',
+    marginTop: 2,
+    color: '#9fe9ff',
+    letterSpacing: 1.1,
+    textTransform: 'uppercase',
+  },
 
+  chatButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    backgroundColor: 'rgba(0, 40, 80, 0.8)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: '#7de1ff',
+  },
+  chatText: { fontSize: 18, color: '#7de1ff', fontWeight: 'bold' },
+
+  // MUSIC
+  musicControls: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 18,
+    marginVertical: 14,
+  },
+  musicButton: {
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+    backgroundColor: 'rgba(0, 60, 120, 0.65)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: '#7de1ff',
+  },
+  musicButtonText: {
+    color: '#e6fbff',
+    fontWeight: 'bold',
+    fontSize: 13,
+  },
+
+  // GRID
   scrollContainer: { paddingBottom: 100, alignItems: 'center' },
   categorySection: { marginBottom: 50, width: '95%' },
-  categoryHeader: { fontSize: 30, fontWeight: 'bold', color: '#00ffff', textAlign: 'center', marginBottom: 10, textShadowColor: '#00b3ff', textShadowRadius: 18 },
-  divider: { height: 3, backgroundColor: '#00b3ff', marginHorizontal: 40, marginBottom: 20, borderRadius: 2 },
+  categoryHeader: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#eaf8ff',
+    textAlign: 'center',
+    marginBottom: 8,
+    textShadowColor: '#00b3ff',
+    textShadowRadius: 16,
+  },
+  divider: {
+    height: 2,
+    backgroundColor: '#7de1ff',
+    marginHorizontal: 50,
+    marginBottom: 20,
+    borderRadius: 2,
+  },
   row: { flexDirection: 'row', justifyContent: 'center' },
   starWrapper: { alignItems: 'center' },
 
+  // STAR CARD (unchanged from your original except colors tweaked to match header)
   card: {
     width: cardSize,
     height: cardSize * cardHeightMultiplier,

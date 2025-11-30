@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,6 @@ import {
   SafeAreaView,
   ScrollView,
   Dimensions,
-  Modal,
   Alert,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -19,10 +18,10 @@ import { Audio } from 'expo-av';
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 const isDesktop = SCREEN_WIDTH > 600;
 const columns = isDesktop ? 6 : 3;
-const cardSize = isDesktop ? 160 : 100;
+const cardSize = isDesktop ? 160 : 110;
 const cardHeightMultiplier = 1.6;
-const horizontalSpacing = isDesktop ? 40 : 10;
-const verticalSpacing = isDesktop ? 50 : 20;
+const horizontalSpacing = isDesktop ? 40 : 12;
+const verticalSpacing = isDesktop ? 50 : 22;
 
 // Phoenix colors for Olympians (Jennifer keeps her original red)
 const PHOENIX = {
@@ -36,7 +35,6 @@ export const OlympiansScreen = () => {
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // Audio functions unchanged
   const playTheme = async () => {
     if (!currentSound) {
       try {
@@ -65,36 +63,46 @@ export const OlympiansScreen = () => {
 
   const stopSound = async () => {
     if (currentSound) {
-      await currentSound.stopAsync();
-      await currentSound.unloadAsync();
+      try {
+        await currentSound.stopAsync();
+        await currentSound.unloadAsync();
+      } catch {}
       setCurrentSound(null);
       setIsPlaying(false);
     }
   };
 
-  useFocusEffect(useCallback(() => () => stopSound(), [currentSound]));
+  useFocusEffect(
+    useCallback(() => {
+      return () => stopSound();
+    }, [currentSound])
+  );
 
   const goToChat = async () => {
     await stopSound();
     navigation.navigate('TeamChat');
   };
 
-  const handleMemberPress = async (member) => {
-    if (member.clickable !== false) {
-      await stopSound();
-      if (member.screen && member.screen !== '') {
-        navigation.navigate(member.screen);
-      } else {
-        navigation.navigate('OlympiansCharacterDetail', { member });
-      }
+  const handleMemberPress = async member => {
+    if (member.clickable === false) return;
+
+    await stopSound();
+
+    if (member.screen && member.screen !== '') {
+      navigation.navigate(member.screen);
+    } else {
+      navigation.navigate('OlympiansCharacterDetail', { member });
     }
   };
 
-  // Regular Olympian cards — Phoenix fire
-  const renderMemberCard = (member) => {
+  // Regular Olympian cards — Phoenix fire theme, responsive text layout
+  const renderMemberCard = member => {
     const enhancedMember = {
       ...member,
-      image: member.images?.[0]?.uri || require('../../assets/Armor/PlaceHolder.jpg'),
+      image:
+        member.images?.[0]?.uri ||
+        member.image ||
+        require('../../assets/Armor/PlaceHolder.jpg'),
       clickable: member.clickable !== false,
     };
 
@@ -106,31 +114,43 @@ export const OlympiansScreen = () => {
           {
             width: cardSize,
             height: cardSize * cardHeightMultiplier,
-            borderWidth: 2,
-            borderColor: PHOENIX.fire,
-            backgroundColor: 'rgba(255, 69, 0, 0.15)',
-            shadowColor: PHOENIX.fire,
-            shadowOpacity: 0.9,
-            shadowRadius: 14,
-            elevation: 12,
           },
           !enhancedMember.clickable && styles.disabledCard,
         ]}
         onPress={() => handleMemberPress(enhancedMember)}
         disabled={!enhancedMember.clickable}
+        activeOpacity={0.9}
       >
         <Image
-          source={typeof enhancedMember.image === 'string' ? { uri: enhancedMember.image } : enhancedMember.image}
+          source={
+            typeof enhancedMember.image === 'string'
+              ? { uri: enhancedMember.image }
+              : enhancedMember.image
+          }
           style={styles.characterImage}
           resizeMode="cover"
         />
 
+        <View style={styles.cardOverlay} />
+
         <View style={styles.textWrapper}>
-          <Text style={[styles.name, isDesktop ? styles.nameDesktop : styles.nameMobile]}>
+          {/* Name */}
+          <Text
+            style={[
+              styles.name,
+              isDesktop ? styles.nameDesktop : styles.nameMobile,
+            ]}
+            numberOfLines={1}
+          >
             {enhancedMember.name}
           </Text>
+
+          {/* Codename */}
           <Text
-            style={[styles.codename, isDesktop ? styles.codenameDesktop : styles.codenameMobile]}
+            style={[
+              styles.codename,
+              isDesktop ? styles.codenameDesktop : styles.codenameMobile,
+            ]}
             numberOfLines={isDesktop ? 1 : 3}
           >
             {enhancedMember.codename || ''}
@@ -140,11 +160,14 @@ export const OlympiansScreen = () => {
     );
   };
 
-  // Jennifer — 100% original memorial red (untouched)
-  const renderJenniferCard = (member) => {
+  // Jennifer — memorial card, stays special
+  const renderJenniferCard = member => {
     const enhancedMember = {
       ...member,
-      image: member.images?.[0]?.uri || require('../../assets/Armor/PlaceHolder.jpg'),
+      image:
+        member.images?.[0]?.uri ||
+        member.image ||
+        require('../../assets/Armor/PlaceHolder.jpg'),
       clickable: member.clickable !== false,
     };
 
@@ -156,124 +179,359 @@ export const OlympiansScreen = () => {
           {
             width: 2 * cardSize + horizontalSpacing,
             height: cardSize * 2.5,
-            borderWidth: 3,
-            borderColor: '#ff9999',
-            backgroundColor: 'rgba(255, 153, 153, 0.1)',
-            shadowColor: '#ff9999',
-            shadowOpacity: 0.9,
-            shadowRadius: 15,
-            elevation: 15,
           },
         ]}
         onPress={() => handleMemberPress(enhancedMember)}
+        activeOpacity={0.9}
       >
         <Image
-          source={typeof enhancedMember.image === 'string' ? { uri: enhancedMember.image } : enhancedMember.image}
+          source={
+            typeof enhancedMember.image === 'string'
+              ? { uri: enhancedMember.image }
+              : enhancedMember.image
+          }
           style={styles.jenniferImage}
           resizeMode="cover"
         />
-        <Text style={styles.jenniferCodename}>{enhancedMember.codename || ''}</Text>
+        <View style={styles.jenniferOverlay} />
+        <Text style={styles.jenniferCodename}>
+          {enhancedMember.codename || ''}
+        </Text>
         <Text style={styles.jenniferName}>{enhancedMember.name}</Text>
       </TouchableOpacity>
     );
   };
 
-  const jenniferMember = olympiansCategories.flatMap(c => c.members).find(m => m.name === 'Jennifer');
-  const eduriaMembers = olympiansCategories.find(c => c.family === 'Eduria')?.members || [];
+  const jenniferMember = olympiansCategories
+    .flatMap(c => c.members)
+    .find(m => m.name === 'Jennifer');
+
+  const eduriaMembers =
+    olympiansCategories.find(c => c.family === 'Eduria')?.members || [];
+
   const nonEduriaMembers = olympiansCategories
     .filter(c => c.family !== 'Eduria')
     .flatMap(c => c.members)
     .filter(m => m.name !== 'Jennifer');
 
   return (
-    <ImageBackground source={require('../../assets/BackGround/Olympians.jpg')} style={styles.background} resizeMode="cover">
-      <SafeAreaView style={styles.container}>
-        <View style={styles.headerWrapper}>
-          <TouchableOpacity style={styles.backButton} onPress={async () => { await stopSound(); navigation.goBack(); }}>
-            <Text style={styles.backText}>Back</Text>
-          </TouchableOpacity>
-          <Text style={styles.header}>Olympians</Text>
-          <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
-            <Text style={styles.chatText}>🛡️</Text>
-          </TouchableOpacity>
-        </View>
+    <ImageBackground
+      source={require('../../assets/BackGround/Olympians.jpg')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.screenOverlay}>
+          {/* HEADER — glassy, phoenix-themed */}
+          <View style={styles.headerWrapper}>
+            <TouchableOpacity
+              style={styles.back}
+              onPress={async () => {
+                await stopSound();
+                navigation.goBack();
+              }}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.backText}>⬅️ Back</Text>
+            </TouchableOpacity>
 
-        <View style={styles.musicControls}>
-          <TouchableOpacity style={styles.musicButton} onPress={playTheme}><Text style={styles.musicButtonText}>Theme</Text></TouchableOpacity>
-          <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}><Text style={styles.musicButtonText}>Pause</Text></TouchableOpacity>
-        </View>
-
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          {jenniferMember && <View style={styles.jenniferCardContainer}>{renderJenniferCard(jenniferMember)}</View>}
-          <View style={styles.spacingBelowJennifer} />
-
-          <View style={styles.membersContainer}>
-            {Array.from({ length: Math.ceil(nonEduriaMembers.length / columns) }).map((_, rowIndex) => (
-              <View key={rowIndex} style={[styles.row, { marginBottom: verticalSpacing, gap: horizontalSpacing }]}>
-                {Array.from({ length: columns }).map((_, colIndex) => {
-                  const member = nonEduriaMembers[rowIndex * columns + colIndex];
-                  return member
-                    ? renderMemberCard(member)
-                    : <View key={colIndex} style={{ width: cardSize, height: cardSize * cardHeightMultiplier }} />;
-                })}
+            <View style={styles.headerTitle}>
+              <View style={styles.headerGlass}>
+                <Text style={styles.header}>Olympians</Text>
+                <Text style={styles.headerSub}>Family of Heroes</Text>
               </View>
-            ))}
+            </View>
 
-            {/* THE DIWATAS — NOW WITH VISIBLE PHOENIX LINE */}
-            {eduriaMembers.length > 0 && (
-              <>
-                <View style={styles.diwataLine} />
-                <Text style={styles.diwataTitle}>The Diwatas</Text>
-                <View style={styles.diwataLine} />
-
-                {Array.from({ length: Math.ceil(eduriaMembers.length / columns) }).map((_, rowIndex) => (
-                  <View key={`diwata-${rowIndex}`} style={[styles.row, { marginBottom: verticalSpacing, gap: horizontalSpacing }]}>
-                    {Array.from({ length: columns }).map((_, colIndex) => {
-                      const member = eduriaMembers[rowIndex * columns + colIndex];
-                      return member
-                        ? renderMemberCard(member)
-                        : <View key={colIndex} style={{ width: cardSize, height: cardSize * cardHeightMultiplier }} />;
-                    })}
-                  </View>
-                ))}
-              </>
-            )}
+            <TouchableOpacity
+              onPress={goToChat}
+              style={styles.chatButton}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.chatText}>💬</Text>
+            </TouchableOpacity>
           </View>
-        </ScrollView>
+
+          {/* MUSIC */}
+          <View style={styles.musicControls}>
+            <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
+              <Text style={styles.musicButtonText}>
+                {isPlaying ? 'Playing…' : 'Theme'}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.musicButtonAlt} onPress={pauseTheme}>
+              <Text style={styles.musicButtonTextAlt}>Pause</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* CONTENT */}
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            {/* Jennifer featured */}
+            {jenniferMember && (
+              <View style={styles.jenniferCardContainer}>
+                {renderJenniferCard(jenniferMember)}
+              </View>
+            )}
+            <View style={styles.spacingBelowJennifer} />
+
+            <View style={styles.membersContainer}>
+              {/* Non-Eduria rows */}
+              {Array.from({
+                length: Math.ceil(nonEduriaMembers.length / columns),
+              }).map((_, rowIndex) => (
+                <View
+                  key={rowIndex}
+                  style={[
+                    styles.row,
+                    {
+                      marginBottom: verticalSpacing,
+                      gap: horizontalSpacing,
+                    },
+                  ]}
+                >
+                  {Array.from({ length: columns }).map((_, colIndex) => {
+                    const member =
+                      nonEduriaMembers[rowIndex * columns + colIndex];
+                    return member ? (
+                      renderMemberCard(member)
+                    ) : (
+                      <View
+                        key={colIndex}
+                        style={{
+                          width: cardSize,
+                          height: cardSize * cardHeightMultiplier,
+                        }}
+                      />
+                    );
+                  })}
+                </View>
+              ))}
+
+              {/* THE DIWATAS section */}
+              {eduriaMembers.length > 0 && (
+                <>
+                  <View style={styles.diwataLine} />
+                  <Text style={styles.diwataTitle}>The Diwatas</Text>
+                  <View style={styles.diwataLine} />
+
+                  {Array.from({
+                    length: Math.ceil(eduriaMembers.length / columns),
+                  }).map((_, rowIndex) => (
+                    <View
+                      key={`diwata-${rowIndex}`}
+                      style={[
+                        styles.row,
+                        {
+                          marginBottom: verticalSpacing,
+                          gap: horizontalSpacing,
+                        },
+                      ]}
+                    >
+                      {Array.from({ length: columns }).map((_, colIndex) => {
+                        const member =
+                          eduriaMembers[rowIndex * columns + colIndex];
+                        return member ? (
+                          renderMemberCard(member)
+                        ) : (
+                          <View
+                            key={colIndex}
+                            style={{
+                              width: cardSize,
+                              height: cardSize * cardHeightMultiplier,
+                            }}
+                          />
+                        );
+                      })}
+                    </View>
+                  ))}
+                </>
+              )}
+            </View>
+          </ScrollView>
+        </View>
       </SafeAreaView>
     </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  background: { width: '100%', height: '100%' },
-  container: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)' },
+  background: { width: SCREEN_WIDTH, height: SCREEN_HEIGHT },
+  safeArea: { flex: 1 },
+  screenOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(5,0,0,0.78)',
+  },
 
-  // Header & buttons — Phoenix fire
-  headerWrapper: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10, paddingTop: 10 },
-  backButton: { padding: 12, backgroundColor: 'rgba(255,69,0,0.3)', borderRadius: 8, borderWidth: 2, borderColor: PHOENIX.fire },
-  backText: { fontSize: 18, color: PHOENIX.gold, fontWeight: 'bold' },
-  header: { fontSize: 32, fontWeight: '900', color: PHOENIX.gold, textShadowColor: PHOENIX.fire, textShadowRadius: 20, textAlign: 'center', flex: 1 },
-  chatButton: { padding: 12, backgroundColor: 'rgba(255,69,0,0.3)', borderRadius: 8, borderWidth: 2, borderColor: PHOENIX.fire },
-  chatText: { fontSize: 24, color: PHOENIX.gold },
+  /* HEADER ------------------------------ */
+  headerWrapper: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingTop: 8,
+    marginBottom: 8,
+    justifyContent: 'space-between',
+  },
+  back: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: 'rgba(80,20,0,0.85)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(255,160,80,0.8)',
+  },
+  backText: {
+    color: PHOENIX.gold,
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  headerTitle: { flex: 1, alignItems: 'center' },
+  headerGlass: {
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 20,
+    backgroundColor: 'rgba(25,5,0,0.8)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,180,90,0.7)',
+  },
+  header: {
+    fontSize: isDesktop ? 30 : 24,
+    fontWeight: '900',
+    color: PHOENIX.gold,
+    textShadowColor: PHOENIX.fire,
+    textShadowRadius: 22,
+    textAlign: 'center',
+  },
+  headerSub: {
+    marginTop: 2,
+    fontSize: isDesktop ? 12 : 10,
+    color: 'rgba(255,230,200,0.9)',
+    textAlign: 'center',
+  },
+  chatButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    backgroundColor: 'rgba(80,20,0,0.85)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(255,160,80,0.8)',
+  },
+  chatText: { fontSize: 16, color: PHOENIX.gold },
 
-  musicControls: { flexDirection: 'row', justifyContent: 'center', marginVertical: 10 },
-  musicButton: { paddingHorizontal: 16, paddingVertical: 10, backgroundColor: 'rgba(255,69,0,0.25)', borderRadius: 30, marginHorizontal: 12, borderWidth: 1, borderColor: PHOENIX.ember },
-  musicButtonText: { fontSize: 13, color: PHOENIX.gold, fontWeight: 'bold' },
+  /* MUSIC ------------------------------ */
+  musicControls: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 10,
+    gap: 8,
+  },
+  musicButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 9,
+    backgroundColor: 'rgba(255,69,0,0.25)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: PHOENIX.ember,
+  },
+  musicButtonAlt: {
+    paddingHorizontal: 16,
+    paddingVertical: 9,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(255,200,160,0.6)',
+  },
+  musicButtonText: {
+    fontSize: 13,
+    color: PHOENIX.gold,
+    fontWeight: 'bold',
+  },
+  musicButtonTextAlt: {
+    fontSize: 13,
+    color: '#ffe0c4',
+    fontWeight: 'bold',
+  },
 
-  scrollContainer: { paddingBottom: 20, alignItems: 'center' },
-  membersContainer: { width: '100%', alignItems: 'center' },
-  row: { flexDirection: 'row', justifyContent: 'center' },
+  /* SCROLL + GRID ---------------------- */
+  scrollContainer: {
+    paddingBottom: 24,
+    alignItems: 'center',
+  },
+  membersContainer: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
 
-  card: { borderRadius: 10, overflow: 'hidden', position: 'relative' },
-  characterImage: { width: '100%', height: '100%', resizeMode: 'cover' },
+  /* CARD ------------------------------- */
+  card: {
+    borderRadius: 12,
+    overflow: 'hidden',
+    position: 'relative',
+    backgroundColor: 'rgba(20,5,0,0.9)',
+    borderWidth: 2,
+    borderColor: PHOENIX.fire,
+    shadowColor: PHOENIX.fire,
+    shadowOpacity: 0.9,
+    shadowRadius: 14,
+    elevation: 12,
+  },
+  disabledCard: { opacity: 0.6 },
+  characterImage: {
+    width: '100%',
+    height: '100%',
+  },
+  cardOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.35)',
+  },
 
-  // DIWATAS LINE — NOW VISIBLE AND GLOWING
+  /* TEXT ON CARDS ---------------------- */
+  textWrapper: {
+    position: 'absolute',
+    bottom: 8,
+    left: 8,
+    right: 8,
+  },
+  name: {
+    color: '#fff',
+    textShadowColor: PHOENIX.fire,
+    textShadowRadius: 12,
+    zIndex: 2,
+  },
+  codename: {
+    fontWeight: 'bold',
+    color: PHOENIX.gold,
+    textShadowColor: PHOENIX.fire,
+    textShadowRadius: 14,
+    zIndex: 2,
+  },
+  // desktop: codename at bottom, name above (non-overlapping)
+  nameDesktop: {
+    fontSize: 12,
+    marginBottom: 2,
+  },
+  codenameDesktop: {
+    fontSize: 14,
+  },
+  // mobile: stacked & wrapping cleanly
+  nameMobile: {
+    fontSize: 11,
+    marginBottom: 2,
+  },
+  codenameMobile: {
+    fontSize: 12,
+    lineHeight: 16,
+  },
+
+  /* DIWATAS SEPARATOR ------------------ */
   diwataLine: {
     height: 5,
     backgroundColor: PHOENIX.fire,
     marginHorizontal: 60,
-    marginVertical: 25,
+    marginVertical: 24,
     borderRadius: 3,
     shadowColor: PHOENIX.fire,
     shadowOpacity: 1,
@@ -281,7 +539,7 @@ const styles = StyleSheet.create({
     elevation: 12,
   },
   diwataTitle: {
-    fontSize: 38,
+    fontSize: isDesktop ? 36 : 30,
     fontWeight: '900',
     color: PHOENIX.gold,
     textShadowColor: PHOENIX.fire,
@@ -289,24 +547,49 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  textWrapper: { position: 'absolute', bottom: 8, left: 8, right: 8, padding: 4 },
-  codename: { fontWeight: 'bold', color: PHOENIX.gold, textShadowColor: PHOENIX.fire, textShadowRadius: 14, zIndex: 2 },
-  name: { color: '#fff', textShadowColor: PHOENIX.fire, textShadowRadius: 12, zIndex: 2 },
-  codenameDesktop: { position: 'absolute', bottom: 12, left: 10, fontSize: 14 },
-  nameDesktop: { position: 'absolute', bottom: 34, left: 10, fontSize: 12 },
-  codenameMobile: { fontSize: 12, lineHeight: 16, textAlign: 'left' },
-  nameMobile: { fontSize: 11, marginBottom: 2, textAlign: 'left' },
-
-  disabledCard: { opacity: 0.6 },
-
-  // JENNIFER — 100% ORIGINAL MEMORIAL RED (unchanged)
-  jenniferCard: { borderRadius: 15, overflow: 'hidden', marginHorizontal: 10 },
-  jenniferImage: { width: '100%', height: '100%', resizeMode: 'cover' },
-  jenniferCodename: { position: 'absolute', bottom: 20, left: 15, fontSize: 22, fontWeight: 'bold', color: '#ff9999', textShadowColor: '#ff9999', textShadowRadius: 15, zIndex: 2 },
-  jenniferName: { position: 'absolute', bottom: 50, left: 15, fontSize: 18, color: '#fff', textShadowColor: '#ff9999', textShadowRadius: 15, zIndex: 2 },
-
-  jenniferCardContainer: { alignItems: 'center', marginTop: verticalSpacing },
+  /* JENNIFER MEMORIAL CARD ------------- */
+  jenniferCardContainer: {
+    alignItems: 'center',
+    marginTop: verticalSpacing,
+  },
   spacingBelowJennifer: { height: verticalSpacing * 2 },
+  jenniferCard: {
+    borderRadius: 18,
+    overflow: 'hidden',
+    backgroundColor: 'rgba(40,0,0,0.9)',
+    borderWidth: 3,
+    borderColor: '#ff9999',
+    shadowColor: '#ff9999',
+    shadowOpacity: 0.9,
+    shadowRadius: 16,
+    elevation: 15,
+  },
+  jenniferImage: { width: '100%', height: '100%' },
+  jenniferOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.35)',
+  },
+  jenniferCodename: {
+    position: 'absolute',
+    bottom: 20,
+    left: 15,
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#ff9999',
+    textShadowColor: '#ff9999',
+    textShadowRadius: 15,
+    zIndex: 2,
+  },
+  jenniferName: {
+    position: 'absolute',
+    bottom: 50,
+    left: 15,
+    fontSize: 18,
+    color: '#fff',
+    textShadowColor: '#ff9999',
+    textShadowRadius: 15,
+    zIndex: 2,
+  },
 });
 
 export default OlympiansScreen;

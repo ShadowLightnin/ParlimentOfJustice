@@ -25,10 +25,10 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const isDesktop = SCREEN_WIDTH > 600;
 const columns = isDesktop ? 7 : 3;
-const cardSize = isDesktop ? 160 : 100;
+const cardSize = isDesktop ? 160 : 110;
 const cardHeightMultiplier = 1.6;
-const horizontalSpacing = isDesktop ? 40 : 10;
-const verticalSpacing = isDesktop ? 20 : 10;
+const horizontalSpacing = isDesktop ? 40 : 12;
+const verticalSpacing = isDesktop ? 24 : 12;
 
 export const LegionairesScreen = () => {
   const navigation = useNavigation();
@@ -40,6 +40,7 @@ export const LegionairesScreen = () => {
   const [background, setBackground] = useState(null);
   const [audioFile, setAudioFile] = useState(null);
 
+  // Random background + audio (your original behavior)
   useEffect(() => {
     const random = Math.random();
     if (random < 0.4) {
@@ -54,7 +55,11 @@ export const LegionairesScreen = () => {
   const playTheme = async () => {
     if (!audioFile || currentSound) return;
     try {
-      const { sound } = await Audio.Sound.createAsync(audioFile, { shouldPlay: true, isLooping: true });
+      const { sound } = await Audio.Sound.createAsync(audioFile, {
+        shouldPlay: true,
+        isLooping: true,
+        volume: 1.0,
+      });
       setCurrentSound(sound);
       await sound.playAsync();
       setIsPlaying(true);
@@ -72,40 +77,67 @@ export const LegionairesScreen = () => {
 
   const stopSound = async () => {
     if (currentSound) {
-      await currentSound.stopAsync();
-      await currentSound.unloadAsync();
+      try {
+        await currentSound.stopAsync();
+      } catch {}
+      try {
+        await currentSound.unloadAsync();
+      } catch {}
       setCurrentSound(null);
       setIsPlaying(false);
     }
   };
 
-  useFocusEffect(useCallback(() => () => stopSound(), [currentSound]));
+  useFocusEffect(
+    useCallback(() => {
+      return () => stopSound();
+    }, [currentSound])
+  );
 
+  // Firestore sync
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, 'LegionairesMembers'), (snapshot) => {
-      const fetched = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const unsubscribe = onSnapshot(collection(db, 'LegionairesMembers'), snapshot => {
+      const fetched = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
       const updated = memberCategories.map(cat => ({
         ...cat,
         members: [
-          ...cat.members.filter(m => legionImages[m.name]?.hardcoded || !fetched.some(f => f.name === m.name)),
-          ...fetched.filter(m => m.category === cat.category && !m.hardcoded)
-        ]
+          // keep hardcoded or non-overwritten originals
+          ...cat.members.filter(
+            m => legionImages[m.name]?.hardcoded || !fetched.some(f => f.name === m.name)
+          ),
+          // add dynamic ones per category
+          ...fetched.filter(m => m.category === cat.category && !m.hardcoded),
+        ],
       }));
+
       setMembers(updated);
     });
+
     return () => unsubscribe();
   }, []);
 
-  const goToChat = async () => { await stopSound(); navigation.navigate('TeamChat'); };
-
-  const handleMemberPress = async (member) => {
-    if (!member.clickable) return;
+  const goToChat = async () => {
     await stopSound();
-    if (member.screen) navigation.navigate(member.screen);
-    else navigation.navigate('LegionairesCharacterDetail', { member });
+    navigation.navigate('TeamChat');
   };
 
-  const renderMemberCard = (member) => (
+  const handleBack = async () => {
+    await stopSound();
+    navigation.goBack();
+  };
+
+  const handleMemberPress = async member => {
+    if (!member.clickable) return;
+    await stopSound();
+    if (member.screen) {
+      navigation.navigate(member.screen);
+    } else {
+      navigation.navigate('LegionairesCharacterDetail', { member });
+    }
+  };
+
+  const renderMemberCard = member => (
     <View key={member.name} style={styles.cardContainer}>
       <TouchableOpacity
         style={[
@@ -114,31 +146,30 @@ export const LegionairesScreen = () => {
             width: cardSize,
             height: cardSize * cardHeightMultiplier,
             marginHorizontal: horizontalSpacing / 2,
-            borderWidth: 2,
-            borderColor: '#00b3ff',
-            backgroundColor: 'rgba(0, 179, 255, 0.1)',
-            shadowColor: '#00b3ff',
-            shadowOpacity: 0.8,
-            shadowRadius: 10,
-            elevation: 10,
           },
           !member.clickable && styles.disabledCard,
         ]}
         onPress={() => handleMemberPress(member)}
         disabled={!member.clickable}
+        activeOpacity={0.9}
       >
         <Image source={member.image} style={styles.characterImage} resizeMode="cover" />
+        <View style={styles.cardOverlay} />
 
-        {/* YOUR ORIGINAL LOOK — NOW PERFECT ON MOBILE */}
+        {/* Glassy, responsive text */}
         <View style={styles.textWrapper}>
-          {/* Real Name — moves up when codename wraps */}
-          <Text style={[styles.name, isDesktop ? styles.nameDesktop : styles.nameMobile]}>
+          <Text
+            style={[styles.name, isDesktop ? styles.nameDesktop : styles.nameMobile]}
+            numberOfLines={1}
+          >
             {member.name}
           </Text>
 
-          {/* Codename — wraps cleanly on mobile */}
           <Text
-            style={[styles.codename, isDesktop ? styles.codenameDesktop : styles.codenameMobile]}
+            style={[
+              styles.codename,
+              isDesktop ? styles.codenameDesktop : styles.codenameMobile,
+            ]}
             numberOfLines={isDesktop ? 1 : 3}
           >
             {member.codename || ''}
@@ -149,10 +180,18 @@ export const LegionairesScreen = () => {
       {/* Admin buttons */}
       {!legionImages[member.name]?.hardcoded && !member.hardcoded && (
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.editButton} onPress={() => setEditingMember(member)}>
+          <TouchableOpacity
+            style={styles.editButton}
+            onPress={() => setEditingMember(member)}
+          >
             <Text style={styles.buttonText}>Edit</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.deleteButton} onPress={() => member.id && setDeleteModal({ visible: true, member })}>
+          <TouchableOpacity
+            style={styles.deleteButton}
+            onPress={() =>
+              member.id && setDeleteModal({ visible: true, member })
+            }
+          >
             <Text style={styles.buttonText}>Delete</Text>
           </TouchableOpacity>
         </View>
@@ -160,13 +199,15 @@ export const LegionairesScreen = () => {
     </View>
   );
 
-  const confirmDelete = async (id) => {
+  const confirmDelete = async id => {
     try {
       await deleteDoc(doc(db, 'LegionairesMembers', id));
-      setMembers(prev => prev.map(cat => ({
-        ...cat,
-        members: cat.members.filter(m => m.id !== id)
-      })));
+      setMembers(prev =>
+        prev.map(cat => ({
+          ...cat,
+          members: cat.members.filter(m => m.id !== id),
+        }))
+      );
       Alert.alert('Success', 'Member deleted successfully!');
     } catch (err) {
       Alert.alert('Error', 'Failed to delete member.');
@@ -176,39 +217,79 @@ export const LegionairesScreen = () => {
   };
 
   return (
-    <ImageBackground source={background || require('../../assets/BackGround/Legionaires2.jpg')} style={styles.background}>
-      <SafeAreaView style={styles.container}>
-        <View style={styles.headerWrapper}>
-          <TouchableOpacity style={styles.backButton} onPress={async () => { await stopSound(); navigation.goBack(); }}>
-            <Text style={styles.backText}>Back</Text>
-          </TouchableOpacity>
-          <Text style={styles.header}>Legionnaires</Text>
-          <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
-            <Text style={styles.chatText}>🛡️</Text>
-          </TouchableOpacity>
-        </View>
+    <ImageBackground
+      source={background || require('../../assets/BackGround/Legionaires2.jpg')}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.overlay}>
+          {/* HEADER — clean + glassy, blue/silver */}
+          <View style={styles.headerWrapper}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={handleBack}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.backText}>⬅️ Back</Text>
+            </TouchableOpacity>
 
-        <View style={styles.musicControls}>
-          <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
-            <Text style={styles.musicButtonText}>Theme</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
-            <Text style={styles.musicButtonText}>Pause</Text>
-          </TouchableOpacity>
-        </View>
+            <View style={styles.headerTitleWrapper}>
+              <View style={styles.headerGlass}>
+                <Text style={styles.header}>Legionnaires</Text>
+                 {/* <Text style={styles.headerSub}>Friends • Mentors • Legends</Text> */}
+                <Text style={styles.headerSub}>The law enforcements of The Parliament</Text>
+              </View>
+            </View>
 
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          {members.map((categoryData, categoryIndex) => {
-            const rows = Math.ceil(categoryData.members.length / columns);
-            return (
-              <View key={categoryIndex} style={styles.categorySection}>
-                <Text style={styles.categoryHeader}>{categoryData.category}</Text>
-                <View style={styles.divider} />
-                {Array.from({ length: rows }).map((_, rowIndex) => (
-                  <View key={rowIndex} style={[styles.row, { marginBottom: verticalSpacing }]}>
-                    {Array.from({ length: columns }).map((_, colIndex) => {
-                      const memberObj = categoryData.members[rowIndex * columns + colIndex];
-                      if (!memberObj?.name) return <View key={colIndex} style={styles.cardSpacer} />;
+            <TouchableOpacity
+              onPress={goToChat}
+              style={styles.chatButton}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.chatText}>💬</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* MUSIC CONTROLS — sleek chips */}
+          <View style={styles.musicControls}>
+            <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
+              <Text style={styles.musicButtonText}>
+                {isPlaying ? 'Playing…' : 'Theme'}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.musicButtonAlt} onPress={pauseTheme}>
+              <Text style={styles.musicButtonTextAlt}>Pause</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* GRID */}
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            {members.map((categoryData, categoryIndex) => {
+              const rows = Math.ceil(categoryData.members.length / columns);
+
+              return (
+                <View key={categoryIndex} style={styles.categorySection}>
+                  {/* Category title + divider */}
+                  <Text style={styles.categoryHeader}>{categoryData.category}</Text>
+                  <View style={styles.divider} />
+
+                  {Array.from({ length: rows }).map((_, rowIndex) => (
+                    <View
+                      key={rowIndex}
+                      style={[styles.row, { marginBottom: verticalSpacing }]}
+                    >
+                      {Array.from({ length: columns }).map((_, colIndex) => {
+                        const memberObj =
+                          categoryData.members[rowIndex * columns + colIndex];
+                        if (!memberObj?.name) {
+                          return (
+                            <View
+                              key={colIndex}
+                              style={styles.cardSpacer}
+                            />
+                          );
+                        }
 
                       const member = {
                         ...memberObj,
@@ -228,64 +309,212 @@ export const LegionairesScreen = () => {
               </View>
             );
           })}
-          <LegionFriends
-            collectionPath="LegionairesMembers"
-            placeholderImage={require('../../assets/Armor/PlaceHolder.jpg')}
-            hero={members}
-            setHero={setMembers}
-            hardcodedHero={memberCategories}
-            editingHero={editingMember}
-            setEditingHero={setEditingMember}
-            onDelete={(m) => m?.id && setDeleteModal({ visible: true, member: m })}
-          />
-        </ScrollView>
 
-        <Modal visible={deleteModal.visible} transparent animationType="slide">
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalText}>{`Delete "${deleteModal.member?.name || ''}"?`}</Text>
-              <View style={styles.modalButtons}>
-                <TouchableOpacity style={styles.modalCancel} onPress={() => setDeleteModal({ visible: false, member: null })}>
-                  <Text style={styles.modalCancelText}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.modalDelete} onPress={() => deleteModal.member?.id && confirmDelete(deleteModal.member.id)}>
-                  <Text style={styles.modalDeleteText}>Delete</Text>
-                </TouchableOpacity>
+            {/* Admin / add friends section */}
+            <LegionFriends
+              collectionPath="LegionairesMembers"
+              placeholderImage={require('../../assets/Armor/PlaceHolder.jpg')}
+              hero={members}
+              setHero={setMembers}
+              hardcodedHero={memberCategories}
+              editingHero={editingMember}
+              setEditingHero={setEditingMember}
+              onDelete={m =>
+                m?.id && setDeleteModal({ visible: true, member: m })
+              }
+            />
+          </ScrollView>
+
+          {/* DELETE MODAL */}
+          <Modal visible={deleteModal.visible} transparent animationType="slide">
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalText}>
+                  {`Delete "${deleteModal.member?.name || ''}"?`}
+                </Text>
+                <View style={styles.modalButtons}>
+                  <TouchableOpacity
+                    style={styles.modalCancel}
+                    onPress={() =>
+                      setDeleteModal({ visible: false, member: null })
+                    }
+                  >
+                    <Text style={styles.modalCancelText}>Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.modalDelete}
+                    onPress={() =>
+                      deleteModal.member?.id &&
+                      confirmDelete(deleteModal.member.id)
+                    }
+                  >
+                    <Text style={styles.modalDeleteText}>Delete</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-          </View>
-        </Modal>
+          </Modal>
+        </View>
       </SafeAreaView>
     </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  background: { width: '100%', height: '100%' },
-  container: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', alignItems: 'center' },
+  background: { width: SCREEN_WIDTH, height: SCREEN_HEIGHT },
+  safeArea: { flex: 1 },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(1, 4, 15, 0.85)',
+    alignItems: 'center',
+  },
 
-  headerWrapper: { width: '100%', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10, paddingTop: 10 },
-  backButton: { padding: 10, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 5 },
-  backText: { fontSize: 18, color: '#00b3ff', fontWeight: 'bold' },
-  header: { fontSize: 28, fontWeight: 'bold', color: '#fff', textAlign: 'center', flex: 1 },
-  chatButton: { padding: 10, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 5 },
-  chatText: { fontSize: 20, color: '#00b3ff' },
+  /* HEADER */
+  headerWrapper: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingTop: 8,
+    marginBottom: 8,
+    justifyContent: 'space-between',
+  },
+  backButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: 'rgba(10,25,50,0.9)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(160,210,255,0.9)',
+  },
+  backText: {
+    fontSize: 14,
+    color: '#e6f3ff',
+    fontWeight: 'bold',
+  },
+  headerTitleWrapper: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  headerGlass: {
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 20,
+    backgroundColor: 'rgba(5,20,40,0.9)',
+    borderWidth: 1,
+    borderColor: 'rgba(120,190,255,0.95)',
+  },
+  header: {
+    fontSize: isDesktop ? 30 : 24,
+    fontWeight: '900',
+    color: '#e8f6ff',
+    textShadowColor: '#54c3ff',
+    textShadowRadius: 20,
+    textAlign: 'center',
+  },
+  headerSub: {
+    marginTop: 2,
+    fontSize: isDesktop ? 12 : 10,
+    color: 'rgba(205,235,255,0.9)',
+    textAlign: 'center',
+  },
+  chatButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    backgroundColor: 'rgba(10,25,50,0.9)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(160,210,255,0.9)',
+  },
+  chatText: { fontSize: 16, color: '#e6f3ff' },
 
-  musicControls: { flexDirection: 'row', justifyContent: 'center', marginVertical: 10 },
-  musicButton: { padding: 10, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 8, marginHorizontal: 10 },
-  musicButtonText: { fontSize: 12, color: '#00b3ff', fontWeight: 'bold' },
+  /* MUSIC */
+  musicControls: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 10,
+  },
+  musicButton: {
+    paddingHorizontal: 18,
+    paddingVertical: 9,
+    backgroundColor: 'rgba(0,139,255,0.55)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: '#00b3ff',
+    marginHorizontal: 6,
+  },
+  musicButtonAlt: {
+    paddingHorizontal: 18,
+    paddingVertical: 9,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(190,230,255,0.6)',
+    marginHorizontal: 6,
+  },
+  musicButtonText: {
+    fontSize: 13,
+    color: '#f4fbff',
+    fontWeight: 'bold',
+  },
+  musicButtonTextAlt: {
+    fontSize: 13,
+    color: '#e0f4ff',
+    fontWeight: 'bold',
+  },
 
-  scrollContainer: { paddingBottom: 40, width: '100%', alignItems: 'center' },
-  categorySection: { marginBottom: verticalSpacing * 2, width: '100%' },
-  categoryHeader: { fontSize: 24, fontWeight: 'bold', color: '#fff', textAlign: 'center', marginBottom: 8 },
-  divider: { height: 2, backgroundColor: '#00b3ff', marginHorizontal: 20, marginBottom: 10 },
-  row: { flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap' },
+  /* CONTENT */
+  scrollContainer: {
+    paddingBottom: 40,
+    width: '100%',
+    alignItems: 'center',
+  },
+  categorySection: {
+    marginBottom: verticalSpacing * 2,
+    width: '100%',
+  },
+  categoryHeader: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#e6f3ff',
+    textAlign: 'center',
+    marginBottom: 6,
+    textShadowColor: '#00b3ff',
+    textShadowRadius: 16,
+  },
+  divider: {
+    height: 2,
+    backgroundColor: 'rgba(120,190,255,0.9)',
+    marginHorizontal: 30,
+    marginBottom: 10,
+    borderRadius: 1,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+  },
 
+  /* CARDS */
   cardContainer: { alignItems: 'center', marginBottom: verticalSpacing },
-  card: { borderRadius: 10, overflow: 'hidden', position: 'relative' },
+  card: {
+    borderRadius: 14,
+    overflow: 'hidden',
+    position: 'relative',
+    backgroundColor: 'rgba(2, 8, 20, 0.95)',
+    borderWidth: 2,
+    borderColor: '#00b3ff',
+    shadowColor: '#00b3ff',
+    shadowOpacity: 0.9,
+    shadowRadius: 12,
+    elevation: 10,
+  },
   characterImage: { width: '100%', height: '100%' },
+  cardOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.35)',
+  },
 
-  // THE MAGIC WRAPPER — YOUR STYLE, NOW RESPONSIVE
   textWrapper: {
     position: 'absolute',
     bottom: 8,
@@ -293,56 +522,118 @@ const styles = StyleSheet.create({
     right: 8,
     padding: 4,
   },
-
-  // BASE TEXT STYLES
+  name: {
+    color: '#f5fbff',
+    textShadowColor: '#00b3ff',
+    textShadowRadius: 12,
+    zIndex: 2,
+  },
   codename: {
     fontWeight: 'bold',
-    color: '#00b3ff',
+    color: '#88ddff',
     textShadowColor: '#00b3ff',
-    textShadowRadius: 12,
-    zIndex: 2,
-  },
-  name: {
-    color: '#fff',
-    textShadowColor: '#00b3ff',
-    textShadowRadius: 12,
+    textShadowRadius: 14,
     zIndex: 2,
   },
 
-  // DESKTOP — 100% YOUR ORIGINAL LOOK
-  codenameDesktop: { position: 'absolute', bottom: 12, left: 10, fontSize: 14 },
-  nameDesktop:    { position: 'absolute', bottom: 34, left: 10, fontSize: 12 },
-
-  // MOBILE — WRAPS, PUSHES NAME UP, NO OVERLAP
-  codenameMobile: {
+  // Desktop: stacked neatly
+  nameDesktop: {
     fontSize: 12,
-    lineHeight: 16,
-    textAlign: 'left',
+    marginBottom: 2,
   },
+  codenameDesktop: {
+    fontSize: 14,
+  },
+
+  // Mobile: wraps cleanly, no overlap
   nameMobile: {
     fontSize: 11,
     marginBottom: 2,
-    textAlign: 'left',
+  },
+  codenameMobile: {
+    fontSize: 12,
+    lineHeight: 16,
   },
 
   disabledCard: { opacity: 0.6 },
-  cardSpacer: { width: cardSize, height: cardSize * cardHeightMultiplier, marginHorizontal: horizontalSpacing / 2 },
+  cardSpacer: {
+    width: cardSize,
+    height: cardSize * cardHeightMultiplier,
+    marginHorizontal: horizontalSpacing / 2,
+  },
 
-  // Admin buttons (unchanged)
-  buttonContainer: { flexDirection: 'row', justifyContent: 'space-around', marginTop: 5, width: cardSize },
-  editButton: { backgroundColor: '#FFA500', padding: 5, borderRadius: 5, alignItems: 'center', width: '45%' },
-  deleteButton: { backgroundColor: '#F44336', padding: 5, borderRadius: 5, alignItems: 'center', width: '45%' },
+  // Admin buttons
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 5,
+    width: cardSize,
+  },
+  editButton: {
+    backgroundColor: '#3b82f6',
+    padding: 5,
+    borderRadius: 5,
+    alignItems: 'center',
+    width: '45%',
+  },
+  deleteButton: {
+    backgroundColor: '#ef4444',
+    padding: 5,
+    borderRadius: 5,
+    alignItems: 'center',
+    width: '45%',
+  },
   buttonText: { color: '#FFF', fontSize: 12, fontWeight: 'bold' },
 
-  // Modal (unchanged)
-  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'center', alignItems: 'center' },
-  modalContent: { backgroundColor: 'rgba(255,255,255,0.9)', padding: 20, borderRadius: 10, alignItems: 'center', width: '80%' },
-  modalText: { fontSize: 18, color: '#000', marginBottom: 20, textAlign: 'center' },
-  modalButtons: { flexDirection: 'row', justifyContent: 'space-between', width: '80%' },
-  modalCancel: { backgroundColor: '#2196F3', padding: 10, borderRadius: 5, flex: 1, marginRight: 10 },
-  modalCancelText: { color: '#FFF', fontWeight: 'bold', textAlign: 'center' },
-  modalDelete: { backgroundColor: '#F44336', padding: 10, borderRadius: 5, flex: 1, marginLeft: 10 },
-  modalDeleteText: { color: '#FFF', fontWeight: 'bold', textAlign: 'center' },
+  // Delete modal
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: 'rgba(240,248,255,0.98)',
+    padding: 20,
+    borderRadius: 12,
+    alignItems: 'center',
+    width: '80%',
+  },
+  modalText: {
+    fontSize: 18,
+    color: '#02203a',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+  },
+  modalCancel: {
+    backgroundColor: '#2563eb',
+    padding: 10,
+    borderRadius: 6,
+    flex: 1,
+    marginRight: 10,
+  },
+  modalCancelText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalDelete: {
+    backgroundColor: '#b91c1c',
+    padding: 10,
+    borderRadius: 6,
+    flex: 1,
+    marginLeft: 10,
+  },
+  modalDeleteText: {
+    color: '#FFF',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
 });
 
 export default LegionairesScreen;
