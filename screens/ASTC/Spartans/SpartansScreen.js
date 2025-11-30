@@ -12,6 +12,12 @@ import {
 } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 
+// 🔊 import from ASTC (adjust path if needed)
+import {
+  playBackgroundMusic,
+  pauseBackgroundMusic,
+} from '../../ASTC/ASTCScreen';
+
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const backgroundImages = [
@@ -77,19 +83,37 @@ const SpartansScreen = () => {
   const [backgroundImage, setBackgroundImage] = useState(backgroundImages[0]);
   const [currentVehicleIndex, setCurrentVehicleIndex] = useState(0);
 
+  const isDesktop = SCREEN_WIDTH > 600;
+  const cardSize = isDesktop ? 320 : 110;
+  const cardSpacing = isDesktop ? 80 : 20;
+
+  // width used for paging & snap
+  const vehicleWidth = SCREEN_WIDTH * (isDesktop ? 0.9 : 1);
+
+  // 🔊 track play/pause UI state (music itself is handled by shared helpers)
+  const [isMusicPlaying, setIsMusicPlaying] = useState(true);
+
   useEffect(() => {
     if (isFocused) {
       setBackgroundImage(
         backgroundImages[Math.floor(Math.random() * backgroundImages.length)]
       );
     }
+    // We do NOT auto play/stop music here; ASTC started it already,
+    // and the user controls it via the header play/pause button.
   }, [isFocused]);
 
-  const isDesktop = SCREEN_WIDTH > 600;
-  const cardSize = isDesktop ? 320 : 110;
-  const cardSpacing = isDesktop ? 80 : 20;
-
   const goToChat = () => navigation.navigate('TeamChat');
+
+  const toggleMusic = async () => {
+    if (isMusicPlaying) {
+      await pauseBackgroundMusic();
+      setIsMusicPlaying(false);
+    } else {
+      await playBackgroundMusic();
+      setIsMusicPlaying(true);
+    }
+  };
 
   const renderVehicle = (vehicle) => {
     const imageSource = vehicle.image || PLACEHOLDER_IMAGE;
@@ -99,7 +123,7 @@ const SpartansScreen = () => {
         style={[
           styles.vehicleCard,
           {
-            width: SCREEN_WIDTH * (isDesktop ? 0.9 : 1),
+            width: vehicleWidth,
             height: isDesktop ? 520 : 380,
           },
         ]}
@@ -167,13 +191,26 @@ const SpartansScreen = () => {
               </View>
             </View>
 
-            <TouchableOpacity
-              onPress={goToChat}
-              style={styles.chatButton}
-              activeOpacity={0.85}
-            >
-              <Text style={styles.chatText}>🛡️</Text>
-            </TouchableOpacity>
+            {/* RIGHT SIDE: music + chat */}
+            <View style={styles.headerRight}>
+              <TouchableOpacity
+                onPress={toggleMusic}
+                style={styles.musicButton}
+                activeOpacity={0.85}
+              >
+                <Text style={styles.musicText}>
+                  {isMusicPlaying ? '⏸' : '▶️'}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={goToChat}
+                style={styles.chatButton}
+                activeOpacity={0.85}
+              >
+                <Text style={styles.chatText}>🛡️</Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
           {/* MEMBER CARDS */}
@@ -189,11 +226,11 @@ const SpartansScreen = () => {
                 horizontal
                 pagingEnabled
                 showsHorizontalScrollIndicator={false}
+                style={{ width: vehicleWidth }}
                 onScroll={(e) =>
                   setCurrentVehicleIndex(
                     Math.round(
-                      e.nativeEvent.contentOffset.x /
-                        (SCREEN_WIDTH * (isDesktop ? 0.9 : 1))
+                      e.nativeEvent.contentOffset.x / vehicleWidth
                     )
                   )
                 }
@@ -273,6 +310,25 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 1.2,
   },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  musicButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(0,240,255,0.9)',
+    backgroundColor: 'rgba(5,15,25,0.95)',
+    marginRight: 4,
+  },
+  musicText: {
+    fontSize: 16,
+    color: '#00e1ff',
+    fontWeight: 'bold',
+  },
   chatButton: {
     paddingVertical: 8,
     paddingHorizontal: 10,
@@ -307,7 +363,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.45)',
   },
 
-  // Text overlay for members
   textWrapper: {
     position: 'absolute',
     bottom: 8,
@@ -328,10 +383,8 @@ const styles = StyleSheet.create({
     textShadowRadius: 14,
     zIndex: 2,
   },
-  // Desktop: fixed stacking
   codenameDesktop: { position: 'absolute', bottom: 10, left: 10, fontSize: 16 },
   nameDesktop: { position: 'absolute', bottom: 32, left: 10, fontSize: 14 },
-  // Mobile: wraps & flows
   codenameMobile: {
     fontSize: 13,
     lineHeight: 17,

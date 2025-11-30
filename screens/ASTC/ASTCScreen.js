@@ -40,10 +40,11 @@ const buttonImages = [
   require('../../assets/Halo/31.jpg'),
 ];
 
-// global sound instance for this screen
-let backgroundSound;
+// 🔊 global sound instance for ASTC + Spartans
+let backgroundSound = null;
 
-const playBackgroundMusic = async () => {
+// 🔊 start / resume music (Spartans can import this)
+export const playBackgroundMusic = async () => {
   try {
     if (!backgroundSound) {
       const { sound } = await Audio.Sound.createAsync(
@@ -60,7 +61,19 @@ const playBackgroundMusic = async () => {
   }
 };
 
-const stopBackgroundMusic = async () => {
+// 🔊 pause (but don’t unload) – used by Spartans play/pause
+export const pauseBackgroundMusic = async () => {
+  try {
+    if (backgroundSound) {
+      await backgroundSound.pauseAsync();
+    }
+  } catch (e) {
+    console.log('ASTC music pause error:', e);
+  }
+};
+
+// 🔊 full stop + unload – for leaving the ASTC “flow” entirely
+export const stopBackgroundMusic = async () => {
   try {
     if (backgroundSound) {
       await backgroundSound.stopAsync();
@@ -91,8 +104,10 @@ const ASTCScreen = () => {
 
   useEffect(() => {
     if (isFocused) {
-      const bg = backgroundImages[Math.floor(Math.random() * backgroundImages.length)];
-      const btn = buttonImages[Math.floor(Math.random() * buttonImages.length)];
+      const bg =
+        backgroundImages[Math.floor(Math.random() * backgroundImages.length)];
+      const btn =
+        buttonImages[Math.floor(Math.random() * buttonImages.length)];
       setBackgroundImage(bg);
       setButtonImage(btn);
 
@@ -101,22 +116,22 @@ const ASTCScreen = () => {
       buttonScale.setValue(1);
       buttonOpacity.setValue(1);
       setIsAnimating(false);
-
-      playBackgroundMusic();
-    } else {
-      // leaving screen
-      stopBackgroundMusic();
     }
-  }, [isFocused]);
+    // ✅ NO automatic music start/stop here
+    // Music starts on card press and is stopped when backing out.
+  }, [isFocused, keyTop, buttonScale, buttonOpacity]);
 
   const handleBackPress = async () => {
-    await stopBackgroundMusic();
+    await stopBackgroundMusic(); // fully kill theme when leaving ASTC “tree”
     navigation.goBack();
   };
 
   const handleCardPress = () => {
     if (isAnimating) return;
     setIsAnimating(true);
+
+    // 🔊 Halo theme starts here and will continue into Spartans
+    playBackgroundMusic();
 
     // Button: scale up → fade out
     Animated.parallel([
@@ -133,20 +148,21 @@ const ASTCScreen = () => {
       }),
     ]).start();
 
-    // Key descends — stops exactly at sacred position, then navigates
+    // Key descends — stops at position, then navigate
     Animated.timing(keyTop, {
       toValue: KEY_STOP_POSITION,
       duration: 3500,
-      useNativeDriver: false, // using "top" so keep this false
+      useNativeDriver: false,
     }).start(() => {
       navigation.navigate('SpartansScreen');
+      // ❌ Do NOT stop music here – Spartans keeps it alive
     });
   };
 
   return (
     <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover">
       <SafeAreaView style={styles.container}>
-        {/* FORERUNNER KEY — descending from the heavens */}
+        {/* FORERUNNER KEY */}
         <Animated.View
           style={{
             position: 'absolute',
@@ -161,7 +177,7 @@ const ASTCScreen = () => {
           />
         </Animated.View>
 
-        {/* HEADER BAR — glassy UNSC / Forerunner console */}
+        {/* HEADER */}
         <View style={styles.headerWrapper}>
           <TouchableOpacity
             style={styles.backButton}
@@ -178,20 +194,17 @@ const ASTCScreen = () => {
             </View>
           </View>
 
-          {/* Spacer to balance layout */}
           <View style={{ width: 56 }} />
         </View>
 
         {/* CENTER PANEL */}
         <View style={styles.centerContent}>
-          {/* “PRESS & HOLD” style label */}
           {!isAnimating && (
             <Text style={styles.pressLabel}>
               PRESS & WAIT
             </Text>
           )}
 
-          {/* ACTIVATION CARD — glassy, glowing */}
           <TouchableOpacity
             style={[
               styles.card,
@@ -209,7 +222,6 @@ const ASTCScreen = () => {
             disabled={isAnimating}
             activeOpacity={0.9}
           >
-            {/* Holographic image layer */}
             <Animated.View
               style={{
                 ...StyleSheet.absoluteFillObject,
@@ -222,11 +234,9 @@ const ASTCScreen = () => {
                 style={styles.cardImage}
                 resizeMode="cover"
               />
-              {/* subtle inner glass vignette */}
               <View style={styles.cardOverlay} />
             </Animated.View>
 
-            {/* ACTIVATING text */}
             {isAnimating && (
               <Text style={styles.activatingText}>ACTIVATING...</Text>
             )}
@@ -246,7 +256,6 @@ const styles = StyleSheet.create({
   background: { flex: 1 },
   container: { flex: 1, backgroundColor: 'rgba(0,0,0,0.7)' },
 
-  // HEADER
   headerWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -295,7 +304,6 @@ const styles = StyleSheet.create({
     letterSpacing: 1.2,
   },
 
-  // CENTER CONTENT
   centerContent: {
     flex: 1,
     justifyContent: 'center',
@@ -311,7 +319,6 @@ const styles = StyleSheet.create({
     letterSpacing: 4,
   },
 
-  // CARD
   card: {
     borderRadius: 26,
     overflow: 'hidden',
@@ -341,12 +348,10 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
   },
 
-  // KEY
   keyImage: {
     resizeMode: 'contain',
   },
 
-  // INSTRUCTIONS
   instruction: {
     marginTop: 26,
     fontSize: 15,
