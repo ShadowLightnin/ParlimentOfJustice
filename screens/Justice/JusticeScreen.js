@@ -312,7 +312,7 @@ const styles = StyleSheet.create({
   clickable: { borderWidth: 5, borderColor: '#FFD700' },
   notClickable: { opacity: 0.65 },
   heroImage: { width: '100%', height: '100%' },
-  overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.55)' },
+  overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0, 0, 0, 0.42)' },
   heroName: { position: 'absolute', bottom: 25, left: 25, fontSize: 24, color: '#FFF', fontWeight: 'bold', textShadowColor: '#000', textShadowRadius: 10 },
   comingSoon: { position: 'absolute', top: 15, right: 15, backgroundColor: 'rgba(220,0,0,0.8)', color: '#FFF', padding: 8, borderRadius: 10, fontSize: 13 },
 
