@@ -1,3 +1,4 @@
+// screens/villains/robots/RobotsScreen.js
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -22,10 +23,26 @@ import DarkLords from './DarkLords';
 // Screen dimensions
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-// Grid layout settings
+// Layout
 const isDesktop = SCREEN_WIDTH > 600;
 
-// Robots data with images & respective screens
+// Card dimensions for desktop and mobile
+const cardSizes = {
+  desktop: { width: 400, height: 600 },
+  mobile: { width: 320, height: 480 },
+};
+const horizontalSpacing = isDesktop ? 40 : 16;
+const verticalSpacing = isDesktop ? 40 : 16;
+
+// Permissions
+const ALLOWED_EMAILS = [
+  'will@test.com',
+  'c1wcummings@gmail.com',
+  'samuelp.woodwell@gmail.com',
+];
+const RESTRICT_ACCESS = true;
+
+// Hardcoded robots
 const hardcodedRobots = [
   {
     id: 'robot-1',
@@ -41,20 +58,9 @@ const hardcodedRobots = [
   },
 ];
 
-// Card dimensions for desktop and mobile
-const cardSizes = {
-  desktop: { width: 400, height: 600 },
-  mobile: { width: 350, height: 500 },
-};
-const horizontalSpacing = isDesktop ? 40 : 20;
-const verticalSpacing = isDesktop ? 50 : 20;
-
-// Permissions
-const ALLOWED_EMAILS = ["will@test.com", "c1wcummings@gmail.com", "samuelp.woodwell@gmail.com"];
-const RESTRICT_ACCESS = true;
-
 const RobotsScreen = () => {
   const navigation = useNavigation();
+
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRobot, setSelectedRobot] = useState(null);
   const [currentSound, setCurrentSound] = useState(null);
@@ -62,75 +68,73 @@ const RobotsScreen = () => {
   const [deleteModal, setDeleteModal] = useState({ visible: false, robot: null });
   const [previewRobot, setPreviewRobot] = useState(null);
   const [editingFriend, setEditingFriend] = useState(null);
-  const canMod = RESTRICT_ACCESS ? auth.currentUser?.email && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
 
-  // Cleanup audio on component unmount
+  const canMod = RESTRICT_ACCESS
+    ? auth.currentUser?.email && ALLOWED_EMAILS.includes(auth.currentUser.email)
+    : true;
+
+  // Cleanup audio
   useEffect(() => {
     return () => {
       if (currentSound) {
-        currentSound.stopAsync().catch(e => console.error('Audio stop error:', e.message));
-        currentSound.unloadAsync().catch(e => console.error('Audio unload error:', e.message));
+        currentSound.stopAsync().catch((e) =>
+          console.error('Audio stop error:', e.message)
+        );
+        currentSound.unloadAsync().catch((e) =>
+          console.error('Audio unload error:', e.message)
+        );
       }
     };
   }, [currentSound]);
 
   // Fetch dynamic robots from Firestore
   useEffect(() => {
-    const unsub = onSnapshot(collection(db, 'robots'), (snap) => {
-      if (snap.empty) {
-        console.log('No robots found in Firestore');
-        setFriend(hardcodedRobots);
-        return;
+    const unsub = onSnapshot(
+      collection(db, 'robots'),
+      (snap) => {
+        if (snap.empty) {
+          setFriend(hardcodedRobots);
+          return;
+        }
+
+        const dynamicRobots = snap.docs.map((docSnap) => ({
+          id: docSnap.id,
+          ...docSnap.data(),
+          clickable: true,
+          borderColor: docSnap.data().borderColor || '#c0c0c0',
+          hardcoded: false,
+          showSummonPopup: docSnap.data().showSummonPopup || false,
+          collectionPath: 'robots',
+        }));
+
+        // Filter out dynamic robots that collide with hardcoded by id or name
+        const filteredDynamic = dynamicRobots.filter(
+          (dynamic) =>
+            !hardcodedRobots.some(
+              (r) =>
+                r.id === dynamic.id ||
+                r.name === (dynamic.name || dynamic.codename)
+            )
+        );
+
+        // Combine & dedupe by id
+        const combinedMap = new Map();
+        [...hardcodedRobots, ...filteredDynamic].forEach((robot) => {
+          combinedMap.set(robot.id, robot);
+        });
+        const combined = Array.from(combinedMap.values());
+        setFriend(combined);
+      },
+      (e) => {
+        console.error('Firestore error:', e.code, e.message);
+        Alert.alert('Error', `Failed to fetch robots: ${e.message}`);
       }
-      // Check for duplicate IDs or names in Firestore
-      const dynamicRobots = snap.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-        clickable: true,
-        borderColor: doc.data().borderColor || '#c0c0c0',
-        hardcoded: false,
-        showSummonPopup: doc.data().showSummonPopup || false,
-        collectionPath: 'robots',
-      }));
-      const idCounts = {};
-      const nameCounts = {};
-      dynamicRobots.forEach(r => {
-        idCounts[r.id] = (idCounts[r.id] || 0) + 1;
-        nameCounts[r.name || r.codename || 'Unknown'] = (nameCounts[r.name || r.codename || 'Unknown'] || 0) + 1;
-      });
-      Object.entries(idCounts).forEach(([id, count]) => {
-        if (count > 1) console.warn(`Duplicate Firestore ID: ${id}, count: ${count}`);
-      });
-      Object.entries(nameCounts).forEach(([name, count]) => {
-        if (count > 1) console.warn(`Duplicate Firestore name: ${name}, count: ${count}`);
-      });
-      console.log('Fetched dynamic robots:', dynamicRobots.map(r => ({ id: r.id, name: r.name || r.codename, showSummonPopup: r.showSummonPopup })));
+    );
 
-      // Filter out dynamic robots that match hardcodedRobots by id or name
-      const filteredDynamic = dynamicRobots.filter(
-        (dynamic) => !hardcodedRobots.some(
-          (robot) => robot.id === dynamic.id || robot.name === (dynamic.name || dynamic.codename)
-        )
-      );
-      console.log('Filtered dynamic robots:', filteredDynamic.map(r => ({ id: r.id, name: r.name || r.codename, showSummonPopup: r.showSummonPopup })));
-
-      // Combine and deduplicate by id
-      const combinedMap = new Map();
-      [...hardcodedRobots, ...filteredDynamic].forEach((robot) => {
-        combinedMap.set(robot.id, robot);
-      });
-      const combined = Array.from(combinedMap.values());
-      console.log('Combined robots:', combined.map(r => ({ id: r.id, name: r.name || r.codename, showSummonPopup: r.showSummonPopup })));
-      setFriend(combined);
-      console.log('Updated friend state:', combined.map(r => ({ id: r.id, name: r.name || r.codename, showSummonPopup: r.showSummonPopup })));
-    }, (e) => {
-      console.error('Firestore error:', e.code, e.message);
-      Alert.alert('Error', `Failed to fetch robots: ${e.message}`);
-    });
     return () => unsub();
   }, []);
 
-  // Dynamic Sound Handler with Cleanup
+  // Audio handler
   const playDemonSound = async (audio, screen) => {
     try {
       if (currentSound) {
@@ -140,10 +144,9 @@ const RobotsScreen = () => {
       const { sound } = await Audio.Sound.createAsync(audio);
       setCurrentSound(sound);
       await sound.playAsync();
-      console.log(`Playing audio for ${screen || 'robot'}`);
+
       if (screen) {
         setTimeout(() => {
-          console.log(`Navigating to ${screen}`);
           navigation.navigate(screen);
         }, 3000);
       }
@@ -154,25 +157,30 @@ const RobotsScreen = () => {
   };
 
   const handlePress = async (robot) => {
-    console.log('Card pressed:', { id: robot.id, name: robot.name || robot.codename, hardcoded: robot.hardcoded });
     try {
-      const robotName = robot.name || robot.codename || 'Unknown';
+      const name = robot.name || robot.codename || 'Unknown';
+
+      // If it has audio, play it and maybe navigate
       if (robot.audio) {
-        console.log('Playing audio for:', robotName);
         await playDemonSound(robot.audio, robot.screen);
-      } else if (robot.screen) {
-        console.log(`Navigating to ${robot.screen}`);
+        return;
+      }
+
+      // If it has a dedicated screen, just navigate
+      if (robot.screen) {
         navigation.navigate(robot.screen);
-      } else if (robot.showSummonPopup) {
-        console.log('Showing summon popup for:', robotName);
+        return;
+      }
+
+      // If summon popup flag is set, show summon popup
+      if (robot.showSummonPopup) {
         setSelectedRobot(robot);
         setModalVisible(true);
-        console.log('Modal state set:', { modalVisible: true, selectedRobot: robotName });
-      } else {
-        console.log('Opening preview for robot:', robotName);
-        setPreviewRobot(robot);
-        console.log('Preview modal opened for:', robotName);
+        return;
       }
+
+      // Otherwise open preview
+      setPreviewRobot(robot);
     } catch (error) {
       console.error('Handle press error:', error.message);
       Alert.alert('Error', 'Failed to handle press: ' + error.message);
@@ -184,47 +192,52 @@ const RobotsScreen = () => {
       Alert.alert('Access Denied', 'Only authorized users can delete robots.');
       return;
     }
+
     try {
-      const robotItem = friend.find(r => r.id === id);
-      if (robotItem.hardcoded) {
+      const robotItem = friend.find((r) => r.id === id);
+      if (robotItem?.hardcoded) {
         Alert.alert('Error', 'Cannot delete hardcoded robots!');
         return;
       }
+
       const robotRef = doc(db, 'robots', id);
       const snap = await getDoc(robotRef);
       if (!snap.exists()) {
         Alert.alert('Error', 'Robot not found');
         return;
       }
+
       const { imageUrl } = snap.data();
       if (imageUrl && imageUrl !== 'placeholder') {
         let path = '';
         try {
-          console.log('Raw imageUrl:', imageUrl); // Debug raw URL
-          if (typeof imageUrl !== 'string' || !imageUrl.includes('/o/')) {
-            console.warn('Invalid imageUrl format:', imageUrl);
-          } else {
+          if (typeof imageUrl === 'string' && imageUrl.includes('/o/')) {
             const urlParts = imageUrl.split('/o/');
             path = decodeURIComponent(urlParts[1].split('?')[0]);
-            console.log('Attempting to delete image:', path);
-            await deleteObject(ref(storage, path)).catch(e => {
+            await deleteObject(ref(storage, path)).catch((e) => {
               if (e.code !== 'storage/object-not-found') {
-                throw e; // Rethrow errors except "not found"
+                throw e;
               }
-              console.warn('Image not found in storage:', path);
             });
-            console.log('Image deleted or not found:', path);
           }
         } catch (e) {
-          console.error('Delete image error:', e.message, 'Path:', path, 'URL:', imageUrl);
-          Alert.alert('Warning', `Failed to delete image from storage: ${e.message}. Robot will still be deleted.`);
+          console.error(
+            'Delete image error:',
+            e.message,
+            'Path:',
+            path,
+            'URL:',
+            imageUrl
+          );
+          Alert.alert(
+            'Warning',
+            `Failed to delete image from storage: ${e.message}. Robot will still be deleted.`
+          );
         }
-      } else {
-        console.log('No image to delete or imageUrl is placeholder:', imageUrl);
       }
+
       await deleteDoc(robotRef);
-      console.log('Robot deleted from Firestore:', id);
-      setFriend(friend.filter(r => r.id !== id));
+      setFriend(friend.filter((r) => r.id !== id));
       setDeleteModal({ visible: false, robot: null });
       Alert.alert('Success', 'Robot deleted successfully!');
     } catch (e) {
@@ -233,22 +246,23 @@ const RobotsScreen = () => {
     }
   };
 
+  // CARD RENDERERS
   const renderRobotCard = (robot) => (
     <View key={robot.id} style={styles.robotCont}>
       <TouchableOpacity
         style={[
-          styles.card,
+          styles.robotCard,
           {
             width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
             height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
           },
-          robot.clickable ? styles.clickable(robot.borderColor) : styles.notClickable,
+          robot.clickable
+            ? styles.clickable(robot.borderColor)
+            : styles.notClickable,
         ]}
-        onPress={() => {
-          console.log('TouchableOpacity pressed for robot:', robot.id);
-          handlePress(robot);
-        }}
+        onPress={() => handlePress(robot)}
         disabled={!robot.clickable}
+        activeOpacity={0.9}
       >
         <Image
           source={
@@ -257,13 +271,18 @@ const RobotsScreen = () => {
               ? { uri: robot.imageUrl }
               : require('../../../assets/BackGround/Robots.jpg'))
           }
-          style={styles.image}
+          style={styles.robotImage}
           resizeMode="cover"
         />
-        <View style={styles.overlay} />
-        <Text style={styles.name}>{robot.name || robot.codename || 'Unknown'}</Text>
-        {!robot.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+        <View style={styles.cardOverlay} />
+        <Text style={styles.robotName}>
+          {robot.name || robot.codename || 'Unknown'}
+        </Text>
+        {!robot.clickable && (
+          <Text style={styles.disabledText}>Not Clickable</Text>
+        )}
       </TouchableOpacity>
+
       {robot.hardcoded === false && (
         <View style={styles.buttons}>
           <TouchableOpacity
@@ -274,7 +293,15 @@ const RobotsScreen = () => {
             <Text style={styles.buttonText}>Edit</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => setDeleteModal({ visible: true, robot: { id: robot.id, name: robot.name || robot.codename || 'Unknown' } })}
+            onPress={() =>
+              setDeleteModal({
+                visible: true,
+                robot: {
+                  id: robot.id,
+                  name: robot.name || robot.codename || 'Unknown',
+                },
+              })
+            }
             style={[styles.delete, !canMod && styles.disabled]}
             disabled={!canMod}
           >
@@ -287,11 +314,13 @@ const RobotsScreen = () => {
 
   const renderPreviewCard = (robot) => (
     <TouchableOpacity
-      style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable(robot.borderColor || '#c0c0c0')]}
-      onPress={() => {
-        console.log('Closing preview modal');
-        setPreviewRobot(null);
-      }}
+      key={robot.id}
+      style={[
+        styles.previewCard(isDesktop, SCREEN_WIDTH),
+        styles.clickable(robot.borderColor || '#c0c0c0'),
+      ]}
+      onPress={() => setPreviewRobot(null)}
+      activeOpacity={0.9}
     >
       <Image
         source={
@@ -303,7 +332,7 @@ const RobotsScreen = () => {
         style={styles.previewImage}
         resizeMode="cover"
       />
-      <View style={styles.overlay} />
+      <View style={styles.cardOverlay} />
       <Text style={styles.cardName}>
         © {robot.name || robot.codename || 'Unknown'}; William Cummings
       </Text>
@@ -315,30 +344,42 @@ const RobotsScreen = () => {
       source={require('../../../assets/BackGround/Robots.jpg')}
       style={styles.background}
     >
-      <View style={styles.overlay}>
-        <ScrollView contentContainerStyle={styles.scroll}>
+      {/* Dim / glass overlay */}
+      <View style={styles.screenDimOverlay}>
+        {/* Top bar */}
+        <View style={styles.topBar}>
           <TouchableOpacity
-            onPress={() => {
-              console.log('Navigating back');
-              navigation.goBack();
-            }}
-            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+            style={styles.iconButton}
           >
-            <Text style={styles.backButtonText}>⬅️ Back</Text>
+            <Text style={styles.iconButtonText}>⬅️</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              console.log('Navigating to RobotsTab');
-              navigation.navigate('RobotsTab');
-            }}
-          >
-            <Text style={styles.header}>Metalmen</Text>
-          </TouchableOpacity>
+
+          <View style={styles.titleBlock}>
+            <Text style={styles.titleLabel}>Enemy • Metalmen</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('RobotsTab')}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.header}>Metalmen</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Empty right side to balance layout (or add future icon) */}
+          <View style={styles.rightSpacer} />
+        </View>
+
+        {/* Main vertical scroll */}
+        <ScrollView
+          contentContainerStyle={styles.scroll}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Horizontal card scroller */}
           <View style={styles.scrollWrapper}>
             <ScrollView
               horizontal
               contentContainerStyle={styles.scrollContainer}
-              showsHorizontalScrollIndicator={true}
+              showsHorizontalScrollIndicator={false}
             >
               {friend.length > 0 ? (
                 friend.map(renderRobotCard)
@@ -347,82 +388,99 @@ const RobotsScreen = () => {
               )}
             </ScrollView>
           </View>
-          <DarkLords
-            collectionPath="robots"
-            placeholderImage={require('../../../assets/BackGround/Robots.jpg')}
-            friend={friend}
-            setFriend={setFriend}
-            hardcodedFriend={hardcodedRobots}
-            editingFriend={editingFriend}
-            setEditingFriend={setEditingFriend}
-          />
+
+          {/* Glass section with DarkLords manager */}
+          <View style={styles.glassSection}>
+            <Text style={styles.sectionTitle}>Forge & Manage</Text>
+            <View style={styles.sectionLine} />
+            <DarkLords
+              collectionPath="robots"
+              placeholderImage={require('../../../assets/BackGround/Robots.jpg')}
+              friend={friend}
+              setFriend={setFriend}
+              hardcodedFriend={hardcodedRobots}
+              editingFriend={editingFriend}
+              setEditingFriend={setEditingFriend}
+            />
+          </View>
         </ScrollView>
+
+        {/* PREVIEW MODAL */}
         <Modal
           visible={!!previewRobot}
           transparent
           animationType="fade"
-          onRequestClose={() => {
-            console.log('Closing preview modal');
-            setPreviewRobot(null);
-          }}
+          onRequestClose={() => setPreviewRobot(null)}
         >
           <View style={styles.modalBackground}>
             <TouchableOpacity
               style={styles.modalOuterContainer}
               activeOpacity={1}
-              onPress={() => {
-                console.log('Closing preview modal');
-                setPreviewRobot(null);
-              }}
+              onPress={() => setPreviewRobot(null)}
             >
-              <View style={styles.imageContainer}>
-                <ScrollView
-                  horizontal
-                  contentContainerStyle={styles.imageScrollContainer}
-                  showsHorizontalScrollIndicator={false}
-                  snapToAlignment="center"
-                  snapToInterval={SCREEN_WIDTH * 0.7 + 20}
-                  decelerationRate="fast"
-                  centerContent={true}
-                >
-                  {previewRobot && renderPreviewCard(previewRobot)}
-                </ScrollView>
-              </View>
-              <View style={styles.previewAboutSection}>
-                <Text style={styles.previewName}>{previewRobot?.name || previewRobot?.codename || 'Unknown'}</Text>
-                <Text style={styles.previewDesc}>{previewRobot?.description || 'No description available'}</Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    console.log('Closing preview modal');
-                    setPreviewRobot(null);
-                  }}
-                  style={styles.close}
-                >
-                  <Text style={styles.buttonText}>Close</Text>
-                </TouchableOpacity>
+              <View style={styles.previewGlass}>
+                <View style={styles.imageContainer}>
+                  <ScrollView
+                    horizontal
+                    contentContainerStyle={styles.imageScrollContainer}
+                    showsHorizontalScrollIndicator={false}
+                    snapToAlignment="center"
+                    snapToInterval={SCREEN_WIDTH * 0.7 + 20}
+                    decelerationRate="fast"
+                    centerContent
+                  >
+                    {previewRobot && renderPreviewCard(previewRobot)}
+                  </ScrollView>
+                </View>
+                <View style={styles.previewAboutSection}>
+                  <Text style={styles.previewName}>
+                    {previewRobot?.name ||
+                      previewRobot?.codename ||
+                      'Unknown'}
+                  </Text>
+                  <Text style={styles.previewDesc}>
+                    {previewRobot?.description || 'No description available.'}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => setPreviewRobot(null)}
+                    style={styles.close}
+                  >
+                    <Text style={styles.buttonText}>Close</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </TouchableOpacity>
           </View>
         </Modal>
+
+        {/* DELETE MODAL */}
         <Modal
           visible={deleteModal.visible}
           transparent
-          animationType="slide"
-          onRequestClose={() => setDeleteModal({ visible: false, robot: null })}
+          animationType="fade"
+          onRequestClose={() =>
+            setDeleteModal({ visible: false, robot: null })
+          }
         >
           <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalText}>{`Delete "${deleteModal.robot?.name || ''}" and its image?`}</Text>
+            <View style={styles.deleteGlass}>
+              <Text style={styles.modalText}>
+                {`Delete "${deleteModal.robot?.name || ''}" and its image?`}
+              </Text>
               <View style={styles.modalButtons}>
                 <TouchableOpacity
                   style={styles.modalCancel}
-                  onPress={() => setDeleteModal({ visible: false, robot: null })}
+                  onPress={() =>
+                    setDeleteModal({ visible: false, robot: null })
+                  }
                 >
                   <Text style={styles.modalCancelText}>Cancel</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.modalDelete}
-                  onPress={() => deleteModal.robot && confirmDelete(deleteModal.robot.id)}
+                  onPress={() =>
+                    deleteModal.robot && confirmDelete(deleteModal.robot.id)
+                  }
                 >
                   <Text style={styles.modalDeleteText}>Delete</Text>
                 </TouchableOpacity>
@@ -430,25 +488,33 @@ const RobotsScreen = () => {
             </View>
           </View>
         </Modal>
+
+        {/* SUMMON MODAL */}
         <Modal
-          transparent={true}
+          transparent
           visible={modalVisible}
           animationType="fade"
           onRequestClose={() => {
-            console.log('Closing summon modal');
             setModalVisible(false);
             setSelectedRobot(null);
           }}
         >
-          <TouchableWithoutFeedback onPress={() => {
-            console.log('Closing summon modal via background tap');
-            setModalVisible(false);
-            setSelectedRobot(null);
-          }}>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              setModalVisible(false);
+              setSelectedRobot(null);
+            }}
+          >
             <View style={styles.summonModalContainer}>
-              <View style={styles.summonModalContent}>
+              <View style={styles.summonGlass}>
                 <Text style={styles.summonModalText}>
-                  🔥 You have summoned: {selectedRobot?.name || selectedRobot?.codename || 'Unknown'} 🔥
+                  ⚙️ You have activated:{' '}
+                  <Text style={styles.summonNameText}>
+                    {selectedRobot?.name ||
+                      selectedRobot?.codename ||
+                      'Unknown'}
+                  </Text>{' '}
+                  ⚙️
                 </Text>
               </View>
             </View>
@@ -466,43 +532,66 @@ const styles = StyleSheet.create({
     height: SCREEN_HEIGHT,
     resizeMode: 'cover',
   },
-  overlay: {
+
+  // Main dim overlay
+  screenDimOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    backgroundColor: 'rgba(0, 0, 0, 0.78)',
     paddingTop: 40,
+  },
+
+  // TOP BAR
+  topBar: {
+    flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: 16,
+    marginBottom: 10,
+    justifyContent: 'space-between',
   },
-  scroll: {
-    paddingBottom: 20,
-  },
-  backButton: {
-    position: 'absolute',
-    top: 40,
-    left: 20,
-    backgroundColor: '#750000',
+  iconButton: {
     paddingVertical: 8,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    elevation: 5,
-    zIndex: 2,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.16)',
   },
-  backButtonText: {
+  iconButtonText: {
     color: '#FFF',
     fontSize: 16,
-    fontWeight: 'bold',
+  },
+  titleBlock: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 2,
+  },
+  titleLabel: {
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.7)',
+    letterSpacing: 1,
+    textTransform: 'uppercase',
   },
   header: {
-    fontSize: 32,
-    fontWeight: 'bold',
+    fontSize: isDesktop ? 30 : 24,
+    fontWeight: '900',
     color: '#00b3ff',
     textAlign: 'center',
-    textShadowColor: '#c0c0c0',
-    textShadowRadius: 25,
-    marginBottom: 20,
+    textShadowColor: 'rgba(0, 179, 255, 0.9)',
+    textShadowRadius: 16,
+    textShadowOffset: { width: 0, height: 0 },
+  },
+  rightSpacer: {
+    width: 40,
+  },
+
+  // MAIN SCROLL
+  scroll: {
+    paddingBottom: 40,
   },
   scrollWrapper: {
     width: SCREEN_WIDTH,
     flexGrow: 0,
+    marginTop: 10,
   },
   scrollContainer: {
     flexDirection: 'row',
@@ -510,46 +599,58 @@ const styles = StyleSheet.create({
     paddingVertical: verticalSpacing,
     alignItems: 'center',
   },
+
+  // ROBOT CARDS
   robotCont: {
     marginHorizontal: 10,
     alignItems: 'center',
   },
-  card: {
-    borderRadius: 15,
+  robotCard: {
+    borderRadius: 20,
     overflow: 'hidden',
-    backgroundColor: 'rgba(0,0,0,0.7)',
-    elevation: 5,
+    backgroundColor: 'rgba(10, 10, 15, 0.78)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
+    shadowColor: '#000',
+    shadowOpacity: 0.6,
+    shadowOffset: { width: 0, height: 10 },
+    shadowRadius: 20,
   },
   clickable: (borderColor) => ({
-    borderColor: borderColor || '#c0c0c0',
-    borderWidth: 2,
+    borderColor: borderColor || 'rgba(192,192,192,0.9)',
+    shadowColor: borderColor || '#c0c0c0',
   }),
   notClickable: {
-    opacity: 0.7,
+    opacity: 0.65,
   },
-  image: {
+  robotImage: {
     width: '100%',
     height: '100%',
-    resizeMode: 'cover',
   },
-  overlay: {
+  cardOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.35)',
   },
-  name: {
+  robotName: {
     position: 'absolute',
-    bottom: 10,
-    left: 10,
-    fontSize: 16,
+    bottom: 14,
+    left: 14,
+    fontSize: 18,
     color: 'white',
-    fontWeight: 'bold',
+    fontWeight: '700',
+    textShadowColor: 'rgba(0,0,0,0.9)',
+    textShadowRadius: 8,
   },
   disabledText: {
-    fontSize: 12,
-    color: 'yellow',
-    marginTop: 5,
-    textAlign: 'center',
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    fontSize: 11,
+    color: 'rgba(255, 255, 0, 0.9)',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 999,
+    backgroundColor: 'rgba(0,0,0,0.75)',
   },
   noRobotsText: {
     fontSize: 16,
@@ -557,30 +658,33 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     padding: 20,
   },
+
+  // EDIT / DELETE BUTTONS
   buttons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
     marginTop: 10,
+    paddingHorizontal: 4,
   },
   edit: {
-    backgroundColor: '#5913bc',
-    padding: 5,
-    borderRadius: 5,
+    backgroundColor: 'rgba(0, 122, 255, 0.9)',
+    padding: 8,
+    borderRadius: 999,
     flex: 1,
     marginRight: 5,
     alignItems: 'center',
   },
   delete: {
-    backgroundColor: '#F44336',
-    padding: 5,
-    borderRadius: 5,
+    backgroundColor: 'rgba(244, 67, 54, 0.9)',
+    padding: 8,
+    borderRadius: 999,
     flex: 1,
     marginLeft: 5,
     alignItems: 'center',
   },
   disabled: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#555',
     opacity: 0.6,
   },
   buttonText: {
@@ -588,22 +692,62 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 14,
   },
+
+  // GLASS SECTION (DarkLords manager)
+  glassSection: {
+    marginTop: 10,
+    marginHorizontal: 16,
+    padding: 14,
+    borderRadius: 20,
+    backgroundColor: 'rgba(15, 20, 30, 0.78)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
+    shadowColor: '#000',
+    shadowOpacity: 0.45,
+    shadowOffset: { width: 0, height: 8 },
+    shadowRadius: 16,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: 'rgba(255,255,255,0.9)',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  sectionLine: {
+    height: 1,
+    backgroundColor: 'rgba(0,179,255,0.65)',
+    width: '40%',
+    alignSelf: 'center',
+    marginBottom: 8,
+  },
+
+  // PREVIEW MODAL
   modalBackground: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    backgroundColor: 'rgba(0, 0, 0, 0.85)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalOuterContainer: {
-    width: '90%',
+    width: '92%',
     height: '80%',
     justifyContent: 'center',
     alignItems: 'center',
   },
+  previewGlass: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 24,
+    backgroundColor: 'rgba(10,10,15,0.95)',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.15)',
+    overflow: 'hidden',
+  },
   imageContainer: {
     width: '100%',
-    paddingVertical: 20,
-    backgroundColor: '#111',
+    paddingVertical: 16,
+    backgroundColor: 'rgba(0,0,0,0.85)',
     alignItems: 'center',
   },
   imageScrollContainer: {
@@ -613,68 +757,77 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   previewCard: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.2 : SCREEN_WIDTH * 0.8,
-    height: isDesktop ? SCREEN_HEIGHT * 0.7 : SCREEN_HEIGHT * 0.6,
-    borderRadius: 15,
+    width: isDesktop ? windowWidth * 0.28 : SCREEN_WIDTH * 0.8,
+    height: isDesktop ? SCREEN_HEIGHT * 0.62 : SCREEN_HEIGHT * 0.6,
+    borderRadius: 20,
     overflow: 'hidden',
-    elevation: 5,
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    backgroundColor: 'rgba(0,0,0,0.75)',
     marginRight: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.12)',
   }),
   previewImage: {
     width: '100%',
     height: '100%',
-    resizeMode: 'cover',
   },
   cardName: {
     position: 'absolute',
-    bottom: 10,
-    left: 10,
-    fontSize: 16,
+    bottom: 12,
+    left: 12,
+    fontSize: 14,
     color: 'white',
-    fontWeight: 'bold',
-    zIndex: 2,
+    fontWeight: '600',
+    textShadowColor: 'rgba(0,0,0,0.9)',
+    textShadowRadius: 8,
   },
   previewAboutSection: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#222',
-    borderRadius: 10,
-    width: '90%',
+    marginTop: 10,
+    padding: 12,
+    backgroundColor: 'rgba(15,15,20,0.9)',
+    borderTopWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
   },
   previewName: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#fff',
     textAlign: 'center',
+    fontWeight: '700',
   },
   previewDesc: {
-    fontSize: 16,
-    color: '#fff7f7',
+    fontSize: 14,
+    color: '#e5f0ff',
     textAlign: 'center',
     marginVertical: 10,
   },
   close: {
     backgroundColor: '#2196F3',
-    padding: 10,
-    borderRadius: 5,
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 999,
     alignSelf: 'center',
+    marginTop: 4,
   },
+
+  // DELETE MODAL
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    backgroundColor: 'rgba(0,0,0,0.75)',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  modalContent: {
-    backgroundColor: 'rgba(255,255,255,0.9)',
+  deleteGlass: {
+    backgroundColor: 'rgba(15,20,30,0.96)',
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 18,
     alignItems: 'center',
+    width: '85%',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.15)',
   },
   modalText: {
-    fontSize: 18,
-    color: '#000',
-    marginBottom: 20,
+    fontSize: 16,
+    color: '#FFF',
+    marginBottom: 16,
     textAlign: 'center',
   },
   modalButtons: {
@@ -683,9 +836,9 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   modalCancel: {
-    backgroundColor: '#2196F3',
+    backgroundColor: 'rgba(33,150,243,0.9)',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 999,
     flex: 1,
     marginRight: 10,
   },
@@ -695,9 +848,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   modalDelete: {
-    backgroundColor: '#F44336',
+    backgroundColor: 'rgba(244,67,54,0.95)',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 999,
     flex: 1,
     marginLeft: 10,
   },
@@ -706,24 +859,32 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
+
+  // SUMMON MODAL
   summonModalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: 'rgba(0, 0, 0, 0.82)',
   },
-  summonModalContent: {
-    backgroundColor: 'black',
-    padding: 20,
-    borderRadius: 10,
+  summonGlass: {
+    backgroundColor: 'rgba(5,10,20,0.95)',
+    padding: 22,
+    borderRadius: 20,
     width: '80%',
+    borderWidth: 1,
+    borderColor: 'rgba(0,179,255,0.6)',
   },
   summonModalText: {
-    fontSize: 24,
+    fontSize: 20,
     color: 'white',
     textAlign: 'center',
-    textShadowColor: '#c0c0c0',
+    textShadowColor: '#00b3ff',
     textShadowRadius: 15,
+  },
+  summonNameText: {
+    color: '#aee4ff',
+    fontWeight: 'bold',
   },
 });
 

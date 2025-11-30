@@ -178,7 +178,7 @@ const DemonsSectionScreen = () => {
 
           <View style={styles.titleBlock}>
             <Text style={styles.titleLabel}>Maw Factions</Text>
-            <Text style={styles.mainTitle}>Demon Legions</Text>
+            <Text style={styles.mainTitle}>Faction Legions</Text>
           </View>
 
           <View style={styles.musicControls}>
@@ -217,7 +217,7 @@ const DemonsSectionScreen = () => {
 
             {/* Dark Forces Section */}
             <View style={styles.section}>
-              <Text style={styles.sectionHeader}>Dark Forces</Text>
+              <Text style={styles.sectionHeader}>Enemy Factions</Text>
               <View style={styles.sectionLine} />
               <View style={styles.scrollWrapper}>
                 <ScrollView
