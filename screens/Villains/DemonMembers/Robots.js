@@ -356,7 +356,7 @@ const RobotsScreen = () => {
           </TouchableOpacity>
 
           <View style={styles.titleBlock}>
-            <Text style={styles.titleLabel}>Enemy • Metalmen</Text>
+            <Text style={styles.titleLabel}>Enemy • Faction</Text>
             <TouchableOpacity
               onPress={() => navigation.navigate('RobotsTab')}
               activeOpacity={0.8}

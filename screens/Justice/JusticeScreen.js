@@ -154,7 +154,9 @@ const JusticeScreen = () => {
           {/* Music Controls */}
           <View style={styles.musicControls}>
             <TouchableOpacity style={styles.musicBtn} onPress={playTheme}>
-              <Text style={styles.musicText}>Play Theme</Text>
+              <Text style={styles.musicText}>
+                {isPlaying ? 'Playing…' : 'Theme'}
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.musicBtn} onPress={pauseTheme}>
               <Text style={styles.musicText}>Pause</Text>

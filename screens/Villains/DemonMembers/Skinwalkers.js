@@ -318,7 +318,7 @@ const SkinwalkersScreen = () => {
           </TouchableOpacity>
 
           <View style={styles.titleBlock}>
-            <Text style={styles.titleLabel}>Demon Lords • Faction</Text>
+            <Text style={styles.titleLabel}>Origin • The Maw</Text>
             <TouchableOpacity
               onPress={() => navigation.navigate('SkinwalkersTab')}
               activeOpacity={0.8}

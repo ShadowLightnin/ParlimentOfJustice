@@ -90,7 +90,7 @@ const worldBuildingFactions = [
 
   // Row 4 → 2 cards
   { 
-    name: 'Infantry', 
+    name: 'C.E.R.R.T.', 
     screen: 'Infantry', 
     clickable: true, 
     image: require('../assets/BackGround/Soldiers.jpg') 
@@ -135,7 +135,7 @@ const getPinnacleWorldBuildingFactions = () => [
     image: require('../assets/BackGround/ShipYard.jpg') 
   },
   { 
-    name: 'Infantry', 
+    name: 'C.E.R.R.T.', 
     screen: 'Infantry', 
     clickable: true, 
     image: require('../assets/BackGround/Soldiers.jpg') 
@@ -548,8 +548,8 @@ const renderWorldBuildingGrid = () => {
                 { color: isYourUniverse ? '#00b3ff' : '#c08ae8' },
               ]}
             >
-              Theme
-            </Text>
+                {isPlaying ? 'Playing…' : 'Theme'}
+              </Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
             <Text

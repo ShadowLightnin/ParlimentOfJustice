@@ -183,7 +183,9 @@ const DemonsSectionScreen = () => {
 
           <View style={styles.musicControls}>
             <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
-              <Text style={styles.musicButtonText}>Theme</Text>
+              <Text style={styles.musicButtonText}>
+                {isPlaying ? 'Playing…' : 'Theme'}
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
               <Text style={styles.musicButtonText}>Pause</Text>

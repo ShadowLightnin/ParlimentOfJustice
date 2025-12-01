@@ -198,18 +198,18 @@ const InfantryScreen = () => {
           }
         } catch (e) {
           console.error('Delete image error:', e.message, 'Path:', path, 'URL:', imageUrl);
-          Alert.alert('Warning', `Failed to delete image from storage: ${e.message}. Infantry will still be deleted.`);
+          Alert.alert('Warning', `Failed to delete image from storage: ${e.message}. Commander will still be deleted.`);
           // Continue with Firestore deletion even if image deletion fails
         }
       }
       await deleteDoc(infantryRef);
-      console.log('Infantry deleted from Firestore:', id);
+      console.log('Commander deleted from Firestore:', id);
       setInfantry(infantry.filter(i => i.id !== id));
       setDeleteModal({ visible: false, infantry: null });
-      Alert.alert('Success', 'Infantry deleted successfully!');
+      Alert.alert('Success', 'Commander deleted successfully!');
     } catch (e) {
-      console.error('Delete infantry error:', e.message);
-      Alert.alert('Error', `Failed to delete infantry: ${e.message}`);
+      console.error('Delete Commander error:', e.message);
+      Alert.alert('Error', `Failed to delete Commander: ${e.message}`);
     }
   };
 
@@ -319,10 +319,12 @@ const InfantryScreen = () => {
           <Text style={styles.backText}>⬅️</Text>
         </TouchableOpacity>
         <ScrollView contentContainerStyle={styles.scroll}>
-          <Text style={styles.header}>Infantry</Text>
+          <Text style={styles.header}>Command Eagle Rapid Response Team</Text>
           <View style={styles.musicControls}>
             <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
-              <Text style={styles.musicButtonText}>Theme</Text>
+              <Text style={styles.musicButtonText}>
+                {isPlaying ? 'Playing…' : 'Theme'}
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
               <Text style={styles.musicButtonText}>Pause</Text>
@@ -337,7 +339,7 @@ const InfantryScreen = () => {
               {infantry.length > 0 ? (
                 infantry.map(renderInfantryCard)
               ) : (
-                <Text style={styles.noInfantryText}>No infantry available</Text>
+                <Text style={styles.noInfantryText}>No Commander available</Text>
               )}
             </ScrollView>
           </View>

@@ -111,11 +111,11 @@ const RecruitForm = ({
 
   const handleSubmit = async () => {
     if (!canSubmit) {
-      Alert.alert('Access Denied', 'Only authorized users can submit infantry.');
+      Alert.alert('Access Denied', 'Only authorized users can submit Commander.');
       return;
     }
     if (!name.trim()) {
-      Alert.alert('Error', 'Please provide an infantry name.');
+      Alert.alert('Error', 'Please provide an Commander name.');
       return;
     }
     setUploading(true);
@@ -136,18 +136,18 @@ const RecruitForm = ({
         borderColor: '#FFFFFF',
         hardcoded: false,
       };
-      console.log('Submitting infantry data:', infantryData);
+      console.log('Submitting Commander data:', infantryData);
       if (editingInfantry) {
         const infantryRef = doc(db, collectionPath, editingInfantry.id);
         await setDoc(infantryRef, infantryData, { merge: true });
-        console.log('Infantry updated:', editingInfantry.id);
+        console.log('Commander updated:', editingInfantry.id);
         setInfantry(infantry.map(item => (item.id === editingInfantry.id ? { id: item.id, ...infantryData } : item)));
         Alert.alert('Success', 'Infantry updated successfully!');
       } else {
         const infantryRef = await addDoc(collection(db, collectionPath), infantryData);
-        console.log('Infantry added:', infantryRef.id);
+        console.log('Commander added:', infantryRef.id);
         setInfantry([...hardcodedInfantry, ...infantry.filter(item => !item.hardcoded), { id: infantryRef.id, ...infantryData }]);
-        Alert.alert('Success', 'Infantry added successfully!');
+        Alert.alert('Success', 'Commander added successfully!');
       }
       setName('');
       setDescription('');
@@ -171,7 +171,7 @@ const RecruitForm = ({
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>{editingInfantry ? 'Edit Infantry' : 'Add New Infantry'}</Text>
+      <Text style={styles.header}>{editingInfantry ? 'Edit Commander' : 'Add New Commander'}</Text>
       <TextInput
         style={styles.input}
         placeholder="Infantry Name"

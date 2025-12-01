@@ -360,7 +360,7 @@ const AliensScreen = () => {
           </TouchableOpacity>
 
           <View style={styles.titleBlock}>
-            <Text style={styles.titleLabel}>Demon Lords • Aliens</Text>
+            <Text style={styles.titleLabel}>Enemy • Faction</Text>
             <TouchableOpacity
               onPress={() => {
                 console.log('Navigating to AliensTab');
