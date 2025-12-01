@@ -58,9 +58,14 @@ const LoginScreen = () => {
   const authCtx = useContext(AuthContext);
 
   const [avatar, setAvatar] = useState({ file: null, url: '' });
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+
+  // 🔐 SEPARATE state for login vs signup so they don't overwrite each other
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [signupEmail, setSignupEmail] = useState('');
+  const [signupPassword, setSignupPassword] = useState('');
   const [username, setUsername] = useState('');
+
   const [loading, setLoading] = useState(false);
 
   // Animated background
@@ -105,11 +110,13 @@ const LoginScreen = () => {
     setLoading(true);
     try {
       const imgUrl = avatar.file ? await upload(avatar.file) : './avatar.png';
-      const res = await createUserWithEmailAndPassword(auth, email, password);
+
+      // use signupEmail / signupPassword ONLY for registration
+      const res = await createUserWithEmailAndPassword(auth, signupEmail, signupPassword);
 
       await setDoc(doc(db, 'users', res.user.uid), {
         username,
-        email,
+        email: signupEmail,
         avatar: imgUrl,
         id: res.user.uid,
         blocked: [],
@@ -132,7 +139,8 @@ const LoginScreen = () => {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      const res = await signInWithEmailAndPassword(auth, email, password);
+      // use loginEmail / loginPassword ONLY for sign in
+      const res = await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
       const token = await res.user.getIdToken();
       authCtx.authenticate(token);
 
@@ -187,23 +195,23 @@ const LoginScreen = () => {
               placeholderTextColor="rgba(226,232,240,0.6)"
               autoCapitalize="none"
               keyboardType="email-address"
-              onChangeText={setEmail}
-              value={email}
+              onChangeText={setLoginEmail}
+              value={loginEmail}
             />
             <TextInput
               style={styles.input}
               placeholder="Password"
               placeholderTextColor="rgba(226,232,240,0.6)"
               secureTextEntry
-              onChangeText={setPassword}
-              value={password}
+              onChangeText={setLoginPassword}
+              value={loginPassword}
             />
 
             {renderGlassButton('Sign In', handleLogin, 'primary')}
           </View>
 
           {/* Divider */}
-          <View style={styles.verticalDivider} />
+          {/* <View style={styles.verticalDivider} /> */}
 
           {/* RIGHT: Sign Up */}
           <View style={[styles.column, isWide && styles.columnSplit]}>
@@ -231,16 +239,16 @@ const LoginScreen = () => {
               placeholderTextColor="rgba(226,232,240,0.6)"
               autoCapitalize="none"
               keyboardType="email-address"
-              onChangeText={setEmail}
-              value={email}
+              onChangeText={setSignupEmail}
+              value={signupEmail}
             />
             <TextInput
               style={styles.input}
               placeholder="Password"
               placeholderTextColor="rgba(226,232,240,0.6)"
               secureTextEntry
-              onChangeText={setPassword}
-              value={password}
+              onChangeText={setSignupPassword}
+              value={signupPassword}
             />
 
             {renderGlassButton('Sign Up', handleRegister, 'secondary')}
@@ -267,7 +275,6 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
   },
-  // dark tinted overlay over bg
   screenOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(15,23,42,0.75)',
@@ -279,7 +286,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
 
-  // Main glass card
   card: {
     width: '95%',
     maxWidth: 900,
@@ -301,10 +307,10 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
   },
 
-//   column: {
-//     flex: 1,
-//     alignItems: 'stretch',
-//   },
+  column: {
+    // flex: 1,
+    alignItems: 'stretch',
+  },
   columnSplit: {
     paddingHorizontal: 8,
   },

@@ -49,7 +49,7 @@ export const cobrosMembers = [
     codename: 'Caster',
     screen: '',
     images: [
-      { uri: require('../../assets/Armor/JosephS_cleanup.jpg'), name: '', clickable: true },
+      { uri: require('../../assets/Armor/JosephS.jpg'), name: '', clickable: true },
       // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: '', clickable: true },
     ],
   },
