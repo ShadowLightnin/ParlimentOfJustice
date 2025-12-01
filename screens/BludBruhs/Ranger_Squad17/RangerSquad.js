@@ -368,7 +368,7 @@ const RangerSquad = () => {
             <View style={styles.headerCenter}>
               <View style={styles.headerGlass}>
                 <Text style={styles.headerTitle}>Ranger Squad 17</Text>
-                <Text style={styles.headerSubtitleTop}>Rogue detachment of The Eagles that beleived in Sam's mission.</Text>
+                <Text style={styles.headerSubtitleTop}>Rogue detachment of The Eagles that believed in Sam's mission.</Text>
                 <Text style={styles.headerSubtitle}>
                   Forward Recon for the Thunder Born
                 </Text>
