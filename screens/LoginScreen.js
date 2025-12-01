@@ -3,12 +3,12 @@ import {
   View,
   Text,
   TextInput,
+  Button,
   Image,
   TouchableOpacity,
   ActivityIndicator,
   StyleSheet,
   Animated,
-  Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
@@ -19,10 +19,8 @@ import upload from '../lib/upload';
 import * as ImagePicker from 'expo-image-picker';
 import { AuthContext } from '../context/auth-context';
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const isWide = SCREEN_WIDTH > 700;
-
 const backgroundImages = [
+  // require('../assets/BackGround/Parliment.png'),
   require('../assets/BackGround/Parliament.jpg'),
   require('../assets/BackGround/Titans.jpg'),
   require('../assets/BackGround/Eclipse.jpg'),
@@ -33,6 +31,7 @@ const backgroundImages = [
   require('../assets/BackGround/RollingThunder.jpg'),
   require('../assets/BackGround/RangerSquad.jpg'),
   require('../assets/BackGround/Monke.jpg'),
+  // require('../assets/BackGround/League.jpg'),
   require('../assets/BackGround/Legionaires2.jpg'),
   require('../assets/BackGround/Legionaires.jpg'),
   require('../assets/BackGround/Forge.jpg'),
@@ -58,29 +57,32 @@ const LoginScreen = () => {
   const authCtx = useContext(AuthContext);
 
   const [avatar, setAvatar] = useState({ file: null, url: '' });
-
-  // separate state for login vs signup (so they don't overwrite each other)
-  const [loginEmail, setLoginEmail] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
-  const [signupEmail, setSignupEmail] = useState('');
-  const [signupPassword, setSignupPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
-
   const [loading, setLoading] = useState(false);
 
-  // Animated background
+  // Animated Background Logic
   const fadeAnim = useState(new Animated.Value(1))[0];
   const [bgIndex, setBgIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
       Animated.sequence([
-        Animated.timing(fadeAnim, { toValue: 0, duration: 20, useNativeDriver: true }),
-        Animated.timing(fadeAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 10,
+          useNativeDriver: true,
+        }),
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
       ]).start();
 
-      setBgIndex(prev => (prev + 1) % backgroundImages.length);
-    }, 6000);
+      setBgIndex(prevIndex => (prevIndex + 1) % backgroundImages.length);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [fadeAnim]);
@@ -91,7 +93,7 @@ const LoginScreen = () => {
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
         aspect: [1, 1],
-        quality: 0.6,
+        quality: 0.5,
       });
 
       if (!result.canceled) {
@@ -102,7 +104,11 @@ const LoginScreen = () => {
       }
     } catch (error) {
       console.error(error);
-      Toast.show({ type: 'error', text1: 'Error', text2: 'Failed to pick an image.' });
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Failed to pick an image.',
+      });
     }
   };
 
@@ -111,26 +117,38 @@ const LoginScreen = () => {
     try {
       const imgUrl = avatar.file ? await upload(avatar.file) : './avatar.png';
 
-      // use signupEmail / signupPassword ONLY for registration
-      const res = await createUserWithEmailAndPassword(auth, signupEmail, signupPassword);
+      const res = await createUserWithEmailAndPassword(auth, email, password);
+      console.log('User Auth UID:', res.user.uid);
+      console.log('ID Token:', await res.user.getIdToken());
 
       await setDoc(doc(db, 'users', res.user.uid), {
         username,
-        email: signupEmail,
+        email,
         avatar: imgUrl,
         id: res.user.uid,
         blocked: [],
       });
 
-      await setDoc(doc(db, 'userchats', res.user.uid), { chats: [] });
+      await setDoc(doc(db, 'userchats', res.user.uid), {
+        chats: [],
+      });
 
       const token = await res.user.getIdToken();
+      console.log('ID Token:', token);
       authCtx.authenticate(token);
 
-      Toast.show({ type: 'success', text1: 'Success', text2: 'Account created! Welcome!' });
+      Toast.show({
+        type: 'success',
+        text1: 'Success',
+        text2: 'Account created! Welcome!',
+      });
     } catch (err) {
       console.error(err);
-      Toast.show({ type: 'error', text1: 'Error', text2: err.message });
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: err.message,
+      });
     } finally {
       setLoading(false);
     }
@@ -139,130 +157,102 @@ const LoginScreen = () => {
   const handleLogin = async () => {
     setLoading(true);
     try {
-      // use loginEmail / loginPassword ONLY for sign in
-      const res = await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
+      const res = await signInWithEmailAndPassword(auth, email, password);
       const token = await res.user.getIdToken();
       authCtx.authenticate(token);
 
-      Toast.show({ type: 'success', text1: 'Success', text2: 'Welcome back!' });
+      Toast.show({
+        type: 'success',
+        text1: 'Success',
+        text2: 'Welcome back!',
+      });
     } catch (err) {
       console.error(err);
-      Toast.show({ type: 'error', text1: 'Error', text2: err.message });
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: err.message,
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  const renderGlassButton = (label, onPress, variant = 'primary') => (
-    <TouchableOpacity
-      onPress={onPress}
-      disabled={loading}
-      style={[
-        styles.button,
-        variant === 'secondary' && styles.buttonSecondary,
-        loading && styles.buttonDisabled,
-      ]}
-      activeOpacity={0.8}
-    >
-      <Text style={styles.buttonText}>{loading ? 'Loading…' : label}</Text>
-    </TouchableOpacity>
-  );
-
   return (
     <View style={styles.wrapper}>
-      {/* Animated Background */}
+      {/* Background Image with No Interaction */}
       <Animated.Image
         source={backgroundImages[bgIndex]}
         style={[styles.background, { opacity: fadeAnim }]}
         resizeMode="cover"
-        pointerEvents="none"
+        pointerEvents="none" // prevents accidental interaction with the image
       />
 
-      {/* Dark glass overlay over everything */}
-      <View style={styles.screenOverlay} />
+      {/* Transparent Overlay for Image Protection */}
+      <View style={styles.transparentOverlay} pointerEvents="box-none" />
 
-      {/* Content */}
-      <View style={styles.content}>
-        <View style={[styles.card, isWide && styles.cardWide]}>
-          {/* LEFT: Sign In */}
-          <View style={[styles.column, isWide && styles.columnSplit]}>
-            <Text style={styles.title}>Welcome back</Text>
-            <Text style={styles.subTitle}>Sign in to the Parliament</Text>
-
-            <TextInput
-              style={styles.input}
-              placeholder="Email"
-              placeholderTextColor="rgba(226,232,240,0.6)"
-              autoCapitalize="none"
-              keyboardType="email-address"
-              onChangeText={setLoginEmail} // no value prop → behaves like old version
-              textContentType="emailAddress"
-              autoComplete="email"
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Password"
-              placeholderTextColor="rgba(226,232,240,0.6)"
-              secureTextEntry
-              onChangeText={setLoginPassword} // no value prop
-              textContentType="password"
-              autoComplete="password"
-            />
-
-            {renderGlassButton('Sign In', handleLogin, 'primary')}
-          </View>
-
-          {/* Divider (optional – uncomment if you want the vertical line back) */}
-          {/* <View style={styles.verticalDivider} /> */}
-
-          {/* RIGHT: Sign Up */}
-          <View style={[styles.column, isWide && styles.columnSplit]}>
-            <Text style={styles.title}>Create an Account</Text>
-            <Text style={styles.subTitle}>Join the Parliament roster</Text>
-
-            <TouchableOpacity onPress={handleAvatar} activeOpacity={0.85} style={styles.avatarWrapper}>
-              <Image
-                source={avatar.url ? { uri: avatar.url } : require('../assets/coolApple.jpeg')}
-                style={styles.avatar}
-              />
-              <Text style={styles.avatarText}>Upload Image (Optional)</Text>
-            </TouchableOpacity>
-
-            <TextInput
-              style={styles.input}
-              placeholder="First and Last name"
-              placeholderTextColor="rgba(226,232,240,0.6)"
-              onChangeText={setUsername}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Email"
-              placeholderTextColor="rgba(226,232,240,0.6)"
-              autoCapitalize="none"
-              keyboardType="email-address"
-              onChangeText={setSignupEmail} // no value prop
-              textContentType="emailAddress"
-              autoComplete="email"
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Password"
-              placeholderTextColor="rgba(226,232,240,0.6)"
-              secureTextEntry
-              onChangeText={setSignupPassword} // no value prop
-              textContentType="newPassword"
-              autoComplete="password"
-            />
-
-            {renderGlassButton('Sign Up', handleRegister, 'secondary')}
-          </View>
+      <View style={styles.container}>
+        {/* SIGN IN */}
+        <View style={styles.login}>
+          <Text style={styles.title}>Welcome back</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            autoCapitalize="none"
+            onChangeText={setEmail}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            secureTextEntry
+            onChangeText={setPassword}
+          />
+          <Button
+            title={loading ? 'Loading...' : 'Sign In'}
+            onPress={handleLogin}
+            disabled={loading}
+          />
         </View>
 
-        {loading && (
-          <View style={styles.loadingOverlay}>
-            <ActivityIndicator size="large" color="#38BDF8" />
-          </View>
-        )}
+        <View style={styles.separator} />
+
+        {/* SIGN UP */}
+        <View style={styles.signup}>
+          <Text style={styles.title}>Create an Account</Text>
+          {/* If you want avatar picking back, uncomment TouchableOpacity */}
+          {/* <TouchableOpacity onPress={handleAvatar}> */}
+          <Image
+            source={avatar.url ? { uri: avatar.url } : require('../assets/coolApple.jpeg')}
+            style={styles.avatar}
+          />
+          <Text style={styles.text}>Upload Image (Optional)</Text>
+          {/* </TouchableOpacity> */}
+
+          <TextInput
+            style={styles.input}
+            placeholder="First and Last name"
+            onChangeText={setUsername}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            autoCapitalize="none"
+            onChangeText={setEmail}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            secureTextEntry
+            onChangeText={setPassword}
+          />
+          <Button
+            title={loading ? 'Loading...' : 'Sign Up'}
+            onPress={handleRegister}
+            disabled={loading}
+          />
+        </View>
+
+        {loading && <ActivityIndicator size="large" color="#fff" />}
       </View>
     </View>
   );
@@ -271,130 +261,83 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: '#020617',
+    position: 'relative',
   },
   background: {
     ...StyleSheet.absoluteFillObject,
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
+    width: '100%',
+    height: '100%',
+    opacity: 0.5,
+    resizeMode: 'contain',
   },
-  screenOverlay: {
+  transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(15,23,42,0.75)',
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    zIndex: 1,
+    pointerEvents: 'box-none',
   },
-  content: {
+  container: {
     flex: 1,
-    alignItems: 'center',
+    width: '90%',
+    maxWidth: 400,
     justifyContent: 'center',
-    paddingHorizontal: 16,
-  },
-
-  card: {
-    width: '95%',
-    maxWidth: 900,
-    borderRadius: 24,
-    padding: 18,
-    flexDirection: 'column',
-    backgroundColor: 'rgba(15,23,42,0.85)',
-    borderWidth: 1,
-    borderColor: 'rgba(148,163,184,0.55)',
-    shadowColor: '#0EA5E9',
-    shadowOffset: { width: 0, height: 20 },
-    shadowOpacity: 0.35,
-    shadowRadius: 32,
-    elevation: 16,
-  },
-  cardWide: {
-    flexDirection: 'row',
-    paddingHorizontal: 26,
-    paddingVertical: 24,
-  },
-
-  column: {
-    alignItems: 'stretch',
-  },
-  columnSplit: {
-    paddingHorizontal: 8,
-  },
-
-  verticalDivider: {
-    width: 1,
-    backgroundColor: 'rgba(148,163,184,0.5)',
-    marginVertical: 8,
-    marginHorizontal: 10,
-  },
-
-  title: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: '#E5F2FF',
-    marginBottom: 4,
-    textShadowColor: 'rgba(15,23,42,0.9)',
-    textShadowRadius: 10,
-  },
-  subTitle: {
-    fontSize: 13,
-    color: 'rgba(226,232,240,0.85)',
-    marginBottom: 14,
-  },
-
-  input: {
-    backgroundColor: 'rgba(15,23,42,0.9)',
-    borderRadius: 999,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    color: '#E5F2FF',
-    marginVertical: 6,
-    borderWidth: 1,
-    borderColor: 'rgba(148,163,184,0.7)',
-    fontSize: 14,
-  },
-
-  avatarWrapper: {
     alignItems: 'center',
+    padding: 30,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    borderRadius: 20,
+    paddingVertical: 30,
+    paddingHorizontal: 25,
+    alignSelf: 'center',
+    marginHorizontal: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.6,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  login: {
+    width: '100%',
     marginBottom: 10,
   },
-  avatar: {
-    width: 90,
-    height: 90,
-    borderRadius: 999,
-    borderWidth: 2,
-    borderColor: '#38BDF8',
-    marginBottom: 6,
-  },
-  avatarText: {
-    fontSize: 12,
-    color: 'rgba(226,232,240,0.9)',
-  },
-
-  button: {
+  signup: {
+    width: '100%',
     marginTop: 10,
-    paddingVertical: 10,
-    borderRadius: 999,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(56,189,248,0.9)', // cyan
-    borderWidth: 1,
-    borderColor: 'rgba(125,211,252,0.9)',
   },
-  buttonSecondary: {
-    backgroundColor: 'rgba(139,92,246,0.9)', // violet
-    borderColor: 'rgba(196,181,253,0.9)',
+  title: {
+    fontSize: 26,
+    color: '#fff',
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
   },
-  buttonDisabled: {
-    opacity: 0.7,
-  },
-  buttonText: {
-    color: '#0B1220',
-    fontWeight: '800',
+  text: {
     fontSize: 14,
-    letterSpacing: 0.5,
+    color: '#ddd',
+    marginBottom: 5,
+    textAlign: 'center',
   },
-
-  loadingOverlay: {
-    position: 'absolute',
-    bottom: 40,
+  input: {
+    backgroundColor: '#222',
+    color: 'white',
+    padding: 10,
+    borderRadius: 10,
+    marginVertical: 5,
+    width: '100%',
+  },
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    borderWidth: 2,
+    borderColor: '#fff',
+    marginVertical: 10,
     alignSelf: 'center',
+  },
+  separator: {
+    height: 2,
+    backgroundColor: '#555',
+    marginVertical: 20,
+    width: '80%',
   },
 });
 
