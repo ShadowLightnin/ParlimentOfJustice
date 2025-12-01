@@ -36,7 +36,7 @@ const bigBads = [
   { name: 'Torath', screen: 'Torath', image: require('../../assets/Villains/Torath.jpg'), clickable: true, borderColor: 'purple' },
   { name: 'Hextator', screen: '', image: require('../../assets/Villains/Hextator.jpg'), clickable: true, borderColor: 'purple' },
   { name: 'Lord Dravak', screen: '', image: require('../../assets/Villains/Dravak.jpg'), clickable: true, borderColor: 'purple' },
-  { name: 'Arcane Devos', screen: 'VortigarScreen', image: require('../../assets/Villains/Devos.jpg'), clickable: true, borderColor: 'purple' },
+  { name: 'Arcane Devos', screen: '', image: require('../../assets/Villains/Devos.jpg'), clickable: true, borderColor: 'purple' },
   { name: 'Archon Ultivax', screen: '', image: require('../../assets/Villains/Ultivax.jpg'), clickable: true, borderColor: 'purple' },
   { name: 'Sovereign Xal-Zor', screen: '', image: require('../../assets/Villains/XalZor.jpg'), clickable: true, borderColor: null },
   { name: 'Emperor Obsidian', screen: '', image: require('../../assets/Villains/EmperorObsidian.jpg'), clickable: true, borderColor: 'purple' },
@@ -53,17 +53,28 @@ const BigBadsTab = () => {
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
+  // helper: stop/unload theme without navigating
+  const stopTheme = useCallback(async () => {
+    try {
+      if (currentSound) {
+        await currentSound.stopAsync();
+        await currentSound.unloadAsync();
+      }
+    } catch (e) {
+      console.error('Error stopping theme:', e);
+    } finally {
+      setCurrentSound(null);
+      setIsPlaying(false);
+    }
+  }, [currentSound]);
+
   useFocusEffect(
     useCallback(() => {
       return () => {
-        if (currentSound) {
-          currentSound.stopAsync();
-          currentSound.unloadAsync();
-          setCurrentSound(null);
-          setIsPlaying(false);
-        }
+        // when leaving screen, kill music
+        stopTheme();
       };
-    }, [currentSound])
+    }, [stopTheme])
   );
 
   const playTheme = async () => {
@@ -96,23 +107,17 @@ const BigBadsTab = () => {
     }
   };
 
-  const stopAndGoToDetail = async (character) => {
-    try {
-      if (currentSound) {
-        await currentSound.stopAsync();
-        await currentSound.unloadAsync();
-        setCurrentSound(null);
-        setIsPlaying(false);
-      }
-    } catch (e) {
-      console.error('Error stopping theme:', e);
-    }
-    navigation.navigate('EnlightenedCharacterDetail', { member: character });
-  };
+  // NEW: use screen if present, otherwise shared detail screen
+  const handlePress = async (bigBad) => {
+    if (!bigBad.clickable) return;
 
-  const handlePress = (bigBad) => {
-    // Either way, we send them into the shared detail screen
-    stopAndGoToDetail(bigBad);
+    await stopTheme();
+
+    if (bigBad.screen && bigBad.screen.trim() !== '') {
+      navigation.navigate(bigBad.screen);
+    } else {
+      navigation.navigate('EnlightenedCharacterDetail', { member: bigBad });
+    }
   };
 
   const renderBigBadCard = (bigBad) => (
@@ -151,17 +156,7 @@ const BigBadsTab = () => {
           <View style={styles.headerWrapper}>
             <TouchableOpacity
               onPress={async () => {
-                try {
-                  if (currentSound) {
-                    await currentSound.stopAsync();
-                    await currentSound.unloadAsync();
-                    setCurrentSound(null);
-                    setIsPlaying(false);
-                  }
-                } catch (e) {
-                  console.error('Error stopping theme on back:', e);
-                }
-                // Match your original back target:
+                await stopTheme();
                 navigation.navigate('Villains');
               }}
               style={styles.backButton}
