@@ -31,7 +31,7 @@ const SYSTEMS = [
     planetId: 'earth',
     image: require('../../assets/Space/Earth.jpg'),
     x: 0.49,
-    y: 0.69,          // stays locked to the “Sun” label
+    y: 0.69, // stays locked to the “Sun” label
   },
   {
     id: 'nemesis',
@@ -39,7 +39,7 @@ const SYSTEMS = [
     planetId: 'planet-x',
     image: require('../../assets/Space/PlanetX.jpg'),
     x: 0.46,
-    y: 0.66,          // very close, slight offset
+    y: 0.66, // very close, slight offset
   },
   {
     id: 'rogues',
@@ -47,15 +47,15 @@ const SYSTEMS = [
     planetId: 'wise',
     image: require('../../assets/Space/Wise.jpg'),
     x: 0.45,
-    y: 0.72,          // also in the same local patch
+    y: 0.72, // also in the same local patch
   },
   {
     id: 'ignis',
     name: 'Ignis',
-    planetId: 'ignis-prime',
+    planetId: 'melcornia',
     image: require('../../assets/Space/Melcornia.jpg'),
     x: 0.60,
-    y: 0.60,          // deeper toward the bar – feels right for a hotter, harsher system
+    y: 0.60, // deeper toward the bar – feels right for a hotter, harsher system
   },
   {
     id: 'zaxxon',
@@ -63,7 +63,7 @@ const SYSTEMS = [
     planetId: 'zaxxon',
     image: require('../../assets/Space/Zaxxon.jpg'),
     x: 0.78,
-    y: 0.52,          // out along another arm
+    y: 0.52, // out along another arm
   },
   {
     id: 'older-brother',
@@ -71,7 +71,7 @@ const SYSTEMS = [
     planetId: 'older-brother',
     image: require('../../assets/Space/OlderBrother.jpg'),
     x: 0.51,
-    y: 0.67,          // *very* close to Sol – like a nearby dot on same ring
+    y: 0.67, // *very* close to Sol – like a nearby dot on same ring
   },
   {
     id: 'twin-sister',
@@ -79,7 +79,7 @@ const SYSTEMS = [
     planetId: 'twin-sister',
     image: require('../../assets/Space/TwinSister.jpg'),
     x: 0.47,
-    y: 0.73,          // also right in that neighborhood
+    y: 0.73, // also right in that neighborhood
   },
   {
     id: 'korrthuun',
@@ -87,22 +87,18 @@ const SYSTEMS = [
     planetId: 'korrthuun',
     image: require('../../assets/Space/Korrthuun.jpg'),
     x: 0.88,
-    y: 0.68,          // way out = feels like a remote war-world
+    y: 0.68, // way out = feels like a remote war-world
   },
 ];
-
 
 /**
  * Simple connections between systems, by primary world.
  */
 const CONNECTIONS = [
-//   { from: 'earth', to: 'planet-x' },       // Sol → Nemesis
-//   { from: 'planet-x', to: 'wise' },       // Nemesis → Rogues
-//   { from: 'wise', to: 'ignis-prime' },    // Rogues → Ignis
-//   { from: 'ignis-prime', to: 'zaxxon' },  // Ignis → Zaxxon
-//   { from: 'zaxxon', to: 'older-brother' },
-//   { from: 'older-brother', to: 'twin-sister' },
-//   { from: 'twin-sister', to: 'korrthuun' },
+  // you can re-enable / adjust these if you want route lines later
+//   { from: 'earth', to: 'melcornia' },
+//     { from: 'melcornia', to: 'zaxxon' },
+//     { from: 'zaxxon', to: 'earth' },
 ];
 
 const getSystemByPlanetId = (planetId) =>
@@ -128,9 +124,12 @@ const GalaxyMap = () => {
   const lastScaleRef = useRef(INITIAL_SCALE);
   const lastPanRef = useRef({ x: 0, y: 0 });
   const initialPinchDistanceRef = useRef(null);
+  // NEW: remember scale at the start of a pinch gesture
+  const pinchStartScaleRef = useRef(INITIAL_SCALE);
 
   const MIN_SCALE = 1;
-  const MAX_SCALE = 9;
+  // much safer max zoom for phones & desktop
+  const MAX_SCALE = SCREEN_WIDTH > 600 ? 5 : 4.5;
 
   const handleBack = () => {
     navigation.goBack();
@@ -167,13 +166,14 @@ const GalaxyMap = () => {
     return Math.sqrt(dx * dx + dy * dy);
   };
 
-  // Generic zoom helper used by pinch, mouse wheel, and +/- buttons
+  // Generic zoom helper used by mouse wheel and +/- buttons
   const handleZoomDelta = (delta) => {
     scale.stopAnimation((current) => {
       let next = current + delta;
       next = Math.max(MIN_SCALE, Math.min(MAX_SCALE, next));
       scale.setValue(next);
       lastScaleRef.current = next;
+      pinchStartScaleRef.current = next;
     });
   };
 
@@ -184,7 +184,7 @@ const GalaxyMap = () => {
     const deltaY = nativeEvent.deltaY || 0;
 
     // scroll up => zoom in, scroll down => out
-    const zoomDelta = deltaY > 0 ? -0.2 : 0.2;
+    const zoomDelta = deltaY > 0 ? -0.15 : 0.15;
     handleZoomDelta(zoomDelta);
   };
 
@@ -198,6 +198,7 @@ const GalaxyMap = () => {
         const touches = evt.nativeEvent.touches || [];
         if (touches.length === 2) {
           initialPinchDistanceRef.current = getTouchDistance(touches);
+          pinchStartScaleRef.current = lastScaleRef.current;
         }
       },
 
@@ -210,7 +211,7 @@ const GalaxyMap = () => {
           if (initialPinchDistanceRef.current) {
             let nextScale =
               (currentDistance / initialPinchDistanceRef.current) *
-              lastScaleRef.current;
+              pinchStartScaleRef.current;
 
             nextScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, nextScale));
             scale.setValue(nextScale);
@@ -225,8 +226,10 @@ const GalaxyMap = () => {
       },
 
       onPanResponderRelease: () => {
+        // Persist current transform for next gesture
         scale.stopAnimation((value) => {
           lastScaleRef.current = value;
+          pinchStartScaleRef.current = value;
         });
         translateX.stopAnimation((x) => {
           translateX.setValue(x);
@@ -279,11 +282,7 @@ const GalaxyMap = () => {
             style={[
               styles.mapInner,
               {
-                transform: [
-                  { scale },
-                  { translateX },
-                  { translateY },
-                ],
+                transform: [{ scale }, { translateX }, { translateY }],
               },
             ]}
             {...panResponder.panHandlers}
@@ -390,14 +389,14 @@ const GalaxyMap = () => {
           <View style={styles.zoomControls}>
             <TouchableOpacity
               style={styles.zoomButton}
-              onPress={() => handleZoomDelta(0.15)}
+              onPress={() => handleZoomDelta(0.25)}
               activeOpacity={0.8}
             >
               <Text style={styles.zoomText}>＋</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.zoomButton}
-              onPress={() => handleZoomDelta(-0.15)}
+              onPress={() => handleZoomDelta(-0.25)}
               activeOpacity={0.8}
             >
               <Text style={styles.zoomText}>－</Text>
@@ -436,8 +435,7 @@ const GalaxyMap = () => {
           ]}
         >
           <Text style={styles.warpText}>
-            Warping to{' '}
-            {getSystemByPlanetId(warpingTo)?.name || 'destination'}…
+            Warping to {getSystemByPlanetId(warpingTo)?.name || 'destination'}…
           </Text>
         </Animated.View>
       )}
@@ -523,7 +521,7 @@ const styles = StyleSheet.create({
   },
   planetGlow: {
     position: 'absolute',
-    width: 14,       // smaller glow
+    width: 14,
     height: 14,
     borderRadius: 30,
     backgroundColor: 'rgba(120, 180, 255, 0.28)',
@@ -537,7 +535,7 @@ const styles = StyleSheet.create({
     shadowColor: '#c5ff9a',
   },
   planetIcon: {
-    width: 10,       // smaller icon
+    width: 10,
     height: 10,
     borderRadius: 40,
     borderWidth: 1.5,
