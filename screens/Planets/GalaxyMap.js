@@ -390,14 +390,14 @@ const GalaxyMap = () => {
           <View style={styles.zoomControls}>
             <TouchableOpacity
               style={styles.zoomButton}
-              onPress={() => handleZoomDelta(0.5)}
+              onPress={() => handleZoomDelta(0.15)}
               activeOpacity={0.8}
             >
               <Text style={styles.zoomText}>＋</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.zoomButton}
-              onPress={() => handleZoomDelta(-0.5)}
+              onPress={() => handleZoomDelta(-0.15)}
               activeOpacity={0.8}
             >
               <Text style={styles.zoomText}>－</Text>
