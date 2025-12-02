@@ -1,49 +1,112 @@
 // screens/Planets/GalaxyMap.js
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   Dimensions,
   TouchableOpacity,
-  ImageBackground,
   Image,
   Animated,
+  PanResponder,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-// High-level systems, each linked to a primary world in that system
+// Square base size for the map (fits on screen, leaves room for header/HUD)
+const MAP_BASE_SIZE = Math.min(SCREEN_WIDTH, SCREEN_HEIGHT * 0.8);
+
+// Galaxy map image
+const GALAXY_MAP = require('../../assets/Space/The_best_Milky_Way_map_by_Gaia_labelled.jpg');
+
+/**
+ * High-level systems, each linked to a primary world in that system.
+ * x / y are 0–1 normalized positions relative to the map image.
+ */
 const SYSTEMS = [
   {
-    name: 'Sol System',
-    planetId: 'earth', // primary world to warp to
+    id: 'sol',
+    name: 'Sol',
+    planetId: 'earth',
     image: require('../../assets/Space/Earth.jpg'),
-    x: SCREEN_WIDTH * 0.25,
-    y: SCREEN_HEIGHT * 0.35,
+    x: 0.49,
+    y: 0.69,          // stays locked to the “Sun” label
   },
   {
-    name: 'Ignis Prime System',
+    id: 'nemesis',
+    name: 'Nemesis',
+    planetId: 'planet-x',
+    image: require('../../assets/Space/PlanetX.jpg'),
+    x: 0.46,
+    y: 0.66,          // very close, slight offset
+  },
+  {
+    id: 'rogues',
+    name: 'Rogues',
+    planetId: 'wise',
+    image: require('../../assets/Space/Wise.jpg'),
+    x: 0.45,
+    y: 0.72,          // also in the same local patch
+  },
+  {
+    id: 'ignis',
+    name: 'Ignis',
     planetId: 'ignis-prime',
     image: require('../../assets/Space/Melcornia.jpg'),
-    x: SCREEN_WIDTH * 0.55,
-    y: SCREEN_HEIGHT * 0.42,
+    x: 0.60,
+    y: 0.60,          // deeper toward the bar – feels right for a hotter, harsher system
   },
   {
-    name: 'Zaxxon System',
+    id: 'zaxxon',
+    name: 'Zaxxon',
     planetId: 'zaxxon',
     image: require('../../assets/Space/Zaxxon.jpg'),
-    x: SCREEN_WIDTH * 0.78,
-    y: SCREEN_HEIGHT * 0.32,
+    x: 0.78,
+    y: 0.52,          // out along another arm
+  },
+  {
+    id: 'older-brother',
+    name: 'Older Brother Star',
+    planetId: 'older-brother',
+    image: require('../../assets/Space/OlderBrother.jpg'),
+    x: 0.51,
+    y: 0.67,          // *very* close to Sol – like a nearby dot on same ring
+  },
+  {
+    id: 'twin-sister',
+    name: 'Twin Sister',
+    planetId: 'twin-sister',
+    image: require('../../assets/Space/TwinSister.jpg'),
+    x: 0.47,
+    y: 0.73,          // also right in that neighborhood
+  },
+  {
+    id: 'korrthuun',
+    name: 'Korrthuun',
+    planetId: 'korrthuun',
+    image: require('../../assets/Space/Korrthuun.jpg'),
+    x: 0.88,
+    y: 0.68,          // way out = feels like a remote war-world
   },
 ];
 
-// Simple connections between systems (from planetId → planetId)
+
+/**
+ * Simple connections between systems, by primary world.
+ */
 const CONNECTIONS = [
-  { from: 'earth', to: 'ignis-prime' },
-  { from: 'ignis-prime', to: 'zaxxon' },
+//   { from: 'earth', to: 'planet-x' },       // Sol → Nemesis
+//   { from: 'planet-x', to: 'wise' },       // Nemesis → Rogues
+//   { from: 'wise', to: 'ignis-prime' },    // Rogues → Ignis
+//   { from: 'ignis-prime', to: 'zaxxon' },  // Ignis → Zaxxon
+//   { from: 'zaxxon', to: 'older-brother' },
+//   { from: 'older-brother', to: 'twin-sister' },
+//   { from: 'twin-sister', to: 'korrthuun' },
 ];
+
+const getSystemByPlanetId = (planetId) =>
+  SYSTEMS.find((s) => s.planetId === planetId) || null;
 
 const GalaxyMap = () => {
   const navigation = useNavigation();
@@ -55,12 +118,26 @@ const GalaxyMap = () => {
   const [warpAnim] = useState(new Animated.Value(0));
   const [warpingTo, setWarpingTo] = useState(null);
 
+  // Initial zoom: a bit zoomed in on desktop, normal on mobile
+  const INITIAL_SCALE = SCREEN_WIDTH > 600 ? 1.4 : 1;
+
+  const scale = useRef(new Animated.Value(INITIAL_SCALE)).current;
+  const translateX = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(0)).current;
+
+  const lastScaleRef = useRef(INITIAL_SCALE);
+  const lastPanRef = useRef({ x: 0, y: 0 });
+  const initialPinchDistanceRef = useRef(null);
+
+  const MIN_SCALE = 1;
+  const MAX_SCALE = 9;
+
   const handleBack = () => {
     navigation.goBack();
   };
 
   const handleSystemPress = (system) => {
-    if (warpingTo) return; // prevent double-taps during warp
+    if (warpingTo) return;
 
     setWarpingTo(system.planetId);
     warpAnim.setValue(0);
@@ -70,166 +147,308 @@ const GalaxyMap = () => {
       duration: 450,
       useNativeDriver: true,
     }).start(() => {
+      const targetPlanetId = system.planetId;
       setWarpingTo(null);
       navigation.navigate('PlanetsHome', {
-        initialPlanetId: system.planetId,
+        initialPlanetId: targetPlanetId,
       });
     });
   };
 
-  // Helper: look up system by planetId
-  const getSystemById = (planetId) =>
-    SYSTEMS.find((s) => s.planetId === planetId);
+  const currentSystem = currentPlanetId
+    ? getSystemByPlanetId(currentPlanetId)
+    : null;
+
+  // Helper: distance between 2 touches
+  const getTouchDistance = (touches) => {
+    const [a, b] = touches;
+    const dx = b.pageX - a.pageX;
+    const dy = b.pageY - a.pageY;
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  // Generic zoom helper used by pinch, mouse wheel, and +/- buttons
+  const handleZoomDelta = (delta) => {
+    scale.stopAnimation((current) => {
+      let next = current + delta;
+      next = Math.max(MIN_SCALE, Math.min(MAX_SCALE, next));
+      scale.setValue(next);
+      lastScaleRef.current = next;
+    });
+  };
+
+  // Mouse wheel zoom (RN Web only – ignored on native)
+  const handleWheel = (e) => {
+    const nativeEvent = e?.nativeEvent;
+    if (!nativeEvent) return;
+    const deltaY = nativeEvent.deltaY || 0;
+
+    // scroll up => zoom in, scroll down => out
+    const zoomDelta = deltaY > 0 ? -0.2 : 0.2;
+    handleZoomDelta(zoomDelta);
+  };
+
+  // PanResponder to handle pinch + drag on touch devices
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+
+      onPanResponderGrant: (evt) => {
+        const touches = evt.nativeEvent.touches || [];
+        if (touches.length === 2) {
+          initialPinchDistanceRef.current = getTouchDistance(touches);
+        }
+      },
+
+      onPanResponderMove: (evt, gestureState) => {
+        const touches = evt.nativeEvent.touches || [];
+
+        // Pinch (two fingers)
+        if (touches.length === 2) {
+          const currentDistance = getTouchDistance(touches);
+          if (initialPinchDistanceRef.current) {
+            let nextScale =
+              (currentDistance / initialPinchDistanceRef.current) *
+              lastScaleRef.current;
+
+            nextScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, nextScale));
+            scale.setValue(nextScale);
+          }
+        } else if (touches.length === 1) {
+          // Drag (one finger)
+          const nextX = lastPanRef.current.x + gestureState.dx;
+          const nextY = lastPanRef.current.y + gestureState.dy;
+          translateX.setValue(nextX);
+          translateY.setValue(nextY);
+        }
+      },
+
+      onPanResponderRelease: () => {
+        scale.stopAnimation((value) => {
+          lastScaleRef.current = value;
+        });
+        translateX.stopAnimation((x) => {
+          translateX.setValue(x);
+          lastPanRef.current.x = x;
+        });
+        translateY.stopAnimation((y) => {
+          translateY.setValue(y);
+          lastPanRef.current.y = y;
+        });
+        initialPinchDistanceRef.current = null;
+      },
+
+      onPanResponderTerminationRequest: () => false,
+      onPanResponderTerminate: () => {
+        initialPinchDistanceRef.current = null;
+      },
+    })
+  ).current;
 
   return (
-    <ImageBackground
-      source={require('../../assets/Space/GalaxyBG.jpg')}
-      style={styles.background}
-    >
-      <View style={styles.overlay}>
-        {/* HEADER */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={handleBack}
-            activeOpacity={0.85}
-          >
-            <Text style={styles.backText}>⬅ Planets</Text>
-          </TouchableOpacity>
+    <View style={styles.root}>
+      {/* HEADER */}
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={handleBack}
+          activeOpacity={0.85}
+        >
+          <Text style={styles.backText}>⬅ Planets</Text>
+        </TouchableOpacity>
 
-          <View style={styles.headerCenter}>
-            <Text style={styles.title}>Galaxy Map</Text>
-            <Text style={styles.subtitle}>
-              {fromUniverse === 'prime'
-                ? 'Prime Universe Stellar Chart'
-                : 'Pinnacle Universe Stellar Chart'}
-            </Text>
-          </View>
-
-          <View style={{ width: 60 }} /> {/* spacer */}
-        </View>
-
-        {/* STARFIELD CONTENT */}
-        <View style={styles.starfield}>
-          {/* CONNECTION LINES */}
-          {CONNECTIONS.map((conn, idx) => {
-            const fromSys = getSystemById(conn.from);
-            const toSys = getSystemById(conn.to);
-            if (!fromSys || !toSys) return null;
-
-            const dx = toSys.x - fromSys.x;
-            const dy = toSys.y - fromSys.y;
-            const length = Math.sqrt(dx * dx + dy * dy);
-            const angle = Math.atan2(dy, dx) * (180 / Math.PI);
-
-            const midX = (fromSys.x + toSys.x) / 2;
-            const midY = (fromSys.y + toSys.y) / 2;
-
-            return (
-              <View
-                key={`conn-${idx}`}
-                style={[
-                  styles.connectionLine,
-                  {
-                    width: length,
-                    left: midX - length / 2,
-                    top: midY,
-                    transform: [{ rotateZ: `${angle}deg` }],
-                  },
-                ]}
-              />
-            );
-          })}
-
-          {/* SYSTEM ICONS */}
-          {SYSTEMS.map((sys) => {
-            const isWarpingThis = warpingTo === sys.planetId;
-
-            const scale = isWarpingThis
-              ? warpAnim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [1, 1.6],
-                })
-              : 1;
-
-            const opacity = isWarpingThis
-              ? warpAnim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [1, 0],
-                })
-              : 1;
-
-            return (
-              <TouchableOpacity
-                key={sys.name}
-                style={[styles.starWrapper, { top: sys.y, left: sys.x }]}
-                onPress={() => handleSystemPress(sys)}
-                activeOpacity={0.9}
-              >
-                <Animated.View
-                  style={[
-                    styles.planetWrapper,
-                    {
-                      transform: [{ scale }],
-                      opacity,
-                    },
-                  ]}
-                >
-                  <View style={styles.planetGlow} />
-                  <Image
-                    source={sys.image}
-                    style={styles.planetIcon}
-                    resizeMode="cover"
-                  />
-                </Animated.View>
-                <Text style={styles.starName}>{sys.name}</Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-
-        {/* HUD */}
-        <View style={styles.hud}>
-          <Text style={styles.hudText}>
-            Tap a system to warp to its primary world.
+        <View style={styles.headerCenter}>
+          <Text style={styles.title}>Galaxy Map</Text>
+          <Text style={styles.subtitle}>
+            {fromUniverse === 'prime'
+              ? 'Prime Universe Stellar Chart'
+              : 'Pinnacle Universe Stellar Chart'}
           </Text>
-          {currentPlanetId && (
-            <Text style={styles.hudSecondary}>
-              Current focus: {currentPlanetId.toUpperCase()}
-            </Text>
-          )}
         </View>
 
-        {/* Warp overlay */}
-        {warpingTo && (
+        <View style={{ width: 60 }} />{/* spacer */}
+      </View>
+
+      {/* MAP AREA */}
+      <View style={styles.starfield}>
+        {/* onWheel works on web; no effect on native */}
+        {/* @ts-ignore web-only prop */}
+        <View style={styles.mapOuter} onWheel={handleWheel}>
           <Animated.View
-            pointerEvents="none"
             style={[
-              styles.warpOverlay,
+              styles.mapInner,
               {
-                opacity: warpAnim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [0, 0.9],
-                }),
+                transform: [
+                  { scale },
+                  { translateX },
+                  { translateY },
+                ],
               },
             ]}
+            {...panResponder.panHandlers}
           >
-            <Text style={styles.warpText}>Warping…</Text>
+            {/* Galaxy image */}
+            <Image
+              source={GALAXY_MAP}
+              style={styles.galaxyImage}
+              resizeMode="contain"
+            />
+
+            {/* CONNECTIONS – drawn in map space */}
+            {CONNECTIONS.map((conn, idx) => {
+              const fromSys = getSystemByPlanetId(conn.from);
+              const toSys = getSystemByPlanetId(conn.to);
+              if (!fromSys || !toSys) return null;
+
+              const x1 = fromSys.x * MAP_BASE_SIZE;
+              const y1 = fromSys.y * MAP_BASE_SIZE;
+              const x2 = toSys.x * MAP_BASE_SIZE;
+              const y2 = toSys.y * MAP_BASE_SIZE;
+
+              const dx = x2 - x1;
+              const dy = y2 - y1;
+              const length = Math.sqrt(dx * dx + dy * dy);
+              const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+              const midX = (x1 + x2) / 2;
+              const midY = (y1 + y2) / 2;
+
+              return (
+                <View
+                  key={`conn-${idx}`}
+                  style={[
+                    styles.connectionLine,
+                    {
+                      width: length,
+                      left: midX - length / 2,
+                      top: midY,
+                      transform: [{ rotateZ: `${angle}deg` }],
+                    },
+                  ]}
+                />
+              );
+            })}
+
+            {/* SYSTEM ICONS */}
+            {SYSTEMS.map((sys) => {
+              const isWarpingThis = warpingTo === sys.planetId;
+              const isCurrentSystem =
+                currentSystem && currentSystem.id === sys.id;
+
+              const scaleWarp = isWarpingThis
+                ? warpAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [1, 1.6],
+                  })
+                : 1;
+
+              const opacity = isWarpingThis
+                ? warpAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [1, 0],
+                  })
+                : 1;
+
+              const left = sys.x * MAP_BASE_SIZE;
+              const top = sys.y * MAP_BASE_SIZE;
+
+              return (
+                <TouchableOpacity
+                  key={sys.id}
+                  style={[styles.starWrapper, { left, top }]}
+                  onPress={() => handleSystemPress(sys)}
+                  activeOpacity={0.9}
+                >
+                  <Animated.View
+                    style={[
+                      styles.planetWrapper,
+                      {
+                        transform: [{ scale: scaleWarp }],
+                        opacity,
+                      },
+                    ]}
+                  >
+                    <View
+                      style={[
+                        styles.planetGlow,
+                        isCurrentSystem && styles.planetGlowActive,
+                      ]}
+                    />
+                    <Image
+                      source={sys.image}
+                      style={styles.planetIcon}
+                      resizeMode="cover"
+                    />
+                  </Animated.View>
+                  <Text style={styles.starName}>{sys.name}</Text>
+                </TouchableOpacity>
+              );
+            })}
           </Animated.View>
+
+          {/* ZOOM BUTTONS (bottom-right of map) */}
+          <View style={styles.zoomControls}>
+            <TouchableOpacity
+              style={styles.zoomButton}
+              onPress={() => handleZoomDelta(0.5)}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.zoomText}>＋</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.zoomButton}
+              onPress={() => handleZoomDelta(-0.5)}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.zoomText}>－</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+
+      {/* HUD */}
+      <View style={styles.hud}>
+        <Text style={styles.hudText}>
+          Pinch to zoom, drag to pan. Scroll or use +/- to zoom on desktop. Tap a node to warp.
+        </Text>
+        {currentPlanetId && (
+          <Text style={styles.hudSecondary}>
+            Current focus:{' '}
+            {currentSystem
+              ? `${currentSystem.name} (${currentPlanetId})`
+              : currentPlanetId.toUpperCase()}
+          </Text>
         )}
       </View>
-    </ImageBackground>
+
+      {/* Warp overlay */}
+      {warpingTo && (
+        <Animated.View
+          pointerEvents="none"
+          style={[
+            styles.warpOverlay,
+            {
+              opacity: warpAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0, 0.9],
+              }),
+            },
+          ]}
+        >
+          <Text style={styles.warpText}>
+            Warping to{' '}
+            {getSystemByPlanetId(warpingTo)?.name || 'destination'}…
+          </Text>
+        </Animated.View>
+      )}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  background: {
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
-  },
-  overlay: {
+  root: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 10, 0.82)',
+    backgroundColor: 'black',
   },
 
   header: {
@@ -272,34 +491,65 @@ const styles = StyleSheet.create({
 
   starfield: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
+  mapOuter: {
+    width: MAP_BASE_SIZE,
+    height: MAP_BASE_SIZE,
+    overflow: 'hidden',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(120, 190, 255, 0.7)',
+    backgroundColor: 'black',
+  },
+  mapInner: {
+    width: MAP_BASE_SIZE,
+    height: MAP_BASE_SIZE,
+  },
+  galaxyImage: {
+    position: 'absolute',
+    width: MAP_BASE_SIZE,
+    height: MAP_BASE_SIZE,
+  },
+
   starWrapper: {
     position: 'absolute',
     alignItems: 'center',
   },
-
   planetWrapper: {
     alignItems: 'center',
     justifyContent: 'center',
   },
   planetGlow: {
     position: 'absolute',
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: 'rgba(120, 180, 255, 0.35)',
+    width: 14,       // smaller glow
+    height: 14,
+    borderRadius: 30,
+    backgroundColor: 'rgba(120, 180, 255, 0.28)',
     shadowColor: '#7acbff',
-    shadowOpacity: 0.9,
-    shadowRadius: 20,
+    shadowOpacity: 0.7,
+    shadowRadius: 14,
     shadowOffset: { width: 0, height: 0 },
   },
+  planetGlowActive: {
+    backgroundColor: 'rgba(200, 255, 180, 0.4)',
+    shadowColor: '#c5ff9a',
+  },
   planetIcon: {
-    width: 55,
-    height: 55,
-    borderRadius: 55,
+    width: 10,       // smaller icon
+    height: 10,
+    borderRadius: 40,
     borderWidth: 1.5,
     borderColor: 'rgba(200, 230, 255, 0.9)',
     overflow: 'hidden',
+  },
+  starName: {
+    marginTop: 1,
+    fontSize: 3,
+    color: '#F8F3FF',
+    textShadowColor: 'rgba(0, 0, 0, 0.9)',
+    textShadowRadius: 8,
   },
 
   connectionLine: {
@@ -309,12 +559,27 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
 
-  starName: {
-    marginTop: 4,
-    fontSize: 12,
-    color: '#F8F3FF',
-    textShadowColor: 'rgba(0, 0, 0, 0.9)',
-    textShadowRadius: 8,
+  zoomControls: {
+    position: 'absolute',
+    right: 8,
+    bottom: 8,
+    flexDirection: 'column',
+    gap: 6,
+  },
+  zoomButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(5, 20, 50, 0.9)',
+    borderWidth: 1,
+    borderColor: 'rgba(150, 210, 255, 0.9)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  zoomText: {
+    color: '#EFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 
   hud: {

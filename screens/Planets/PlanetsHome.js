@@ -6,7 +6,6 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
-  ImageBackground,
   Animated,
   Modal,
   ScrollView,
@@ -16,245 +15,22 @@ import {
 import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import {
+  PLANETS,
+  EARTH_SIDE_IMAGES,
+  SYSTEMS,
+  sortPlanets,
+  getOrbitPositionLabel,
+} from './celestialBodies';
+
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-/**
- * PLANETS – global route order
- * Sol → Ignis Prime / Noctheron / Vortanite Field / Melcornia → Zaxxon
- */
-const PLANETS = [
-  // ===== SOL SYSTEM (YOUR UNIVERSE / PRIME) =====
-  {
-    id: 'Helios',
-    name: 'Helios',
-    universe: 'prime',
-    systemId: 'sol',
-    order: 1,
-    background: require('../../assets/Space/Sol.jpg'),
-    thumbnail: require('../../assets/Space/Sol.jpg'),
-  },
-  {
-    id: 'mercury',
-    name: 'Mercury',
-    universe: 'prime',
-    systemId: 'sol',
-    order: 2,
-    background: require('../../assets/Space/Mercury.jpg'),
-    thumbnail: require('../../assets/Space/Mercury.jpg'),
-  },
-  {
-    id: 'venus',
-    name: 'Venus',
-    universe: 'prime',
-    systemId: 'sol',
-    order: 3,
-    background: require('../../assets/Space/Venus.jpg'),
-    thumbnail: require('../../assets/Space/Venus.jpg'),
-  },
-  {
-    id: 'earth',
-    name: 'Earth',
-    universe: 'prime',
-    systemId: 'sol',
-    order: 4,
-    background: require('../../assets/Space/Earth.jpg'),
-    thumbnail: require('../../assets/Space/Earth.jpg'),
-    hotspots: [
-      {
-        id: 'zion',
-        name: 'Zion City',
-        description: 'The Parliament’s heart in Utah, a rising modern megacity.',
-        image: require('../../assets/ParliamentTower.jpg'),
-        position: { top: '55%', left: '18%' },
-      },
-      {
-        id: 'aegis',
-        name: 'The Aegis Compound',
-        description: 'Desert fortress HQ for the Parliament’s true operations.',
-        image: require('../../assets/BackGround/ShipYard.jpg'),
-        position: { top: '35%', left: '70%' },
-      },
-    ],
-  },
-  {
-    id: 'Luna',
-    name: 'Luna',
-    universe: 'prime',
-    systemId: 'sol',
-    order: 5,
-    background: require('../../assets/Space/Luna.jpg'),
-    thumbnail: require('../../assets/Space/Luna.jpg'),
-  },
-  {
-    id: 'mars',
-    name: 'Mars',
-    universe: 'prime',
-    systemId: 'sol',
-    order: 6,
-    background: require('../../assets/Space/Mars.jpg'),
-    thumbnail: require('../../assets/Space/Mars.jpg'),
-  },
-  {
-    id: 'jupiter',
-    name: 'Jupiter',
-    universe: 'prime',
-    systemId: 'sol',
-    order: 7,
-    background: require('../../assets/Space/Jupiter.jpg'),
-    thumbnail: require('../../assets/Space/Jupiter.jpg'),
-  },
-  {
-    id: 'saturn',
-    name: 'Saturn',
-    universe: 'prime',
-    systemId: 'sol',
-    order: 8,
-    background: require('../../assets/Space/Saturn.jpg'),
-    thumbnail: require('../../assets/Space/Saturn.jpg'),
-  },
-  {
-    id: 'uranus',
-    name: 'Uranus',
-    universe: 'prime',
-    systemId: 'sol',
-    order: 9,
-    background: require('../../assets/Space/Uranus.jpg'),
-    thumbnail: require('../../assets/Space/Uranus.jpg'),
-  },
-  {
-    id: 'neptune',
-    name: 'Neptune',
-    universe: 'prime',
-    systemId: 'sol',
-    order: 10,
-    background: require('../../assets/Space/Neptune.jpg'),
-    thumbnail: require('../../assets/Space/Neptune.jpg'),
-  },
-  {
-    id: 'planet9',
-    name: 'Planet 9',
-    universe: 'prime',
-    systemId: 'sol',
-    order: 11,
-    background: require('../../assets/Space/Planet9.jpg'),
-    thumbnail: require('../../assets/Space/Planet9.jpg'),
-  },
-  {
-    id: 'quaoar',
-    name: 'Quaoar',
-    universe: 'prime',
-    systemId: 'sol',
-    order: 12,
-    background: require('../../assets/Space/Quaoar.jpg'),
-    thumbnail: require('../../assets/Space/Quaoar.jpg'),
-  },
-
-  // ===== IGNIS PRIME SYSTEM (SAM'S UNIVERSE / PINNACLE) =====
-  {
-    id: 'ignis-prime',
-    name: 'Ignis Prime',
-    universe: 'pinnacle',
-    systemId: 'ignis',
-    order: 13,
-    background: require('../../assets/Space/IgnisPrime.jpg'),
-    thumbnail: require('../../assets/Space/IgnisPrime.jpg'),
-  },
-  {
-    id: 'noctheron',
-    name: 'Noctheron',
-    universe: 'pinnacle',
-    systemId: 'ignis',
-    order: 14,
-    background: require('../../assets/Space/Noctheron.jpg'),
-    thumbnail: require('../../assets/Space/Noctheron.jpg'),
-  },
-  {
-    id: 'vortanite-field',
-    name: 'Vortanite Asteroid Field',
-    universe: 'pinnacle',
-    systemId: 'ignis',
-    order: 15,
-    background: require('../../assets/Space/Vortaniteasteroidfield.jpg'),
-    thumbnail: require('../../assets/Space/Vortaniteasteroidfield.jpg'),
-  },
-  {
-    id: 'melcornia',
-    name: 'Melcornia',
-    universe: 'pinnacle',
-    systemId: 'ignis',
-    order: 16,
-    background: require('../../assets/Space/Melcornia.jpg'),
-    thumbnail: require('../../assets/Space/Melcornia.jpg'),
-    hotspots: [
-      {
-        id: 'maw-rift',
-        name: 'The Maw Rift',
-        description: 'The scar where the Maw’s influence first shattered the planet.',
-        image: require('../../assets/Space/Mirror.jpg'),
-        position: { top: '48%', left: '28%' },
-      },
-    ],
-  },
-
-  // ===== ZAXXON SYSTEM =====
-  {
-    id: 'zaxxon',
-    name: 'Zaxxon',
-    universe: 'pinnacle',
-    systemId: 'zaxxon',
-    order: 17,
-    background: require('../../assets/Space/Zaxxon.jpg'),
-    thumbnail: require('../../assets/Space/Zaxxon.jpg'),
-  },
-];
-
-/**
- * Earth special sides (only Earth uses these inside the planet disk)
- */
-const EARTH_SIDE_IMAGES = {
-  na: require('../../assets/Space/NorthAmericanSide.jpg'),
-  ph: require('../../assets/Space/PhilippinesSide.jpg'),
-};
-
-/**
- * Star systems list for jump controls
- */
-const SYSTEMS = [
-  { id: 'sol', name: 'Sol System', order: 1 },
-  { id: 'ignis', name: 'Ignis Prime System', order: 2 },
-  { id: 'zaxxon', name: 'Zaxxon System', order: 3 },
-];
-
-const sortPlanets = () => {
-  return [...PLANETS].sort((a, b) => (a.order || 0) - (b.order || 0));
-};
-
-/**
- * Compute "Orbit position" label.
- * - For the Sol system, Helios is NOT included in the orbit count.
- *   Mercury = 1, Venus = 2, Earth = 3, etc.
- * - For other systems, use the planet's `order` as-is.
- */
-const getOrbitPositionLabel = (planet, allPlanets) => {
-  if (!planet) return '?';
-
-  if (planet.systemId === 'sol') {
-    // All Sol bodies except the star (Helios) sorted by order
-    const solOrbitables = allPlanets
-      .filter(p => p.systemId === 'sol' && p.id !== 'Helios')
-      .sort((a, b) => (a.order || 0) - (b.order || 0));
-
-    const idx = solOrbitables.findIndex(p => p.id === planet.id);
-    if (idx === -1) {
-      // Helios or something weird: show a dash
-      return '—';
-    }
-    return idx + 1; // Mercury = 1, ...
-  }
-
-  // Default behavior for other systems
-  return planet.order ?? '?';
-};
+const PLANET_PIXEL_SIZE = 1084;
+const PLANET_DISPLAY_SIZE = Math.min(
+  SCREEN_WIDTH - 40,
+  SCREEN_HEIGHT - 260,
+  PLANET_PIXEL_SIZE
+);
 
 const PlanetsHome = () => {
   const navigation = useNavigation();
@@ -264,21 +40,25 @@ const PlanetsHome = () => {
   const [planets, setPlanets] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedHotspot, setSelectedHotspot] = useState(null);
-  const [earthSide, setEarthSide] = useState('na'); // 'na' or 'ph'
+
+  // Earth side: default to full Earth until user chooses a side
+  const [earthSide, setEarthSide] = useState('earth'); // 'earth' | 'na' | 'ph'
 
   const [hotspotAnim] = useState(new Animated.Value(0));
   const [planetAnim] = useState(new Animated.Value(0));
   const entryAnim = useRef(new Animated.Value(0)).current;
 
+  // INFO PANEL
+  const [infoOpen, setInfoOpen] = useState(false);
+  const infoAnim = useRef(new Animated.Value(0)).current;
+
   const initialPlanetIdFromRoute = route.params?.initialPlanetId || null;
 
-  // Handle resize (kept for future use)
   useEffect(() => {
     const sub = Dimensions.addEventListener('change', () => {});
     return () => sub?.remove();
   }, []);
 
-  // Load universe preference and set starting planet
   useEffect(() => {
     const loadUniverse = async () => {
       try {
@@ -297,7 +77,6 @@ const PlanetsHome = () => {
           const foundIndex = sorted.findIndex(p => p.id === initialPlanetIdFromRoute);
           if (foundIndex !== -1) index = foundIndex;
         } else {
-          // Start on Earth if your universe is Prime, Melcornia if Pinnacle
           const defaultId = isYour ? 'earth' : 'melcornia';
           const defIndex = sorted.findIndex(p => p.id === defaultId);
           if (defIndex !== -1) index = defIndex;
@@ -306,7 +85,6 @@ const PlanetsHome = () => {
         setPlanets(sorted);
         setCurrentIndex(index);
 
-        // Start entry animation
         entryAnim.setValue(0);
         planetAnim.setValue(0);
         Animated.parallel([
@@ -343,7 +121,7 @@ const PlanetsHome = () => {
   useFocusEffect(
     useCallback(() => {
       return () => {
-        // no-op for now
+        // no-op
       };
     }, [])
   );
@@ -362,7 +140,6 @@ const PlanetsHome = () => {
   const currentUniverseLabel =
     currentPlanet.universe === 'pinnacle' ? 'Pinnacle Universe' : 'Prime Universe';
 
-  // SYSTEM JUMP LOGIC
   const sortedSystems = [...SYSTEMS].sort((a, b) => a.order - b.order);
   const currentSystem =
     sortedSystems.find(s => s.id === currentPlanet.systemId) || sortedSystems[0];
@@ -374,6 +151,39 @@ const PlanetsHome = () => {
     currentSystemIndex < sortedSystems.length - 1
       ? sortedSystems[currentSystemIndex + 1]
       : null;
+
+  const animatePlanetChange = (newIndex, dir) => {
+    Animated.timing(planetAnim, {
+      toValue: 0,
+      duration: 220,
+      useNativeDriver: true,
+    }).start(() => {
+      setCurrentIndex(newIndex);
+      planetAnim.setValue(dir === 1 ? -0.4 : 0.4);
+      Animated.timing(planetAnim, {
+        toValue: 1,
+        duration: 320,
+        useNativeDriver: true,
+      }).start();
+    });
+  };
+
+  // Looping arrows
+  const handleArrowPress = (direction) => {
+    if (!planets.length) return;
+
+    const lastIndex = planets.length - 1;
+    if (direction === 'left') {
+      const newIndex = currentIndex === 0 ? lastIndex : currentIndex - 1;
+      animatePlanetChange(newIndex, -1);
+    } else if (direction === 'right') {
+      const newIndex = currentIndex === lastIndex ? 0 : currentIndex + 1;
+      animatePlanetChange(newIndex, 1);
+    }
+  };
+
+  const canGoLeft = planets.length > 1;
+  const canGoRight = planets.length > 1;
 
   const jumpToSystem = (systemId, dir = 1) => {
     const idx = planets.findIndex(p => p.systemId === systemId);
@@ -393,35 +203,34 @@ const PlanetsHome = () => {
     });
   };
 
-  // ARROWS: move through full route of planets
-  const canGoLeft = currentIndex > 0;
-  const canGoRight = currentIndex < planets.length - 1;
-
-  const animatePlanetChange = (newIndex, dir) => {
-    Animated.timing(planetAnim, {
-      toValue: 0,
-      duration: 220,
-      useNativeDriver: true,
-    }).start(() => {
-      setCurrentIndex(newIndex);
-      planetAnim.setValue(dir === 1 ? -0.4 : 0.4);
-      Animated.timing(planetAnim, {
-        toValue: 1,
-        duration: 320,
-        useNativeDriver: true,
-      }).start();
-    });
-  };
-
-  const handleArrowPress = (direction) => {
-    if (direction === 'left' && canGoLeft) {
-      animatePlanetChange(currentIndex - 1, -1);
-    } else if (direction === 'right' && canGoRight) {
-      animatePlanetChange(currentIndex + 1, 1);
+  // Planet image (Earth has Earth / NA / PH sides)
+  let planetDiskImage = currentPlanet.thumbnail;
+  if (currentPlanet.id === 'earth') {
+    if (earthSide === 'earth') {
+      planetDiskImage = currentPlanet.thumbnail; // full Earth default
+    } else {
+      const sideKey = earthSide === 'ph' ? 'ph' : 'na';
+      planetDiskImage = EARTH_SIDE_IMAGES[sideKey] || currentPlanet.thumbnail;
     }
-  };
+  }
 
-  // HOTSPOTS
+  const slideTranslate = planetAnim.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: [50, -10, 0],
+  });
+  const slideOpacity = planetAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1],
+  });
+
+  const entryScale = entryAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.7, 1],
+  });
+
+  const orbitLabel = getOrbitPositionLabel(currentPlanet, planets);
+
+  // HOTSPOTS (logic kept for future)
   const handleHotspotPress = (hotspot) => {
     setSelectedHotspot(hotspot);
     hotspotAnim.setValue(0);
@@ -440,37 +249,30 @@ const PlanetsHome = () => {
     }).start(() => setSelectedHotspot(null));
   };
 
-  // Planet disk image (Earth has two special sides)
-  let planetDiskImage = currentPlanet.thumbnail;
-  if (currentPlanet.id === 'earth') {
-    // 'Utah side' -> NorthAmericanSide, 'Philippines side' -> PhilippinesSide
-    planetDiskImage =
-      earthSide === 'ph' ? EARTH_SIDE_IMAGES.ph : EARTH_SIDE_IMAGES.na;
-  }
+  // INFO PANEL toggle
+  const toggleInfoPanel = () => {
+    const toOpen = !infoOpen;
+    setInfoOpen(toOpen);
 
-  // Animations
-  const slideTranslate = planetAnim.interpolate({
-    inputRange: [0, 0.5, 1],
-    outputRange: [50, -10, 0],
-  });
-  const slideOpacity = planetAnim.interpolate({
+    Animated.timing(infoAnim, {
+      toValue: toOpen ? 1 : 0,
+      duration: 260,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const infoTranslateY = infoAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 1],
+    outputRange: [-40, 0],
   });
+  const infoOpacity = infoAnim;
 
-  const entryScale = entryAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0.7, 1],
-  });
-
-  const isDesktop = SCREEN_WIDTH >= 900;
+  const description =
+    currentPlanet.description ||
+    'No lore entry yet. This celestial body awaits its official codex entry.';
 
   return (
-    <ImageBackground
-      source={currentPlanet.background}
-      style={styles.background}
-      blurRadius={3}
-    >
+    <View style={styles.root}>
       <View style={styles.overlay}>
         {/* HEADER */}
         <View style={styles.header}>
@@ -482,16 +284,18 @@ const PlanetsHome = () => {
             <Text style={styles.backText}>⬅ Home</Text>
           </TouchableOpacity>
 
-          <View style={styles.headerCenter}>
-            {/* System name + body name */}
+          <TouchableOpacity
+            style={styles.headerCenter}
+            activeOpacity={0.85}
+            onPress={toggleInfoPanel}
+          >
             <Text style={styles.title}>
               {currentSystem.name} – {currentPlanet.name}
             </Text>
-            {/* Universe label */}
             <Text style={styles.subtitle}>
-              {currentUniverseLabel}
+              {currentUniverseLabel} • tap for details
             </Text>
-          </View>
+          </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.galaxyButton}
@@ -501,6 +305,40 @@ const PlanetsHome = () => {
             <Text style={styles.galaxyButtonText}>Galaxy Map ✨</Text>
           </TouchableOpacity>
         </View>
+
+        {/* INFO PANEL (slides down under header) */}
+        <Animated.View
+          pointerEvents={infoOpen ? 'auto' : 'none'}
+          style={[
+            styles.infoPanel,
+            {
+              opacity: infoOpacity,
+              transform: [{ translateY: infoTranslateY }],
+            },
+          ]}
+        >
+          <View style={styles.infoRowTop}>
+            <Text style={styles.infoName}>{currentPlanet.name}</Text>
+            <Text style={styles.infoSystem}>{currentSystem.name}</Text>
+          </View>
+          <View style={styles.infoRowMeta}>
+            <Text style={styles.infoTag}>
+              {currentUniverseLabel}
+            </Text>
+            <Text style={styles.infoTag}>
+              {orbitLabel != null
+                ? `Orbit: ${orbitLabel}`
+                : 'Central / special object'}
+            </Text>
+            {currentPlanet.type && (
+              <Text style={styles.infoTag}>{currentPlanet.type}</Text>
+            )}
+          </View>
+
+          <ScrollView style={styles.infoScroll} nestedScrollEnabled>
+            <Text style={styles.infoDescription}>{description}</Text>
+          </ScrollView>
+        </Animated.View>
 
         {/* MAIN CONTENT */}
         <View style={styles.main}>
@@ -523,13 +361,6 @@ const PlanetsHome = () => {
               },
             ]}
           >
-            <View style={styles.planetGlass}>
-              <Text style={styles.planetName}>{currentPlanet.name}</Text>
-              <Text style={styles.planetLabel}>
-                Use arrows to travel • Tap nodes to explore
-              </Text>
-            </View>
-
             {/* Earth side toggle */}
             {currentPlanet.id === 'earth' && (
               <View style={styles.earthToggleRow}>
@@ -568,85 +399,32 @@ const PlanetsHome = () => {
               </View>
             )}
 
-            {/* Planet disk area */}
+            {/* Planet image area */}
             <View style={styles.planetArea}>
-              <View style={styles.orbitLine} />
-
-              {planetDiskImage && (
-                <Image
-                  source={planetDiskImage}
-                  style={styles.planetImage}
-                  resizeMode="cover"
-                />
-              )}
-
-              {/* Hotspots */}
-              {currentPlanet.hotspots?.map(hs => (
-                <View key={hs.id} style={[styles.hotspotWrapper, hs.position]}>
-                  <View style={styles.hotspotLine} />
-                  <TouchableOpacity
-                    style={styles.hotspotSquare}
-                    onPress={() => handleHotspotPress(hs)}
-                    activeOpacity={0.9}
-                  >
-                    <Text style={styles.hotspotPlus}>＋</Text>
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </View>
-
-            {/* Planet footer */}
-            <View style={styles.planetFooter}>
-              <Text style={styles.planetFooterText}>
-                Orbit position: {getOrbitPositionLabel(currentPlanet, planets)}
-              </Text>
-              <Text style={styles.planetFooterText}>
-                {currentIndex + 1} / {planets.length} worlds
-              </Text>
-            </View>
-
-            {/* System footer – "explore this system vs jump to next" */}
-            <View style={styles.systemFooter}>
-              <Text style={styles.systemLabel}>{currentSystem.name}</Text>
-              <View style={styles.systemButtonsRow}>
-                <TouchableOpacity
-                  style={[
-                    styles.systemButton,
-                    !prevSystem && styles.systemButtonDisabled,
-                  ]}
-                  activeOpacity={0.85}
-                  disabled={!prevSystem}
-                  onPress={() => prevSystem && jumpToSystem(prevSystem.id, -1)}
-                >
-                  <Text
-                    style={[
-                      styles.systemButtonText,
-                      !prevSystem && styles.systemButtonTextDisabled,
-                    ]}
-                  >
-                    ⬅ Prev System
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[
-                    styles.systemButton,
-                    !nextSystem && styles.systemButtonDisabled,
-                  ]}
-                  activeOpacity={0.85}
-                  disabled={!nextSystem}
-                  onPress={() => nextSystem && jumpToSystem(nextSystem.id, 1)}
-                >
-                  <Text
-                    style={[
-                      styles.systemButtonText,
-                      !nextSystem && styles.systemButtonTextDisabled,
-                    ]}
-                  >
-                    Next System ➜
-                  </Text>
-                </TouchableOpacity>
+              <View style={styles.planetImageBox}>
+                {planetDiskImage && (
+                  <Image
+                    source={planetDiskImage}
+                    style={styles.planetImage}
+                    resizeMode="contain"
+                  />
+                )}
               </View>
+
+              {/* Hotspots (disabled for now) */}
+              {false &&
+                currentPlanet.hotspots?.map(hs => (
+                  <View key={hs.id} style={[styles.hotspotWrapper, hs.position]}>
+                    <View style={styles.hotspotLine} />
+                    <TouchableOpacity
+                      style={styles.hotspotSquare}
+                      onPress={() => handleHotspotPress(hs)}
+                      activeOpacity={0.9}
+                    >
+                      <Text style={styles.hotspotPlus}>＋</Text>
+                    </TouchableOpacity>
+                  </View>
+                ))}
             </View>
           </Animated.View>
 
@@ -658,6 +436,62 @@ const PlanetsHome = () => {
           >
             <Text style={[styles.arrowText, !canGoRight && styles.arrowDisabled]}>{'›'}</Text>
           </TouchableOpacity>
+        </View>
+
+        {/* BOTTOM HUD */}
+        <View style={styles.bottomHud}>
+          <View style={styles.bottomTopRow}>
+            <Text style={styles.bottomLabelLeft}>
+              {orbitLabel != null
+                ? `Orbit position: ${orbitLabel}`
+                : 'Central body / special object'}
+            </Text>
+            <Text style={styles.bottomLabelRight}>
+              {currentIndex + 1} / {planets.length} celestial bodies
+            </Text>
+          </View>
+
+          <View style={styles.bottomDivider} />
+
+          <View style={styles.systemButtonsRow}>
+            <TouchableOpacity
+              style={[
+                styles.systemButton,
+                !prevSystem && styles.systemButtonDisabled,
+              ]}
+              activeOpacity={0.85}
+              disabled={!prevSystem}
+              onPress={() => prevSystem && jumpToSystem(prevSystem.id, -1)}
+            >
+              <Text
+                style={[
+                  styles.systemButtonText,
+                  !prevSystem && styles.systemButtonTextDisabled,
+                ]}
+              >
+                ⬅ Prev System
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.systemButton,
+                !nextSystem && styles.systemButtonDisabled,
+              ]}
+              activeOpacity={0.85}
+              disabled={!nextSystem}
+              onPress={() => nextSystem && jumpToSystem(nextSystem.id, 1)}
+            >
+              <Text
+                style={[
+                  styles.systemButtonText,
+                  !nextSystem && styles.systemButtonTextDisabled,
+                ]}
+              >
+                Next System ➜
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* HOTSPOT MODAL */}
@@ -692,13 +526,11 @@ const PlanetsHome = () => {
             >
               <Text style={styles.modalTitle}>{selectedHotspot?.name}</Text>
               <View style={styles.modalImageHolder}>
-                <ImageBackground
+                <Image
                   source={selectedHotspot?.image}
                   style={styles.modalImage}
                   resizeMode="cover"
-                >
-                  <View style={styles.modalImageOverlay} />
-                </ImageBackground>
+                />
               </View>
               <ScrollView style={styles.modalScroll}>
                 <Text style={styles.modalDescription}>
@@ -716,14 +548,14 @@ const PlanetsHome = () => {
           </View>
         </Modal>
       </View>
-    </ImageBackground>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  background: {
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
+  root: {
+    flex: 1,
+    backgroundColor: 'black',
   },
   overlay: {
     flex: 1,
@@ -785,13 +617,68 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
+  // INFO PANEL
+  infoPanel: {
+    marginHorizontal: 12,
+    marginBottom: 4,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: 'rgba(140, 210, 255, 0.8)',
+    backgroundColor: 'rgba(3, 10, 30, 0.96)',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    maxHeight: SCREEN_HEIGHT * 0.26,
+  },
+  infoRowTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+    marginBottom: 4,
+  },
+  infoName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#EFFFFF',
+  },
+  infoSystem: {
+    fontSize: 12,
+    color: 'rgba(190, 225, 255, 0.9)',
+  },
+  infoRowMeta: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 4,
+    marginBottom: 4,
+  },
+  infoTag: {
+    fontSize: 10,
+    color: 'rgba(205, 235, 255, 0.95)',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(130, 205, 255, 0.7)',
+  },
+  infoScroll: {
+    maxHeight: SCREEN_HEIGHT * 0.16,
+  },
+  infoDescription: {
+    fontSize: 12,
+    color: 'rgba(220, 240, 255, 0.96)',
+    lineHeight: 18,
+  },
+
   // MAIN CONTENT
   main: {
     flex: 1,
-    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
+    position: 'relative', // for absolute arrows
   },
   arrowWrapper: {
+    position: 'absolute',
+    top: '50%',
+    marginTop: -24,
     width: 48,
     height: 48,
     borderRadius: 999,
@@ -800,6 +687,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(190, 230, 255, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 5,
   },
   arrowText: {
     fontSize: 28,
@@ -810,7 +698,9 @@ const styles = StyleSheet.create({
   },
 
   planetCard: {
-    flex: 1,
+    width: SCREEN_WIDTH - 80,  // leave room for arrows
+    maxWidth: 900,
+    alignSelf: 'center',
     marginHorizontal: 10,
     borderRadius: 24,
     borderWidth: 1.5,
@@ -822,36 +712,12 @@ const styles = StyleSheet.create({
     shadowRadius: 18,
     shadowOffset: { width: 0, height: 8 },
   },
-  planetGlass: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: 'rgba(150, 225, 255, 0.6)',
-    backgroundColor: 'rgba(0, 0, 0, 0.38)',
-    alignSelf: 'center',
-    marginBottom: 8,
-  },
-  planetName: {
-    fontSize: 20,
-    color: '#EFFFFF',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    textShadowRadius: 10,
-    textShadowColor: '#00b3ff',
-  },
-  planetLabel: {
-    fontSize: 11,
-    color: 'rgba(195, 236, 255, 0.9)',
-    textAlign: 'center',
-    marginTop: 2,
-  },
 
   earthToggleRow: {
     flexDirection: 'row',
     alignSelf: 'center',
-    marginTop: 6,
-    marginBottom: 2,
+    marginTop: 4,
+    marginBottom: 6,
     gap: 6,
   },
   earthToggleButton: {
@@ -878,30 +744,18 @@ const styles = StyleSheet.create({
 
   planetArea: {
     flex: 1,
-    marginTop: 12,
-    marginBottom: 10,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: 'rgba(91, 172, 255, 0.7)',
-    backgroundColor: 'rgba(0, 0, 0, 0.55)',
-    overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  orbitLine: {
-    position: 'absolute',
-    width: '75%',
-    height: '48%',
-    borderWidth: 1.5,
-    borderColor: 'rgba(90, 190, 255, 0.6)',
-    borderRadius: 999,
-    opacity: 0.85,
+  planetImageBox: {
+    width: PLANET_DISPLAY_SIZE,
+    height: PLANET_DISPLAY_SIZE,
+    backgroundColor: 'black',
   },
   planetImage: {
-    width: '90%',
-    height: '90%',
-    borderRadius: 999,
-    opacity: 0.96,
+    width: '100%',
+    height: '100%',
+    opacity: 1,
   },
 
   hotspotWrapper: {
@@ -930,29 +784,34 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  planetFooter: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 8,
-    paddingTop: 4,
-  },
-  planetFooterText: {
-    fontSize: 11,
-    color: 'rgba(195, 236, 255, 0.9)',
-  },
-
-  systemFooter: {
-    marginTop: 4,
-    paddingTop: 6,
+  // BOTTOM HUD
+  bottomHud: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     borderTopWidth: 1,
     borderTopColor: 'rgba(110, 190, 255, 0.45)',
+    backgroundColor: 'rgba(3, 10, 30, 0.95)',
   },
-  systemLabel: {
-    fontSize: 12,
-    color: 'rgba(190, 230, 255, 0.95)',
-    textAlign: 'center',
+  bottomTopRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 4,
   },
+  bottomLabelLeft: {
+    fontSize: 11,
+    color: 'rgba(195, 236, 255, 0.95)',
+  },
+  bottomLabelRight: {
+    fontSize: 11,
+    color: 'rgba(195, 236, 255, 0.95)',
+    textAlign: 'right',
+  },
+  bottomDivider: {
+    height: 1,
+    backgroundColor: 'rgba(110, 190, 255, 0.4)',
+    marginVertical: 4,
+  },
+
   systemButtonsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -1018,10 +877,6 @@ const styles = StyleSheet.create({
   modalImage: {
     width: '100%',
     height: 160,
-  },
-  modalImageOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.25)',
   },
   modalScroll: {
     maxHeight: 160,
