@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -50,28 +50,30 @@ const bigBads = [
 
 const BigBadsTab = () => {
   const navigation = useNavigation();
-  const [currentSound, setCurrentSound] = useState(null);
+
+  // keep the actual Audio.Sound instance in a ref (doesn't trigger re-renders)
+  const soundRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // helper: stop/unload theme without navigating
+  // stop/unload theme
   const stopTheme = useCallback(async () => {
     try {
-      if (currentSound) {
-        await currentSound.stopAsync();
-        await currentSound.unloadAsync();
+      if (soundRef.current) {
+        await soundRef.current.stopAsync();
+        await soundRef.current.unloadAsync();
+        soundRef.current = null;
       }
     } catch (e) {
       console.error('Error stopping theme:', e);
     } finally {
-      setCurrentSound(null);
       setIsPlaying(false);
     }
-  }, [currentSound]);
+  }, []);
 
+  // kill audio when leaving this screen
   useFocusEffect(
     useCallback(() => {
       return () => {
-        // when leaving screen, kill music
         stopTheme();
       };
     }, [stopTheme])
@@ -79,27 +81,30 @@ const BigBadsTab = () => {
 
   const playTheme = async () => {
     try {
-      if (!currentSound) {
+      if (!soundRef.current) {
         const { sound } = await Audio.Sound.createAsync(
           require('../../assets/audio/BigThreat.mp4'),
-          { shouldPlay: true, isLooping: true, volume: 0.7 }
+          {
+            isLooping: true,
+            volume: 0.7,
+          }
         );
-        setCurrentSound(sound);
-        await sound.playAsync();
-        setIsPlaying(true);
-      } else if (!isPlaying) {
-        await currentSound.playAsync();
-        setIsPlaying(true);
+        soundRef.current = sound;
+        await soundRef.current.playAsync();
+      } else {
+        await soundRef.current.playAsync();
       }
+      setIsPlaying(true);
     } catch (e) {
       console.error('Error playing theme:', e);
+      setIsPlaying(false);
     }
   };
 
   const pauseTheme = async () => {
     try {
-      if (currentSound && isPlaying) {
-        await currentSound.pauseAsync();
+      if (soundRef.current && isPlaying) {
+        await soundRef.current.pauseAsync();
         setIsPlaying(false);
       }
     } catch (e) {
@@ -107,7 +112,7 @@ const BigBadsTab = () => {
     }
   };
 
-  // NEW: use screen if present, otherwise shared detail screen
+  // use screen if present, otherwise shared detail screen
   const handlePress = async (bigBad) => {
     if (!bigBad.clickable) return;
 
@@ -173,7 +178,7 @@ const BigBadsTab = () => {
               <View style={styles.headerGlass}>
                 <Text style={styles.header}>Big Bads</Text>
                 <Text style={styles.headerSub}>
-                  Cosmic tyrants, reality-breakers, and endgame threats
+                  Tyrants, reality-breakers, and endgame threats
                 </Text>
               </View>
             </TouchableOpacity>
@@ -201,7 +206,7 @@ const BigBadsTab = () => {
 
           {/* CATEGORY + SCROLLER */}
           <View style={styles.scrollWrapper}>
-            <Text style={styles.categoryHeader}>Cosmic Tyrants</Text>
+            <Text style={styles.categoryHeader}>Tyrants</Text>
             <ScrollView
               horizontal
               contentContainerStyle={styles.scrollContainer}

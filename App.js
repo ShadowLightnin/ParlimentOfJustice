@@ -33,6 +33,7 @@ import SignupScreen from './screens/SignupScreen';
 import LoginScreen from './screens/LoginScreen';
 import PublicChatScreen from './screens/PublicChatScreen';
 import VillainsStack from './navigation/VillainsStack';
+import PlanetsStack from './navigation/PlanetsStack';
 import JusticeStack from './navigation/JusticeStack';
 import ShipYardStack from './navigation/ShipYardStack';
 import InfantryStack from './navigation/InfantryStack';
@@ -112,6 +113,7 @@ function AuthenticatedStack() {
       <Stack.Screen name="ForgeScreen" component={ForgeStack} />
       <Stack.Screen name="Constollation" component={ConstollationStack} />
       <Stack.Screen name="JusticeScreen" component={JusticeStack} />
+      <Stack.Screen name="PlanetsScreen" component={PlanetsStack} />
       <Stack.Screen name="ShipYardScreen" component={ShipYardStack} />
       <Stack.Screen name="Infantry" component={InfantryStack} />
       <Stack.Screen name="VillainsScreen" component={VillainsStack} />
