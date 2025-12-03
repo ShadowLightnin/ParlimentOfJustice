@@ -20,11 +20,18 @@ const MAP_BASE_SIZE = Math.min(SCREEN_WIDTH, SCREEN_HEIGHT * 0.8);
 // Galaxy map image
 const GALAXY_MAP = require('../../assets/Space/The_best_Milky_Way_map_by_Gaia_labelled.jpg');
 
+// Generic icon for Star Trek systems (tiny, so reuse a safe asset)
+const TREK_ICON = require('../../assets/Space/Earth.jpg');
+
 /**
  * High-level systems, each linked to a primary world in that system.
  * x / y are 0–1 normalized positions relative to the map image.
+ *
+ * quadrant: 'alpha' | 'beta' | 'gamma' | 'delta' | 'custom'
+ * faction:  'federation' | 'klingon' | 'romulan' | 'cardassian' | 'dominion' | 'borg' | etc.
  */
 const SYSTEMS = [
+  // ===== YOUR JUSTICEVERSE SYSTEMS =====
   {
     id: 'sol',
     name: 'Sol',
@@ -32,6 +39,8 @@ const SYSTEMS = [
     image: require('../../assets/Space/Earth.jpg'),
     x: 0.49,
     y: 0.69, // stays locked to the “Sun” label
+    quadrant: 'alpha',
+    faction: 'justiceverse',
   },
   {
     id: 'nemesis',
@@ -40,6 +49,8 @@ const SYSTEMS = [
     image: require('../../assets/Space/PlanetX.jpg'),
     x: 0.46,
     y: 0.66, // very close, slight offset
+    quadrant: 'alpha',
+    faction: 'justiceverse',
   },
   {
     id: 'rogues',
@@ -48,6 +59,8 @@ const SYSTEMS = [
     image: require('../../assets/Space/Wise.jpg'),
     x: 0.45,
     y: 0.72, // also in the same local patch
+    quadrant: 'alpha',
+    faction: 'justiceverse',
   },
   {
     id: 'ignis',
@@ -56,6 +69,8 @@ const SYSTEMS = [
     image: require('../../assets/Space/Melcornia.jpg'),
     x: 0.60,
     y: 0.60, // deeper toward the bar – feels right for a hotter, harsher system
+    quadrant: 'beta',
+    faction: 'justiceverse',
   },
   {
     id: 'zaxxon',
@@ -64,6 +79,8 @@ const SYSTEMS = [
     image: require('../../assets/Space/Zaxxon.jpg'),
     x: 0.78,
     y: 0.52, // out along another arm
+    quadrant: 'beta',
+    faction: 'justiceverse',
   },
   {
     id: 'older-brother',
@@ -72,6 +89,8 @@ const SYSTEMS = [
     image: require('../../assets/Space/OlderBrother.jpg'),
     x: 0.51,
     y: 0.67, // *very* close to Sol – like a nearby dot on same ring
+    quadrant: 'alpha',
+    faction: 'justiceverse',
   },
   {
     id: 'twin-sister',
@@ -80,6 +99,8 @@ const SYSTEMS = [
     image: require('../../assets/Space/TwinSister.jpg'),
     x: 0.47,
     y: 0.73, // also right in that neighborhood
+    quadrant: 'alpha',
+    faction: 'justiceverse',
   },
   {
     id: 'korrthuun',
@@ -88,17 +109,178 @@ const SYSTEMS = [
     image: require('../../assets/Space/Korrthuun.jpg'),
     x: 0.88,
     y: 0.68, // way out = feels like a remote war-world
+    quadrant: 'beta',
+    faction: 'justiceverse',
+  },
+  {
+    id: '',
+    name: '',
+    planetId: null, // no warp target yet = safe
+    image: require('../../assets/Space/Kolob.jpg'),
+    x: 0.52,
+    y: 0.46, // distant, mysterious location
+    quadrant: 'custom',
+    faction: 'justiceverse',
+  },
+
+  // ===== STAR TREK – ALPHA QUADRANT (Federation & neighbours) =====
+  {
+    id: 'vulcan',
+    name: 'Vulcan',
+    planetId: null,
+    image: TREK_ICON,
+    x: 0.45,
+    y: 0.67,
+    quadrant: 'alpha',
+    faction: 'federation',
+  },
+  {
+    id: 'andoria',
+    name: 'Andoria',
+    planetId: null,
+    image: TREK_ICON,
+    x: 0.46,
+    y: 0.75,
+    quadrant: 'alpha',
+    faction: 'federation',
+  },
+  {
+    id: 'tellar-prime',
+    name: 'Tellar Prime',
+    planetId: null,
+    image: TREK_ICON,
+    x: 0.43,
+    y: 0.71,
+    quadrant: 'alpha',
+    faction: 'federation',
+  },
+  {
+    id: 'ferenginar',
+    name: 'Ferenginar',
+    planetId: null,
+    image: TREK_ICON,
+    x: 0.38,
+    y: 0.63,
+    quadrant: 'alpha',
+    faction: 'ferengi',
+  },
+
+  // ===== STAR TREK – BETA QUADRANT (Klingon, Romulan, Cardassian) =====
+  {
+    id: 'qonos',
+    name: "Qo'noS",
+    planetId: null,
+    image: TREK_ICON,
+    x: 0.62,
+    y: 0.67,
+    quadrant: 'beta',
+    faction: 'klingon',
+  },
+  {
+    id: 'romulus',
+    name: 'Romulus',
+    planetId: null,
+    image: TREK_ICON,
+    x: 0.70,
+    y: 0.63,
+    quadrant: 'beta',
+    faction: 'romulan',
+  },
+  {
+    id: 'cardassia',
+    name: 'Cardassia Prime',
+    planetId: null,
+    image: TREK_ICON,
+    x: 0.54,
+    y: 0.73,
+    quadrant: 'beta',
+    faction: 'cardassian',
+  },
+
+  // ===== STAR TREK – GAMMA QUADRANT (Dominion) – moved to top-left =====
+  {
+    id: 'founders-homeworld',
+    name: "Founders' Homeworld",
+    planetId: null,
+    image: TREK_ICON,
+    x: 0.33,
+    y: 0.30,
+    quadrant: 'gamma',
+    faction: 'dominion',
+  },
+  {
+    id: 'vorta-prime',
+    name: 'Vorta Prime',
+    planetId: null,
+    image: TREK_ICON,
+    x: 0.28,
+    y: 0.22,
+    quadrant: 'gamma',
+    faction: 'dominion',
+  },
+  {
+    id: 'jemhadar-world',
+    name: 'Jem’Hadar World',
+    planetId: null,
+    image: TREK_ICON,
+    x: 0.36,
+    y: 0.40,
+    quadrant: 'gamma',
+    faction: 'dominion',
+  },
+
+  // ===== STAR TREK – DELTA QUADRANT (Borg, Ocampa, Talaxians) – far, outer rim =====
+  {
+    id: 'unimatrix-01',
+    name: 'Unimatrix 01',
+    planetId: null,
+    image: TREK_ICON,
+    x: 0.78,
+    y: 0.22,
+    quadrant: 'delta',
+    faction: 'borg',
+  },
+  {
+    id: 'ocampa',
+    name: 'Ocampa',
+    planetId: null,
+    image: TREK_ICON,
+    x: 0.88,
+    y: 0.18, // pushed way to the edge: first Voyager stop
+    quadrant: 'delta',
+    faction: 'delta-world',
+  },
+  {
+    id: 'talax',
+    name: 'Talax',
+    planetId: null,
+    image: TREK_ICON,
+    x: 0.82,
+    y: 0.26,
+    quadrant: 'delta',
+    faction: 'delta-world',
+  },
+
+  // ===== CYBERTRON (Transformers crossover, also on the far side) =====
+  {
+    id: 'cybertron',
+    name: 'Cybertron',
+    planetId: null,
+    // image: require('../../assets/Space/Cybertron.jpg'),
+    x: 0.80,
+    y: 0.33,
+    quadrant: 'delta',
+    faction: 'cybertronian',
   },
 ];
 
 /**
  * Simple connections between systems, by primary world.
+ * (Left empty for now; you can add Trek routes or Justiceverse routes later.)
  */
 const CONNECTIONS = [
-  // you can re-enable / adjust these if you want route lines later
-//   { from: 'earth', to: 'melcornia' },
-//     { from: 'melcornia', to: 'zaxxon' },
-//     { from: 'zaxxon', to: 'earth' },
+  // Example if you want later:
+  // { from: 'earth', to: 'melcornia' },
 ];
 
 const getSystemByPlanetId = (planetId) =>
@@ -124,11 +306,10 @@ const GalaxyMap = () => {
   const lastScaleRef = useRef(INITIAL_SCALE);
   const lastPanRef = useRef({ x: 0, y: 0 });
   const initialPinchDistanceRef = useRef(null);
-  // NEW: remember scale at the start of a pinch gesture
+  // remember scale at the start of a pinch gesture
   const pinchStartScaleRef = useRef(INITIAL_SCALE);
 
   const MIN_SCALE = 1;
-  // much safer max zoom for phones & desktop
   const MAX_SCALE = SCREEN_WIDTH > 600 ? 6 : 5.5;
 
   const handleBack = () => {
@@ -136,7 +317,8 @@ const GalaxyMap = () => {
   };
 
   const handleSystemPress = (system) => {
-    if (warpingTo) return;
+    // Only warp if the system has a mapped planetId in your PlanetsHome
+    if (warpingTo || !system?.planetId) return;
 
     setWarpingTo(system.planetId);
     warpAnim.setValue(0);
@@ -294,6 +476,79 @@ const GalaxyMap = () => {
               resizeMode="contain"
             />
 
+            {/* QUADRANT DIVIDERS */}
+            <View
+              style={[
+                styles.quadrantLine,
+                {
+                  width: MAP_BASE_SIZE,
+                  left: 0,
+                  top: MAP_BASE_SIZE * 0.5,
+                },
+              ]}
+            />
+            <View
+              style={[
+                styles.quadrantLine,
+                {
+                  height: MAP_BASE_SIZE,
+                  top: 0,
+                  left: MAP_BASE_SIZE * 0.5,
+                },
+              ]}
+            />
+
+            {/* QUADRANT LABELS
+                Alpha: bottom-left
+                Beta:  bottom-right
+                Gamma: top-left
+                Delta: top-right
+            */}
+            <Text
+              style={[
+                styles.quadrantLabel,
+                {
+                  left: MAP_BASE_SIZE * 0.18,
+                  top: MAP_BASE_SIZE * 0.70,
+                },
+              ]}
+            >
+              ALPHA
+            </Text>
+            <Text
+              style={[
+                styles.quadrantLabel,
+                {
+                  left: MAP_BASE_SIZE * 0.68,
+                  top: MAP_BASE_SIZE * 0.70,
+                },
+              ]}
+            >
+              BETA
+            </Text>
+            <Text
+              style={[
+                styles.quadrantLabel,
+                {
+                  left: MAP_BASE_SIZE * 0.18,
+                  top: MAP_BASE_SIZE * 0.18,
+                },
+              ]}
+            >
+              GAMMA
+            </Text>
+            <Text
+              style={[
+                styles.quadrantLabel,
+                {
+                  left: MAP_BASE_SIZE * 0.68,
+                  top: MAP_BASE_SIZE * 0.18,
+                },
+              ]}
+            >
+              DELTA
+            </Text>
+
             {/* CONNECTIONS – drawn in map space */}
             {CONNECTIONS.map((conn, idx) => {
               const fromSys = getSystemByPlanetId(conn.from);
@@ -351,12 +606,30 @@ const GalaxyMap = () => {
               const left = sys.x * MAP_BASE_SIZE;
               const top = sys.y * MAP_BASE_SIZE;
 
+              let quadrantGlowStyle = null;
+              switch (sys.quadrant) {
+                case 'alpha':
+                  quadrantGlowStyle = styles.glowAlpha;
+                  break;
+                case 'beta':
+                  quadrantGlowStyle = styles.glowBeta;
+                  break;
+                case 'gamma':
+                  quadrantGlowStyle = styles.glowGamma;
+                  break;
+                case 'delta':
+                  quadrantGlowStyle = styles.glowDelta;
+                  break;
+                default:
+                  quadrantGlowStyle = null;
+              }
+
               return (
                 <TouchableOpacity
                   key={sys.id}
                   style={[styles.starWrapper, { left, top }]}
                   onPress={() => handleSystemPress(sys)}
-                  activeOpacity={0.9}
+                  activeOpacity={sys.planetId ? 0.9 : 1}
                 >
                   <Animated.View
                     style={[
@@ -370,6 +643,7 @@ const GalaxyMap = () => {
                     <View
                       style={[
                         styles.planetGlow,
+                        quadrantGlowStyle,
                         isCurrentSystem && styles.planetGlowActive,
                       ]}
                     />
@@ -408,7 +682,7 @@ const GalaxyMap = () => {
       {/* HUD */}
       <View style={styles.hud}>
         <Text style={styles.hudText}>
-          Drag to pan, or scroll. Use +/- to zoom. Tap a System to warp.
+          Drag to pan. Pinch or scroll / +/- to zoom. Tap a Justiceverse system to warp.
         </Text>
         {currentPlanetId && (
           <Text style={styles.hudSecondary}>
@@ -511,6 +785,20 @@ const styles = StyleSheet.create({
     height: MAP_BASE_SIZE,
   },
 
+  quadrantLine: {
+    position: 'absolute',
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+  },
+  quadrantLabel: {
+    position: 'absolute',
+    fontSize: 8,
+    letterSpacing: 2,
+    color: 'rgba(240, 240, 255, 0.9)',
+    textShadowColor: 'rgba(0, 0, 0, 0.9)',
+    textShadowRadius: 6,
+    fontWeight: '600',
+  },
+
   starWrapper: {
     position: 'absolute',
     alignItems: 'center',
@@ -530,9 +818,26 @@ const styles = StyleSheet.create({
     shadowRadius: 14,
     shadowOffset: { width: 0, height: 0 },
   },
+  // Quadrant-specific tint
+  glowAlpha: {
+    backgroundColor: 'rgba(120, 180, 255, 0.35)', // bluish
+    shadowColor: '#8ac5ff',
+  },
+  glowBeta: {
+    backgroundColor: 'rgba(255, 130, 130, 0.35)', // reddish
+    shadowColor: '#ff8a8a',
+  },
+  glowGamma: {
+    backgroundColor: 'rgba(210, 130, 255, 0.35)', // purple
+    shadowColor: '#d28aff',
+  },
+  glowDelta: {
+    backgroundColor: 'rgba(140, 255, 180, 0.35)', // greenish
+    shadowColor: '#92ffb8',
+  },
   planetGlowActive: {
-    backgroundColor: 'rgba(200, 255, 180, 0.4)',
-    shadowColor: '#c5ff9a',
+    backgroundColor: 'rgba(244, 206, 12, 0.8)',
+    shadowColor: '#e6d520',
   },
   planetIcon: {
     width: 10,
