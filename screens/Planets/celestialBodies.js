@@ -1,14 +1,11 @@
 // screens/Planets/celestialBodies.js
 
 /**
- * GLOBAL PLANETARY ORDER
- * Sol → Nemesis → Rogues → Ignis → Zaxxon → Older Brother → Twin Sister → Korrthuun
+ * PLANETS / CELESTIAL BODIES – global route order
+ * Sol → Nemesis system → Rogues → Ignis system → Zaxxon → Older Brother → Twin Sister system → Korrthuun System
  */
-
 export const PLANETS = [
-  // ============================
-  // SOL SYSTEM (Prime)
-  // ============================
+
   {
     id: 'Helios',
     name: 'Helios',
@@ -18,7 +15,7 @@ export const PLANETS = [
     background: require('../../assets/Space/Sol.jpg'),
     thumbnail: require('../../assets/Space/Sol.jpg'),
     description:
-      'The Sun — heart of the Sol System and birthplace of Earth, Zion City, and the Parliament.',
+      'The Sun of the Sol System — a stable G-type star whose light birthed Earth, Zion City, and the Parliament of Justice. In the Justiceverse, Helios is watched closely by cosmic factions, because every prophecy starts here.',
   },
   {
     id: 'mercury',
@@ -28,7 +25,8 @@ export const PLANETS = [
     order: 2,
     background: require('../../assets/Space/Mercury.jpg'),
     thumbnail: require('../../assets/Space/Mercury.jpg'),
-    description: 'A scorched metal-rich world.',
+    description:
+      'A scorched, metal-rich world skimming close to Helios. In lore, Mercury is used as a proving ground for experimental heat-shielding and early prototype armor tests.',
   },
   {
     id: 'venus',
@@ -38,7 +36,8 @@ export const PLANETS = [
     order: 3,
     background: require('../../assets/Space/Venus.jpg'),
     thumbnail: require('../../assets/Space/Venus.jpg'),
-    description: 'A runaway greenhouse hell.',
+    description:
+      'A runaway-greenhouse hell wrapped in sulfuric clouds. Rumors say Erevos once considered terraforming Venus into a fortress world, but even he deemed it too unstable.',
   },
   {
     id: 'earth',
@@ -52,20 +51,20 @@ export const PLANETS = [
       {
         id: 'zion',
         name: 'Zion City',
-        description: 'The Parliament’s heart in Utah.',
+        description: 'The Parliament’s heart in Utah, a rising modern megacity.',
         image: require('../../assets/ParliamentTower.jpg'),
         position: { top: '55%', left: '18%' },
       },
       {
         id: 'aegis',
         name: 'The Aegis Compound',
-        description: 'Desert fortress HQ for the Parliament.',
+        description: 'Desert fortress HQ for the Parliament’s true operations.',
         image: require('../../assets/BackGround/ShipYard.jpg'),
         position: { top: '35%', left: '70%' },
       },
     ],
     description:
-      'Homeworld of the Parliament of Justice and the site of The Incident.',
+      'Homeworld of the Parliament of Justice and the site of The Incident. Modern Earth looks ordinary from orbit, but Zion City and the Aegis Compound have turned it into the nexus of a coming cosmic war.',
   },
   {
     id: 'Luna',
@@ -75,7 +74,8 @@ export const PLANETS = [
     order: 5,
     background: require('../../assets/Space/Luna.jpg'),
     thumbnail: require('../../assets/Space/Luna.jpg'),
-    description: 'Earth’s ancient moon.',
+    description:
+      'Earth’s ancient moon, scarred by impacts and human footprints. Parliament listening posts and early-warning arrays are buried deep under its maria.',
   },
   {
     id: 'mars',
@@ -85,7 +85,8 @@ export const PLANETS = [
     order: 6,
     background: require('../../assets/Space/Mars.jpg'),
     thumbnail: require('../../assets/Space/Mars.jpg'),
-    description: 'The red desert world.',
+    description:
+      'The red desert world. In the Justiceverse, Mars is the site of abandoned pre-Incident research stations and the first failed attempt at an off-world Parliament outpost.',
   },
   {
     id: 'jupiter',
@@ -95,7 +96,8 @@ export const PLANETS = [
     order: 7,
     background: require('../../assets/Space/Jupiter.jpg'),
     thumbnail: require('../../assets/Space/Jupiter.jpg'),
-    description: 'A titanic gas giant.',
+    description:
+      'A titanic gas giant and the system’s gravitational shield. Jupiter’s magnetosphere hides classified deep-space docks used by Parliament capital ships.',
   },
   {
     id: 'saturn',
@@ -105,7 +107,8 @@ export const PLANETS = [
     order: 8,
     background: require('../../assets/Space/Saturn.jpg'),
     thumbnail: require('../../assets/Space/Saturn.jpg'),
-    description: 'The ringed giant.',
+    description:
+      'The ringed giant. Mining guilds operate in the rings under Parliament oversight, harvesting ice and rock for shipyards near Titan.',
   },
   {
     id: 'titan',
@@ -115,7 +118,8 @@ export const PLANETS = [
     order: 9,
     background: require('../../assets/Space/Titan.jpg'),
     thumbnail: require('../../assets/Space/Titan.jpg'),
-    description: 'A hazy moon of Saturn.',
+    description:
+      'Saturn’s hazy, hydrocarbon-rich moon. Titan hosts secret black-ops labs where experimental Maw-countermeasure tech is tested in the cold, orange gloom.',
   },
   {
     id: 'uranus',
@@ -125,7 +129,8 @@ export const PLANETS = [
     order: 10,
     background: require('../../assets/Space/Uranus.jpg'),
     thumbnail: require('../../assets/Space/Uranus.jpg'),
-    description: 'An ice giant tilted on its side.',
+    description:
+      'An ice giant tilted on its side, wrapped in pale blue clouds. In lore, Uranus marks the edge of routine Parliament patrols in the Sol System.',
   },
   {
     id: 'neptune',
@@ -135,7 +140,8 @@ export const PLANETS = [
     order: 11,
     background: require('../../assets/Space/Neptune.jpg'),
     thumbnail: require('../../assets/Space/Neptune.jpg'),
-    description: 'The far blue giant.',
+    description:
+      'The far blue giant, guardian of the deep Kuiper Belt. Its storms mask the movements of smugglers and fringe cults who worship the Maw.',
   },
   {
     id: 'triton',
@@ -145,7 +151,8 @@ export const PLANETS = [
     order: 12,
     background: require('../../assets/Space/Triton.jpg'),
     thumbnail: require('../../assets/Space/Triton.jpg'),
-    description: 'Captured retrograde moon.',
+    description:
+      'Neptune’s captured, retrograde moon. Parliament surveyors suspect ancient alien artifacts buried beneath its cryovolcanic plains.',
   },
   {
     id: 'pluto',
@@ -155,7 +162,8 @@ export const PLANETS = [
     order: 13,
     background: require('../../assets/Space/Pluto.jpg'),
     thumbnail: require('../../assets/Space/Pluto.jpg'),
-    description: 'Cold dwarf world.',
+    description:
+      'A lonely dwarf world on the system’s fringe. Pluto is a refueling and listening waypoint for ships vanishing into the dark beyond Sol.',
   },
   {
     id: 'quaoar',
@@ -165,7 +173,8 @@ export const PLANETS = [
     order: 14,
     background: require('../../assets/Space/Quaoar.jpg'),
     thumbnail: require('../../assets/Space/Quaoar.jpg'),
-    description: 'Kuiper Belt dwarf with unusual rings.',
+    description:
+      'A distant Kuiper Belt dwarf with fragile rings. In the Justiceverse, Quaoar’s unusual ring system is suspected to be the residue of a shattered Maw probe.',
   },
   {
     id: 'planet9',
@@ -175,7 +184,8 @@ export const PLANETS = [
     order: 15,
     background: require('../../assets/Space/Planet9.jpg'),
     thumbnail: require('../../assets/Space/Planet9.jpg'),
-    description: 'Hypothetical deep planet.',
+    description:
+      'A hypothesized super-Earth or mini-Neptune lurking in the deep dark, inferred from the orbits of distant objects. In-universe, Planet 9 is a ghost-mass the Parliament has not yet fully confirmed.',
   },
   {
     id: 'planet10',
@@ -185,89 +195,91 @@ export const PLANETS = [
     order: 16,
     background: require('../../assets/Space/Planet10.jpg'),
     thumbnail: require('../../assets/Space/Planet10.jpg'),
-    description: 'Another hypothetical outer giant.',
+    description:
+      'A theoretical second hidden giant beyond Planet 9. Some Enlightened seers claim Planet 10 is a Maw seed, slowly waking on the edge of Sol.',
   },
 
-  // ============================
-  // NEMESIS (Prime)
-  // ============================
+  // ===== NEMESIS STAR SYSTEM =====
   {
     id: 'nemesis',
     name: 'Nemesis',
     universe: 'prime',
     systemId: 'nemesis',
-    order: 17,
+    order: 16,
     background: require('../../assets/Space/Nemesis.jpg'),
     thumbnail: require('../../assets/Space/Nemesis.jpg'),
-    description: 'The hypothetical “dark twin” of the Sun.',
+    description:
+      'A hypothetical dark companion to Helios — a faint star or brown dwarf on a vast orbit. In the Justiceverse, Nemesis is whispered about in cult circles as the “shadow sun” that heralds cosmic reset events.',
   },
   {
     id: 'goblin-planet',
     name: 'The Goblin Perturbing Planet',
     universe: 'prime',
     systemId: 'nemesis',
-    order: 18,
+    order: 17,
     background: require('../../assets/Space/TheGoblinsPerturbingPlanet.jpg'),
     thumbnail: require('../../assets/Space/TheGoblinsPerturbingPlanet.jpg'),
-    description: 'Massive unseen perturber.',
+    description:
+      'A massive unseen world invoked to explain the bizarre orbit of the distant object nicknamed “The Goblin.” In lore, it is a stealth-shrouded waystation used by deep-space raiders.',
   },
   {
     id: 'nibiru',
     name: 'Nibiru',
     universe: 'prime',
     systemId: 'nemesis',
-    order: 19,
+    order: 18,
     background: require('../../assets/Space/Nibiru.jpg'),
     thumbnail: require('../../assets/Space/Nibiru.jpg'),
-    description: 'Mythical doomsday world.',
+    description:
+      'The mythical “doomsday planet” of conspiracy legends. In the Justiceverse, Nibiru is not a real world but a forged data-shadow planted by Erevos to misdirect paranoid civilizations.',
   },
   {
     id: 'planet-x',
     name: 'Planet X',
     universe: 'prime',
     systemId: 'nemesis',
-    order: 20,
+    order: 19,
     background: require('../../assets/Space/PlanetX.jpg'),
     thumbnail: require('../../assets/Space/PlanetX.jpg'),
-    description: 'Catch-all name for unknown massive objects.',
+    description:
+      'A catch-all name for any undiscovered massive body roaming beyond known planets. Parliament archives label several different candidate objects as “Planet X,” none yet confirmed.',
   },
 
-  // ============================
-  // ROGUE OBJECTS (Prime)
-  // ============================
+  // ===== ROGUE OBJECTS =====
   {
     id: 'wise',
     name: 'Wise',
     universe: 'prime',
     systemId: 'rogues',
-    order: 21,
+    order: 20,
     background: require('../../assets/Space/Wise.jpg'),
     thumbnail: require('../../assets/Space/Wise.jpg'),
-    description: 'A cold rogue world.',
+    description:
+      'A cold rogue object detected in deep survey data — a wandering body untethered from any star. Justiceverse rumor: Wise was thrown free of its system by an early encounter with the Maw.',
   },
 
-  // ============================
-  // IGNIS SYSTEM (Pinnacle)
-  // ============================
+  // ===== IGNIS SYSTEM (PINNACLE) – black hole + star + others =====
   {
     id: 'noctheron',
     name: 'Noctheron',
     universe: 'pinnacle',
     systemId: 'ignis',
-    order: 22,
+    order: 21,
     background: require('../../assets/Space/Noctheron.jpg'),
     thumbnail: require('../../assets/Space/Noctheron.jpg'),
-    description: 'The hungry black hole.',
+    description:
+      'A hungry black hole at the heart of the Ignis System. Space here folds and screams; this is one of the gateways through which the Maw’s influence seeps into the Pinnacle Universe.',
   },
   {
     id: 'ignis-prime',
     name: 'Ignis Prime',
     universe: 'pinnacle',
     systemId: 'ignis',
-    order: 23,
+    order: 22,
     background: require('../../assets/Space/IgnisPrime.jpg'),
     thumbnail: require('../../assets/Space/IgnisPrime.jpg'),
-    description: 'The star of the Ignis System.',
+    description:
+      'The central star of the Ignis System, burning hot and unstable. Its flares carve shifting safe-lanes through the warped gravity around Noctheron.',
   },
   {
     id: 'vortanite-field',
@@ -277,7 +289,8 @@ export const PLANETS = [
     order: 24,
     background: require('../../assets/Space/Vortaniteasteroidfield.jpg'),
     thumbnail: require('../../assets/Space/Vortaniteasteroidfield.jpg'),
-    description: 'Asteroids infused with vortanite.',
+    description:
+      'A dense asteroid belt saturated with vortanite — an exotic ore that amplifies both starship drives and Maw corruption. Mining here is insanely profitable and insanely dangerous.',
   },
   {
     id: 'melcornia',
@@ -287,13 +300,20 @@ export const PLANETS = [
     order: 25,
     background: require('../../assets/Space/Melcornia.jpg'),
     thumbnail: require('../../assets/Space/Melcornia.jpg'),
+    hotspots: [
+      {
+        id: 'maw-rift',
+        name: 'The Maw Rift',
+        description: 'The scar where the Maw’s influence first shattered the planet.',
+        image: require('../../assets/Space/Mirror.jpg'),
+        position: { top: '48%', left: '28%' },
+      },
+    ],
     description:
-      'Fragmented planet scarred by the Maw.',
+      'Once a living world, now a fractured, haunted planet carved open by the Maw. This is where Velathar fell, and where Void Walker’s destiny took its darkest turn.',
   },
 
-  // ============================
-  // ZAXXON SYSTEM (Pinnacle)
-  // ============================
+  // ===== ZAXXON SYSTEM =====
   {
     id: 'zaxxon',
     name: 'Zaxxon',
@@ -302,12 +322,11 @@ export const PLANETS = [
     order: 26,
     background: require('../../assets/Space/Zaxxon.jpg'),
     thumbnail: require('../../assets/Space/Zaxxon.jpg'),
-    description: 'Fortress world wrapped in defensive rings.',
+    description:
+      'A fortress-world wrapped in defensive rings and shipyards. Zaxxon is a militarized hub contested by Parliament fleets, Thunder Born raiders, and Maw-touched warlords.',
   },
 
-  // ============================
-  // OLDER BROTHER (Prime)
-  // ============================
+  // ===== OLDER BROTHER STAR =====
   {
     id: 'older-brother',
     name: 'Older Brother',
@@ -316,12 +335,11 @@ export const PLANETS = [
     order: 27,
     background: require('../../assets/Space/OlderBrother.jpg'),
     thumbnail: require('../../assets/Space/OlderBrother.jpg'),
-    description: 'The Sun’s solar sibling.',
+    description:
+      'The star HD 162826 — a suspected solar sibling around 110 light-years away in Hercules, slightly warmer and more massive than the Sun. In the Justiceverse, “Older Brother” watches the Sol System from afar, its own worlds bearing echoes of humanity’s lost potential.',
   },
 
-  // ============================
-  // TWIN SISTER (Prime)
-  // ============================
+  // ===== TWIN SISTER SYSTEM =====
   {
     id: 'twin-sister',
     name: 'Twin Sister',
@@ -330,7 +348,8 @@ export const PLANETS = [
     order: 28,
     background: require('../../assets/Space/TwinSister.jpg'),
     thumbnail: require('../../assets/Space/TwinSister.jpg'),
-    description: 'The Sun’s twin star.',
+    description:
+      'The star HD 186302 — an almost perfect solar twin about 184 light-years away. Astronomers consider it one of the Sun’s closest analogues; in-universe it is literally the Sun’s “twin sister,” with a system that feels eerily familiar.',
   },
   {
     id: 'planet-v',
@@ -340,7 +359,8 @@ export const PLANETS = [
     order: 29,
     background: require('../../assets/Space/PlanetV.jpg'),
     thumbnail: require('../../assets/Space/PlanetV.jpg'),
-    description: 'Echo of our lost early planet.',
+    description:
+      'An echo of the theorized lost “Planet V” of the early solar system, here realized as a fully intact world orbiting Twin Sister. Parliament xenologists study it to understand what Sol’s own missing planet might have been.',
   },
   {
     id: 'ice-giant',
@@ -350,97 +370,121 @@ export const PLANETS = [
     order: 30,
     background: require('../../assets/Space/IceGiant.jpg'),
     thumbnail: require('../../assets/Space/IceGiant.jpg'),
-    description: 'Distant ice giant.',
+    description:
+      'A distant ice giant in the Twin Sister system that mirrors our own Uranus/Neptune analogues. Its storm bands carry radio whispers that sound uncannily like human voices.',
   },
 
-  // ============================
-  // KORRTHUUN (Prime Only)
-  // ============================
+  // ===== KORRTHUUN SYSTEM (TORATH'S DOMAIN) =====
   {
     id: 'korrthuun',
     name: 'Korrthuun',
-    universe: 'prime',
+    universe: 'prime',  // ⬅️ Prime-only, so it won't show when viewing Pinnacle
     systemId: 'korrthuun',
     order: 31,
     background: require('../../assets/Space/Korrthuun.jpg'),
     thumbnail: require('../../assets/Space/Korrthuun.jpg'),
     description:
-      'Torath’s war-scarred throne world.',
+      'Torath’s throne world — once called Draegos, now reforged into an industrial, war-scarred dystopia. The Nihilborn march across its obsidian plains, and the Black Crucible rises here, housing the Omega Core that feeds Torath’s dominion.',
   },
 ];
 
-/** Earth sides */
+
+/**
+ * Earth special sides (only Earth uses these inside the planet disk)
+ */
 export const EARTH_SIDE_IMAGES = {
   na: require('../../assets/Space/NorthAmericanSide.jpg'),
   ph: require('../../assets/Space/PhilippinesSide.jpg'),
 };
 
-/** SYSTEMS (Order matters) */
+/**
+ * Star systems list for jump controls
+ */
 export const SYSTEMS = [
-  { id: 'sol', name: 'Sol System', order: 1 },
-  { id: 'nemesis', name: 'Nemesis System', order: 2 },
-  { id: 'rogues', name: 'Rogue Objects', order: 3 },
-  { id: 'ignis', name: 'Ignis System', order: 4 },
-  { id: 'zaxxon', name: 'Zaxxon System', order: 5 },
-  { id: 'older-brother', name: 'Older Brother Star', order: 6 },
-  { id: 'twin-sister', name: 'Twin Sister System', order: 7 },
-  { id: 'korrthuun', name: 'Korrthuun System', order: 8 },
+  { id: 'sol',           name: 'Sol System',          order: 1 },
+  { id: 'nemesis',       name: 'Nemesis System',      order: 2 },
+  { id: 'rogues',        name: 'Rogues',              order: 3 },
+  { id: 'ignis',         name: 'Ignis System',        order: 4 },
+  { id: 'zaxxon',        name: 'Zaxxon System',       order: 5 },
+  { id: 'older-brother', name: 'Older Brother Star',  order: 6 },
+  { id: 'twin-sister',   name: 'Twin Sister System',  order: 7 },
+  { id: 'korrthuun',     name: 'Korrthuun System',    order: 8 },
 ];
 
-/** Sorting */
-export const sortPlanets = () =>
-  [...PLANETS].sort((a, b) => (a.order || 0) - (b.order || 0));
+export const sortPlanets = () => {
+  return [...PLANETS].sort((a, b) => (a.order || 0) - (b.order || 0));
+};
 
 /**
- * UNIVERSE VISIBILITY LOGIC (FIXED)
- * Prime Universe → sees EVERYTHING
- * Pinnacle Universe → sees ONLY planets where planet.universe === 'pinnacle'
+ * Universe visibility rules
+ * - planet.universe === 'prime'    -> exists only in Prime view
+ * - planet.universe === 'pinnacle' -> exists in BOTH Prime and Pinnacle views
+ *
+ * View logic:
+ * - viewUniverse === 'prime'    -> see everything
+ * - viewUniverse === 'pinnacle' -> only see shared ('pinnacle') stuff
  */
 export const isVisibleInUniverse = (planetUniverse, viewUniverse) => {
-  if (viewUniverse === 'prime') return true;
-  if (viewUniverse === 'pinnacle') return planetUniverse === 'pinnacle';
-  return true;
+  if (!viewUniverse) return true; // fallback – show all if not provided
+
+  if (viewUniverse === 'prime') {
+    return true; // Prime sees everything
+  }
+
+  if (viewUniverse === 'pinnacle') {
+    return planetUniverse === 'pinnacle'; // Pinnacle sees only shared worlds
+  }
+
+  return true; // default
 };
 
-export const getPlanetsForUniverse = (viewUniverse) =>
-  sortPlanets().filter((p) => isVisibleInUniverse(p.universe, viewUniverse));
+/**
+ * Get planets filtered by universe mode, sorted by order.
+ */
+export const getPlanetsForUniverse = (viewUniverse) => {
+  return [...PLANETS]
+    .filter(p => isVisibleInUniverse(p.universe, viewUniverse))
+    .sort((a, b) => (a.order || 0) - (b.order || 0));
+};
 
+/**
+ * Get systems that have at least one visible world in this universe mode.
+ */
 export const getSystemsForUniverse = (viewUniverse) => {
   const visiblePlanets = getPlanetsForUniverse(viewUniverse);
-  const visibleSystemIds = new Set(visiblePlanets.map((p) => p.systemId));
+  const visibleSystemIds = new Set(visiblePlanets.map(p => p.systemId));
 
-  return SYSTEMS.filter((sys) => visibleSystemIds.has(sys.id)).sort(
-    (a, b) => a.order - b.order
-  );
+  return SYSTEMS
+    .filter(sys => visibleSystemIds.has(sys.id))
+    .sort((a, b) => (a.order || 0) - (b.order || 0));
 };
 
-/** Orbit label rules */
-const CENTRAL_BODY_IDS = [
-  'Helios',
-  'noctheron',
-  'nemesis',
-  'older-brother',
-  'twin-sister',
-];
 
+/** IDs that should be treated as central bodies (stars / black hole, no orbit index) */
+const CENTRAL_BODY_IDS = ['Helios', 'ignis-black-hole', 'nemesis', 'older-brother', 'twin-sister'];
+
+/** IDs that are moons (orbit planets, not the system’s central mass) */
 const MOON_IDS = ['Luna', 'titan', 'triton'];
 
-const isCentralBody = (p) => CENTRAL_BODY_IDS.includes(p.id);
-const isMoon = (p) => MOON_IDS.includes(p.id);
+const isCentralBody = (body) => CENTRAL_BODY_IDS.includes(body.id);
+const isMoon = (body) => MOON_IDS.includes(body.id);
 
-export const getOrbitPositionLabel = (planet, all) => {
+/**
+ * Compute "Orbit position" label per system.
+ * - Central bodies (stars / black hole) return null.
+ * - Moons are ignored when computing orbit index.
+ * - For each system, non-central, non-moon bodies are sorted by `order` and numbered 1..N.
+ */
+export const getOrbitPositionLabel = (planet, allPlanets) => {
   if (!planet) return null;
   if (isCentralBody(planet)) return null;
 
-  const same = all
-    .filter(
-      (p) =>
-        p.systemId === planet.systemId &&
-        !isCentralBody(p) &&
-        !isMoon(p)
-    )
-    .sort((a, b) => a.order - b.order);
+  const sameSystemBodies = allPlanets
+    .filter(p => p.systemId === planet.systemId && !isCentralBody(p) && !isMoon(p))
+    .sort((a, b) => (a.order || 0) - (b.order || 0));
 
-  const idx = same.findIndex((p) => p.id === planet.id);
-  return idx === -1 ? null : idx + 1;
+  const idx = sameSystemBodies.findIndex(p => p.id === planet.id);
+  if (idx === -1) return null;
+
+  return idx + 1;
 };

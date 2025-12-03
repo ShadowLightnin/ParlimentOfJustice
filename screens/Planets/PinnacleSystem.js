@@ -1,5 +1,5 @@
-// screens/Planets/GalaxyMap.js
-import React, { useState, useRef, useEffect } from 'react';
+// screens/Planets/PinnacleGalaxyMap.js
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -12,7 +12,6 @@ import {
   Platform,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
   SYSTEMS,
@@ -34,13 +33,7 @@ const Warp3Gif = require('../../assets/Space/warp3.gif');
 
 // On web / IG in-app browser, big GIF + animation can be crashy.
 // So we only use the warp GIF on native by default.
-const USE_WARP_GIF = Platform;
-
-const ICON_SIZE_STORAGE_KEY = 'galaxy_icon_size';
-const MIN_ICON_SIZE = 2;
-const MAX_ICON_SIZE = 10;
-const ICON_STEP = 1;
-
+const USE_WARP_GIF = Platform.OS !== 'web';
 
 const getQuadrantGlowStyle = (quadrant) => {
   switch (quadrant) {
@@ -57,21 +50,6 @@ const getQuadrantGlowStyle = (quadrant) => {
   }
 };
 
-// ----- COORD HELPERS (support 0–1 or 0–100) -----
-const normalizeCoord = (value) => {
-  if (value == null || Number.isNaN(value)) return 0;
-
-  // If already in 0–1 range, treat as normalized
-  if (value >= 0 && value <= 1) return value;
-
-  // Otherwise treat as "0–100 grid units"
-  // e.g. 49.0 -> 0.49, 73.2 -> 0.732
-  return value / 100;
-};
-
-const coordToPixel = (value) => normalizeCoord(value) * MAP_BASE_SIZE;
-// -----------------------------------------------
-
 // Helper: distance between 2 touches
 const getTouchDistance = (touches) => {
   if (!touches || touches.length < 2) return 0;
@@ -81,11 +59,12 @@ const getTouchDistance = (touches) => {
   return Math.sqrt(dx * dx + dy * dy);
 };
 
-const GalaxyMap = () => {
+const PinnacleGalaxyMap = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const fromUniverse = route.params?.fromUniverse || 'prime';
+  // This screen is always Pinnacle universe
+  const fromUniverse = 'pinnacle';
   const currentPlanetId = route.params?.currentPlanetId || null;
 
   // WARP STATE
@@ -105,60 +84,20 @@ const GalaxyMap = () => {
   const pinchStartScaleRef = useRef(INITIAL_SCALE);
 
   const MIN_SCALE = 1;
-  const MAX_SCALE = SCREEN_WIDTH > 600 ? 10 : 5.5;
-
-// === PLANET ICON SIZE (0.5–10), persisted ===
-const [iconSize, setIconSize] = useState(3);
-
-useEffect(() => {
-  const loadSize = async () => {
-    try {
-      const stored = await AsyncStorage.getItem(ICON_SIZE_STORAGE_KEY);
-      if (!stored) return;
-
-      let parsed = parseFloat(stored);
-      if (Number.isNaN(parsed)) return;
-
-      // clamp into valid range
-      parsed = Math.max(MIN_ICON_SIZE, Math.min(MAX_ICON_SIZE, parsed));
-      setIconSize(parsed);
-    } catch (e) {
-      console.warn('Failed to load galaxy icon size', e);
-    }
-  };
-  loadSize();
-}, []);
-
-const setAndPersistIconSize = async (newSize) => {
-  const clamped = Math.max(MIN_ICON_SIZE, Math.min(MAX_ICON_SIZE, newSize));
-  setIconSize(clamped);
-  try {
-    await AsyncStorage.setItem(ICON_SIZE_STORAGE_KEY, String(clamped));
-  } catch (e) {
-    console.warn('Failed to save galaxy icon size', e);
-  }
-};
-
-const handleIconSizeIncrement = () => {
-  setAndPersistIconSize(iconSize + ICON_STEP);
-};
-
-const handleIconSizeDecrement = () => {
-  setAndPersistIconSize(iconSize - ICON_STEP);
-};
-
+  const MAX_SCALE = SCREEN_WIDTH > 600 ? 7 : 5.5;
 
   const handleBack = () => {
     try {
-      navigation.goBack();
+      // Explicitly go back to Pinnacle planets screen
+      navigation.navigate('PinnaclePlanets');
     } catch (err) {
-      console.warn('GalaxyMap back navigation error:', err);
+      console.warn('PinnacleGalaxyMap back navigation error:', err);
     }
   };
 
   const handleSystemPress = (system) => {
     try {
-      // Only warp if the system has a mapped planetId in your PlanetsHome
+      // Only warp if the system has a mapped planetId
       if (warpingTo || !system?.planetId) return;
 
       setWarpingTo(system.planetId);
@@ -174,15 +113,15 @@ const handleIconSizeDecrement = () => {
         warpAnim.setValue(0);
 
         try {
-          navigation.navigate('PlanetsHome', {
+          navigation.navigate('PinnaclePlanets', {
             initialPlanetId: targetPlanetId,
           });
         } catch (err) {
-          console.warn('GalaxyMap navigation error:', err);
+          console.warn('PinnacleGalaxyMap navigation error:', err);
         }
       });
     } catch (err) {
-      console.warn('GalaxyMap handleSystemPress error:', err);
+      console.warn('PinnacleGalaxyMap handleSystemPress error:', err);
       setWarpingTo(null);
       warpAnim.setValue(0);
     }
@@ -192,10 +131,7 @@ const handleIconSizeDecrement = () => {
     ? getSystemByPlanetId(currentPlanetId)
     : null;
 
-  // --- FILTER SYSTEMS BY UNIVERSE ---
-  // Using the same universe semantics as planets:
-  // - 'prime' view: see all systems
-  // - 'pinnacle' view: only systems tagged universe === 'pinnacle'
+  // --- FILTER SYSTEMS BY UNIVERSE (Pinnacle only) ---
   const visibleSystems = getSystemsForUniverse(fromUniverse);
   const visibleSystemIds = new Set(visibleSystems.map((s) => s.id));
 
@@ -243,7 +179,7 @@ const handleIconSizeDecrement = () => {
         const touches = evt.nativeEvent?.touches || [];
 
         // Pinch (two fingers) – native only; web falls back to scroll/zoom buttons
-        if (touches.length === 2 && Platform) {
+        if (touches.length === 2 && Platform.OS !== 'web') {
           const currentDistance = getTouchDistance(touches);
           if (initialPinchDistanceRef.current) {
             let nextScale =
@@ -286,9 +222,6 @@ const handleIconSizeDecrement = () => {
     })
   ).current;
 
-  // Derived sizes so glow stays centered & proportional
-  const glowSize = iconSize + 2; // can tweak if you want a bigger/smaller halo
-
   return (
     <View style={styles.root}>
       {/* HEADER */}
@@ -302,12 +235,8 @@ const handleIconSizeDecrement = () => {
         </TouchableOpacity>
 
         <View style={styles.headerCenter}>
-          <Text style={styles.title}>Galaxy Map</Text>
-          <Text style={styles.subtitle}>
-            {fromUniverse === 'prime'
-              ? 'Prime Universe Stellar Chart'
-              : 'Pinnacle Universe Stellar Chart'}
-          </Text>
+          <Text style={styles.title}>Pinnacle Galaxy Map</Text>
+          <Text style={styles.subtitle}>Pinnacle Universe Stellar Chart</Text>
         </View>
 
         <View style={{ width: 60 }} />
@@ -333,6 +262,9 @@ const handleIconSizeDecrement = () => {
               style={styles.galaxyImage}
               resizeMode="contain"
             />
+
+            {/* RED TINT OVERLAY */}
+            <View style={styles.redTint} pointerEvents="none" />
 
             {/* QUADRANT DIVIDERS */}
             <View
@@ -404,10 +336,10 @@ const handleIconSizeDecrement = () => {
                 return null;
               }
 
-              const x1 = coordToPixel(fromSys.x);
-              const y1 = coordToPixel(fromSys.y);
-              const x2 = coordToPixel(toSys.x);
-              const y2 = coordToPixel(toSys.y);
+              const x1 = fromSys.x * MAP_BASE_SIZE;
+              const y1 = fromSys.y * MAP_BASE_SIZE;
+              const x2 = toSys.x * MAP_BASE_SIZE;
+              const y2 = toSys.y * MAP_BASE_SIZE;
 
               const dx = x2 - x1;
               const dy = y2 - y1;
@@ -452,20 +384,14 @@ const handleIconSizeDecrement = () => {
                   })
                 : 1;
 
-              const centerX = coordToPixel(sys.x);
-              const centerY = coordToPixel(sys.y);
+              const left = sys.x * MAP_BASE_SIZE;
+              const top = sys.y * MAP_BASE_SIZE;
               const quadrantGlowStyle = getQuadrantGlowStyle(sys.quadrant);
 
               return (
                 <TouchableOpacity
                   key={sys.id}
-                  style={[
-                    styles.starWrapper,
-                    {
-                      left: centerX - iconSize / 2,
-                      top: centerY - iconSize / 2,
-                    },
-                  ]}
+                  style={[styles.starWrapper, { left, top }]}
                   onPress={() => handleSystemPress(sys)}
                   activeOpacity={sys.planetId ? 0.9 : 1}
                 >
@@ -475,29 +401,17 @@ const handleIconSizeDecrement = () => {
                       { transform: [{ scale: scaleWarp }], opacity },
                     ]}
                   >
-                  <View
-                    style={[
-                      styles.planetGlow,
-                      quadrantGlowStyle,
-                      isCurrentSystem && styles.planetGlowActive,
-                      {
-                        width: glowSize,
-                        height: glowSize,
-                        borderRadius: glowSize / 2,
-                      },
-                    ]}
-                  />
+                    <View
+                      style={[
+                        styles.planetGlow,
+                        quadrantGlowStyle,
+                        isCurrentSystem && styles.planetGlowActive,
+                      ]}
+                    />
                     {sys.image && (
                       <Image
                         source={sys.image}
-                        style={[
-                          styles.planetIcon,
-                          {
-                            width: iconSize,
-                            height: iconSize,
-                            borderRadius: iconSize / 2,
-                          },
-                        ]}
+                        style={styles.planetIcon}
                         resizeMode="cover"
                       />
                     )}
@@ -541,30 +455,6 @@ const handleIconSizeDecrement = () => {
               : currentPlanetId.toUpperCase()}
           </Text>
         )}
-
-        {/* ICON SIZE +/- CONTROL */}
-        <View style={styles.sizeToggleRow}>
-          <Text style={styles.sizeToggleLabel}>Icon size:</Text>
-
-          <TouchableOpacity
-            style={styles.sizeToggleButton}
-            onPress={handleIconSizeDecrement}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.sizeToggleText}>−</Text>
-          </TouchableOpacity>
-
-          <Text style={styles.sizeValueText}>{iconSize.toFixed(1)}</Text>
-
-          <TouchableOpacity
-            style={styles.sizeToggleButton}
-            onPress={handleIconSizeIncrement}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.sizeToggleText}>＋</Text>
-          </TouchableOpacity>
-        </View>
-
       </View>
 
       {/* Warp overlay */}
@@ -614,13 +504,13 @@ const styles = StyleSheet.create({
   backButton: {
     paddingVertical: 8,
     paddingHorizontal: 12,
-    backgroundColor: 'rgba(5, 20, 60, 0.9)',
+    backgroundColor: 'rgba(60, 0, 40, 0.9)',
     borderRadius: 999,
     borderWidth: 1,
-    borderColor: 'rgba(153, 215, 255, 0.8)',
+    borderColor: 'rgba(255, 100, 170, 0.9)',
   },
   backText: {
-    color: '#E6F7FF',
+    color: '#FFE6FF',
     fontSize: 14,
     fontWeight: 'bold',
   },
@@ -630,15 +520,15 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    color: '#F5F1FF',
+    color: '#FFE9FF',
     fontWeight: 'bold',
-    textShadowColor: '#b077ff',
-    textShadowRadius: 14,
+    textShadowColor: '#ff4f8a',
+    textShadowRadius: 16,
   },
   subtitle: {
     marginTop: 2,
     fontSize: 11,
-    color: 'rgba(225, 205, 255, 0.9)',
+    color: 'rgba(255, 190, 230, 0.95)',
   },
 
   starfield: {
@@ -652,7 +542,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: 'rgba(120, 190, 255, 0.7)',
+    borderColor: 'rgba(255, 90, 160, 0.7)',
     backgroundColor: 'black',
   },
   mapInner: {
@@ -664,17 +554,23 @@ const styles = StyleSheet.create({
     width: MAP_BASE_SIZE,
     height: MAP_BASE_SIZE,
   },
+  redTint: {
+    position: 'absolute',
+    width: MAP_BASE_SIZE,
+    height: MAP_BASE_SIZE,
+    backgroundColor: 'rgba(150, 0, 50, 0.35)',
+  },
 
   quadrantLine: {
     position: 'absolute',
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    backgroundColor: 'rgba(255, 140, 190, 0.35)',
   },
   quadrantLabel: {
     position: 'absolute',
     fontSize: 8,
     letterSpacing: 2,
-    color: 'rgba(240, 240, 255, 0.9)',
-    textShadowColor: 'rgba(0, 0, 0, 0.9)',
+    color: 'rgba(255, 230, 245, 0.9)',
+    textShadowColor: 'rgba(0, 0, 0, 0.95)',
     textShadowRadius: 6,
     fontWeight: '600',
   },
@@ -689,49 +585,55 @@ const styles = StyleSheet.create({
   },
   planetGlow: {
     position: 'absolute',
-    backgroundColor: 'rgba(120, 180, 255, 0.28)',
-    shadowColor: '#7acbff',
-    shadowOpacity: 0.7,
-    shadowRadius: 3,
+    width: 12,
+    height: 12,
+    borderRadius: 30,
+    backgroundColor: 'rgba(255, 130, 170, 0.28)',
+    shadowColor: '#ff6fa6',
+    shadowOpacity: 0.8,
+    shadowRadius: 14,
     shadowOffset: { width: 0, height: 0 },
   },
   glowAlpha: {
-    backgroundColor: 'rgba(120, 180, 255, 0.35)',
-    shadowColor: '#8ac5ff',
+    backgroundColor: 'rgba(255, 120, 150, 0.4)',
+    shadowColor: '#ff6c99',
   },
   glowBeta: {
-    backgroundColor: 'rgba(255, 130, 130, 0.35)',
-    shadowColor: '#ff8a8a',
+    backgroundColor: 'rgba(255, 90, 200, 0.4)',
+    shadowColor: '#ff5fb8',
   },
   glowGamma: {
-    backgroundColor: 'rgba(210, 130, 255, 0.35)',
-    shadowColor: '#d28aff',
+    backgroundColor: 'rgba(210, 90, 255, 0.4)',
+    shadowColor: '#d262ff',
   },
   glowDelta: {
-    backgroundColor: 'rgba(140, 255, 180, 0.35)',
-    shadowColor: '#92ffb8',
+    backgroundColor: 'rgba(255, 160, 120, 0.4)',
+    shadowColor: '#ff9a76',
   },
   planetGlowActive: {
-    backgroundColor: 'rgba(244, 206, 12, 0.8)',
-    shadowColor: '#e6d520',
+    backgroundColor: 'rgba(255, 220, 90, 0.85)',
+    shadowColor: '#ffe76f',
   },
   planetIcon: {
+    width: 10,
+    height: 10,
+    borderRadius: 40,
     borderWidth: 1.5,
-    borderColor: 'rgba(200, 230, 255, 0.9)',
+    borderColor: 'rgba(255, 220, 245, 0.95)',
     overflow: 'hidden',
   },
   starName: {
     marginTop: 1,
     fontSize: 2,
-    color: '#F8F3FF',
-    textShadowColor: 'rgba(0, 0, 0, 0.9)',
+    color: '#FFF5FF',
+    textShadowColor: 'rgba(0, 0, 0, 0.95)',
     textShadowRadius: 8,
   },
 
   connectionLine: {
     position: 'absolute',
     height: 2,
-    backgroundColor: 'rgba(140, 190, 255, 0.45)',
+    backgroundColor: 'rgba(255, 110, 180, 0.55)',
     borderRadius: 999,
   },
 
@@ -746,14 +648,14 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: 'rgba(5, 20, 50, 0.9)',
+    backgroundColor: 'rgba(40, 0, 40, 0.9)',
     borderWidth: 1,
-    borderColor: 'rgba(150, 210, 255, 0.9)',
+    borderColor: 'rgba(255, 140, 210, 0.95)',
     alignItems: 'center',
     justifyContent: 'center',
   },
   zoomText: {
-    color: '#EFFFFF',
+    color: '#FFEFFF',
     fontSize: 18,
     fontWeight: 'bold',
   },
@@ -762,59 +664,18 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(150, 130, 210, 0.8)',
-    backgroundColor: 'rgba(3, 5, 25, 0.9)',
+    borderTopColor: 'rgba(255, 110, 180, 0.8)',
+    backgroundColor: 'rgba(15, 0, 25, 0.95)',
   },
   hudText: {
     fontSize: 12,
-    color: 'rgba(225, 215, 255, 0.95)',
+    color: 'rgba(255, 215, 240, 0.96)',
   },
   hudSecondary: {
     marginTop: 2,
     fontSize: 11,
-    color: 'rgba(185, 215, 255, 0.9)',
+    color: 'rgba(255, 190, 230, 0.9)',
   },
-
-  // ICON SIZE TOGGLE
-  sizeToggleRow: {
-    marginTop: 6,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  sizeToggleLabel: {
-    fontSize: 11,
-    color: 'rgba(215, 215, 255, 0.9)',
-  },
-  sizeToggleButton: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: 'rgba(150, 170, 255, 0.7)',
-    backgroundColor: 'rgba(10, 15, 35, 0.9)',
-  },
-  sizeToggleButtonActive: {
-    backgroundColor: 'rgba(190, 120, 255, 0.95)',
-    borderColor: 'rgba(235, 220, 255, 0.95)',
-  },
-  sizeToggleText: {
-    fontSize: 11,
-    color: 'rgba(215, 215, 255, 0.9)',
-    fontWeight: '500',
-  },
-  sizeToggleTextActive: {
-    color: '#FFFFFF',
-    fontWeight: '700',
-  },
-  sizeValueText: {
-  fontSize: 11,
-  color: 'rgba(235, 235, 255, 0.95)',
-  fontWeight: '600',
-  minWidth: 36,
-  textAlign: 'center',
-},
-
 
   // WARP OVERLAY
   warpOverlay: {
@@ -835,4 +696,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GalaxyMap;
+export default PinnacleGalaxyMap;

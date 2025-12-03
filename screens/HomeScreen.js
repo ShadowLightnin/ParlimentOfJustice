@@ -116,7 +116,7 @@ const getPinnacleWorldBuildingFactions = () => [
     name: 'Planets',
     screen: 'PlanetsScreen',
     clickable: true,
-    image: require('../assets/BackGround/Melcornia.jpg'),
+    image: require('../assets/BackGround/Melcornia.jpg'), pinnacleScreen: 'PinnaclePlanets',
   },
 
   // Row 2 → 1 card
