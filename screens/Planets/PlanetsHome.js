@@ -1,5 +1,5 @@
 // screens/Planets/PlanetsHome.js
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -7,16 +7,14 @@ import {
   Dimensions,
   TouchableOpacity,
   Animated,
-  Modal,
   ScrollView,
   ActivityIndicator,
   Image,
 } from 'react-native';
-import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
-  PLANETS,
   EARTH_SIDE_IMAGES,
   SYSTEMS,
   sortPlanets,
@@ -36,35 +34,21 @@ const PlanetsHome = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const [isYourUniverse, setIsYourUniverse] = useState(null);
   const [planets, setPlanets] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedHotspot, setSelectedHotspot] = useState(null);
-
-  // Earth side: default to full Earth until user chooses a side
   const [earthSide, setEarthSide] = useState('earth'); // 'earth' | 'na' | 'ph'
-
-  const [hotspotAnim] = useState(new Animated.Value(0));
-  const [planetAnim] = useState(new Animated.Value(0));
-  const entryAnim = useRef(new Animated.Value(0)).current;
-
-  // INFO PANEL
   const [infoOpen, setInfoOpen] = useState(false);
+
+  const planetAnim = useRef(new Animated.Value(0)).current;
   const infoAnim = useRef(new Animated.Value(0)).current;
 
   const initialPlanetIdFromRoute = route.params?.initialPlanetId || null;
 
   useEffect(() => {
-    const sub = Dimensions.addEventListener('change', () => {});
-    return () => sub?.remove();
-  }, []);
-
-  useEffect(() => {
     const loadUniverse = async () => {
       try {
         const stored = await AsyncStorage.getItem('selectedUniverse');
-        const isYour = stored ? stored === 'your' : true;
-        setIsYourUniverse(isYour);
+        const isYourUniverse = stored ? stored === 'your' : true;
 
         const sorted = sortPlanets();
         if (!sorted.length) {
@@ -73,11 +57,12 @@ const PlanetsHome = () => {
         }
 
         let index = 0;
+
         if (initialPlanetIdFromRoute) {
           const foundIndex = sorted.findIndex(p => p.id === initialPlanetIdFromRoute);
           if (foundIndex !== -1) index = foundIndex;
         } else {
-          const defaultId = isYour ? 'earth' : 'melcornia';
+          const defaultId = isYourUniverse ? 'earth' : 'melcornia';
           const defIndex = sorted.findIndex(p => p.id === defaultId);
           if (defIndex !== -1) index = defIndex;
         }
@@ -85,50 +70,27 @@ const PlanetsHome = () => {
         setPlanets(sorted);
         setCurrentIndex(index);
 
-        entryAnim.setValue(0);
         planetAnim.setValue(0);
-        Animated.parallel([
-          Animated.timing(entryAnim, {
-            toValue: 1,
-            duration: 500,
-            useNativeDriver: true,
-          }),
-          Animated.timing(planetAnim, {
-            toValue: 1,
-            duration: 450,
-            useNativeDriver: true,
-          }),
-        ]).start();
+        Animated.timing(planetAnim, {
+          toValue: 1,
+          duration: 450,
+          useNativeDriver: true,
+        }).start();
       } catch (e) {
         console.error('Error loading universe / planets', e);
-        setIsYourUniverse(true);
         const sorted = sortPlanets();
         setPlanets(sorted);
         setCurrentIndex(0);
-
-        entryAnim.setValue(0);
         planetAnim.setValue(1);
-        Animated.timing(entryAnim, {
-          toValue: 1,
-          duration: 500,
-          useNativeDriver: true,
-        }).start();
       }
     };
-    loadUniverse();
-  }, [initialPlanetIdFromRoute, planetAnim, entryAnim]);
 
-  useFocusEffect(
-    useCallback(() => {
-      return () => {
-        // no-op
-      };
-    }, [])
-  );
+    loadUniverse();
+  }, [initialPlanetIdFromRoute, planetAnim]);
 
   const currentPlanet = planets[currentIndex] || null;
 
-  if (isYourUniverse === null || !currentPlanet) {
+  if (!currentPlanet) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#7acbff" />
@@ -168,8 +130,7 @@ const PlanetsHome = () => {
     });
   };
 
-  // Looping arrows
-  const handleArrowPress = (direction) => {
+  const handleArrowPress = direction => {
     if (!planets.length) return;
 
     const lastIndex = planets.length - 1;
@@ -187,14 +148,10 @@ const PlanetsHome = () => {
 
   const jumpToSystem = (systemId, dir = 1) => {
     const idx = planets.findIndex(p => p.systemId === systemId);
-    if (idx !== -1) {
-      animatePlanetChange(idx, dir);
-    }
+    if (idx !== -1) animatePlanetChange(idx, dir);
   };
 
-  const goBackHome = () => {
-    navigation.navigate('Home');
-  };
+  const goBackHome = () => navigation.navigate('Home');
 
   const openGalaxyMap = () => {
     navigation.navigate('GalaxyMap', {
@@ -207,7 +164,7 @@ const PlanetsHome = () => {
   let planetDiskImage = currentPlanet.thumbnail;
   if (currentPlanet.id === 'earth') {
     if (earthSide === 'earth') {
-      planetDiskImage = currentPlanet.thumbnail; // full Earth default
+      planetDiskImage = currentPlanet.thumbnail;
     } else {
       const sideKey = earthSide === 'ph' ? 'ph' : 'na';
       planetDiskImage = EARTH_SIDE_IMAGES[sideKey] || currentPlanet.thumbnail;
@@ -222,40 +179,19 @@ const PlanetsHome = () => {
     inputRange: [0, 1],
     outputRange: [0, 1],
   });
-
-  const entryScale = entryAnim.interpolate({
+  const slideScale = planetAnim.interpolate({
     inputRange: [0, 1],
     outputRange: [0.7, 1],
   });
 
   const orbitLabel = getOrbitPositionLabel(currentPlanet, planets);
 
-  // HOTSPOTS (logic kept for future)
-  const handleHotspotPress = (hotspot) => {
-    setSelectedHotspot(hotspot);
-    hotspotAnim.setValue(0);
-    Animated.timing(hotspotAnim, {
-      toValue: 1,
-      duration: 400,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const closeHotspot = () => {
-    Animated.timing(hotspotAnim, {
-      toValue: 0,
-      duration: 250,
-      useNativeDriver: true,
-    }).start(() => setSelectedHotspot(null));
-  };
-
-  // INFO PANEL toggle
+  // INFO PANEL
   const toggleInfoPanel = () => {
-    const toOpen = !infoOpen;
-    setInfoOpen(toOpen);
-
+    const nextOpen = !infoOpen;
+    setInfoOpen(nextOpen);
     Animated.timing(infoAnim, {
-      toValue: toOpen ? 1 : 0,
+      toValue: nextOpen ? 1 : 0,
       duration: 260,
       useNativeDriver: true,
     }).start();
@@ -265,7 +201,6 @@ const PlanetsHome = () => {
     inputRange: [0, 1],
     outputRange: [-40, 0],
   });
-  const infoOpacity = infoAnim;
 
   const description =
     currentPlanet.description ||
@@ -274,7 +209,7 @@ const PlanetsHome = () => {
   return (
     <View style={styles.root}>
       <View style={styles.overlay}>
-        {/* HEADER */}
+        {/* HEADER – nothing in the center */}
         <View style={styles.header}>
           <TouchableOpacity
             style={styles.backButton}
@@ -284,18 +219,7 @@ const PlanetsHome = () => {
             <Text style={styles.backText}>⬅ Home</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={styles.headerCenter}
-            activeOpacity={0.85}
-            onPress={toggleInfoPanel}
-          >
-            <Text style={styles.title}>
-              {currentSystem.name} – {currentPlanet.name}
-            </Text>
-            <Text style={styles.subtitle}>
-              {currentUniverseLabel} • tap for details
-            </Text>
-          </TouchableOpacity>
+          <View style={{ flex: 1 }} />
 
           <TouchableOpacity
             style={styles.galaxyButton}
@@ -312,7 +236,7 @@ const PlanetsHome = () => {
           style={[
             styles.infoPanel,
             {
-              opacity: infoOpacity,
+              opacity: infoAnim,
               transform: [{ translateY: infoTranslateY }],
             },
           ]}
@@ -322,9 +246,7 @@ const PlanetsHome = () => {
             <Text style={styles.infoSystem}>{currentSystem.name}</Text>
           </View>
           <View style={styles.infoRowMeta}>
-            <Text style={styles.infoTag}>
-              {currentUniverseLabel}
-            </Text>
+            <Text style={styles.infoTag}>{currentUniverseLabel}</Text>
             <Text style={styles.infoTag}>
               {orbitLabel != null
                 ? `Orbit: ${orbitLabel}`
@@ -343,63 +265,26 @@ const PlanetsHome = () => {
         {/* MAIN CONTENT */}
         <View style={styles.main}>
           {/* LEFT ARROW */}
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={[styles.arrowWrapper, { left: 10 }]}
             disabled={!canGoLeft}
             onPress={() => handleArrowPress('left')}
           >
-            <Text style={[styles.arrowText, !canGoLeft && styles.arrowDisabled]}>{'‹'}</Text>
-          </TouchableOpacity>
+            <Text style={[styles.arrowText, !canGoLeft && styles.arrowDisabled]}>
+              {'‹'}
+            </Text>
+          </TouchableOpacity> */}
 
-          {/* PLANET VIEW CARD */}
+          {/* PLANET VIEW CARD (no glow) */}
           <Animated.View
             style={[
-              styles.planetCard,
-              {
-                opacity: slideOpacity,
-                transform: [{ translateX: slideTranslate }, { scale: entryScale }],
-              },
+            //   styles.planetCard,
+            //   {
+            //     opacity: slideOpacity,
+            //     transform: [{ translateX: slideTranslate }, { scale: slideScale }],
+            //   },
             ]}
           >
-            {/* Earth side toggle */}
-            {currentPlanet.id === 'earth' && (
-              <View style={styles.earthToggleRow}>
-                <TouchableOpacity
-                  style={[
-                    styles.earthToggleButton,
-                    earthSide === 'na' && styles.earthToggleButtonActive,
-                  ]}
-                  onPress={() => setEarthSide('na')}
-                >
-                  <Text
-                    style={[
-                      styles.earthToggleText,
-                      earthSide === 'na' && styles.earthToggleTextActive,
-                    ]}
-                  >
-                    Utah side
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[
-                    styles.earthToggleButton,
-                    earthSide === 'ph' && styles.earthToggleButtonActive,
-                  ]}
-                  onPress={() => setEarthSide('ph')}
-                >
-                  <Text
-                    style={[
-                      styles.earthToggleText,
-                      earthSide === 'ph' && styles.earthToggleTextActive,
-                    ]}
-                  >
-                    Philippines side
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
-
-            {/* Planet image area */}
             <View style={styles.planetArea}>
               <View style={styles.planetImageBox}>
                 {planetDiskImage && (
@@ -410,37 +295,82 @@ const PlanetsHome = () => {
                   />
                 )}
               </View>
-
-              {/* Hotspots (disabled for now) */}
-              {false &&
-                currentPlanet.hotspots?.map(hs => (
-                  <View key={hs.id} style={[styles.hotspotWrapper, hs.position]}>
-                    <View style={styles.hotspotLine} />
-                    <TouchableOpacity
-                      style={styles.hotspotSquare}
-                      onPress={() => handleHotspotPress(hs)}
-                      activeOpacity={0.9}
-                    >
-                      <Text style={styles.hotspotPlus}>＋</Text>
-                    </TouchableOpacity>
-                  </View>
-                ))}
             </View>
           </Animated.View>
 
           {/* RIGHT ARROW */}
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={[styles.arrowWrapper, { right: 10 }]}
             disabled={!canGoRight}
             onPress={() => handleArrowPress('right')}
           >
-            <Text style={[styles.arrowText, !canGoRight && styles.arrowDisabled]}>{'›'}</Text>
-          </TouchableOpacity>
+            <Text style={[styles.arrowText, !canGoRight && styles.arrowDisabled]}>
+              {'›'}
+            </Text>
+          </TouchableOpacity> */}
         </View>
 
         {/* BOTTOM HUD */}
         <View style={styles.bottomHud}>
-          <View style={styles.bottomTopRow}>
+          {/* PLANET NAV ROW – now on TOP */}
+          <View style={styles.planetNavRow}>
+            <TouchableOpacity
+              style={[
+                styles.planetNavButton,
+                !canGoLeft && styles.planetNavButtonDisabled,
+              ]}
+              activeOpacity={0.85}
+              disabled={!canGoLeft}
+              onPress={() => handleArrowPress('left')}
+            >
+              <Text
+                style={[
+                  styles.planetNavText,
+                  !canGoLeft && styles.planetNavTextDisabled,
+                ]}
+              >
+                ⟵ Prev Planet
+              </Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity
+              style={[
+                styles.planetNavButton,
+                !canGoRight && styles.planetNavButtonDisabled,
+              ]}
+              activeOpacity={0.85}
+              disabled={!canGoRight}
+              onPress={() => handleArrowPress('right')}
+            >
+              <Text
+                style={[
+                  styles.planetNavText,
+                  !canGoRight && styles.planetNavTextDisabled,
+                ]}
+              >
+                Next Planet ⟶
+              </Text>
+            </TouchableOpacity>
+          </View>
+            
+          {/* NAMES ROW: SYSTEM (left) • NAME (center tappable) • UNIVERSE (right) */}
+          <View style={styles.bottomInfoRow}>
+            <Text style={styles.bottomSystem}>{currentSystem.name}</Text>
+            
+            <TouchableOpacity
+              style={styles.bottomNameWrapper}
+              onPress={toggleInfoPanel}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.bottomName}>{currentPlanet.name}</Text>
+              <Text style={styles.bottomNameHint}>tap for lore</Text>
+            </TouchableOpacity>
+            
+            <Text style={styles.bottomUniverse}>{currentUniverseLabel}</Text>
+          </View>
+            
+          {/* META ROW: ORBIT + COUNT */}
+          <View style={styles.bottomMetaRow}>
             <Text style={styles.bottomLabelLeft}>
               {orbitLabel != null
                 ? `Orbit position: ${orbitLabel}`
@@ -450,9 +380,48 @@ const PlanetsHome = () => {
               {currentIndex + 1} / {planets.length} celestial bodies
             </Text>
           </View>
+            
+          {/* EARTH SIDE TOGGLE – stays above divider */}
+          {currentPlanet.id === 'earth' && (
+            <View style={styles.earthToggleRow}>
+              <TouchableOpacity
+                style={[
+                  styles.earthToggleButton,
+                  earthSide === 'na' && styles.earthToggleButtonActive,
+                ]}
+                onPress={() => setEarthSide('na')}
+              >
+                <Text
+                  style={[
+                    styles.earthToggleText,
+                    earthSide === 'na' && styles.earthToggleTextActive,
+                  ]}
+                >
+                  Utah side
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.earthToggleButton,
+                  earthSide === 'ph' && styles.earthToggleButtonActive,
+                ]}
+                onPress={() => setEarthSide('ph')}
+              >
+                <Text
+                  style={[
+                    styles.earthToggleText,
+                    earthSide === 'ph' && styles.earthToggleTextActive,
+                  ]}
+                >
+                  Philippines side
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
 
           <View style={styles.bottomDivider} />
-
+      
+          {/* SYSTEM NAV ROW – now on BOTTOM */}
           <View style={styles.systemButtonsRow}>
             <TouchableOpacity
               style={[
@@ -472,7 +441,7 @@ const PlanetsHome = () => {
                 ⬅ Prev System
               </Text>
             </TouchableOpacity>
-
+            
             <TouchableOpacity
               style={[
                 styles.systemButton,
@@ -493,60 +462,6 @@ const PlanetsHome = () => {
             </TouchableOpacity>
           </View>
         </View>
-
-        {/* HOTSPOT MODAL */}
-        <Modal
-          visible={!!selectedHotspot}
-          transparent
-          animationType="none"
-          onRequestClose={closeHotspot}
-        >
-          <View style={styles.modalOverlay}>
-            <Animated.View
-              style={[
-                styles.modalCard,
-                {
-                  opacity: hotspotAnim,
-                  transform: [
-                    {
-                      translateY: hotspotAnim.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [60, 0],
-                      }),
-                    },
-                    {
-                      scale: hotspotAnim.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [0.96, 1],
-                      }),
-                    },
-                  ],
-                },
-              ]}
-            >
-              <Text style={styles.modalTitle}>{selectedHotspot?.name}</Text>
-              <View style={styles.modalImageHolder}>
-                <Image
-                  source={selectedHotspot?.image}
-                  style={styles.modalImage}
-                  resizeMode="cover"
-                />
-              </View>
-              <ScrollView style={styles.modalScroll}>
-                <Text style={styles.modalDescription}>
-                  {selectedHotspot?.description}
-                </Text>
-              </ScrollView>
-              <TouchableOpacity
-                style={styles.modalClose}
-                onPress={closeHotspot}
-                activeOpacity={0.85}
-              >
-                <Text style={styles.modalCloseText}>Return to orbit</Text>
-              </TouchableOpacity>
-            </Animated.View>
-          </View>
-        </Modal>
       </View>
     </View>
   );
@@ -583,25 +498,6 @@ const styles = StyleSheet.create({
     color: '#E6F7FF',
     fontSize: 14,
     fontWeight: 'bold',
-  },
-  headerCenter: {
-    flex: 1,
-    alignItems: 'center',
-    paddingHorizontal: 6,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#EFFFFF',
-    textAlign: 'center',
-    textShadowColor: '#00b3ff',
-    textShadowRadius: 10,
-  },
-  subtitle: {
-    marginTop: 2,
-    fontSize: 11,
-    color: 'rgba(198, 234, 255, 0.9)',
-    textAlign: 'center',
   },
   galaxyButton: {
     paddingVertical: 8,
@@ -673,7 +569,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'relative', // for absolute arrows
+    position: 'relative',
   },
   arrowWrapper: {
     position: 'absolute',
@@ -698,50 +594,16 @@ const styles = StyleSheet.create({
   },
 
   planetCard: {
-    width: SCREEN_WIDTH - 80,  // leave room for arrows
+    width: SCREEN_WIDTH - 80,
     maxWidth: 900,
     alignSelf: 'center',
     marginHorizontal: 10,
     borderRadius: 24,
-    borderWidth: 1.5,
-    borderColor: 'rgba(153, 227, 255, 0.7)',
+    borderWidth: 1,
+    borderColor: 'rgba(153, 227, 255, 0.4)',
     backgroundColor: 'rgba(0, 15, 36, 0.9)',
     padding: 12,
-    shadowColor: '#00b3ff',
-    shadowOpacity: 0.5,
-    shadowRadius: 18,
-    shadowOffset: { width: 0, height: 8 },
   },
-
-  earthToggleRow: {
-    flexDirection: 'row',
-    alignSelf: 'center',
-    marginTop: 4,
-    marginBottom: 6,
-    gap: 6,
-  },
-  earthToggleButton: {
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: 'rgba(130, 205, 255, 0.6)',
-    backgroundColor: 'rgba(5, 20, 40, 0.8)',
-  },
-  earthToggleButtonActive: {
-    backgroundColor: 'rgba(40, 130, 255, 0.95)',
-    borderColor: 'rgba(200, 240, 255, 0.9)',
-  },
-  earthToggleText: {
-    fontSize: 11,
-    color: 'rgba(190, 225, 255, 0.9)',
-    fontWeight: '500',
-  },
-  earthToggleTextActive: {
-    color: '#EFFFFF',
-    fontWeight: 'bold',
-  },
-
   planetArea: {
     flex: 1,
     alignItems: 'center',
@@ -755,33 +617,6 @@ const styles = StyleSheet.create({
   planetImage: {
     width: '100%',
     height: '100%',
-    opacity: 1,
-  },
-
-  hotspotWrapper: {
-    position: 'absolute',
-    alignItems: 'center',
-  },
-  hotspotLine: {
-    width: 2,
-    height: 32,
-    backgroundColor: 'rgba(120, 210, 255, 0.8)',
-    marginBottom: 3,
-  },
-  hotspotSquare: {
-    width: 26,
-    height: 26,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: 'rgba(150, 230, 255, 0.9)',
-    backgroundColor: 'rgba(5, 20, 40, 0.95)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  hotspotPlus: {
-    color: '#c5f1ff',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
 
   // BOTTOM HUD
@@ -791,20 +626,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: 'rgba(110, 190, 255, 0.45)',
     backgroundColor: 'rgba(3, 10, 30, 0.95)',
-  },
-  bottomTopRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 4,
-  },
-  bottomLabelLeft: {
-    fontSize: 11,
-    color: 'rgba(195, 236, 255, 0.95)',
-  },
-  bottomLabelRight: {
-    fontSize: 11,
-    color: 'rgba(195, 236, 255, 0.95)',
-    textAlign: 'right',
   },
   bottomDivider: {
     height: 1,
@@ -838,68 +659,106 @@ const styles = StyleSheet.create({
     color: 'rgba(210, 225, 245, 0.7)',
   },
 
-  // HOTSPOT MODAL
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.78)',
-    justifyContent: 'center',
+  bottomInfoRow: {
+    flexDirection: 'row',
     alignItems: 'center',
+    marginTop: 6,
   },
-  modalCard: {
-    width: SCREEN_WIDTH > 600 ? SCREEN_WIDTH * 0.55 : SCREEN_WIDTH * 0.9,
-    maxHeight: SCREEN_HEIGHT * 0.8,
-    borderRadius: 20,
-    backgroundColor: 'rgba(4, 10, 26, 0.98)',
-    borderWidth: 1,
-    borderColor: 'rgba(180, 225, 255, 0.8)',
-    padding: 12,
-    shadowColor: '#00b3ff',
-    shadowOpacity: 0.7,
-    shadowRadius: 18,
-    shadowOffset: { width: 0, height: 8 },
+  bottomSystem: {
+    flex: 1,
+    fontSize: 12,
+    color: 'rgba(190, 225, 255, 0.9)',
   },
-  modalTitle: {
-    fontSize: 18,
+  bottomNameWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bottomName: {
+    fontSize: 15,
     fontWeight: 'bold',
     color: '#EFFFFF',
     textAlign: 'center',
-    textShadowColor: '#00b3ff',
-    textShadowRadius: 12,
-    marginBottom: 8,
   },
-  modalImageHolder: {
-    borderRadius: 14,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: 'rgba(120, 205, 255, 0.75)',
-    marginBottom: 8,
+  bottomNameHint: {
+    fontSize: 9,
+    color: 'rgba(190, 225, 255, 0.8)',
   },
-  modalImage: {
-    width: '100%',
-    height: 160,
+  bottomUniverse: {
+    flex: 1,
+    fontSize: 11,
+    color: 'rgba(175, 215, 255, 0.9)',
+    fontStyle: 'italic',
+    textAlign: 'right',
   },
-  modalScroll: {
-    maxHeight: 160,
-    marginBottom: 10,
+
+  bottomMetaRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 2,
   },
-  modalDescription: {
-    fontSize: 13,
-    color: 'rgba(220, 240, 255, 0.95)',
-    lineHeight: 18,
+  bottomLabelLeft: {
+    fontSize: 11,
+    color: 'rgba(195, 236, 255, 0.95)',
   },
-  modalClose: {
+  bottomLabelRight: {
+    fontSize: 11,
+    color: 'rgba(195, 236, 255, 0.95)',
+    textAlign: 'right',
+  },
+
+  earthToggleRow: {
+    flexDirection: 'row',
     alignSelf: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 26,
+    marginTop: 6,
+    gap: 6,
+  },
+  earthToggleButton: {
+    paddingVertical: 4,
+    paddingHorizontal: 10,
     borderRadius: 999,
     borderWidth: 1,
-    borderColor: 'rgba(120, 205, 255, 0.85)',
-    backgroundColor: 'rgba(5, 25, 50, 0.95)',
+    borderColor: 'rgba(130, 205, 255, 0.6)',
+    backgroundColor: 'rgba(5, 20, 40, 0.8)',
   },
-  modalCloseText: {
-    fontSize: 13,
-    fontWeight: 'bold',
+  earthToggleButtonActive: {
+    backgroundColor: 'rgba(40, 130, 255, 0.95)',
+    borderColor: 'rgba(200, 240, 255, 0.9)',
+  },
+  earthToggleText: {
+    fontSize: 11,
+    color: 'rgba(190, 225, 255, 0.9)',
+    fontWeight: '500',
+  },
+  earthToggleTextActive: {
     color: '#EFFFFF',
+    fontWeight: 'bold',
+  },
+
+  planetNavRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 6,
+    marginTop: 6,
+  },
+  planetNavButton: {
+    flex: 1,
+    paddingVertical: 6,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(130, 205, 255, 0.8)',
+    backgroundColor: 'rgba(5, 25, 50, 0.95)',
+    alignItems: 'center',
+  },
+  planetNavButtonDisabled: {
+    opacity: 0.35,
+  },
+  planetNavText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#EFFFFF',
+  },
+  planetNavTextDisabled: {
+    color: 'rgba(210, 225, 245, 0.7)',
   },
 
   // LOADING

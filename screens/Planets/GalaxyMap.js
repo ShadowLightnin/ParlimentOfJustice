@@ -682,7 +682,7 @@ const GalaxyMap = () => {
       {/* HUD */}
       <View style={styles.hud}>
         <Text style={styles.hudText}>
-          Drag to pan. Pinch or scroll / +/- to zoom. Tap a Justiceverse system to warp.
+            Drag to pan, or scroll. Use +/- to zoom. Tap a System to warp.
         </Text>
         {currentPlanetId && (
           <Text style={styles.hudSecondary}>
