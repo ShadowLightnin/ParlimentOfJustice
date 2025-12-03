@@ -318,7 +318,7 @@ const GalaxyMap = () => {
   const pinchStartScaleRef = useRef(INITIAL_SCALE);
 
   const MIN_SCALE = 1;
-  const MAX_SCALE = SCREEN_WIDTH > 600 ? 9 : 7.5;
+  const MAX_SCALE = SCREEN_WIDTH > 600 ? 7 : 5.5;
 
   const handleBack = () => {
     navigation.goBack();
