@@ -23,12 +23,12 @@ const GALAXY_MAP = require('../../assets/Space/The_best_Milky_Way_map_by_Gaia_la
 // Generic icon for Star Trek systems (tiny, so reuse a safe asset)
 const TREK_ICON = require('../../assets/Space/Earth.jpg');
 
+// Warp overlay gif
+const Warp3Gif = require('../../assets/Space/warp3.gif');
+
 /**
  * High-level systems, each linked to a primary world in that system.
  * x / y are 0–1 normalized positions relative to the map image.
- *
- * quadrant: 'alpha' | 'beta' | 'gamma' | 'delta' | 'custom'
- * faction:  'federation' | 'klingon' | 'romulan' | 'cardassian' | 'dominion' | 'borg' | etc.
  */
 const SYSTEMS = [
   // ===== YOUR JUSTICEVERSE SYSTEMS =====
@@ -38,7 +38,7 @@ const SYSTEMS = [
     planetId: 'earth',
     image: require('../../assets/Space/Earth.jpg'),
     x: 0.49,
-    y: 0.69, // stays locked to the “Sun” label
+    y: 0.69,
     quadrant: 'alpha',
     faction: 'justiceverse',
   },
@@ -48,7 +48,7 @@ const SYSTEMS = [
     planetId: 'planet-x',
     image: require('../../assets/Space/PlanetX.jpg'),
     x: 0.46,
-    y: 0.66, // very close, slight offset
+    y: 0.66,
     quadrant: 'alpha',
     faction: 'justiceverse',
   },
@@ -58,7 +58,7 @@ const SYSTEMS = [
     planetId: 'wise',
     image: require('../../assets/Space/Wise.jpg'),
     x: 0.45,
-    y: 0.72, // also in the same local patch
+    y: 0.72,
     quadrant: 'alpha',
     faction: 'justiceverse',
   },
@@ -67,8 +67,8 @@ const SYSTEMS = [
     name: 'Ignis',
     planetId: 'melcornia',
     image: require('../../assets/Space/Melcornia.jpg'),
-    x: 0.60,
-    y: 0.60, // deeper toward the bar – feels right for a hotter, harsher system
+    x: 0.6,
+    y: 0.6,
     quadrant: 'beta',
     faction: 'justiceverse',
   },
@@ -78,7 +78,7 @@ const SYSTEMS = [
     planetId: 'zaxxon',
     image: require('../../assets/Space/Zaxxon.jpg'),
     x: 0.78,
-    y: 0.52, // out along another arm
+    y: 0.52,
     quadrant: 'beta',
     faction: 'justiceverse',
   },
@@ -88,7 +88,7 @@ const SYSTEMS = [
     planetId: 'older-brother',
     image: require('../../assets/Space/OlderBrother.jpg'),
     x: 0.51,
-    y: 0.67, // *very* close to Sol – like a nearby dot on same ring
+    y: 0.67,
     quadrant: 'alpha',
     faction: 'justiceverse',
   },
@@ -98,7 +98,7 @@ const SYSTEMS = [
     planetId: 'twin-sister',
     image: require('../../assets/Space/TwinSister.jpg'),
     x: 0.47,
-    y: 0.73, // also right in that neighborhood
+    y: 0.73,
     quadrant: 'alpha',
     faction: 'justiceverse',
   },
@@ -108,22 +108,22 @@ const SYSTEMS = [
     planetId: 'korrthuun',
     image: require('../../assets/Space/Korrthuun.jpg'),
     x: 0.88,
-    y: 0.68, // way out = feels like a remote war-world
+    y: 0.68,
     quadrant: 'beta',
     faction: 'justiceverse',
   },
   {
-    id: '',
+    id: 'kolob-placeholder',
     name: '',
-    planetId: null, // no warp target yet = safe
+    planetId: null,
     image: require('../../assets/Space/Kolob.jpg'),
     x: 0.52,
-    y: 0.46, // distant, mysterious location
+    y: 0.46,
     quadrant: 'custom',
     faction: 'justiceverse',
   },
 
-  // ===== STAR TREK – ALPHA QUADRANT (Federation & neighbours) =====
+  // ===== STAR TREK – ALPHA QUADRANT =====
   {
     id: 'vulcan',
     name: 'Vulcan',
@@ -165,7 +165,7 @@ const SYSTEMS = [
     faction: 'ferengi',
   },
 
-  // ===== STAR TREK – BETA QUADRANT (Klingon, Romulan, Cardassian) =====
+  // ===== STAR TREK – BETA QUADRANT =====
   {
     id: 'qonos',
     name: "Qo'noS",
@@ -181,7 +181,7 @@ const SYSTEMS = [
     name: 'Romulus',
     planetId: null,
     image: TREK_ICON,
-    x: 0.70,
+    x: 0.7,
     y: 0.63,
     quadrant: 'beta',
     faction: 'romulan',
@@ -197,14 +197,14 @@ const SYSTEMS = [
     faction: 'cardassian',
   },
 
-  // ===== STAR TREK – GAMMA QUADRANT (Dominion) – moved to top-left =====
+  // ===== STAR TREK – GAMMA QUADRANT =====
   {
     id: 'founders-homeworld',
     name: "Founders' Homeworld",
     planetId: null,
     image: TREK_ICON,
     x: 0.33,
-    y: 0.30,
+    y: 0.3,
     quadrant: 'gamma',
     faction: 'dominion',
   },
@@ -224,12 +224,12 @@ const SYSTEMS = [
     planetId: null,
     image: TREK_ICON,
     x: 0.36,
-    y: 0.40,
+    y: 0.4,
     quadrant: 'gamma',
     faction: 'dominion',
   },
 
-  // ===== STAR TREK – DELTA QUADRANT (Borg, Ocampa, Talaxians) – far, outer rim =====
+  // ===== STAR TREK – DELTA QUADRANT =====
   {
     id: 'unimatrix-01',
     name: 'Unimatrix 01',
@@ -246,7 +246,7 @@ const SYSTEMS = [
     planetId: null,
     image: TREK_ICON,
     x: 0.88,
-    y: 0.18, // pushed way to the edge: first Voyager stop
+    y: 0.18,
     quadrant: 'delta',
     faction: 'delta-world',
   },
@@ -261,30 +261,38 @@ const SYSTEMS = [
     faction: 'delta-world',
   },
 
-  // ===== CYBERTRON (Transformers crossover, also on the far side) =====
+  // ===== CYBERTRON =====
   {
     id: 'cybertron',
     name: 'Cybertron',
     planetId: null,
-    // image: require('../../assets/Space/Cybertron.jpg'),
-    x: 0.80,
+    x: 0.8,
     y: 0.33,
     quadrant: 'delta',
     faction: 'cybertronian',
   },
 ];
 
-/**
- * Simple connections between systems, by primary world.
- * (Left empty for now; you can add Trek routes or Justiceverse routes later.)
- */
-const CONNECTIONS = [
-  // Example if you want later:
-  // { from: 'earth', to: 'melcornia' },
-];
+// Simple connections placeholder (kept for future use)
+const CONNECTIONS = [];
 
 const getSystemByPlanetId = (planetId) =>
   SYSTEMS.find((s) => s.planetId === planetId) || null;
+
+const getQuadrantGlowStyle = (quadrant) => {
+  switch (quadrant) {
+    case 'alpha':
+      return styles.glowAlpha;
+    case 'beta':
+      return styles.glowBeta;
+    case 'gamma':
+      return styles.glowGamma;
+    case 'delta':
+      return styles.glowDelta;
+    default:
+      return null;
+  }
+};
 
 const GalaxyMap = () => {
   const navigation = useNavigation();
@@ -293,7 +301,8 @@ const GalaxyMap = () => {
   const fromUniverse = route.params?.fromUniverse || 'prime';
   const currentPlanetId = route.params?.currentPlanetId || null;
 
-  const [warpAnim] = useState(new Animated.Value(0));
+  // WARP STATE
+  const warpAnim = useRef(new Animated.Value(0)).current;
   const [warpingTo, setWarpingTo] = useState(null);
 
   // Initial zoom: a bit zoomed in on desktop, normal on mobile
@@ -306,11 +315,10 @@ const GalaxyMap = () => {
   const lastScaleRef = useRef(INITIAL_SCALE);
   const lastPanRef = useRef({ x: 0, y: 0 });
   const initialPinchDistanceRef = useRef(null);
-  // remember scale at the start of a pinch gesture
   const pinchStartScaleRef = useRef(INITIAL_SCALE);
 
   const MIN_SCALE = 1;
-  const MAX_SCALE = SCREEN_WIDTH > 600 ? 6 : 5.5;
+  const MAX_SCALE = SCREEN_WIDTH > 600 ? 9 : 7.5;
 
   const handleBack = () => {
     navigation.goBack();
@@ -325,11 +333,13 @@ const GalaxyMap = () => {
 
     Animated.timing(warpAnim, {
       toValue: 1,
-      duration: 450,
+      duration: 600,
       useNativeDriver: true,
     }).start(() => {
       const targetPlanetId = system.planetId;
       setWarpingTo(null);
+      warpAnim.setValue(0);
+
       navigation.navigate('PlanetsHome', {
         initialPlanetId: targetPlanetId,
       });
@@ -364,8 +374,6 @@ const GalaxyMap = () => {
     const nativeEvent = e?.nativeEvent;
     if (!nativeEvent) return;
     const deltaY = nativeEvent.deltaY || 0;
-
-    // scroll up => zoom in, scroll down => out
     const zoomDelta = deltaY > 0 ? -0.15 : 0.15;
     handleZoomDelta(zoomDelta);
   };
@@ -452,7 +460,7 @@ const GalaxyMap = () => {
           </Text>
         </View>
 
-        <View style={{ width: 60 }} />{/* spacer */}
+        <View style={{ width: 60 }} />
       </View>
 
       {/* MAP AREA */}
@@ -498,19 +506,11 @@ const GalaxyMap = () => {
               ]}
             />
 
-            {/* QUADRANT LABELS
-                Alpha: bottom-left
-                Beta:  bottom-right
-                Gamma: top-left
-                Delta: top-right
-            */}
+            {/* QUADRANT LABELS */}
             <Text
               style={[
                 styles.quadrantLabel,
-                {
-                  left: MAP_BASE_SIZE * 0.18,
-                  top: MAP_BASE_SIZE * 0.70,
-                },
+                { left: MAP_BASE_SIZE * 0.18, top: MAP_BASE_SIZE * 0.7 },
               ]}
             >
               ALPHA
@@ -518,10 +518,7 @@ const GalaxyMap = () => {
             <Text
               style={[
                 styles.quadrantLabel,
-                {
-                  left: MAP_BASE_SIZE * 0.68,
-                  top: MAP_BASE_SIZE * 0.70,
-                },
+                { left: MAP_BASE_SIZE * 0.68, top: MAP_BASE_SIZE * 0.7 },
               ]}
             >
               BETA
@@ -529,10 +526,7 @@ const GalaxyMap = () => {
             <Text
               style={[
                 styles.quadrantLabel,
-                {
-                  left: MAP_BASE_SIZE * 0.18,
-                  top: MAP_BASE_SIZE * 0.18,
-                },
+                { left: MAP_BASE_SIZE * 0.18, top: MAP_BASE_SIZE * 0.18 },
               ]}
             >
               GAMMA
@@ -540,16 +534,13 @@ const GalaxyMap = () => {
             <Text
               style={[
                 styles.quadrantLabel,
-                {
-                  left: MAP_BASE_SIZE * 0.68,
-                  top: MAP_BASE_SIZE * 0.18,
-                },
+                { left: MAP_BASE_SIZE * 0.68, top: MAP_BASE_SIZE * 0.18 },
               ]}
             >
               DELTA
             </Text>
 
-            {/* CONNECTIONS – drawn in map space */}
+            {/* CONNECTIONS (placeholder) */}
             {CONNECTIONS.map((conn, idx) => {
               const fromSys = getSystemByPlanetId(conn.from);
               const toSys = getSystemByPlanetId(conn.to);
@@ -605,24 +596,7 @@ const GalaxyMap = () => {
 
               const left = sys.x * MAP_BASE_SIZE;
               const top = sys.y * MAP_BASE_SIZE;
-
-              let quadrantGlowStyle = null;
-              switch (sys.quadrant) {
-                case 'alpha':
-                  quadrantGlowStyle = styles.glowAlpha;
-                  break;
-                case 'beta':
-                  quadrantGlowStyle = styles.glowBeta;
-                  break;
-                case 'gamma':
-                  quadrantGlowStyle = styles.glowGamma;
-                  break;
-                case 'delta':
-                  quadrantGlowStyle = styles.glowDelta;
-                  break;
-                default:
-                  quadrantGlowStyle = null;
-              }
+              const quadrantGlowStyle = getQuadrantGlowStyle(sys.quadrant);
 
               return (
                 <TouchableOpacity
@@ -634,10 +608,7 @@ const GalaxyMap = () => {
                   <Animated.View
                     style={[
                       styles.planetWrapper,
-                      {
-                        transform: [{ scale: scaleWarp }],
-                        opacity,
-                      },
+                      { transform: [{ scale: scaleWarp }], opacity },
                     ]}
                   >
                     <View
@@ -647,11 +618,13 @@ const GalaxyMap = () => {
                         isCurrentSystem && styles.planetGlowActive,
                       ]}
                     />
-                    <Image
-                      source={sys.image}
-                      style={styles.planetIcon}
-                      resizeMode="cover"
-                    />
+                    {sys.image && (
+                      <Image
+                        source={sys.image}
+                        style={styles.planetIcon}
+                        resizeMode="cover"
+                      />
+                    )}
                   </Animated.View>
                   <Text style={styles.starName}>{sys.name}</Text>
                 </TouchableOpacity>
@@ -659,7 +632,7 @@ const GalaxyMap = () => {
             })}
           </Animated.View>
 
-          {/* ZOOM BUTTONS (bottom-right of map) */}
+          {/* ZOOM BUTTONS */}
           <View style={styles.zoomControls}>
             <TouchableOpacity
               style={styles.zoomButton}
@@ -682,7 +655,7 @@ const GalaxyMap = () => {
       {/* HUD */}
       <View style={styles.hud}>
         <Text style={styles.hudText}>
-            Drag to pan, or scroll. Use +/- to zoom. Tap a System to warp.
+          Drag to pan, pinch or scroll to zoom. Tap a system to warp.
         </Text>
         {currentPlanetId && (
           <Text style={styles.hudSecondary}>
@@ -694,7 +667,7 @@ const GalaxyMap = () => {
         )}
       </View>
 
-      {/* Warp overlay */}
+      {/* Warp overlay with warp3.gif */}
       {warpingTo && (
         <Animated.View
           pointerEvents="none"
@@ -703,14 +676,17 @@ const GalaxyMap = () => {
             {
               opacity: warpAnim.interpolate({
                 inputRange: [0, 1],
-                outputRange: [0, 0.9],
+                outputRange: [0, 1],
               }),
             },
           ]}
         >
-          <Text style={styles.warpText}>
-            Warping to {getSystemByPlanetId(warpingTo)?.name || 'destination'}…
-          </Text>
+          <Image source={Warp3Gif} style={styles.warpImage} resizeMode="cover" />
+          {/* <View style={styles.warpTextWrapper}>
+            <Text style={styles.warpText}>
+              Warping to {getSystemByPlanetId(warpingTo)?.name || 'destination'}…
+            </Text>
+          </View> */}
         </Animated.View>
       )}
     </View>
@@ -818,21 +794,20 @@ const styles = StyleSheet.create({
     shadowRadius: 14,
     shadowOffset: { width: 0, height: 0 },
   },
-  // Quadrant-specific tint
   glowAlpha: {
-    backgroundColor: 'rgba(120, 180, 255, 0.35)', // bluish
+    backgroundColor: 'rgba(120, 180, 255, 0.35)',
     shadowColor: '#8ac5ff',
   },
   glowBeta: {
-    backgroundColor: 'rgba(255, 130, 130, 0.35)', // reddish
+    backgroundColor: 'rgba(255, 130, 130, 0.35)',
     shadowColor: '#ff8a8a',
   },
   glowGamma: {
-    backgroundColor: 'rgba(210, 130, 255, 0.35)', // purple
+    backgroundColor: 'rgba(210, 130, 255, 0.35)',
     shadowColor: '#d28aff',
   },
   glowDelta: {
-    backgroundColor: 'rgba(140, 255, 180, 0.35)', // greenish
+    backgroundColor: 'rgba(140, 255, 180, 0.35)',
     shadowColor: '#92ffb8',
   },
   planetGlowActive: {
@@ -902,15 +877,28 @@ const styles = StyleSheet.create({
     color: 'rgba(185, 215, 255, 0.9)',
   },
 
+  // WARP OVERLAY
   warpOverlay: {
     position: 'absolute',
     top: 0,
     left: 0,
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
-    backgroundColor: 'black',
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 50,
+    backgroundColor: 'black',
+  },
+  warpImage: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+  },
+  warpTextWrapper: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 999,
+    backgroundColor: 'rgba(0, 0, 0, 0.55)',
   },
   warpText: {
     color: '#EFFFFF',
