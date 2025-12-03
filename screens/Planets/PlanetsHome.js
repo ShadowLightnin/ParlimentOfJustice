@@ -41,25 +41,45 @@ const PlanetsHome = () => {
 
   const [planets, setPlanets] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [earthSide, setEarthSide] = useState('earth'); // 'earth' | 'na' | 'ph'
+  const [earthSide, setEarthSide] = useState('earth');
   const [infoOpen, setInfoOpen] = useState(false);
 
-  // warp overlay state
   const [warpVisible, setWarpVisible] = useState(false);
   const [warpImage, setWarpImage] = useState(null);
+
+  const [selectedUniverse, setSelectedUniverse] = useState('prime');
 
   const planetAnim = useRef(new Animated.Value(0)).current;
   const infoAnim = useRef(new Animated.Value(0)).current;
 
   const initialPlanetIdFromRoute = route.params?.initialPlanetId || null;
 
+  // Load universe selection
+  useEffect(() => {
+    AsyncStorage.getItem('selectedUniverse').then((u) => {
+      if (u === 'pinnacle') setSelectedUniverse('pinnacle');
+      else setSelectedUniverse('prime');
+    });
+  }, []);
+
   useEffect(() => {
     const loadUniverse = async () => {
       try {
         const stored = await AsyncStorage.getItem('selectedUniverse');
-        const isYourUniverse = stored ? stored === 'your' : true;
+        const isPrime = stored !== 'pinnacle';
 
-        const sorted = sortPlanets();
+        let sorted = sortPlanets();
+
+        // FILTER PLANETS BASED ON UNIVERSE
+        if (!isPrime) {
+          sorted = sorted.filter(
+            (p) =>
+              p.systemId === 'sol' ||
+              p.systemId === 'ignis' ||
+              p.systemId === 'zaxxon'
+          );
+        }
+
         if (!sorted.length) {
           setPlanets([]);
           return;
@@ -68,11 +88,13 @@ const PlanetsHome = () => {
         let index = 0;
 
         if (initialPlanetIdFromRoute) {
-          const foundIndex = sorted.findIndex(p => p.id === initialPlanetIdFromRoute);
+          const foundIndex = sorted.findIndex(
+            (p) => p.id === initialPlanetIdFromRoute
+          );
           if (foundIndex !== -1) index = foundIndex;
         } else {
-          const defaultId = isYourUniverse ? 'earth' : 'melcornia';
-          const defIndex = sorted.findIndex(p => p.id === defaultId);
+          const defaultId = isPrime ? 'earth' : 'melcornia';
+          const defIndex = sorted.findIndex((p) => p.id === defaultId);
           if (defIndex !== -1) index = defIndex;
         }
 
@@ -99,6 +121,7 @@ const PlanetsHome = () => {
 
   const currentPlanet = planets[currentIndex] || null;
 
+  // LOADING STATE
   if (!currentPlanet) {
     return (
       <View style={styles.loadingContainer}>
@@ -108,21 +131,51 @@ const PlanetsHome = () => {
     );
   }
 
+  // UNIVERSE LABEL (THIS WAS FIXED)
   const currentUniverseLabel =
-    currentPlanet.universe === 'pinnacle' ? 'Pinnacle Universe' : 'Prime Universe';
+    selectedUniverse === 'pinnacle'
+      ? 'Pinnacle Universe'
+      : 'Prime Universe';
 
-  const sortedSystems = [...SYSTEMS].sort((a, b) => a.order - b.order);
-  const currentSystem =
-    sortedSystems.find(s => s.id === currentPlanet.systemId) || sortedSystems[0];
+  // FILTER SYSTEMS BY UNIVERSE
+  let systemsForUniverse = SYSTEMS;
+  if (selectedUniverse === 'pinnacle') {
+    systemsForUniverse = SYSTEMS.filter(
+      (s) =>
+        s.id === 'sol' ||
+        s.id === 'ignis' ||
+        s.id === 'zaxxon'
+    );
+  }
 
-  const currentSystemIndex = sortedSystems.findIndex(s => s.id === currentSystem.id);
-  const prevSystem =
-    currentSystemIndex > 0 ? sortedSystems[currentSystemIndex - 1] : null;
-  const nextSystem =
-    currentSystemIndex < sortedSystems.length - 1
-      ? sortedSystems[currentSystemIndex + 1]
-      : null;
+  const sortedSystems = [...systemsForUniverse].sort(
+    (a, b) => (a.order || 0) - (b.order || 0)
+  );
 
+  let currentSystem = null;
+  let prevSystem = null;
+  let nextSystem = null;
+
+  if (sortedSystems.length > 0) {
+    currentSystem =
+      sortedSystems.find((s) => s.id === currentPlanet.systemId) ||
+      sortedSystems[0];
+
+    const currentSystemIndex = sortedSystems.findIndex(
+      (s) => s.id === currentSystem.id
+    );
+
+    if (currentSystemIndex > 0) {
+      prevSystem = sortedSystems[currentSystemIndex - 1];
+    }
+    if (currentSystemIndex < sortedSystems.length - 1) {
+      nextSystem = sortedSystems[currentSystemIndex + 1];
+    }
+  }
+
+  const currentSystemName = currentSystem ? currentSystem.name : 'Unknown System';
+
+  // ANIMATION: change planet
   const animatePlanetChange = (newIndex, dir) => {
     Animated.timing(planetAnim, {
       toValue: 0,
@@ -139,93 +192,84 @@ const PlanetsHome = () => {
     });
   };
 
-const handleArrowPress = direction => {
-  if (!planets.length) return;
+  // PLANET NAVIGATION
+  const handleArrowPress = (direction) => {
+    if (!planets.length || !currentSystem) return;
 
-  const currentSysId = currentSystem.id;
+    const currentSysId = currentSystem.id;
 
-  // All planet indices that belong to the current system
-  const planetsInCurrentSystem = planets
-    .map((p, idx) => ({ p, idx }))
-    .filter(item => item.p.systemId === currentSysId);
+    const planetsInCurrentSystem = planets
+      .map((p, idx) => ({ p, idx }))
+      .filter((item) => item.p.systemId === currentSysId);
 
-  const firstInSystem =
-    planetsInCurrentSystem[0]?.idx ?? 0;
-  const lastInSystem =
-    planetsInCurrentSystem[planetsInCurrentSystem.length - 1]?.idx ?? planets.length - 1;
+    const firstInSystem = planetsInCurrentSystem[0]?.idx ?? 0;
+    const lastInSystem =
+      planetsInCurrentSystem[planetsInCurrentSystem.length - 1]?.idx ??
+      planets.length - 1;
 
-  if (direction === 'right') {
-    // If we're on the last planet of this system and there *is* a next system,
-    // warp and jump into the first planet of that next system.
-    if (currentIndex === lastInSystem && nextSystem) {
-      const targetInNextSystem = planets
-        .map((p, idx) => ({ p, idx }))
-        .find(item => item.p.systemId === nextSystem.id);
+    if (direction === 'right') {
+      if (currentIndex === lastInSystem && nextSystem) {
+        const targetInNextSystem = planets
+          .map((p, idx) => ({ p, idx }))
+          .find((item) => item.p.systemId === nextSystem.id);
 
-      if (targetInNextSystem) {
-        triggerWarp('system');
-        setTimeout(() => {
-          animatePlanetChange(targetInNextSystem.idx, 1);
-        }, 300);
-        return;
+        if (targetInNextSystem) {
+          triggerWarp('system');
+          setTimeout(() => {
+            animatePlanetChange(targetInNextSystem.idx, 1);
+          }, 300);
+          return;
+        }
       }
-    }
 
-    // Normal planet-to-planet behavior (wrap around full list)
-    const lastIndex = planets.length - 1;
-    const newIndex = currentIndex === lastIndex ? 0 : currentIndex + 1;
-    animatePlanetChange(newIndex, 1);
-  } else if (direction === 'left') {
-    // If we're on the first planet of this system and there *is* a previous system,
-    // warp and jump into the last planet of that previous system.
-    if (currentIndex === firstInSystem && prevSystem) {
-      const planetsInPrevSystem = planets
-        .map((p, idx) => ({ p, idx }))
-        .filter(item => item.p.systemId === prevSystem.id);
+      const lastIndex = planets.length - 1;
+      const newIndex = currentIndex === lastIndex ? 0 : currentIndex + 1;
+      animatePlanetChange(newIndex, 1);
+    } else if (direction === 'left') {
+      if (currentIndex === firstInSystem && prevSystem) {
+        const planetsInPrevSystem = planets
+          .map((p, idx) => ({ p, idx }))
+          .filter((item) => item.p.systemId === prevSystem.id);
 
-      if (planetsInPrevSystem.length) {
-        const targetIdx =
-          planetsInPrevSystem[planetsInPrevSystem.length - 1].idx;
+        if (planetsInPrevSystem.length) {
+          const targetIdx =
+            planetsInPrevSystem[planetsInPrevSystem.length - 1].idx;
 
-        triggerWarp('system');
-        setTimeout(() => {
-          animatePlanetChange(targetIdx, -1);
-        }, 300);
-        return;
+          triggerWarp('system');
+          setTimeout(() => {
+            animatePlanetChange(targetIdx, -1);
+          }, 300);
+          return;
+        }
       }
+
+      const lastIndex = planets.length - 1;
+      const newIndex = currentIndex === 0 ? lastIndex : currentIndex - 1;
+      animatePlanetChange(newIndex, -1);
     }
-
-    // Normal planet-to-planet behavior (wrap around full list)
-    const lastIndex = planets.length - 1;
-    const newIndex = currentIndex === 0 ? lastIndex : currentIndex - 1;
-    animatePlanetChange(newIndex, -1);
-  }
-};
-
+  };
 
   const canGoLeft = planets.length > 1;
   const canGoRight = planets.length > 1;
 
-  // ---- WARP HANDLER ----
+  // WARP
   const triggerWarp = (type) => {
     const img = type === 'galaxy' ? Warp3Gif : WarpGif;
     setWarpImage(img);
     setWarpVisible(true);
 
-    // hide warp after ~1 second
     setTimeout(() => {
       setWarpVisible(false);
     }, 1000);
   };
 
+  // SYSTEM JUMP
   const jumpToSystem = (systemId, dir = 1) => {
-    const idx = planets.findIndex(p => p.systemId === systemId);
+    const idx = planets.findIndex((p) => p.systemId === systemId);
     if (idx === -1) return;
 
-    // play warp when switching systems
     triggerWarp('system');
 
-    // small delay before switching so warp feels like transition
     setTimeout(() => {
       animatePlanetChange(idx, dir);
     }, 300);
@@ -234,19 +278,17 @@ const handleArrowPress = direction => {
   const goBackHome = () => navigation.navigate('Home');
 
   const openGalaxyMap = () => {
-    // play different warp when jumping to galaxy map
     triggerWarp('galaxy');
 
-    // navigate after warp animation finishes
     setTimeout(() => {
       navigation.navigate('GalaxyMap', {
-        fromUniverse: currentPlanet.universe || 'prime',
+        fromUniverse: selectedUniverse,
         currentPlanetId: currentPlanet.id || null,
       });
     }, 1000);
   };
 
-  // Planet image (Earth has Earth / NA / PH sides)
+  // Earth sides
   let planetDiskImage = currentPlanet.thumbnail;
   if (currentPlanet.id === 'earth') {
     if (earthSide === 'earth') {
@@ -272,7 +314,7 @@ const handleArrowPress = direction => {
 
   const orbitLabel = getOrbitPositionLabel(currentPlanet, planets);
 
-  // INFO PANEL overlay
+  // INFO PANEL
   const toggleInfoPanel = () => {
     const nextOpen = !infoOpen;
     setInfoOpen(nextOpen);
@@ -296,7 +338,7 @@ const handleArrowPress = direction => {
     <View style={styles.root}>
       <ImageBackground source={SpaceBg} style={styles.bg} resizeMode="cover">
         <View style={styles.overlay}>
-          {/* HEADER – nothing in the center */}
+          {/* HEADER */}
           <View style={styles.header}>
             <TouchableOpacity
               style={styles.backButton}
@@ -317,16 +359,16 @@ const handleArrowPress = direction => {
             </TouchableOpacity>
           </View>
 
-          {/* MAIN CONTENT */}
+          {/* PLANET */}
           <View style={styles.main}>
-            {/* PLANET VIEW (image a bit higher by using flex-start + paddingTop) */}
             <Animated.View
-              style={[
-                {
-                  opacity: slideOpacity,
-                  transform: [{ translateX: slideTranslate }, { scale: slideScale }],
-                },
-              ]}
+              style={{
+                opacity: slideOpacity,
+                transform: [
+                  { translateX: slideTranslate },
+                  { scale: slideScale },
+                ],
+              }}
             >
               <View style={styles.planetArea}>
                 <View style={styles.planetImageBox}>
@@ -344,7 +386,6 @@ const handleArrowPress = direction => {
 
           {/* BOTTOM HUD */}
           <View style={styles.bottomHud}>
-            {/* PLANET NAV ROW – on TOP */}
             <View style={styles.planetNavRow}>
               <TouchableOpacity
                 style={[
@@ -385,9 +426,8 @@ const handleArrowPress = direction => {
               </TouchableOpacity>
             </View>
 
-            {/* NAMES ROW: SYSTEM (left) • NAME (center tappable) • UNIVERSE (right) */}
             <View style={styles.bottomInfoRow}>
-              <Text style={styles.bottomSystem}>{currentSystem.name}</Text>
+              <Text style={styles.bottomSystem}>{currentSystemName}</Text>
 
               <TouchableOpacity
                 style={styles.bottomNameWrapper}
@@ -398,10 +438,11 @@ const handleArrowPress = direction => {
                 <Text style={styles.bottomNameHint}>tap for lore</Text>
               </TouchableOpacity>
 
-              <Text style={styles.bottomUniverse}>{currentUniverseLabel}</Text>
+              <Text style={styles.bottomUniverse}>
+                {currentUniverseLabel}
+              </Text>
             </View>
 
-            {/* META ROW: ORBIT + COUNT */}
             <View style={styles.bottomMetaRow}>
               <Text style={styles.bottomLabelLeft}>
                 {orbitLabel != null
@@ -413,7 +454,6 @@ const handleArrowPress = direction => {
               </Text>
             </View>
 
-            {/* EARTH SIDE TOGGLE – stays above divider */}
             {currentPlanet.id === 'earth' && (
               <View style={styles.earthToggleRow}>
                 <TouchableOpacity
@@ -432,6 +472,7 @@ const handleArrowPress = direction => {
                     Utah side
                   </Text>
                 </TouchableOpacity>
+
                 <TouchableOpacity
                   style={[
                     styles.earthToggleButton,
@@ -453,7 +494,6 @@ const handleArrowPress = direction => {
 
             <View style={styles.bottomDivider} />
 
-            {/* SYSTEM NAV ROW – on BOTTOM */}
             <View style={styles.systemButtonsRow}>
               <TouchableOpacity
                 style={[
@@ -495,7 +535,7 @@ const handleArrowPress = direction => {
             </View>
           </View>
 
-          {/* INFO POPUP OVERLAY – in front of planet image */}
+          {/* INFO OVERLAY */}
           <Animated.View
             pointerEvents={infoOpen ? 'auto' : 'none'}
             style={[
@@ -509,7 +549,7 @@ const handleArrowPress = direction => {
             <View style={styles.infoPanelCard}>
               <View style={styles.infoRowTop}>
                 <Text style={styles.infoName}>{currentPlanet.name}</Text>
-                <Text style={styles.infoSystem}>{currentSystem.name}</Text>
+                <Text style={styles.infoSystem}>{currentSystemName}</Text>
               </View>
               <View style={styles.infoRowMeta}>
                 <Text style={styles.infoTag}>{currentUniverseLabel}</Text>
@@ -537,7 +577,7 @@ const handleArrowPress = direction => {
             </View>
           </Animated.View>
 
-          {/* WARP OVERLAY – on top of EVERYTHING */}
+          {/* WARP */}
           {warpVisible && warpImage && (
             <View style={styles.warpOverlay} pointerEvents="none">
               <Image
@@ -554,19 +594,10 @@ const handleArrowPress = direction => {
 };
 
 const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: 'black',
-  },
-  bg: {
-    flex: 1,
-  },
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(2, 6, 18, 0.72)',
-  },
+  root: { flex: 1, backgroundColor: 'black' },
+  bg: { flex: 1 },
+  overlay: { flex: 1 },
 
-  // HEADER
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -602,10 +633,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  // MAIN CONTENT
   main: {
     flex: 1,
-    justifyContent: 'flex-start', // pushes planet a bit higher
+    justifyContent: 'flex-start',
     alignItems: 'center',
     paddingTop: 20,
   },
@@ -623,7 +653,6 @@ const styles = StyleSheet.create({
     height: '100%',
   },
 
-  // BOTTOM HUD
   bottomHud: {
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -651,9 +680,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(5, 25, 50, 0.92)',
     alignItems: 'center',
   },
-  systemButtonDisabled: {
-    opacity: 0.3,
-  },
+  systemButtonDisabled: { opacity: 0.3 },
   systemButtonText: {
     fontSize: 11,
     fontWeight: '600',
@@ -681,7 +708,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold',
     color: '#EFFFFF',
-    textAlign: 'center',
   },
   bottomNameHint: {
     fontSize: 9,
@@ -753,9 +779,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(5, 25, 50, 0.95)',
     alignItems: 'center',
   },
-  planetNavButtonDisabled: {
-    opacity: 0.35,
-  },
+  planetNavButtonDisabled: { opacity: 0.35 },
   planetNavText: {
     fontSize: 11,
     fontWeight: '600',
@@ -765,7 +789,6 @@ const styles = StyleSheet.create({
     color: 'rgba(210, 225, 245, 0.7)',
   },
 
-  // INFO POPUP OVERLAY
   infoOverlay: {
     position: 'absolute',
     left: 0,
@@ -790,7 +813,6 @@ const styles = StyleSheet.create({
   infoRowTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'baseline',
     marginBottom: 4,
   },
   infoName: {
@@ -843,7 +865,6 @@ const styles = StyleSheet.create({
     color: '#EFFFFF',
   },
 
-  // WARP OVERLAY
   warpOverlay: {
     position: 'absolute',
     left: 0,
@@ -857,7 +878,6 @@ const styles = StyleSheet.create({
     height: '100%',
   },
 
-  // LOADING
   loadingContainer: {
     flex: 1,
     backgroundColor: '#020415',

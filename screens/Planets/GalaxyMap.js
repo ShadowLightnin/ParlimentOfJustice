@@ -9,8 +9,16 @@ import {
   Image,
   Animated,
   PanResponder,
+  Platform,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+
+import {
+  SYSTEMS,
+  CONNECTIONS,
+  getSystemByPlanetId,
+  getSystemsForUniverse,
+} from './galaxySystems';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -20,264 +28,12 @@ const MAP_BASE_SIZE = Math.min(SCREEN_WIDTH, SCREEN_HEIGHT * 0.8);
 // Galaxy map image
 const GALAXY_MAP = require('../../assets/Space/The_best_Milky_Way_map_by_Gaia_labelled.jpg');
 
-// Generic icon for Star Trek systems (tiny, so reuse a safe asset)
-const TREK_ICON = require('../../assets/Space/Earth.jpg');
-
-// Warp overlay gif
+// Warp overlay gif (used mainly on native)
 const Warp3Gif = require('../../assets/Space/warp3.gif');
 
-/**
- * High-level systems, each linked to a primary world in that system.
- * x / y are 0–1 normalized positions relative to the map image.
- */
-const SYSTEMS = [
-  // ===== YOUR JUSTICEVERSE SYSTEMS =====
-  {
-    id: 'sol',
-    name: 'Sol',
-    planetId: 'earth',
-    image: require('../../assets/Space/Earth.jpg'),
-    x: 0.49,
-    y: 0.69,
-    quadrant: 'alpha',
-    faction: 'justiceverse',
-  },
-  {
-    id: 'nemesis',
-    name: 'Nemesis',
-    planetId: 'planet-x',
-    image: require('../../assets/Space/PlanetX.jpg'),
-    x: 0.46,
-    y: 0.66,
-    quadrant: 'alpha',
-    faction: 'justiceverse',
-  },
-  {
-    id: 'rogues',
-    name: 'Rogues',
-    planetId: 'wise',
-    image: require('../../assets/Space/Wise.jpg'),
-    x: 0.45,
-    y: 0.72,
-    quadrant: 'alpha',
-    faction: 'justiceverse',
-  },
-  {
-    id: 'ignis',
-    name: 'Ignis',
-    planetId: 'melcornia',
-    image: require('../../assets/Space/Melcornia.jpg'),
-    x: 0.6,
-    y: 0.6,
-    quadrant: 'beta',
-    faction: 'justiceverse',
-  },
-  {
-    id: 'zaxxon',
-    name: 'Zaxxon',
-    planetId: 'zaxxon',
-    image: require('../../assets/Space/Zaxxon.jpg'),
-    x: 0.78,
-    y: 0.52,
-    quadrant: 'beta',
-    faction: 'justiceverse',
-  },
-  {
-    id: 'older-brother',
-    name: 'Older Brother',
-    planetId: 'older-brother',
-    image: require('../../assets/Space/OlderBrother.jpg'),
-    x: 0.51,
-    y: 0.67,
-    quadrant: 'alpha',
-    faction: 'justiceverse',
-  },
-  {
-    id: 'twin-sister',
-    name: 'Twin Sister',
-    planetId: 'twin-sister',
-    image: require('../../assets/Space/TwinSister.jpg'),
-    x: 0.47,
-    y: 0.73,
-    quadrant: 'alpha',
-    faction: 'justiceverse',
-  },
-  {
-    id: 'korrthuun',
-    name: 'Korrthuun',
-    planetId: 'korrthuun',
-    image: require('../../assets/Space/Korrthuun.jpg'),
-    x: 0.88,
-    y: 0.68,
-    quadrant: 'beta',
-    faction: 'justiceverse',
-  },
-  {
-    id: 'kolob-placeholder',
-    name: '',
-    planetId: null,
-    image: require('../../assets/Space/Kolob.jpg'),
-    x: 0.52,
-    y: 0.46,
-    quadrant: 'custom',
-    faction: 'justiceverse',
-  },
-
-  // ===== STAR TREK – ALPHA QUADRANT =====
-  {
-    id: 'vulcan',
-    name: 'Vulcan',
-    planetId: null,
-    image: TREK_ICON,
-    x: 0.45,
-    y: 0.67,
-    quadrant: 'alpha',
-    faction: 'federation',
-  },
-  {
-    id: 'andoria',
-    name: 'Andoria',
-    planetId: null,
-    image: TREK_ICON,
-    x: 0.46,
-    y: 0.75,
-    quadrant: 'alpha',
-    faction: 'federation',
-  },
-  {
-    id: 'tellar-prime',
-    name: 'Tellar Prime',
-    planetId: null,
-    image: TREK_ICON,
-    x: 0.43,
-    y: 0.71,
-    quadrant: 'alpha',
-    faction: 'federation',
-  },
-  {
-    id: 'ferenginar',
-    name: 'Ferenginar',
-    planetId: null,
-    image: TREK_ICON,
-    x: 0.38,
-    y: 0.63,
-    quadrant: 'alpha',
-    faction: 'ferengi',
-  },
-
-  // ===== STAR TREK – BETA QUADRANT =====
-  {
-    id: 'qonos',
-    name: "Qo'noS",
-    planetId: null,
-    image: TREK_ICON,
-    x: 0.62,
-    y: 0.67,
-    quadrant: 'beta',
-    faction: 'klingon',
-  },
-  {
-    id: 'romulus',
-    name: 'Romulus',
-    planetId: null,
-    image: TREK_ICON,
-    x: 0.7,
-    y: 0.63,
-    quadrant: 'beta',
-    faction: 'romulan',
-  },
-  {
-    id: 'cardassia',
-    name: 'Cardassia Prime',
-    planetId: null,
-    image: TREK_ICON,
-    x: 0.54,
-    y: 0.73,
-    quadrant: 'beta',
-    faction: 'cardassian',
-  },
-
-  // ===== STAR TREK – GAMMA QUADRANT =====
-  {
-    id: 'founders-homeworld',
-    name: "Founders' Homeworld",
-    planetId: null,
-    image: TREK_ICON,
-    x: 0.33,
-    y: 0.3,
-    quadrant: 'gamma',
-    faction: 'dominion',
-  },
-  {
-    id: 'vorta-prime',
-    name: 'Vorta Prime',
-    planetId: null,
-    image: TREK_ICON,
-    x: 0.28,
-    y: 0.22,
-    quadrant: 'gamma',
-    faction: 'dominion',
-  },
-  {
-    id: 'jemhadar-world',
-    name: 'Jem’Hadar World',
-    planetId: null,
-    image: TREK_ICON,
-    x: 0.36,
-    y: 0.4,
-    quadrant: 'gamma',
-    faction: 'dominion',
-  },
-
-  // ===== STAR TREK – DELTA QUADRANT =====
-  {
-    id: 'unimatrix-01',
-    name: 'Unimatrix 01',
-    planetId: null,
-    image: TREK_ICON,
-    x: 0.78,
-    y: 0.22,
-    quadrant: 'delta',
-    faction: 'borg',
-  },
-  {
-    id: 'ocampa',
-    name: 'Ocampa',
-    planetId: null,
-    image: TREK_ICON,
-    x: 0.88,
-    y: 0.18,
-    quadrant: 'delta',
-    faction: 'delta-world',
-  },
-  {
-    id: 'talax',
-    name: 'Talax',
-    planetId: null,
-    image: TREK_ICON,
-    x: 0.82,
-    y: 0.26,
-    quadrant: 'delta',
-    faction: 'delta-world',
-  },
-
-  // ===== CYBERTRON =====
-  {
-    id: 'cybertron',
-    name: 'Cybertron',
-    planetId: null,
-    x: 0.8,
-    y: 0.33,
-    quadrant: 'delta',
-    faction: 'cybertronian',
-  },
-];
-
-// Simple connections placeholder (kept for future use)
-const CONNECTIONS = [];
-
-const getSystemByPlanetId = (planetId) =>
-  SYSTEMS.find((s) => s.planetId === planetId) || null;
+// On web / IG in-app browser, big GIF + animation can be crashy.
+// So we only use the warp GIF on native by default.
+const USE_WARP_GIF = Platform.OS !== 'web';
 
 const getQuadrantGlowStyle = (quadrant) => {
   switch (quadrant) {
@@ -292,6 +48,15 @@ const getQuadrantGlowStyle = (quadrant) => {
     default:
       return null;
   }
+};
+
+// Helper: distance between 2 touches
+const getTouchDistance = (touches) => {
+  if (!touches || touches.length < 2) return 0;
+  const [a, b] = touches;
+  const dx = b.pageX - a.pageX;
+  const dy = b.pageY - a.pageY;
+  return Math.sqrt(dx * dx + dy * dy);
 };
 
 const GalaxyMap = () => {
@@ -321,42 +86,55 @@ const GalaxyMap = () => {
   const MAX_SCALE = SCREEN_WIDTH > 600 ? 7 : 5.5;
 
   const handleBack = () => {
-    navigation.goBack();
+    try {
+      navigation.goBack();
+    } catch (err) {
+      console.warn('GalaxyMap back navigation error:', err);
+    }
   };
 
   const handleSystemPress = (system) => {
-    // Only warp if the system has a mapped planetId in your PlanetsHome
-    if (warpingTo || !system?.planetId) return;
+    try {
+      // Only warp if the system has a mapped planetId in your PlanetsHome
+      if (warpingTo || !system?.planetId) return;
 
-    setWarpingTo(system.planetId);
-    warpAnim.setValue(0);
-
-    Animated.timing(warpAnim, {
-      toValue: 1,
-      duration: 600,
-      useNativeDriver: true,
-    }).start(() => {
-      const targetPlanetId = system.planetId;
-      setWarpingTo(null);
+      setWarpingTo(system.planetId);
       warpAnim.setValue(0);
 
-      navigation.navigate('PlanetsHome', {
-        initialPlanetId: targetPlanetId,
+      Animated.timing(warpAnim, {
+        toValue: 1,
+        duration: 600,
+        useNativeDriver: true,
+      }).start(() => {
+        const targetPlanetId = system.planetId;
+        setWarpingTo(null);
+        warpAnim.setValue(0);
+
+        try {
+          navigation.navigate('PlanetsHome', {
+            initialPlanetId: targetPlanetId,
+          });
+        } catch (err) {
+          console.warn('GalaxyMap navigation error:', err);
+        }
       });
-    });
+    } catch (err) {
+      console.warn('GalaxyMap handleSystemPress error:', err);
+      setWarpingTo(null);
+      warpAnim.setValue(0);
+    }
   };
 
   const currentSystem = currentPlanetId
     ? getSystemByPlanetId(currentPlanetId)
     : null;
 
-  // Helper: distance between 2 touches
-  const getTouchDistance = (touches) => {
-    const [a, b] = touches;
-    const dx = b.pageX - a.pageX;
-    const dy = b.pageY - a.pageY;
-    return Math.sqrt(dx * dx + dy * dy);
-  };
+  // --- FILTER SYSTEMS BY UNIVERSE ---
+  // Using the same universe semantics as planets:
+  // - 'prime' view: see all systems
+  // - 'pinnacle' view: only systems tagged universe === 'pinnacle'
+  const visibleSystems = getSystemsForUniverse(fromUniverse);
+  const visibleSystemIds = new Set(visibleSystems.map((s) => s.id));
 
   // Generic zoom helper used by mouse wheel and +/- buttons
   const handleZoomDelta = (delta) => {
@@ -381,11 +159,17 @@ const GalaxyMap = () => {
   // PanResponder to handle pinch + drag on touch devices
   const panResponder = useRef(
     PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: () => true,
+      onStartShouldSetPanResponder: (evt) => {
+        const touches = evt.nativeEvent?.touches || [];
+        return touches.length >= 1;
+      },
+      onMoveShouldSetPanResponder: (evt) => {
+        const touches = evt.nativeEvent?.touches || [];
+        return touches.length >= 1;
+      },
 
       onPanResponderGrant: (evt) => {
-        const touches = evt.nativeEvent.touches || [];
+        const touches = evt.nativeEvent?.touches || [];
         if (touches.length === 2) {
           initialPinchDistanceRef.current = getTouchDistance(touches);
           pinchStartScaleRef.current = lastScaleRef.current;
@@ -393,10 +177,10 @@ const GalaxyMap = () => {
       },
 
       onPanResponderMove: (evt, gestureState) => {
-        const touches = evt.nativeEvent.touches || [];
+        const touches = evt.nativeEvent?.touches || [];
 
-        // Pinch (two fingers)
-        if (touches.length === 2) {
+        // Pinch (two fingers) – native only; web falls back to scroll/zoom buttons
+        if (touches.length === 2 && Platform.OS !== 'web') {
           const currentDistance = getTouchDistance(touches);
           if (initialPinchDistanceRef.current) {
             let nextScale =
@@ -540,11 +324,19 @@ const GalaxyMap = () => {
               DELTA
             </Text>
 
-            {/* CONNECTIONS (placeholder) */}
+            {/* CONNECTIONS (only between visible systems) */}
             {CONNECTIONS.map((conn, idx) => {
               const fromSys = getSystemByPlanetId(conn.from);
               const toSys = getSystemByPlanetId(conn.to);
               if (!fromSys || !toSys) return null;
+
+              // Skip if either system is hidden in this universe view
+              if (
+                !visibleSystemIds.has(fromSys.id) ||
+                !visibleSystemIds.has(toSys.id)
+              ) {
+                return null;
+              }
 
               const x1 = fromSys.x * MAP_BASE_SIZE;
               const y1 = fromSys.y * MAP_BASE_SIZE;
@@ -575,7 +367,7 @@ const GalaxyMap = () => {
             })}
 
             {/* SYSTEM ICONS */}
-            {SYSTEMS.map((sys) => {
+            {visibleSystems.map((sys) => {
               const isWarpingThis = warpingTo === sys.planetId;
               const isCurrentSystem =
                 currentSystem && currentSystem.id === sys.id;
@@ -667,7 +459,7 @@ const GalaxyMap = () => {
         )}
       </View>
 
-      {/* Warp overlay with warp3.gif */}
+      {/* Warp overlay */}
       {warpingTo && (
         <Animated.View
           pointerEvents="none"
@@ -681,12 +473,16 @@ const GalaxyMap = () => {
             },
           ]}
         >
-          <Image source={Warp3Gif} style={styles.warpImage} resizeMode="cover" />
-          {/* <View style={styles.warpTextWrapper}>
-            <Text style={styles.warpText}>
-              Warping to {getSystemByPlanetId(warpingTo)?.name || 'destination'}…
-            </Text>
-          </View> */}
+          {USE_WARP_GIF ? (
+            <Image
+              source={Warp3Gif}
+              style={styles.warpImage}
+              resizeMode="cover"
+            />
+          ) : (
+            // Web / IG: simple fade to black background (already black)
+            <View style={{ flex: 1 }} />
+          )}
         </Animated.View>
       )}
     </View>
@@ -893,19 +689,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     height: '100%',
-  },
-  warpTextWrapper: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 999,
-    backgroundColor: 'rgba(0, 0, 0, 0.55)',
-  },
-  warpText: {
-    color: '#EFFFFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-    textShadowColor: '#7acbff',
-    textShadowRadius: 12,
   },
 });
 
