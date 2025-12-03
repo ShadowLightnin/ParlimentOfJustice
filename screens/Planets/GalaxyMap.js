@@ -67,7 +67,7 @@ const SYSTEMS = [
   },
   {
     id: 'older-brother',
-    name: 'Older Brother Star',
+    name: 'Older Brother',
     planetId: 'older-brother',
     image: require('../../assets/Space/OlderBrother.jpg'),
     x: 0.51,
@@ -129,7 +129,7 @@ const GalaxyMap = () => {
 
   const MIN_SCALE = 1;
   // much safer max zoom for phones & desktop
-  const MAX_SCALE = SCREEN_WIDTH > 600 ? 5 : 4.5;
+  const MAX_SCALE = SCREEN_WIDTH > 600 ? 6 : 5.5;
 
   const handleBack = () => {
     navigation.goBack();
@@ -408,7 +408,7 @@ const GalaxyMap = () => {
       {/* HUD */}
       <View style={styles.hud}>
         <Text style={styles.hudText}>
-          Pinch to zoom, drag to pan. Scroll or use +/- to zoom on desktop. Tap a node to warp.
+          Drag to pan, or scroll. Use +/- to zoom. Tap a System to warp.
         </Text>
         {currentPlanetId && (
           <Text style={styles.hudSecondary}>
@@ -521,8 +521,8 @@ const styles = StyleSheet.create({
   },
   planetGlow: {
     position: 'absolute',
-    width: 14,
-    height: 14,
+    width: 12,
+    height: 12,
     borderRadius: 30,
     backgroundColor: 'rgba(120, 180, 255, 0.28)',
     shadowColor: '#7acbff',
@@ -544,7 +544,7 @@ const styles = StyleSheet.create({
   },
   starName: {
     marginTop: 1,
-    fontSize: 3,
+    fontSize: 2,
     color: '#F8F3FF',
     textShadowColor: 'rgba(0, 0, 0, 0.9)',
     textShadowRadius: 8,
