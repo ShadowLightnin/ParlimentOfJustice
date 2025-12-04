@@ -33,7 +33,7 @@ const Warp3Gif = require('../../assets/Space/warp3.gif');
 
 // On web / IG in-app browser, big GIF + animation can be crashy.
 // So we only use the warp GIF on native by default.
-const USE_WARP_GIF = Platform.OS !== 'web';
+const USE_WARP_GIF = Platform;
 
 const getQuadrantGlowStyle = (quadrant) => {
   switch (quadrant) {
@@ -179,7 +179,7 @@ const PinnacleGalaxyMap = () => {
         const touches = evt.nativeEvent?.touches || [];
 
         // Pinch (two fingers) – native only; web falls back to scroll/zoom buttons
-        if (touches.length === 2 && Platform.OS !== 'web') {
+        if (touches.length === 2 && Platform) {
           const currentDistance = getTouchDistance(touches);
           if (initialPinchDistanceRef.current) {
             let nextScale =
