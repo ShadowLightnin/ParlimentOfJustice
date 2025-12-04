@@ -41,7 +41,6 @@ const DemonsSectionScreen = () => {
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
 
-  // Handle music playback
   const playTheme = async () => {
     if (!currentSound) {
       try {
@@ -68,7 +67,6 @@ const DemonsSectionScreen = () => {
     }
   };
 
-  // Handle music pause
   const pauseTheme = async () => {
     if (currentSound && isPlaying) {
       try {
@@ -81,7 +79,6 @@ const DemonsSectionScreen = () => {
     }
   };
 
-  // Cleanup audio on blur/unmount
   useFocusEffect(
     useCallback(() => {
       return () => {
@@ -96,7 +93,6 @@ const DemonsSectionScreen = () => {
     }, [currentSound])
   );
 
-  // Navigate regardless of audio state; stop/unload if playing
   const handleFactionPress = async (faction) => {
     if (!faction.clickable || !faction.screen) return;
 
@@ -115,7 +111,6 @@ const DemonsSectionScreen = () => {
     }
   };
 
-  // Pause audio before navigating back
   const handleBackPress = async () => {
     if (currentSound) {
       try {
@@ -131,7 +126,6 @@ const DemonsSectionScreen = () => {
     navigation.goBack();
   };
 
-  // Render each faction card
   const renderFactionCard = (faction) => (
     <TouchableOpacity
       key={faction.name}
@@ -147,10 +141,7 @@ const DemonsSectionScreen = () => {
         source={faction.image}
         style={[styles.factionImage, { width: cardSize, height: cardSize * 1.25 }]}
       />
-
-      {/* Dark gradient overlay on image */}
       <View style={styles.cardOverlay} />
-
       <View style={styles.textContainer}>
         <Text style={styles.factionName}>{faction.name}</Text>
         {!faction.clickable && (
@@ -165,9 +156,8 @@ const DemonsSectionScreen = () => {
       source={require('../../assets/BackGround/NateEmblem.jpg')}
       style={styles.background}
     >
-      {/* Dim + glass overlay over background */}
       <View style={styles.screenDimOverlay}>
-        {/* Top bar */}
+        {/* TOP BAR */}
         <View style={styles.topBar}>
           <TouchableOpacity
             onPress={handleBackPress}
@@ -176,8 +166,8 @@ const DemonsSectionScreen = () => {
             <Text style={styles.iconButtonText}>⬅️</Text>
           </TouchableOpacity>
 
+          {/* Faction Legions stays here */}
           <View style={styles.titleBlock}>
-            <Text style={styles.titleLabel}>Maw Factions</Text>
             <Text style={styles.mainTitle}>Faction Legions</Text>
           </View>
 
@@ -193,7 +183,7 @@ const DemonsSectionScreen = () => {
           </View>
         </View>
 
-        {/* Vertical ScrollView for sections */}
+        {/* MAIN SCROLL */}
         <ScrollView
           contentContainerStyle={styles.scrollContentContainer}
           showsVerticalScrollIndicator={false}
@@ -202,6 +192,10 @@ const DemonsSectionScreen = () => {
             {/* Demon Lords Section */}
             <View style={styles.section}>
               <Text style={styles.sectionHeader}>⚡️ Demon Lords ⚡️</Text>
+
+              {/* 🔻 Maw Factions moved here, ABOVE the line */}
+              <Text style={styles.mawSubtitle}>Maw Factions</Text>
+
               <View style={styles.sectionLine} />
               <View style={styles.scrollWrapper}>
                 <ScrollView
@@ -217,7 +211,7 @@ const DemonsSectionScreen = () => {
               </View>
             </View>
 
-            {/* Dark Forces Section */}
+            {/* Enemy Factions Section */}
             <View style={styles.section}>
               <Text style={styles.sectionHeader}>Enemy Factions</Text>
               <View style={styles.sectionLine} />
@@ -254,7 +248,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.78)',
   },
 
-  // TOP BAR
   topBar: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -278,13 +271,6 @@ const styles = StyleSheet.create({
   titleBlock: {
     flex: 1,
     alignItems: 'center',
-    gap: 2,
-  },
-  titleLabel: {
-    fontSize: 11,
-    letterSpacing: 1,
-    textTransform: 'uppercase',
-    color: 'rgba(255,255,255,0.7)',
   },
   mainTitle: {
     fontSize: isDesktop ? 26 : 22,
@@ -315,12 +301,10 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 
-  // MAIN SCROLL
   scrollContentContainer: {
     paddingTop: 10,
     paddingBottom: 40,
   },
-
   container: {
     paddingHorizontal: 12,
   },
@@ -343,7 +327,16 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: 'rgba(255,255,255,0.92)',
     textAlign: 'center',
-    marginBottom: 4,
+    marginBottom: 2,
+  },
+  // New small subtitle under Demon Lords
+  mawSubtitle: {
+    fontSize: 12,
+    textAlign: 'center',
+    color: 'rgba(255, 200, 150, 0.9)',
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginBottom: 6,
   },
   sectionLine: {
     height: 1,

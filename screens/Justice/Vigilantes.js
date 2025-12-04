@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   ImageBackground,
   Modal,
   Alert,
+  Animated,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { db, auth, storage } from '../../lib/firebase';
@@ -28,18 +29,7 @@ const cardSizes = {
 };
 
 // Hardcoded vigilantes (currently empty – you can add later if needed)
-const hardcodedVigilantes = [
-  // {
-  //   id: 'vig-1',
-  //   name: 'Broken Knight',
-  //   screen: '',
-  //   image: require('../../assets/Armor/BatmanBroken.jpg'),
-  //   clickable: true,
-  //   borderColor: '#8B0000',
-  //   hardcoded: true,
-  //   description: 'Shattered protector',
-  // },
-];
+const hardcodedVigilantes = [];
 
 const ALLOWED_EMAILS = ['will@test.com', 'c1wcummings@gmail.com'];
 const RESTRICT_ACCESS = true;
@@ -54,6 +44,27 @@ const VigilanteScreen = () => {
     ? auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email)
     : true;
 
+  // 🔽 INCIDENT / LORE DROPDOWN
+  const [infoOpen, setInfoOpen] = useState(false);
+  const infoAnim = useRef(new Animated.Value(0)).current;
+
+  const toggleInfo = useCallback(() => {
+    if (infoOpen) {
+      Animated.timing(infoAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start(() => setInfoOpen(false));
+    } else {
+      setInfoOpen(true);
+      Animated.timing(infoAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [infoOpen, infoAnim]);
+
   // Fetch dynamic vigilantes
   useEffect(() => {
     const unsub = onSnapshot(
@@ -67,7 +78,6 @@ const VigilanteScreen = () => {
           hardcoded: false,
         }));
 
-        // Combine with hardcoded (no randomization)
         setVigilantes([...hardcodedVigilantes, ...dynamicVigilantes]);
       },
       (e) => {
@@ -152,7 +162,7 @@ const VigilanteScreen = () => {
     }
   };
 
-  // Card renderer – now glassy + consistent
+  // Card renderer
   const renderVigilanteCard = (vigilante) => {
     const cardWidth = isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width;
     const cardHeight = isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height;
@@ -269,13 +279,91 @@ const VigilanteScreen = () => {
           <View style={styles.headerCenter}>
             <View style={styles.headerGlass}>
               <Text style={styles.headerTitle}>The Vigilantes</Text>
-              <Text style={styles.headerSubtitle}>The ones that caused The Incident</Text>
+              <Text style={styles.headerSubtitle}>
+                The ones that caused The Incident
+              </Text>
+              <TouchableOpacity onPress={toggleInfo} activeOpacity={0.85}>
+                <Text style={styles.headerHint}>
+                  {infoOpen ? 'Hide incident dossier ⬆️' : 'Tap for incident dossier ⬇️'}
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
 
           {/* right spacer for symmetry */}
           <View style={{ width: 60 }} />
         </View>
+
+        {/* FLOATING INCIDENT / LORE PANEL */}
+        <Animated.View
+          pointerEvents={infoOpen ? 'auto' : 'none'}
+          style={[
+            styles.infoPanel,
+            {
+              opacity: infoAnim,
+              transform: [
+                {
+                  translateY: infoAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [-10, 0],
+                  }),
+                },
+              ],
+            },
+          ]}
+        >
+          {infoOpen && (
+            <ScrollView
+              style={styles.infoScroll}
+              contentContainerStyle={styles.infoScrollContent}
+              nestedScrollEnabled
+            >
+              <View style={styles.infoHeaderRow}>
+                <Text style={styles.infoHeaderTitle}>
+                  The Vigilantes — Incident Dossier
+                </Text>
+                <TouchableOpacity
+                  onPress={toggleInfo}
+                  hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                >
+                  <Text style={styles.infoClose}>✕</Text>
+                </TouchableOpacity>
+              </View>
+
+              <Text style={styles.infoSectionTitle}>Who they are</Text>
+              <Text style={styles.infoText}>
+                A scattered faction of broken heroes, failed sidekicks, and
+                disillusioned soldiers who decided the systems meant to protect
+                people were the real problem. They stopped asking permission and
+                started writing their own rules in blood and neon.
+              </Text>
+
+              <Text style={styles.infoSectionTitle}>The Incident</Text>
+              <Text style={styles.infoText}>
+                What began as a &quot;final clean-up&quot; operation spiraled into
+                a cascading catastrophe — collateral damage, chain reactions, and
+                a dozen bad calls stacked on top of each other. The world saw
+                mass destruction; the Parliament saw a warning.
+              </Text>
+
+              <Text style={styles.infoSectionTitle}>How the world sees them</Text>
+              <Text style={styles.infoText}>
+                • To governments: terrorists with capes and military-grade hardware.{'\n'}
+                • To street-level citizens: folk monsters and whispered campfire
+                stories.{'\n'}
+                • To some heroes: the nightmare version of what they could become.
+              </Text>
+
+              <Text style={styles.infoSectionTitle}>Why they still matter</Text>
+              <Text style={styles.infoText}>
+                Even after The Incident, their tactics, tech, and ideology echo
+                through the underground. Every time a hero crosses a line, every
+                time a city cheers a brutal win, someone quietly asks:{' '}
+                &quot;Are we becoming them?&quot;
+              </Text>
+            </ScrollView>
+          )}
+        </Animated.View>
 
         <ScrollView contentContainerStyle={styles.scroll}>
           {/* HORIZONTAL LIST */}
@@ -331,7 +419,8 @@ const VigilanteScreen = () => {
                     contentContainerStyle={styles.descriptionContent}
                   >
                     <Text style={styles.previewDesc}>
-                      {previewVigilante?.description || 'A fractured soul walking the line.'}
+                      {previewVigilante?.description ||
+                        'A fractured soul walking the line.'}
                     </Text>
                   </ScrollView>
                   <TouchableOpacity
@@ -392,6 +481,7 @@ const styles = StyleSheet.create({
   mainOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.85)',
+    position: 'relative',           // so the info panel can be absolutely positioned
   },
 
   // HEADER
@@ -441,6 +531,64 @@ const styles = StyleSheet.create({
     color: '#ff9bb8',
     textTransform: 'uppercase',
     letterSpacing: 1.4,
+  },
+  headerHint: {
+    fontSize: 11,
+    marginTop: 4,
+    textAlign: 'center',
+    color: '#fecaca',
+  },
+
+  // FLOATING INFO PANEL
+  infoPanel: {
+    position: 'absolute',
+    top: 80,             // sits under header; tweak if needed
+    left: 10,
+    right: 10,
+    zIndex: 20,
+    elevation: 20,
+
+    borderRadius: 18,
+    backgroundColor: 'rgba(10,10,15,0.97)',
+    borderWidth: 1,
+    borderColor: 'rgba(248,113,113,0.9)',
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+  },
+  infoScroll: {
+    maxHeight: SCREEN_HEIGHT * 0.5,
+  },
+  infoScrollContent: {
+    paddingBottom: 4,
+  },
+  infoHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  infoHeaderTitle: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    color: '#ffe6ec',
+  },
+  infoClose: {
+    fontSize: 16,
+    color: '#ffe6ec',
+  },
+  infoSectionTitle: {
+    marginTop: 8,
+    fontSize: 13,
+    fontWeight: '900',
+    color: '#fecaca',
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+  },
+  infoText: {
+    fontSize: 12,
+    color: '#f9a8d4',
+    marginTop: 2,
+    lineHeight: 16,
   },
 
   scroll: {
@@ -567,9 +715,9 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255,0,80,0.7)',
     overflow: 'hidden',
   },
-  previewCard: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.22 : windowWidth * 0.8,
-    height: isDesktop ? SCREEN_HEIGHT * 0.55 : SCREEN_HEIGHT * 0.45,
+  previewCard: (isDesktopVal, windowWidth) => ({
+    width: isDesktopVal ? windowWidth * 0.22 : windowWidth * 0.8,
+    height: isDesktopVal ? SCREEN_HEIGHT * 0.55 : SCREEN_HEIGHT * 0.45,
     borderRadius: 18,
     overflow: 'hidden',
     backgroundColor: 'rgba(20,20,30,0.95)',
