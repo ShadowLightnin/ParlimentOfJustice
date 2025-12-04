@@ -105,7 +105,7 @@ const GalaxyMap = () => {
   const pinchStartScaleRef = useRef(INITIAL_SCALE);
 
   const MIN_SCALE = 1;
-  const MAX_SCALE = SCREEN_WIDTH > 600 ? 10 : 5.5;
+  const MAX_SCALE = SCREEN_WIDTH > 600 ? 7 : 5.5;
 
 // === PLANET ICON SIZE (0.5–10), persisted ===
 const [iconSize, setIconSize] = useState(3);
@@ -215,7 +215,7 @@ const handleIconSizeDecrement = () => {
     const nativeEvent = e?.nativeEvent;
     if (!nativeEvent) return;
     const deltaY = nativeEvent.deltaY || 0;
-    const zoomDelta = deltaY > 0 ? -0.15 : 0.15;
+    const zoomDelta = deltaY > 0 ? -0.10 : 0.10;
     handleZoomDelta(zoomDelta);
   };
 

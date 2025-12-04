@@ -192,62 +192,94 @@ const PlanetsHome = () => {
     });
   };
 
-  // PLANET NAVIGATION
-  const handleArrowPress = (direction) => {
-    if (!planets.length || !currentSystem) return;
+// PLANET NAVIGATION
+const handleArrowPress = (direction) => {
+  if (!planets.length || !currentSystem) return;
 
-    const currentSysId = currentSystem.id;
+  const currentSysId = currentSystem.id;
 
-    const planetsInCurrentSystem = planets
-      .map((p, idx) => ({ p, idx }))
-      .filter((item) => item.p.systemId === currentSysId);
+  const planetsInCurrentSystem = planets
+    .map((p, idx) => ({ p, idx }))
+    .filter((item) => item.p.systemId === currentSysId);
 
-    const firstInSystem = planetsInCurrentSystem[0]?.idx ?? 0;
-    const lastInSystem =
-      planetsInCurrentSystem[planetsInCurrentSystem.length - 1]?.idx ??
-      planets.length - 1;
+  const firstInSystem = planetsInCurrentSystem[0]?.idx ?? 0;
+  const lastInSystem =
+    planetsInCurrentSystem[planetsInCurrentSystem.length - 1]?.idx ??
+    planets.length - 1;
 
-    if (direction === 'right') {
-      if (currentIndex === lastInSystem && nextSystem) {
-        const targetInNextSystem = planets
-          .map((p, idx) => ({ p, idx }))
-          .find((item) => item.p.systemId === nextSystem.id);
+  const lastIndex = planets.length - 1;
 
-        if (targetInNextSystem) {
-          triggerWarp('system');
-          setTimeout(() => {
-            animatePlanetChange(targetInNextSystem.idx, 1);
-          }, 300);
-          return;
-        }
+  // for wrap-around detection
+  const isFirstSystem =
+    sortedSystems.length > 0 &&
+    currentSystem.id === sortedSystems[0].id;
+
+  const isLastSystem =
+    sortedSystems.length > 0 &&
+    currentSystem.id === sortedSystems[sortedSystems.length - 1].id;
+
+  if (direction === 'right') {
+    // 1) leaving current system → next system (already had warp)
+    if (currentIndex === lastInSystem && nextSystem) {
+      const targetInNextSystem = planets
+        .map((p, idx) => ({ p, idx }))
+        .find((item) => item.p.systemId === nextSystem.id);
+
+      if (targetInNextSystem) {
+        triggerWarp('system');
+        setTimeout(() => {
+          animatePlanetChange(targetInNextSystem.idx, 1);
+        }, 300);
+        return;
       }
-
-      const lastIndex = planets.length - 1;
-      const newIndex = currentIndex === lastIndex ? 0 : currentIndex + 1;
-      animatePlanetChange(newIndex, 1);
-    } else if (direction === 'left') {
-      if (currentIndex === firstInSystem && prevSystem) {
-        const planetsInPrevSystem = planets
-          .map((p, idx) => ({ p, idx }))
-          .filter((item) => item.p.systemId === prevSystem.id);
-
-        if (planetsInPrevSystem.length) {
-          const targetIdx =
-            planetsInPrevSystem[planetsInPrevSystem.length - 1].idx;
-
-          triggerWarp('system');
-          setTimeout(() => {
-            animatePlanetChange(targetIdx, -1);
-          }, 300);
-          return;
-        }
-      }
-
-      const lastIndex = planets.length - 1;
-      const newIndex = currentIndex === 0 ? lastIndex : currentIndex - 1;
-      animatePlanetChange(newIndex, -1);
     }
-  };
+
+    // 2) last planet of last system → wrap to first planet of first system
+    if (currentIndex === lastInSystem && isLastSystem) {
+      triggerWarp('system');
+      setTimeout(() => {
+        animatePlanetChange(0, 1);
+      }, 300);
+      return;
+    }
+
+    // 3) normal planet step / generic wrap
+    const newIndex = currentIndex === lastIndex ? 0 : currentIndex + 1;
+    animatePlanetChange(newIndex, 1);
+  } else if (direction === 'left') {
+    // 1) leaving current system → previous system (already had warp)
+    if (currentIndex === firstInSystem && prevSystem) {
+      const planetsInPrevSystem = planets
+        .map((p, idx) => ({ p, idx }))
+        .filter((item) => item.p.systemId === prevSystem.id);
+
+      if (planetsInPrevSystem.length) {
+        const targetIdx =
+          planetsInPrevSystem[planetsInPrevSystem.length - 1].idx;
+
+        triggerWarp('system');
+        setTimeout(() => {
+          animatePlanetChange(targetIdx, -1);
+        }, 300);
+        return;
+      }
+    }
+
+    // 2) first planet of first system → wrap to last planet of last system
+    if (currentIndex === firstInSystem && isFirstSystem) {
+      triggerWarp('system');
+      setTimeout(() => {
+        animatePlanetChange(lastIndex, -1);
+      }, 300);
+      return;
+    }
+
+    // 3) normal planet step / generic wrap
+    const newIndex = currentIndex === 0 ? lastIndex : currentIndex - 1;
+    animatePlanetChange(newIndex, -1);
+  }
+};
+
 
   const canGoLeft = planets.length > 1;
   const canGoRight = planets.length > 1;
