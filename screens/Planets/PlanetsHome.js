@@ -29,6 +29,7 @@ import Warp3Gif from '../../assets/Space/warp3.gif';
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const PLANET_PIXEL_SIZE = 1084;
+const isDesktop = SCREEN_WIDTH > 600;
 const PLANET_DISPLAY_SIZE = Math.min(
   SCREEN_WIDTH - 40,
   SCREEN_HEIGHT - 260,
@@ -41,7 +42,7 @@ const PlanetsHome = () => {
 
   const [planets, setPlanets] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [earthSide, setEarthSide] = useState('earth');
+  const [earthSide, setEarthSide] = useState('Earth');
   const [infoOpen, setInfoOpen] = useState(false);
 
   const [warpVisible, setWarpVisible] = useState(false);
@@ -322,8 +323,8 @@ const handleArrowPress = (direction) => {
 
   // Earth sides
   let planetDiskImage = currentPlanet.thumbnail;
-  if (currentPlanet.id === 'earth') {
-    if (earthSide === 'earth') {
+  if (currentPlanet.id === 'Earth') {
+    if (earthSide === 'Earth') {
       planetDiskImage = currentPlanet.thumbnail;
     } else {
       const sideKey = earthSide === 'ph' ? 'ph' : 'na';
@@ -366,270 +367,285 @@ const handleArrowPress = (direction) => {
     currentPlanet.description ||
     'No lore entry yet. This celestial body awaits its official codex entry.';
 
+  // 🔹 Shared content for both desktop & mobile
+  const renderContent = () => (
+    <View style={styles.overlay}>
+      {/* HEADER */}
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={goBackHome}
+          activeOpacity={0.85}
+        >
+          <Text style={styles.backText}>⬅ Home</Text>
+        </TouchableOpacity>
+
+        <View style={{ flex: 1 }} />
+
+        <TouchableOpacity
+          style={styles.galaxyButton}
+          onPress={openGalaxyMap}
+          activeOpacity={0.85}
+        >
+          <Text style={styles.galaxyButtonText}>Galaxy Map ✨</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* PLANET */}
+      <View style={styles.main}>
+        <Animated.View
+          style={{
+            opacity: slideOpacity,
+            transform: [
+              { translateX: slideTranslate },
+              { scale: slideScale },
+            ],
+          }}
+        >
+          <View style={styles.planetArea}>
+            <View style={styles.planetImageBox}>
+              {planetDiskImage && (
+                <Image
+                  source={planetDiskImage}
+                  style={styles.planetImage}
+                  resizeMode="contain"
+                />
+              )}
+            </View>
+          </View>
+        </Animated.View>
+      </View>
+
+      {/* BOTTOM HUD (the “console”) */}
+      <View style={styles.bottomHud}>
+        <View style={styles.planetNavRow}>
+          <TouchableOpacity
+            style={[
+              styles.planetNavButton,
+              !canGoLeft && styles.planetNavButtonDisabled,
+            ]}
+            activeOpacity={0.85}
+            disabled={!canGoLeft}
+            onPress={() => handleArrowPress('left')}
+          >
+            <Text
+              style={[
+                styles.planetNavText,
+                !canGoLeft && styles.planetNavTextDisabled,
+              ]}
+            >
+              ⟵ Prev Planet
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.planetNavButton,
+              !canGoRight && styles.planetNavButtonDisabled,
+            ]}
+            activeOpacity={0.85}
+            disabled={!canGoRight}
+            onPress={() => handleArrowPress('right')}
+          >
+            <Text
+              style={[
+                styles.planetNavText,
+                !canGoRight && styles.planetNavTextDisabled,
+              ]}
+            >
+              Next Planet ⟶
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.bottomInfoRow}>
+          <Text style={styles.bottomSystem}>{currentSystemName}</Text>
+
+          <TouchableOpacity
+            style={styles.bottomNameWrapper}
+            onPress={toggleInfoPanel}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.bottomName}>{currentPlanet.name}</Text>
+            <Text style={styles.bottomNameHint}>tap for lore</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.bottomUniverse}>{currentUniverseLabel}</Text>
+        </View>
+
+        <View style={styles.bottomMetaRow}>
+          <Text style={styles.bottomLabelLeft}>
+            {orbitLabel != null
+              ? `Orbit position: ${orbitLabel}`
+              : 'Central body / special object'}
+          </Text>
+          <Text style={styles.bottomLabelRight}>
+            {currentIndex + 1} / {planets.length} celestial bodies
+          </Text>
+        </View>
+
+        {currentPlanet.id === 'Earth' && (
+          <View style={styles.earthToggleRow}>
+            <TouchableOpacity
+              style={[
+                styles.earthToggleButton,
+                earthSide === 'na' && styles.earthToggleButtonActive,
+              ]}
+              onPress={() => setEarthSide('na')}
+            >
+              <Text
+                style={[
+                  styles.earthToggleText,
+                  earthSide === 'na' && styles.earthToggleTextActive,
+                ]}
+              >
+                Utah side
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.earthToggleButton,
+                earthSide === 'ph' && styles.earthToggleButtonActive,
+              ]}
+              onPress={() => setEarthSide('ph')}
+            >
+              <Text
+                style={[
+                  styles.earthToggleText,
+                  earthSide === 'ph' && styles.earthToggleTextActive,
+                ]}
+              >
+                Philippines side
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        <View style={styles.bottomDivider} />
+
+        <View style={styles.systemButtonsRow}>
+          <TouchableOpacity
+            style={[
+              styles.systemButton,
+              !prevSystem && styles.systemButtonDisabled,
+            ]}
+            activeOpacity={0.85}
+            disabled={!prevSystem}
+            onPress={() => prevSystem && jumpToSystem(prevSystem.id, -1)}
+          >
+            <Text
+              style={[
+                styles.systemButtonText,
+                !prevSystem && styles.systemButtonTextDisabled,
+              ]}
+            >
+              ⬅ Prev System
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.systemButton,
+              !nextSystem && styles.systemButtonDisabled,
+            ]}
+            activeOpacity={0.85}
+            disabled={!nextSystem}
+            onPress={() => nextSystem && jumpToSystem(nextSystem.id, 1)}
+          >
+            <Text
+              style={[
+                styles.systemButtonText,
+                !nextSystem && styles.systemButtonTextDisabled,
+              ]}
+            >
+              Next System ➜
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* INFO OVERLAY */}
+      <Animated.View
+        pointerEvents={infoOpen ? 'auto' : 'none'}
+        style={[
+          styles.infoOverlay,
+          {
+            opacity: infoAnim,
+            transform: [{ scale: infoScale }],
+          },
+        ]}
+      >
+        <View style={styles.infoPanelCard}>
+          <View style={styles.infoRowTop}>
+            <Text style={styles.infoName}>{currentPlanet.name}</Text>
+            <Text style={styles.infoSystem}>{currentSystemName}</Text>
+          </View>
+
+          <View style={styles.infoRowMeta}>
+            <Text style={styles.infoTag}>{currentUniverseLabel}</Text>
+            <Text style={styles.infoTag}>
+              {orbitLabel != null
+                ? `Orbit: ${orbitLabel}`
+                : 'Central / special object'}
+            </Text>
+            {currentPlanet.type && (
+              <Text style={styles.infoTag}>{currentPlanet.type}</Text>
+            )}
+          </View>
+
+          <ScrollView style={styles.infoScroll} nestedScrollEnabled>
+            <Text style={styles.infoDescription}>{description}</Text>
+          </ScrollView>
+
+          <TouchableOpacity
+            style={styles.infoCloseButton}
+            onPress={toggleInfoPanel}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.infoCloseText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </Animated.View>
+
+      {/* WARP OVERLAY */}
+      {warpVisible && warpImage && (
+        <View style={styles.warpOverlay} pointerEvents="none">
+          <Image
+            source={warpImage}
+            style={styles.warpImage}
+            resizeMode="cover"
+          />
+        </View>
+      )}
+    </View>
+  );
+
+  // 🔚 FINAL RETURN
   return (
     <View style={styles.root}>
-      <ImageBackground source={SpaceBg} style={styles.bg} resizeMode="cover">
-        <View style={styles.overlay}>
-          {/* HEADER */}
-          <View style={styles.header}>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={goBackHome}
-              activeOpacity={0.85}
-            >
-              <Text style={styles.backText}>⬅ Home</Text>
-            </TouchableOpacity>
-
-            <View style={{ flex: 1 }} />
-
-            <TouchableOpacity
-              style={styles.galaxyButton}
-              onPress={openGalaxyMap}
-              activeOpacity={0.85}
-            >
-              <Text style={styles.galaxyButtonText}>Galaxy Map ✨</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* PLANET */}
-          <View style={styles.main}>
-            <Animated.View
-              style={{
-                opacity: slideOpacity,
-                transform: [
-                  { translateX: slideTranslate },
-                  { scale: slideScale },
-                ],
-              }}
-            >
-              <View style={styles.planetArea}>
-                <View style={styles.planetImageBox}>
-                  {planetDiskImage && (
-                    <Image
-                      source={planetDiskImage}
-                      style={styles.planetImage}
-                      resizeMode="contain"
-                    />
-                  )}
-                </View>
-              </View>
-            </Animated.View>
-          </View>
-
-          {/* BOTTOM HUD */}
-          <View style={styles.bottomHud}>
-            <View style={styles.planetNavRow}>
-              <TouchableOpacity
-                style={[
-                  styles.planetNavButton,
-                  !canGoLeft && styles.planetNavButtonDisabled,
-                ]}
-                activeOpacity={0.85}
-                disabled={!canGoLeft}
-                onPress={() => handleArrowPress('left')}
-              >
-                <Text
-                  style={[
-                    styles.planetNavText,
-                    !canGoLeft && styles.planetNavTextDisabled,
-                  ]}
-                >
-                  ⟵ Prev Planet
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[
-                  styles.planetNavButton,
-                  !canGoRight && styles.planetNavButtonDisabled,
-                ]}
-                activeOpacity={0.85}
-                disabled={!canGoRight}
-                onPress={() => handleArrowPress('right')}
-              >
-                <Text
-                  style={[
-                    styles.planetNavText,
-                    !canGoRight && styles.planetNavTextDisabled,
-                  ]}
-                >
-                  Next Planet ⟶
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.bottomInfoRow}>
-              <Text style={styles.bottomSystem}>{currentSystemName}</Text>
-
-              <TouchableOpacity
-                style={styles.bottomNameWrapper}
-                onPress={toggleInfoPanel}
-                activeOpacity={0.85}
-              >
-                <Text style={styles.bottomName}>{currentPlanet.name}</Text>
-                <Text style={styles.bottomNameHint}>tap for lore</Text>
-              </TouchableOpacity>
-
-              <Text style={styles.bottomUniverse}>
-                {currentUniverseLabel}
-              </Text>
-            </View>
-
-            <View style={styles.bottomMetaRow}>
-              <Text style={styles.bottomLabelLeft}>
-                {orbitLabel != null
-                  ? `Orbit position: ${orbitLabel}`
-                  : 'Central body / special object'}
-              </Text>
-              <Text style={styles.bottomLabelRight}>
-                {currentIndex + 1} / {planets.length} celestial bodies
-              </Text>
-            </View>
-
-            {currentPlanet.id === 'earth' && (
-              <View style={styles.earthToggleRow}>
-                <TouchableOpacity
-                  style={[
-                    styles.earthToggleButton,
-                    earthSide === 'na' && styles.earthToggleButtonActive,
-                  ]}
-                  onPress={() => setEarthSide('na')}
-                >
-                  <Text
-                    style={[
-                      styles.earthToggleText,
-                      earthSide === 'na' && styles.earthToggleTextActive,
-                    ]}
-                  >
-                    Utah side
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[
-                    styles.earthToggleButton,
-                    earthSide === 'ph' && styles.earthToggleButtonActive,
-                  ]}
-                  onPress={() => setEarthSide('ph')}
-                >
-                  <Text
-                    style={[
-                      styles.earthToggleText,
-                      earthSide === 'ph' && styles.earthToggleTextActive,
-                    ]}
-                  >
-                    Philippines side
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
-
-            <View style={styles.bottomDivider} />
-
-            <View style={styles.systemButtonsRow}>
-              <TouchableOpacity
-                style={[
-                  styles.systemButton,
-                  !prevSystem && styles.systemButtonDisabled,
-                ]}
-                activeOpacity={0.85}
-                disabled={!prevSystem}
-                onPress={() => prevSystem && jumpToSystem(prevSystem.id, -1)}
-              >
-                <Text
-                  style={[
-                    styles.systemButtonText,
-                    !prevSystem && styles.systemButtonTextDisabled,
-                  ]}
-                >
-                  ⬅ Prev System
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[
-                  styles.systemButton,
-                  !nextSystem && styles.systemButtonDisabled,
-                ]}
-                activeOpacity={0.85}
-                disabled={!nextSystem}
-                onPress={() => nextSystem && jumpToSystem(nextSystem.id, 1)}
-              >
-                <Text
-                  style={[
-                    styles.systemButtonText,
-                    !nextSystem && styles.systemButtonTextDisabled,
-                  ]}
-                >
-                  Next System ➜
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          {/* INFO OVERLAY */}
-          <Animated.View
-            pointerEvents={infoOpen ? 'auto' : 'none'}
-            style={[
-              styles.infoOverlay,
-              {
-                opacity: infoAnim,
-                transform: [{ scale: infoScale }],
-              },
-            ]}
-          >
-            <View style={styles.infoPanelCard}>
-              <View style={styles.infoRowTop}>
-                <Text style={styles.infoName}>{currentPlanet.name}</Text>
-                <Text style={styles.infoSystem}>{currentSystemName}</Text>
-              </View>
-              <View style={styles.infoRowMeta}>
-                <Text style={styles.infoTag}>{currentUniverseLabel}</Text>
-                <Text style={styles.infoTag}>
-                  {orbitLabel != null
-                    ? `Orbit: ${orbitLabel}`
-                    : 'Central / special object'}
-                </Text>
-                {currentPlanet.type && (
-                  <Text style={styles.infoTag}>{currentPlanet.type}</Text>
-                )}
-              </View>
-
-              <ScrollView style={styles.infoScroll} nestedScrollEnabled>
-                <Text style={styles.infoDescription}>{description}</Text>
-              </ScrollView>
-
-              <TouchableOpacity
-                style={styles.infoCloseButton}
-                onPress={toggleInfoPanel}
-                activeOpacity={0.85}
-              >
-                <Text style={styles.infoCloseText}>Close</Text>
-              </TouchableOpacity>
-            </View>
-          </Animated.View>
-
-          {/* WARP */}
-          {warpVisible && warpImage && (
-            <View style={styles.warpOverlay} pointerEvents="none">
-              <Image
-                source={warpImage}
-                style={styles.warpImage}
-                resizeMode="cover"
-              />
-            </View>
-          )}
-        </View>
-      </ImageBackground>
+      {isDesktop ? (
+        // Desktop: solid background, no image
+        <View style={styles.bg}>{renderContent()}</View>
+      ) : (
+        // Mobile: keep space background
+        <ImageBackground
+          source={SpaceBg}
+          style={styles.bg}
+          resizeMode="cover"
+        >
+          {renderContent()}
+        </ImageBackground>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: 'black' },
-  bg: { flex: 1 },
+  bg: { flex: 1, backgroundColor: 'black' },
   overlay: { flex: 1 },
-
+  
   header: {
     flexDirection: 'row',
     alignItems: 'center',
