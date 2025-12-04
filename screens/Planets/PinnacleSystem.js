@@ -26,7 +26,7 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const MAP_BASE_SIZE = Math.min(SCREEN_WIDTH, SCREEN_HEIGHT * 0.8);
 
 // Galaxy map image
-const GALAXY_MAP = require('../../assets/Space/The_best_Milky_Way_map_by_Gaia_labelled.jpg');
+const GALAXY_MAP = require('../../assets/Space/MilkyWay.jpg');
 
 // Warp overlay gif (used mainly on native)
 const Warp3Gif = require('../../assets/Space/warp3.gif');
