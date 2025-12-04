@@ -29,18 +29,18 @@ const MAP_BASE_SIZE = Math.min(SCREEN_WIDTH, SCREEN_HEIGHT * 0.8);
 // Galaxy map image
 const GALAXY_MAP = require('../../assets/Space/The_best_Milky_Way_map_by_Gaia_labelled.jpg');
 
-// Warp overlay gif (used mainly on native)
-// const Warp3Gif = require('../../assets/Space/warp3.gif');
-
 // On web / IG in-app browser, big GIF + animation can be crashy.
-// So we only use the warp GIF on native by default.
 const USE_WARP_GIF = Platform.OS !== 'web';
+
+// Warp overlay gif (used mainly on native)
+const Warp3Gif = USE_WARP_GIF
+  ? require('../../assets/Space/warp3.gif')
+  : null;
 
 const ICON_SIZE_STORAGE_KEY = 'galaxy_icon_size';
 const MIN_ICON_SIZE = 2;
 const MAX_ICON_SIZE = 10;
 const ICON_STEP = 1;
-
 
 const getQuadrantGlowStyle = (quadrant) => {
   switch (quadrant) {
@@ -103,50 +103,50 @@ const GalaxyMap = () => {
   const lastPanRef = useRef({ x: 0, y: 0 });
   const initialPinchDistanceRef = useRef(null);
   const pinchStartScaleRef = useRef(INITIAL_SCALE);
+  const isPinchingRef = useRef(false);
 
   const MIN_SCALE = 1;
   const MAX_SCALE = SCREEN_WIDTH > 600 ? 7 : 5.5;
 
-// === PLANET ICON SIZE (0.5–10), persisted ===
-const [iconSize, setIconSize] = useState(3);
+  // === PLANET ICON SIZE (2–10), persisted ===
+  const [iconSize, setIconSize] = useState(3);
 
-useEffect(() => {
-  const loadSize = async () => {
+  useEffect(() => {
+    const loadSize = async () => {
+      try {
+        const stored = await AsyncStorage.getItem(ICON_SIZE_STORAGE_KEY);
+        if (!stored) return;
+
+        let parsed = parseFloat(stored);
+        if (Number.isNaN(parsed)) return;
+
+        // clamp into valid range
+        parsed = Math.max(MIN_ICON_SIZE, Math.min(MAX_ICON_SIZE, parsed));
+        setIconSize(parsed);
+      } catch (e) {
+        console.warn('Failed to load galaxy icon size', e);
+      }
+    };
+    loadSize();
+  }, []);
+
+  const setAndPersistIconSize = async (newSize) => {
+    const clamped = Math.max(MIN_ICON_SIZE, Math.min(MAX_ICON_SIZE, newSize));
+    setIconSize(clamped);
     try {
-      const stored = await AsyncStorage.getItem(ICON_SIZE_STORAGE_KEY);
-      if (!stored) return;
-
-      let parsed = parseFloat(stored);
-      if (Number.isNaN(parsed)) return;
-
-      // clamp into valid range
-      parsed = Math.max(MIN_ICON_SIZE, Math.min(MAX_ICON_SIZE, parsed));
-      setIconSize(parsed);
+      await AsyncStorage.setItem(ICON_SIZE_STORAGE_KEY, String(clamped));
     } catch (e) {
-      console.warn('Failed to load galaxy icon size', e);
+      console.warn('Failed to save galaxy icon size', e);
     }
   };
-  loadSize();
-}, []);
 
-const setAndPersistIconSize = async (newSize) => {
-  const clamped = Math.max(MIN_ICON_SIZE, Math.min(MAX_ICON_SIZE, newSize));
-  setIconSize(clamped);
-  try {
-    await AsyncStorage.setItem(ICON_SIZE_STORAGE_KEY, String(clamped));
-  } catch (e) {
-    console.warn('Failed to save galaxy icon size', e);
-  }
-};
+  const handleIconSizeIncrement = () => {
+    setAndPersistIconSize(iconSize + ICON_STEP);
+  };
 
-const handleIconSizeIncrement = () => {
-  setAndPersistIconSize(iconSize + ICON_STEP);
-};
-
-const handleIconSizeDecrement = () => {
-  setAndPersistIconSize(iconSize - ICON_STEP);
-};
-
+  const handleIconSizeDecrement = () => {
+    setAndPersistIconSize(iconSize - ICON_STEP);
+  };
 
   const handleBack = () => {
     try {
@@ -212,10 +212,11 @@ const handleIconSizeDecrement = () => {
 
   // Mouse wheel zoom (RN Web only – ignored on native)
   const handleWheel = (e) => {
+    if (Platform.OS !== 'web') return;
     const nativeEvent = e?.nativeEvent;
     if (!nativeEvent) return;
     const deltaY = nativeEvent.deltaY || 0;
-    const zoomDelta = deltaY > 0 ? -0.10 : 0.10;
+    const zoomDelta = deltaY > 0 ? -0.1 : 0.1;
     handleZoomDelta(zoomDelta);
   };
 
@@ -234,8 +235,11 @@ const handleIconSizeDecrement = () => {
       onPanResponderGrant: (evt) => {
         const touches = evt.nativeEvent?.touches || [];
         if (touches.length === 2) {
+          isPinchingRef.current = true;
           initialPinchDistanceRef.current = getTouchDistance(touches);
           pinchStartScaleRef.current = lastScaleRef.current;
+        } else {
+          isPinchingRef.current = false;
         }
       },
 
@@ -245,7 +249,7 @@ const handleIconSizeDecrement = () => {
         // Pinch (two fingers) – native only; web falls back to scroll/zoom buttons
         if (touches.length === 2 && Platform.OS !== 'web') {
           const currentDistance = getTouchDistance(touches);
-          if (initialPinchDistanceRef.current) {
+          if (initialPinchDistanceRef.current && currentDistance > 0) {
             let nextScale =
               (currentDistance / initialPinchDistanceRef.current) *
               pinchStartScaleRef.current;
@@ -253,7 +257,7 @@ const handleIconSizeDecrement = () => {
             nextScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, nextScale));
             scale.setValue(nextScale);
           }
-        } else if (touches.length === 1) {
+        } else if (touches.length === 1 && !isPinchingRef.current) {
           // Drag (one finger)
           const nextX = lastPanRef.current.x + gestureState.dx;
           const nextY = lastPanRef.current.y + gestureState.dy;
@@ -277,17 +281,24 @@ const handleIconSizeDecrement = () => {
           lastPanRef.current.y = y;
         });
         initialPinchDistanceRef.current = null;
+        isPinchingRef.current = false;
       },
 
       onPanResponderTerminationRequest: () => false,
       onPanResponderTerminate: () => {
         initialPinchDistanceRef.current = null;
+        isPinchingRef.current = false;
       },
     })
   ).current;
 
   // Derived sizes so glow stays centered & proportional
   const glowSize = iconSize + 2; // can tweak if you want a bigger/smaller halo
+
+  // Make sure icon size value is always safe for display
+  const iconSizeDisplay = Number.isFinite(iconSize)
+    ? iconSize.toFixed(1)
+    : '—';
 
   return (
     <View style={styles.root}>
@@ -475,18 +486,18 @@ const handleIconSizeDecrement = () => {
                       { transform: [{ scale: scaleWarp }], opacity },
                     ]}
                   >
-                  <View
-                    style={[
-                      styles.planetGlow,
-                      quadrantGlowStyle,
-                      isCurrentSystem && styles.planetGlowActive,
-                      {
-                        width: glowSize,
-                        height: glowSize,
-                        borderRadius: glowSize / 2,
-                      },
-                    ]}
-                  />
+                    <View
+                      style={[
+                        styles.planetGlow,
+                        quadrantGlowStyle,
+                        isCurrentSystem && styles.planetGlowActive,
+                        {
+                          width: glowSize,
+                          height: glowSize,
+                          borderRadius: glowSize / 2,
+                        },
+                      ]}
+                    />
                     {sys.image && (
                       <Image
                         source={sys.image}
@@ -554,7 +565,7 @@ const handleIconSizeDecrement = () => {
             <Text style={styles.sizeToggleText}>−</Text>
           </TouchableOpacity>
 
-          <Text style={styles.sizeValueText}>{iconSize.toFixed(1)}</Text>
+          <Text style={styles.sizeValueText}>{iconSizeDisplay}</Text>
 
           <TouchableOpacity
             style={styles.sizeToggleButton}
@@ -564,7 +575,6 @@ const handleIconSizeDecrement = () => {
             <Text style={styles.sizeToggleText}>＋</Text>
           </TouchableOpacity>
         </View>
-
       </View>
 
       {/* Warp overlay */}
@@ -581,7 +591,7 @@ const handleIconSizeDecrement = () => {
             },
           ]}
         >
-          {USE_WARP_GIF ? (
+          {USE_WARP_GIF && Warp3Gif ? (
             <Image
               source={Warp3Gif}
               style={styles.warpImage}
@@ -740,7 +750,6 @@ const styles = StyleSheet.create({
     right: 8,
     bottom: 8,
     flexDirection: 'column',
-    gap: 6,
   },
   zoomButton: {
     width: 32,
@@ -751,6 +760,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(150, 210, 255, 0.9)',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 6,
   },
   zoomText: {
     color: '#EFFFFF',
@@ -780,11 +790,11 @@ const styles = StyleSheet.create({
     marginTop: 6,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
   },
   sizeToggleLabel: {
     fontSize: 11,
     color: 'rgba(215, 215, 255, 0.9)',
+    marginRight: 6,
   },
   sizeToggleButton: {
     paddingHorizontal: 8,
@@ -793,28 +803,20 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(150, 170, 255, 0.7)',
     backgroundColor: 'rgba(10, 15, 35, 0.9)',
-  },
-  sizeToggleButtonActive: {
-    backgroundColor: 'rgba(190, 120, 255, 0.95)',
-    borderColor: 'rgba(235, 220, 255, 0.95)',
+    marginHorizontal: 4,
   },
   sizeToggleText: {
     fontSize: 11,
     color: 'rgba(215, 215, 255, 0.9)',
     fontWeight: '500',
   },
-  sizeToggleTextActive: {
-    color: '#FFFFFF',
-    fontWeight: '700',
-  },
   sizeValueText: {
-  fontSize: 11,
-  color: 'rgba(235, 235, 255, 0.95)',
-  fontWeight: '600',
-  minWidth: 36,
-  textAlign: 'center',
-},
-
+    fontSize: 11,
+    color: 'rgba(235, 235, 255, 0.95)',
+    fontWeight: '600',
+    minWidth: 36,
+    textAlign: 'center',
+  },
 
   // WARP OVERLAY
   warpOverlay: {
