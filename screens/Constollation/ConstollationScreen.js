@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   ScrollView,
   Dimensions,
+  Animated,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { memberCategories } from './ConstollationMembers';
@@ -32,6 +33,27 @@ export const ConstollationScreen = () => {
   const [members, setMembers] = useState(memberCategories);
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+
+  // 🔹 Lore panel state + animation
+  const [infoOpen, setInfoOpen] = useState(false);
+  const infoAnim = useRef(new Animated.Value(0)).current;
+
+  const toggleInfo = () => {
+    if (infoOpen) {
+      Animated.timing(infoAnim, {
+        toValue: 0,
+        duration: 220,
+        useNativeDriver: true,
+      }).start(() => setInfoOpen(false));
+    } else {
+      setInfoOpen(true);
+      Animated.timing(infoAnim, {
+        toValue: 1,
+        duration: 220,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
 
   // ── AUDIO ─────────────────────────────────────
   const playTheme = async () => {
@@ -82,11 +104,14 @@ export const ConstollationScreen = () => {
       const processed = cat.members.map(m => {
         const imgData = constollationImages[m.name];
 
-        // ⬇️ This is your original, working image structure
-        const images = imgData?.images || [{ uri: require('../../assets/Armor/PlaceHolder.jpg') }];
+        // ⬇️ Original image structure
+        const images = imgData?.images || [
+          { uri: require('../../assets/Armor/PlaceHolder.jpg') },
+        ];
 
         const description =
-          ConstollationDescription[m.name] || 'A star whose light speaks for itself.';
+          ConstollationDescription[m.name] ||
+          'A star whose light speaks for itself.';
 
         return {
           ...m,
@@ -107,16 +132,16 @@ export const ConstollationScreen = () => {
     navigation.navigate('TeamChat');
   };
 
-  const handleMemberPress = async (member) => {
+  const handleMemberPress = async member => {
     await stopSound();
     navigation.navigate('ConstollationCharacterDetail', { member });
   };
 
-  const renderStar = (member) => {
+  const renderStar = member => {
     if (!member) return <View key={Math.random()} style={styles.cardSpacer} />;
 
-    // ⬇️ ORIGINAL logic: expects images entries like { uri: require(...) }
-    const primaryImage = member.images?.[0]?.uri || require('../../assets/Armor/PlaceHolder.jpg');
+    const primaryImage =
+      member.images?.[0]?.uri || require('../../assets/Armor/PlaceHolder.jpg');
 
     return (
       <TouchableOpacity
@@ -128,7 +153,12 @@ export const ConstollationScreen = () => {
         <Image source={primaryImage} style={styles.starImage} resizeMode="cover" />
 
         <View style={styles.textWrapper}>
-          <Text style={[styles.name, isDesktop ? styles.nameDesktop : styles.nameMobile]}>
+          <Text
+            style={[
+              styles.name,
+              isDesktop ? styles.nameDesktop : styles.nameMobile,
+            ]}
+          >
             {member.name}
           </Text>
           {member.codename && (
@@ -162,12 +192,20 @@ export const ConstollationScreen = () => {
             <Text style={styles.backText}>⬅️ Back</Text>
           </TouchableOpacity>
 
-          <View style={styles.headerCenter}>
+          {/* Tap center to toggle lore panel */}
+          <TouchableOpacity
+            style={styles.headerCenter}
+            onPress={toggleInfo}
+            activeOpacity={0.9}
+          >
             <View style={styles.headerGlass}>
               <Text style={styles.headerTitle}>Constollation</Text>
-              <Text style={styles.headerSubtitle}>The Social Workers of The Parliament</Text>
+              <Text style={styles.headerSubtitle}>
+                The Social Workers of The Parliament
+              </Text>
+              <Text style={styles.infoHint}>Tap for team lore ⬇</Text>
             </View>
-          </View>
+          </TouchableOpacity>
 
           <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
             <Text style={styles.chatText}>🛡️</Text>
@@ -184,9 +222,9 @@ export const ConstollationScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* THE STARS — CLICKABLE, GLORIOUS */}
+        {/* THE STARS — CLICKABLE */}
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          {members.map((cat) => {
+          {members.map(cat => {
             const rows = Math.ceil(cat.members.length / columns);
             return (
               <View key={cat.category} style={styles.categorySection}>
@@ -215,6 +253,60 @@ export const ConstollationScreen = () => {
             );
           })}
         </ScrollView>
+
+        {/* ⭐ Lore overlay on top of everything */}
+        <Animated.View
+          pointerEvents={infoOpen ? 'auto' : 'none'}
+          style={[
+            styles.infoPanelContainer,
+            {
+              opacity: infoAnim,
+              transform: [
+                {
+                  translateY: infoAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [-20, 0],
+                  }),
+                },
+              ],
+            },
+          ]}
+        >
+          {infoOpen && (
+            <View style={styles.infoPanel}>
+              <View style={styles.infoHeaderRow}>
+                <Text style={styles.infoTitle}>Constollation</Text>
+                <TouchableOpacity
+                  onPress={toggleInfo}
+                  hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                >
+                  <Text style={styles.infoClose}>✕</Text>
+                </TouchableOpacity>
+              </View>
+
+              <Text style={styles.infoText}>
+                Constollation is made of the doctors, counselors, social workers,
+                mentors, and teachers whose whole power set is people. They&apos;re
+                the ones who patch up minds, families, and communities so the
+                Parliament has something worth defending.
+              </Text>
+
+              <Text style={styles.infoLabel}>What they represent</Text>
+              <Text style={styles.infoText}>
+                Healing, advocacy, and quiet heroism. These are the heroes who show
+                up in hospital corridors, school hallways, and therapy offices —
+                the constellation of adults who helped you not fall apart.
+              </Text>
+
+              <Text style={styles.infoLabel}>How they operate</Text>
+              <Text style={styles.infoText}>
+                • On the ground with citizens before, during, and after crises{'\n'}
+                • Coordinating shelters, outreach, and long-term recovery{'\n'}
+                • Standing between systems and the people crushed by them
+              </Text>
+            </View>
+          )}
+        </Animated.View>
       </SafeAreaView>
     </ImageBackground>
   );
@@ -271,6 +363,12 @@ const styles = StyleSheet.create({
     letterSpacing: 1.1,
     textTransform: 'uppercase',
   },
+  infoHint: {
+    marginTop: 2,
+    fontSize: 10,
+    textAlign: 'center',
+    color: '#bfeeff',
+  },
 
   chatButton: {
     paddingVertical: 8,
@@ -325,7 +423,7 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row', justifyContent: 'center' },
   starWrapper: { alignItems: 'center' },
 
-  // STAR CARD (unchanged from your original except colors tweaked to match header)
+  // STAR CARD
   card: {
     width: cardSize,
     height: cardSize * cardHeightMultiplier,
@@ -341,13 +439,67 @@ const styles = StyleSheet.create({
   },
   starImage: { width: '100%', height: '100%' },
   textWrapper: { position: 'absolute', bottom: 10, left: 10, right: 10 },
-  name: { color: '#ffffff', fontWeight: 'bold', textShadowColor: '#000', textShadowRadius: 10 },
-  codename: { color: '#00ffff', fontWeight: 'bold', textShadowColor: '#000', textShadowRadius: 12 },
+  name: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+    textShadowColor: '#000',
+    textShadowRadius: 10,
+  },
+  codename: {
+    color: '#00ffff',
+    fontWeight: 'bold',
+    textShadowColor: '#000',
+    textShadowRadius: 12,
+  },
   nameDesktop: { fontSize: 16 },
   codenameDesktop: { fontSize: 19 },
   nameMobile: { fontSize: 11 },
   codenameMobile: { fontSize: 12 },
   cardSpacer: { width: cardSize, height: cardSize * cardHeightMultiplier },
+
+  // INFO PANEL
+  infoPanelContainer: {
+    position: 'absolute',
+    top: 80,
+    left: 10,
+    right: 10,
+    zIndex: 20,
+  },
+  infoPanel: {
+    backgroundColor: 'rgba(3, 10, 30, 0.97)',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderWidth: 1.5,
+    borderColor: '#7de1ff',
+  },
+  infoHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  infoTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#f7fdff',
+  },
+  infoClose: {
+    fontSize: 16,
+    color: '#f7fdff',
+  },
+  infoLabel: {
+    marginTop: 6,
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#9fe9ff',
+  },
+  infoText: {
+    fontSize: 12,
+    color: 'rgba(230,245,255,0.98)',
+    marginTop: 2,
+    lineHeight: 16,
+  },
 });
 
 export default ConstollationScreen;

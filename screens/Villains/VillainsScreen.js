@@ -62,7 +62,7 @@ const villainsFactions = [
     pinnacleShadowColor: '#4b0082',   // Corrupted purple for card shadow in Pinnacle
   },
   {
-    name: 'Demons Section',
+    name: 'Other Worldly',
     screen: 'DemonsSection',
     clickable: true,
     image: require('../../assets/BackGround/NateEmblem.jpg'),

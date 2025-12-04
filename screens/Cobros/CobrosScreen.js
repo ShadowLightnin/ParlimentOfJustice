@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
   Dimensions,
   Modal,
   Alert,
+  Animated,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { cobrosMembers } from './CobrosMembers';
@@ -31,6 +32,27 @@ export const CobrosScreen = () => {
   const [previewMember, setPreviewMember] = useState(null);
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+
+  // 🔽 Lore overlay state + animation
+  const [infoOpen, setInfoOpen] = useState(false);
+  const infoAnim = useRef(new Animated.Value(0)).current;
+
+  const toggleInfo = () => {
+    if (infoOpen) {
+      Animated.timing(infoAnim, {
+        toValue: 0,
+        duration: 220,
+        useNativeDriver: true,
+      }).start(() => setInfoOpen(false));
+    } else {
+      setInfoOpen(true);
+      Animated.timing(infoAnim, {
+        toValue: 1,
+        duration: 220,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
 
   // MUSIC SYSTEM — Justice Gang forever
   const playTheme = async () => {
@@ -268,12 +290,20 @@ export const CobrosScreen = () => {
               <Text style={styles.backText}>⬅️ Back</Text>
             </TouchableOpacity>
 
-            <View style={styles.headerTitle}>
+            {/* Tap header center to toggle lore */}
+            <TouchableOpacity
+              style={styles.headerTitle}
+              onPress={toggleInfo}
+              activeOpacity={0.9}
+            >
               <View style={styles.headerGlass}>
                 <Text style={styles.header}>Cobros 314</Text>
-                <Text style={styles.headerSub}>The rangers of The Parliament</Text>
+                <Text style={styles.headerSub}>
+                  The rangers of The Parliament
+                </Text>
+                <Text style={styles.infoHint}>Tap for team lore ⬇</Text>
               </View>
-            </View>
+            </TouchableOpacity>
 
             <TouchableOpacity
               onPress={goToChat}
@@ -300,6 +330,64 @@ export const CobrosScreen = () => {
           <ScrollView contentContainerStyle={styles.scrollContainer}>
             {renderGrid()}
           </ScrollView>
+
+          {/* 🔴 LORE OVERLAY ON TOP OF EVERYTHING */}
+          <Animated.View
+            pointerEvents={infoOpen ? 'auto' : 'none'}
+            style={[
+              styles.infoPanelContainer,
+              {
+                opacity: infoAnim,
+                transform: [
+                  {
+                    translateY: infoAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [-20, 0],
+                    }),
+                  },
+                ],
+              },
+            ]}
+          >
+            {infoOpen && (
+              <View style={styles.infoPanel}>
+                <View style={styles.infoHeaderRow}>
+                  <Text style={styles.infoTitle}>Cobros 314</Text>
+                  <TouchableOpacity
+                    onPress={toggleInfo}
+                    hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                  >
+                    <Text style={styles.infoClose}>✕</Text>
+                  </TouchableOpacity>
+                </View>
+
+                <Text style={styles.infoText}>
+                  Cobros 314 are the Parliament&apos;s rangers — scouts, trailblazers,
+                  and rescue specialists forged out of real-world memories of
+                  campouts, late-night drives, and Young Men adventures. They&apos;re
+                  the guys you call when the path forward is unknown and the
+                  terrain is hostile.
+                </Text>
+
+                <Text style={styles.infoLabel}>What they represent</Text>
+                <Text style={styles.infoText}>
+                  Brotherhood, grit, and loyalty. Cobros stand for the kind of
+                  friendship that survives storms, bad choices, and near-disaster
+                  hikes — then laughs about it around a fire the next night.
+                </Text>
+
+                <Text style={styles.infoLabel}>
+                  Missions they specialize in
+                </Text>
+                <Text style={styles.infoText}>
+                  • Recon runs and long-range scouting outside Zion City{'\n'}
+                  • Escorting convoys, search-and-rescue, and extractions{'\n'}
+                  • Hit-and-run strikes and field support for Titans and
+                  Spartans
+                </Text>
+              </View>
+            )}
+          </Animated.View>
 
           {/* PREVIEW MODAL */}
           <Modal
@@ -374,6 +462,12 @@ const styles = StyleSheet.create({
     color: 'rgba(255,220,220,0.9)',
     textAlign: 'center',
   },
+  infoHint: {
+    marginTop: 2,
+    fontSize: 10,
+    color: 'rgba(255,220,220,0.9)',
+    textAlign: 'center',
+  },
   chatButton: {
     paddingVertical: 8,
     paddingHorizontal: 10,
@@ -416,6 +510,50 @@ const styles = StyleSheet.create({
     color: '#ffeaea',
     fontWeight: 'bold',
     fontSize: 13,
+  },
+
+  /* INFO PANEL OVERLAY */
+  infoPanelContainer: {
+    position: 'absolute',
+    top: 78, // just under header
+    left: 10,
+    right: 10,
+    zIndex: 20,
+  },
+  infoPanel: {
+    backgroundColor: 'rgba(20,2,2,0.97)',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,120,120,0.9)',
+  },
+  infoHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  infoTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#ffdddd',
+  },
+  infoClose: {
+    fontSize: 16,
+    color: '#ffdddd',
+  },
+  infoLabel: {
+    marginTop: 6,
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#ffb3b3',
+  },
+  infoText: {
+    fontSize: 12,
+    color: 'rgba(255,235,235,0.98)',
+    marginTop: 2,
+    lineHeight: 16,
   },
 
   /* GRID */

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
   Dimensions,
   Modal,
   Alert,
+  Animated,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { collection, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
@@ -39,6 +40,27 @@ export const LegionairesScreen = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [background, setBackground] = useState(null);
   const [audioFile, setAudioFile] = useState(null);
+
+  // 🔽 Lore overlay state + animation
+  const [infoOpen, setInfoOpen] = useState(false);
+  const infoAnim = useRef(new Animated.Value(0)).current;
+
+  const toggleInfo = () => {
+    if (infoOpen) {
+      Animated.timing(infoAnim, {
+        toValue: 0,
+        duration: 220,
+        useNativeDriver: true,
+      }).start(() => setInfoOpen(false));
+    } else {
+      setInfoOpen(true);
+      Animated.timing(infoAnim, {
+        toValue: 1,
+        duration: 220,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
 
   // Random background + audio (your original behavior)
   useEffect(() => {
@@ -234,13 +256,21 @@ export const LegionairesScreen = () => {
               <Text style={styles.backText}>⬅️ Back</Text>
             </TouchableOpacity>
 
-            <View style={styles.headerTitleWrapper}>
+            {/* Tap the title to open lore panel */}
+            <TouchableOpacity
+              style={styles.headerTitleWrapper}
+              onPress={toggleInfo}
+              activeOpacity={0.9}
+            >
               <View style={styles.headerGlass}>
                 <Text style={styles.header}>Legionnaires</Text>
-                 {/* <Text style={styles.headerSub}>Friends • Mentors • Legends</Text> */}
-                <Text style={styles.headerSub}>The law enforcements of The Parliament</Text>
+                {/* <Text style={styles.headerSub}>Friends • Mentors • Legends</Text> */}
+                <Text style={styles.headerSub}>
+                  The law enforcements of The Parliament
+                </Text>
+                <Text style={styles.infoHint}>Tap for team lore ⬇</Text>
               </View>
-            </View>
+            </TouchableOpacity>
 
             <TouchableOpacity
               onPress={goToChat}
@@ -291,24 +321,32 @@ export const LegionairesScreen = () => {
                           );
                         }
 
-                      const member = {
-                        ...memberObj,
-                        image: memberObj.imageUrl && memberObj.imageUrl !== 'placeholder'
-                          ? { uri: memberObj.imageUrl }
-                          : (legionImages[memberObj.name]?.images?.[0]?.uri || require('../../assets/Armor/PlaceHolder.jpg')),
+                        const member = {
+                          ...memberObj,
+                          image:
+                            memberObj.imageUrl && memberObj.imageUrl !== 'placeholder'
+                              ? { uri: memberObj.imageUrl }
+                              : (legionImages[memberObj.name]?.images?.[0]?.uri ||
+                                require('../../assets/Armor/PlaceHolder.jpg')),
 
-                        // ⭐ NEW: pass full image array into the member object
-                        images: legionImages[memberObj.name]?.images || memberObj.images || [],
+                          // ⭐ pass full image array into the member object
+                          images:
+                            legionImages[memberObj.name]?.images ||
+                            memberObj.images ||
+                            [],
 
-                        clickable: memberObj.clickable !== undefined ? memberObj.clickable : true,
-                      };
-                      return renderMemberCard(member);
-                    })}
-                  </View>
-                ))}
-              </View>
-            );
-          })}
+                          clickable:
+                            memberObj.clickable !== undefined
+                              ? memberObj.clickable
+                              : true,
+                        };
+                        return renderMemberCard(member);
+                      })}
+                    </View>
+                  ))}
+                </View>
+              );
+            })}
 
             {/* Admin / add friends section */}
             <LegionFriends
@@ -324,6 +362,65 @@ export const LegionairesScreen = () => {
               }
             />
           </ScrollView>
+
+          {/* 🔵 LORE OVERLAY — ON TOP OF EVERYTHING */}
+          <Animated.View
+            pointerEvents={infoOpen ? 'auto' : 'none'}
+            style={[
+              styles.infoPanelContainer,
+              {
+                opacity: infoAnim,
+                transform: [
+                  {
+                    translateY: infoAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [-20, 0],
+                    }),
+                  },
+                ],
+              },
+            ]}
+          >
+            {infoOpen && (
+              <View style={styles.infoPanel}>
+                <View style={styles.infoHeaderRow}>
+                  <Text style={styles.infoTitle}>Legionnaires</Text>
+                  <TouchableOpacity
+                    onPress={toggleInfo}
+                    hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                  >
+                    <Text style={styles.infoClose}>✕</Text>
+                  </TouchableOpacity>
+                </View>
+
+                <Text style={styles.infoText}>
+                  The Legionnaires are the Parliament&apos;s extended shield —
+                  friends, classmates, mentors, and legends who chose to stand
+                  between Zion City and the chaos outside its walls. They aren&apos;t
+                  just backup; they are the law keepers, responders, and first
+                  boots on the ground when everything goes sideways.
+                </Text>
+
+                <Text style={styles.infoLabel}>What they represent</Text>
+                <Text style={styles.infoText}>
+                  Loyalty, accountability, and everyday heroism. The
+                  Legionnaires prove that you don&apos;t need cosmic powers or a
+                  Titan badge to matter — you just need the courage to act when
+                  others freeze.
+                </Text>
+
+                <Text style={styles.infoLabel}>
+                  Threats they specialize against
+                </Text>
+                <Text style={styles.infoText}>
+                  • Street-level crime and gang uprisings in Zion City{'\n'}
+                  • Riot control, evacuations, and disaster response{'\n'}
+                  • Coordinating with Parliament teams during Maw incursions,
+                  demon attacks, and major villain events
+                </Text>
+              </View>
+            )}
+          </Animated.View>
 
           {/* DELETE MODAL */}
           <Modal visible={deleteModal.visible} transparent animationType="slide">
@@ -418,6 +515,12 @@ const styles = StyleSheet.create({
     color: 'rgba(205,235,255,0.9)',
     textAlign: 'center',
   },
+  infoHint: {
+    marginTop: 2,
+    fontSize: 10,
+    color: 'rgba(205,235,255,0.9)',
+    textAlign: 'center',
+  },
   chatButton: {
     paddingVertical: 8,
     paddingHorizontal: 10,
@@ -461,6 +564,50 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#e0f4ff',
     fontWeight: 'bold',
+  },
+
+  /* INFO PANEL OVERLAY */
+  infoPanelContainer: {
+    position: 'absolute',
+    top: 78, // just under header
+    left: 10,
+    right: 10,
+    zIndex: 20,
+  },
+  infoPanel: {
+    backgroundColor: 'rgba(3,10,25,0.97)',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderWidth: 1.5,
+    borderColor: 'rgba(120,190,255,0.95)',
+  },
+  infoHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  infoTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#e8f6ff',
+  },
+  infoClose: {
+    fontSize: 16,
+    color: '#e8f6ff',
+  },
+  infoLabel: {
+    marginTop: 6,
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#8fd7ff',
+  },
+  infoText: {
+    fontSize: 12,
+    color: 'rgba(225,242,255,0.98)',
+    marginTop: 2,
+    lineHeight: 16,
   },
 
   /* CONTENT */

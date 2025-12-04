@@ -292,6 +292,7 @@ export const SYSTEMS = [
     universe: 'prime',
   },
 
+// UNSC core colony – Reach
   {
     id: 'reach',
     name: 'Reach (Epsilon Eridani II)',
@@ -329,17 +330,44 @@ export const SYSTEMS = [
   // ==========================
   // ===== HALO – COVENANT / SANGHELIOS CLUSTER (FARTHER FROM SOL) =====
   // ==========================
-  {
-    id: 'sanghelios',
-    name: 'Sanghelios',
-    planetId: null,
-    // image: HALO_ICON,
-    x: 0.30,
-    y: 0.33 + deltaY,
-    quadrant: 'gamma',     // opposite side of Sol to feel “far”
-    faction: 'covenant',
-    universe: 'prime',
-  },
+// Sanghelios – Elite homeworld
+{
+  id: 'sanghelios',
+  name: 'Sanghelios',
+  planetId: null,
+  // image: HALO_ICON,
+  x: 0.68,
+  y: 0.58 + deltaY,
+  quadrant: 'beta',
+  faction: 'covenant',
+  universe: 'prime',
+},
+
+// Doisac – Jiralhanae (Brute) homeworld
+{
+  id: 'doisac',
+  name: 'Doisac',
+  planetId: null,
+  // image: HALO_ICON,
+  x: 0.73,
+  y: 0.62 + deltaY,
+  quadrant: 'beta',
+  faction: 'covenant',
+  universe: 'prime',
+},
+
+// Banished presence around Zeta Halo
+{
+  id: 'banished-zeta-front',
+  name: 'Banished Zeta Front',
+  planetId: null,
+  // image: HALO_ICON,
+  x: 0.92,
+  y: 0.15 + deltaY,    // Near Installation 07
+  quadrant: 'delta',
+  faction: 'banished',
+  universe: 'prime',
+},
   {
     id: 'high-charity',
     name: 'High Charity',
@@ -363,53 +391,221 @@ export const SYSTEMS = [
     universe: 'prime',
   },
 
-  // ==========================
-  // ===== HALO – FORERUNNER INSTALLATIONS (HALO RINGS & ARK) =====
-  // ==========================
+// ==========================
+// ===== HALO – FORERUNNER INSTALLATIONS (RINGS)
+// ==========================
+
+// Installation 01
+{
+  id: 'installation-01',
+  name: 'Installation 01',
+  planetId: null,
+  // image: HALO_ICON,
+  x: 0.30,             // Gamma mid-rim
+  y: 0.28 + deltaY,
+  quadrant: 'gamma',
+  faction: 'forerunner',
+  universe: 'prime',
+},
+
+// Installation 02
+{
+  id: 'installation-02',
+  name: 'Installation 02',
+  planetId: null,
+  // image: HALO_ICON,
+  x: 0.22,             // Alpha outer arc
+  y: 0.80 + deltaY,
+  quadrant: 'alpha',
+  faction: 'forerunner',
+  universe: 'prime',
+},
+
+// Installation 03
+{
+  id: 'installation-03',
+  name: 'Installation 03',
+  planetId: null,
+  // image: HALO_ICON,
+  x: 0.27,
+  y: 0.34 + deltaY,
+  quadrant: 'gamma',
+  faction: 'forerunner',
+  universe: 'prime',
+},
+
+// Installation 04 (Alpha Halo)
   {
     id: 'installation-04',
     name: 'Installation 04 (Alpha Halo)',
     planetId: null,
     // image: HALO_ICON,
-    x: 0.76,
-    y: 0.14 + deltaY,
+    x: 0.40,
+    y: 0.55 + deltaY,
     quadrant: 'delta',       // out near the rim
     faction: 'forerunner',
     universe: 'prime',
   },
-  {
-    id: 'installation-05',
-    name: 'Installation 05 (Delta Halo)',
-    planetId: null,
-    // image: HALO_ICON,
-    x: 0.70,
-    y: 0.10 + deltaY,
-    quadrant: 'delta',
-    faction: 'forerunner',
-    universe: 'prime',
-  },
-  {
-    id: 'installation-07',
-    name: 'Installation 07 (Zeta Halo)',
-    planetId: null,
-    // image: HALO_ICON,
-    x: 0.88,
-    y: 0.12 + deltaY,
-    quadrant: 'delta',
-    faction: 'forerunner',
-    universe: 'prime',
-  },
-  {
-    id: 'ark',
-    name: 'The Ark (Installation 00)',
-    planetId: null,
-    // image: HALO_ICON,
-    x: 0.92,
-    y: 0.45 + deltaY,
-    quadrant: 'custom',      // technically extra-galactic
-    faction: 'forerunner',
-    universe: 'prime',
-  },
+
+// Installation 05 (Delta Halo)
+{
+  id: 'installation-05',
+  name: 'Installation 05 (Delta Halo)',
+  planetId: null,
+  // image: HALO_ICON,
+  x: 0.85,
+  y: 0.24 + deltaY,
+  quadrant: 'delta',
+  faction: 'forerunner',
+  universe: 'prime',
+},
+
+// Installation 06
+{
+  id: 'installation-06',
+  name: 'Installation 06',
+  planetId: null,
+  // image: HALO_ICON,
+  x: 0.70,
+  y: 0.40 + deltaY,
+  quadrant: 'delta',
+  faction: 'forerunner',
+  universe: 'prime',
+},
+
+// Installation 07 (Zeta Halo)
+{
+  id: 'installation-07',
+  name: 'Installation 07 (Zeta Halo)',
+  planetId: null,
+  // image: HALO_ICON,
+  x: 0.90,
+  y: 0.10 + deltaY,    // Drifting near galactic edge
+  quadrant: 'delta',
+  faction: 'forerunner',
+  universe: 'prime',
+},
+
+// Installation 00 – The Ark (extra-galactic)
+{
+  id: 'ark',
+  name: 'The Ark (Installation 00)',
+  planetId: null,
+  // image: HALO_ICON,
+  x: 0.96,
+  y: 0.50 + deltaY,    // Off the disk edge in your map
+  quadrant: 'custom',
+  faction: 'forerunner',
+  universe: 'prime',
+},
+
+// ==========================
+// ===== HALO – SHIELD WORLDS
+// ==========================
+
+{
+  id: 'onyx',
+  name: 'Onyx (Shield World)',
+  planetId: null,
+  // image: HALO_ICON,
+  x: 0.35,
+  y: 0.78 + deltaY,    // Outer Alpha, UNSC frontier feel
+  quadrant: 'alpha',
+  faction: 'unsc',
+  universe: 'prime',
+},
+
+{
+  id: 'requiem',
+  name: 'Requiem (Shield World)',
+  planetId: null,
+  // image: HALO_ICON,
+  x: 0.76,
+  y: 0.32 + deltaY,    // Deep Forerunner territory
+  quadrant: 'delta',
+  faction: 'forerunner',
+  universe: 'prime',
+},
+
+{
+  id: 'shield-world-0459',
+  name: 'Shield World 0459',
+  planetId: null,
+  // image: HALO_ICON,
+  x: 0.20,
+  y: 0.40 + deltaY,
+  quadrant: 'gamma',
+  faction: 'forerunner',
+  universe: 'prime',
+},
+
+// ==========================
+// ===== HALO – PRECURSOR / ANCIENT
+// ==========================
+
+{
+  id: 'path-kethona',
+  name: 'Path Kethona Expanse',
+  planetId: null,
+  // image: HALO_ICON,
+  x: 0.04,
+  y: 0.52 + deltaY,    // Extra-rim region
+  quadrant: 'custom',
+  faction: 'precursor',
+  universe: 'prime',
+},
+
+{
+  id: 'precursor-cradle',
+  name: 'Precursor Cradle World',
+  planetId: null,
+  // image: HALO_ICON,
+  x: 0.12,
+  y: 0.20 + deltaY,
+  quadrant: 'gamma',
+  faction: 'precursor',
+  universe: 'prime',
+},
+
+// ==========================
+// ===== HALO – FLOOD ZONES
+// ==========================
+
+{
+  id: 'high-charity',
+  name: 'High Charity (Infested Ruin)',
+  planetId: null,
+  // image: HALO_ICON,
+  x: 0.82,
+  y: 0.20 + deltaY,
+  quadrant: 'delta',
+  faction: 'flood',
+  universe: 'prime',
+},
+
+{
+  id: 'threshold',
+  name: 'Threshold System',
+  planetId: null,
+  // image: HALO_ICON,
+  x: 0.42,
+  y: 0.58 + deltaY,    // Near Installation 04
+  quadrant: 'alpha',
+  faction: 'flood',
+  universe: 'prime',
+},
+
+{
+  id: 'flood-quarantine-zone',
+  name: 'Flood Quarantine Zone',
+  planetId: null,
+  // image: HALO_ICON,
+  x: 0.18,
+  y: 0.12 + deltaY,
+  quadrant: 'gamma',
+  faction: 'flood',
+  universe: 'prime',
+},
 ];
 
 // Simple connections placeholder (kept for future use)

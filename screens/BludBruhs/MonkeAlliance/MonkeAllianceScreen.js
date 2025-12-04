@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   ScrollView,
   Dimensions,
+  Animated,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Audio } from 'expo-av';
@@ -118,6 +119,27 @@ const MonkeAllianceScreen = () => {
   const navigation = useNavigation();
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+
+  // ⭐ Lore panel state + animation (same pattern as Constollation / Forge)
+  const [infoOpen, setInfoOpen] = useState(false);
+  const infoAnim = useRef(new Animated.Value(0)).current;
+
+  const toggleInfo = () => {
+    if (infoOpen) {
+      Animated.timing(infoAnim, {
+        toValue: 0,
+        duration: 220,
+        useNativeDriver: true,
+      }).start(() => setInfoOpen(false));
+    } else {
+      setInfoOpen(true);
+      Animated.timing(infoAnim, {
+        toValue: 1,
+        duration: 220,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
 
   const killMonke = async () => {
     if (currentSound) {
@@ -258,12 +280,20 @@ const MonkeAllianceScreen = () => {
             <Text style={styles.backText}>⬅️ Back</Text>
           </TouchableOpacity>
 
-          <View style={styles.headerCenter}>
+          {/* Tap center to toggle lore panel */}
+          <TouchableOpacity
+            style={styles.headerCenter}
+            onPress={toggleInfo}
+            activeOpacity={0.9}
+          >
             <View style={styles.headerGlass}>
               <Text style={styles.header}>Monke Alliance</Text>
-              <Text style={styles.headerSubtitle}>The Anti-heroes of The Parliament</Text>
+              <Text style={styles.headerSubtitle}>
+                The Anti-heroes & Maw Hunters of The Parliament
+              </Text>
+              <Text style={styles.infoHint}>Tap for team lore ⬇</Text>
             </View>
-          </View>
+          </TouchableOpacity>
 
           <TouchableOpacity
             onPress={() => {
@@ -312,6 +342,61 @@ const MonkeAllianceScreen = () => {
             ))}
           </View>
         </ScrollView>
+
+        {/* 🍌 LORE PANEL (dropdown-style like others) */}
+        <Animated.View
+          pointerEvents={infoOpen ? 'auto' : 'none'}
+          style={[
+            styles.infoPanelContainer,
+            {
+              opacity: infoAnim,
+              transform: [
+                {
+                  translateY: infoAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [-20, 0],
+                  }),
+                },
+              ],
+            },
+          ]}
+        >
+          {infoOpen && (
+            <View style={styles.infoPanel}>
+              <View style={styles.infoHeaderRow}>
+                <Text style={styles.infoTitle}>Monke Alliance</Text>
+                <TouchableOpacity
+                  onPress={toggleInfo}
+                  hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                >
+                  <Text style={styles.infoClose}>✕</Text>
+                </TouchableOpacity>
+              </View>
+
+              <Text style={styles.infoText}>
+                The Monke Alliance are the Parliament&apos;s problem children —
+                anti-heroes who go where the clean capes won&apos;t. They move
+                through ruins, jungles, and dead zones picking fights with things
+                that should not exist.
+              </Text>
+
+              <Text style={styles.infoLabel}>What they fight</Text>
+              <Text style={styles.infoText}>
+                • Maw corruption leaking into reality{'\n'}
+                • Supernatural threats, curses, and hauntings{'\n'}
+                • Cults, anomalies, and entities too messy for public heroes
+              </Text>
+
+              <Text style={styles.infoLabel}>How they operate</Text>
+              <Text style={styles.infoText}>
+                • Hit hard, vanish into the dark, no press conferences{'\n'}
+                • Use questionable methods for the right reasons{'\n'}
+                • Half rumor, half urban legend — but when the Maw stirs,
+                they&apos;re the first ones in.
+              </Text>
+            </View>
+          )}
+        </Animated.View>
       </SafeAreaView>
     </ImageBackground>
   );
@@ -364,6 +449,12 @@ const styles = StyleSheet.create({
     color: '#ffeebb',
     letterSpacing: 0.6,
     textTransform: 'uppercase',
+  },
+  infoHint: {
+    marginTop: 2,
+    fontSize: 10,
+    textAlign: 'center',
+    color: '#ffefc0',
   },
 
   chatButton: {
@@ -452,6 +543,50 @@ const styles = StyleSheet.create({
   nameMobile: {
     fontSize: 11,
     marginBottom: 2,
+  },
+
+  // Lore panel
+  infoPanelContainer: {
+    position: 'absolute',
+    top: 90,
+    left: 10,
+    right: 10,
+    zIndex: 1000,
+  },
+  infoPanel: {
+    backgroundColor: 'rgba(20, 10, 3, 0.97)',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderWidth: 1.5,
+    borderColor: JUNGLE.ember,
+  },
+  infoHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  infoTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#ffe7c0',
+  },
+  infoClose: {
+    fontSize: 16,
+    color: '#ffe7c0',
+  },
+  infoLabel: {
+    marginTop: 6,
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: JUNGLE.gold,
+  },
+  infoText: {
+    fontSize: 12,
+    color: 'rgba(255,240,220,0.98)',
+    marginTop: 2,
+    lineHeight: 16,
   },
 });
 

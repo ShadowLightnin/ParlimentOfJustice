@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   Dimensions,
   ScrollView,
   Alert,
+  Animated,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Audio } from 'expo-av';
@@ -17,13 +18,62 @@ import { Audio } from 'expo-av';
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 const members = [
-  { name: 'Spencer McNeil', codename: 'Annihilator', screen: 'Spencer', clickable: true, position: [0, 0], image: require('../../assets/Armor/Spencer5.jpg'), },
-  { name: 'Azure Briggs', codename: 'Mediateir', screen: 'Azure', clickable: true, position: [0, 2], image: require('../../assets/Armor/Azure3.jpg'),},
-  { name: 'Jared McNeil', codename: 'Spector', screen: 'Jared', clickable: true, position: [1, 0], image: require('../../assets/Armor/Jared3.jpg'), },
-  { name: 'Will Cummings', codename: 'Night Hawk', screen: 'Will', clickable: true, position: [1, 1], image: require('../../assets/Armor/WillNightHawk3.jpg'), },
-  { name: 'Ben Briggs', codename: 'Nuscus', screen: 'Ben', clickable: true, position: [1, 2], image: require('../../assets/Armor/Ben4.jpg'), },
-  { name: 'Jennifer McNeil', codename: 'Kintsugi', screen: 'Jennifer', clickable: true, position: [2, 0], image: require('../../assets/Armor/JenniferLegacy.jpg'), },
-  { name: 'Emma Cummings', codename: 'Kintsunera', screen: 'Emma', clickable: true, position: [2, 2], image: require('../../assets/Armor/EmmaLegacy.jpg'), },
+  {
+    name: 'Spencer McNeil',
+    codename: 'Annihilator',
+    screen: 'Spencer',
+    clickable: true,
+    position: [0, 0],
+    image: require('../../assets/Armor/Spencer5.jpg'),
+  },
+  {
+    name: 'Azure Briggs',
+    codename: 'Mediateir',
+    screen: 'Azure',
+    clickable: true,
+    position: [0, 2],
+    image: require('../../assets/Armor/Azure3.jpg'),
+  },
+  {
+    name: 'Jared McNeil',
+    codename: 'Spector',
+    screen: 'Jared',
+    clickable: true,
+    position: [1, 0],
+    image: require('../../assets/Armor/Jared3.jpg'),
+  },
+  {
+    name: 'Will Cummings',
+    codename: 'Night Hawk',
+    screen: 'Will',
+    clickable: true,
+    position: [1, 1],
+    image: require('../../assets/Armor/WillNightHawk3.jpg'),
+  },
+  {
+    name: 'Ben Briggs',
+    codename: 'Nuscus',
+    screen: 'Ben',
+    clickable: true,
+    position: [1, 2],
+    image: require('../../assets/Armor/Ben4.jpg'),
+  },
+  {
+    name: 'Jennifer McNeil',
+    codename: 'Kintsugi',
+    screen: 'Jennifer',
+    clickable: true,
+    position: [2, 0],
+    image: require('../../assets/Armor/JenniferLegacy.jpg'),
+  },
+  {
+    name: 'Emma Cummings',
+    codename: 'Kintsunera',
+    screen: 'Emma',
+    clickable: true,
+    position: [2, 2],
+    image: require('../../assets/Armor/EmmaLegacy.jpg'),
+  },
 ];
 
 const isEmpty = (row, col) =>
@@ -36,6 +86,29 @@ const TitansScreen = () => {
   const navigation = useNavigation();
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+
+  // 🔽 Info panel state + animation
+  const [infoOpen, setInfoOpen] = useState(false);
+  const infoAnim = useRef(new Animated.Value(0)).current;
+
+  const toggleInfo = () => {
+    if (infoOpen) {
+      Animated.timing(infoAnim, {
+        toValue: 0,
+        duration: 220,
+        useNativeDriver: true,
+      }).start(() => {
+        setInfoOpen(false);
+      });
+    } else {
+      setInfoOpen(true);
+      Animated.timing(infoAnim, {
+        toValue: 1,
+        duration: 220,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
 
   const playTheme = async () => {
     if (!currentSound) {
@@ -86,7 +159,9 @@ const TitansScreen = () => {
 
   const isDesktop = SCREEN_WIDTH > 600;
   const cardSize = isDesktop ? 210 : Math.min(130, SCREEN_WIDTH / 3 - 20);
-  const cardSpacing = isDesktop ? 30 : Math.min(18, (SCREEN_WIDTH - 3 * cardSize) / 4);
+  const cardSpacing = isDesktop
+    ? 30
+    : Math.min(18, (SCREEN_WIDTH - 3 * cardSize) / 4);
 
   const renderCard = m => (
     <TouchableOpacity
@@ -108,7 +183,11 @@ const TitansScreen = () => {
       disabled={!m.clickable}
       activeOpacity={0.9}
     >
-      <Image source={m.image} style={styles.characterImage} resizeMode="cover" />
+      <Image
+        source={m.image}
+        style={styles.characterImage}
+        resizeMode="cover"
+      />
 
       {/* Glass overlay */}
       <View style={styles.cardOverlay} />
@@ -159,12 +238,20 @@ const TitansScreen = () => {
               <Text style={styles.backText}>⬅️ Back</Text>
             </TouchableOpacity>
 
-            <View style={styles.headerTitle}>
+            {/* Tap the title to open lore panel */}
+            <TouchableOpacity
+              style={styles.headerTitle}
+              onPress={toggleInfo}
+              activeOpacity={0.9}
+            >
               <View style={styles.headerGlass}>
                 <Text style={styles.header}>Titans</Text>
-                <Text style={styles.headerSub}>Prime Parliament hero team</Text>
+                <Text style={styles.headerSub}>
+                  Prime Parliament hero team
+                </Text>
+                <Text style={styles.infoHint}>Tap for team lore ⬇</Text>
               </View>
-            </View>
+            </TouchableOpacity>
 
             <TouchableOpacity
               onPress={async () => {
@@ -178,6 +265,62 @@ const TitansScreen = () => {
             </TouchableOpacity>
           </View>
 
+          {/* Team Info Overlay (on top of everything) */}
+          <Animated.View
+            pointerEvents={infoOpen ? 'auto' : 'none'}
+            style={[
+              styles.infoPanelContainer,
+              {
+                opacity: infoAnim,
+                transform: [
+                  {
+                    translateY: infoAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [-20, 0],
+                    }),
+                  },
+                ],
+              },
+            ]}
+          >
+            {infoOpen && (
+              <View style={styles.infoPanel}>
+                <View style={styles.infoHeaderRow}>
+                  <Text style={styles.infoTitle}>Titans</Text>
+                  <TouchableOpacity
+                    onPress={toggleInfo}
+                    hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                  >
+                    <Text style={styles.infoClose}>✕</Text>
+                  </TouchableOpacity>
+                </View>
+
+                <Text style={styles.infoText}>
+                  The Titans are the Prime Parliament&apos;s frontline hero
+                  team — the original squad that stood together during The
+                  Incident and became legends in Zion City.
+                </Text>
+
+                <Text style={styles.infoLabel}>What they represent</Text>
+                <Text style={styles.infoText}>
+                  Family, leadership, and unity. Each Titan carries the weight
+                  of their family legacy while protecting the Justiceverse as
+                  its core symbol of hope and resilience.
+                </Text>
+
+                <Text style={styles.infoLabel}>
+                  Enemy types they specialize against
+                </Text>
+                <Text style={styles.infoText}>
+                  • World-ending threats and cosmic invaders{'\n'}
+                  • Maw-related incursions and void entities{'\n'}
+                  • High-tier villains tied to Erevos, Torath, and the
+                  Enlightened
+                </Text>
+              </View>
+            )}
+          </Animated.View>
+
           {/* Music Controls */}
           <View style={styles.musicControls}>
             <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
@@ -185,7 +328,10 @@ const TitansScreen = () => {
                 {isPlaying ? 'Playing…' : 'Theme'}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.musicButtonSecondary} onPress={pauseTheme}>
+            <TouchableOpacity
+              style={styles.musicButtonSecondary}
+              onPress={pauseTheme}
+            >
               <Text style={styles.musicButtonTextSecondary}>Pause</Text>
             </TouchableOpacity>
           </View>
@@ -218,7 +364,10 @@ const TitansScreen = () => {
                           return (
                             <View
                               key={col}
-                              style={{ width: cardSize, height: cardSize * 1.6 }}
+                              style={{
+                                width: cardSize,
+                                height: cardSize * 1.6,
+                              }}
                             />
                           );
                         }
@@ -300,6 +449,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     letterSpacing: 0.4,
   },
+  infoHint: {
+    marginTop: 2,
+    fontSize: 10,
+    color: 'rgba(190, 240, 255, 0.9)',
+    textAlign: 'center',
+  },
   chatButton: {
     paddingVertical: 8,
     paddingHorizontal: 10,
@@ -313,6 +468,50 @@ const styles = StyleSheet.create({
   chatText: {
     fontSize: 16,
     color: '#E6F7FF',
+  },
+
+  // INFO PANEL OVERLAY
+  infoPanelContainer: {
+    position: 'absolute',
+    top: 70,          // just under the header
+    left: 12,
+    right: 12,
+    zIndex: 20,
+  },
+  infoPanel: {
+    backgroundColor: 'rgba(1, 15, 30, 0.96)',
+    borderRadius: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 200, 255, 0.85)',
+  },
+  infoHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  infoTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#EFFFFF',
+  },
+  infoClose: {
+    fontSize: 16,
+    color: '#A8E4FF',
+  },
+  infoLabel: {
+    marginTop: 6,
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#7CEBFF',
+  },
+  infoText: {
+    fontSize: 12,
+    color: '#CFEFFF',
+    marginTop: 2,
+    lineHeight: 16,
   },
 
   // MUSIC CONTROLS

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
   Dimensions,
   Modal,
   Alert,
+  Animated,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { db, auth, storage } from '../../../lib/firebase';
@@ -93,6 +94,27 @@ const RangerSquad = () => {
   const canMod = RESTRICT_ACCESS
     ? auth.currentUser?.email && ALLOWED_EMAILS.includes(auth.currentUser.email)
     : true;
+
+  // ⭐ INFO DROPDOWN (same pattern as other screens)
+  const [infoOpen, setInfoOpen] = useState(false);
+  const infoAnim = useRef(new Animated.Value(0)).current;
+
+  const toggleInfo = useCallback(() => {
+    if (infoOpen) {
+      Animated.timing(infoAnim, {
+        toValue: 0,
+        duration: 220,
+        useNativeDriver: true,
+      }).start(() => setInfoOpen(false));
+    } else {
+      setInfoOpen(true);
+      Animated.timing(infoAnim, {
+        toValue: 1,
+        duration: 220,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [infoOpen, infoAnim]);
 
   // Setup + Firestore sync
   useEffect(() => {
@@ -365,15 +387,23 @@ const RangerSquad = () => {
               <Text style={styles.backText}>⬅️ Back</Text>
             </TouchableOpacity>
 
-            <View style={styles.headerCenter}>
+            {/* Tap center to toggle brief (same behavior as other dropdowns) */}
+            <TouchableOpacity
+              style={styles.headerCenter}
+              onPress={toggleInfo}
+              activeOpacity={0.9}
+            >
               <View style={styles.headerGlass}>
                 <Text style={styles.headerTitle}>Ranger Squad 17</Text>
-                <Text style={styles.headerSubtitleTop}>Rogue detachment of The Eagles that believed in Sam's mission.</Text>
+                <Text style={styles.headerSubtitleTop}>
+                  Rogue detachment of The Eagles that believed in Sam&apos;s mission.
+                </Text>
                 <Text style={styles.headerSubtitle}>
                   Forward Recon for the Thunder Born
                 </Text>
+                <Text style={styles.headerHint}>Tap for unit brief ⬇</Text>
               </View>
-            </View>
+            </TouchableOpacity>
 
             <View style={styles.headerRight}>
               <TouchableOpacity
@@ -385,6 +415,59 @@ const RangerSquad = () => {
               </TouchableOpacity>
             </View>
           </View>
+
+          {/* INFO DROPDOWN */}
+          <Animated.View
+            pointerEvents={infoOpen ? 'auto' : 'none'}
+            style={[
+              styles.infoPanelContainer,
+              {
+                opacity: infoAnim,
+                transform: [
+                  {
+                    translateY: infoAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [-15, 0],
+                    }),
+                  },
+                ],
+              },
+            ]}
+          >
+            {infoOpen && (
+              <View style={styles.infoPanel}>
+                <View style={styles.infoHeaderRow}>
+                  <Text style={styles.infoTitle}>Ranger Squad 17</Text>
+                  <TouchableOpacity
+                    onPress={toggleInfo}
+                    hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                  >
+                    <Text style={styles.infoClose}>✕</Text>
+                  </TouchableOpacity>
+                </View>
+
+                <Text style={styles.infoText}>
+                  Ranger Squad 17 is a breakaway unit from The Eagles — elite recon troopers
+                  who chose Sam and the Thunder Born over official orders. They live in the
+                  gray zone between clone legion and outlaw strike team.
+                </Text>
+
+                <Text style={styles.infoLabel}>Primary role</Text>
+                <Text style={styles.infoText}>
+                  • Deep recon ahead of Thunder Born operations{'\n'}
+                  • First contact against Maw incursions and corrupted zones{'\n'}
+                  • Shadow escorts for Void Walker on high-risk runs
+                </Text>
+
+                <Text style={styles.infoLabel}>Reputation</Text>
+                <Text style={styles.infoText}>
+                  • Loyal to each other above any banner{'\n'}
+                  • Known for impossible insertions and extraction jobs{'\n'}
+                  • Officially &quot;missing in action&quot; — unofficially everywhere.
+                </Text>
+              </View>
+            )}
+          </Animated.View>
 
           <ScrollView
             style={styles.scrollView}
@@ -565,6 +648,12 @@ const styles = StyleSheet.create({
     letterSpacing: 0.8,
     textTransform: 'uppercase',
   },
+  headerHint: {
+    fontSize: 10,
+    color: '#d7ecff',
+    textAlign: 'center',
+    marginTop: 2,
+  },
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -581,6 +670,50 @@ const styles = StyleSheet.create({
   chatIcon: {
     fontSize: 16,
     color: '#e8f8ff',
+  },
+
+  /* INFO PANEL (dropdown) */
+  infoPanelContainer: {
+    position: 'absolute',
+    top: 72,
+    left: 10,
+    right: 10,
+    zIndex: 50,
+  },
+  infoPanel: {
+    backgroundColor: 'rgba(5, 18, 40, 0.97)',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderWidth: 1.5,
+    borderColor: 'rgba(130,210,255,0.95)',
+  },
+  infoHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  infoTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#e6f5ff',
+  },
+  infoClose: {
+    fontSize: 16,
+    color: '#e6f5ff',
+  },
+  infoLabel: {
+    marginTop: 6,
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: CLONE.steel,
+  },
+  infoText: {
+    fontSize: 12,
+    color: '#d5e6ff',
+    marginTop: 2,
+    lineHeight: 16,
   },
 
   /* SCROLL / GRID */

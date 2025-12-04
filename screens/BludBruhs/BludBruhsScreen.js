@@ -1,4 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+} from 'react';
 import {
   View,
   Text,
@@ -101,9 +106,30 @@ const BludBruhsScreen = ({ route }) => {
     route.params?.isYourUniverse ?? true
   );
 
-  // ⚡ lightning flash animation
+  // ⚡ OLD LIGHTNING BAR ANIMATIONS (back to what you had before)
   const [flashAnim] = useState(new Animated.Value(0));
   const [flashAnim2] = useState(new Animated.Value(0));
+
+  // 🔽 INFO DROPDOWN (Thunder Born Maw lore, standard format)
+  const [infoOpen, setInfoOpen] = useState(false);
+  const infoAnim = useRef(new Animated.Value(0)).current;
+
+  const toggleInfo = useCallback(() => {
+    if (infoOpen) {
+      Animated.timing(infoAnim, {
+        toValue: 0,
+        duration: 220,
+        useNativeDriver: true,
+      }).start(() => setInfoOpen(false));
+    } else {
+      setInfoOpen(true);
+      Animated.timing(infoAnim, {
+        toValue: 1,
+        duration: 220,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [infoOpen, infoAnim]);
 
   useEffect(() => {
     const load = async () => {
@@ -117,7 +143,7 @@ const BludBruhsScreen = ({ route }) => {
     load();
   }, []);
 
-  // Start looping "lightning flashes"
+  // ⚡ Loop lightning flashes (top bar + diagonal, like original)
   useEffect(() => {
     const flashLoop = Animated.loop(
       Animated.sequence([
@@ -356,7 +382,7 @@ const BludBruhsScreen = ({ route }) => {
     >
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.overlay}>
-          {/* ⚡ LIGHTNING FLASH LAYERS OVER HEADER AREA */}
+          {/* ⚡ LIGHTNING FLASH LAYERS OVER HEADER AREA (original effect) */}
           <Animated.View
             pointerEvents="none"
             style={[
@@ -384,7 +410,7 @@ const BludBruhsScreen = ({ route }) => {
             ]}
           />
 
-          {/* HEADER — glassy lightning bar */}
+          {/* HEADER — glassy lightning bar (tap center for dropdown) */}
           <View style={styles.headerWrapper}>
             <TouchableOpacity
               style={styles.backButton}
@@ -397,7 +423,11 @@ const BludBruhsScreen = ({ route }) => {
               <Text style={styles.backText}>⬅️ Back</Text>
             </TouchableOpacity>
 
-            <View style={styles.headerCenter}>
+            <TouchableOpacity
+              style={styles.headerCenter}
+              onPress={toggleInfo}
+              activeOpacity={0.9}
+            >
               <View style={styles.headerGlass}>
                 <Text style={styles.headerTitle}>
                   {isYourUniverse ? 'Thunder Born' : 'Shattered Realm'}
@@ -408,12 +438,13 @@ const BludBruhsScreen = ({ route }) => {
                   <Text style={styles.headerSubtitleTop}>Thunder Born</Text>
                 )}
 
-                {/* Shared subtitle for BOTH universes */}
+                {/* Shared subtitle */}
                 <Text style={styles.headerSubtitleJudgement}>
                   The judgement of The Parliament
                 </Text>
+                <Text style={styles.headerHint}>Tap for Maw dossier ⬇</Text>
               </View>
-            </View>
+            </TouchableOpacity>
 
             <View style={styles.headerRight}>
               <TouchableOpacity
@@ -432,6 +463,64 @@ const BludBruhsScreen = ({ route }) => {
               </TouchableOpacity>
             </View>
           </View>
+
+          {/* 🔽 INFO DROPDOWN — standard format */}
+          <Animated.View
+            pointerEvents={infoOpen ? 'auto' : 'none'}
+            style={[
+              styles.infoPanelContainer,
+              {
+                opacity: infoAnim,
+                transform: [
+                  {
+                    translateY: infoAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [-15, 0],
+                    }),
+                  },
+                ],
+              },
+            ]}
+          >
+            {infoOpen && (
+              <View style={styles.infoPanel}>
+                <View style={styles.infoHeaderRow}>
+                  <Text style={styles.infoTitle}>Thunder Born</Text>
+                  <TouchableOpacity
+                    onPress={toggleInfo}
+                    hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                  >
+                    <Text style={styles.infoClose}>✕</Text>
+                  </TouchableOpacity>
+                </View>
+
+                <Text style={styles.infoText}>
+                  The Thunder Born are the Parliament&apos;s storm company — a brutal
+                  strike squad built around Void Walker and his closest allies. They are
+                  called when the sky tears open, the Maw leaks through, and someone has
+                  to walk straight into the nightmare.
+                </Text>
+
+                <Text style={styles.infoLabel}>What they represent</Text>
+                <Text style={styles.infoText}>
+                  Relentless judgement, loyalty under fire, and the will to step into
+                  places touched by the Maw when no other team can. They are the edge of
+                  the Parliament&apos;s sword when the threat is supernatural, unknown,
+                  or already corrupting reality.
+                </Text>
+
+                <Text style={styles.infoLabel}>
+                  Enemy types they specialize against
+                </Text>
+                <Text style={styles.infoText}>
+                  • Maw-born horrors and corrupted entities{'\n'}
+                  • Supernatural threats, hauntings, and cursed locations{'\n'}
+                  • High-intensity shock missions requiring overwhelming force and
+                  precision
+                </Text>
+              </View>
+            )}
+          </Animated.View>
 
           {/* MUSIC CONTROLS */}
           <View style={styles.musicControls}>
@@ -484,9 +573,10 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: THUNDER.stormDark,
+    position: 'relative',
   },
 
-  /* ⚡ LIGHTNING FLASHES */
+  /* ⚡ LIGHTNING FLASH BARS (old system) */
   lightningFlashMain: {
     position: 'absolute',
     top: 0,
@@ -576,6 +666,12 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0,0,0,0.8)',
     textShadowRadius: 10,
   },
+  headerHint: {
+    fontSize: 10,
+    color: '#d7ecff',
+    textAlign: 'center',
+    marginTop: 2,
+  },
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -599,11 +695,56 @@ const styles = StyleSheet.create({
     color: THUNDER.bolt,
   },
 
+  /* INFO PANEL (dropdown) */
+  infoPanelContainer: {
+    position: 'absolute',
+    top: 70,
+    left: 10,
+    right: 10,
+    zIndex: 3,
+  },
+  infoPanel: {
+    backgroundColor: 'rgba(4, 15, 30, 0.97)',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderWidth: 1.5,
+    borderColor: 'rgba(120,190,255,0.95)',
+  },
+  infoHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  infoTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#e6f5ff',
+  },
+  infoClose: {
+    fontSize: 16,
+    color: '#e6f5ff',
+  },
+  infoLabel: {
+    marginTop: 6,
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: THUNDER.storm,
+  },
+  infoText: {
+    fontSize: 12,
+    color: '#d5e6ff',
+    marginTop: 2,
+    lineHeight: 16,
+  },
+
   /* MUSIC */
   musicControls: {
     flexDirection: 'row',
     justifyContent: 'center',
     marginVertical: 8,
+    zIndex: 1,
   },
   musicButtonPrimary: {
     paddingHorizontal: 18,
@@ -648,6 +789,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.7)',
     borderTopWidth: 1,
     borderTopColor: 'rgba(130,190,255,0.8)',
+    zIndex: 1,
   },
 
   /* CARDS */

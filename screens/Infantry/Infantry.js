@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   ImageBackground,
   Modal,
   Alert,
+  Animated,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { db, auth, storage } from '../../lib/firebase';
@@ -46,7 +47,7 @@ const hardcodedInfantry = [
   },
 ];
 
-const ALLOWED_EMAILS = ["will@test.com", "c1wcummings@gmail.com"];
+const ALLOWED_EMAILS = ['will@test.com', 'c1wcummings@gmail.com'];
 const RESTRICT_ACCESS = false; // Allow anyone to add/edit/delete infantry
 
 const InfantryScreen = () => {
@@ -55,12 +56,30 @@ const InfantryScreen = () => {
   const [infantry, setInfantry] = useState(hardcodedInfantry);
   const [deleteModal, setDeleteModal] = useState({ visible: false, infantry: null });
   const [currentSound, setCurrentSound] = useState(null);
-  const [pausedPosition, setPausedPosition] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const canMod = RESTRICT_ACCESS ? auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email) : true;
 
-  // Initialize sound on mount
+  // 🔽 INFO DROPDOWN (Command Eagle briefing)
+  const [infoOpen, setInfoOpen] = useState(false);
+  const infoAnim = useRef(new Animated.Value(0)).current;
+
+  const toggleInfo = useCallback(() => {
+    if (infoOpen) {
+      Animated.timing(infoAnim, {
+        toValue: 0,
+        duration: 220,
+        useNativeDriver: true,
+      }).start(() => setInfoOpen(false));
+    } else {
+      setInfoOpen(true);
+      Animated.timing(infoAnim, {
+        toValue: 1,
+        duration: 220,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [infoOpen, infoAnim]);
+
   // Handle music playback
   const playTheme = async () => {
     if (!currentSound) {
@@ -75,7 +94,10 @@ const InfantryScreen = () => {
         console.log('ForDemocracy.mp4 started playing at:', new Date().toISOString());
       } catch (error) {
         console.error('Failed to load audio file:', error);
-        Alert.alert('Audio Error', 'Failed to load background music. Please check the audio file path: ../../assets/audio/ForDemocracy.mp4');
+        Alert.alert(
+          'Audio Error',
+          'Failed to load background music. Please check the audio file path: ../../assets/audio/ForDemocracy.mp4'
+        );
       }
     } else if (!isPlaying) {
       try {
@@ -101,13 +123,17 @@ const InfantryScreen = () => {
     }
   };
 
-  // Handle screen focus to resume/pause audio
+  // Handle screen focus to stop/unload audio on blur
   useFocusEffect(
     useCallback(() => {
       return () => {
         if (currentSound) {
-          currentSound.stopAsync().catch((error) => console.error('Error stopping sound:', error));
-          currentSound.unloadAsync().catch((error) => console.error('Error unloading sound:', error));
+          currentSound
+            .stopAsync()
+            .catch(error => console.error('Error stopping sound:', error));
+          currentSound
+            .unloadAsync()
+            .catch(error => console.error('Error unloading sound:', error));
           setCurrentSound(null);
           setIsPlaying(false);
           console.log('ForDemocracy.mp4 stopped at:', new Date().toISOString());
@@ -118,24 +144,28 @@ const InfantryScreen = () => {
 
   // Fetch dynamic infantry from Firestore
   useEffect(() => {
-    const unsub = onSnapshot(collection(db, 'infantry'), (snap) => {
-      const dynamicInfantry = snap.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-        clickable: true,
-        borderColor: doc.data().borderColor || '#FFFFFF', // White for dynamic
-        hardcoded: false,
-      }));
-      console.log('Fetched dynamic infantry:', dynamicInfantry);
-      setInfantry([...hardcodedInfantry, ...dynamicInfantry]);
-    }, (e) => {
-      console.error('Firestore error:', e.message);
-      Alert.alert('Error', 'Failed to fetch infantry: ' + e.message);
-    });
+    const unsub = onSnapshot(
+      collection(db, 'infantry'),
+      snap => {
+        const dynamicInfantry = snap.docs.map(docSnap => ({
+          id: docSnap.id,
+          ...docSnap.data(),
+          clickable: true,
+          borderColor: docSnap.data().borderColor || '#FFFFFF', // White for dynamic
+          hardcoded: false,
+        }));
+        console.log('Fetched dynamic infantry:', dynamicInfantry);
+        setInfantry([...hardcodedInfantry, ...dynamicInfantry]);
+      },
+      e => {
+        console.error('Firestore error:', e.message);
+        Alert.alert('Error', 'Failed to fetch infantry: ' + e.message);
+      }
+    );
     return () => unsub();
   }, []);
 
-  const handleInfantryPress = async (infantryItem) => {
+  const handleInfantryPress = async infantryItem => {
     if (infantryItem.clickable) {
       if (currentSound) {
         try {
@@ -158,7 +188,7 @@ const InfantryScreen = () => {
     }
   };
 
-  const confirmDelete = async (id) => {
+  const confirmDelete = async id => {
     if (!auth.currentUser || !ALLOWED_EMAILS.includes(auth.currentUser.email)) {
       Alert.alert('Access Denied', 'Only authorized users can delete infantry.');
       return;
@@ -198,7 +228,10 @@ const InfantryScreen = () => {
           }
         } catch (e) {
           console.error('Delete image error:', e.message, 'Path:', path, 'URL:', imageUrl);
-          Alert.alert('Warning', `Failed to delete image from storage: ${e.message}. Commander will still be deleted.`);
+          Alert.alert(
+            'Warning',
+            `Failed to delete image from storage: ${e.message}. Commander will still be deleted.`
+          );
           // Continue with Firestore deletion even if image deletion fails
         }
       }
@@ -214,7 +247,7 @@ const InfantryScreen = () => {
   };
 
   // Render Each Infantry Card
-  const renderInfantryCard = (infantryItem) => (
+  const renderInfantryCard = infantryItem => (
     <View key={infantryItem.id || infantryItem.name} style={styles.infantryCont}>
       <TouchableOpacity
         style={[
@@ -223,13 +256,20 @@ const InfantryScreen = () => {
             width: isDesktop ? cardSizes.desktop.width : cardSizes.mobile.width,
             height: isDesktop ? cardSizes.desktop.height : cardSizes.mobile.height,
           },
-          infantryItem.clickable && infantryItem.borderColor ? styles.clickable(infantryItem.borderColor) : styles.notClickable,
+          infantryItem.clickable && infantryItem.borderColor
+            ? styles.clickable(infantryItem.borderColor)
+            : styles.notClickable,
         ]}
         onPress={() => handleInfantryPress(infantryItem)}
         disabled={!infantryItem.clickable}
       >
         <Image
-          source={infantryItem.image || (infantryItem.imageUrl && infantryItem.imageUrl !== 'placeholder' ? { uri: infantryItem.imageUrl } : require('../../assets/Armor/PlaceHolder.jpg'))}
+          source={
+            infantryItem.image ||
+            (infantryItem.imageUrl && infantryItem.imageUrl !== 'placeholder'
+              ? { uri: infantryItem.imageUrl }
+              : require('../../assets/Armor/PlaceHolder.jpg'))
+          }
           style={styles.infantryImg}
           resizeMode="cover"
         />
@@ -247,7 +287,9 @@ const InfantryScreen = () => {
             <Text style={styles.buttonText}>Edit</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => setDeleteModal({ visible: true, infantry: { id: infantryItem.id, name: infantryItem.name } })}
+            onPress={() =>
+              setDeleteModal({ visible: true, infantry: { id: infantryItem.id, name: infantryItem.name } })
+            }
             style={[styles.delete, !canMod && styles.disabled]}
             disabled={!canMod}
           >
@@ -259,28 +301,36 @@ const InfantryScreen = () => {
   );
 
   // Render Preview Card
-  const renderPreviewCard = (infantryItem) => (
+  const renderPreviewCard = infantryItem => (
     <TouchableOpacity
       style={[styles.previewCard(isDesktop, SCREEN_WIDTH), styles.clickable(infantryItem.borderColor)]}
       onPress={() => {
         console.log('Closing preview modal');
         if (currentSound) {
-          currentSound.stopAsync().then(async () => {
-            try {
-              await currentSound.unloadAsync();
-              setCurrentSound(null);
-              setIsPlaying(false);
-              console.log('ForDemocracy.mp4 stopped at:', new Date().toISOString());
-            } catch (error) {
-              console.error('Error unloading sound on preview close:', error);
-            }
-          }).catch((error) => console.error('Error stopping sound:', error));
+          currentSound
+            .stopAsync()
+            .then(async () => {
+              try {
+                await currentSound.unloadAsync();
+                setCurrentSound(null);
+                setIsPlaying(false);
+                console.log('ForDemocracy.mp4 stopped at:', new Date().toISOString());
+              } catch (error) {
+                console.error('Error unloading sound on preview close:', error);
+              }
+            })
+            .catch(error => console.error('Error stopping sound:', error));
         }
         setPreviewInfantry(null);
       }}
     >
       <Image
-        source={infantryItem.image || (infantryItem.imageUrl && infantryItem.imageUrl !== 'placeholder' ? { uri: infantryItem.imageUrl } : require('../../assets/Armor/PlaceHolder.jpg'))}
+        source={
+          infantryItem.image ||
+          (infantryItem.imageUrl && infantryItem.imageUrl !== 'placeholder'
+            ? { uri: infantryItem.imageUrl }
+            : require('../../assets/Armor/PlaceHolder.jpg'))
+        }
         style={styles.previewImage}
         resizeMode="contain"
       />
@@ -297,29 +347,111 @@ const InfantryScreen = () => {
       style={styles.bg}
     >
       <View style={styles.screenOverlay}>
-        <TouchableOpacity
-          onPress={() => {
-            console.log('Navigating back');
-            if (currentSound) {
-              currentSound.stopAsync().then(async () => {
-                try {
-                  await currentSound.unloadAsync();
-                  setCurrentSound(null);
-                  setIsPlaying(false);
-                  console.log('ForDemocracy.mp4 stopped at:', new Date().toISOString());
-                } catch (error) {
-                  console.error('Error unloading sound on back:', error);
-                }
-              }).catch((error) => console.error('Error stopping sound:', error));
-            }
-            navigation.goBack();
-          }}
-          style={styles.back}
+        {/* HEADER – glass bar with dropdown */}
+        <View style={styles.headerWrapper}>
+          <TouchableOpacity
+            onPress={() => {
+              console.log('Navigating back');
+              if (currentSound) {
+                currentSound
+                  .stopAsync()
+                  .then(async () => {
+                    try {
+                      await currentSound.unloadAsync();
+                      setCurrentSound(null);
+                      setIsPlaying(false);
+                      console.log('ForDemocracy.mp4 stopped at:', new Date().toISOString());
+                    } catch (error) {
+                      console.error('Error unloading sound on back:', error);
+                    }
+                  })
+                  .catch(error => console.error('Error stopping sound:', error));
+              }
+              navigation.goBack();
+            }}
+            style={styles.backButton}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.backButtonText}>⬅️ Back</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.headerCenter}
+            onPress={toggleInfo}
+            activeOpacity={0.9}
+          >
+            <View style={styles.headerGlass}>
+              <Text style={styles.headerTitle}>Command Eagle Rapid Response Team</Text>
+              <Text style={styles.headerSubtitle}>
+                Bridge between the Parliament, Eagles, and the people
+              </Text>
+              <Text style={styles.headerHint}>Tap for unit briefing ⬇</Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Right side kept empty for now (future icons if you want) */}
+          <View style={styles.headerRight} />
+        </View>
+
+        {/* 🔽 INFO DROPDOWN – matches Titans structure */}
+        <Animated.View
+          pointerEvents={infoOpen ? 'auto' : 'none'}
+          style={[
+            styles.infoPanelContainer,
+            {
+              opacity: infoAnim,
+              transform: [
+                {
+                  translateY: infoAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [-15, 0],
+                  }),
+                },
+              ],
+            },
+          ]}
         >
-          <Text style={styles.backText}>⬅️</Text>
-        </TouchableOpacity>
+          {infoOpen && (
+            <View style={styles.infoPanel}>
+              <View style={styles.infoHeaderRow}>
+                <Text style={styles.infoTitle}>Command Eagle Rapid Response Team</Text>
+                <TouchableOpacity
+                  onPress={toggleInfo}
+                  hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                >
+                  <Text style={styles.infoClose}>✕</Text>
+                </TouchableOpacity>
+              </View>
+
+              <Text style={styles.infoText}>
+                The Command Eagle Rapid Response Team is the Parliament&apos;s liaison
+                vanguard — elite commanders who coordinate between world governments,
+                the Zion City Eagles, and the Parliament of Justice. When heroes deploy
+                on domestic soil, these are the people on the comms, in the war rooms,
+                and on the ground making sure it all holds together.
+              </Text>
+
+              <Text style={styles.infoLabel}>What they represent</Text>
+              <Text style={styles.infoText}>
+                Trust in superheroes, structured oversight, and rapid humanitarian
+                response. They believe that superpowered teams save more lives than
+                they end — and they fight to keep public support, legal protections,
+                and clear lines of command in place so heroes can actually do the most
+                good.
+              </Text>
+
+              <Text style={styles.infoLabel}>Enemy types they specialize against</Text>
+              <Text style={styles.infoText}>
+                • Large-scale crises that need joint military + hero response{'\n'}
+                • Anti-superhuman extremists, riots, and hostile regimes{'\n'}
+                • Rogue supers or factions that threaten diplomatic stability and civilian safety
+              </Text>
+            </View>
+          )}
+        </Animated.View>
+
         <ScrollView contentContainerStyle={styles.scroll}>
-          <Text style={styles.header}>Command Eagle Rapid Response Team</Text>
+          {/* Music controls under the header */}
           <View style={styles.musicControls}>
             <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
               <Text style={styles.musicButtonText}>
@@ -330,6 +462,7 @@ const InfantryScreen = () => {
               <Text style={styles.musicButtonText}>Pause</Text>
             </TouchableOpacity>
           </View>
+
           <View style={styles.scrollWrapper}>
             <ScrollView
               horizontal
@@ -343,6 +476,7 @@ const InfantryScreen = () => {
               )}
             </ScrollView>
           </View>
+
           <RecruitForm
             collectionPath="infantry"
             placeholderImage={require('../../assets/Armor/PlaceHolder.jpg')}
@@ -352,6 +486,8 @@ const InfantryScreen = () => {
             editingInfantry={previewInfantry?.isEditing ? previewInfantry : null}
             setEditingInfantry={setPreviewInfantry}
           />
+
+          {/* Preview Modal */}
           <Modal
             visible={!!previewInfantry && !previewInfantry.isEditing}
             transparent
@@ -359,16 +495,19 @@ const InfantryScreen = () => {
             onRequestClose={() => {
               console.log('Closing preview modal');
               if (currentSound) {
-                currentSound.stopAsync().then(async () => {
-                  try {
-                    await currentSound.unloadAsync();
-                    setCurrentSound(null);
-                    setIsPlaying(false);
-                    console.log('ForDemocracy.mp4 stopped at:', new Date().toISOString());
-                  } catch (error) {
-                    console.error('Error unloading sound on modal close:', error);
-                  }
-                }).catch((error) => console.error('Error stopping sound:', error));
+                currentSound
+                  .stopAsync()
+                  .then(async () => {
+                    try {
+                      await currentSound.unloadAsync();
+                      setCurrentSound(null);
+                      setIsPlaying(false);
+                      console.log('ForDemocracy.mp4 stopped at:', new Date().toISOString());
+                    } catch (error) {
+                      console.error('Error unloading sound on modal close:', error);
+                    }
+                  })
+                  .catch(error => console.error('Error stopping sound:', error));
               }
               setPreviewInfantry(null);
             }}
@@ -380,16 +519,19 @@ const InfantryScreen = () => {
                 onPress={() => {
                   console.log('Closing preview modal');
                   if (currentSound) {
-                    currentSound.stopAsync().then(async () => {
-                      try {
-                        await currentSound.unloadAsync();
-                        setCurrentSound(null);
-                        setIsPlaying(false);
-                        console.log('ForDemocracy.mp4 stopped at:', new Date().toISOString());
-                      } catch (error) {
-                        console.error('Error unloading sound on modal outer press:', error);
-                      }
-                    }).catch((error) => console.error('Error stopping sound:', error));
+                    currentSound
+                      .stopAsync()
+                      .then(async () => {
+                        try {
+                          await currentSound.unloadAsync();
+                          setCurrentSound(null);
+                          setIsPlaying(false);
+                          console.log('ForDemocracy.mp4 stopped at:', new Date().toISOString());
+                        } catch (error) {
+                          console.error('Error unloading sound on modal outer press:', error);
+                        }
+                      })
+                      .catch(error => console.error('Error stopping sound:', error));
                   }
                   setPreviewInfantry(null);
                 }}
@@ -408,22 +550,32 @@ const InfantryScreen = () => {
                   </ScrollView>
                 </View>
                 <View style={styles.previewAboutSection}>
-                  <Text style={styles.previewName}>{previewInfantry?.name || 'Unknown'}</Text>
-                  <Text style={styles.previewDesc}>{previewInfantry?.description || 'No description available'}</Text>
+                  <Text style={styles.previewName}>
+                    {previewInfantry?.name || 'Unknown'}
+                  </Text>
+                  <Text style={styles.previewDesc}>
+                    {previewInfantry?.description || 'No description available'}
+                  </Text>
                   <TouchableOpacity
                     onPress={() => {
                       console.log('Closing preview modal');
                       if (currentSound) {
-                        currentSound.stopAsync().then(async () => {
-                          try {
-                            await currentSound.unloadAsync();
-                            setCurrentSound(null);
-                            setIsPlaying(false);
-                            console.log('ForDemocracy.mp4 stopped at:', new Date().toISOString());
-                          } catch (error) {
-                            console.error('Error unloading sound on close button:', error);
-                          }
-                        }).catch((error) => console.error('Error stopping sound:', error));
+                        currentSound
+                          .stopAsync()
+                          .then(async () => {
+                            try {
+                              await currentSound.unloadAsync();
+                              setCurrentSound(null);
+                              setIsPlaying(false);
+                              console.log(
+                                'ForDemocracy.mp4 stopped at:',
+                                new Date().toISOString()
+                              );
+                            } catch (error) {
+                              console.error('Error unloading sound on close button:', error);
+                            }
+                          })
+                          .catch(error => console.error('Error stopping sound:', error));
                       }
                       setPreviewInfantry(null);
                     }}
@@ -435,25 +587,35 @@ const InfantryScreen = () => {
               </TouchableOpacity>
             </View>
           </Modal>
+
+          {/* Delete Modal */}
           <Modal
             visible={deleteModal.visible}
             transparent
             animationType="slide"
-            onRequestClose={() => setDeleteModal({ visible: false, infantry: null })}
+            onRequestClose={() =>
+              setDeleteModal({ visible: false, infantry: null })
+            }
           >
             <View style={styles.modalOverlay}>
               <View style={styles.modalContent}>
-                <Text style={styles.modalText}>{`Delete "${deleteModal.infantry?.name || ''}" and its image?`}</Text>
+                <Text style={styles.modalText}>
+                  {`Delete "${deleteModal.infantry?.name || ''}" and its image?`}
+                </Text>
                 <View style={styles.modalButtons}>
                   <TouchableOpacity
                     style={styles.modalCancel}
-                    onPress={() => setDeleteModal({ visible: false, infantry: null })}
+                    onPress={() =>
+                      setDeleteModal({ visible: false, infantry: null })
+                    }
                   >
                     <Text style={styles.modalCancelText}>Cancel</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.modalDelete}
-                    onPress={() => deleteModal.infantry && confirmDelete(deleteModal.infantry.id)}
+                    onPress={() =>
+                      deleteModal.infantry && confirmDelete(deleteModal.infantry.id)
+                    }
                   >
                     <Text style={styles.modalDeleteText}>Delete</Text>
                   </TouchableOpacity>
@@ -480,39 +642,117 @@ const styles = StyleSheet.create({
   screenOverlay: {
     flex: 1,
     backgroundColor: 'rgba(3, 7, 18, 0.8)', // deep navy glass
-    paddingTop: 50,
+    paddingTop: 40,
   },
 
   scroll: {
     paddingBottom: 20,
   },
 
-  back: {
-    position: 'absolute',
-    top: 10,
-    left: 10,
-    backgroundColor: 'rgba(15, 23, 42, 0.9)',
-    padding: 10,
-    borderRadius: 999,
-    zIndex: 10,
-    borderWidth: 1,
-    borderColor: 'rgba(148, 163, 184, 0.7)',
+  /* HEADER BAR */
+  headerWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingTop: 6,
+    paddingBottom: 8,
+    backgroundColor: 'rgba(15,23,42,0.95)',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(250,204,21,0.45)',
+    zIndex: 2,
   },
-  backText: {
-    color: '#E5F2FF',
-    fontSize: 16,
+  backButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(250,204,21,0.8)',
+    backgroundColor: 'rgba(15,23,42,0.95)',
+  },
+  backButtonText: {
+    color: '#F9FAFB',
+    fontSize: 13,
     fontWeight: 'bold',
   },
-
-  header: {
-    fontSize: 30,
+  headerCenter: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  headerGlass: {
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 22,
+    backgroundColor: 'rgba(15,23,42,0.92)',
+    borderWidth: 1,
+    borderColor: 'rgba(250,204,21,0.85)',
+  },
+  headerTitle: {
+    fontSize: isDesktop ? 24 : 20,
     fontWeight: '900',
-    color: '#F9FAFB',
+    color: '#FEFCE8',
     textAlign: 'center',
-    marginVertical: 20,
-    textShadowColor: '#FACC15', // warm gold glow
-    textShadowRadius: 22,
-    letterSpacing: 1,
+    textShadowColor: '#FACC15',
+    textShadowRadius: 18,
+  },
+  headerSubtitle: {
+    fontSize: 11,
+    color: '#E5E7EB',
+    textAlign: 'center',
+    marginTop: 2,
+  },
+  headerHint: {
+    fontSize: 10,
+    color: '#FDE68A',
+    textAlign: 'center',
+    marginTop: 3,
+    letterSpacing: 0.4,
+  },
+  headerRight: {
+    width: 40, // placeholder for symmetry / future icons
+  },
+
+  /* INFO PANEL (dropdown) */
+  infoPanelContainer: {
+    position: 'absolute',
+    top: 70,
+    left: 10,
+    right: 10,
+    zIndex: 3,
+  },
+  infoPanel: {
+    backgroundColor: 'rgba(15,23,42,0.98)',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderWidth: 1.5,
+    borderColor: 'rgba(250,204,21,0.85)',
+  },
+  infoHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  infoTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#FEFCE8',
+  },
+  infoClose: {
+    fontSize: 16,
+    color: '#FEFCE8',
+  },
+  infoLabel: {
+    marginTop: 6,
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#FACC15',
+  },
+  infoText: {
+    fontSize: 12,
+    color: '#E5E7EB',
+    marginTop: 2,
+    lineHeight: 16,
   },
 
   // Music buttons – glassy pills
@@ -520,6 +760,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     marginBottom: 16,
+    marginTop: 12,
     gap: 10,
   },
   musicButton: {
@@ -562,7 +803,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 10 },
   },
 
-  clickable: (borderColor) => ({
+  clickable: borderColor => ({
     borderColor: borderColor || '#FACC15', // default gold
     borderWidth: 2,
   }),

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   Dimensions,
   ScrollView,
+  Animated,
 } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 
@@ -87,11 +88,31 @@ const SpartansScreen = () => {
   const cardSize = isDesktop ? 320 : 110;
   const cardSpacing = isDesktop ? 80 : 20;
 
-  // width used for paging & snap
   const vehicleWidth = SCREEN_WIDTH * (isDesktop ? 0.9 : 1);
 
   // 🔊 track play/pause UI state (music itself is handled by shared helpers)
   const [isMusicPlaying, setIsMusicPlaying] = useState(true);
+
+  // 🔽 Lore overlay state + animation
+  const [infoOpen, setInfoOpen] = useState(false);
+  const infoAnim = useRef(new Animated.Value(0)).current;
+
+  const toggleInfo = () => {
+    if (infoOpen) {
+      Animated.timing(infoAnim, {
+        toValue: 0,
+        duration: 220,
+        useNativeDriver: true,
+      }).start(() => setInfoOpen(false));
+    } else {
+      setInfoOpen(true);
+      Animated.timing(infoAnim, {
+        toValue: 1,
+        duration: 220,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
 
   useEffect(() => {
     if (isFocused) {
@@ -99,8 +120,7 @@ const SpartansScreen = () => {
         backgroundImages[Math.floor(Math.random() * backgroundImages.length)]
       );
     }
-    // We do NOT auto play/stop music here; ASTC started it already,
-    // and the user controls it via the header play/pause button.
+    // Music lifecycle is controlled by ASTC + header button
   }, [isFocused]);
 
   const goToChat = () => navigation.navigate('TeamChat');
@@ -173,85 +193,152 @@ const SpartansScreen = () => {
   return (
     <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover">
       <SafeAreaView style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollContent}>
-          {/* HEADER */}
-          <View style={styles.headerWrapper}>
-            <TouchableOpacity
-              style={styles.backButton}
-              onPress={() => navigation.goBack()}
-              activeOpacity={0.85}
-            >
-              <Text style={styles.backText}>⬅️ Back</Text>
-            </TouchableOpacity>
+        <View style={{ flex: 1 }}>
+          <ScrollView contentContainerStyle={styles.scrollContent}>
+            {/* HEADER */}
+            <View style={styles.headerWrapper}>
+              <TouchableOpacity
+                style={styles.backButton}
+                onPress={() => navigation.goBack()}
+                activeOpacity={0.85}
+              >
+                <Text style={styles.backText}>⬅️ Back</Text>
+              </TouchableOpacity>
 
-            <View style={styles.headerCenter}>
-              <View style={styles.headerGlass}>
-                <Text style={styles.headerTitle}>The Spartans</Text>
-                <Text style={styles.headerSubtitle}>The Elite Commandos of The Parliament</Text>
+              {/* Tap center glass to toggle Spartans lore */}
+              <TouchableOpacity
+                style={styles.headerCenter}
+                onPress={toggleInfo}
+                activeOpacity={0.9}
+              >
+                <View style={styles.headerGlass}>
+                  <Text style={styles.headerTitle}>The Spartans</Text>
+                  <Text style={styles.headerSubtitle}>
+                    The Elite Commandos of The Parliament
+                  </Text>
+                  <Text style={styles.infoHint}>Tap for team lore ⬇</Text>
+                </View>
+              </TouchableOpacity>
+
+              {/* RIGHT SIDE: music + chat */}
+              <View style={styles.headerRight}>
+                <TouchableOpacity
+                  onPress={toggleMusic}
+                  style={styles.musicButton}
+                  activeOpacity={0.85}
+                >
+                  <Text style={styles.musicText}>
+                    {isMusicPlaying ? '⏸' : '▶️'}
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={goToChat}
+                  style={styles.chatButton}
+                  activeOpacity={0.85}
+                >
+                  <Text style={styles.chatText}>🛡️</Text>
+                </TouchableOpacity>
               </View>
             </View>
 
-            {/* RIGHT SIDE: music + chat */}
-            <View style={styles.headerRight}>
-              <TouchableOpacity
-                onPress={toggleMusic}
-                style={styles.musicButton}
-                activeOpacity={0.85}
-              >
-                <Text style={styles.musicText}>
-                  {isMusicPlaying ? '⏸' : '▶️'}
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={goToChat}
-                style={styles.chatButton}
-                activeOpacity={0.85}
-              >
-                <Text style={styles.chatText}>🛡️</Text>
-              </TouchableOpacity>
+            {/* MEMBER CARDS */}
+            <View style={[styles.memberRow, { gap: cardSpacing }]}>
+              {members.map(renderMemberCard)}
             </View>
-          </View>
 
-          {/* MEMBER CARDS */}
-          <View style={[styles.memberRow, { gap: cardSpacing }]}>
-            {members.map(renderMemberCard)}
-          </View>
-
-          {/* VEHICLE BAY */}
-          <View style={styles.vehicleBay}>
-            <Text style={styles.vehicleHeader}>Vehicle Bay</Text>
-            <View style={styles.vehicleWindow}>
-              <ScrollView
-                horizontal
-                pagingEnabled
-                showsHorizontalScrollIndicator={false}
-                style={{ width: vehicleWidth }}
-                onScroll={(e) =>
-                  setCurrentVehicleIndex(
-                    Math.round(
-                      e.nativeEvent.contentOffset.x / vehicleWidth
+            {/* VEHICLE BAY */}
+            <View style={styles.vehicleBay}>
+              <Text style={styles.vehicleHeader}>Vehicle Bay</Text>
+              <View style={styles.vehicleWindow}>
+                <ScrollView
+                  horizontal
+                  pagingEnabled
+                  showsHorizontalScrollIndicator={false}
+                  style={{ width: vehicleWidth }}
+                  onScroll={(e) =>
+                    setCurrentVehicleIndex(
+                      Math.round(
+                        e.nativeEvent.contentOffset.x / vehicleWidth
+                      )
                     )
-                  )
-                }
-                scrollEventThrottle={16}
-              >
-                {HARDCODED_VEHICLES.map(renderVehicle)}
-              </ScrollView>
-              <View style={styles.dotContainer}>
-                {HARDCODED_VEHICLES.map((_, i) => (
-                  <View
-                    key={i}
-                    style={[
-                      styles.dot,
-                      { backgroundColor: i === currentVehicleIndex ? '#00e1ff' : '#555' },
-                    ]}
-                  />
-                ))}
+                  }
+                  scrollEventThrottle={16}
+                >
+                  {HARDCODED_VEHICLES.map(renderVehicle)}
+                </ScrollView>
+                <View style={styles.dotContainer}>
+                  {HARDCODED_VEHICLES.map((_, i) => (
+                    <View
+                      key={i}
+                      style={[
+                        styles.dot,
+                        { backgroundColor: i === currentVehicleIndex ? '#00e1ff' : '#555' },
+                      ]}
+                    />
+                  ))}
+                </View>
               </View>
             </View>
-          </View>
-        </ScrollView>
+          </ScrollView>
+
+          {/* LORE OVERLAY – ON TOP OF EVERYTHING */}
+          <Animated.View
+            pointerEvents={infoOpen ? 'auto' : 'none'}
+            style={[
+              styles.infoPanelContainer,
+              {
+                opacity: infoAnim,
+                transform: [
+                  {
+                    translateY: infoAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [-20, 0],
+                    }),
+                  },
+                ],
+              },
+            ]}
+          >
+            {infoOpen && (
+              <View style={styles.infoPanel}>
+                <View style={styles.infoHeaderRow}>
+                  <Text style={styles.infoTitle}>The Spartans</Text>
+                  <TouchableOpacity
+                    onPress={toggleInfo}
+                    hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                  >
+                    <Text style={styles.infoClose}>✕</Text>
+                  </TouchableOpacity>
+                </View>
+
+                <Text style={styles.infoText}>
+                  The Spartans are the Parliament&apos;s elite commando squad — the
+                  small, tight-knit fireteam you send in when planets are burning and
+                  there&apos;s no backup coming. They hit hard, move fast, and bring
+                  their own motor pool of war machines.
+                </Text>
+
+                <Text style={styles.infoLabel}>What they represent</Text>
+                <Text style={styles.infoText}>
+                  Precision, loyalty, and boots-on-the-ground heroism. Where the
+                  Titans handle cosmic headlines, the Spartans handle the missions no
+                  one hears about — boarding actions, black ops rescues, and holding
+                  the line so everyone else can live to see tomorrow.
+                </Text>
+
+                <Text style={styles.infoLabel}>
+                  Enemy types they specialize against
+                </Text>
+                <Text style={styles.infoText}>
+                  • Organized militaries, warlords, and planetary invasions{'\n'}
+                  • Maw-backed shock troops and heavy ground forces{'\n'}
+                  • Armored convoys, fortress assaults, and hostile vehicle warfare
+                </Text>
+              </View>
+            )}
+          </Animated.View>
+        </View>
       </SafeAreaView>
     </ImageBackground>
   );
@@ -260,7 +347,12 @@ const SpartansScreen = () => {
 const styles = StyleSheet.create({
   background: { width: '100%', height: '100%' },
   container: { flex: 1, backgroundColor: 'rgba(0,0,0,0.7)' },
-  scrollContent: { flexGrow: 1, alignItems: 'center', paddingVertical: 20, paddingHorizontal: 6 },
+  scrollContent: {
+    flexGrow: 1,
+    alignItems: 'center',
+    paddingVertical: 20,
+    paddingHorizontal: 6,
+  },
 
   // HEADER
   headerWrapper: {
@@ -310,6 +402,12 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 1.2,
   },
+  infoHint: {
+    marginTop: 2,
+    fontSize: 10,
+    textAlign: 'center',
+    color: 'rgba(190,240,255,0.9)',
+  },
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -339,6 +437,50 @@ const styles = StyleSheet.create({
   },
   chatText: { fontSize: 18, color: '#00e1ff' },
 
+  // INFO PANEL OVERLAY
+  infoPanelContainer: {
+    position: 'absolute',
+    top: 80, // just under header
+    left: 10,
+    right: 10,
+    zIndex: 20,
+  },
+  infoPanel: {
+    backgroundColor: 'rgba(3,10,20,0.97)',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderWidth: 1.5,
+    borderColor: 'rgba(0,240,255,0.9)',
+  },
+  infoHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  infoTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#e6fbff',
+  },
+  infoClose: {
+    fontSize: 16,
+    color: '#00e1ff',
+  },
+  infoLabel: {
+    marginTop: 6,
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#00e1ff',
+  },
+  infoText: {
+    fontSize: 12,
+    color: 'rgba(220,245,255,0.95)',
+    marginTop: 2,
+    lineHeight: 16,
+  },
+
   // MEMBERS
   memberRow: {
     flexDirection: 'row',
@@ -362,7 +504,6 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0,0,0,0.45)',
   },
-
   textWrapper: {
     position: 'absolute',
     bottom: 8,

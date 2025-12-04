@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   ScrollView,
   Dimensions,
   Alert,
+  Animated,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { olympiansCategories } from './OlympiansMembers';
@@ -34,6 +35,27 @@ export const OlympiansScreen = () => {
   const navigation = useNavigation();
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+
+  // 🔽 Lore overlay state + animation
+  const [infoOpen, setInfoOpen] = useState(false);
+  const infoAnim = useRef(new Animated.Value(0)).current;
+
+  const toggleInfo = () => {
+    if (infoOpen) {
+      Animated.timing(infoAnim, {
+        toValue: 0,
+        duration: 220,
+        useNativeDriver: true,
+      }).start(() => setInfoOpen(false));
+    } else {
+      setInfoOpen(true);
+      Animated.timing(infoAnim, {
+        toValue: 1,
+        duration: 220,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
 
   const playTheme = async () => {
     if (!currentSound) {
@@ -235,12 +257,18 @@ export const OlympiansScreen = () => {
               <Text style={styles.backText}>⬅️ Back</Text>
             </TouchableOpacity>
 
-            <View style={styles.headerTitle}>
+            {/* Tap title for lore */}
+            <TouchableOpacity
+              style={styles.headerTitle}
+              onPress={toggleInfo}
+              activeOpacity={0.9}
+            >
               <View style={styles.headerGlass}>
                 <Text style={styles.header}>Olympians</Text>
                 <Text style={styles.headerSub}>Family of Heroes</Text>
+                <Text style={styles.infoHint}>Tap for team lore ⬇</Text>
               </View>
-            </View>
+            </TouchableOpacity>
 
             <TouchableOpacity
               onPress={goToChat}
@@ -347,6 +375,65 @@ export const OlympiansScreen = () => {
               )}
             </View>
           </ScrollView>
+
+          {/* 🔥 LORE OVERLAY — ON TOP OF EVERYTHING */}
+          <Animated.View
+            pointerEvents={infoOpen ? 'auto' : 'none'}
+            style={[
+              styles.infoPanelContainer,
+              {
+                opacity: infoAnim,
+                transform: [
+                  {
+                    translateY: infoAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [-20, 0],
+                    }),
+                  },
+                ],
+              },
+            ]}
+          >
+            {infoOpen && (
+              <View style={styles.infoPanel}>
+                <View style={styles.infoHeaderRow}>
+                  <Text style={styles.infoTitle}>Olympians</Text>
+                  <TouchableOpacity
+                    onPress={toggleInfo}
+                    hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                  >
+                    <Text style={styles.infoClose}>✕</Text>
+                  </TouchableOpacity>
+                </View>
+
+                <Text style={styles.infoText}>
+                  The Olympians are the Parliament&apos;s living legacy — an
+                  entire family tree of heroes, mentors, and guardians stretching
+                  across generations. From parents and cousins to future
+                  prodigies, they are the beating heart behind every frontline
+                  team.
+                </Text>
+
+                <Text style={styles.infoLabel}>What they represent</Text>
+                <Text style={styles.infoText}>
+                  Legacy, unity, and resurrection. The Olympians prove that the
+                  mantle of heroism is inherited not just by blood, but by love,
+                  sacrifice, and the choice to stand back up when worlds fall
+                  apart.
+                </Text>
+
+                <Text style={styles.infoLabel}>
+                  Threats they stand against
+                </Text>
+                <Text style={styles.infoText}>
+                  • Multi-front crises that endanger whole families and cities{'\n'}
+                  • Demon-lord incursions, Maw spillover, and cosmic plagues{'\n'}
+                  • Any enemy that tries to break the bonds of home, faith, and
+                  family
+                </Text>
+              </View>
+            )}
+          </Animated.View>
         </View>
       </SafeAreaView>
     </ImageBackground>
@@ -407,6 +494,12 @@ const styles = StyleSheet.create({
     color: 'rgba(255,230,200,0.9)',
     textAlign: 'center',
   },
+  infoHint: {
+    marginTop: 2,
+    fontSize: 10,
+    color: 'rgba(255,230,200,0.9)',
+    textAlign: 'center',
+  },
   chatButton: {
     paddingVertical: 8,
     paddingHorizontal: 10,
@@ -449,6 +542,50 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#ffe0c4',
     fontWeight: 'bold',
+  },
+
+  /* INFO PANEL OVERLAY ----------------- */
+  infoPanelContainer: {
+    position: 'absolute',
+    top: 78, // just under header
+    left: 10,
+    right: 10,
+    zIndex: 20,
+  },
+  infoPanel: {
+    backgroundColor: 'rgba(25,5,0,0.96)',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,180,90,0.9)',
+  },
+  infoHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  infoTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: PHOENIX.gold,
+  },
+  infoClose: {
+    fontSize: 16,
+    color: PHOENIX.gold,
+  },
+  infoLabel: {
+    marginTop: 6,
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: PHOENIX.fire,
+  },
+  infoText: {
+    fontSize: 12,
+    color: 'rgba(255,235,210,0.96)',
+    marginTop: 2,
+    lineHeight: 16,
   },
 
   /* SCROLL + GRID ---------------------- */

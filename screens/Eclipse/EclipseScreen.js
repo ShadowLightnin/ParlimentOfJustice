@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   Dimensions,
   ScrollView,
   Alert,
+  Animated,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Audio } from 'expo-av';
@@ -34,6 +35,27 @@ const EclipseScreen = () => {
   const navigation = useNavigation();
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+
+  // 🔽 Info panel state + animation (overlay)
+  const [infoOpen, setInfoOpen] = useState(false);
+  const infoAnim = useRef(new Animated.Value(0)).current;
+
+  const toggleInfo = () => {
+    if (infoOpen) {
+      Animated.timing(infoAnim, {
+        toValue: 0,
+        duration: 220,
+        useNativeDriver: true,
+      }).start(() => setInfoOpen(false));
+    } else {
+      setInfoOpen(true);
+      Animated.timing(infoAnim, {
+        toValue: 1,
+        duration: 220,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
 
   const playTheme = async () => {
     if (!currentSound) {
@@ -153,12 +175,18 @@ const EclipseScreen = () => {
               <Text style={styles.backText}>⬅️ Back</Text>
             </TouchableOpacity>
 
-            <View style={styles.headerTitle}>
+            {/* Tap title to toggle lore overlay */}
+            <TouchableOpacity
+              style={styles.headerTitle}
+              onPress={toggleInfo}
+              activeOpacity={0.9}
+            >
               <View style={styles.headerGlass}>
                 <Text style={styles.header}>Eclipse</Text>
                 <Text style={styles.headerSub}>The Hearts of the Titans</Text>
+                <Text style={styles.infoHint}>Tap for team lore ⬇</Text>
               </View>
-            </View>
+            </TouchableOpacity>
 
             <TouchableOpacity
               onPress={goToChat}
@@ -168,6 +196,62 @@ const EclipseScreen = () => {
               <Text style={styles.chatText}>💬</Text>
             </TouchableOpacity>
           </View>
+
+          {/* LORE OVERLAY (on top of everything) */}
+          <Animated.View
+            pointerEvents={infoOpen ? 'auto' : 'none'}
+            style={[
+              styles.infoPanelContainer,
+              {
+                opacity: infoAnim,
+                transform: [
+                  {
+                    translateY: infoAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [-20, 0],
+                    }),
+                  },
+                ],
+              },
+            ]}
+          >
+            {infoOpen && (
+              <View style={styles.infoPanel}>
+                <View style={styles.infoHeaderRow}>
+                  <Text style={styles.infoTitle}>Eclipse</Text>
+                  <TouchableOpacity
+                    onPress={toggleInfo}
+                    hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                  >
+                    <Text style={styles.infoClose}>✕</Text>
+                  </TouchableOpacity>
+                </View>
+
+                <Text style={styles.infoText}>
+                  Eclipse is the circle of partners, spouses, and soul-level allies
+                  who stand beside the Titans. They are the emotional armor of the
+                  Parliament — the ones who steady the heroes when the universe is
+                  falling apart.
+                </Text>
+
+                <Text style={styles.infoLabel}>What they represent</Text>
+                <Text style={styles.infoText}>
+                  Love, grounding, and perspective. Eclipse members remind the Titans
+                  what they&apos;re fighting for — real lives, real relationships,
+                  and a future worth saving beyond the battlefield.
+                </Text>
+
+                <Text style={styles.infoLabel}>
+                  Enemy types they specialize against
+                </Text>
+                <Text style={styles.infoText}>
+                  • Psychological and emotional warfare{'\n'}
+                  • Villains who target families, support networks, or civilians{'\n'}
+                  • Manipulation, propaganda, and morale-breaking threats
+                </Text>
+              </View>
+            )}
+          </Animated.View>
 
           {/* MUSIC */}
           <View style={styles.musicControls}>
@@ -285,6 +369,12 @@ const styles = StyleSheet.create({
     color: 'rgba(180,220,255,0.9)',
     textAlign: 'center',
   },
+  infoHint: {
+    marginTop: 2,
+    fontSize: 10,
+    color: 'rgba(200,220,255,0.9)',
+    textAlign: 'center',
+  },
   chatButton: {
     paddingVertical: 8,
     paddingHorizontal: 10,
@@ -294,6 +384,50 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(120,160,200,0.9)',
   },
   chatText: { fontSize: 16, color: SILVER },
+
+  /* INFO PANEL OVERLAY ------------------------ */
+  infoPanelContainer: {
+    position: 'absolute',
+    top: 70, // under header
+    left: 12,
+    right: 12,
+    zIndex: 20,
+  },
+  infoPanel: {
+    backgroundColor: 'rgba(5,10,20,0.96)',
+    borderRadius: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(160,200,240,0.9)',
+  },
+  infoHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  infoTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: SILVER,
+  },
+  infoClose: {
+    fontSize: 16,
+    color: BLUE,
+  },
+  infoLabel: {
+    marginTop: 6,
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: BLUE,
+  },
+  infoText: {
+    fontSize: 12,
+    color: 'rgba(210,230,255,0.95)',
+    marginTop: 2,
+    lineHeight: 16,
+  },
 
   /* MUSIC BUTTONS ----------------------------- */
   musicControls: {

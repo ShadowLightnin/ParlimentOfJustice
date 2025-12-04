@@ -64,7 +64,7 @@ export const PLANETS = [
       },
     ],
     description:
-      'Homeworld of the Parliament of Justice and the site of The Incident. Modern Earth looks ordinary from orbit, but Zion City and the Aegis Compound have turned it into the nexus of a coming cosmic war.',
+      'Homeworld of humanity and The Parliament of Justice. Earth is a blue-green jewel of life, culture, and technology, and creativity.',
   },
   {
     id: 'Luna',
