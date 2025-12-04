@@ -29,14 +29,6 @@ const MAP_BASE_SIZE = Math.min(SCREEN_WIDTH, SCREEN_HEIGHT * 0.8);
 // Galaxy map image
 const GALAXY_MAP = require('../../assets/Space/The_best_Milky_Way_map_by_Gaia_labelled.jpg');
 
-// On web / IG in-app browser, big GIF + animation can be crashy.
-const USE_WARP_GIF = Platform.OS !== 'web';
-
-// Warp overlay gif (used mainly on native)
-const Warp3Gif = USE_WARP_GIF
-  ? require('../../assets/Space/warp3.gif')
-  : null;
-
 const ICON_SIZE_STORAGE_KEY = 'galaxy_icon_size';
 const MIN_ICON_SIZE = 2;
 const MAX_ICON_SIZE = 10;
@@ -72,25 +64,12 @@ const normalizeCoord = (value) => {
 const coordToPixel = (value) => normalizeCoord(value) * MAP_BASE_SIZE;
 // -----------------------------------------------
 
-// Helper: distance between 2 touches
-const getTouchDistance = (touches) => {
-  if (!touches || touches.length < 2) return 0;
-  const [a, b] = touches;
-  const dx = b.pageX - a.pageX;
-  const dy = b.pageY - a.pageY;
-  return Math.sqrt(dx * dx + dy * dy);
-};
-
 const GalaxyMap = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
   const fromUniverse = route.params?.fromUniverse || 'prime';
   const currentPlanetId = route.params?.currentPlanetId || null;
-
-  // WARP STATE
-  const warpAnim = useRef(new Animated.Value(0)).current;
-  const [warpingTo, setWarpingTo] = useState(null);
 
   // Initial zoom: a bit zoomed in on desktop, normal on mobile
   const INITIAL_SCALE = SCREEN_WIDTH > 600 ? 1.4 : 1;
@@ -101,9 +80,6 @@ const GalaxyMap = () => {
 
   const lastScaleRef = useRef(INITIAL_SCALE);
   const lastPanRef = useRef({ x: 0, y: 0 });
-  const initialPinchDistanceRef = useRef(null);
-  const pinchStartScaleRef = useRef(INITIAL_SCALE);
-  const isPinchingRef = useRef(false);
 
   const MIN_SCALE = 1;
   const MAX_SCALE = SCREEN_WIDTH > 600 ? 7 : 5.5;
@@ -120,7 +96,6 @@ const GalaxyMap = () => {
         let parsed = parseFloat(stored);
         if (Number.isNaN(parsed)) return;
 
-        // clamp into valid range
         parsed = Math.max(MIN_ICON_SIZE, Math.min(MAX_ICON_SIZE, parsed));
         setIconSize(parsed);
       } catch (e) {
@@ -158,33 +133,13 @@ const GalaxyMap = () => {
 
   const handleSystemPress = (system) => {
     try {
-      // Only warp if the system has a mapped planetId in your PlanetsHome
-      if (warpingTo || !system?.planetId) return;
+      if (!system?.planetId) return;
 
-      setWarpingTo(system.planetId);
-      warpAnim.setValue(0);
-
-      Animated.timing(warpAnim, {
-        toValue: 1,
-        duration: 600,
-        useNativeDriver: true,
-      }).start(() => {
-        const targetPlanetId = system.planetId;
-        setWarpingTo(null);
-        warpAnim.setValue(0);
-
-        try {
-          navigation.navigate('PlanetsHome', {
-            initialPlanetId: targetPlanetId,
-          });
-        } catch (err) {
-          console.warn('GalaxyMap navigation error:', err);
-        }
+      navigation.navigate('PlanetsHome', {
+        initialPlanetId: system.planetId,
       });
     } catch (err) {
-      console.warn('GalaxyMap handleSystemPress error:', err);
-      setWarpingTo(null);
-      warpAnim.setValue(0);
+      console.warn('GalaxyMap navigation error:', err);
     }
   };
 
@@ -193,9 +148,6 @@ const GalaxyMap = () => {
     : null;
 
   // --- FILTER SYSTEMS BY UNIVERSE ---
-  // Using the same universe semantics as planets:
-  // - 'prime' view: see all systems
-  // - 'pinnacle' view: only systems tagged universe === 'pinnacle'
   const visibleSystems = getSystemsForUniverse(fromUniverse);
   const visibleSystemIds = new Set(visibleSystems.map((s) => s.id));
 
@@ -206,7 +158,6 @@ const GalaxyMap = () => {
       next = Math.max(MIN_SCALE, Math.min(MAX_SCALE, next));
       scale.setValue(next);
       lastScaleRef.current = next;
-      pinchStartScaleRef.current = next;
     });
   };
 
@@ -220,58 +171,24 @@ const GalaxyMap = () => {
     handleZoomDelta(zoomDelta);
   };
 
-  // PanResponder to handle pinch + drag on touch devices
+  // PanResponder to handle drag only (no pinch)
   const panResponder = useRef(
     PanResponder.create({
-      onStartShouldSetPanResponder: (evt) => {
-        const touches = evt.nativeEvent?.touches || [];
-        return touches.length >= 1;
-      },
-      onMoveShouldSetPanResponder: (evt) => {
-        const touches = evt.nativeEvent?.touches || [];
-        return touches.length >= 1;
-      },
-
-      onPanResponderGrant: (evt) => {
-        const touches = evt.nativeEvent?.touches || [];
-        if (touches.length === 2) {
-          isPinchingRef.current = true;
-          initialPinchDistanceRef.current = getTouchDistance(touches);
-          pinchStartScaleRef.current = lastScaleRef.current;
-        } else {
-          isPinchingRef.current = false;
-        }
-      },
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
 
       onPanResponderMove: (evt, gestureState) => {
+        // Only care about single-finger drags for stability
         const touches = evt.nativeEvent?.touches || [];
+        if (touches.length !== 1) return;
 
-        // Pinch (two fingers) – native only; web falls back to scroll/zoom buttons
-        if (touches.length === 2 && Platform.OS !== 'web') {
-          const currentDistance = getTouchDistance(touches);
-          if (initialPinchDistanceRef.current && currentDistance > 0) {
-            let nextScale =
-              (currentDistance / initialPinchDistanceRef.current) *
-              pinchStartScaleRef.current;
-
-            nextScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, nextScale));
-            scale.setValue(nextScale);
-          }
-        } else if (touches.length === 1 && !isPinchingRef.current) {
-          // Drag (one finger)
-          const nextX = lastPanRef.current.x + gestureState.dx;
-          const nextY = lastPanRef.current.y + gestureState.dy;
-          translateX.setValue(nextX);
-          translateY.setValue(nextY);
-        }
+        const nextX = lastPanRef.current.x + gestureState.dx;
+        const nextY = lastPanRef.current.y + gestureState.dy;
+        translateX.setValue(nextX);
+        translateY.setValue(nextY);
       },
 
       onPanResponderRelease: () => {
-        // Persist current transform for next gesture
-        scale.stopAnimation((value) => {
-          lastScaleRef.current = value;
-          pinchStartScaleRef.current = value;
-        });
         translateX.stopAnimation((x) => {
           translateX.setValue(x);
           lastPanRef.current.x = x;
@@ -280,22 +197,24 @@ const GalaxyMap = () => {
           translateY.setValue(y);
           lastPanRef.current.y = y;
         });
-        initialPinchDistanceRef.current = null;
-        isPinchingRef.current = false;
       },
 
       onPanResponderTerminationRequest: () => false,
       onPanResponderTerminate: () => {
-        initialPinchDistanceRef.current = null;
-        isPinchingRef.current = false;
+        translateX.stopAnimation((x) => {
+          translateX.setValue(x);
+          lastPanRef.current.x = x;
+        });
+        translateY.stopAnimation((y) => {
+          translateY.setValue(y);
+          lastPanRef.current.y = y;
+        });
       },
     })
   ).current;
 
   // Derived sizes so glow stays centered & proportional
-  const glowSize = iconSize + 2; // can tweak if you want a bigger/smaller halo
-
-  // Make sure icon size value is always safe for display
+  const glowSize = iconSize + 2;
   const iconSizeDisplay = Number.isFinite(iconSize)
     ? iconSize.toFixed(1)
     : '—';
@@ -407,7 +326,6 @@ const GalaxyMap = () => {
               const toSys = getSystemByPlanetId(conn.to);
               if (!fromSys || !toSys) return null;
 
-              // Skip if either system is hidden in this universe view
               if (
                 !visibleSystemIds.has(fromSys.id) ||
                 !visibleSystemIds.has(toSys.id)
@@ -445,23 +363,8 @@ const GalaxyMap = () => {
 
             {/* SYSTEM ICONS */}
             {visibleSystems.map((sys) => {
-              const isWarpingThis = warpingTo === sys.planetId;
               const isCurrentSystem =
                 currentSystem && currentSystem.id === sys.id;
-
-              const scaleWarp = isWarpingThis
-                ? warpAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [1, 1.6],
-                  })
-                : 1;
-
-              const opacity = isWarpingThis
-                ? warpAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [1, 0],
-                  })
-                : 1;
 
               const centerX = coordToPixel(sys.x);
               const centerY = coordToPixel(sys.y);
@@ -480,12 +383,7 @@ const GalaxyMap = () => {
                   onPress={() => handleSystemPress(sys)}
                   activeOpacity={sys.planetId ? 0.9 : 1}
                 >
-                  <Animated.View
-                    style={[
-                      styles.planetWrapper,
-                      { transform: [{ scale: scaleWarp }], opacity },
-                    ]}
-                  >
+                  <View style={styles.planetWrapper}>
                     <View
                       style={[
                         styles.planetGlow,
@@ -512,7 +410,7 @@ const GalaxyMap = () => {
                         resizeMode="cover"
                       />
                     )}
-                  </Animated.View>
+                  </View>
                   <Text style={styles.starName}>{sys.name}</Text>
                 </TouchableOpacity>
               );
@@ -542,7 +440,7 @@ const GalaxyMap = () => {
       {/* HUD */}
       <View style={styles.hud}>
         <Text style={styles.hudText}>
-          Drag to pan, pinch or scroll to zoom. Tap a system to warp.
+          Drag to pan, scroll or use + / − to zoom. Tap a system to open it.
         </Text>
         {currentPlanetId && (
           <Text style={styles.hudSecondary}>
@@ -576,33 +474,6 @@ const GalaxyMap = () => {
           </TouchableOpacity>
         </View>
       </View>
-
-      {/* Warp overlay */}
-      {warpingTo && (
-        <Animated.View
-          pointerEvents="none"
-          style={[
-            styles.warpOverlay,
-            {
-              opacity: warpAnim.interpolate({
-                inputRange: [0, 1],
-                outputRange: [0, 1],
-              }),
-            },
-          ]}
-        >
-          {USE_WARP_GIF && Warp3Gif ? (
-            <Image
-              source={Warp3Gif}
-              style={styles.warpImage}
-              resizeMode="cover"
-            />
-          ) : (
-            // Web / IG: simple fade to black background (already black)
-            <View style={{ flex: 1 }} />
-          )}
-        </Animated.View>
-      )}
     </View>
   );
 };
@@ -816,24 +687,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     minWidth: 36,
     textAlign: 'center',
-  },
-
-  // WARP OVERLAY
-  warpOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 50,
-    backgroundColor: 'black',
-  },
-  warpImage: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
   },
 });
 
