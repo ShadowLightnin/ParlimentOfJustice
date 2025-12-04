@@ -10,7 +10,7 @@ export const SYSTEMS = [
   {
     id: 'sol',
     name: 'Sol',
-    planetId: 'earth',
+    planetId: 'Earth',
     image: require('../../assets/Space/Earth.jpg'),
     x: 0.49955,   // more precise
     y: 0.70485935 + deltaY,   // more precise
@@ -30,15 +30,37 @@ export const SYSTEMS = [
     universe: 'prime', // Prime-only
   },
   {
-    id: 'rogues',
-    name: 'Rogues',
+    id: 'wise',
+    name: 'Wise',
     planetId: 'wise',
     image: require('../../assets/Space/Wise.jpg'),
     x: 0.45,
     y: 0.72 + deltaY,
     quadrant: 'alpha',
     faction: 'justiceverse',
-    universe: 'prime', // Prime-only
+    universe: 'pinnacle', // Prime-only
+  },
+  {
+    id: 'steppenwolf',
+    name: 'Steppenwolf',
+    planetId: 'steppenwolf',
+    image: require('../../assets/Space/Steppenwolf.jpg'),
+    x: 0.55,
+    y: 0.62 + deltaY,
+    quadrant: 'alpha',
+    faction: 'justiceverse',
+    universe: 'pinnacle', // Shared (Prime + Pinnacle)
+  },
+  {
+    id: 'reject',
+    name: 'Reject',
+    planetId: 'reject',
+    image: require('../../assets/Space/Reject.jpg'),
+    x: 0.42,
+    y: 0.65 + deltaY,
+    quadrant: 'alpha',
+    faction: 'justiceverse',
+    universe: 'pinnacle', // Shared (Prime + Pinnacle)
   },
   {
     id: 'ignis',
@@ -267,6 +289,125 @@ export const SYSTEMS = [
     y: 0.33 + deltaY,
     quadrant: 'delta',
     faction: 'cybertronian',
+    universe: 'prime',
+  },
+
+  {
+    id: 'reach',
+    name: 'Reach (Epsilon Eridani II)',
+    planetId: null,
+    // image: HALO_ICON,
+    x: 0.53,          // clustered just “above/right” of Sol
+    y: 0.70 + deltaY,
+    quadrant: 'alpha',
+    faction: 'unsc',
+    universe: 'prime',
+  },
+  {
+    id: 'harvest',
+    name: 'Harvest',
+    planetId: null,
+    // image: HALO_ICON,
+    x: 0.56,
+    y: 0.74 + deltaY,
+    quadrant: 'alpha',
+    faction: 'unsc',
+    universe: 'prime',
+  },
+  {
+    id: 'onyx',
+    name: 'Onyx',
+    planetId: null,
+    // image: HALO_ICON,
+    x: 0.55,
+    y: 0.66 + deltaY,
+    quadrant: 'alpha',
+    faction: 'unsc',
+    universe: 'prime',
+  },
+
+  // ==========================
+  // ===== HALO – COVENANT / SANGHELIOS CLUSTER (FARTHER FROM SOL) =====
+  // ==========================
+  {
+    id: 'sanghelios',
+    name: 'Sanghelios',
+    planetId: null,
+    // image: HALO_ICON,
+    x: 0.30,
+    y: 0.33 + deltaY,
+    quadrant: 'gamma',     // opposite side of Sol to feel “far”
+    faction: 'covenant',
+    universe: 'prime',
+  },
+  {
+    id: 'high-charity',
+    name: 'High Charity',
+    planetId: null,
+    // image: HALO_ICON,
+    x: 0.35,
+    y: 0.26 + deltaY,
+    quadrant: 'gamma',
+    faction: 'covenant',
+    universe: 'prime',
+  },
+  {
+    id: 'requiem',
+    name: 'Requiem',
+    planetId: null,
+    // image: HALO_ICON,
+    x: 0.27,
+    y: 0.38 + deltaY,
+    quadrant: 'gamma',
+    faction: 'covenant',
+    universe: 'prime',
+  },
+
+  // ==========================
+  // ===== HALO – FORERUNNER INSTALLATIONS (HALO RINGS & ARK) =====
+  // ==========================
+  {
+    id: 'installation-04',
+    name: 'Installation 04 (Alpha Halo)',
+    planetId: null,
+    // image: HALO_ICON,
+    x: 0.76,
+    y: 0.14 + deltaY,
+    quadrant: 'delta',       // out near the rim
+    faction: 'forerunner',
+    universe: 'prime',
+  },
+  {
+    id: 'installation-05',
+    name: 'Installation 05 (Delta Halo)',
+    planetId: null,
+    // image: HALO_ICON,
+    x: 0.70,
+    y: 0.10 + deltaY,
+    quadrant: 'delta',
+    faction: 'forerunner',
+    universe: 'prime',
+  },
+  {
+    id: 'installation-07',
+    name: 'Installation 07 (Zeta Halo)',
+    planetId: null,
+    // image: HALO_ICON,
+    x: 0.88,
+    y: 0.12 + deltaY,
+    quadrant: 'delta',
+    faction: 'forerunner',
+    universe: 'prime',
+  },
+  {
+    id: 'ark',
+    name: 'The Ark (Installation 00)',
+    planetId: null,
+    // image: HALO_ICON,
+    x: 0.92,
+    y: 0.45 + deltaY,
+    quadrant: 'custom',      // technically extra-galactic
+    faction: 'forerunner',
     universe: 'prime',
   },
 ];

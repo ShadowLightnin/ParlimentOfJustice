@@ -93,7 +93,7 @@ const PlanetsHome = () => {
           );
           if (foundIndex !== -1) index = foundIndex;
         } else {
-          const defaultId = isPrime ? 'earth' : 'melcornia';
+          const defaultId = isPrime ? 'Earth' : 'melcornia';
           const defIndex = sorted.findIndex((p) => p.id === defaultId);
           if (defIndex !== -1) index = defIndex;
         }

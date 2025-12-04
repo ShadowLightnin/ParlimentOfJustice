@@ -40,7 +40,7 @@ export const PLANETS = [
       'A runaway-greenhouse hell wrapped in sulfuric clouds. Rumors say Erevos once considered terraforming Venus into a fortress world, but even he deemed it too unstable.',
   },
   {
-    id: 'earth',
+    id: 'Earth',
     name: 'Earth',
     universe: 'prime',
     systemId: 'sol',
@@ -257,6 +257,28 @@ export const PLANETS = [
     description:
       'A cold rogue object detected in deep survey data — a wandering body untethered from any star. Justiceverse rumor: Wise was thrown free of its system by an early encounter with the Maw.',
   },
+  {
+    id: 'steppenwolf',
+    name: 'Steppenwolf',
+    universe: 'prime',
+    systemId: 'rogues',
+    order: 21,
+    background: require('../../assets/Space/Steppenwolf.jpg'),
+    thumbnail: require('../../assets/Space/Steppenwolf.jpg'),
+    description:
+    'A Steppenwolf planet is a rogue, Earth-like world that has been: kicked out of its solar system cast into interstellar space left drifting in complete darkness. The name comes from the novel Steppenwolf — a lone wanderer. We likely had one according to models.',
+  },
+  {
+    id: 'reject',
+    name: 'Reject',
+    universe: 'prime',
+    systemId: 'rogues',
+    order: 22,
+    background: require('../../assets/Space/Reject.jpg'),
+    thumbnail: require('../../assets/Space/Reject.jpg'),
+    description:
+      'Mathematical models suggest the Solar System once had a super-Earth that didn’t survive formation.',
+  },
 
   // ===== IGNIS SYSTEM (PINNACLE) – black hole + star + others =====
   {
@@ -360,7 +382,7 @@ export const PLANETS = [
     background: require('../../assets/Space/RLVulcan.jpg'),
     thumbnail: require('../../assets/Space/RLVulcan.jpg'),
     description:
-    'Vulcan — the legendary imagined planet that 19th-century astronomers believed orbited inside Mercury’s orbit, closer to the Sun than anything else in the Solar System.',
+      'Vulcan — the legendary imagined planet that 19th-century astronomers believed orbited inside Mercury’s orbit, closer to the Sun than anything else in the Solar System.',
   },
   {
     id: 'Life Theia',
@@ -477,8 +499,12 @@ export const SYSTEMS = [
   { id: 'korrthuun',     name: 'Korrthuun System',    order: 8 },
 ];
 
+/**
+ * Planets sorted in their declaration order.
+ * You no longer need to maintain `order` on each planet for global ordering.
+ */
 export const sortPlanets = () => {
-  return [...PLANETS].sort((a, b) => (a.order || 0) - (b.order || 0));
+  return [...PLANETS];
 };
 
 /**
@@ -505,29 +531,30 @@ export const isVisibleInUniverse = (planetUniverse, viewUniverse) => {
 };
 
 /**
- * Get planets filtered by universe mode, sorted by order.
+ * Get planets filtered by universe mode, preserving PLANETS array order.
  */
 export const getPlanetsForUniverse = (viewUniverse) => {
-  return [...PLANETS]
-    .filter(p => isVisibleInUniverse(p.universe, viewUniverse))
-    .sort((a, b) => (a.order || 0) - (b.order || 0));
+  return PLANETS.filter((p) =>
+    isVisibleInUniverse(p.universe, viewUniverse)
+  );
 };
 
 /**
  * Get systems that have at least one visible world in this universe mode.
+ * Systems themselves still use their own `order` field for sorting.
  */
 export const getSystemsForUniverse = (viewUniverse) => {
   const visiblePlanets = getPlanetsForUniverse(viewUniverse);
-  const visibleSystemIds = new Set(visiblePlanets.map(p => p.systemId));
+  const visibleSystemIds = new Set(visiblePlanets.map((p) => p.systemId));
 
   return SYSTEMS
-    .filter(sys => visibleSystemIds.has(sys.id))
+    .filter((sys) => visibleSystemIds.has(sys.id))
     .sort((a, b) => (a.order || 0) - (b.order || 0));
 };
 
 
 /** IDs that should be treated as central bodies (stars / black hole, no orbit index) */
-const CENTRAL_BODY_IDS = ['Helios', 'ignis-black-hole', 'nemesis', 'older-brother', 'twin-sister'];
+const CENTRAL_BODY_IDS = ['Helios', 'noctheron', 'nemesis', 'older-brother', 'twin-sister'];
 
 /** IDs that are moons (orbit planets, not the system’s central mass) */
 const MOON_IDS = ['Luna', 'titan', 'triton'];
@@ -539,17 +566,23 @@ const isMoon = (body) => MOON_IDS.includes(body.id);
  * Compute "Orbit position" label per system.
  * - Central bodies (stars / black hole) return null.
  * - Moons are ignored when computing orbit index.
- * - For each system, non-central, non-moon bodies are sorted by `order` and numbered 1..N.
+ * - For each system, non-central, non-moon bodies follow the order of `allPlanets`
+ *   (which should be derived from PLANETS) and are numbered 1..N.
  */
 export const getOrbitPositionLabel = (planet, allPlanets) => {
   if (!planet) return null;
   if (isCentralBody(planet)) return null;
 
-  const sameSystemBodies = allPlanets
-    .filter(p => p.systemId === planet.systemId && !isCentralBody(p) && !isMoon(p))
-    .sort((a, b) => (a.order || 0) - (b.order || 0));
+  const source = allPlanets && allPlanets.length ? allPlanets : PLANETS;
 
-  const idx = sameSystemBodies.findIndex(p => p.id === planet.id);
+  const sameSystemBodies = source.filter(
+    (p) =>
+      p.systemId === planet.systemId &&
+      !isCentralBody(p) &&
+      !isMoon(p)
+  );
+
+  const idx = sameSystemBodies.findIndex((p) => p.id === planet.id);
   if (idx === -1) return null;
 
   return idx + 1;
