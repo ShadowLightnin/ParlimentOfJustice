@@ -34,7 +34,7 @@ const Warp3Gif = require('../../assets/Space/warp3.gif');
 
 // On web / IG in-app browser, big GIF + animation can be crashy.
 // So we only use the warp GIF on native by default.
-const USE_WARP_GIF = Platform.OS !== 'web';
+const USE_WARP_GIF = Platform;
 
 const ICON_SIZE_STORAGE_KEY = 'galaxy_icon_size';
 const MIN_ICON_SIZE = 1;
@@ -243,7 +243,7 @@ const GalaxyMap = () => {
         const touches = evt.nativeEvent?.touches || [];
 
         // Pinch (two fingers) – native only; web falls back to scroll/zoom buttons
-        if (touches.length === 2 && Platform.OS !== 'web') {
+        if (touches.length === 2 && Platform) {
           const currentDistance = getTouchDistance(touches);
           if (initialPinchDistanceRef.current && currentDistance > 0) {
             let nextScale =
