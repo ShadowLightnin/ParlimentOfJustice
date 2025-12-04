@@ -352,6 +352,50 @@ export const PLANETS = [
       'The star HD 186302 — an almost perfect solar twin about 184 light-years away. Astronomers consider it one of the Sun’s closest analogues; in-universe it is literally the Sun’s “twin sister,” with a system that feels eerily familiar.',
   },
   {
+    id: 'RLVulcan',
+    name: 'R L Vulcan',
+    universe: 'prime',
+    systemId: 'twin-sister',
+    order: 36,
+    background: require('../../assets/Space/RLVulcan.jpg'),
+    thumbnail: require('../../assets/Space/RLVulcan.jpg'),
+    description:
+    'Vulcan — the legendary imagined planet that 19th-century astronomers believed orbited inside Mercury’s orbit, closer to the Sun than anything else in the Solar System.',
+  },
+  {
+    id: 'Life Theia',
+    name: 'Life Theia',
+    universe: 'prime',
+    systemId: 'twin-sister',
+    order: 33,
+    background: require('../../assets/Space/LifeTheia.jpg'),
+    thumbnail: require('../../assets/Space/LifeTheia.jpg'),
+    description:
+      'A large, Earth-like exoplanet orbiting within the habitable zone of Twin Sister. Life Theia is a world teeming with alien biospheres, its blue-green oceans and verdant continents studied closely by Parliament xenologists.',
+  },
+  {
+    id: 'Zelus',
+    name: 'Zelus',
+    universe: 'prime',
+    systemId: 'twin-sister',
+    order: 34,
+    background: require('../../assets/Space/Zelus.jpg'),
+    thumbnail: require('../../assets/Space/Zelus.jpg'),
+    description:
+      'A massive super-Earth orbiting close to Twin Sister. Zelus has a crushing atmosphere and extreme volcanic activity, with skies perpetually roiled by ash clouds and lightning storms.',
+  },
+  {
+    id: 'Theia',
+    name: 'Theia',
+    universe: 'prime',
+    systemId: 'twin-sister',
+    order: 35,
+    background: require('../../assets/Space/Theia.jpg'),
+    thumbnail: require('../../assets/Space/Theia.jpg'),
+    description:
+      'Theia — the ancient Mars-sized protoplanet that struck early Earth 4.5 billion years ago, forming the Moon and reshaping our planet forever.',
+  },
+  {
     id: 'planet-v',
     name: 'Planet V',
     universe: 'prime',
@@ -363,6 +407,17 @@ export const PLANETS = [
       'An echo of the theorized lost “Planet V” of the early solar system, here realized as a fully intact world orbiting Twin Sister. Parliament xenologists study it to understand what Sol’s own missing planet might have been.',
   },
   {
+    id: 'Phaeton',
+    name: 'Phaeton',
+    universe: 'prime',
+    systemId: 'twin-sister',
+    order: 32,
+    background: require('../../assets/Space/Phaeton.jpg'),
+    thumbnail: require('../../assets/Space/Phaeton.jpg'),
+    description:
+      'Phaeton — the legendary lost planet that ancient astronomers believed once existed between Mars and Jupiter before being shattered into the asteroid belt.',
+  },
+  {
     id: 'ice-giant',
     name: 'Ice Giant',
     universe: 'prime',
@@ -372,6 +427,17 @@ export const PLANETS = [
     thumbnail: require('../../assets/Space/IceGiant.jpg'),
     description:
       'A distant ice giant in the Twin Sister system that mirrors our own Uranus/Neptune analogues. Its storm bands carry radio whispers that sound uncannily like human voices.',
+  },
+  {
+    id: 'Tyche',
+    name: 'Tyche',
+    universe: 'prime',
+    systemId: 'twin-sister',
+    order: 37,
+    background: require('../../assets/Space/Tyche.jpg'),
+    thumbnail: require('../../assets/Space/Tyche.jpg'),
+    description:
+      'Tyche — the hypothetical giant world once proposed to exist deep in the Oort Cloud.',
   },
 
   // ===== KORRTHUUN SYSTEM (TORATH'S DOMAIN) =====
