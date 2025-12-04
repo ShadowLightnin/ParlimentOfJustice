@@ -30,11 +30,11 @@ const MAP_BASE_SIZE = Math.min(SCREEN_WIDTH, SCREEN_HEIGHT * 0.8);
 const GALAXY_MAP = require('../../assets/Space/The_best_Milky_Way_map_by_Gaia_labelled.jpg');
 
 // Warp overlay gif (used mainly on native)
-const Warp3Gif = require('../../assets/Space/warp3.gif');
+// const Warp3Gif = require('../../assets/Space/warp3.gif');
 
 // On web / IG in-app browser, big GIF + animation can be crashy.
 // So we only use the warp GIF on native by default.
-const USE_WARP_GIF = Platform;
+const USE_WARP_GIF = Platform.OS !== 'web';
 
 const ICON_SIZE_STORAGE_KEY = 'galaxy_icon_size';
 const MIN_ICON_SIZE = 2;
@@ -243,7 +243,7 @@ const handleIconSizeDecrement = () => {
         const touches = evt.nativeEvent?.touches || [];
 
         // Pinch (two fingers) – native only; web falls back to scroll/zoom buttons
-        if (touches.length === 2 && Platform) {
+        if (touches.length === 2 && Platform.OS !== 'web') {
           const currentDistance = getTouchDistance(touches);
           if (initialPinchDistanceRef.current) {
             let nextScale =
