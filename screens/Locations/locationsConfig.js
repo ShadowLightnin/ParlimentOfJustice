@@ -32,8 +32,8 @@ const LOCATIONS = [
     pins: [
       {
         id: 'earth_utah_pin',
-        label: 'Utah Region',
-        position: { top: '58%', left: '18%' },
+        label: 'Utah',
+        position: { top: '42%', left: '26%' },
         targetLocationId: 'earth_utah_region',
       },
     ],
@@ -52,8 +52,8 @@ const LOCATIONS = [
     pins: [
       {
         id: 'earth_philippines_pin_orbit',
-        label: 'Philippines Region',
-        position: { top: '62%', left: '72%' },
+        label: 'Philippines',
+        position: { top: '48%', left: '41%' },
         targetLocationId: 'earth_philippines_region',
       },
     ],
@@ -70,14 +70,14 @@ const LOCATIONS = [
       {
         id: 'zion_city_pin',
         label: 'Zion City',
-        position: { top: '48%', left: '36%' },
+        position: { top: '44%', left: '35%' },
         // 👉 goes straight to ZionCity screen, NOT another map
         targetScreen: 'ZionCity',
       },
       {
         id: 'aegis_compound_pin',
         label: 'The Aegis',
-        position: { top: '60%', left: '40%' },
+        position: { top: '41%', left: '29%' },
         targetScreen: 'AegisCompound',
       },
     ],
@@ -92,8 +92,8 @@ const LOCATIONS = [
     pins: [
       {
         id: 'ophir_pin',
-        label: 'Ophir City',
-        position: { top: '58%', left: '65%' },
+        label: 'Ophir',
+        position: { top: '31%', left: '22%' },
         targetScreen: 'OphirCity',
       },
     ],
@@ -171,14 +171,14 @@ const LOCATIONS = [
       {
         id: 'maw_rift_pin',
         label: 'The Maw Rift',
-        position: { top: '48%', left: '28%' },
+        position: { top: '50%', left: '56%' }, // tweak this as you like
         // Example future detail:
         // targetScreen: 'MelcorniaMawRift',
       },
       {
         id: 'manor_pin',
-        label: 'The Manor',
-        position: { top: '55%', left: '40%' }, // tweak this as you like
+        label: 'Montrose Manor',
+        position: { top: '48%', left: '34%' }, // tweak this as you like
         // 👉 goes straight to Manor screen, like Zion/Aegis/Ophir
         targetScreen: 'Manor',
       },
