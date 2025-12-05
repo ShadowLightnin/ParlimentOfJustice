@@ -49,7 +49,7 @@ export const SYSTEMS = [
     y: 0.62 + deltaY,
     quadrant: 'alpha',
     faction: 'justiceverse',
-    universe: 'pinnacle', // Shared (Prime + Pinnacle)
+    universe: 'prime', // Shared (Prime + Pinnacle)
   },
   {
     id: 'reject',
@@ -60,7 +60,7 @@ export const SYSTEMS = [
     y: 0.65 + deltaY,
     quadrant: 'alpha',
     faction: 'justiceverse',
-    universe: 'pinnacle', // Shared (Prime + Pinnacle)
+    universe: 'prime', // Shared (Prime + Pinnacle)
   },
   {
     id: 'ignis',

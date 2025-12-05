@@ -39,33 +39,38 @@ export const PLANETS = [
     description:
       'A runaway-greenhouse hell wrapped in sulfuric clouds. Rumors say Erevos once considered terraforming Venus into a fortress world, but even he deemed it too unstable.',
   },
-  {
-    id: 'Earth',
-    name: 'Earth',
-    universe: 'prime',
-    systemId: 'sol',
-    order: 4,
-    background: require('../../assets/Space/Earth.jpg'),
-    thumbnail: require('../../assets/Space/Earth.jpg'),
-    hotspots: [
-      {
-        id: 'zion',
-        name: 'Zion City',
-        description: 'The Parliament’s heart in Utah, a rising modern megacity.',
-        image: require('../../assets/ParliamentTower.jpg'),
-        position: { top: '55%', left: '18%' },
-      },
-      {
-        id: 'aegis',
-        name: 'The Aegis Compound',
-        description: 'Desert fortress HQ for the Parliament’s true operations.',
-        image: require('../../assets/BackGround/ShipYard.jpg'),
-        position: { top: '35%', left: '70%' },
-      },
-    ],
-    description:
-      'Homeworld of humanity and The Parliament of Justice. Earth is a blue-green jewel of life, culture, and technology, and creativity.',
-  },
+{
+  id: 'earth',
+  name: 'Earth',
+  universe: 'prime',
+  systemId: 'sol',
+  order: 4,
+  background: require('../../assets/Space/Earth.jpg'),
+  thumbnail: require('../../assets/Space/Earth.jpg'),
+
+  // 👇 NEW: locations metadata
+  hasLocations: true,
+  defaultLocationId: 'earth_orbit_na', // this will be defined in locationsConfig
+
+  hotspots: [
+    {
+      id: 'zion',
+      name: 'Zion City',
+      description: 'The Parliament’s heart in Utah, a rising modern megacity.',
+      image: require('../../assets/ParliamentTower.jpg'),
+      position: { top: '55%', left: '18%' },
+    },
+    {
+      id: 'aegis',
+      name: 'The Aegis Compound',
+      description: 'Desert fortress HQ for the Parliament’s true operations.',
+      image: require('../../assets/BackGround/ShipYard.jpg'),
+      position: { top: '35%', left: '70%' },
+    },
+  ],
+  description:
+    'Homeworld of the Parliament of Justice and the site of The Incident. Modern Earth looks ordinary from orbit, but Zion City and the Aegis Compound have turned it into the nexus of a coming cosmic war.',
+},
   {
     id: 'Luna',
     name: 'Luna',
@@ -74,6 +79,8 @@ export const PLANETS = [
     order: 5,
     background: require('../../assets/Space/Luna.jpg'),
     thumbnail: require('../../assets/Space/Luna.jpg'),
+    hasLocations: true,
+    defaultLocationId: 'luna_orbit', // or whatever ID you define
     description:
       'Earth’s ancient moon, scarred by impacts and human footprints. Parliament listening posts and early-warning arrays are buried deep under its maria.',
   },
@@ -85,6 +92,8 @@ export const PLANETS = [
     order: 6,
     background: require('../../assets/Space/Mars.jpg'),
     thumbnail: require('../../assets/Space/Mars.jpg'),
+    hasLocations: true,
+    defaultLocationId: 'mars_orbit', // or whatever ID you define
     description:
       'The red desert world. In the Justiceverse, Mars is the site of abandoned pre-Incident research stations and the first failed attempt at an off-world Parliament outpost.',
   },
@@ -96,6 +105,8 @@ export const PLANETS = [
     order: 7,
     background: require('../../assets/Space/Jupiter.jpg'),
     thumbnail: require('../../assets/Space/Jupiter.jpg'),
+        hasLocations: true,
+    defaultLocationId: 'jupiter_orbit', // or whatever ID you define
     description:
       'A titanic gas giant and the system’s gravitational shield. Jupiter’s magnetosphere hides classified deep-space docks used by Parliament capital ships.',
   },
@@ -322,6 +333,8 @@ export const PLANETS = [
     order: 25,
     background: require('../../assets/Space/Melcornia.jpg'),
     thumbnail: require('../../assets/Space/Melcornia.jpg'),
+        hasLocations: true,
+    defaultLocationId: 'melcornia_orbit',
     hotspots: [
       {
         id: 'maw-rift',
@@ -344,6 +357,8 @@ export const PLANETS = [
     order: 26,
     background: require('../../assets/Space/Zaxxon.jpg'),
     thumbnail: require('../../assets/Space/Zaxxon.jpg'),
+        hasLocations: true,
+    defaultLocationId: 'zaxxon_orbit',
     description:
       'A fortress-world wrapped in defensive rings and shipyards. Zaxxon is a militarized hub contested by Parliament fleets, Thunder Born raiders, and Maw-touched warlords.',
   },

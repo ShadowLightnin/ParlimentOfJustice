@@ -16,7 +16,6 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
-  EARTH_SIDE_IMAGES,
   SYSTEMS,
   sortPlanets,
   getOrbitPositionLabel,
@@ -42,7 +41,6 @@ const PlanetsHome = () => {
 
   const [planets, setPlanets] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [earthSide, setEarthSide] = useState('Earth');
   const [infoOpen, setInfoOpen] = useState(false);
 
   const [warpVisible, setWarpVisible] = useState(false);
@@ -94,7 +92,7 @@ const PlanetsHome = () => {
           );
           if (foundIndex !== -1) index = foundIndex;
         } else {
-          const defaultId = isPrime ? 'Earth' : 'melcornia';
+          const defaultId = isPrime ? 'earth' : 'melcornia';
           const defIndex = sorted.findIndex((p) => p.id === defaultId);
           if (defIndex !== -1) index = defIndex;
         }
@@ -132,7 +130,11 @@ const PlanetsHome = () => {
     );
   }
 
-  // UNIVERSE LABEL (THIS WAS FIXED)
+  // ✅ Use your new fields: hasLocations + defaultLocationId
+  const hasLocation =
+    !!currentPlanet.hasLocations && !!currentPlanet.defaultLocationId;
+
+  // UNIVERSE LABEL
   const currentUniverseLabel =
     selectedUniverse === 'pinnacle'
       ? 'Pinnacle Universe'
@@ -193,94 +195,93 @@ const PlanetsHome = () => {
     });
   };
 
-// PLANET NAVIGATION
-const handleArrowPress = (direction) => {
-  if (!planets.length || !currentSystem) return;
+  // PLANET NAVIGATION
+  const handleArrowPress = (direction) => {
+    if (!planets.length || !currentSystem) return;
 
-  const currentSysId = currentSystem.id;
+    const currentSysId = currentSystem.id;
 
-  const planetsInCurrentSystem = planets
-    .map((p, idx) => ({ p, idx }))
-    .filter((item) => item.p.systemId === currentSysId);
+    const planetsInCurrentSystem = planets
+      .map((p, idx) => ({ p, idx }))
+      .filter((item) => item.p.systemId === currentSysId);
 
-  const firstInSystem = planetsInCurrentSystem[0]?.idx ?? 0;
-  const lastInSystem =
-    planetsInCurrentSystem[planetsInCurrentSystem.length - 1]?.idx ??
-    planets.length - 1;
+    const firstInSystem = planetsInCurrentSystem[0]?.idx ?? 0;
+    const lastInSystem =
+      planetsInCurrentSystem[planetsInCurrentSystem.length - 1]?.idx ??
+      planets.length - 1;
 
-  const lastIndex = planets.length - 1;
+    const lastIndex = planets.length - 1;
 
-  // for wrap-around detection
-  const isFirstSystem =
-    sortedSystems.length > 0 &&
-    currentSystem.id === sortedSystems[0].id;
+    // for wrap-around detection
+    const isFirstSystem =
+      sortedSystems.length > 0 &&
+      currentSystem.id === sortedSystems[0].id;
 
-  const isLastSystem =
-    sortedSystems.length > 0 &&
-    currentSystem.id === sortedSystems[sortedSystems.length - 1].id;
+    const isLastSystem =
+      sortedSystems.length > 0 &&
+      currentSystem.id === sortedSystems[sortedSystems.length - 1].id;
 
-  if (direction === 'right') {
-    // 1) leaving current system → next system (already had warp)
-    if (currentIndex === lastInSystem && nextSystem) {
-      const targetInNextSystem = planets
-        .map((p, idx) => ({ p, idx }))
-        .find((item) => item.p.systemId === nextSystem.id);
+    if (direction === 'right') {
+      // 1) leaving current system → next system
+      if (currentIndex === lastInSystem && nextSystem) {
+        const targetInNextSystem = planets
+          .map((p, idx) => ({ p, idx }))
+          .find((item) => item.p.systemId === nextSystem.id);
 
-      if (targetInNextSystem) {
+        if (targetInNextSystem) {
+          triggerWarp('system');
+          setTimeout(() => {
+            animatePlanetChange(targetInNextSystem.idx, 1);
+          }, 300);
+          return;
+        }
+      }
+
+      // 2) last planet of last system → wrap to first planet of first system
+      if (currentIndex === lastInSystem && isLastSystem) {
         triggerWarp('system');
         setTimeout(() => {
-          animatePlanetChange(targetInNextSystem.idx, 1);
+          animatePlanetChange(0, 1);
         }, 300);
         return;
       }
-    }
 
-    // 2) last planet of last system → wrap to first planet of first system
-    if (currentIndex === lastInSystem && isLastSystem) {
-      triggerWarp('system');
-      setTimeout(() => {
-        animatePlanetChange(0, 1);
-      }, 300);
-      return;
-    }
+      // 3) normal planet step / generic wrap
+      const newIndex = currentIndex === lastIndex ? 0 : currentIndex + 1;
+      animatePlanetChange(newIndex, 1);
+    } else if (direction === 'left') {
+      // 1) leaving current system → previous system
+      if (currentIndex === firstInSystem && prevSystem) {
+        const planetsInPrevSystem = planets
+          .map((p, idx) => ({ p, idx }))
+          .filter((item) => item.p.systemId === prevSystem.id);
 
-    // 3) normal planet step / generic wrap
-    const newIndex = currentIndex === lastIndex ? 0 : currentIndex + 1;
-    animatePlanetChange(newIndex, 1);
-  } else if (direction === 'left') {
-    // 1) leaving current system → previous system (already had warp)
-    if (currentIndex === firstInSystem && prevSystem) {
-      const planetsInPrevSystem = planets
-        .map((p, idx) => ({ p, idx }))
-        .filter((item) => item.p.systemId === prevSystem.id);
+        if (planetsInPrevSystem.length) {
+          const targetIdx =
+            planetsInPrevSystem[planetsInPrevSystem.length - 1].idx;
 
-      if (planetsInPrevSystem.length) {
-        const targetIdx =
-          planetsInPrevSystem[planetsInPrevSystem.length - 1].idx;
+          triggerWarp('system');
+          setTimeout(() => {
+            animatePlanetChange(targetIdx, -1);
+          }, 300);
+          return;
+        }
+      }
 
+      // 2) first planet of first system → wrap to last planet of last system
+      if (currentIndex === firstInSystem && isFirstSystem) {
         triggerWarp('system');
         setTimeout(() => {
-          animatePlanetChange(targetIdx, -1);
+          animatePlanetChange(lastIndex, -1);
         }, 300);
         return;
       }
+
+      // 3) normal planet step / generic wrap
+      const newIndex = currentIndex === 0 ? lastIndex : currentIndex - 1;
+      animatePlanetChange(newIndex, -1);
     }
-
-    // 2) first planet of first system → wrap to last planet of last system
-    if (currentIndex === firstInSystem && isFirstSystem) {
-      triggerWarp('system');
-      setTimeout(() => {
-        animatePlanetChange(lastIndex, -1);
-      }, 300);
-      return;
-    }
-
-    // 3) normal planet step / generic wrap
-    const newIndex = currentIndex === 0 ? lastIndex : currentIndex - 1;
-    animatePlanetChange(newIndex, -1);
-  }
-};
-
+  };
 
   const canGoLeft = planets.length > 1;
   const canGoRight = planets.length > 1;
@@ -321,16 +322,20 @@ const handleArrowPress = (direction) => {
     }, 1000);
   };
 
-  // Earth sides
-  let planetDiskImage = currentPlanet.thumbnail;
-  if (currentPlanet.id === 'Earth') {
-    if (earthSide === 'Earth') {
-      planetDiskImage = currentPlanet.thumbnail;
-    } else {
-      const sideKey = earthSide === 'ph' ? 'ph' : 'na';
-      planetDiskImage = EARTH_SIDE_IMAGES[sideKey] || currentPlanet.thumbnail;
-    }
-  }
+  // ✅ Open Locations map using defaultLocationId
+  const openLocationMap = () => {
+    if (!currentPlanet?.hasLocations || !currentPlanet.defaultLocationId) return;
+
+    navigation.navigate('LocationsScreen', {
+      screen: 'LocationMap',
+      params: {
+        locationId: currentPlanet.defaultLocationId,
+      },
+    });
+  };
+
+  // Planet disk image (no more Earth-side swap here)
+  const planetDiskImage = currentPlanet.thumbnail;
 
   const slideTranslate = planetAnim.interpolate({
     inputRange: [0, 0.5, 1],
@@ -367,7 +372,7 @@ const handleArrowPress = (direction) => {
     currentPlanet.description ||
     'No lore entry yet. This celestial body awaits its official codex entry.';
 
-  // 🔹 Shared content for both desktop & mobile
+  // Shared content for both desktop & mobile
   const renderContent = () => (
     <View style={styles.overlay}>
       {/* HEADER */}
@@ -416,7 +421,7 @@ const handleArrowPress = (direction) => {
         </Animated.View>
       </View>
 
-      {/* BOTTOM HUD (the “console”) */}
+      {/* BOTTOM HUD */}
       <View style={styles.bottomHud}>
         <View style={styles.planetNavRow}>
           <TouchableOpacity
@@ -458,6 +463,21 @@ const handleArrowPress = (direction) => {
           </TouchableOpacity>
         </View>
 
+        {/* Locations button (only if planet has locations configured) */}
+        {hasLocation && (
+          <View style={styles.locationRow}>
+            <TouchableOpacity
+              style={styles.locationButton}
+              onPress={openLocationMap}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.locationButtonText}>
+                View Locations
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
         <View style={styles.bottomInfoRow}>
           <Text style={styles.bottomSystem}>{currentSystemName}</Text>
 
@@ -483,44 +503,6 @@ const handleArrowPress = (direction) => {
             {currentIndex + 1} / {planets.length} celestial bodies
           </Text>
         </View>
-
-        {currentPlanet.id === 'Earth' && (
-          <View style={styles.earthToggleRow}>
-            <TouchableOpacity
-              style={[
-                styles.earthToggleButton,
-                earthSide === 'na' && styles.earthToggleButtonActive,
-              ]}
-              onPress={() => setEarthSide('na')}
-            >
-              <Text
-                style={[
-                  styles.earthToggleText,
-                  earthSide === 'na' && styles.earthToggleTextActive,
-                ]}
-              >
-                Utah side
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[
-                styles.earthToggleButton,
-                earthSide === 'ph' && styles.earthToggleButtonActive,
-              ]}
-              onPress={() => setEarthSide('ph')}
-            >
-              <Text
-                style={[
-                  styles.earthToggleText,
-                  earthSide === 'ph' && styles.earthToggleTextActive,
-                ]}
-              >
-                Philippines side
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
 
         <View style={styles.bottomDivider} />
 
@@ -621,7 +603,7 @@ const handleArrowPress = (direction) => {
     </View>
   );
 
-  // 🔚 FINAL RETURN
+  // FINAL RETURN
   return (
     <View style={styles.root}>
       {isDesktop ? (
@@ -645,7 +627,7 @@ const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: 'black' },
   bg: { flex: 1, backgroundColor: 'black' },
   overlay: { flex: 1 },
-  
+
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -784,34 +766,6 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
 
-  earthToggleRow: {
-    flexDirection: 'row',
-    alignSelf: 'center',
-    marginTop: 6,
-    gap: 6,
-  },
-  earthToggleButton: {
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-    borderRadius: 999,
-    borderWidth: 1,
-    borderColor: 'rgba(130, 205, 255, 0.6)',
-    backgroundColor: 'rgba(5, 20, 40, 0.8)',
-  },
-  earthToggleButtonActive: {
-    backgroundColor: 'rgba(40, 130, 255, 0.95)',
-    borderColor: 'rgba(200, 240, 255, 0.9)',
-  },
-  earthToggleText: {
-    fontSize: 11,
-    color: 'rgba(190, 225, 255, 0.9)',
-    fontWeight: '500',
-  },
-  earthToggleTextActive: {
-    color: '#EFFFFF',
-    fontWeight: 'bold',
-  },
-
   planetNavRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -835,6 +789,26 @@ const styles = StyleSheet.create({
   },
   planetNavTextDisabled: {
     color: 'rgba(210, 225, 245, 0.7)',
+  },
+
+  // Locations button row
+  locationRow: {
+    marginTop: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  locationButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 20,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(150, 230, 255, 0.9)',
+    backgroundColor: 'rgba(10, 40, 70, 0.98)',
+  },
+  locationButtonText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#EFFFFF',
   },
 
   infoOverlay: {

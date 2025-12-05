@@ -83,7 +83,7 @@ const worldBuildingFactions = [
   // Row 3 → 1 card
   { 
     name: 'Zion Metropolitan', 
-    screen: '', 
+    screen: 'LocationsScreen', 
     clickable: true, 
     image: require('../assets/ParliamentTower.jpg') 
   },
@@ -122,7 +122,7 @@ const getPinnacleWorldBuildingFactions = () => [
   // Row 2 → 1 card
   { 
     name: 'Zion Metropolitan', 
-    screen: '', 
+    screen: 'LocationsScreen', 
     clickable: true, 
     image: require('../assets/ParliamentTower.jpg') 
   },
