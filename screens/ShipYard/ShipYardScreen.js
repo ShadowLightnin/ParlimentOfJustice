@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   ImageBackground,
   Modal,
   Alert,
+  Animated,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { db, auth, storage } from '../../lib/firebase';
@@ -56,7 +57,7 @@ const RESTRICT_ACCESS = true; // Enforce authentication and email check
 
 // Simple helper for card border styles
 const getBorderStyle = (borderColor) => ({
-  borderColor: borderColor || 'yellow',
+  borderColor: borderColor || 'rgba(250, 204, 21, 0.9)', // soft yellow
   borderWidth: 2,
 });
 
@@ -69,6 +70,29 @@ const ShipYardScreen = () => {
   const canMod = RESTRICT_ACCESS
     ? auth.currentUser && ALLOWED_EMAILS.includes(auth.currentUser.email)
     : true;
+
+  // 🔽 Info panel state + animation (like Titans)
+  const [infoOpen, setInfoOpen] = useState(false);
+  const infoAnim = useRef(new Animated.Value(0)).current;
+
+  const toggleInfo = () => {
+    if (infoOpen) {
+      Animated.timing(infoAnim, {
+        toValue: 0,
+        duration: 220,
+        useNativeDriver: true,
+      }).start(() => {
+        setInfoOpen(false);
+      });
+    } else {
+      setInfoOpen(true);
+      Animated.timing(infoAnim, {
+        toValue: 1,
+        duration: 220,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
 
   // Fetch dynamic ships from Firestore
   useEffect(() => {
@@ -259,21 +283,95 @@ const ShipYardScreen = () => {
     <ImageBackground
       source={require('../../assets/BackGround/ShipYard.jpg')}
       style={styles.bg}
+      resizeMode="cover"
     >
       <View style={styles.screenOverlay}>
-        <TouchableOpacity
-          onPress={() => {
-            console.log('Navigating back');
-            navigation.goBack();
-          }}
-          style={styles.back}
+        {/* 🔵 Glassy header like Titans */}
+        <View style={styles.headerWrapper}>
+          <TouchableOpacity
+            onPress={() => {
+              console.log('Navigating back');
+              navigation.goBack();
+            }}
+            style={styles.back}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.backText}>⬅️ Back</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.headerTitle}
+            onPress={toggleInfo}
+            activeOpacity={0.9}
+          >
+            <View style={styles.headerGlass}>
+              <Text style={styles.header}>Ship Yard</Text>
+              <Text style={styles.headerSub}>
+                Prime Parliament starships & fleets
+              </Text>
+              <Text style={styles.infoHint}>Tap for hangar lore ⬇</Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Right side spacer (future button spot) */}
+          <View style={{ width: 40 }} />
+        </View>
+
+        {/* 🔽 Info dropdown panel */}
+        <Animated.View
+          pointerEvents={infoOpen ? 'auto' : 'none'}
+          style={[
+            styles.infoPanelContainer,
+            {
+              opacity: infoAnim,
+              transform: [
+                {
+                  translateY: infoAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [-20, 0],
+                  }),
+                },
+              ],
+            },
+          ]}
         >
-          <Text style={styles.backText}>⬅️</Text>
-        </TouchableOpacity>
+          {infoOpen && (
+            <View style={styles.infoPanel}>
+              <View style={styles.infoHeaderRow}>
+                <Text style={styles.infoTitle}>Ship Yard</Text>
+                <TouchableOpacity
+                  onPress={toggleInfo}
+                  hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                >
+                  <Text style={styles.infoClose}>✕</Text>
+                </TouchableOpacity>
+              </View>
 
+              <Text style={styles.infoText}>
+                The Ship Yard is the central dock for Parliament capital ships,
+                flagships, and personal vessels — from the USS Coalescence to
+                experimental star-warp prototypes.
+              </Text>
+
+              <Text style={styles.infoLabel}>What it represents</Text>
+              <Text style={styles.infoText}>
+                Exploration, defense, and legacy. Every hull here carries a
+                story — family names, fallen missions, and the future of Zion&apos;s
+                reach into the stars.
+              </Text>
+
+              <Text style={styles.infoLabel}>Primary uses in the lore</Text>
+              <Text style={styles.infoText}>
+                • Deployment point for Parliament fleets{'\n'}
+                • Safe harbor between cosmic campaigns{'\n'}
+                • Museum bay for legendary starships and relic craft
+              </Text>
+            </View>
+          )}
+        </Animated.View>
+
+        {/* Main content */}
         <ScrollView contentContainerStyle={styles.scroll}>
-          <Text style={styles.header}>Ship Yard</Text>
-
           <View style={styles.scrollWrapper}>
             <ScrollView
               horizontal
@@ -394,46 +492,119 @@ const styles = StyleSheet.create({
     flex: 1,
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
-    resizeMode: 'cover',
   },
 
   // Full-screen dark glass overlay
   screenOverlay: {
     flex: 1,
     backgroundColor: 'rgba(3, 7, 18, 0.78)', // deep navy glass
-    paddingTop: 50,
+    paddingTop: 12,
+  },
+
+  // HEADER (matching Titans style)
+  headerWrapper: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingTop: 8,
+    marginBottom: 10,
+    justifyContent: 'space-between',
+  },
+  back: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: 'rgba(0, 40, 80, 0.85)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 200, 255, 0.6)',
+  },
+  backText: {
+    color: '#E5F2FF',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  headerTitle: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  headerGlass: {
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.35)',
+    borderWidth: 1,
+    borderColor: 'rgba(0, 200, 255, 0.4)',
+  },
+  header: {
+    fontSize: SCREEN_WIDTH > 600 ? 30 : 24,
+    fontWeight: '900',
+    color: '#F9FAFB',
+    textAlign: 'center',
+    textShadowColor: '#FACC15',
+    textShadowRadius: 18,
+    letterSpacing: 1,
+  },
+  headerSub: {
+    marginTop: 2,
+    fontSize: SCREEN_WIDTH > 600 ? 12 : 10,
+    color: 'rgba(190, 240, 255, 0.9)',
+    textAlign: 'center',
+    letterSpacing: 0.4,
+  },
+  infoHint: {
+    marginTop: 2,
+    fontSize: 10,
+    color: 'rgba(190, 240, 255, 0.9)',
+    textAlign: 'center',
+  },
+
+  // Info dropdown panel
+  infoPanelContainer: {
+    position: 'absolute',
+    top: 70,
+    left: 12,
+    right: 12,
+    zIndex: 20,
+  },
+  infoPanel: {
+    backgroundColor: 'rgba(1, 15, 30, 0.96)',
+    borderRadius: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 200, 255, 0.85)',
+  },
+  infoHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  infoTitle: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#EFFFFF',
+  },
+  infoClose: {
+    fontSize: 16,
+    color: '#A8E4FF',
+  },
+  infoLabel: {
+    marginTop: 6,
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#7CEBFF',
+  },
+  infoText: {
+    fontSize: 12,
+    color: '#CFEFFF',
+    marginTop: 2,
+    lineHeight: 16,
   },
 
   scroll: {
     paddingBottom: 20,
-  },
-
-  back: {
-    position: 'absolute',
-    top: 10,
-    left: 10,
-    backgroundColor: 'rgba(15, 23, 42, 0.9)',
-    padding: 10,
-    borderRadius: 999,
-    zIndex: 10,
-    borderWidth: 1,
-    borderColor: 'rgba(148, 163, 184, 0.7)',
-  },
-  backText: {
-    color: '#E5F2FF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-
-  header: {
-    fontSize: 30,
-    fontWeight: '900',
-    color: '#F9FAFB',
-    textAlign: 'center',
-    marginVertical: 20,
-    textShadowColor: '#FACC15',
-    textShadowRadius: 20,
-    letterSpacing: 1,
   },
 
   scrollWrapper: {

@@ -13,8 +13,9 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { getLocationById } from './locationsConfig';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-// Give the map a max height so it fits between header + footer
-const MAP_MAX_HEIGHT = SCREEN_HEIGHT - 180;
+
+// 🔒 Same idea as Galaxy Map: fixed base size canvas
+const MAP_BASE_SIZE = Math.min(SCREEN_WIDTH - 24, SCREEN_HEIGHT * 0.8);
 
 const LocationMapScreen = () => {
   const navigation = useNavigation();
@@ -50,17 +51,17 @@ const LocationMapScreen = () => {
     });
   };
 
-const handleViewPlanet = () => {
-  if (!location.planetId) return;
+  const handleViewPlanet = () => {
+    if (!location.planetId) return;
 
-  navigation.navigate('PlanetsScreen', {
-    screen: 'PlanetsScreen',
-    params: {
-      initialPlanetId: location.planetId,
-    },
-  });
-};
-
+    // ✅ uses the same nested navigation pattern you had working
+    navigation.navigate('PlanetsScreen', {
+      screen: 'PlanetsScreen',
+      params: {
+        initialPlanetId: location.planetId,
+      },
+    });
+  };
 
   const handlePinPress = (pin) => {
     if (pin.targetLocationId) {
@@ -101,7 +102,7 @@ const handleViewPlanet = () => {
               : 'Location map'}
           </Text>
 
-          {/* 🔹 NEW: “View more locations on other worlds” button */}
+          {/* “View more locations on other worlds” button */}
           {location.planetId && (
             <TouchableOpacity
               style={styles.planetLinkButton}
@@ -134,31 +135,37 @@ const handleViewPlanet = () => {
       {/* MAP */}
       <View style={styles.mapContainer}>
         <View style={styles.mapInner}>
-          {/* Background image – show ENTIRE image */}
-          <Image
-            source={location.background}
-            style={styles.mapImage}
-          />
+          {/* Background image – fixed canvas, like Galaxy Map */}
+          <Image source={location.background} style={styles.mapImage} />
 
           {/* Pins */}
-          {location.pins?.map((pin) => (
-            <TouchableOpacity
-              key={pin.id}
-              style={[
-                styles.pinWrapper,
-                {
-                  top: pin.position.top,
-                  left: pin.position.left,
-                },
-              ]}
-              onPress={() => handlePinPress(pin)}
-              activeOpacity={0.9}
-            >
-              <View style={styles.pinOuterGlow} />
-              <View style={styles.pinInnerDot} />
-              <Text style={styles.pinLabel}>{pin.label}</Text>
-            </TouchableOpacity>
-          ))}
+          {location.pins?.map((pin) => {
+            const x = pin.position?.x ?? 0;
+            const y = pin.position?.y ?? 0;
+
+            // 🔢 Same math as Galaxy Map: normalized coords * MAP_BASE_SIZE
+            const top = MAP_BASE_SIZE * y;
+            const left = MAP_BASE_SIZE * x;
+
+            return (
+              <TouchableOpacity
+                key={pin.id}
+                style={[
+                  styles.pinWrapper,
+                  {
+                    top,
+                    left,
+                  },
+                ]}
+                onPress={() => handlePinPress(pin)}
+                activeOpacity={0.9}
+              >
+                <View style={styles.pinOuterGlow} />
+                <View style={styles.pinInnerDot} />
+                <Text style={styles.pinLabel}>{pin.label}</Text>
+              </TouchableOpacity>
+            );
+          })}
         </View>
       </View>
 
@@ -223,7 +230,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  // 🔹 NEW styles for the planet link button
   planetLinkButton: {
     marginTop: 6,
     paddingHorizontal: 12,
@@ -263,20 +269,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingBottom: 8,
   },
+
+  // 🔒 Fixed-size canvas, like GalaxyMap’s mapOuter/mapInner
   mapInner: {
-    width: SCREEN_WIDTH - 24,
-    maxWidth: 900,
-    height: MAP_MAX_HEIGHT, // 👈 instead of aspectRatio
+    width: MAP_BASE_SIZE,
+    height: MAP_BASE_SIZE,
     borderRadius: 16,
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: 'rgba(150, 200, 255, 0.7)',
     backgroundColor: 'black',
   },
+
+  // Mirror GalaxyMap’s image behavior (absolute, contain)
   mapImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'contain', // 👈 show entire image, letterbox if needed
+    position: 'absolute',
+    width: MAP_BASE_SIZE,
+    height: MAP_BASE_SIZE,
+    resizeMode: 'contain',
   },
 
   pinWrapper: {

@@ -33,7 +33,8 @@ const LOCATIONS = [
       {
         id: 'earth_utah_pin',
         label: 'Utah',
-        position: { top: '42%', left: '26%' },
+        // was top: '42%', left: '26%'
+        position: { x: 0.27, y: 0.34 },
         targetLocationId: 'earth_utah_region',
       },
     ],
@@ -53,7 +54,8 @@ const LOCATIONS = [
       {
         id: 'earth_philippines_pin_orbit',
         label: 'Philippines',
-        position: { top: '48%', left: '41%' },
+        // was top: '48%', left: '41%'
+        position: { x: 0.42, y: 0.48 },
         targetLocationId: 'earth_philippines_region',
       },
     ],
@@ -63,21 +65,23 @@ const LOCATIONS = [
   {
     id: 'earth_utah_region',
     planetId: 'earth',
-    name: 'Utah Region',
+    name: 'Utah',
     type: 'region',
     background: UtahTopDown,
     pins: [
       {
         id: 'zion_city_pin',
         label: 'Zion City',
-        position: { top: '44%', left: '35%' },
+        // was top: '44%', left: '35%'
+        position: { x: 0.32, y: 0.36 },
         // 👉 goes straight to ZionCity screen, NOT another map
         targetScreen: 'ZionCity',
-      },
-      {
+    },
+    {
         id: 'aegis_compound_pin',
         label: 'The Aegis',
-        position: { top: '41%', left: '29%' },
+        // was top: '41%', left: '29%'
+        position: { x: 0.35, y: 0.40 },
         targetScreen: 'AegisCompound',
       },
     ],
@@ -86,14 +90,15 @@ const LOCATIONS = [
   {
     id: 'earth_philippines_region',
     planetId: 'earth',
-    name: 'Philippines Region',
+    name: 'Philippines',
     type: 'region',
     background: PhilippinesTopDown,
     pins: [
       {
         id: 'ophir_pin',
         label: 'Ophir',
-        position: { top: '31%', left: '22%' },
+        // was top: '31%', left: '22%'
+        position: { x: 0.26, y: 0.23 },
         targetScreen: 'OphirCity',
       },
     ],
@@ -107,18 +112,18 @@ const LOCATIONS = [
   {
     id: 'luna_orbit',
     planetId: 'Luna', // note: matches PLANETS id "Luna"
-    name: 'Luna – Nearside',
+    name: 'Luna',
     type: 'planet-side',
     background: LunaSide,
     isDefault: true,
     pins: [
       // Add pins later if you want e.g. "Parliament Luna Relay"
-      // {
-      //   id: 'luna_relay_pin',
-      //   label: 'Luna Relay',
-      //   position: { top: '50%', left: '50%' },
-      //   targetScreen: 'LunaRelay', // dedicated screen
-      // },
+      {
+        id: 'luna_relay_pin',
+        label: 'Lunar Relay',
+        position: { x: 0.50, y: 0.50 },
+        targetScreen: 'LunaRelay', // dedicated screen
+      },
     ],
   },
 
@@ -126,23 +131,22 @@ const LOCATIONS = [
   {
     id: 'mars_orbit',
     planetId: 'mars',
-    name: 'Mars – Polar Orbit',
+    name: 'Mars',
     type: 'planet-side',
     background: MarsSide,
     isDefault: true,
     pins: [
-      // Example future base:
-      // {
-      //   id: 'mars_base_pin',
-      //   label: 'Parliament Mars Base',
-      //   position: { top: '52%', left: '41%' },
-      //   targetScreen: 'MarsBase', // dedicated screen
-      // },
-    ],
-  },
+      {
+        id: 'mars_base_pin',
+        label: 'Mars Base',
+        position: { x: 0.60, y: 0.45 },
+        targetScreen: 'MarsBase',
+    },
+],
+},
 
-  // ===== JUPITER =====
-  {
+// ===== JUPITER =====
+{
     id: 'jupiter_orbit',
     planetId: 'jupiter',
     name: 'Jupiter – High Orbit',
@@ -150,12 +154,12 @@ const LOCATIONS = [
     background: JupiterSide,
     isDefault: true,
     pins: [
-      // {
-      //   id: 'jovian_dock_pin',
-      //   label: 'Jovian Shipyards',
-      //   position: { top: '45%', left: '60%' },
-      //   targetScreen: 'JovianDock', // dedicated screen
-      // },
+    {
+        id: 'jovian_dock_pin',
+        label: 'Spartan Orbital Station',
+        position: { x: 0.45, y: 0.58 },
+        targetScreen: 'JovianDock',
+      },
     ],
   },
 
@@ -163,7 +167,7 @@ const LOCATIONS = [
   {
     id: 'melcornia_orbit',
     planetId: 'melcornia',
-    name: 'Melcornia – Maw-Scarred Orbit',
+    name: 'Melcornia',
     type: 'planet-side',
     background: MelcorniaSide,
     isDefault: true,
@@ -171,15 +175,15 @@ const LOCATIONS = [
       {
         id: 'maw_rift_pin',
         label: 'The Maw Rift',
-        position: { top: '50%', left: '56%' }, // tweak this as you like
-        // Example future detail:
+        // was top: '50%', left: '56%'
+        position: { x: 0.56, y: 0.50 },
         // targetScreen: 'MelcorniaMawRift',
       },
       {
         id: 'manor_pin',
         label: 'Montrose Manor',
-        position: { top: '48%', left: '34%' }, // tweak this as you like
-        // 👉 goes straight to Manor screen, like Zion/Aegis/Ophir
+        // was top: '48%', left: '34%'
+        position: { x: 0.34, y: 0.48 },
         targetScreen: 'Manor',
       },
     ],
@@ -189,7 +193,7 @@ const LOCATIONS = [
   {
     id: 'zaxxon_orbit',
     planetId: 'zaxxon',
-    name: 'Zaxxon – Fortress World',
+    name: 'Zaxxon',
     type: 'planet-side',
     background: ZaxxonSide,
     isDefault: true,
@@ -197,8 +201,8 @@ const LOCATIONS = [
       // {
       //   id: 'zaxxon_ring_pin',
       //   label: 'Orbital Defense Rings',
-      //   position: { top: '40%', left: '50%' },
-      //   targetScreen: 'ZaxxonRings', // dedicated screen
+      //   position: { x: 0.50, y: 0.40 },
+      //   targetScreen: 'ZaxxonRings',
       // },
     ],
   },

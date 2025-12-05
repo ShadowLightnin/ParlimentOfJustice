@@ -416,7 +416,7 @@ const BludBruhsScreen = ({ route }) => {
               style={styles.backButton}
               onPress={() => {
                 killMusic();
-                navigation.navigate('Home');
+                navigation.goBack();
               }}
               activeOpacity={0.85}
             >

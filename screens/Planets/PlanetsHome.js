@@ -309,7 +309,8 @@ const PlanetsHome = () => {
     }, 300);
   };
 
-  const goBackHome = () => navigation.navigate('Home');
+  const goBackHome = () => navigation.goBack();
+;
 
   const openGalaxyMap = () => {
     triggerWarp('galaxy');

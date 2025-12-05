@@ -231,7 +231,7 @@ const TitansScreen = () => {
               style={styles.back}
               onPress={async () => {
                 await stopSound();
-                navigation.navigate('Home');
+                navigation.goBack();
               }}
               activeOpacity={0.85}
             >
