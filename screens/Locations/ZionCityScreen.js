@@ -28,18 +28,18 @@ const ZionCityScreen = () => {
       <ScrollView contentContainerStyle={styles.content}>
         {/* Hero image placeholder – swap with your Zion render later */}
         <Image
-          source={require('../../assets/BackGround/OGTitans.jpg')}
+          source={require('../../assets/ParliamentTower.jpg')}
           style={styles.heroImage}
           resizeMode="cover"
         />
 
         <Text style={styles.sectionTitle}>Overview</Text>
         <Text style={styles.bodyText}>
-          Zion City is the Parliament&apos;s primary megacity on Earth — a rising
+          Zion City is the Utah's primary megacity — a rising
           skyline in the Utah desert. Each sector blends modern-day Utah
           architecture with advanced Parliament tech, forming Celestial,
-          Terrestrial, Telestial, and Outer Darkness rings around the central
-          Parliament towers.
+          Terrestrial, Telestial, and Outer Darkness. And near the center are the 
+          Parliament towers and plaze.
         </Text>
 
         {/* Add more sections later: sectors, landmarks, transit, etc. */}
