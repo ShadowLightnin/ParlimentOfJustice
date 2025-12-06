@@ -447,15 +447,15 @@ const RangerSquad = () => {
                 </View>
 
                 <Text style={styles.infoText}>
-                  Ranger Squad 17 is a breakaway unit from The Eagles — elite recon troopers
+                  Ranger Squad 17 is a breakaway unit from The C.E.R.R.T. and The Eagles — elite recon troopers
                   who chose Sam and the Thunder Born over official orders. They live in the
-                  gray zone between clone legion and outlaw strike team.
+                  gray zone and are an outlaw strike team. There armor is modeled after Sam's favorite franchise in honor of him
                 </Text>
 
                 <Text style={styles.infoLabel}>Primary role</Text>
                 <Text style={styles.infoText}>
                   • Deep recon ahead of Thunder Born operations{'\n'}
-                  • First contact against Maw incursions and corrupted zones{'\n'}
+                  • First contact and recon deployment and search and rescue ops{'\n'}
                   • Shadow escorts for Void Walker on high-risk runs
                 </Text>
 

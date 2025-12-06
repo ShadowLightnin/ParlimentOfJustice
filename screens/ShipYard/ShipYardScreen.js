@@ -307,7 +307,7 @@ const ShipYardScreen = () => {
             <View style={styles.headerGlass}>
               <Text style={styles.header}>Ship Yard</Text>
               <Text style={styles.headerSub}>
-                Prime Parliament starships & fleets
+                Primary Shipyard for the Parliament at The Aegis Compound
               </Text>
               <Text style={styles.infoHint}>Tap for hangar lore ⬇</Text>
             </View>

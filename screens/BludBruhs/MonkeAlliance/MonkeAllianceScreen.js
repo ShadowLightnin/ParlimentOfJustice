@@ -289,7 +289,7 @@ const MonkeAllianceScreen = () => {
             <View style={styles.headerGlass}>
               <Text style={styles.header}>Monke Alliance</Text>
               <Text style={styles.headerSubtitle}>
-                The Anti-heroes & Maw Hunters of The Parliament
+                The Anti-heroes & Hunters of The Parliament
               </Text>
               <Text style={styles.infoHint}>Tap for team lore ⬇</Text>
             </View>
@@ -374,15 +374,16 @@ const MonkeAllianceScreen = () => {
               </View>
 
               <Text style={styles.infoText}>
-                The Monke Alliance are the Parliament&apos;s problem children —
-                anti-heroes who go where the clean capes won&apos;t. They move
-                through ruins, jungles, and dead zones picking fights with things
-                that should not exist.
+                The Monke Alliance are almost the polar opposite of The Thunder Born —
+                anti-heroes who go and fight the supernatural by any means but make sures no ones gets hurt. They
+                frequently clash with Thunder Born after a falling out in the original team named BludBruhs but split in half
+                after some members like Void Walker used his tremendous dark powers and had difficulty controlling them, as well as how
+                the all the team members should use their powers that they got from The Maw.
               </Text>
 
               <Text style={styles.infoLabel}>What they fight</Text>
               <Text style={styles.infoText}>
-                • Maw corruption leaking into reality{'\n'}
+                • Maw corruption incursions{'\n'}
                 • Supernatural threats, curses, and hauntings{'\n'}
                 • Cults, anomalies, and entities too messy for public heroes
               </Text>
@@ -391,8 +392,7 @@ const MonkeAllianceScreen = () => {
               <Text style={styles.infoText}>
                 • Hit hard, vanish into the dark, no press conferences{'\n'}
                 • Use questionable methods for the right reasons{'\n'}
-                • Half rumor, half urban legend — but when the Maw stirs,
-                they&apos;re the first ones in.
+                • They work in the shadows and gather information and intel before striking.
               </Text>
             </View>
           )}

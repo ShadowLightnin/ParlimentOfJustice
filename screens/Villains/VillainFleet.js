@@ -433,19 +433,19 @@ const VillainsFleetScreen = () => {
             <Text style={styles.backText}>⬅️ Back</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.headerTitle}
             onPress={toggleInfo}
             activeOpacity={0.9}
-          >
+          > */}
             <View style={styles.headerGlass}>
               <Text style={styles.header}>Villains Fleet</Text>
               <Text style={styles.headerSub}>
                 Dark armadas, dreadnoughts & war engines
               </Text>
-              <Text style={styles.infoHint}>Tap for fleet intel ⬇</Text>
+              {/* <Text style={styles.infoHint}>Tap for fleet intel ⬇</Text> */}
             </View>
-          </TouchableOpacity>
+          {/* </TouchableOpacity> */}
 
           {/* Right spacer for symmetry / future buttons */}
           <View style={{ width: 40 }} />

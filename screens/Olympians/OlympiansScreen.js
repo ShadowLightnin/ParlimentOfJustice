@@ -427,7 +427,7 @@ export const OlympiansScreen = () => {
                 </Text>
                 <Text style={styles.infoText}>
                   • Multi-front crises that endanger whole families and cities{'\n'}
-                  • Demon-lord incursions, Maw spillover, and cosmic plagues{'\n'}
+                  • Dark forces and emotional and mental manipulation and turmoil{'\n'}
                   • Any enemy that tries to break the bonds of home, faith, and
                   family
                 </Text>

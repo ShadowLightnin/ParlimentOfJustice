@@ -405,7 +405,7 @@ export const LegionairesScreen = () => {
                 <Text style={styles.infoText}>
                   Loyalty, accountability, and everyday heroism. The
                   Legionnaires prove that you don&apos;t need cosmic powers or a
-                  Titan badge to matter — you just need the courage to act when
+                  badge to matter — you just need the courage to act when
                   others freeze.
                 </Text>
 
@@ -413,10 +413,10 @@ export const LegionairesScreen = () => {
                   Threats they specialize against
                 </Text>
                 <Text style={styles.infoText}>
-                  • Street-level crime and gang uprisings in Zion City{'\n'}
-                  • Riot control, evacuations, and disaster response{'\n'}
-                  • Coordinating with Parliament teams during Maw incursions,
-                  demon attacks, and major villain events
+                  • Street-level and major threats, crime and gang uprisings in Zion City{'\n'}
+                  • Civil discourse, evacuations, and disaster response{'\n'}
+                  • Coordinating with Parliament teams during incursions and crisis,
+                  terror attacks, and major villain events
                 </Text>
               </View>
             )}

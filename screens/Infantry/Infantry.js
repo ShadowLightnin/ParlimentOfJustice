@@ -425,10 +425,11 @@ const InfantryScreen = () => {
 
               <Text style={styles.infoText}>
                 The Command Eagle Rapid Response Team is the Parliament&apos;s liaison
-                vanguard — elite commanders who coordinate between world governments,
+                vanguard — elite commanders who coordinate between governments,
                 the Zion City Eagles, and the Parliament of Justice. When heroes deploy
                 on domestic soil, these are the people on the comms, in the war rooms,
-                and on the ground making sure it all holds together.
+                and on the ground making sure it all holds together. They clash a lot and dread being
+                with or to Thunder Born missions, and bitter about the lose of some of their comrade.
               </Text>
 
               <Text style={styles.infoLabel}>What they represent</Text>

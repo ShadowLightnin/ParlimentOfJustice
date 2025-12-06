@@ -316,15 +316,16 @@ const SpartansScreen = () => {
                   The Spartans are the Parliament&apos;s elite commando squad — the
                   small, tight-knit fireteam you send in when planets are burning and
                   there&apos;s no backup coming. They hit hard, move fast, and bring
-                  their own motor pool of war machines.
+                  their all. Stealth, precision, and overwhelming force are their
+                  trademarks, and they never leave a teammate behind.
                 </Text>
 
                 <Text style={styles.infoLabel}>What they represent</Text>
                 <Text style={styles.infoText}>
                   Precision, loyalty, and boots-on-the-ground heroism. Where the
-                  Titans handle cosmic headlines, the Spartans handle the missions no
-                  one hears about — boarding actions, black ops rescues, and holding
-                  the line so everyone else can live to see tomorrow.
+                  Titans handle major headlines, the Spartans handle the missions no
+                  one hears about — boarding actions, black ops rescues, Great Escapes, and holding
+                  the line so everyone else can live to see another day.
                 </Text>
 
                 <Text style={styles.infoLabel}>
@@ -332,7 +333,7 @@ const SpartansScreen = () => {
                 </Text>
                 <Text style={styles.infoText}>
                   • Organized militaries, warlords, and planetary invasions{'\n'}
-                  • Maw-backed shock troops and heavy ground forces{'\n'}
+                  • Other worldly incursions and espionage{'\n'}
                   • Armored convoys, fortress assaults, and hostile vehicle warfare
                 </Text>
               </View>

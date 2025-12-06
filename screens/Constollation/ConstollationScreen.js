@@ -295,7 +295,7 @@ export const ConstollationScreen = () => {
               <Text style={styles.infoText}>
                 Healing, advocacy, and quiet heroism. These are the heroes who show
                 up in hospital corridors, school hallways, and therapy offices —
-                the constellation of adults who helped you not fall apart.
+                the constellation of people who help you not fall apart. They are the backbone of society.
               </Text>
 
               <Text style={styles.infoLabel}>How they operate</Text>

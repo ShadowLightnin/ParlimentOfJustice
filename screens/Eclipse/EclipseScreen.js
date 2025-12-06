@@ -238,7 +238,7 @@ const EclipseScreen = () => {
                 <Text style={styles.infoText}>
                   Love, grounding, and perspective. Eclipse members remind the Titans
                   what they&apos;re fighting for — real lives, real relationships,
-                  and a future worth saving beyond the battlefield.
+                  and a future worth saving.
                 </Text>
 
                 <Text style={styles.infoLabel}>
@@ -247,7 +247,7 @@ const EclipseScreen = () => {
                 <Text style={styles.infoText}>
                   • Psychological and emotional warfare{'\n'}
                   • Villains who target families, support networks, or civilians{'\n'}
-                  • Manipulation, propaganda, and morale-breaking threats
+                  • Manipulation, propaganda, street-level and major villains
                 </Text>
               </View>
             )}

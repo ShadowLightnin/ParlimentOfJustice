@@ -445,7 +445,7 @@ export const ForgeScreen = () => {
                 The Forge is the Parliament&apos;s workshop floor — bosses, mentors,
                 and crew who keep everything running. They&apos;re the ones who wire
                 the lights back on, fix busted armor, and make sure the doors still
-                open after a kaiju hits the city.
+                open after a major hit to the city.
               </Text>
 
               <Text style={styles.infoLabel}>The Hammer</Text>
@@ -458,10 +458,9 @@ export const ForgeScreen = () => {
 
               <Text style={styles.infoLabel}>The Anvil</Text>
               <Text style={styles.infoText}>
-                The Anvil is the crew that actually absorbs the impact: custodians,
-                coworkers, and teammates who do the daily grind. They&apos;re the
-                frontline workforce that turns wild plans into working reality,
-                strike after strike.
+                The Anvil is the crew that actually absorbs the impact, teammates who do the daily grind. 
+                They&apos;re the frontline workforce that turns wild plans into working reality,
+                day after day, a pinnacle pillar in the team and society.
               </Text>
             </View>
           )}

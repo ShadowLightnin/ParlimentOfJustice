@@ -495,10 +495,10 @@ const BludBruhsScreen = ({ route }) => {
                 </View>
 
                 <Text style={styles.infoText}>
-                  The Thunder Born are the Parliament&apos;s storm company — a brutal
-                  strike squad built around Void Walker and his closest allies. They are
-                  called when the sky tears open, the Maw leaks through, and someone has
-                  to walk straight into the nightmare.
+                  The Thunder Born are the Parliament&apos;s thorn in there side and frequently have conflict
+                  with the Monke Alliance. They are the judges of their own law and play by there own rules without hesitation or a second thought
+                  (primarly from influence and corruption from getting there powers from the Maw and The Enlightened's influence).
+                  But when you need them they are and will be there to protect and defend.
                 </Text>
 
                 <Text style={styles.infoLabel}>What they represent</Text>
@@ -506,7 +506,7 @@ const BludBruhsScreen = ({ route }) => {
                   Relentless judgement, loyalty under fire, and the will to step into
                   places touched by the Maw when no other team can. They are the edge of
                   the Parliament&apos;s sword when the threat is supernatural, unknown,
-                  or already corrupting reality.
+                  or already corrupting everything.
                 </Text>
 
                 <Text style={styles.infoLabel}>

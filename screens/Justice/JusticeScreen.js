@@ -272,8 +272,8 @@ const JusticeScreen = () => {
               {/* GUARDIANS */}
               <Text style={styles.infoSectionTitle}>Guardians</Text>
               <Text style={styles.infoText}>
-                The Guardians are the public-facing protectors of Zion City and
-                the wider Justiceverse — the capes and symbols most citizens
+                The Guardians are the public-facing protectors of Zion City,
+                the wider world and galaxy — the capes and symbols most citizens
                 actually recognize. They stand in the open when the streets are
                 on fire.
               </Text>
@@ -339,22 +339,23 @@ const JusticeScreen = () => {
               {/* OMNI JUMPERS */}
               <Text style={styles.infoSectionTitle}>Omni Jumpers</Text>
               <Text style={styles.infoText}>
-                The Omni Jumpers are the multiversal rapid-response unit —
-                hopping between timelines and shattered realms when reality
-                itself starts to crack.
+                The Omni Jumpers are an Omniveral team of heroes —
+                hopping between timelines and realies to where they are needed the most 
+                and when reality itself starts to crack.
               </Text>
               <Text style={styles.infoLabel}>What they represent</Text>
               <Text style={styles.infoText}>
                 Adaptability, sacrifice, and perspective. They&apos;ve seen
                 worlds survive and worlds die and fight to make sure this one
-                doesn&apos;t repeat the worst endings.
+                doesn&apos;t repeat the worst endings. They fight to save reality and all of creation.
               </Text>
               <Text style={styles.infoLabel}>
                 Enemy types they specialize against
               </Text>
               <Text style={styles.infoText}>
                 • Timeline anomalies and paradox-born entities{'\n'}
-                • Multiversal raiders, jump-tech cartels, and reality pirates
+                • The Imagine Order and Geno who want to control and perfect realities{'\n'}
+                • Omniversal threats like The Last Reality and The Nothing.
                 {'\n'}
                 • Crises where saving one universe means understanding a dozen
                 others

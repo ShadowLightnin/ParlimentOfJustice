@@ -296,15 +296,15 @@ const TitansScreen = () => {
                 </View>
 
                 <Text style={styles.infoText}>
-                  The Titans are the Prime Parliament&apos;s frontline hero
-                  team — the original squad that stood together during The
-                  Incident and became legends in Zion City.
+                  The Titans are the Prime Parliament&apos;s hero
+                  team — the first squad that formed after The Incident and became legends in Zion City.
+                  They are a symbol of hope and resilience in the face of chaos and catastrophe.
                 </Text>
 
                 <Text style={styles.infoLabel}>What they represent</Text>
                 <Text style={styles.infoText}>
                   Family, leadership, and unity. Each Titan carries the weight
-                  of their family legacy while protecting the Justiceverse as
+                  of their family legacy while protecting the planet as
                   its core symbol of hope and resilience.
                 </Text>
 
@@ -312,10 +312,9 @@ const TitansScreen = () => {
                   Enemy types they specialize against
                 </Text>
                 <Text style={styles.infoText}>
-                  • World-ending threats and cosmic invaders{'\n'}
-                  • Maw-related incursions and void entities{'\n'}
-                  • High-tier villains tied to Erevos, Torath, and the
-                  Enlightened
+                  • World-ending threats and invaders{'\n'}
+                  • Ancient tyrants and Erevos{'\n'}
+                  • High-tier villains tied to Erevos, the Enlightened, and other street-level and major villains
                 </Text>
               </View>
             )}
