@@ -65,7 +65,7 @@ const villainsFactions = [
     name: 'Other Worldly',
     screen: 'DemonsSection',
     clickable: true,
-    image: require('../../assets/BackGround/NateEmblem.jpg'),
+    image: require('../../assets/BackGround/OtherWorldly.jpg'),
     mobileWidth: 190,
     mobileHeight: 180,
     desktopWidth: 340,

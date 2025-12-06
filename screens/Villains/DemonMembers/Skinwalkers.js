@@ -304,7 +304,7 @@ const SkinwalkersScreen = () => {
 
   return (
     <ImageBackground
-      source={require('../../../assets/BackGround/Skinwalkers.jpg')}
+      source={require('../../../assets/BackGround/NateEmblem.jpg')}
       style={styles.background}
     >
       <View style={styles.screenDimOverlay}>

@@ -22,7 +22,7 @@ const cardSize = isDesktop ? 360 : 280;
 
 // Demon factions data
 const demonLords = [
-  { name: 'Skinwalkers', screen: 'SkinwalkerScreen', image: require('../../assets/BackGround/Skinwalkers.jpg'), clickable: true },
+  { name: 'Skinwalkers', screen: 'SkinwalkerScreen', image: require('../../assets/BackGround/NateEmblem.jpg'), clickable: true },
   { name: 'Weeping Angels', screen: 'StatuesScreen', image: require('../../assets/BackGround/Statue.jpg'), clickable: true },
   { name: 'Oni', screen: 'OniScreen', image: require('../../assets/BackGround/Oni.jpg'), clickable: true },
   { name: 'Ghosts', screen: 'GhostsScreen', image: require('../../assets/BackGround/Ghosts2.jpg'), clickable: true },
@@ -34,6 +34,14 @@ const otherEvilThreats = [
   { name: 'Metalmen', screen: 'RobotsScreen', image: require('../../assets/BackGround/Robots.jpg'), clickable: true },
   { name: 'Bugs', screen: 'BugsScreen', image: require('../../assets/BackGround/Bugs.jpg'), clickable: true },
   { name: 'Pirates', screen: 'PiratesScreen', image: require('../../assets/BackGround/Pirates.jpg'), clickable: true },
+];
+
+const realityBreakers = [
+  { name: 'The Maw', screen: 'MawScreen', image: require('../../assets/TheMaw.jpg'), clickable: false },
+  { name: 'The Last Reality', screen: 'LastRealityScreen', image: require('../../assets/BackGround/TheLastReality.jpg'), clickable: false },
+  { name: 'The Nothing', screen: 'NothingScreen', image: require('../../assets/BackGround/TheNothing.jpg'), clickable: false },
+  // { name: 'The Riftwalkers', screen: 'RiftwalkersScreen', image: require('../../assets/BackGround/Riftwalkers.jpg'), clickable: false },
+  // { name: 'The Voidborn', screen: 'VoidbornScreen', image: require('../../assets/BackGround/Voidborn.jpg'), clickable: false },
 ];
 
 const DemonsSectionScreen = () => {
@@ -162,7 +170,7 @@ const DemonsSectionScreen = () => {
 
   return (
     <ImageBackground
-      source={require('../../assets/BackGround/NateEmblem.jpg')}
+      source={require('../../assets/BackGround/OtherWorldly.jpg')}
       style={styles.background}
     >
       {/* Dim + glass overlay over background */}
@@ -219,7 +227,7 @@ const DemonsSectionScreen = () => {
               </View>
             </View>
 
-            {/* Dark Forces Section */}
+            {/* Other World Section */}
             <View style={styles.section}>
               <Text style={styles.sectionHeader}>Enemy Factions</Text>
               <View style={styles.sectionLine} />
@@ -234,6 +242,25 @@ const DemonsSectionScreen = () => {
                   ]}
                 >
                   {otherEvilThreats.map(renderFactionCard)}
+                </ScrollView>
+              </View>
+            </View>
+
+              {/* Reality Breakers Section */}
+            <View style={styles.section}>
+              <Text style={styles.sectionHeader}>Reality Breakers</Text>
+              <View style={styles.sectionLine} />
+                <Text style={styles.mawSubtitle}>They are coming</Text>
+              <View style={styles.scrollWrapper}>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={[
+                    styles.scrollContainer,
+                    { gap: isDesktop ? 32 : 18 },
+                  ]}
+                >
+                  {realityBreakers.map(renderFactionCard)}
                 </ScrollView>
               </View>
             </View>

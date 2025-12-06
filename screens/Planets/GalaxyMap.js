@@ -34,7 +34,7 @@ const Warp3Gif = require('../../assets/Space/warp3.gif');
 
 // On web / IG in-app browser, big GIF + animation can be crashy.
 // So we only use the warp GIF on native by default.
-const USE_WARP_GIF = Platform;
+const USE_WARP_GIF = Platform.OS !== 'web';   // corrected
 
 const ICON_SIZE_STORAGE_KEY = 'galaxy_icon_size';
 const MIN_ICON_SIZE = 1;
@@ -239,28 +239,30 @@ const GalaxyMap = () => {
         }
       },
 
-      onPanResponderMove: (evt, gestureState) => {
-        const touches = evt.nativeEvent?.touches || [];
+// Inside PanResponder → onPanResponderMove, fix the pinch condition:
+onPanResponderMove: (evt, gestureState) => {
+  const touches = evt.nativeEvent?.touches || [];
 
-        // Pinch (two fingers) – native only; web falls back to scroll/zoom buttons
-        if (touches.length === 2 && Platform) {
-          const currentDistance = getTouchDistance(touches);
-          if (initialPinchDistanceRef.current && currentDistance > 0) {
-            let nextScale =
-              (currentDistance / initialPinchDistanceRef.current) *
-              pinchStartScaleRef.current;
+  // Pinch – only on native (iOS/Android)
+  if (touches.length === 2 && Platform.OS !== 'web') {
+    const currentDistance = getTouchDistance(touches);
+    if (initialPinchDistanceRef.current && currentDistance > 0) {
+      let nextScale =
+        (currentDistance / initialPinchDistanceRef.current) *
+        pinchStartScaleRef.current;
 
-            nextScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, nextScale));
-            scale.setValue(nextScale);
-          }
-        } else if (touches.length === 1) {
-          // Drag (one finger)
-          const nextX = lastPanRef.current.x + gestureState.dx;
-          const nextY = lastPanRef.current.y + gestureState.dy;
-          translateX.setValue(nextX);
-          translateY.setValue(nextY);
-        }
-      },
+      nextScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, nextScale));
+      scale.setValue(nextScale);
+      lastScaleRef.current = nextScale; // keep in sync
+    }
+  } else if (touches.length === 1) {
+    // Single finger drag
+    const nextX = lastPanRef.current.x + gestureState.dx;
+    const nextY = lastPanRef.current.y + gestureState.dy;
+    translateX.setValue(nextX);
+    translateY.setValue(nextY);
+  }
+},
 
       onPanResponderRelease: () => {
         // Persist current transform for next gesture
