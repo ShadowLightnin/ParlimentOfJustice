@@ -10,7 +10,7 @@ export const SYSTEMS = [
   {
     id: 'sol',
     name: 'Sol',
-    planetId: 'Earth',
+    planetId: 'earth',
     image: require('../../assets/Space/Earth.jpg'),
     x: 0.49955,   // more precise
     y: 0.70485935 + deltaY,   // more precise
@@ -315,17 +315,17 @@ export const SYSTEMS = [
     faction: 'unsc',
     universe: 'prime',
   },
-  {
-    id: 'onyx',
-    name: 'Onyx',
-    planetId: null,
-    // image: HALO_ICON,
-    x: 0.55,
-    y: 0.66 + deltaY,
-    quadrant: 'alpha',
-    faction: 'unsc',
-    universe: 'prime',
-  },
+  // {
+  //   id: 'onyx',
+  //   name: 'Onyx',
+  //   planetId: null,
+  //   // image: HALO_ICON,
+  //   x: 0.55,
+  //   y: 0.66 + deltaY,
+  //   quadrant: 'alpha',
+  //   faction: 'unsc',
+  //   universe: 'prime',
+  // },
 
   // ==========================
   // ===== HALO – COVENANT / SANGHELIOS CLUSTER (FARTHER FROM SOL) =====
@@ -379,17 +379,17 @@ export const SYSTEMS = [
     faction: 'covenant',
     universe: 'prime',
   },
-  {
-    id: 'requiem',
-    name: 'Requiem',
-    planetId: null,
-    // image: HALO_ICON,
-    x: 0.27,
-    y: 0.38 + deltaY,
-    quadrant: 'gamma',
-    faction: 'covenant',
-    universe: 'prime',
-  },
+  // {
+  //   id: 'requiem',
+  //   name: 'Requiem',
+  //   planetId: null,
+  //   // image: HALO_ICON,
+  //   x: 0.27,
+  //   y: 0.38 + deltaY,
+  //   quadrant: 'gamma',
+  //   faction: 'covenant',
+  //   universe: 'prime',
+  // },
 
 // ==========================
 // ===== HALO – FORERUNNER INSTALLATIONS (RINGS)
@@ -572,7 +572,7 @@ export const SYSTEMS = [
 // ==========================
 
 {
-  id: 'high-charity',
+  id: 'high-charity-wreckage',
   name: 'High Charity (Infested Ruin)',
   planetId: null,
   // image: HALO_ICON,

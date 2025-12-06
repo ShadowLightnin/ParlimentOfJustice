@@ -21,13 +21,13 @@ const LOCATIONS = [
   {
     id: 'earth_orbit_na',
     planetId: 'earth',
-    name: 'Earth – North America Side',
+    name: 'Earth – North America',
     type: 'planet-side',
     background: EarthNASide,
     isDefault: true, // default for planetId:'earth'
     toggle: {
       targetLocationId: 'earth_orbit_ph',
-      label: 'Switch to Philippines Side',
+      label: 'Switch to Philippines',
     },
     pins: [
       {
@@ -73,7 +73,7 @@ const LOCATIONS = [
         id: 'zion_city_pin',
         label: 'Zion City',
         // was top: '44%', left: '35%'
-        position: { x: 0.32, y: 0.36 },
+        position: { x: 0.31, y: 0.36 },
         // 👉 goes straight to ZionCity screen, NOT another map
         targetScreen: 'ZionCity',
     },
@@ -81,7 +81,7 @@ const LOCATIONS = [
         id: 'aegis_compound_pin',
         label: 'The Aegis',
         // was top: '41%', left: '29%'
-        position: { x: 0.35, y: 0.40 },
+        position: { x: 0.36, y: 0.40 },
         targetScreen: 'AegisCompound',
       },
     ],
