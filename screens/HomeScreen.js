@@ -1,7 +1,15 @@
 import React, { useRef, useEffect, useContext, useState, useCallback } from 'react';
-import { 
-  View, Text, ImageBackground, TouchableOpacity, StyleSheet, FlatList, 
-  Animated, Alert, Dimensions, ScrollView, Modal 
+import {
+  View,
+  Text,
+  ImageBackground,
+  TouchableOpacity,
+  StyleSheet,
+  Animated,
+  Alert,
+  Dimensions,
+  Modal,
+  ScrollView,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { signOut } from 'firebase/auth';
@@ -9,15 +17,13 @@ import { auth, db } from '../lib/firebase';
 import { AuthContext } from '../context/auth-context';
 import { Audio } from 'expo-av';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { 
-  collection, onSnapshot, addDoc 
-} from 'firebase/firestore';
+import { collection, onSnapshot, addDoc } from 'firebase/firestore';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 const isDesktop = SCREEN_WIDTH > 600;
 
-const cardWidth = isDesktop ? 300 : 180; 
-const cardHeight = isDesktop ? 240 : 140; 
+const cardWidth = isDesktop ? 300 : 180;
+const cardHeight = isDesktop ? 240 : 140;
 const cardSpacing = isDesktop ? 30 : 5;
 
 const homageFactions = [
@@ -41,7 +47,7 @@ const pinnacleHomageFactions = [
   { name: 'Legionaires', screen: 'Legionaires', clickable: true, image: require('../assets/BackGround/Legionaires.jpg') },
 ];
 
-// Define desktop-specific order for Pinnacle Universe
+// Desktop-specific order for Pinnacle Universe
 const desktopPinnacleHomageFactions = [
   { name: 'Thunder Born', screen: 'BludBruhs', clickable: true, image: require('../assets/BackGround/PowerBorn.jpg'), pinnacleScreen: 'PowerBorn' },
   { name: 'Titans', screen: 'Titans', clickable: true, image: require('../assets/BackGround/Titans.jpg'), pinnacleScreen: 'PowerTitans' },
@@ -54,16 +60,16 @@ const desktopPinnacleHomageFactions = [
 /**
  * WORLD BUILDING
  * Prime:   1,2,1,2  = [Guardians] / [Planets, Ship Yard] / [Zion] / [Infantry, Villains]
- * Pinnacle:1,2,1,2  = [Guardians] / [Villains, Planets] / [Zion] / [Ship Yard, Infantry]
+ * Pinnacle:2,1,2    = [Villains, Planets] / [Zion] / [Ship Yard, Infantry]
  */
 
 const worldBuildingFactions = [
   // Row 1 → 1 card
-  { 
-    name: 'Guardians of Justice', 
-    screen: 'JusticeScreen', 
-    clickable: true, 
-    image: require('../assets/BackGround/Justice.jpg') 
+  {
+    name: 'Guardians of Justice',
+    screen: 'JusticeScreen',
+    clickable: true,
+    image: require('../assets/BackGround/Justice.jpg'),
   },
 
   // Row 2 → 2 cards
@@ -73,82 +79,82 @@ const worldBuildingFactions = [
     clickable: true,
     image: require('../assets/BackGround/Earth.jpg'),
   },
-  { 
-    name: 'Ship Yard', 
-    screen: 'ShipYardScreen', 
-    clickable: true, 
-    image: require('../assets/BackGround/ShipYard.jpg') 
+  {
+    name: 'Ship Yard',
+    screen: 'ShipYardScreen',
+    clickable: true,
+    image: require('../assets/BackGround/ShipYard.jpg'),
   },
 
   // Row 3 → 1 card
-  { 
-    name: 'Zion Metropolitan', 
-    screen: 'LocationsScreen', 
-    clickable: true, 
-    image: require('../assets/ParliamentTower.jpg') 
+  {
+    name: 'Zion Metropolitan',
+    screen: 'LocationsScreen',
+    clickable: true,
+    image: require('../assets/ParliamentTower.jpg'),
   },
 
   // Row 4 → 2 cards
-  { 
-    name: 'C.E.R.R.T.', 
-    screen: 'Infantry', 
-    clickable: true, 
-    image: require('../assets/BackGround/Soldiers.jpg') 
+  {
+    name: 'C.E.R.R.T.',
+    screen: 'Infantry',
+    clickable: true,
+    image: require('../assets/BackGround/Soldiers.jpg'),
   },
-  { 
-    name: 'Villains', 
-    screen: 'VillainsScreen', 
-    clickable: true, 
-    image: require('../assets/BackGround/VillainsHub.jpg') 
+  {
+    name: 'Villains',
+    screen: 'VillainsScreen',
+    clickable: true,
+    image: require('../assets/BackGround/VillainsHub.jpg'),
   },
 ];
 
-// Reorder worldBuildingFactions for Pinnacle Universe (2,1,2)
+// Reorder for Pinnacle Universe (2,1,2)
 const getPinnacleWorldBuildingFactions = () => [
   // Row 1 → 2 cards
-  { 
-    name: 'Villains', 
-    screen: 'VillainsScreen', 
-    clickable: true, 
-    image: require('../assets/BackGround/VillainsHub.jpg') 
+  {
+    name: 'Villains',
+    screen: 'VillainsScreen',
+    clickable: true,
+    image: require('../assets/BackGround/VillainsHub.jpg'),
   },
   {
     name: 'Planets',
     screen: 'PlanetsScreen',
     clickable: true,
-    image: require('../assets/BackGround/Melcornia.jpg'), pinnacleScreen: 'PinnaclePlanets',
+    image: require('../assets/BackGround/Melcornia.jpg'),
+    pinnacleScreen: 'PinnaclePlanets',
   },
 
   // Row 2 → 1 card
-  { 
-    name: 'Zion Metropolitan', 
-    screen: 'LocationsScreen', 
-    clickable: true, 
-    image: require('../assets/ParliamentTower.jpg') 
+  {
+    name: 'Zion Metropolitan',
+    screen: 'LocationsScreen',
+    clickable: true,
+    image: require('../assets/ParliamentTower.jpg'),
   },
 
   // Row 3 → 2 cards
-  { 
-    name: 'Ship Yard', 
-    screen: 'ShipYardScreen', 
-    clickable: true, 
-    image: require('../assets/BackGround/ShipYard.jpg') 
+  {
+    name: 'Ship Yard',
+    screen: 'ShipYardScreen',
+    clickable: true,
+    image: require('../assets/BackGround/ShipYard.jpg'),
   },
-  { 
-    name: 'C.E.R.R.T.', 
-    screen: 'Infantry', 
-    clickable: true, 
-    image: require('../assets/BackGround/Soldiers.jpg') 
+  {
+    name: 'C.E.R.R.T.',
+    screen: 'Infantry',
+    clickable: true,
+    image: require('../assets/BackGround/Soldiers.jpg'),
   },
 ];
-
 
 const otherFactions = [
   { name: 'Designs', screen: 'Designs', clickable: true, image: require('../assets/BackGround/donut_hologram.png') },
 ];
 
-const YOUR_EMAIL = "will@test.com";
-const FRIEND_EMAIL = "samuelp.woodwell@gmail.com";
+const YOUR_EMAIL = 'will@test.com';
+const FRIEND_EMAIL = 'samuelp.woodwell@gmail.com';
 const mirrorRules = {
   [YOUR_EMAIL]: { 'Thunder Born': { targetCollection: `friend_ThunderBorn`, sameUniverse: true } },
   [FRIEND_EMAIL]: { 'Thunder Born': { targetCollection: `your_GuardiansOfJustice`, sameUniverse: false } },
@@ -211,23 +217,26 @@ export const HomeScreen = () => {
       }).start();
 
       const userRules = mirrorRules[userEmail] || {};
-      const unsubscribes = Object.entries(userRules).map(([sourceFaction, { targetCollection }]) => {
-        const sourceRef = collection(db, `${userEmail.split('@')[0]}_${sourceFaction}`);
-        const unsubscribe = onSnapshot(sourceRef, (snap) => {
-          snap.docChanges().forEach(change => {
-            if (change.type === 'added') {
-              const data = change.doc.data();
-              addDoc(collection(db, targetCollection), {
-                ...data,
-                mirroredFrom: `${userEmail}_${sourceFaction}`,
-                timestamp: new Date().toISOString(),
-              }).then(() => console.log(`Mirrored ${sourceFaction} to ${targetCollection}`))
-                .catch(error => console.error('Mirror error:', error));
-            }
+      const unsubscribes = Object.entries(userRules).map(
+        ([sourceFaction, { targetCollection }]) => {
+          const sourceRef = collection(db, `${userEmail.split('@')[0]}_${sourceFaction}`);
+          const unsubscribe = onSnapshot(sourceRef, snap => {
+            snap.docChanges().forEach(change => {
+              if (change.type === 'added') {
+                const data = change.doc.data();
+                addDoc(collection(db, targetCollection), {
+                  ...data,
+                  mirroredFrom: `${userEmail}_${sourceFaction}`,
+                  timestamp: new Date().toISOString(),
+                })
+                  .then(() => console.log(`Mirrored ${sourceFaction} to ${targetCollection}`))
+                  .catch(error => console.error('Mirror error:', error));
+              }
+            });
           });
-        });
-        return unsubscribe;
-      });
+          return unsubscribe;
+        }
+      );
 
       return () => {
         unsubscribes.forEach(unsub => unsub && unsub());
@@ -237,15 +246,17 @@ export const HomeScreen = () => {
 
   // Music playback
   const playTheme = async () => {
-    const soundFile = isYourUniverse 
+    const soundFile = isYourUniverse
       ? require('../assets/audio/StarTrekEnterprise.mp4')
       : require('../assets/audio/parliamentofpower.m4a');
+
     if (!currentSound) {
       try {
-        const { sound } = await Audio.Sound.createAsync(
-          soundFile,
-          { shouldPlay: true, isLooping: true, volume: 1.0 }
-        );
+        const { sound } = await Audio.Sound.createAsync(soundFile, {
+          shouldPlay: true,
+          isLooping: true,
+          volume: 1.0,
+        });
         setCurrentSound(sound);
         await sound.playAsync();
         setIsPlaying(true);
@@ -287,12 +298,13 @@ export const HomeScreen = () => {
     }
   };
 
+  // ⬅️ Only stop audio on screen blur, not when currentSound changes
   useFocusEffect(
     useCallback(() => {
       return () => {
         stopAndUnloadAudio();
       };
-    }, [currentSound])
+    }, [])
   );
 
   const handleLogout = async () => {
@@ -312,7 +324,7 @@ export const HomeScreen = () => {
 
   const toggleUniverse = () => setUniverseModalVisible(true);
 
-  const switchUniverse = async (isYour) => {
+  const switchUniverse = async isYour => {
     setIsYourUniverse(isYour);
     try {
       await AsyncStorage.setItem('selectedUniverse', isYour ? 'your' : 'friend');
@@ -323,7 +335,7 @@ export const HomeScreen = () => {
     setUniverseModalVisible(false);
   };
 
-  const handleQuadrantPress = async (isYour) => {
+  const handleQuadrantPress = async isYour => {
     await stopAndUnloadAudio();
     switchUniverse(isYour);
   };
@@ -333,7 +345,7 @@ export const HomeScreen = () => {
       <Text
         style={[
           styles.factionTitle,
-          { textShadowColor: isYourUniverse ? '#00b3ff' : '#800080', textShadowRadius: 10 }
+          { textShadowColor: isYourUniverse ? '#00b3ff' : '#800080', textShadowRadius: 10 },
         ]}
       >
         {item.name || ''}
@@ -341,7 +353,7 @@ export const HomeScreen = () => {
       <TouchableOpacity
         style={[
           styles.card,
-          { width: cardWidth, height: cardHeight, margin: cardSpacing / 2 },
+          { width: cardWidth, height: cardHeight },
           !item.clickable && styles.disabledCard,
           {
             borderWidth: 1,
@@ -381,19 +393,95 @@ export const HomeScreen = () => {
     </Animated.View>
   );
 
-  // World Building grid
-// World Building grid
-const renderWorldBuildingGrid = () => {
-  const factionsToShow = isYourUniverse
-    ? worldBuildingFactions
-    : getPinnacleWorldBuildingFactions();
+  // Chunk an array into rows of numColumns (for that clean 2/3-column grid)
+  const renderGridSection = (data) => {
+    const rows = [];
+    for (let i = 0; i < data.length; i += numColumns) {
+      rows.push(data.slice(i, i + numColumns));
+    }
 
-  if (isYourUniverse) {
-    // PRIME → 1,2,1,2
-    const row1 = factionsToShow[0] ? [factionsToShow[0]] : [];
-    const row2 = factionsToShow.slice(1, 3);
-    const row3 = factionsToShow[3] ? [factionsToShow[3]] : [];
-    const row4 = factionsToShow.slice(4, 6);
+    return (
+      <View style={styles.listContainer}>
+        {rows.map((row, rowIndex) => (
+          <View
+            key={`row-${rowIndex}`}
+            style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: cardSpacing }}
+          >
+            {row.map(item => (
+              <View
+                key={item.name}
+                style={{ marginHorizontal: cardSpacing / 2 }}
+              >
+                {renderFaction({ item })}
+              </View>
+            ))}
+          </View>
+        ))}
+      </View>
+    );
+  };
+
+  // World Building grid (keeps your 1,2,1,2 vs 2,1,2 structure)
+  const renderWorldBuildingGrid = () => {
+    const factionsToShow = isYourUniverse
+      ? worldBuildingFactions
+      : getPinnacleWorldBuildingFactions();
+
+    if (isYourUniverse) {
+      const row1 = factionsToShow[0] ? [factionsToShow[0]] : [];
+      const row2 = factionsToShow.slice(1, 3);
+      const row3 = factionsToShow[3] ? [factionsToShow[3]] : [];
+      const row4 = factionsToShow.slice(4, 6);
+
+      return (
+        <View style={styles.gridContainer}>
+          {row1.length > 0 && (
+            <View style={styles.row}>
+              {row1.map(item => (
+                <View key={item.name} style={styles.gridItem}>
+                  {renderFaction({ item })}
+                </View>
+              ))}
+            </View>
+          )}
+
+          {row2.length > 0 && (
+            <View style={styles.row}>
+              {row2.map(item => (
+                <View key={item.name} style={styles.gridItem}>
+                  {renderFaction({ item })}
+                </View>
+              ))}
+            </View>
+          )}
+
+          {row3.length > 0 && (
+            <View style={styles.row}>
+              {row3.map(item => (
+                <View key={item.name} style={styles.gridItem}>
+                  {renderFaction({ item })}
+                </View>
+              ))}
+            </View>
+          )}
+
+          {row4.length > 0 && (
+            <View style={styles.row}>
+              {row4.map(item => (
+                <View key={item.name} style={styles.gridItem}>
+                  {renderFaction({ item })}
+                </View>
+              ))}
+            </View>
+          )}
+        </View>
+      );
+    }
+
+    // Pinnacle → 2,1,2
+    const row1 = factionsToShow.slice(0, 2);
+    const row2 = factionsToShow[2] ? [factionsToShow[2]] : [];
+    const row3 = factionsToShow.slice(3, 5);
 
     return (
       <View style={styles.gridContainer}>
@@ -406,7 +494,6 @@ const renderWorldBuildingGrid = () => {
             ))}
           </View>
         )}
-
         {row2.length > 0 && (
           <View style={styles.row}>
             {row2.map(item => (
@@ -416,7 +503,6 @@ const renderWorldBuildingGrid = () => {
             ))}
           </View>
         )}
-
         {row3.length > 0 && (
           <View style={styles.row}>
             {row3.map(item => (
@@ -426,70 +512,30 @@ const renderWorldBuildingGrid = () => {
             ))}
           </View>
         )}
-
-        {row4.length > 0 && (
-          <View style={styles.row}>
-            {row4.map(item => (
-              <View key={item.name} style={styles.gridItem}>
-                {renderFaction({ item })}
-              </View>
-            ))}
-          </View>
-        )}
       </View>
     );
-  }
-
-  // PINNACLE → 2,1,2
-  // expected order: [Villains, Planets, Zion, Ship Yard, Infantry]
-  const row1 = factionsToShow.slice(0, 2);          // 2 cards
-  const row2 = factionsToShow[2] ? [factionsToShow[2]] : []; // 1 card
-  const row3 = factionsToShow.slice(3, 5);          // 2 cards
-
-  return (
-    <View style={styles.gridContainer}>
-      {row1.length > 0 && (
-        <View style={styles.row}>
-          {row1.map(item => (
-            <View key={item.name} style={styles.gridItem}>
-              {renderFaction({ item })}
-            </View>
-          ))}
-        </View>
-      )}
-
-      {row2.length > 0 && (
-        <View style={styles.row}>
-          {row2.map(item => (
-            <View key={item.name} style={styles.gridItem}>
-              {renderFaction({ item })}
-            </View>
-          ))}
-        </View>
-      )}
-
-      {row3.length > 0 && (
-        <View style={styles.row}>
-          {row3.map(item => (
-            <View key={item.name} style={styles.gridItem}>
-              {renderFaction({ item })}
-            </View>
-          ))}
-        </View>
-      )}
-    </View>
-  );
-};
+  };
 
   // Use desktop-specific order for Pinnacle Universe on desktop
   const filteredHomageFactions = isYourUniverse
     ? homageFactions
-    : (isDesktop ? desktopPinnacleHomageFactions : pinnacleHomageFactions);
+    : isDesktop
+    ? desktopPinnacleHomageFactions
+    : pinnacleHomageFactions;
 
   const filteredOtherFactions = isYourUniverse ? otherFactions : [];
 
+  // While universe is still loading, avoid rendering main UI
+  if (isYourUniverse === null) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <Text style={{ color: '#fff' }}>Loading universe…</Text>
+      </View>
+    );
+  }
+
   return (
-    <ImageBackground 
+    <ImageBackground
       source={
         isYourUniverse
           ? require('../assets/BackGround/Parliament.jpg')
@@ -498,12 +544,12 @@ const renderWorldBuildingGrid = () => {
       style={styles.background}
     >
       <View style={styles.container}>
+        {/* TOP BAR */}
         <View style={styles.topBar}>
           <TouchableOpacity onPress={handleLogout} style={styles.iconButton}>
             <Text style={styles.iconText}>🚪</Text>
           </TouchableOpacity>
 
-          {/* CENTER TITLE + SUBTEXT (tap to jump universes) */}
           <TouchableOpacity onPress={toggleUniverse} style={styles.headerButton}>
             <View style={styles.titleBlock}>
               <Animated.Text
@@ -540,6 +586,7 @@ const renderWorldBuildingGrid = () => {
           </TouchableOpacity>
         </View>
 
+        {/* MUSIC CONTROLS */}
         <View style={styles.musicControls}>
           <TouchableOpacity style={styles.musicButton} onPress={playTheme}>
             <Text
@@ -548,8 +595,8 @@ const renderWorldBuildingGrid = () => {
                 { color: isYourUniverse ? '#00b3ff' : '#c08ae8' },
               ]}
             >
-                {isPlaying ? 'Playing…' : 'Theme'}
-              </Text>
+              {isPlaying ? 'Playing…' : 'Theme'}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.musicButton} onPress={pauseTheme}>
             <Text
@@ -563,18 +610,14 @@ const renderWorldBuildingGrid = () => {
           </TouchableOpacity>
         </View>
 
+        {/* MAIN SCROLL CONTENT */}
         <ScrollView contentContainerStyle={styles.scrollContainer}>
+          {/* HOMAGE FACTIONS (2/3-column grid) */}
           <View style={styles.sectionContainer}>
-            <FlatList
-              data={filteredHomageFactions}
-              keyExtractor={item => item.name}
-              renderItem={renderFaction}
-              numColumns={numColumns}
-              contentContainerStyle={styles.listContainer}
-              key={isYourUniverse ? 'prime' : 'pinnacle'}
-            />
+            {renderGridSection(filteredHomageFactions)}
           </View>
 
+          {/* WORLD BUILDING */}
           <View style={styles.sectionContainer}>
             <View style={styles.headerContainer}>
               <Text
@@ -602,6 +645,7 @@ const renderWorldBuildingGrid = () => {
             {renderWorldBuildingGrid()}
           </View>
 
+          {/* OTHERS (Prime only) */}
           {isYourUniverse && (
             <View style={styles.sectionContainer}>
               <View style={styles.headerContainer}>
@@ -623,17 +667,12 @@ const renderWorldBuildingGrid = () => {
                   ]}
                 />
               </View>
-              <FlatList
-                data={filteredOtherFactions}
-                keyExtractor={item => item.name}
-                renderItem={renderFaction}
-                numColumns={numColumns}
-                contentContainerStyle={styles.listContainer}
-              />
+              {renderGridSection(filteredOtherFactions)}
             </View>
           )}
         </ScrollView>
 
+        {/* UNIVERSE MODAL */}
         <Modal
           visible={universeModalVisible}
           transparent={true}
@@ -823,7 +862,6 @@ const styles = StyleSheet.create({
   disabledText: {
     fontSize: 12,
     color: '#ff8888',
-    marginTop: 5,
   },
   iconButton: {
     padding: 8,

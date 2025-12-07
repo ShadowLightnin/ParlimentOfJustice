@@ -6,11 +6,11 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
   Dimensions,
   ScrollView,
   Animated,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 
 // 🔊 import from ASTC (adjust path if needed)

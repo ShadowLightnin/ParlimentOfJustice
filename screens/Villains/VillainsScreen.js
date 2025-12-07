@@ -94,8 +94,8 @@ const VillainsScreen = () => {
   }, []);
 
   const goHome = () => {
-    navigation.goBack();
-};
+    navigation.navigate('Home');
+  };
 
   return (
     <ImageBackground

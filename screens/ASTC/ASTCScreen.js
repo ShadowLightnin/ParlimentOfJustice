@@ -7,9 +7,9 @@ import {
   TouchableOpacity,
   Animated,
   StyleSheet,
-  SafeAreaView,
   Dimensions,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Audio } from 'expo-av';
 

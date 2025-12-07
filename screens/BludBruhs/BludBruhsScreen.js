@@ -11,11 +11,11 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
   Dimensions,
   ScrollView,
   Animated,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Audio } from 'expo-av';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -416,7 +416,7 @@ const BludBruhsScreen = ({ route }) => {
               style={styles.backButton}
               onPress={() => {
                 killMusic();
-                navigation.goBack();
+                navigation.navigate('Home');
               }}
               activeOpacity={0.85}
             >

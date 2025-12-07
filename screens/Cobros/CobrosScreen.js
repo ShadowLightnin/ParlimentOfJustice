@@ -6,13 +6,13 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
   ScrollView,
   Dimensions,
   Modal,
   Alert,
   Animated,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { cobrosMembers } from './CobrosMembers';
 import { Audio } from 'expo-av';

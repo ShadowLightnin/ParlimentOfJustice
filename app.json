@@ -4,27 +4,32 @@
     "slug": "ParlimentOfJustice",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/favicon.png",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/favicon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+"splash": {
+  "image": "./assets/icon.png",
+  "resizeMode": "contain",
+  "backgroundColor": "#ffffff"
+}
+,
     "ios": {
       "supportsTablet": true,
-      "web": { "favicon": "./assets/favicon.png" },
-      "ios": { "icon": "./assets/favicon.png" }    
+      "bundleIdentifier": "com.yourname.parlimentofjustice",
+      "icon": "./assets/icon.png"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/favicon.png",
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-sqlite",
+      "expo-font"
+    ]
   }
 }

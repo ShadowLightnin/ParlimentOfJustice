@@ -6,12 +6,12 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
   ScrollView,
   Dimensions,
   Animated,
   Easing,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { forgeMembers } from './ForgeMembers';
 import { Audio } from 'expo-av';
