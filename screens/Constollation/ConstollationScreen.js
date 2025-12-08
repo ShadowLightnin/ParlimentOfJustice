@@ -179,7 +179,7 @@ export const ConstollationScreen = () => {
 
   return (
     <ImageBackground source={background} style={styles.background}>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container}  edges={['bottom', 'left', 'right']}>
         {/* Header */}
         <View style={styles.headerWrapper}>
           <TouchableOpacity
@@ -207,9 +207,9 @@ export const ConstollationScreen = () => {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
+          {/* <TouchableOpacity onPress={goToChat} style={styles.chatButton}>
             <Text style={styles.chatText}>🛡️</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
         {/* Music */}

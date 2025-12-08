@@ -6,11 +6,11 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
   ScrollView,
   Dimensions,
   Animated,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Audio } from 'expo-av';
 
@@ -266,7 +266,7 @@ const MonkeAllianceScreen = () => {
       style={styles.background}
       resizeMode="cover"
     >
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
         {/* Header */}
         <View style={styles.headerWrapper}>
           <TouchableOpacity
@@ -295,7 +295,7 @@ const MonkeAllianceScreen = () => {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => {
               killMonke();
               navigation.navigate('TeamChat');
@@ -304,7 +304,7 @@ const MonkeAllianceScreen = () => {
             activeOpacity={0.85}
           >
             <Text style={styles.chatText}>🛡️</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
         {/* Music controls */}

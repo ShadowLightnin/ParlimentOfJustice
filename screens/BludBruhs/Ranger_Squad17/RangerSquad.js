@@ -6,13 +6,13 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
   ScrollView,
   Dimensions,
   Modal,
   Alert,
   Animated,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { db, auth, storage } from '../../../lib/firebase';
 import { collection, onSnapshot, deleteDoc, doc, getDoc } from 'firebase/firestore';
@@ -375,7 +375,7 @@ const RangerSquad = () => {
       style={styles.background}
       resizeMode="cover"
     >
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={styles.safeArea} edges={['bottom', 'left', 'right']}>
         <View style={styles.mainOverlay}>
           {/* HEADER — glassy UNSC bar */}
           <View style={styles.headerWrapper}>
@@ -406,13 +406,13 @@ const RangerSquad = () => {
             </TouchableOpacity>
 
             <View style={styles.headerRight}>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={goToChat}
                 style={styles.iconButton}
                 activeOpacity={0.85}
               >
                 <Text style={styles.chatIcon}>🛡️</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           </View>
 

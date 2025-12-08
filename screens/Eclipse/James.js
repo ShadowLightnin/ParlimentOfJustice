@@ -1,63 +1,231 @@
-import React, { useState, useEffect } from "react";
-import { 
-  View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions 
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { Audio } from "expo-av";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
+
+// 🎧 Guardian / James music array
+const TRACKS = [
+  {
+    id: "guardian_main",
+    label: "Guardian Theme",
+    source: require("../../assets/audio/NightWing.mp4"),
+  },
+  {
+    id: "guardian_alt",
+    label: "Heartland Resolve",
+    source: require("../../assets/audio/NightWing.mp4"),
+  },
+];
+
+const armors = [
+  { name: "Guardian", image: require("../../assets/Armor/James.jpg"), clickable: true },
+];
 
 const James = () => {
   const navigation = useNavigation();
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
 
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [trackIndex, setTrackIndex] = useState(0);
+
+  const currentTrack = TRACKS[trackIndex];
+
+  // responsive width
   useEffect(() => {
-    const updateDimensions = () => {
+    const subscription = Dimensions.addEventListener("change", () => {
       setWindowWidth(Dimensions.get("window").width);
-    };
-    const subscription = Dimensions.addEventListener("change", updateDimensions);
+    });
     return () => subscription?.remove();
   }, []);
 
   const isDesktop = windowWidth >= 768;
 
-  const armors = [
-    { name: "Guardian", image: require("../../assets/Armor/James.jpg"), clickable: true },
-  ];
+  // ───────── AUDIO HELPERS ─────────
+  const unloadSound = useCallback(async () => {
+    if (sound) {
+      try {
+        await sound.stopAsync();
+      } catch {}
+      try {
+        await sound.unloadAsync();
+      } catch {}
+      setSound(null);
+    }
+  }, [sound]);
 
-  const renderArmorCard = (armor) => (
+  const loadAndPlayTrack = useCallback(
+    async (index) => {
+      await unloadSound();
+      try {
+        const { sound: newSound } = await Audio.Sound.createAsync(
+          TRACKS[index].source,
+          { isLooping: true, volume: 1.0 }
+        );
+        setSound(newSound);
+        await newSound.playAsync();
+        setIsPlaying(true);
+      } catch (e) {
+        console.error("Failed to play Guardian track", e);
+        setIsPlaying(false);
+      }
+    },
+    [unloadSound]
+  );
+
+  const playTheme = async () => {
+    if (sound) {
+      try {
+        await sound.playAsync();
+        setIsPlaying(true);
+      } catch (e) {
+        console.error("Play error", e);
+      }
+    } else {
+      await loadAndPlayTrack(trackIndex);
+    }
+  };
+
+  const pauseTheme = async () => {
+    if (!sound) return;
+    try {
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } catch (e) {
+      console.error("Pause error", e);
+    }
+  };
+
+  const cycleTrack = async (direction) => {
+    const nextIndex = (trackIndex + direction + TRACKS.length) % TRACKS.length;
+    setTrackIndex(nextIndex);
+    if (isPlaying) {
+      await loadAndPlayTrack(nextIndex);
+    } else {
+      await unloadSound();
+    }
+  };
+
+  // stop sound when leaving screen
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        unloadSound();
+        setIsPlaying(false);
+      };
+    }, [unloadSound])
+  );
+
+  const handleBackPress = async () => {
+    await unloadSound();
+    setIsPlaying(false);
+    navigation.goBack();
+  };
+
+  // ───────── RENDER CARDS ─────────
+  const renderArmorCard = (armor, index) => (
     <TouchableOpacity
-      key={armor.name}
-      style={[styles.card(isDesktop, windowWidth), armor.clickable ? styles.clickable : styles.notClickable]}
+      key={`${armor.name}-${index}`}
+      style={[
+        styles.card(isDesktop, windowWidth),
+        armor.clickable ? styles.clickable : styles.notClickable,
+      ]}
       onPress={() => armor.clickable && console.log(`${armor.name} clicked`)}
       disabled={!armor.clickable}
+      activeOpacity={0.9}
     >
       <Image source={armor.image} style={styles.armorImage} />
-      <View style={styles.transparentOverlay} />
+      <View style={styles.cardOverlay} />
       <Text style={styles.cardName}>
-        © {armor.name || 'Unknown'}; William Cummings
+        © {armor.name || "Unknown"}; William Cummings
       </Text>
-      {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+      {!armor.clickable && (
+        <Text style={styles.disabledText}>Not Clickable</Text>
+      )}
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.headerContainer}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-            <Text style={styles.backButtonText}>←</Text>
-          </TouchableOpacity>
-          <Text style={styles.title}>Guardian</Text>
+      {/* 🎧 MUSIC BAR – Ohio navy / scarlet / white */}
+      <View style={styles.musicControls}>
+        <TouchableOpacity
+          style={styles.trackButton}
+          onPress={() => cycleTrack(-1)}
+        >
+          <Text style={styles.trackButtonText}>⟵</Text>
+        </TouchableOpacity>
+
+        <View style={styles.trackInfoGlass}>
+          <Text style={styles.trackLabel}>Track:</Text>
+          <Text style={styles.trackTitle}>{currentTrack.label}</Text>
         </View>
 
-        <View style={styles.imageContainer}>
+        <TouchableOpacity
+          style={styles.trackButton}
+          onPress={() => cycleTrack(1)}
+        >
+          <Text style={styles.trackButtonText}>⟶</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.musicButton, isPlaying && styles.musicButtonDisabled]}
+          onPress={playTheme}
+          disabled={isPlaying}
+        >
+          <Text style={styles.musicButtonText}>
+            {isPlaying ? "Playing" : "Play"}
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[
+            styles.musicButtonSecondary,
+            !isPlaying && styles.musicButtonDisabled,
+          ]}
+          onPress={pauseTheme}
+          disabled={!isPlaying}
+        >
+          <Text style={styles.musicButtonTextSecondary}>Pause</Text>
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {/* HEADER – glassy like the others, with Ohio colors */}
+        <View style={styles.headerOuter}>
+          <View style={styles.headerContainer}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={handleBackPress}
+            >
+              <Text style={styles.backButtonText}>←</Text>
+            </TouchableOpacity>
+
+            <View style={styles.headerGlass}>
+              <Text style={styles.title}>Guardian</Text>
+              <Text style={styles.subtitle}>Heartland • Shield • Calm</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* ARMORY SECTION */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Guardian Armory</Text>
+          <View style={styles.sectionDivider} />
           <ScrollView
             horizontal
             contentContainerStyle={styles.imageScrollContainer}
             showsHorizontalScrollIndicator={false}
-            snapToAlignment="center"
-            snapToInterval={SCREEN_WIDTH * 0.7 + 20}
-            decelerationRate="fast"
           >
             {armors.map(renderArmorCard)}
           </ScrollView>
@@ -106,107 +274,276 @@ const James = () => {
 };
 
 const styles = StyleSheet.create({
+  // BASE
   container: {
     flex: 1,
-    backgroundColor: "#0a0a0a",
+    backgroundColor: "#050814", // deep navy / night blue
   },
   scrollContainer: {
-    paddingBottom: 20,
+    paddingBottom: 30,
+  },
+
+  // 🎧 MUSIC BAR — Ohio navy / scarlet / white
+  musicControls: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    backgroundColor: "rgba(10, 16, 34, 0.97)",
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(200, 16, 46, 0.8)", // scarlet
+    shadowColor: "#c8102e",
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 10,
+  },
+  trackButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "rgba(200, 16, 46, 0.95)",
+    backgroundColor: "rgba(16, 28, 62, 0.95)",
+    marginRight: 6,
+  },
+  trackButtonText: {
+    color: "#f5f7ff",
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  trackInfoGlass: {
+    flex: 1,
+    marginHorizontal: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 999,
+    backgroundColor: "rgba(8, 18, 44, 0.92)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.7)",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  trackLabel: {
+    color: "#ffb3c2",
+    fontSize: 11,
+    marginRight: 6,
+  },
+  trackTitle: {
+    color: "#e3f0ff",
+    fontSize: 13,
+    fontWeight: "700",
+  },
+  musicButton: {
+    backgroundColor: "rgba(200, 16, 46, 0.96)", // scarlet
+    paddingHorizontal: 16,
+    paddingVertical: 7,
+    borderRadius: 999,
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.9)",
+  },
+  musicButtonSecondary: {
+    backgroundColor: "rgba(14, 24, 52, 0.96)",
+    paddingHorizontal: 16,
+    paddingVertical: 7,
+    borderRadius: 999,
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: "rgba(160, 180, 210, 0.9)",
+  },
+  musicButtonDisabled: {
+    opacity: 0.55,
+  },
+  musicButtonText: {
+    color: "#fff4f4",
+    fontWeight: "bold",
+    fontSize: 13,
+  },
+  musicButtonTextSecondary: {
+    color: "#f0f4ff",
+    fontWeight: "bold",
+    fontSize: 13,
+  },
+
+  // HEADER
+  headerOuter: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
   },
   headerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    backgroundColor: "#0a0a0a",
-    borderBottomWidth: 1,
-    borderBottomColor: "#333",
   },
   backButton: {
-    padding: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    backgroundColor: "rgba(12, 20, 46, 0.96)",
+    borderWidth: 1,
+    borderColor: "rgba(200, 16, 46, 0.9)",
+    marginRight: 10,
   },
   backButtonText: {
-    fontSize: 24,
-    color: "#fff",
+    fontSize: 22,
+    color: "#f5f7ff",
+  },
+  headerGlass: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    backgroundColor: "rgba(10, 20, 52, 0.96)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.8)",
+    shadowColor: "#c8102e",
+    shadowOpacity: 0.45,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 10,
   },
   title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#00b3ff",
+    fontSize: 26,
+    fontWeight: "900",
+    color: "#f5f7ff",
     textAlign: "center",
-    flex: 1,
+    textShadowColor: "#c8102e",
+    textShadowRadius: 22,
+    letterSpacing: 1,
   },
-  imageContainer: {
-    width: "100%",
-    paddingVertical: 20,
-    backgroundColor: "#111",
+  subtitle: {
+    marginTop: 4,
+    fontSize: 12,
+    color: "#ffb3c2",
+    textAlign: "center",
+    letterSpacing: 1,
+    textTransform: "uppercase",
   },
+
+  // SECTION
+  section: {
+    marginTop: 24,
+    marginHorizontal: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    backgroundColor: "rgba(8, 14, 34, 0.97)",
+    borderWidth: 1,
+    borderColor: "rgba(200, 16, 46, 0.55)",
+    shadowColor: "#c8102e",
+    shadowOpacity: 0.25,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 10,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#f5f7ff",
+    textAlign: "center",
+    textShadowColor: "#c8102e",
+    textShadowRadius: 16,
+    letterSpacing: 0.8,
+  },
+  sectionDivider: {
+    marginTop: 6,
+    marginBottom: 10,
+    alignSelf: "center",
+    width: "40%",
+    height: 2,
+    borderRadius: 999,
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+  },
+
   imageScrollContainer: {
     flexDirection: "row",
-    paddingHorizontal: 10,
+    paddingHorizontal: 8,
+    paddingTop: 4,
     alignItems: "center",
-    paddingLeft: 15,
   },
-  card: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9,
-    height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7,
-    borderRadius: 15,
+
+  // CARD
+  card: (isDesktop, w) => ({
+    width: isDesktop ? w * 0.28 : SCREEN_WIDTH * 0.8,
+    height: isDesktop ? SCREEN_HEIGHT * 0.7 : SCREEN_HEIGHT * 0.65,
+    borderRadius: 22,
     overflow: "hidden",
-    elevation: 5,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-    marginRight: 20,
+    marginRight: 18,
+    backgroundColor: "rgba(4, 10, 22, 0.97)",
+    borderWidth: 1,
+    borderColor: "rgba(200, 16, 46, 0.9)",
+    shadowColor: "#c8102e",
+    shadowOpacity: 0.75,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 12,
   }),
-  clickable: {
-    borderWidth: 2,
-  },
-  notClickable: {
-    opacity: 0.8,
-  },
   armorImage: {
     width: "100%",
     height: "100%",
     resizeMode: "cover",
   },
-  transparentOverlay: {
+  cardOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0)",
-    zIndex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.25)",
+  },
+  clickable: {},
+  notClickable: {
+    opacity: 0.75,
   },
   cardName: {
     position: "absolute",
     bottom: 10,
-    left: 10,
-    fontSize: 16,
-    color: "white",
-    fontWeight: "bold",
+    left: 12,
+    right: 12,
+    fontSize: 12,
+    color: "#f5f7ff",
+    fontWeight: "600",
+    textShadowColor: "#000",
+    textShadowRadius: 10,
   },
   disabledText: {
-    fontSize: 12,
-    color: "#ff4444",
     position: "absolute",
-    bottom: 30,
-    left: 10,
+    top: 10,
+    right: 12,
+    fontSize: 10,
+    color: "#ff8a8a",
+    fontWeight: "600",
   },
+
+  // ABOUT (still matches pattern if/when you uncomment)
   aboutSection: {
-    marginTop: 40,
-    padding: 20,
-    backgroundColor: "#222",
-    borderRadius: 15,
+    marginTop: 28,
+    marginHorizontal: 12,
+    marginBottom: 32,
+    paddingVertical: 18,
+    paddingHorizontal: 14,
+    borderRadius: 22,
+    backgroundColor: "rgba(10, 16, 36, 0.97)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.9)",
+    shadowColor: "#c8102e",
+    shadowOpacity: 0.25,
+    shadowRadius: 22,
+    shadowOffset: { width: 0, height: 12 },
+    elevation: 12,
   },
   aboutHeader: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#00b3ff",
+    fontSize: 20,
+    fontWeight: "800",
+    color: "#f5f7ff",
     textAlign: "center",
+    textShadowColor: "#c8102e",
+    textShadowRadius: 18,
+    letterSpacing: 0.8,
+    marginBottom: 6,
   },
   aboutText: {
-    fontSize: 16,
-    color: "#fff",
-    textAlign: "center",
-    marginTop: 10,
+    fontSize: 14,
+    color: "#e4e8f5",
+    lineHeight: 20,
+    marginTop: 6,
+    textAlign: "left",
   },
 });
 

@@ -161,7 +161,7 @@ const ASTCScreen = () => {
 
   return (
     <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover">
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
         {/* FORERUNNER KEY */}
         <Animated.View
           style={{

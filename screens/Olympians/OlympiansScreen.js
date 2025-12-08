@@ -242,7 +242,7 @@ export const OlympiansScreen = () => {
       style={styles.background}
       resizeMode="cover"
     >
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={styles.safeArea} edges={['bottom', 'left', 'right']}>
         <View style={styles.screenOverlay}>
           {/* HEADER — glassy, phoenix-themed */}
           <View style={styles.headerWrapper}>
@@ -270,13 +270,13 @@ export const OlympiansScreen = () => {
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={goToChat}
               style={styles.chatButton}
               activeOpacity={0.85}
             >
               <Text style={styles.chatText}>💬</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
           {/* MUSIC */}

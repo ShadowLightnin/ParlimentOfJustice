@@ -245,34 +245,37 @@ export const HomeScreen = () => {
   }, [fadeAnim, isYourUniverse, userEmail]);
 
   // Music playback
-  const playTheme = async () => {
-    const soundFile = isYourUniverse
-      ? require('../assets/audio/StarTrekEnterprise.mp4')
-      : require('../assets/audio/parliamentofpower.m4a');
+const playTheme = async () => {
+  const soundFile = isYourUniverse
+    ? require('../assets/audio/StarTrekEnterprise.mp4')
+    : require('../assets/audio/parliamentofpower.m4a');
 
-    if (!currentSound) {
-      try {
-        const { sound } = await Audio.Sound.createAsync(soundFile, {
-          shouldPlay: true,
-          isLooping: true,
-          volume: 1.0,
-        });
-        setCurrentSound(sound);
-        await sound.playAsync();
-        setIsPlaying(true);
-      } catch (error) {
-        console.error('Failed to load audio file:', error);
-        Alert.alert('Audio Error', 'Failed to load background music. Please check the file path.');
-      }
-    } else if (!isPlaying) {
-      try {
-        await currentSound.playAsync();
-        setIsPlaying(true);
-      } catch (error) {
-        console.error('Error resuming sound:', error);
-      }
+  if (!currentSound) {
+    try {
+      const { sound } = await Audio.Sound.createAsync(soundFile, {
+        shouldPlay: true,
+        isLooping: true,
+        volume: 1.0,
+      });
+      setCurrentSound(sound);
+      await sound.playAsync();
+      setIsPlaying(true);
+    } catch (error) {
+      console.error('Failed to load audio file:', error);
+      Alert.alert(
+        'Audio Error',
+        'Failed to load background music. Please check the file path.'
+      );
     }
-  };
+  } else if (!isPlaying) {
+    try {
+      await currentSound.playAsync();
+      setIsPlaying(true);
+    } catch (error) {
+      console.error('Error resuming sound:', error);
+    }
+  }
+};
 
   const pauseTheme = async () => {
     if (currentSound && isPlaying) {
@@ -285,18 +288,19 @@ export const HomeScreen = () => {
     }
   };
 
-  const stopAndUnloadAudio = async () => {
-    if (currentSound) {
-      try {
-        await currentSound.stopAsync();
-        await currentSound.unloadAsync();
-        setCurrentSound(null);
-        setIsPlaying(false);
-      } catch (error) {
-        console.error('Error stopping/unloading sound:', error);
-      }
+const stopAndUnloadAudio = async () => {
+  if (currentSound) {
+    try {
+      await currentSound.stopAsync();
+      await currentSound.unloadAsync();
+      setCurrentSound(null);
+      setIsPlaying(false);
+    } catch (error) {
+      console.error('Error stopping/unloading sound:', error);
     }
-  };
+  }
+};
+
 
   // ⬅️ Only stop audio on screen blur, not when currentSound changes
   useFocusEffect(
@@ -581,9 +585,9 @@ export const HomeScreen = () => {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={goToChat} style={styles.iconButton}>
+          {/* <TouchableOpacity onPress={goToChat} style={styles.iconButton}>
             <Text style={styles.iconText}>🗨️</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
         {/* MUSIC CONTROLS */}

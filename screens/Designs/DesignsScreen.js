@@ -44,7 +44,7 @@ export const DesignsScreen = () => {
       source={require('../../assets/BackGround/donut_hologram.png')}
       style={styles.background}
     >
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container}  edges={['bottom', 'left', 'right']}>
         {/* Header & Back Button */}
         <View style={styles.headerWrapper}>
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>

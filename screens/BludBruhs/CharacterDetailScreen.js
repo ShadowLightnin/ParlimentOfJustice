@@ -1,5 +1,5 @@
 // screens/BludBruhs/CharacterDetailScreen.js
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -9,21 +9,53 @@ import {
   TouchableOpacity,
   StyleSheet,
   Dimensions,
-  SafeAreaView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { Audio } from 'expo-av';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const isDesktop = SCREEN_WIDTH > 600;
 
+// 🔹 Fallback placeholder image
+const PLACEHOLDER = require('../../assets/Armor/PlaceHolder.jpg');
+
+// 🔹 Normalize ANY kind of image value into something <Image> understands
+const normalizeImageSource = (img) => {
+  if (!img) return PLACEHOLDER;
+
+  // 1) Local require(...) → number
+  if (typeof img === 'number') {
+    return img;
+  }
+
+  // 2) Object with uri
+  if (typeof img === 'object' && img.uri != null) {
+    // local require stored in uri
+    if (typeof img.uri === 'number') return img.uri;
+    // remote URL string
+    if (typeof img.uri === 'string') return { uri: img.uri };
+  }
+
+  // 3) Plain string → remote URL
+  if (typeof img === 'string') {
+    return { uri: img };
+  }
+
+  return PLACEHOLDER;
+};
+
 // Default lore fallback
 const defaultDescriptions = {
-  'Taylor': 'A star that burns brighter than the rest. Her presence commands silence, her will bends reality. Known to walk between realms.',
-  'Adin': 'Born under the southern cross. A warrior of ancient bloodlines, guardian of forgotten oaths. His footsteps shake the earth.',
-  'Justin Platt': 'Echo Wood — the voice that lingers in the forest long after he’s gone. Master of resonance, breaker of silence.',
-  'Zack Dustin': 'Carved Echo — a soul etched into the world itself. His scars tell stories louder than words.',
-  'default': 'A legend in the making. Their story is still being forged in fire and thunder.',
+  Taylor:
+    'A star that burns brighter than the rest. Her presence commands silence, her will bends reality. Known to walk between realms.',
+  Adin:
+    'Born under the southern cross. A warrior of ancient bloodlines, guardian of forgotten oaths. His footsteps shake the earth.',
+  'Justin Platt':
+    'Echo Wood — the voice that lingers in the forest long after he’s gone. Master of resonance, breaker of silence.',
+  'Zack Dustin':
+    'Carved Echo — a soul etched into the world itself. His scars tell stories louder than words.',
+  default:
+    'A legend in the making. Their story is still being forged in fire and thunder.',
 };
 
 export default function CharacterDetailScreen() {
@@ -39,20 +71,32 @@ export default function CharacterDetailScreen() {
     );
   }
 
-  // Use multiple images if provided, otherwise use single image
-  const images = member.images || (member.image ? [member.image] : [require('../../assets/Armor/PlaceHolder.jpg')]);
-  const description = member.description || defaultDescriptions[member.name] || defaultDescriptions.default;
+  // ✅ Use multiple images if provided, otherwise single image or placeholder
+  const images =
+    member.images && member.images.length
+      ? member.images
+      : [member.image || PLACEHOLDER];
+
+  const description =
+    member.description ||
+    defaultDescriptions[member.name] ||
+    defaultDescriptions.default;
 
   const cardWidth = isDesktop ? SCREEN_WIDTH * 0.45 : SCREEN_WIDTH * 0.88;
 
   return (
-    <ImageBackground source={require('../../assets/BackGround/Bludbruh2.jpg')} style={styles.background}>
-      <SafeAreaView style={styles.container}>
+    <ImageBackground
+      source={require('../../assets/BackGround/Bludbruh2.jpg')}
+      style={styles.background}
+    >
+      <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
         <ScrollView contentContainerStyle={styles.scrollContent}>
-
           {/* HEADER WITH BACK BUTTON */}
           <View style={styles.header}>
-            <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
+            <TouchableOpacity
+              style={styles.backBtn}
+              onPress={() => navigation.goBack()}
+            >
               <Text style={styles.backText}>Back</Text>
             </TouchableOpacity>
             <Text style={styles.title}>
@@ -72,7 +116,7 @@ export default function CharacterDetailScreen() {
               {images.map((img, i) => (
                 <View key={i} style={[styles.card, { width: cardWidth }]}>
                   <Image
-                    source={typeof img === 'object' && img.uri ? img : { uri: img }}
+                    source={normalizeImageSource(img)}
                     style={styles.armorImage}
                     resizeMode="cover"
                   />
@@ -84,12 +128,13 @@ export default function CharacterDetailScreen() {
 
           {/* LORE SECTION */}
           <View style={styles.about}>
-            <Text style={styles.codename}>{member.codename || 'Unknown Legend'}</Text>
+            <Text style={styles.codename}>
+              {member.codename || 'Unknown Legend'}
+            </Text>
             <Text style={styles.name}>{member.name || 'The Nameless'}</Text>
             <View style={styles.divider} />
             <Text style={styles.description}>{description}</Text>
           </View>
-
         </ScrollView>
       </SafeAreaView>
     </ImageBackground>
@@ -100,6 +145,7 @@ const styles = StyleSheet.create({
   background: { width: '100%', height: '100%' },
   container: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)' },
   scrollContent: { paddingBottom: 80 },
+
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -116,7 +162,15 @@ const styles = StyleSheet.create({
     borderColor: '#00b3ff',
   },
   backText: { fontSize: 28, color: '#00ffff', fontWeight: 'bold' },
-  title: { flex: 1, textAlign: 'center', fontSize: 32, fontWeight: '900', color: '#00ffff', textShadowColor: '#00b3ff', textShadowRadius: 15 },
+  title: {
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 32,
+    fontWeight: '900',
+    color: '#00ffff',
+    textShadowColor: '#00b3ff',
+    textShadowRadius: 15,
+  },
 
   imageContainer: { paddingVertical: 20 },
   card: {
@@ -132,7 +186,10 @@ const styles = StyleSheet.create({
     elevation: 20,
   },
   armorImage: { width: '100%', height: '100%' },
-  overlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.4)' },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
 
   about: {
     marginTop: 30,

@@ -8,8 +8,8 @@ import {
   StyleSheet,
   Dimensions,
   Alert,
-  Picker,
 } from 'react-native';
+import { Picker } from '@react-native-picker/picker'; // ✅ correct Picker import
 import * as ImagePicker from 'expo-image-picker';
 import { db, storage, auth } from '../../lib/firebase';
 import { doc, setDoc, addDoc, collection } from 'firebase/firestore';

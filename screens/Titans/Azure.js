@@ -1,15 +1,76 @@
-import React, { useState, useEffect } from "react";
-import { 
-  View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions 
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+  Alert,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { Audio } from "expo-av";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
+
+// 🎧 Azure / Mediateir music array (swap files later if you want)
+const TRACKS = [
+  {
+    id: "mediateir_main",
+    label: "Mediateir Theme",
+    source: require("../../assets/audio/BlueBloods.mp4"), // change later if you want
+  },
+  {
+    id: "mediateir_variant",
+    label: "Mediateir – Variant",
+    source: require("../../assets/audio/BlueBloods.mp4"),
+  },
+];
+
+const armors = [
+  {
+    name: "Mediateir",
+    copyright: "William Cummings",
+    image: require("../../assets/Armor/Azure3.jpg"),
+    clickable: true,
+  },
+  {
+    name: "Legacy",
+    copyright: "William Cummings",
+    image: require("../../assets/Armor/AzureLegacy.jpg"),
+    clickable: true,
+  },
+  {
+    name: "Mediateir",
+    copyright: "William Cummings",
+    image: require("../../assets/Armor/Azure.jpg"),
+    clickable: true,
+  },
+  {
+    name: "Midigator",
+    copyright: "William Cummings",
+    image: require("../../assets/Armor/Azure2.jpg"),
+    clickable: true,
+  },
+  {
+    name: "",
+    image: require("../../assets/Armor/AzuresSymbol.jpg"),
+    clickable: true,
+  },
+];
 
 const Azure = () => {
   const navigation = useNavigation();
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
 
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [trackIndex, setTrackIndex] = useState(0);
+
+  const currentTrack = TRACKS[trackIndex];
+
+  // dimension handling
   useEffect(() => {
     const updateDimensions = () => {
       setWindowWidth(Dimensions.get("window").width);
@@ -20,54 +81,192 @@ const Azure = () => {
 
   const isDesktop = windowWidth >= 768;
 
-  const armors = [
-    { name: "Mediateir", copyright: "William Cummings", image: require("../../assets/Armor/Azure3.jpg"), clickable: true },
-    { name: "Legacy", copyright: "William Cummings", image: require("../../assets/Armor/AzureLegacy.jpg"), clickable: true },
-    { name: "Mediateir", copyright: "William Cummings", image: require("../../assets/Armor/Azure.jpg"), clickable: true },
-    { name: "Midigator", copyright: "William Cummings", image: require("../../assets/Armor/Azure2.jpg"), clickable: true },
-    { name: "", image: require("../../assets/Armor/AzuresSymbol.jpg"), clickable: true },
-  ];
+  // ───────── AUDIO HELPERS ─────────
+  const unloadSound = useCallback(async () => {
+    if (sound) {
+      try {
+        await sound.stopAsync();
+      } catch {}
+      try {
+        await sound.unloadAsync();
+      } catch {}
+      setSound(null);
+    }
+  }, [sound]);
+
+  const loadAndPlayTrack = useCallback(
+    async (index) => {
+      await unloadSound();
+      try {
+        const { sound: newSound } = await Audio.Sound.createAsync(
+          TRACKS[index].source,
+          { isLooping: true, volume: 0.9 }
+        );
+        setSound(newSound);
+        await newSound.playAsync();
+        setIsPlaying(true);
+      } catch (e) {
+        console.error("Failed to play Azure track", e);
+        Alert.alert("Audio Error", "Could not play Mediateir's theme.");
+        setIsPlaying(false);
+      }
+    },
+    [unloadSound]
+  );
+
+  const playTheme = async () => {
+    if (sound) {
+      try {
+        await sound.playAsync();
+        setIsPlaying(true);
+      } catch (e) {
+        console.error("Play error", e);
+      }
+    } else {
+      await loadAndPlayTrack(trackIndex);
+    }
+  };
+
+  const pauseTheme = async () => {
+    if (!sound) return;
+    try {
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } catch (e) {
+      console.error("Pause error", e);
+    }
+  };
+
+  const cycleTrack = async (direction) => {
+    const nextIndex = (trackIndex + direction + TRACKS.length) % TRACKS.length;
+    setTrackIndex(nextIndex);
+    if (isPlaying) {
+      await loadAndPlayTrack(nextIndex);
+    } else {
+      await unloadSound();
+    }
+  };
+
+  // Stop sound when leaving screen
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        unloadSound();
+        setIsPlaying(false);
+      };
+    }, [unloadSound])
+  );
+
+  const handleBackPress = async () => {
+    await unloadSound();
+    setIsPlaying(false);
+    navigation.goBack();
+  };
 
   const renderArmorCard = (armor, index) => (
     <TouchableOpacity
-      key={`${armor.name}-${armor.copyright || index}`} // Unique key using name, copyright, or index
-      style={[styles.card(isDesktop, windowWidth), armor.clickable ? styles.clickable : styles.notClickable]}
-      onPress={() => armor.clickable && console.log(`${armor.name || 'Unnamed'} clicked`)}
+      key={`${armor.name}-${armor.copyright || index}`}
+      style={[
+        styles.card(isDesktop, windowWidth),
+        armor.clickable ? styles.clickable : styles.notClickable,
+      ]}
+      onPress={() =>
+        armor.clickable && console.log(`${armor.name || "Unnamed"} clicked`)
+      }
       disabled={!armor.clickable}
+      activeOpacity={0.9}
     >
       <Image source={armor.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
       <Text style={styles.cardName}>
-        {armor.copyright ? `© ${armor.name || 'Unknown'}; ${armor.copyright}` : (armor.name)}
+        {armor.copyright
+          ? `© ${armor.name || "Unknown"}; ${armor.copyright}`
+          : armor.name}
       </Text>
-      {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+      {!armor.clickable && (
+        <Text style={styles.disabledText}>Not Clickable</Text>
+      )}
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.headerContainer}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-            <Text style={styles.backButtonText}>←</Text>
-          </TouchableOpacity>
-          <Text style={styles.title}>Mediateir</Text>
+      {/* 🎧 MUSIC BAR – azure / aqua / silver */}
+      <View style={styles.musicControls}>
+        <TouchableOpacity
+          style={styles.trackButton}
+          onPress={() => cycleTrack(-1)}
+        >
+          <Text style={styles.trackButtonText}>⟵</Text>
+        </TouchableOpacity>
+
+        <View style={styles.trackInfoGlass}>
+          <Text style={styles.trackLabel}>Track:</Text>
+          <Text style={styles.trackTitle}>{currentTrack.label}</Text>
         </View>
 
-        <View style={styles.imageContainer}>
+        <TouchableOpacity
+          style={styles.trackButton}
+          onPress={() => cycleTrack(1)}
+        >
+          <Text style={styles.trackButtonText}>⟶</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.musicButton, isPlaying && styles.musicButtonDisabled]}
+          onPress={playTheme}
+          disabled={isPlaying}
+        >
+          <Text style={styles.musicButtonText}>
+            {isPlaying ? "Playing" : "Play"}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.musicButtonSecondary,
+            !isPlaying && styles.musicButtonDisabled,
+          ]}
+          onPress={pauseTheme}
+          disabled={!isPlaying}
+        >
+          <Text style={styles.musicButtonTextSecondary}>Pause</Text>
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {/* HEADER – glass block like the others, Azure palette */}
+        <View style={styles.headerOuter}>
+          <View style={styles.headerContainer}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={handleBackPress}
+            >
+              <Text style={styles.backButtonText}>←</Text>
+            </TouchableOpacity>
+
+            <View style={styles.headerGlass}>
+              <Text style={styles.title}>Mediateir</Text>
+              <Text style={styles.subtitle}>
+                Shield of Order • Arbiter of Zion
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        {/* ARMORY SECTION – same structure as the others */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Mediateir Armory</Text>
+          <View style={styles.sectionDivider} />
           <ScrollView
             horizontal
             contentContainerStyle={styles.imageScrollContainer}
             showsHorizontalScrollIndicator={false}
-            snapToAlignment="center"
-            snapToInterval={SCREEN_WIDTH * 0.7 + 20}
-            decelerationRate="fast"
-            contentOffset={{ x: (SCREEN_WIDTH - (SCREEN_WIDTH * 0.7)) / 2 - 10, y: 0 }}
           >
             {armors.map(renderArmorCard)}
           </ScrollView>
         </View>
 
+        {/* About block preserved exactly as you had it (still commented) */}
         {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
@@ -112,64 +311,214 @@ const Azure = () => {
 };
 
 const styles = StyleSheet.create({
+  // BASE
   container: {
     flex: 1,
-    backgroundColor: "#0a0a0a",
+    backgroundColor: "#040b12", // deep navy with a hint of teal
   },
   scrollContainer: {
-    paddingBottom: 20,
+    paddingBottom: 24,
+  },
+
+  // 🎧 MUSIC BAR – azure / aqua / silver
+  musicControls: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    backgroundColor: "rgba(5, 18, 30, 0.97)",
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(130, 200, 255, 0.75)",
+    shadowColor: "#4fc3f7",
+    shadowOpacity: 0.45,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 10,
+  },
+  trackButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "rgba(120, 210, 255, 0.9)", // aqua border
+    backgroundColor: "rgba(8, 30, 50, 0.96)", // deep aqua glass
+    marginRight: 6,
+  },
+  trackButtonText: {
+    color: "#e5f6ff",
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  trackInfoGlass: {
+    flex: 1,
+    marginHorizontal: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 999,
+    backgroundColor: "rgba(6, 22, 36, 0.9)",
+    borderWidth: 1,
+    borderColor: "rgba(160, 215, 255, 0.85)",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  trackLabel: {
+    color: "#b3e5ff",
+    fontSize: 11,
+    marginRight: 6,
+  },
+  trackTitle: {
+    color: "#f2f9ff",
+    fontSize: 13,
+    fontWeight: "700",
+  },
+  musicButton: {
+    backgroundColor: "rgba(0, 172, 237, 0.96)", // bright azure
+    paddingHorizontal: 16,
+    paddingVertical: 7,
+    borderRadius: 999,
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: "rgba(200, 235, 255, 0.95)",
+  },
+  musicButtonSecondary: {
+    backgroundColor: "rgba(4, 35, 56, 0.96)",
+    paddingHorizontal: 16,
+    paddingVertical: 7,
+    borderRadius: 999,
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: "rgba(150, 210, 245, 0.9)",
+  },
+  musicButtonDisabled: {
+    opacity: 0.55,
+  },
+  musicButtonText: {
+    color: "#e8f5ff",
+    fontWeight: "bold",
+    fontSize: 13,
+  },
+  musicButtonTextSecondary: {
+    color: "#e3f2fd",
+    fontWeight: "bold",
+    fontSize: 13,
+  },
+
+  // HEADER
+  headerOuter: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
   },
   headerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    backgroundColor: "#0a0a0a",
-    borderBottomWidth: 1,
-    borderBottomColor: "#333",
   },
   backButton: {
-    padding: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    backgroundColor: "rgba(4, 26, 44, 0.96)",
+    borderWidth: 1,
+    borderColor: "rgba(150, 210, 245, 0.9)",
+    marginRight: 10,
   },
   backButtonText: {
-    fontSize: 24,
-    color: "#fff",
+    fontSize: 20,
+    color: "#b3e5ff",
+    fontWeight: "bold",
+  },
+  headerGlass: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    backgroundColor: "rgba(4, 20, 34, 0.94)",
+    borderWidth: 1,
+    borderColor: "rgba(160, 220, 255, 0.85)",
+    shadowColor: "#4fc3f7",
+    shadowOpacity: 0.5,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 10,
   },
   title: {
     fontSize: 28,
-    fontWeight: "bold",
-    color: "#00b3ff",
+    fontWeight: "900",
+    color: "#4fc3f7", // azure blue
     textAlign: "center",
-    flex: 1,
+    textShadowColor: "#b3e5ff",
+    textShadowRadius: 20,
+    letterSpacing: 1,
   },
-  imageContainer: {
-    width: "100%",
-    paddingVertical: 20,
-    backgroundColor: "#111",
-    paddingLeft: 15,
+  subtitle: {
+    marginTop: 4,
+    fontSize: 12,
+    color: "#cfd8dc", // silver/grey
+    textAlign: "center",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
   },
+
+  // SECTION WRAPPER
+  section: {
+    marginTop: 24,
+    marginHorizontal: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    backgroundColor: "rgba(3, 17, 28, 0.97)",
+    borderWidth: 1,
+    borderColor: "rgba(150, 210, 245, 0.8)",
+    shadowColor: "#4fc3f7",
+    shadowOpacity: 0.25,
+    shadowRadius: 22,
+    shadowOffset: { width: 0, height: 12 },
+    elevation: 12,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#e3f2fd",
+    textAlign: "center",
+    textShadowColor: "#81d4fa",
+    textShadowRadius: 18,
+    letterSpacing: 0.8,
+  },
+  sectionDivider: {
+    marginTop: 6,
+    marginBottom: 10,
+    alignSelf: "center",
+    width: "40%",
+    height: 2,
+    borderRadius: 999,
+    backgroundColor: "rgba(130, 200, 255, 0.95)",
+  },
+
   imageScrollContainer: {
     flexDirection: "row",
     paddingHorizontal: 10,
     alignItems: "center",
   },
+
+  // ARMOR CARDS
   card: (isDesktop, windowWidth) => ({
     width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9,
     height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7,
-    borderRadius: 15,
+    borderRadius: 18,
     overflow: "hidden",
-    elevation: 5,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    elevation: 10,
+    backgroundColor: "rgba(2, 12, 20, 0.9)",
     marginRight: 20,
   }),
   clickable: {
-    borderWidth: 2,
+    borderWidth: 3,
+    borderColor: "#4fc3f7", // azure
+    shadowColor: "#00bcd4", // aqua
+    shadowOpacity: 0.85,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 6 },
   },
   notClickable: {
-    opacity: 0.8,
+    opacity: 0.7,
   },
   armorImage: {
     width: "100%",
@@ -178,7 +527,7 @@ const styles = StyleSheet.create({
   },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0)",
+    backgroundColor: "rgba(0, 0, 0, 0.15)",
     zIndex: 1,
   },
   cardName: {
@@ -186,33 +535,52 @@ const styles = StyleSheet.create({
     bottom: 10,
     left: 10,
     fontSize: 16,
-    color: "white",
+    color: "#e3f2fd",
     fontWeight: "bold",
+    textShadowColor: "#000814",
+    textShadowRadius: 6,
   },
   disabledText: {
     fontSize: 12,
-    color: "#ff4444",
+    color: "#ff8a8a",
     position: "absolute",
     bottom: 30,
     left: 10,
   },
+
+  // ABOUT (for when you uncomment)
   aboutSection: {
-    marginTop: 40,
-    padding: 20,
-    backgroundColor: "#222",
-    borderRadius: 15,
+    marginTop: 28,
+    marginHorizontal: 12,
+    marginBottom: 32,
+    paddingVertical: 18,
+    paddingHorizontal: 14,
+    borderRadius: 22,
+    backgroundColor: "rgba(3, 20, 32, 0.97)",
+    borderWidth: 1,
+    borderColor: "rgba(150, 210, 245, 0.8)",
+    shadowColor: "#4fc3f7",
+    shadowOpacity: 0.25,
+    shadowRadius: 22,
+    shadowOffset: { width: 0, height: 12 },
+    elevation: 12,
   },
   aboutHeader: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#00b3ff",
+    fontSize: 20,
+    fontWeight: "800",
+    color: "#e3f2fd",
     textAlign: "center",
+    textShadowColor: "#81d4fa",
+    textShadowRadius: 18,
+    letterSpacing: 0.8,
+    marginBottom: 6,
   },
   aboutText: {
-    fontSize: 16,
-    color: "#fff",
-    textAlign: "center",
-    marginTop: 10,
+    fontSize: 14,
+    color: "#cfd8dc",
+    lineHeight: 20,
+    marginTop: 6,
+    textAlign: "left",
   },
 });
 

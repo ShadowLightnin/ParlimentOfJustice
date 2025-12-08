@@ -244,7 +244,7 @@ export const LegionairesScreen = () => {
       style={styles.background}
       resizeMode="cover"
     >
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={styles.safeArea}  edges={['bottom', 'left', 'right']}>
         <View style={styles.overlay}>
           {/* HEADER — clean + glassy, blue/silver */}
           <View style={styles.headerWrapper}>
@@ -272,13 +272,13 @@ export const LegionairesScreen = () => {
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={goToChat}
               style={styles.chatButton}
               activeOpacity={0.85}
             >
               <Text style={styles.chatText}>💬</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
           {/* MUSIC CONTROLS — sleek chips */}

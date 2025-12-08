@@ -7,12 +7,11 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-"splash": {
-  "image": "./assets/icon.png",
-  "resizeMode": "contain",
-  "backgroundColor": "#ffffff"
-}
-,
+    "splash": {
+      "image": "./assets/icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.yourname.parlimentofjustice",
@@ -29,7 +28,8 @@
     },
     "plugins": [
       "expo-sqlite",
-      "expo-font"
+      "expo-font",
+      "expo-audio"
     ]
   }
 }

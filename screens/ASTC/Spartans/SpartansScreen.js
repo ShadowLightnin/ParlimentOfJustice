@@ -192,7 +192,7 @@ const SpartansScreen = () => {
 
   return (
     <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover">
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
         <View style={{ flex: 1 }}>
           <ScrollView contentContainerStyle={styles.scrollContent}>
             {/* HEADER */}
@@ -232,13 +232,13 @@ const SpartansScreen = () => {
                   </Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   onPress={goToChat}
                   style={styles.chatButton}
                   activeOpacity={0.85}
                 >
                   <Text style={styles.chatText}>🛡️</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
             </View>
 

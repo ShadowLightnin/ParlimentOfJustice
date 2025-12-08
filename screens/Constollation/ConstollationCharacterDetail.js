@@ -1,3 +1,4 @@
+// screens/Constollation/ConstollationCharacterDetail.js
 import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
@@ -14,21 +15,55 @@ import constollationImages from './ConstollationImages';
 import ConstollationDescription from './ConstollationDescription';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const PLACEHOLDER = require('../../assets/Armor/PlaceHolder.jpg');
+
+// 🔹 Normalize anything into a valid Image source
+const normalizeImageSource = (img) => {
+  if (!img) return PLACEHOLDER;
+
+  // Already a local require
+  if (typeof img === 'number') return img;
+
+  // Object with uri or nested source
+  if (typeof img === 'object') {
+    // Sometimes people store { source: require(...) }
+    if (img.source) return normalizeImageSource(img.source);
+
+    if (img.uri != null) {
+      // local require accidentally put into uri
+      if (typeof img.uri === 'number') return img.uri;
+      if (typeof img.uri === 'string') return { uri: img.uri };
+    }
+  }
+
+  // Plain string → remote URL
+  if (typeof img === 'string') {
+    return { uri: img };
+  }
+
+  return PLACEHOLDER;
+};
 
 const ConstollationCharacterDetail = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { member } = route.params || {};
+
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef(null);
   const audioRef = useRef(null);
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
+
   const isDesktop = windowWidth >= 768;
   const cardWidth = isDesktop ? windowWidth * 0.32 : SCREEN_WIDTH * 0.88;
 
   useEffect(() => {
-    const updateDimensions = () => setWindowWidth(Dimensions.get('window').width);
-    const subscription = Dimensions.addEventListener('change', updateDimensions);
+    const updateDimensions = () =>
+      setWindowWidth(Dimensions.get('window').width);
+    const subscription = Dimensions.addEventListener(
+      'change',
+      updateDimensions
+    );
     return () => subscription?.remove();
   }, []);
 
@@ -47,50 +82,59 @@ const ConstollationCharacterDetail = () => {
     };
   }, []);
 
-  // CORRECT COPYRIGHT TEXT
+  // ✅ Correct copyright text
   const copyrightText = member?.codename
     ? `© ${member.codename}; William Cummings`
     : '© William Cummings';
 
-  // BUILD IMAGES ARRAY WITH COPYRIGHT APPLIED TO EVERY IMAGE
-  const images = member?.images?.length > 0
-    ? member.images.map((img) => ({
-        uri: img.uri,
-        name: copyrightText,        // This is what shows under each image
-        clickable: img.clickable ?? true,
-      }))
-    : constollationImages[member?.name]?.images?.length > 0
-      ? constollationImages[member.name].images.map((img) => ({
-          uri: img.uri,
-          name: copyrightText,
-          clickable: img.clickable ?? true,
-        }))
-      : [{
-          uri: member?.image || require('../../assets/Armor/PlaceHolder.jpg'),
-          name: copyrightText,
-          clickable: true,
-        }];
+  // ✅ Build IMAGES ARRAY with normalized sources & copyright name
+  let images;
+  if (member?.images?.length > 0) {
+    images = member.images.map((img) => ({
+      source: normalizeImageSource(img.uri ?? img),
+      name: copyrightText,
+      clickable: img.clickable ?? true,
+    }));
+  } else if (constollationImages[member?.name]?.images?.length > 0) {
+    images = constollationImages[member.name].images.map((img) => ({
+      source: normalizeImageSource(img.uri ?? img),
+      name: copyrightText,
+      clickable: img.clickable ?? true,
+    }));
+  } else {
+    images = [
+      {
+        source: normalizeImageSource(member?.image || PLACEHOLDER),
+        name: copyrightText,
+        clickable: true,
+      },
+    ];
+  }
 
-  const memberDescription = member?.description || 
-    ConstollationDescription[member?.name] || 
+  const memberDescription =
+    member?.description ||
+    ConstollationDescription[member?.name] ||
     'A guiding star in the Constollation. Their light shapes the future of those they teach, mentor, and inspire. Eternal gratitude to all who illuminate the path.';
 
-  const renderImageCard = (img, index) => {
-    const source = typeof img.uri === 'object' ? img.uri : { uri: img.uri };
-    return (
-      <TouchableOpacity
-        key={index}
-        style={[styles.card(isDesktop, windowWidth), img.clickable !== false && styles.clickable]}
-        onPress={() => console.log(`${copyrightText} clicked`)}
-      >
-        <Image source={source} style={styles.armorImage} resizeMode="cover" />
-        <View style={styles.transparentOverlay} />
-        {img.name && (
-          <Text style={styles.cardName}>{img.name}</Text>
-        )}
-      </TouchableOpacity>
-    );
-  };
+  const renderImageCard = (img, index) => (
+    <TouchableOpacity
+      key={index}
+      style={[
+        styles.card(isDesktop, windowWidth),
+        img.clickable !== false && styles.clickable,
+      ]}
+      onPress={() => console.log(`${copyrightText} clicked`)}
+      activeOpacity={0.9}
+    >
+      <Image
+        source={normalizeImageSource(img.source)}
+        style={styles.armorImage}
+        resizeMode="cover"
+      />
+      <View style={styles.transparentOverlay} />
+      {img.name && <Text style={styles.cardName}>{img.name}</Text>}
+    </TouchableOpacity>
+  );
 
   const renderMediaPlayer = () => {
     if (!member?.mediaUri) return null;
@@ -107,7 +151,18 @@ const ConstollationCharacterDetail = () => {
             useNativeControls
           />
         ) : (
-          <View style={{ width: '100%', height: 60, backgroundColor: '#111', borderRadius: 12, justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: '#00b3ff' }}>
+          <View
+            style={{
+              width: '100%',
+              height: 60,
+              backgroundColor: '#111',
+              borderRadius: 12,
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderWidth: 1,
+              borderColor: '#00b3ff',
+            }}
+          >
             <Text style={styles.mediaText}>Audio Message</Text>
           </View>
         )}
@@ -131,7 +186,7 @@ const ConstollationCharacterDetail = () => {
           </Text>
         </View>
 
-        {/* Horizontal Image Gallery — NOW USING THE CORRECT IMAGES ARRAY */}
+        {/* Horizontal Image Gallery */}
         <View style={styles.imageContainer}>
           <ScrollView
             horizontal
@@ -153,13 +208,9 @@ const ConstollationCharacterDetail = () => {
             {member?.name || 'A Soul of the Constollation'}
           </Text>
           {member?.category && (
-            <Text style={styles.aboutCategory}>
-              {member.category}
-            </Text>
+            <Text style={styles.aboutCategory}>{member.category}</Text>
           )}
-          <Text style={styles.aboutText}>
-            {memberDescription}
-          </Text>
+          <Text style={styles.aboutText}>{memberDescription}</Text>
         </View>
 
         {/* Optional Media */}
@@ -169,10 +220,11 @@ const ConstollationCharacterDetail = () => {
   );
 };
 
-// Styles remain unchanged...
+// Styles
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#0a0a0a' },
   scrollContainer: { paddingBottom: 60 },
+
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -190,9 +242,22 @@ const styles = StyleSheet.create({
     borderColor: '#00b3ff',
   },
   backButtonText: { fontSize: 24, color: '#00b3ff', fontWeight: 'bold' },
-  title: { fontSize: 28, fontWeight: 'bold', color: '#00b3ff', textAlign: 'center', flex: 1, textShadowColor: '#00b3ff', textShadowRadius: 10 },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#00b3ff',
+    textAlign: 'center',
+    flex: 1,
+    textShadowColor: '#00b3ff',
+    textShadowRadius: 10,
+  },
 
-  imageContainer: { width: '100%', paddingVertical: 20, backgroundColor: '#111', paddingLeft: 15 },
+  imageContainer: {
+    width: '100%',
+    paddingVertical: 20,
+    backgroundColor: '#111',
+    paddingLeft: 15,
+  },
   imageScrollContainer: { paddingHorizontal: 10, alignItems: 'center' },
 
   card: (isDesktop, windowWidth) => ({
@@ -210,9 +275,23 @@ const styles = StyleSheet.create({
     shadowRadius: 15,
   }),
   clickable: { borderWidth: 3, borderColor: '#00ffff' },
+
   armorImage: { width: '100%', height: '100%', resizeMode: 'cover' },
-  transparentOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.4)', zIndex: 1 },
-  cardName: { position: 'absolute', bottom: 16, left: 16, fontSize: 18, color: '#00ffff', fontWeight: 'bold', textShadowColor: '#000', textShadowRadius: 8 },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    zIndex: 1,
+  },
+  cardName: {
+    position: 'absolute',
+    bottom: 16,
+    left: 16,
+    fontSize: 18,
+    color: '#00ffff',
+    fontWeight: 'bold',
+    textShadowColor: '#000',
+    textShadowRadius: 8,
+  },
 
   aboutSection: {
     marginTop: 30,
@@ -224,12 +303,43 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#00b3ff',
   },
-  aboutHeader: { fontSize: 26, fontWeight: 'bold', color: '#00b3ff', textAlign: 'center', textShadowColor: '#00b3ff', textShadowRadius: 8 },
-  aboutSubheader: { fontSize: 20, color: '#aaa', textAlign: 'center', marginTop: 8, fontStyle: 'italic' },
-  aboutCategory: { fontSize: 16, color: '#00ffff', textAlign: 'center', marginTop: 12, fontWeight: '600' },
-  aboutText: { fontSize: 16, color: '#ccc', textAlign: 'center', marginTop: 16, lineHeight: 24 },
+  aboutHeader: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#00b3ff',
+    textAlign: 'center',
+    textShadowColor: '#00b3ff',
+    textShadowRadius: 8,
+  },
+  aboutSubheader: {
+    fontSize: 20,
+    color: '#aaa',
+    textAlign: 'center',
+    marginTop: 8,
+    fontStyle: 'italic',
+  },
+  aboutCategory: {
+    fontSize: 16,
+    color: '#00ffff',
+    textAlign: 'center',
+    marginTop: 12,
+    fontWeight: '600',
+  },
+  aboutText: {
+    fontSize: 16,
+    color: '#ccc',
+    textAlign: 'center',
+    marginTop: 16,
+    lineHeight: 24,
+  },
 
-  mediaContainer: { marginTop: 40, marginBottom: 20, width: '90%', alignSelf: 'center', alignItems: 'center' },
+  mediaContainer: {
+    marginTop: 40,
+    marginBottom: 20,
+    width: '90%',
+    alignSelf: 'center',
+    alignItems: 'center',
+  },
   mediaText: { color: '#00b3ff', fontSize: 16, fontWeight: 'bold' },
 });
 

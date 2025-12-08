@@ -176,7 +176,7 @@ export const PowerCobros = () => {
 
   return (
     <ImageBackground source={require('../../assets/BackGround/Cobros.jpg')} style={styles.background}>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container}  edges={['bottom', 'left', 'right']}>
 
         {/* Header with Back & Chat */}
         <View style={styles.headerWrapper}>

@@ -1,4 +1,9 @@
-import React, { useRef, useEffect, useState, useCallback } from "react";
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import {
   View,
   Text,
@@ -14,32 +19,128 @@ import {
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { Audio } from "expo-av";
 
-const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
+const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } =
+  Dimensions.get("window");
+
+// 🎧 Ariata / Aileen music array
+const TRACKS = [
+  {
+    id: "ariata_main",
+    label: "Ariata Theme",
+    source: require("../../assets/audio/SourceOfStrength.mp4"),
+  },
+  {
+    id: "ariata_variant",
+    label: "Ariata – Variant",
+    source: require("../../assets/audio/NightWing.mp4"),
+  },
+];
 
 const armor = [
-  { name: "Ariata Prime", image: require("../../assets/Armor/AileenAriata.jpg"), clickable: true },
-  { name: "Legacy", image: require("../../assets/Armor/AileenLegacy.jpg"), clickable: true },
-  { name: "Baybayin", image: require("../../assets/Armor/Aileen.jpg"), clickable: true },
-  { name: "Ariata", image: require("../../assets/Armor/Aileen2.jpg"), clickable: true },
-  { name: "Luminara", image: require("../../assets/Armor/Aileen3.jpg"), clickable: true },
-  { name: "Aileara", image: require("../../assets/Armor/Aileen5.jpg"), clickable: true },
-  { name: "Nialla", image: require("../../assets/Armor/Aileen6.jpg"), clickable: true },
-  { name: "Ailethra", image: require("../../assets/Armor/Aileen9.jpg"), clickable: true },
-  { name: "Aishal", image: require("../../assets/Armor/Aileen8.jpg"), clickable: true },
-  { name: "Seraphina", image: require("../../assets/Armor/Aileen7.jpg"), clickable: true, screen: "Aileenchat" },
-  { name: "Aikarea", image: require("../../assets/Armor/Aileen4.jpg"), clickable: true },
-  { name: "Philippines Crusader", image: require("../../assets/Armor/AileensSymbol.jpg"), clickable: true },
+  {
+    name: "Ariata Prime",
+    image: require("../../assets/Armor/AileenAriata.jpg"),
+    clickable: true,
+  },
+  {
+    name: "Legacy",
+    image: require("../../assets/Armor/AileenLegacy.jpg"),
+    clickable: true,
+  },
+  {
+    name: "Baybayin",
+    image: require("../../assets/Armor/Aileen.jpg"),
+    clickable: true,
+  },
+  {
+    name: "Ariata",
+    image: require("../../assets/Armor/Aileen2.jpg"),
+    clickable: true,
+  },
+  {
+    name: "Luminara",
+    image: require("../../assets/Armor/Aileen3.jpg"),
+    clickable: true,
+  },
+  {
+    name: "Aileara",
+    image: require("../../assets/Armor/Aileen5.jpg"),
+    clickable: true,
+  },
+  {
+    name: "Nialla",
+    image: require("../../assets/Armor/Aileen6.jpg"),
+    clickable: true,
+  },
+  {
+    name: "Ailethra",
+    image: require("../../assets/Armor/Aileen9.jpg"),
+    clickable: true,
+  },
+  {
+    name: "Aishal",
+    image: require("../../assets/Armor/Aileen8.jpg"),
+    clickable: true,
+  },
+  {
+    name: "Seraphina",
+    image: require("../../assets/Armor/Aileen7.jpg"),
+    clickable: true,
+    screen: "Aileenchat",
+  },
+  {
+    name: "Aikarea",
+    image: require("../../assets/Armor/Aileen4.jpg"),
+    clickable: true,
+  },
+  {
+    name: "Philippines Crusader",
+    image: require("../../assets/Armor/AileensSymbol.jpg"),
+    clickable: true,
+  },
 ];
 
 const kids = [
-  { name: "Niella Terra", image: require("../../assets/Armor/Niella.jpg"), clickable: true },
-  { name: "Oliver Robertodd", image: require("../../assets/Armor/Oliver.jpg"), clickable: true },
-  { name: "Cassidy Zayn", image: require("../../assets/Armor/CassidyZayn.jpg"), clickable: true },
-  { name: "", image: require("../../assets/Armor/family4.jpg"), clickable: true },
-  { name: "", image: require("../../assets/Armor/family5.jpg"), clickable: true },
-  { name: "", image: require("../../assets/Armor/family1.jpg"), clickable: true },
-  { name: "", image: require("../../assets/Armor/family2.jpg"), clickable: true },
-  { name: "", image: require("../../assets/Armor/family3.jpg"), clickable: true },
+  {
+    name: "Niella Terra",
+    image: require("../../assets/Armor/Niella.jpg"),
+    clickable: true,
+  },
+  {
+    name: "Oliver Robertodd",
+    image: require("../../assets/Armor/Oliver.jpg"),
+    clickable: true,
+  },
+  {
+    name: "Cassidy Zayn",
+    image: require("../../assets/Armor/CassidyZayn.jpg"),
+    clickable: true,
+  },
+  {
+    name: "",
+    image: require("../../assets/Armor/family4.jpg"),
+    clickable: true,
+  },
+  {
+    name: "",
+    image: require("../../assets/Armor/family5.jpg"),
+    clickable: true,
+  },
+  {
+    name: "",
+    image: require("../../assets/Armor/family1.jpg"),
+    clickable: true,
+  },
+  {
+    name: "",
+    image: require("../../assets/Armor/family2.jpg"),
+    clickable: true,
+  },
+  {
+    name: "",
+    image: require("../../assets/Armor/family3.jpg"),
+    clickable: true,
+  },
 ];
 
 const ARIATA_STORY = `
@@ -56,61 +157,14 @@ const Aileen = () => {
   const flashAnim = useRef(new Animated.Value(1)).current;
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
 
-  // ────── NEW: Clean audio control (no autoplay) ──────
   const [sound, setSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [trackIndex, setTrackIndex] = useState(0);
   const [selectedCharacter, setSelectedCharacter] = useState(null);
 
-  // Load sound once – NO autoplay
-  useEffect(() => {
-    let soundObj = null;
-    const loadSound = async () => {
-      try {
-        const { sound } = await Audio.Sound.createAsync(
-          require("../../assets/audio/SourceOfStrength.mp4"),
-          { isLooping: true, volume: 1.0 },
-          null,
-          false // ← critical: no autoplay
-        );
-        soundObj = sound;
-        setSound(sound);
-      } catch (e) {
-        console.error("Failed to load SourceOfStrength.mp4", e);
-        Alert.alert("Audio Error", "Could not load background music.");
-      }
-    };
-    loadSound();
+  const currentTrack = TRACKS[trackIndex];
 
-    return () => {
-      soundObj?.unloadAsync();
-    };
-  }, []);
-
-  const playTheme = async () => {
-    if (!sound) return;
-    await sound.playAsync();
-    setIsPlaying(true);
-  };
-
-  const pauseTheme = async () => {
-    if (!sound) return;
-    await sound.pauseAsync();
-    setIsPlaying(false);
-  };
-
-  // Stop sound when leaving screen
-  useFocusEffect(
-    useCallback(() => {
-      return () => {
-        if (sound) {
-          sound.stopAsync();
-          setIsPlaying(false);
-        }
-      };
-    }, [sound])
-  );
-
-  // ────── Dimension handling (unchanged) ──────
+  // dimension handling
   useEffect(() => {
     const subscription = Dimensions.addEventListener("change", () => {
       setWindowWidth(Dimensions.get("window").width);
@@ -118,19 +172,112 @@ const Aileen = () => {
     return () => subscription?.remove();
   }, []);
 
-  // Flashing planet animation (unchanged)
+  const isDesktop = windowWidth >= 768;
+
+  // ───────── AUDIO HELPERS ─────────
+  const unloadSound = useCallback(async () => {
+    if (sound) {
+      try {
+        await sound.stopAsync();
+      } catch {}
+      try {
+        await sound.unloadAsync();
+      } catch {}
+      setSound(null);
+    }
+  }, [sound]);
+
+  const loadAndPlayTrack = useCallback(
+    async (index) => {
+      await unloadSound();
+      try {
+        const { sound: newSound } = await Audio.Sound.createAsync(
+          TRACKS[index].source,
+          { isLooping: true, volume: 1.0 }
+        );
+        setSound(newSound);
+        await newSound.playAsync();
+        setIsPlaying(true);
+      } catch (e) {
+        console.error("Failed to play Ariata track", e);
+        Alert.alert("Audio Error", "Could not play Aileen's theme.");
+        setIsPlaying(false);
+      }
+    },
+    [unloadSound]
+  );
+
+  const playTheme = async () => {
+    if (sound) {
+      try {
+        await sound.playAsync();
+        setIsPlaying(true);
+      } catch (e) {
+        console.error("Play error", e);
+      }
+    } else {
+      await loadAndPlayTrack(trackIndex);
+    }
+  };
+
+  const pauseTheme = async () => {
+    if (!sound) return;
+    try {
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } catch (e) {
+      console.error("Pause error", e);
+    }
+  };
+
+  const cycleTrack = async (direction) => {
+    const nextIndex = (trackIndex + direction + TRACKS.length) % TRACKS.length;
+    setTrackIndex(nextIndex);
+    if (isPlaying) {
+      await loadAndPlayTrack(nextIndex);
+    } else {
+      await unloadSound();
+    }
+  };
+
+  // Stop sound when leaving screen
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        unloadSound();
+        setIsPlaying(false);
+      };
+    }, [unloadSound])
+  );
+
+  // Flashing planet animation
   useEffect(() => {
     const interval = setInterval(() => {
       Animated.sequence([
-        Animated.timing(flashAnim, { toValue: 0.4, duration: 600, useNativeDriver: true }),
-        Animated.timing(flashAnim, { toValue: 1, duration: 600, useNativeDriver: true }),
+        Animated.timing(flashAnim, {
+          toValue: 0.4,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+        Animated.timing(flashAnim, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+        }),
       ]).start();
     }, 2000);
     return () => clearInterval(interval);
   }, [flashAnim]);
 
+  const handleBackPress = async () => {
+    await unloadSound();
+    setIsPlaying(false);
+    navigation.reset({ index: 0, routes: [{ name: "EclipseHome" }] });
+  };
+
   const handlePlanetPress = async () => {
-    if (sound) await sound.stopAsync();
+    await unloadSound();
+    setIsPlaying(false);
     navigation.navigate("WarpScreen");
   };
 
@@ -138,14 +285,14 @@ const Aileen = () => {
     if (!item.clickable) return;
 
     if (sound && isPlaying) {
-      await sound.pauseAsync();
-      setIsPlaying(false);
+      await pauseTheme();
     }
 
     if (item.name === "Ariata") {
       setSelectedCharacter(item);
     } else if (item.name === "Seraphina") {
-      if (sound) await sound.stopAsync();
+      await unloadSound();
+      setIsPlaying(false);
       navigation.navigate("Aileenchat");
     } else {
       console.log(`${item.name} clicked`);
@@ -154,29 +301,38 @@ const Aileen = () => {
 
   const closePopup = () => setSelectedCharacter(null);
 
-  const isDesktop = windowWidth >= 768;
-
-  const renderImageCard = (item) => (
+  const renderImageCard = (item, index) => (
     <TouchableOpacity
-      key={item.name}
-      style={[styles.card(isDesktop, windowWidth), item.clickable ? styles.clickable : styles.notClickable]}
+      key={`${item.name}-${index}`}
+      style={[
+        styles.card(isDesktop, windowWidth),
+        item.clickable ? styles.clickable : styles.notClickable,
+      ]}
       onPress={() => handleCardPress(item)}
       disabled={!item.clickable}
+      activeOpacity={0.9}
     >
       <Image source={item.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
       <Text style={styles.cardName}>
-        © {item.name || 'Unknown'}; William Cummings
+        © {item.name || "Unknown"}; William Cummings
       </Text>
     </TouchableOpacity>
   );
 
-  const renderKidCard = (item) => (
+  const renderKidCard = (item, index) => (
     <TouchableOpacity
-      key={item.name || Math.random()}
-      style={[styles.kidCard(isDesktop, windowWidth), item.clickable ? styles.clickable : styles.notClickable]}
-      onPress={() => item.clickable && console.log(`${item.name || "Family"} clicked`)}
+      key={`${item.name || "family"}-${index}`}
+      style={[
+        styles.kidCard(isDesktop, windowWidth),
+        item.clickable ? styles.clickable : styles.notClickable,
+      ]}
+      onPress={() =>
+        item.clickable &&
+        console.log(`${item.name || "Family"} clicked`)
+      }
       disabled={!item.clickable}
+      activeOpacity={0.9}
     >
       <Image source={item.image} style={styles.kidImage} />
       <View style={styles.transparentOverlay} />
@@ -186,78 +342,141 @@ const Aileen = () => {
 
   return (
     <View style={styles.container}>
-      {/* ────── NEW: Gold-themed Play / Pause controls ────── */}
+      {/* 🎧 MUSIC BAR – warm gold / crimson / deep night */}
       <View style={styles.musicControls}>
-        <TouchableOpacity style={styles.musicButton} onPress={playTheme} disabled={isPlaying}>
-          <Text style={styles.musicButtonText}>Play Theme</Text>
+        <TouchableOpacity
+          style={styles.trackButton}
+          onPress={() => cycleTrack(-1)}
+        >
+          <Text style={styles.trackButtonText}>⟵</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.musicButton} onPress={pauseTheme} disabled={!isPlaying}>
-          <Text style={styles.musicButtonText}>Pause</Text>
+
+        <View style={styles.trackInfoGlass}>
+          <Text style={styles.trackLabel}>Track:</Text>
+          <Text style={styles.trackTitle}>{currentTrack.label}</Text>
+        </View>
+
+        <TouchableOpacity
+          style={styles.trackButton}
+          onPress={() => cycleTrack(1)}
+        >
+          <Text style={styles.trackButtonText}>⟶</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.musicButton, isPlaying && styles.musicButtonDisabled]}
+          onPress={playTheme}
+          disabled={isPlaying}
+        >
+          <Text style={styles.musicButtonText}>
+            {isPlaying ? "Playing" : "Play"}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.musicButtonSecondary,
+            !isPlaying && styles.musicButtonDisabled,
+          ]}
+          onPress={pauseTheme}
+          disabled={!isPlaying}
+        >
+          <Text style={styles.musicButtonTextSecondary}>Pause</Text>
         </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.headerContainer}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.reset({ index: 0, routes: [{ name: "EclipseHome" }] })}
-          >
-            <Text style={styles.backButtonText}>Back</Text>
-          </TouchableOpacity>
-          <Text style={styles.title}>Ariata</Text>
-          <TouchableOpacity onPress={handlePlanetPress} style={styles.planetContainer}>
-            <Animated.Image
-              source={require("../../assets/Space/Earth_hero.jpg")}
-              style={[styles.planetImage, { opacity: flashAnim }]}
-            />
-          </TouchableOpacity>
+        {/* HEADER – glass core + planet */}
+        <View style={styles.headerOuter}>
+          <View style={styles.headerContainer}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={handleBackPress}
+            >
+              <Text style={styles.backButtonText}>←</Text>
+            </TouchableOpacity>
+
+            <View style={styles.headerGlass}>
+              <Text style={styles.title}>Ariata</Text>
+              <Text style={styles.subtitle}>
+                Filipina Crusader • Source of Strength
+              </Text>
+            </View>
+
+            <TouchableOpacity
+              onPress={handlePlanetPress}
+              style={styles.planetContainer}
+            >
+              <Animated.Image
+                source={require("../../assets/Space/Earth_hero.jpg")}
+                style={[
+                  styles.planetImage,
+                  { opacity: flashAnim },
+                ]}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
 
-        <View style={styles.imageContainer}>
+        {/* ARMORY SECTION */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Ariata Armory</Text>
+          <View style={styles.sectionDivider} />
           <ScrollView
             horizontal
             contentContainerStyle={styles.imageScrollContainer}
             showsHorizontalScrollIndicator={false}
-            snapToAlignment="center"
-            snapToInterval={windowWidth * 0.7 + 20}
-            decelerationRate="fast"
+            // decelerationRate="fast"
           >
             {armor.map(renderImageCard)}
           </ScrollView>
         </View>
 
+        {/* PARTNER + HEAVEN'S GUARD TABS */}
         <View style={styles.tabsContainer}>
           <View style={styles.tabItem}>
             <Text style={styles.partnerHeader}>My Partner</Text>
             <TouchableOpacity
-              style={[styles.partnerImageContainer(isDesktop, windowWidth), styles.clickable]}
+              style={[
+                styles.partnerImageContainer(isDesktop, windowWidth),
+                styles.clickable,
+              ]}
               onPress={() => navigation.navigate("Will")}
             >
-              <Image source={require("../../assets/Armor/Celestial.jpg")} style={styles.partnerImage(isDesktop, windowWidth)} />
+              <Image
+                source={require("../../assets/Armor/Celestial.jpg")}
+                style={styles.partnerImage(isDesktop, windowWidth)}
+              />
               <View style={styles.transparentOverlay} />
             </TouchableOpacity>
           </View>
           <View style={styles.tabItem}>
-            <Text style={styles.heavensGuardHeader}>Heaven's Guard</Text>
+            <Text style={styles.heavensGuardHeader}>
+              Heaven&apos;s Guard
+            </Text>
             <TouchableOpacity
-              style={[styles.partnerImageContainer(isDesktop, windowWidth), styles.clickable]}
+              style={[
+                styles.partnerImageContainer(isDesktop, windowWidth),
+                styles.clickable,
+              ]}
               onPress={() => navigation.navigate("Angels")}
             >
-              <Image source={require("../../assets/BackGround/Angel2.jpg")} style={styles.partnerImage(isDesktop, windowWidth)} />
+              <Image
+                source={require("../../assets/BackGround/Angel2.jpg")}
+                style={styles.partnerImage(isDesktop, windowWidth)}
+              />
               <View style={styles.transparentOverlay} />
             </TouchableOpacity>
           </View>
         </View>
 
-        <View style={styles.kidsContainer}>
+        {/* KIDS / FAMILY SECTION */}
+        <View style={styles.kidsSection}>
           <Text style={styles.kidsHeader}>Our Future Family</Text>
+          <View style={styles.sectionDividerSmall} />
           <ScrollView
             horizontal
             contentContainerStyle={styles.imageScrollContainer}
             showsHorizontalScrollIndicator={false}
-            snapToAlignment="center"
-            snapToInterval={windowWidth * 0.35 + 20}
-            decelerationRate="fast"
           >
             {kids.map(renderKidCard)}
           </ScrollView>
@@ -312,14 +531,22 @@ const Aileen = () => {
       </ScrollView>
 
       {/* Ariata Story Modal */}
-      <Modal visible={!!selectedCharacter} transparent animationType="slide" onRequestClose={closePopup}>
+      <Modal
+        visible={!!selectedCharacter}
+        transparent
+        animationType="slide"
+        onRequestClose={closePopup}
+      >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Aileen's Story</Text>
+            <Text style={styles.modalTitle}>Aileen&apos;s Story</Text>
             <ScrollView style={styles.modalScroll}>
               <Text style={styles.modalText}>{ARIATA_STORY}</Text>
             </ScrollView>
-            <TouchableOpacity onPress={closePopup} style={styles.closeButton}>
+            <TouchableOpacity
+              onPress={closePopup}
+              style={styles.closeButton}
+            >
               <Text style={styles.closeButtonText}>Close</Text>
             </TouchableOpacity>
           </View>
@@ -330,96 +557,419 @@ const Aileen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#0a0a0a" },
+  // BASE
+  container: {
+    flex: 1,
+    backgroundColor: "#0b0504", // deep warm night
+  },
+  scrollContainer: {
+    paddingBottom: 24,
+  },
+
+  // 🎧 MUSIC BAR – warm gold / crimson / deep night
   musicControls: {
     flexDirection: "row",
-    justifyContent: "center",
-    paddingVertical: 14,
-    backgroundColor: "rgba(30, 20, 10, 0.95)",
-    borderBottomWidth: 2,
-    borderBottomColor: "#b8860b",
+    alignItems: "center",
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    backgroundColor: "rgba(25, 8, 4, 0.97)",
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255, 215, 130, 0.75)",
+    shadowColor: "#ffb84d",
+    shadowOpacity: 0.45,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 10,
+  },
+  trackButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "rgba(255, 215, 160, 0.9)",
+    backgroundColor: "rgba(60, 22, 10, 0.96)",
+    marginRight: 6,
+  },
+  trackButtonText: {
+    color: "#fff6e8",
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  trackInfoGlass: {
+    flex: 1,
+    marginHorizontal: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 999,
+    backgroundColor: "rgba(40, 14, 8, 0.9)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 215, 150, 0.85)",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  trackLabel: {
+    color: "#ffe4b5",
+    fontSize: 11,
+    marginRight: 6,
+  },
+  trackTitle: {
+    color: "#fffaf0",
+    fontSize: 13,
+    fontWeight: "700",
   },
   musicButton: {
-    backgroundColor: "rgba(184, 134, 11, 0.9)",
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 12,
-    marginHorizontal: 16,
-    elevation: 8,
-    shadowColor: "gold",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.9,
-    shadowRadius: 12,
+    backgroundColor: "rgba(255, 193, 94, 0.96)",
+    paddingHorizontal: 16,
+    paddingVertical: 7,
+    borderRadius: 999,
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: "rgba(255, 235, 190, 0.95)",
   },
-  musicButtonText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
-  scrollContainer: { paddingBottom: 20 },
+  musicButtonSecondary: {
+    backgroundColor: "rgba(60, 24, 10, 0.96)",
+    paddingHorizontal: 16,
+    paddingVertical: 7,
+    borderRadius: 999,
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: "rgba(255, 210, 160, 0.9)",
+  },
+  musicButtonDisabled: {
+    opacity: 0.55,
+  },
+  musicButtonText: {
+    color: "#2b1300",
+    fontWeight: "bold",
+    fontSize: 13,
+  },
+  musicButtonTextSecondary: {
+    color: "#ffe8c2",
+    fontWeight: "bold",
+    fontSize: 13,
+  },
+
+  // HEADER
+  headerOuter: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
   headerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    backgroundColor: "#0a0a0a",
-    borderBottomWidth: 1,
-    borderBottomColor: "#333",
   },
-  backButton: { padding: 10, backgroundColor: "rgba(255,255,255,0.1)", borderRadius: 5 },
-  backButtonText: { fontSize: 24, color: "#fff" },
-  title: { fontSize: 28, fontWeight: "bold", color: "#000000", textAlign: "center", flex: 1, textShadowColor: "gold", textShadowRadius: 25 },
-  planetContainer: { alignItems: "center" },
-  planetImage: { width: 40, height: 40, borderRadius: 20 },
-  imageContainer: { width: "100%", paddingVertical: 20, backgroundColor: "#111" },
-  tabsContainer: { width: "100%", paddingVertical: 20, backgroundColor: "#111", flexDirection: "row", justifyContent: "space-around", alignItems: "center" },
-  tabItem: { alignItems: "center", flex: 1, maxWidth: "45%" },
-  heavensGuardHeader: { fontSize: 22, fontWeight: "bold", color: "#000000", textAlign: "center", marginBottom: 10, textShadowColor: "gold", textShadowRadius: 25 },
-  partnerHeader: { fontSize: 22, fontWeight: "bold", color: "#000000", textAlign: "center", marginBottom: 10, textShadowColor: "gold", textShadowRadius: 25 },
-  partnerImageContainer: (isDesktop, w) => ({
-    width: isDesktop ? w * 0.15 : SCREEN_WIDTH * 0.3,
-    height: isDesktop ? w * 0.15 : SCREEN_WIDTH * 0.3,
-    borderRadius: isDesktop ? w * 0.15 / 2 : SCREEN_WIDTH * 0.3 / 2,
-    overflow: "hidden",
-    elevation: 5,
-    backgroundColor: "rgba(0,0,0,0.7)",
-  }),
-  partnerImage: (isDesktop, w) => ({ width: "100%", height: "100%", resizeMode: "cover" }),
-  kidsContainer: { width: "100%", paddingVertical: 20, backgroundColor: "#111" },
-  kidsHeader: { fontSize: 22, fontWeight: "bold", color: "#000000", textAlign: "center", marginBottom: 10, textShadowColor: "gold", textShadowRadius: 25 },
-  imageScrollContainer: { flexDirection: "row", paddingHorizontal: 10, alignItems: "center", paddingLeft: 15 },
+  backButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    backgroundColor: "rgba(45, 20, 8, 0.96)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 215, 150, 0.9)",
+    marginRight: 10,
+  },
+  backButtonText: {
+    fontSize: 20,
+    color: "#ffe4b5",
+    fontWeight: "bold",
+  },
+  headerGlass: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    backgroundColor: "rgba(30, 10, 5, 0.94)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 215, 150, 0.85)",
+    shadowColor: "#ffb84d",
+    shadowOpacity: 0.5,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 10,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "900",
+    color: "#ffd27f",
+    textAlign: "center",
+    textShadowColor: "#ffeaaf",
+    textShadowRadius: 20,
+    letterSpacing: 1,
+  },
+  subtitle: {
+    marginTop: 4,
+    fontSize: 12,
+    color: "#ffe7c4",
+    textAlign: "center",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+  },
+  planetContainer: {
+    marginLeft: 10,
+  },
+  planetImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+
+  // ARMORY SECTION
+  section: {
+    marginTop: 24,
+    marginHorizontal: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    backgroundColor: "rgba(18, 8, 4, 0.97)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 215, 150, 0.8)",
+    shadowColor: "#ffb84d",
+    shadowOpacity: 0.25,
+    shadowRadius: 22,
+    shadowOffset: { width: 0, height: 12 },
+    elevation: 12,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#ffe8c2",
+    textAlign: "center",
+    textShadowColor: "#ffb84d",
+    textShadowRadius: 18,
+    letterSpacing: 0.8,
+  },
+  sectionDivider: {
+    marginTop: 6,
+    marginBottom: 10,
+    alignSelf: "center",
+    width: "40%",
+    height: 2,
+    borderRadius: 999,
+    backgroundColor: "rgba(255, 215, 150, 0.95)",
+  },
+  sectionDividerSmall: {
+    marginTop: 4,
+    marginBottom: 10,
+    alignSelf: "center",
+    width: "30%",
+    height: 2,
+    borderRadius: 999,
+    backgroundColor: "rgba(255, 215, 150, 0.8)",
+  },
+
+  imageScrollContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 10,
+    alignItems: "center",
+    paddingLeft: 15,
+  },
+
+  // ARMOR / FAMILY CARDS
   card: (isDesktop, w) => ({
     width: isDesktop ? w * 0.3 : SCREEN_WIDTH * 0.9,
     height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7,
-    borderRadius: 15,
+    borderRadius: 18,
     overflow: "hidden",
-    elevation: 5,
-    backgroundColor: "rgba(0,0,0,0.7)",
+    elevation: 10,
+    backgroundColor: "rgba(5, 2, 1, 0.9)",
     marginRight: 20,
   }),
   kidCard: (isDesktop, w) => ({
     width: isDesktop ? w * 0.15 : SCREEN_WIDTH * 0.45,
     height: isDesktop ? SCREEN_HEIGHT * 0.4 : SCREEN_HEIGHT * 0.35,
-    borderRadius: 15,
+    borderRadius: 18,
     overflow: "hidden",
-    elevation: 5,
-    backgroundColor: "rgba(0,0,0,0.7)",
+    elevation: 8,
+    backgroundColor: "rgba(5, 2, 1, 0.9)",
     marginRight: 20,
   }),
-  clickable: { borderWidth: 2, borderColor: "gold", shadowColor: "gold", shadowOffset: { width: 0, height: 5 }, shadowRadius: 8, shadowOpacity: 0.7 },
-  notClickable: { opacity: 0.8 },
-  armorImage: { width: "100%", height: "100%", resizeMode: "cover" },
-  kidImage: { width: "100%", height: "100%", resizeMode: "cover" },
-  transparentOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0)", zIndex: 1 },
-  cardName: { position: "absolute", bottom: 10, left: 10, fontSize: 16, color: "white", fontWeight: "bold" },
-  kidCardName: { position: "absolute", bottom: 5, left: 5, fontSize: 12, color: "white", fontWeight: "bold" },
-  aboutSection: { marginTop: 40, padding: 20, backgroundColor: "#222", borderRadius: 15 },
-  aboutHeader: { fontSize: 22, fontWeight: "bold", color: "#000000", textAlign: "center", textShadowColor: "gold", textShadowRadius: 25 },
-  aboutText: { fontSize: 16, color: "#fff", textAlign: "center", marginTop: 10 },
-  modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.9)", justifyContent: "center", alignItems: "center" },
-  modalContent: { width: "90%", maxHeight: SCREEN_HEIGHT * 0.7, backgroundColor: "rgba(34,34,34,0.98)", borderRadius: 15, padding: 20, elevation: 10, borderWidth: 2, borderColor: "gold" },
-  modalTitle: { fontSize: 24, fontWeight: "bold", color: "gold", textAlign: "center", marginBottom: 15 },
-  modalScroll: { maxHeight: SCREEN_HEIGHT * 0.5 },
-  modalText: { fontSize: 16, color: "#fff", textAlign: "center", lineHeight: 24 },
-  closeButton: { marginTop: 20, backgroundColor: "#b8860b", padding: 12, borderRadius: 8, alignSelf: "center", paddingHorizontal: 30 },
-  closeButtonText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
+  clickable: {
+    borderWidth: 3,
+    borderColor: "#ffd27f",
+    shadowColor: "#ffb84d",
+    shadowOpacity: 0.8,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 6 },
+  },
+  notClickable: {
+    opacity: 0.7,
+  },
+  armorImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+  },
+  kidImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+  },
+  transparentOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.15)",
+    zIndex: 1,
+  },
+  cardName: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    fontSize: 16,
+    color: "#fffaf0",
+    fontWeight: "bold",
+    textShadowColor: "#000",
+    textShadowRadius: 6,
+  },
+  kidCardName: {
+    position: "absolute",
+    bottom: 5,
+    left: 5,
+    fontSize: 12,
+    color: "#fffaf0",
+    fontWeight: "bold",
+  },
+
+  // TABS
+  tabsContainer: {
+    width: "100%",
+    paddingVertical: 20,
+    backgroundColor: "#120705",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+  },
+  tabItem: {
+    alignItems: "center",
+    flex: 1,
+    maxWidth: "45%",
+  },
+  partnerHeader: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#ffe8c2",
+    textAlign: "center",
+    marginBottom: 10,
+    textShadowColor: "#ffb84d",
+    textShadowRadius: 18,
+  },
+  heavensGuardHeader: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#ffe8c2",
+    textAlign: "center",
+    marginBottom: 10,
+    textShadowColor: "#ffb84d",
+    textShadowRadius: 18,
+  },
+  partnerImageContainer: (isDesktop, w) => ({
+    width: isDesktop ? w * 0.15 : SCREEN_WIDTH * 0.3,
+    height: isDesktop ? w * 0.15 : SCREEN_WIDTH * 0.3,
+    borderRadius: isDesktop ? (w * 0.15) / 2 : (SCREEN_WIDTH * 0.3) / 2,
+    overflow: "hidden",
+    elevation: 8,
+    backgroundColor: "rgba(0, 0, 0, 0.85)",
+  }),
+  partnerImage: (isDesktop, w) => ({
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+  }),
+
+  // KIDS SECTION
+  kidsSection: {
+    width: "100%",
+    paddingVertical: 20,
+    backgroundColor: "#120705",
+  },
+  kidsHeader: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#ffe8c2",
+    textAlign: "center",
+    marginBottom: 6,
+    textShadowColor: "#ffb84d",
+    textShadowRadius: 18,
+  },
+
+  // ABOUT (when uncommented later)
+  aboutSection: {
+    marginTop: 28,
+    marginHorizontal: 12,
+    marginBottom: 32,
+    paddingVertical: 18,
+    paddingHorizontal: 14,
+    borderRadius: 22,
+    backgroundColor: "rgba(20, 8, 4, 0.97)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 215, 150, 0.8)",
+    shadowColor: "#ffb84d",
+    shadowOpacity: 0.25,
+    shadowRadius: 22,
+    shadowOffset: { width: 0, height: 12 },
+    elevation: 12,
+  },
+  aboutHeader: {
+    fontSize: 20,
+    fontWeight: "800",
+    color: "#ffe8c2",
+    textAlign: "center",
+    textShadowColor: "#ffb84d",
+    textShadowRadius: 18,
+    letterSpacing: 0.8,
+    marginBottom: 6,
+  },
+  aboutText: {
+    fontSize: 14,
+    color: "#fff6e8",
+    lineHeight: 20,
+    marginTop: 6,
+    textAlign: "left",
+  },
+
+  // MODAL
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.9)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    width: "90%",
+    maxHeight: SCREEN_HEIGHT * 0.7,
+    backgroundColor: "rgba(34,34,34,0.98)",
+    borderRadius: 15,
+    padding: 20,
+    elevation: 10,
+    borderWidth: 2,
+    borderColor: "gold",
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "gold",
+    textAlign: "center",
+    marginBottom: 15,
+  },
+  modalScroll: {
+    maxHeight: SCREEN_HEIGHT * 0.5,
+  },
+  modalText: {
+    fontSize: 16,
+    color: "#fff",
+    textAlign: "center",
+    lineHeight: 24,
+  },
+  closeButton: {
+    marginTop: 20,
+    backgroundColor: "#b8860b",
+    padding: 12,
+    borderRadius: 8,
+    alignSelf: "center",
+    paddingHorizontal: 30,
+  },
+  closeButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
 });
 
 export default Aileen;

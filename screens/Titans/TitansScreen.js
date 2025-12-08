@@ -223,7 +223,7 @@ const TitansScreen = () => {
       style={styles.background}
       resizeMode="cover"
     >
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={styles.safeArea} edges={['bottom', 'left', 'right']}>
         <View style={styles.overlay}>
           {/* Glassy Header */}
           <View style={styles.headerWrapper}>
@@ -253,7 +253,7 @@ const TitansScreen = () => {
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={async () => {
                 await stopSound();
                 navigation.navigate('TeamChat');
@@ -262,7 +262,7 @@ const TitansScreen = () => {
               activeOpacity={0.85}
             >
               <Text style={styles.chatText}>💬</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
           {/* Team Info Overlay (on top of everything) */}

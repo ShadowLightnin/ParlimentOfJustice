@@ -14,71 +14,54 @@ import { Audio } from "expo-av";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
+// 🎧 Emma / Kintsunera music array
+const TRACKS = [
+  {
+    id: "kintsunera_main",
+    label: "Kintsunera Theme",
+    source: require("../../assets/audio/BlueBloods.mp4"),
+  },
+  {
+    id: "kintsunera_variant",
+    label: "Kintsunera – Variant",
+    source: require("../../assets/audio/BlueBloods.mp4"),
+  },
+];
+
 const armors = [
-  { name: "Kintsunera Prime", image: require("../../assets/Armor/EmmaLegacy.jpg"), clickable: true },
-  { name: "Kintsunera", image: require("../../assets/Armor/Emma.jpg"), clickable: true },
-  { name: "Kintsunera", image: require("../../assets/Armor/Emma2.jpg"), clickable: true },
-  { name: "Symbol", image: require("../../assets/Armor/EmmasSymbol.jpg"), clickable: true },
+  {
+    name: "Kintsunera Prime",
+    image: require("../../assets/Armor/EmmaLegacy.jpg"),
+    clickable: true,
+  },
+  {
+    name: "Kintsunera",
+    image: require("../../assets/Armor/Emma.jpg"),
+    clickable: true,
+  },
+  {
+    name: "Kintsunera",
+    image: require("../../assets/Armor/Emma2.jpg"),
+    clickable: true,
+  },
+  {
+    name: "Symbol",
+    image: require("../../assets/Armor/EmmasSymbol.jpg"),
+    clickable: true,
+  },
 ];
 
 const Emma = () => {
   const navigation = useNavigation();
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
 
-  // Audio state — exactly like Will & Aileen
   const [sound, setSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [trackIndex, setTrackIndex] = useState(0);
 
-  // Load BlueBloods.mp4 once — NO autoplay
-  useEffect(() => {
-    let soundObj = null;
-    const loadSound = async () => {
-      try {
-        const { sound } = await Audio.Sound.createAsync(
-          require("../../assets/audio/BlueBloods.mp4"),
-          { isLooping: true, volume: 0.9 },
-          null,
-          false // no autoplay
-        );
-        soundObj = sound;
-        setSound(sound);
-      } catch (e) {
-        console.error("Failed to load BlueBloods.mp4", e);
-        Alert.alert("Audio Error", "Could not load BlueBloods.mp4");
-      }
-    };
-    loadSound();
+  const currentTrack = TRACKS[trackIndex];
 
-    return () => {
-      soundObj?.unloadAsync();
-    };
-  }, []);
-
-  const playTheme = async () => {
-    if (!sound) return;
-    await sound.playAsync();
-    setIsPlaying(true);
-  };
-
-  const pauseTheme = async () => {
-    if (!sound) return;
-    await sound.pauseAsync();
-    setIsPlaying(false);
-  };
-
-  // Stop music when leaving the screen (same as Will & Aileen)
-  useFocusEffect(
-    useCallback(() => {
-      return () => {
-        if (sound) {
-          sound.stopAsync();
-          setIsPlaying(false);
-        }
-      };
-    }, [sound])
-  );
-
-  // Dimension handling
+  // dimension handling
   useEffect(() => {
     const subscription = Dimensions.addEventListener("change", () => {
       setWindowWidth(Dimensions.get("window").width);
@@ -88,12 +71,92 @@ const Emma = () => {
 
   const isDesktop = windowWidth >= 768;
 
-  const renderArmorCard = (armor) => (
+  // ───────── AUDIO HELPERS ─────────
+  const unloadSound = useCallback(async () => {
+    if (sound) {
+      try {
+        await sound.stopAsync();
+      } catch {}
+      try {
+        await sound.unloadAsync();
+      } catch {}
+      setSound(null);
+    }
+  }, [sound]);
+
+  const loadAndPlayTrack = useCallback(
+    async (index) => {
+      await unloadSound();
+      try {
+        const { sound: newSound } = await Audio.Sound.createAsync(
+          TRACKS[index].source,
+          { isLooping: true, volume: 0.9 }
+        );
+        setSound(newSound);
+        await newSound.playAsync();
+        setIsPlaying(true);
+      } catch (e) {
+        console.error("Failed to play Emma track", e);
+        Alert.alert("Audio Error", "Could not play Emma's theme.");
+        setIsPlaying(false);
+      }
+    },
+    [unloadSound]
+  );
+
+  const playTheme = async () => {
+    if (sound) {
+      try {
+        await sound.playAsync();
+        setIsPlaying(true);
+      } catch (e) {
+        console.error("Play error", e);
+      }
+    } else {
+      await loadAndPlayTrack(trackIndex);
+    }
+  };
+
+  const pauseTheme = async () => {
+    if (!sound) return;
+    try {
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } catch (e) {
+      console.error("Pause error", e);
+    }
+  };
+
+  const cycleTrack = async (direction) => {
+    const nextIndex = (trackIndex + direction + TRACKS.length) % TRACKS.length;
+    setTrackIndex(nextIndex);
+    if (isPlaying) {
+      await loadAndPlayTrack(nextIndex);
+    } else {
+      await unloadSound();
+    }
+  };
+
+  // Stop sound when leaving screen
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        unloadSound();
+        setIsPlaying(false);
+      };
+    }, [unloadSound])
+  );
+
+  const renderArmorCard = (armor, index) => (
     <TouchableOpacity
-      key={armor.name}
-      style={[styles.card(isDesktop, windowWidth), armor.clickable ? styles.clickable : styles.notClickable]}
+      key={`${armor.name}-${index}`}
+      style={[
+        styles.card(isDesktop, windowWidth),
+        armor.clickable ? styles.clickable : styles.notClickable,
+      ]}
       onPress={() => armor.clickable && console.log(`${armor.name} clicked`)}
       disabled={!armor.clickable}
+      activeOpacity={0.9}
     >
       <Image source={armor.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
@@ -103,57 +166,90 @@ const Emma = () => {
     </TouchableOpacity>
   );
 
+  const handleBackPress = async () => {
+    await unloadSound();
+    setIsPlaying(false);
+    navigation.goBack();
+  };
+
   return (
     <View style={styles.container}>
-      {/* SAME MUSIC CONTROLS AS WILL & AILEEN — now in Kintsunera blue-gold */}
+      {/* 🎧 MUSIC BAR – flamingo themed */}
       <View style={styles.musicControls}>
         <TouchableOpacity
-          style={styles.musicButton}
+          style={styles.trackButton}
+          onPress={() => cycleTrack(-1)}
+        >
+          <Text style={styles.trackButtonText}>⟵</Text>
+        </TouchableOpacity>
+
+        <View style={styles.trackInfoGlass}>
+          <Text style={styles.trackLabel}>Track:</Text>
+          <Text style={styles.trackTitle}>{currentTrack.label}</Text>
+        </View>
+
+        <TouchableOpacity
+          style={styles.trackButton}
+          onPress={() => cycleTrack(1)}
+        >
+          <Text style={styles.trackButtonText}>⟶</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.musicButton, isPlaying && styles.musicButtonDisabled]}
           onPress={playTheme}
           disabled={isPlaying}
         >
-          <Text style={styles.musicButtonText}>Play Theme</Text>
+          <Text style={styles.musicButtonText}>
+            {isPlaying ? "Playing" : "Play"}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.musicButton}
+          style={[
+            styles.musicButtonSecondary,
+            !isPlaying && styles.musicButtonDisabled,
+          ]}
           onPress={pauseTheme}
           disabled={!isPlaying}
         >
-          <Text style={styles.musicButtonText}>Pause</Text>
+          <Text style={styles.musicButtonTextSecondary}>Pause</Text>
         </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {/* Header */}
-        <View style={styles.headerContainer}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => {
-              if (sound) sound.stopAsync();
-              navigation.goBack();
-            }}
-          >
-            <Text style={styles.backButtonText}>Back</Text>
-          </TouchableOpacity>
-          <Text style={styles.title}>Kintsunera</Text>
-          <View style={{ width: 50 }} /> {/* Spacer for symmetry */}
+        {/* HEADER – glass block like Jennifer */}
+        <View style={styles.headerOuter}>
+          <View style={styles.headerContainer}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={handleBackPress}
+            >
+              <Text style={styles.backButtonText}>←</Text>
+            </TouchableOpacity>
+
+            <View style={styles.headerGlass}>
+              <Text style={styles.title}>Kintsunera</Text>
+              <Text style={styles.subtitle}>
+                Angel of Innovation • Flamingo Wing
+              </Text>
+            </View>
+          </View>
         </View>
 
-        {/* Armor Gallery */}
-        <View style={styles.imageContainer}>
+        {/* ARMORY SECTION – same structure as Jennifer */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Kintsunera Armory</Text>
+          <View style={styles.sectionDivider} />
           <ScrollView
             horizontal
             contentContainerStyle={styles.imageScrollContainer}
             showsHorizontalScrollIndicator={false}
-            snapToAlignment="center"
-            snapToInterval={SCREEN_WIDTH * 0.7 + 20}
-            decelerationRate="fast"
-            contentOffset={{ x: (SCREEN_WIDTH - (SCREEN_WIDTH * 0.7)) / 2 - 10, y: 0 }}
           >
             {armors.map(renderArmorCard)}
           </ScrollView>
         </View>
 
+        {/* About block preserved exactly as you had it (still commented) */}
         {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
@@ -198,101 +294,259 @@ const Emma = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#0a0a0a" },
+  // BASE
+  container: { flex: 1, backgroundColor: "#12030f" },
+  scrollContainer: { paddingBottom: 30 },
 
-  // SAME EXACT MUSIC BAR STYLE AS WILL (green) — but now blue-gold for Emma
+  // 🎧 MUSIC BAR – flamingo colors
   musicControls: {
     flexDirection: "row",
-    justifyContent: "center",
-    paddingVertical: 12,
-    backgroundColor: "rgba(10, 20, 40, 0.95)",
+    alignItems: "center",
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    backgroundColor: "rgba(40, 5, 25, 0.96)",
     borderBottomWidth: 1,
-    borderBottomColor: "#4169e1",
+    borderBottomColor: "rgba(255, 165, 200, 0.7)",
+    shadowColor: "#ff8fb8",
+    shadowOpacity: 0.45,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 10,
+  },
+  trackButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "rgba(255, 190, 220, 0.9)",
+    backgroundColor: "rgba(70, 10, 40, 0.96)",
+    marginRight: 6,
+  },
+  trackButtonText: {
+    color: "#ffe6f4",
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  trackInfoGlass: {
+    flex: 1,
+    marginHorizontal: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 999,
+    backgroundColor: "rgba(50, 5, 30, 0.9)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 200, 220, 0.8)",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  trackLabel: {
+    color: "#ffd2ec",
+    fontSize: 11,
+    marginRight: 6,
+  },
+  trackTitle: {
+    color: "#fff5fb",
+    fontSize: 13,
+    fontWeight: "700",
   },
   musicButton: {
-    backgroundColor: "rgba(65, 105, 225, 0.9)",
-    paddingHorizontal: 26,
-    paddingVertical: 12,
-    borderRadius: 12,
-    marginHorizontal: 16,
-    elevation: 8,
-    shadowColor: "#00bfff",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.9,
-    shadowRadius: 12,
+    backgroundColor: "rgba(255, 105, 180, 0.96)", // hot pink
+    paddingHorizontal: 16,
+    paddingVertical: 7,
+    borderRadius: 999,
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: "rgba(255, 225, 240, 0.95)",
   },
-  musicButtonText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
+  musicButtonSecondary: {
+    backgroundColor: "rgba(90, 10, 50, 0.96)",
+    paddingHorizontal: 16,
+    paddingVertical: 7,
+    borderRadius: 999,
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: "rgba(255, 200, 220, 0.9)",
+  },
+  musicButtonDisabled: {
+    opacity: 0.55,
+  },
+  musicButtonText: {
+    color: "#fff5fb",
+    fontWeight: "bold",
+    fontSize: 13,
+  },
+  musicButtonTextSecondary: {
+    color: "#ffe4ef",
+    fontWeight: "bold",
+    fontSize: 13,
+  },
 
-  scrollContainer: { paddingBottom: 30 },
+  // HEADER (matching Jennifer structure)
+  headerOuter: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
   headerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    backgroundColor: "#0a0a0a",
-    borderBottomWidth: 1,
-    borderBottomColor: "#333",
   },
   backButton: {
-    padding: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    backgroundColor: "rgba(40, 5, 25, 0.96)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 182, 193, 0.9)",
+    marginRight: 10,
   },
-  backButtonText: { fontSize: 24, color: "#87CEEB", fontWeight: "bold" },
-  title: {
-    fontSize: 32,
+  backButtonText: {
+    fontSize: 20,
+    color: "#ffb6c1",
     fontWeight: "bold",
-    color: "#00BFFF",
-    textAlign: "center",
+  },
+  headerGlass: {
     flex: 1,
-    textShadowColor: "#87CEEB",
-    textShadowRadius: 15,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    backgroundColor: "rgba(50, 5, 30, 0.9)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 180, 210, 0.85)",
+    shadowColor: "#ff8fb8",
+    shadowOpacity: 0.5,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 10,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "900",
+    color: "#ff8fb8",
+    textAlign: "center",
+    textShadowColor: "#ffb6c1",
+    textShadowRadius: 20,
+    letterSpacing: 1,
+  },
+  subtitle: {
+    marginTop: 4,
+    fontSize: 12,
+    color: "#ffd2ec",
+    textAlign: "center",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
   },
 
-  imageContainer: {
-    width: "100%",
-    paddingVertical: 20,
-    backgroundColor: "#111",
-    paddingLeft: 15,
+  // SECTION WRAPPER (like Jennifer)
+  section: {
+    marginTop: 24,
+    marginHorizontal: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    backgroundColor: "rgba(25, 5, 18, 0.97)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 180, 210, 0.7)",
+    shadowColor: "#ff8fb8",
+    shadowOpacity: 0.25,
+    shadowRadius: 22,
+    shadowOffset: { width: 0, height: 12 },
+    elevation: 12,
   },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#ffeaf2",
+    textAlign: "center",
+    textShadowColor: "#ff9abf",
+    textShadowRadius: 18,
+    letterSpacing: 0.8,
+  },
+  sectionDivider: {
+    marginTop: 6,
+    marginBottom: 10,
+    alignSelf: "center",
+    width: "40%",
+    height: 2,
+    borderRadius: 999,
+    backgroundColor: "rgba(255, 180, 210, 0.9)",
+  },
+
   imageScrollContainer: {
     flexDirection: "row",
     paddingHorizontal: 10,
     alignItems: "center",
   },
+
+  // ARMOR CARDS
   card: (isDesktop, w) => ({
     width: isDesktop ? w * 0.3 : SCREEN_WIDTH * 0.9,
     height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7,
-    borderRadius: 15,
+    borderRadius: 18,
     overflow: "hidden",
-    elevation: 8,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    elevation: 10,
+    backgroundColor: "rgba(20, 5, 20, 0.9)",
     marginRight: 20,
   }),
   clickable: {
     borderWidth: 3,
-    borderColor: "#87CEEB",
-    shadowColor: "#00BFFF",
-    shadowOpacity: 0.9,
+    borderColor: "#ff8fb8",
+    shadowColor: "#ff7f50",
+    shadowOpacity: 0.85,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 6 },
   },
   notClickable: { opacity: 0.7 },
   armorImage: { width: "100%", height: "100%", resizeMode: "cover" },
   transparentOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0)",
+    backgroundColor: "rgba(0,0,0,0.15)",
     zIndex: 1,
   },
   cardName: {
     position: "absolute",
     bottom: 12,
     left: 12,
-    fontSize: 17,
-    color: "#E0FFFF",
+    fontSize: 16,
+    color: "#ffeaf2",
     fontWeight: "bold",
-    textShadowColor: "#000080",
+    textShadowColor: "#8b004b",
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 6,
+  },
+
+  // ABOUT (for when you uncomment)
+  aboutSection: {
+    marginTop: 28,
+    marginHorizontal: 12,
+    marginBottom: 32,
+    paddingVertical: 18,
+    paddingHorizontal: 14,
+    borderRadius: 22,
+    backgroundColor: "rgba(35, 5, 22, 0.97)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 180, 210, 0.7)",
+    shadowColor: "#ff8fb8",
+    shadowOpacity: 0.25,
+    shadowRadius: 22,
+    shadowOffset: { width: 0, height: 12 },
+    elevation: 12,
+  },
+  aboutHeader: {
+    fontSize: 20,
+    fontWeight: "800",
+    color: "#ffeaf2",
+    textAlign: "center",
+    textShadowColor: "#ff9abf",
+    textShadowRadius: 18,
+    letterSpacing: 0.8,
+    marginBottom: 6,
+  },
+  aboutText: {
+    fontSize: 14,
+    color: "#ffe2f0",
+    lineHeight: 20,
+    marginTop: 6,
+    textAlign: "left",
   },
 });
 

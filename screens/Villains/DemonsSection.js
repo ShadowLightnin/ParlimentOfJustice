@@ -162,7 +162,7 @@ const DemonsSectionScreen = () => {
       <View style={styles.textContainer}>
         <Text style={styles.factionName}>{faction.name}</Text>
         {!faction.clickable && (
-          <Text style={styles.disabledText}>Not Clickable</Text>
+          <Text style={styles.disabledText}>Comings Soon</Text>
         )}
       </View>
     </TouchableOpacity>

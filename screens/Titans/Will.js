@@ -14,6 +14,20 @@ import { Audio } from "expo-av";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
+// 🎵 Night Hawk tracks – swap sources as you add more
+const TRACKS = [
+  {
+    id: "night_hawk_main",
+    label: "Night Hawk Theme",
+    source: require("../../assets/audio/NightWing.mp4"),
+  },
+  {
+    id: "night_hawk_variant",
+    label: "Night Hawk – Variant",
+    source: require("../../assets/audio/SourceOfStrength.mp4"),
+  },
+];
+
 const armors = [
   { name: "Parliament Founder", image: require("../../assets/Armor/WillNightHawk3.jpg"), clickable: true },
   { name: "Titan Founder", image: require("../../assets/Armor/WillNightHawk4.jpg"), clickable: true },
@@ -23,7 +37,6 @@ const armors = [
   { name: "Flying Night Hawk", image: require("../../assets/Armor/WillNightHawkFly.jpg"), clickable: true },
   { name: "Night Hawk Flying", image: require("../../assets/Armor/WillNightHawkFly2.jpg"), clickable: true },
   { name: "Legacy", image: require("../../assets/Armor/WillLegacy.jpg"), clickable: true },
-  { name: "Lightning Leopard", image: require("../../assets/Armor/Will.jpg"), clickable: true },
 ];
 
 const legacyArmors = [
@@ -31,6 +44,7 @@ const legacyArmors = [
   { name: "Celestial", image: require("../../assets/Armor/WillCelestial.jpg"), clickable: true },
   { name: "Sentinel", image: require("../../assets/Armor/WillSentinel.jpg"), clickable: true },
   { name: "Wrath", image: require("../../assets/Armor/WillWrath.jpg"), clickable: true },
+  { name: "Lightning Leopard", image: require("../../assets/Armor/Will.jpg"), clickable: true },
   { name: "Shadow Storm", image: require("../../assets/Armor/WillShadowStorm.jpg"), clickable: true },
   { name: "Defender v2", image: require("../../assets/Armor/WillDefender2.jpg"), clickable: true },
   { name: "Defender v1", image: require("../../assets/Armor/WillDefender1.jpg"), clickable: true },
@@ -61,60 +75,12 @@ const Will = () => {
   const navigation = useNavigation();
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
 
-  // ────── NEW: Audio state (no autoplay) ──────
   const [sound, setSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [trackIndex, setTrackIndex] = useState(0);
 
-  // Load sound once – but DO NOT play automatically
-  useEffect(() => {
-    let soundObj = null;
-    const loadSound = async () => {
-      try {
-        const { sound } = await Audio.Sound.createAsync(
-          require("../../assets/audio/NightWing.mp4"),
-          { isLooping: true, volume: 1.0 },
-          null,
-          false // ← no autoplay
-        );
-        soundObj = sound;
-        setSound(sound);
-      } catch (e) {
-        console.error("Failed to load sound", e);
-        Alert.alert("Audio Error", "Could not load NightWing.mp4");
-      }
-    };
-    loadSound();
+  const currentTrack = TRACKS[trackIndex];
 
-    return () => {
-      soundObj?.unloadAsync();
-    };
-  }, []);
-
-  const playTheme = async () => {
-    if (!sound) return;
-    await sound.playAsync();
-    setIsPlaying(true);
-  };
-
-  const pauseTheme = async () => {
-    if (!sound) return;
-    await sound.pauseAsync();
-    setIsPlaying(false);
-  };
-
-  // Stop sound when leaving screen
-  useFocusEffect(
-    useCallback(() => {
-      return () => {
-        if (sound) {
-          sound.stopAsync();
-          setIsPlaying(false);
-        }
-      };
-    }, [sound])
-  );
-
-  // ────── Dimension handling (unchanged) ──────
   useEffect(() => {
     const subscription = Dimensions.addEventListener("change", () => {
       setWindowWidth(Dimensions.get("window").width);
@@ -124,32 +90,116 @@ const Will = () => {
 
   const isDesktop = windowWidth >= 768;
 
-  // ────── Render cards (your original logic – untouched) ──────
+  // 🔊 AUDIO HELPERS
+  const unloadSound = useCallback(async () => {
+    if (sound) {
+      try {
+        await sound.stopAsync();
+      } catch {}
+      try {
+        await sound.unloadAsync();
+      } catch {}
+      setSound(null);
+    }
+  }, [sound]);
+
+  const loadAndPlayTrack = useCallback(
+    async (index) => {
+      await unloadSound();
+      try {
+        const { sound: newSound } = await Audio.Sound.createAsync(
+          TRACKS[index].source,
+          { isLooping: true, volume: 1.0 }
+        );
+        setSound(newSound);
+        await newSound.playAsync();
+        setIsPlaying(true);
+      } catch (e) {
+        console.error("Failed to load Night Hawk track", e);
+        Alert.alert("Audio Error", "Could not load the selected Night Hawk track.");
+        setIsPlaying(false);
+      }
+    },
+    [unloadSound]
+  );
+
+  const playTheme = async () => {
+    if (sound) {
+      await sound.playAsync();
+      setIsPlaying(true);
+    } else {
+      await loadAndPlayTrack(trackIndex);
+    }
+  };
+
+  const pauseTheme = async () => {
+    if (!sound) return;
+    try {
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } catch (e) {
+      console.error("Pause error", e);
+    }
+  };
+
+  const cycleTrack = async (direction) => {
+    const nextIndex = (trackIndex + direction + TRACKS.length) % TRACKS.length;
+    setTrackIndex(nextIndex);
+    if (isPlaying) {
+      await loadAndPlayTrack(nextIndex);
+    } else {
+      await unloadSound();
+    }
+  };
+
+  // Stop/unload when leaving screen
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        unloadSound();
+        setIsPlaying(false);
+      };
+    }, [unloadSound])
+  );
+
+  // RENDER CARDS
   const renderArmorCard = (armor) => (
     <TouchableOpacity
       key={armor.name}
-      style={[styles.card(isDesktop, windowWidth), armor.clickable ? styles.clickable : styles.notClickable]}
+      style={[
+        styles.card(isDesktop, windowWidth),
+        armor.clickable ? styles.clickable : styles.notClickable,
+      ]}
       onPress={() => armor.clickable && console.log(`${armor.name} clicked`)}
       disabled={!armor.clickable}
+      activeOpacity={0.9}
     >
       <Image source={armor.image} style={styles.armorImage} />
-      <View style={styles.transparentOverlay} />
+      <View style={styles.cardOverlay} />
       <Text style={styles.cardName}>
         © {armor.name || "Unknown"}; William Cummings
       </Text>
-      {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+      {!armor.clickable && (
+        <Text style={styles.disabledText}>Not Clickable</Text>
+      )}
     </TouchableOpacity>
   );
 
-  const renderKidCard = (item) => (
+  const renderKidCard = (item, index) => (
     <TouchableOpacity
-      key={item.name || Math.random()}
-      style={[styles.kidCard(isDesktop, windowWidth), item.clickable ? styles.clickableKid : styles.notClickable]}
-      onPress={() => item.clickable && console.log(`${item.name || "Family"} clicked`)}
+      key={item.name || `kid-${index}`}
+      style={[
+        styles.kidCard(isDesktop, windowWidth),
+        item.clickable ? styles.clickableKid : styles.notClickable,
+      ]}
+      onPress={() =>
+        item.clickable && console.log(`${item.name || "Family"} clicked`)
+      }
       disabled={!item.clickable}
+      activeOpacity={0.9}
     >
       <Image source={item.image} style={styles.kidImage} />
-      <View style={styles.transparentOverlay} />
+      <View style={styles.kidOverlay} />
       <Text style={styles.kidCardName}>
         © {item.name || "Unknown"}; William Cummings
       </Text>
@@ -158,69 +208,117 @@ const Will = () => {
 
   return (
     <View style={styles.container}>
-      {/* ────── NEW: Play / Pause buttons ────── */}
+      {/* 🎧 MUSIC BAR WITH TRACK INFO */}
       <View style={styles.musicControls}>
-        <TouchableOpacity style={styles.musicButton} onPress={playTheme} disabled={isPlaying}>
-          <Text style={styles.musicButtonText}>Play Theme</Text>
+        <TouchableOpacity
+          style={styles.trackButton}
+          onPress={() => cycleTrack(-1)}
+        >
+          <Text style={styles.trackButtonText}>⟵</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.musicButton} onPress={pauseTheme} disabled={!isPlaying}>
-          <Text style={styles.musicButtonText}>Pause</Text>
+
+        <View style={styles.trackInfoGlass}>
+          <Text style={styles.trackLabel}>Track:</Text>
+          <Text style={styles.trackTitle}>{currentTrack.label}</Text>
+        </View>
+
+        <TouchableOpacity
+          style={styles.trackButton}
+          onPress={() => cycleTrack(1)}
+        >
+          <Text style={styles.trackButtonText}>⟶</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.musicButton, isPlaying && styles.musicButtonDisabled]}
+          onPress={playTheme}
+          disabled={isPlaying}
+        >
+          <Text style={styles.musicButtonText}>
+            {isPlaying ? "Theme Playing" : "Play Theme"}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.musicButtonSecondary,
+            !isPlaying && styles.musicButtonDisabled,
+          ]}
+          onPress={pauseTheme}
+          disabled={!isPlaying}
+        >
+          <Text style={styles.musicButtonTextSecondary}>Pause</Text>
         </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.headerContainer}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.navigate("TitansHome")}
-          >
-            <Text style={styles.backButtonText}>Back</Text>
-          </TouchableOpacity>
-          <Text style={styles.title}>Night Hawk</Text>
+        {/* HEADER */}
+        <View style={styles.headerOuter}>
+          <View style={styles.headerContainer}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => navigation.navigate("TitansHome")}
+            >
+              <Text style={styles.backButtonText}>←</Text>
+            </TouchableOpacity>
+
+            <View style={styles.headerGlass}>
+              <Text style={styles.title}>Night Hawk</Text>
+              <Text style={styles.subtitle}>Creation • Legacy • Honor</Text>
+            </View>
+          </View>
         </View>
 
-        {/* Main Armory */}
-        <View style={styles.imageContainer}>
+        {/* PRIME ARMORY */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Prime Armory</Text>
+          <View style={styles.sectionDivider} />
           <ScrollView
-            horizontal={true}
+            horizontal
             contentContainerStyle={styles.imageScrollContainer}
-            showsHorizontalScrollIndicator={true}
+            showsHorizontalScrollIndicator={false}
           >
             {armors.map(renderArmorCard)}
           </ScrollView>
         </View>
 
-        {/* Legacy Armory */}
-        <View style={styles.legacyContainer}>
-          <Text style={styles.legacyHeader}>Legacy Armory</Text>
+        {/* LEGACY ARMORY */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Legacy Armory</Text>
+          <View style={styles.sectionDivider} />
           <ScrollView
-            horizontal={true}
+            horizontal
             contentContainerStyle={styles.imageScrollContainer}
-            showsHorizontalScrollIndicator={true}
+            showsHorizontalScrollIndicator={false}
           >
             {legacyArmors.map(renderArmorCard)}
           </ScrollView>
         </View>
 
-        {/* Partner Section */}
-        <View style={styles.partnerContainer}>
-          <Text style={styles.partnerHeader}>My Partner</Text>
+        {/* PARTNER */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitleGold}>My Partner</Text>
+          <View style={styles.sectionDividerGold} />
           <TouchableOpacity
-            style={[styles.partnerImageContainer(isDesktop, windowWidth), styles.clickableKid]}
+            style={[
+              styles.partnerImageContainer(isDesktop, windowWidth),
+              styles.partnerBorder,
+            ]}
             onPress={() => navigation.navigate("Aileen")}
+            activeOpacity={0.92}
           >
             <Image
-              source={require("../../assets/Armor/Aileen2.jpg")}
+              source={require("../../assets/Armor/AileenAriata.jpg")}
               style={styles.partnerImage(isDesktop, windowWidth)}
             />
-            <View style={styles.transparentOverlay} />
-            <Text style={styles.partnerName}></Text>
+            <View style={styles.partnerOverlay} />
+            <Text style={styles.partnerName}>Aileen</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Kids Section */}
-        <View style={styles.kidsContainer}>
-          <Text style={styles.kidsHeader}>Our Future Family</Text>
+        {/* KIDS / FAMILY FUTURE */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitleGold}>Our Future Family</Text>
+          <View style={styles.sectionDividerGold} />
           <ScrollView
             horizontal
             contentContainerStyle={styles.imageScrollContainer}
@@ -234,9 +332,9 @@ const Will = () => {
         </View>
 
         {/* About Section */}
-        {/* <View style={styles.aboutSection}>
+        <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
-          <Text style={styles.aboutText}>
+          {/* <Text style={styles.aboutText}>
             William Cummings, known as Night Hawk, is a master of shadows and strategy, the older Cummings sibling and a cornerstone of the Titans within the Parliament of Justice. His lean, agile frame hides a mind as sharp as his claws and a heart loyal to his family. Behind his sleek, ever-changing helmets, William is a tech genius and stealth expert, always two steps ahead of his enemies and ready to adapt to any situation. He’s in a relationship with Aileen, whose strength complements his tactical mind, and he shares an unbreakable bond with his sister Emma. As one of the oldest cousins, William bridges the gap between tradition (like Spencer’s ideals) and innovation, using his suits to protect his cousins—Spencer, Jared, Jennifer (McNeil), Ben, Azure (Briggs), and the rest. Off the battlefield, he’s a problem-solver, often tinkering with gadgets or strategizing with his family, but his drive to stay invisible and untouchable sometimes isolates him.
           </Text>
           <Text style={styles.aboutText}>Backstory</Text>
@@ -318,86 +416,311 @@ const Will = () => {
           </Text>
           <Text style={styles.aboutText}>
             In the Parliament of Justice, William coordinates with tech-savvy cousins like Myran (Jennifer’s husband) and strategists like Todd (Cummings) and Lee (Jensen). His ultimate goal is to protect Zion City’s future, proving that technology and tradition can coexist, while ensuring his family—especially Emma—thrives.
-          </Text>
-        </View> */}
+          </Text> */}
+        </View>
       </ScrollView>
     </View>
   );
 };
 
-// ────── Your original styles + new music button styles ──────
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#0a0a0a" },
+  // BASE
+  container: {
+    flex: 1,
+    backgroundColor: "#02050b",
+  },
+  scrollContainer: {
+    paddingBottom: 30,
+  },
+
+  // MUSIC BAR
   musicControls: {
     flexDirection: "row",
-    justifyContent: "center",
-    paddingVertical: 12,
-    backgroundColor: "rgba(20, 40, 35, 0.95)",
+    alignItems: "center",
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    backgroundColor: "rgba(4, 14, 30, 0.95)",
     borderBottomWidth: 1,
-    borderBottomColor: "#2a6d5d",
+    borderBottomColor: "rgba(0, 220, 255, 0.25)",
+    shadowColor: "#00e5ff",
+    shadowOpacity: 0.4,
+    shadowOffset: { width: 0, height: 6 },
+    shadowRadius: 14,
+    elevation: 8,
+  },
+  trackButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "rgba(140, 220, 255, 0.9)",
+    backgroundColor: "rgba(6, 20, 40, 0.96)",
+    marginRight: 6,
+  },
+  trackButtonText: {
+    color: "#e9fbff",
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  trackInfoGlass: {
+    flex: 1,
+    marginHorizontal: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 999,
+    backgroundColor: "rgba(4, 16, 32, 0.96)",
+    borderWidth: 1,
+    borderColor: "rgba(0, 220, 255, 0.7)",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  trackLabel: {
+    color: "#b8dfff",
+    fontSize: 11,
+    marginRight: 6,
+  },
+  trackTitle: {
+    color: "#e9fbff",
+    fontSize: 13,
+    fontWeight: "700",
   },
   musicButton: {
-    backgroundColor: "rgba(42, 109, 93, 0.9)",
-    paddingHorizontal: 22,
-    paddingVertical: 11,
-    borderRadius: 10,
-    marginHorizontal: 15,
-    elevation: 6,
-    shadowColor: "#089272",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.8,
-    shadowRadius: 10,
+    backgroundColor: "rgba(0, 40, 70, 0.95)",
+    paddingHorizontal: 16,
+    paddingVertical: 9,
+    borderRadius: 999,
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: "rgba(0, 230, 255, 0.9)",
   },
-  musicButtonText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
-  scrollContainer: { paddingBottom: 20 },
+  musicButtonSecondary: {
+    backgroundColor: "rgba(3, 14, 28, 0.9)",
+    paddingHorizontal: 16,
+    paddingVertical: 9,
+    borderRadius: 999,
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: "rgba(160, 220, 255, 0.8)",
+  },
+  musicButtonDisabled: {
+    opacity: 0.55,
+  },
+  musicButtonText: {
+    color: "#e9fbff",
+    fontWeight: "bold",
+    fontSize: 13,
+    textShadowColor: "#00e5ff",
+    textShadowRadius: 10,
+  },
+  musicButtonTextSecondary: {
+    color: "#d6ecff",
+    fontWeight: "bold",
+    fontSize: 13,
+  },
+
+  // HEADER
+  headerOuter: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
   headerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    backgroundColor: "#0a0a0a",
-    borderBottomWidth: 1,
-    borderBottomColor: "#333",
   },
-  backButton: { padding: 10, backgroundColor: "rgba(255, 255, 255, 0.1)", borderRadius: 5 },
-  backButtonText: { fontSize: 24, color: "#fff" },
-  title: { fontSize: 28, fontWeight: "bold", color: "#2a6d5d", textAlign: "center", flex: 1 },
-  imageContainer: { width: "100%", paddingVertical: 20, backgroundColor: "#111", paddingLeft: 15 },
-  legacyContainer: { width: "100%", paddingVertical: 20, backgroundColor: "#111", paddingLeft: 15, marginTop: 10 },
-  legacyHeader: {
+  backButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    backgroundColor: "rgba(5, 20, 45, 0.95)",
+    borderWidth: 1,
+    borderColor: "rgba(170, 215, 255, 0.9)",
+    marginRight: 10,
+  },
+  backButtonText: {
     fontSize: 22,
-    fontWeight: "bold",
-    color: "#2a6d5d",
+    color: "#e8f4ff",
+  },
+  headerGlass: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    backgroundColor: "rgba(6, 22, 50, 0.9)",
+    borderWidth: 1,
+    borderColor: "rgba(0, 220, 255, 0.6)",
+    shadowColor: "#00e5ff",
+    shadowOpacity: 0.45,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 10,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: "900",
+    color: "#f5fcff",
     textAlign: "center",
+    textShadowColor: "#00e5ff",
+    textShadowRadius: 22,
+    letterSpacing: 1,
+  },
+  subtitle: {
+    marginTop: 4,
+    fontSize: 12,
+    color: "#b8dfff",
+    textAlign: "center",
+    letterSpacing: 1,
+    textTransform: "uppercase",
+  },
+
+  // GENERIC SECTION
+  section: {
+    marginTop: 24,
+    marginHorizontal: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    backgroundColor: "rgba(4, 16, 36, 0.93)",
+    borderWidth: 1,
+    borderColor: "rgba(0, 200, 255, 0.35)",
+    shadowColor: "#00e5ff",
+    shadowOpacity: 0.25,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 10,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#e9fbff",
+    textAlign: "center",
+    textShadowColor: "#00b3ff",
+    textShadowRadius: 16,
+    letterSpacing: 0.8,
+  },
+  sectionTitleGold: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#ffe9a6",
+    textAlign: "center",
+    textShadowColor: "gold",
+    textShadowRadius: 18,
+    letterSpacing: 0.8,
+  },
+  sectionDivider: {
+    marginTop: 6,
     marginBottom: 10,
-    textShadowColor: "#089272",
+    alignSelf: "center",
+    width: "40%",
+    height: 2,
+    borderRadius: 999,
+    backgroundColor: "rgba(0, 230, 255, 0.8)",
+  },
+  sectionDividerGold: {
+    marginTop: 6,
+    marginBottom: 10,
+    alignSelf: "center",
+    width: "40%",
+    height: 2,
+    borderRadius: 999,
+    backgroundColor: "rgba(255, 215, 120, 0.95)",
+  },
+
+  imageScrollContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 6,
+    paddingTop: 4,
+    alignItems: "center",
+  },
+
+  // ARMOR CARDS
+  card: (isDesktop, w) => ({
+    width: isDesktop ? w * 0.28 : SCREEN_WIDTH * 0.8,
+    height: isDesktop ? SCREEN_HEIGHT * 0.7 : SCREEN_HEIGHT * 0.65,
+    borderRadius: 22,
+    overflow: "hidden",
+    marginRight: 18,
+    backgroundColor: "rgba(1, 8, 20, 0.9)",
+    borderWidth: 1,
+    borderColor: "rgba(0, 225, 255, 0.85)",
+    shadowColor: "#00e5ff",
+    shadowOpacity: 0.7,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 12,
+  }),
+  armorImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+  },
+  cardOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.35)",
+  },
+  clickable: {},
+  notClickable: {
+    opacity: 0.75,
+  },
+  cardName: {
+    position: "absolute",
+    bottom: 10,
+    left: 12,
+    right: 12,
+    fontSize: 12,
+    color: "#eaf8ff",
+    fontWeight: "600",
+    textShadowColor: "#000",
     textShadowRadius: 10,
   },
-  partnerContainer: { width: "100%", paddingVertical: 20, backgroundColor: "#111", alignItems: "center" },
-  partnerHeader: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#000000",
-    textAlign: "center",
-    marginBottom: 10,
-    textShadowColor: "gold",
-    textShadowRadius: 25,
+  disabledText: {
+    position: "absolute",
+    top: 10,
+    right: 12,
+    fontSize: 10,
+    color: "#7ad0c1",
+    fontWeight: "600",
   },
+
+  // PARTNER
   partnerImageContainer: (isDesktop, w) => ({
-    width: isDesktop ? w * 0.15 : SCREEN_WIDTH * 0.3,
-    height: isDesktop ? w * 0.15 : SCREEN_WIDTH * 0.3,
-    borderRadius: isDesktop ? w * 0.15 / 2 : SCREEN_WIDTH * 0.3 / 2,
+    width: isDesktop ? w * 0.22 : SCREEN_WIDTH * 0.5,
+    height: isDesktop ? w * 0.22 : SCREEN_WIDTH * 0.5,
+    borderRadius: isDesktop ? (w * 0.22) / 2 : SCREEN_WIDTH * 0.25,
     overflow: "hidden",
-    elevation: 5,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    alignSelf: "center",
+    marginTop: 10,
   }),
+  partnerBorder: {
+    borderWidth: 2,
+    borderColor: "rgba(255, 215, 120, 0.95)",
+    backgroundColor: "rgba(0,0,0,0.7)",
+    shadowColor: "gold",
+    shadowOpacity: 0.7,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 12,
+  },
   partnerImage: (isDesktop, w) => ({
     width: "100%",
     height: "100%",
     resizeMode: "cover",
   }),
-  kidsContainer: { width: "100%", paddingVertical: 20, backgroundColor: "#111" },
+  partnerOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.35)",
+  },
+  partnerName: {
+    position: "absolute",
+    bottom: 10,
+    alignSelf: "center",
+    fontSize: 16,
+    color: "#ffe9b8",
+    fontWeight: "700",
+    textShadowColor: "#000",
+    textShadowRadius: 12,
+  },
+
+  // KIDS
   kidsHeader: {
     fontSize: 22,
     fontWeight: "bold",
@@ -407,37 +730,77 @@ const styles = StyleSheet.create({
     textShadowColor: "gold",
     textShadowRadius: 25,
   },
-  imageScrollContainer: { flexDirection: "row", paddingHorizontal: 10, alignItems: "center" },
-  card: (isDesktop, w) => ({
-    width: isDesktop ? w * 0.3 : SCREEN_WIDTH * 0.9,
-    height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7,
-    borderRadius: 15,
-    overflow: "hidden",
-    elevation: 5,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-    marginRight: 20,
-  }),
   kidCard: (isDesktop, w) => ({
-    width: isDesktop ? w * 0.15 : SCREEN_WIDTH * 0.45,
-    height: isDesktop ? SCREEN_HEIGHT * 0.4 : SCREEN_HEIGHT * 0.35,
-    borderRadius: 15,
+    width: isDesktop ? w * 0.16 : SCREEN_WIDTH * 0.46,
+    height: isDesktop ? SCREEN_HEIGHT * 0.42 : SCREEN_HEIGHT * 0.38,
+    borderRadius: 18,
     overflow: "hidden",
-    elevation: 5,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-    marginRight: 20,
+    marginRight: 16,
+    backgroundColor: "rgba(5, 10, 22, 0.9)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 215, 120, 0.9)",
+    shadowColor: "gold",
+    shadowOpacity: 0.6,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 10,
   }),
-  clickable: { borderWidth: 2, borderColor: "#2a6d5d", shadowColor: "#089272", shadowOffset: { width: 0, height: 5 }, shadowRadius: 8, shadowOpacity: 0.7 },
-  clickableKid: { borderWidth: 2, borderColor: "gold", shadowColor: "gold", shadowOffset: { width: 0, height: 5 }, shadowRadius: 8, shadowOpacity: 0.7 },
-  notClickable: { opacity: 0.8 },
-  armorImage: { width: "100%", height: "100%", resizeMode: "cover" },
-  kidImage: { width: "100%", height: "100%", resizeMode: "cover" },
-  transparentOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0)", zIndex: 1 },
-  cardName: { position: "absolute", bottom: 10, left: 10, fontSize: 16, color: "white", fontWeight: "bold" },
-  kidCardName: { position: "absolute", bottom: 5, left: 5, fontSize: 12, color: "white", fontWeight: "bold" },
-  disabledText: { fontSize: 12, color: "#2a6d5d", position: "absolute", bottom: 30, left: 10 },
-  aboutSection: { marginTop: 40, padding: 20, backgroundColor: "#222", borderRadius: 15 },
-  aboutHeader: { fontSize: 22, fontWeight: "bold", color: "#2a6d5d", textAlign: "center" },
-  aboutText: { fontSize: 16, color: "#fff", textAlign: "center", marginTop: 10 },
+  kidImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+  },
+  kidOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+  },
+  clickableKid: {},
+  kidCardName: {
+    position: "absolute",
+    bottom: 8,
+    left: 8,
+    right: 8,
+    fontSize: 11,
+    color: "#fff8e1",
+    fontWeight: "600",
+    textShadowColor: "#000",
+    textShadowRadius: 10,
+  },
+
+  // ABOUT ME
+  aboutSection: {
+    marginTop: 28,
+    marginHorizontal: 12,
+    marginBottom: 32,
+    paddingVertical: 18,
+    paddingHorizontal: 14,
+    borderRadius: 22,
+    backgroundColor: "rgba(3, 12, 28, 0.96)",
+    borderWidth: 1,
+    borderColor: "rgba(0, 220, 255, 0.45)",
+    shadowColor: "#00e5ff",
+    shadowOpacity: 0.25,
+    shadowRadius: 22,
+    shadowOffset: { width: 0, height: 12 },
+    elevation: 12,
+  },
+  aboutHeader: {
+    fontSize: 20,
+    fontWeight: "800",
+    color: "#e9fbff",
+    textAlign: "center",
+    textShadowColor: "#00b3ff",
+    textShadowRadius: 18,
+    letterSpacing: 0.8,
+    marginBottom: 6,
+  },
+  aboutText: {
+    fontSize: 14,
+    color: "#dcecff",
+    lineHeight: 20,
+    marginTop: 6,
+    textAlign: "left",
+  },
 });
 
 export default Will;

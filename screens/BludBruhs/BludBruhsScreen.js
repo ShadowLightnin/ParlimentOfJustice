@@ -15,7 +15,10 @@ import {
   ScrollView,
   Animated,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,   // 🔹 import insets
+} from 'react-native-safe-area-context';
 import { Audio } from 'expo-av';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -27,10 +30,10 @@ const cardSpacing = isDesktop ? 25 : 10;
 
 // ⚡ Lightning storm palette
 const THUNDER = {
-  bolt: '#00e5ff',        // bright lightning blue
-  core: '#00b3ff',        // electric cyan
-  storm: '#4b6cff',       // stormy blue
-  violet: '#9b5bff',      // shattered realm purple
+  bolt: '#00e5ff',
+  core: '#00b3ff',
+  storm: '#4b6cff',
+  violet: '#9b5bff',
   stormDark: 'rgba(3, 8, 25, 0.92)',
   stormGlass: 'rgba(8, 20, 45, 0.85)',
 };
@@ -100,6 +103,8 @@ const fixedMembers = [
 
 const BludBruhsScreen = ({ route }) => {
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();        // 🔹 get safe-area values
+
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isYourUniverse, setIsYourUniverse] = useState(
@@ -380,7 +385,10 @@ const BludBruhsScreen = ({ route }) => {
       style={styles.background}
       resizeMode="cover"
     >
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView
+        style={styles.safeArea}
+        edges={['bottom', 'left', 'right']}
+      >
         <View style={styles.overlay}>
           {/* ⚡ LIGHTNING FLASH LAYERS OVER HEADER AREA (original effect) */}
           <Animated.View
@@ -447,13 +455,13 @@ const BludBruhsScreen = ({ route }) => {
             </TouchableOpacity>
 
             <View style={styles.headerRight}>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => navigation.navigate('TeamChat')}
                 style={styles.iconButton}
                 activeOpacity={0.85}
               >
                 <Text style={styles.chatText}>⚡</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <TouchableOpacity
                 onPress={() => navigation.navigate('AddMember')}
                 style={styles.iconButton}
@@ -543,7 +551,13 @@ const BludBruhsScreen = ({ route }) => {
           {/* GRID SCROLL */}
           <ScrollView
             style={styles.scrollView}
-            contentContainerStyle={styles.scrollContent}
+            contentContainerStyle={[
+              styles.scrollContent,
+              {
+                // 🔹 add bottom padding so last row clears the fixed row + safe-area
+                paddingBottom: 12 + cardSize * 1.6 * 0.4 + (insets.bottom || 8),
+              },
+            ]}
           >
             <View style={[styles.grid, { gap: cardSpacing }]}>
               {rows.map((row, rowIndex) => (
@@ -558,7 +572,15 @@ const BludBruhsScreen = ({ route }) => {
           </ScrollView>
 
           {/* FIXED BOTTOM ROW */}
-          <View style={[styles.fixedRow, { gap: cardSpacing }]}>
+          <View
+            style={[
+              styles.fixedRow,
+              {
+                gap: cardSpacing,
+                paddingBottom: (insets.bottom || 10) + 18, // 🔹 lift above home bar
+              },
+            ]}
+          >
             {fixedMembers.map(renderMemberCard)}
           </View>
         </View>
@@ -566,7 +588,6 @@ const BludBruhsScreen = ({ route }) => {
     </ImageBackground>
   );
 };
-
 const styles = StyleSheet.create({
   background: { width: SCREEN_WIDTH, height: SCREEN_HEIGHT },
   safeArea: { flex: 1 },
@@ -777,14 +798,17 @@ const styles = StyleSheet.create({
 
   /* GRID */
   scrollView: { flex: 1 },
-  scrollContent: { paddingHorizontal: 10, paddingBottom: 12 },
+  scrollContent: {
+    paddingHorizontal: 10,
+    // paddingBottom now injected inline with insets
+  },
   grid: { flexDirection: 'column', alignItems: 'center' },
   row: { flexDirection: 'row', justifyContent: 'center' },
 
   fixedRow: {
     flexDirection: 'row',
     justifyContent: 'center',
-    paddingVertical: 10,
+    paddingTop: 8,
     paddingHorizontal: 10,
     backgroundColor: 'rgba(0,0,0,0.7)',
     borderTopWidth: 1,

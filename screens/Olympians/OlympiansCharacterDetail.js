@@ -1,3 +1,4 @@
+// screens/Olympians/OlympiansCharacterDetail.js
 import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
@@ -13,11 +14,37 @@ import { Video, Audio } from 'expo-av';
 import descriptions from './OlympiansDescription';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const PLACEHOLDER = require('../../assets/Armor/PlaceHolder.jpg');
+
+// 🔹 Normalize any “image-like” value into a valid RN Image `source`
+const normalizeImageSource = (img) => {
+  if (!img) return PLACEHOLDER;
+
+  // Already a local require id
+  if (typeof img === 'number') return img;
+
+  if (typeof img === 'object') {
+    // Nested like { source: require(...) }
+    if (img.source) return normalizeImageSource(img.source);
+
+    if (img.uri != null) {
+      if (typeof img.uri === 'number') return img.uri;           // local require in uri
+      if (typeof img.uri === 'string') return { uri: img.uri };  // remote/local string uri
+    }
+  }
+
+  if (typeof img === 'string') {
+    return { uri: img };
+  }
+
+  return PLACEHOLDER;
+};
 
 const OlympiansCharacterDetail = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { member } = route.params || {};
+
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef(null);
   const audioRef = useRef(null);
@@ -59,7 +86,9 @@ const OlympiansCharacterDetail = () => {
 
     return () => {
       if (audioRef.current) {
-        audioRef.current.unloadAsync().catch((e) => console.error('Audio unload error:', e));
+        audioRef.current
+          .unloadAsync()
+          .catch((e) => console.error('Audio unload error:', e));
         audioRef.current = null;
         console.log('Audio unloaded on cleanup');
       }
@@ -99,25 +128,60 @@ const OlympiansCharacterDetail = () => {
     }
   };
 
+  // 🔹 Copyright text per image
+  const copyrightText = member?.codename
+    ? `© ${member.codename}; William Cummings`
+    : '© William Cummings';
+
+  // 🔹 Build a normalized images array
+  let images;
+  if (member?.images?.length) {
+    images = member.images.map((img) => {
+      const base =
+        typeof img === 'object' && img !== null ? img : { uri: img };
+      return {
+        source: normalizeImageSource(base.uri ?? base),
+        name: copyrightText,
+        clickable: base.clickable ?? true,
+      };
+    });
+  } else {
+    images = [
+      {
+        source: normalizeImageSource(member?.image || PLACEHOLDER),
+        name: copyrightText,
+        clickable: true,
+      },
+    ];
+  }
+
+  console.log('Member:', member?.name, 'Images:', images);
+
   const renderImageCard = (img, index) => {
-    const key = img.uri ? `${typeof img.uri === 'string' ? img.uri : index}-${index}` : `image-${index}`;
+    const key = `image-${index}`;
     return (
       <TouchableOpacity
         key={key}
-        style={[styles.card(isDesktop, windowWidth), styles.clickable]}
+        style={[styles.card(isDesktop, windowWidth), img.clickable !== false && styles.clickable]}
         onPress={() => console.log(`${img.name || 'Image'} clicked`)}
+        activeOpacity={0.9}
       >
         <Image
-          source={typeof img.uri === 'string' ? { uri: img.uri } : img.uri}
+          source={normalizeImageSource(img.source)}
           style={styles.armorImage}
           resizeMode="cover"
-          onError={(e) => console.error('Image load error:', e.nativeEvent.error, 'URI:', img.uri)}
+          onError={(e) =>
+            console.error(
+              'Image load error:',
+              e.nativeEvent.error,
+              'source:',
+              img.source
+            )
+          }
         />
         <View style={styles.transparentOverlay} />
         {img.name && img.name.trim() && (
-          <Text style={styles.cardName}>
-            {img.name.trim()}
-          </Text>
+          <Text style={styles.cardName}>{img.name.trim()}</Text>
         )}
       </TouchableOpacity>
     );
@@ -150,11 +214,15 @@ const OlympiansCharacterDetail = () => {
           />
         ) : member.mediaType === 'audio' ? (
           <View style={mediaStyle}>
-            <Text style={styles.mediaText}>Audio: {member.mediaUri.split('/').pop()}</Text>
+            <Text style={styles.mediaText}>
+              Audio: {member.mediaUri.split('/').pop()}
+            </Text>
           </View>
         ) : (
           <View style={mediaStyle}>
-            <Text style={styles.mediaText}>File: {member.mediaUri.split('/').pop()}</Text>
+            <Text style={styles.mediaText}>
+              File: {member.mediaUri.split('/').pop()}
+            </Text>
           </View>
         )}
         {(member.mediaType === 'video' || member.mediaType === 'audio') && (
@@ -166,24 +234,6 @@ const OlympiansCharacterDetail = () => {
     );
   };
 
-const copyrightText = member?.codename 
-  ? `© ${member.codename}; William Cummings`
-  : '© William Cummings';
-
-const images = member?.images?.length
-  ? member.images.map((img) => ({
-      uri: img.uri,
-      name: copyrightText,
-      clickable: img.clickable ?? true,
-    }))
-  : [{
-      uri: member?.image || require('../../assets/Armor/PlaceHolder.jpg'),
-      name: copyrightText,
-      clickable: true,
-    }];
-
-  console.log('Member:', member?.name, 'Images:', images);
-
   const getDescription = (name, memberDesc) => {
     const desc = memberDesc || descriptions[name] || 'No description available';
     return typeof desc === 'string' ? desc.trim() : 'No description available';
@@ -192,33 +242,39 @@ const images = member?.images?.length
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {/* Header */}
         <View style={styles.headerContainer}>
-          <TouchableOpacity style={styles.backButton} onPress={async () => {
-            if (audioRef.current) {
-              try {
-                await audioRef.current.pauseAsync();
-                await audioRef.current.unloadAsync();
-                audioRef.current = null;
-                console.log('Audio paused and unloaded on back press');
-              } catch (e) {
-                console.error('Audio stop error on back press:', e.message);
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={async () => {
+              if (audioRef.current) {
+                try {
+                  await audioRef.current.pauseAsync();
+                  await audioRef.current.unloadAsync();
+                  audioRef.current = null;
+                  console.log('Audio paused and unloaded on back press');
+                } catch (e) {
+                  console.error('Audio stop error on back press:', e.message);
+                }
               }
-            }
-            if (videoRef.current) {
-              try {
-                await videoRef.current.pauseAsync();
-                console.log('Video paused on back press');
-              } catch (e) {
-                console.error('Video stop error on back press:', e.message);
+              if (videoRef.current) {
+                try {
+                  await videoRef.current.pauseAsync();
+                  console.log('Video paused on back press');
+                } catch (e) {
+                  console.error('Video stop error on back press:', e.message);
+                }
               }
-            }
-            setIsPlaying(false);
-            navigation.goBack();
-          }}>
+              setIsPlaying(false);
+              navigation.goBack();
+            }}
+          >
             <Text style={styles.backButtonText}>←</Text>
           </TouchableOpacity>
           <Text style={styles.title}>{member?.codename || 'N/A'}</Text>
         </View>
+
+        {/* Image gallery */}
         <View style={styles.imageContainer}>
           <ScrollView
             horizontal
@@ -227,17 +283,26 @@ const images = member?.images?.length
             snapToAlignment="center"
             snapToInterval={cardWidth + 20}
             decelerationRate="fast"
-            contentOffset={{ x: (SCREEN_WIDTH - cardWidth) / 2 - 10, y: 0 }}
+            contentOffset={{
+              x: (SCREEN_WIDTH - cardWidth) / 2 - 10,
+              y: 0,
+            }}
           >
             {images.map(renderImageCard)}
           </ScrollView>
         </View>
+
+        {/* About */}
         <View style={styles.aboutSection}>
-          <Text style={styles.aboutHeader}>About {member?.codename || 'Character'}</Text>
+          <Text style={styles.aboutHeader}>
+            About {member?.codename || 'Character'}
+          </Text>
           <Text style={styles.aboutText}>
             {getDescription(member?.name, member?.description)}
           </Text>
         </View>
+
+        {/* Media */}
         {renderMediaPlayer()}
       </ScrollView>
     </View>

@@ -6,12 +6,12 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
   ScrollView,
   Modal,
   Dimensions,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { db, auth, storage } from '../../lib/firebase';
 import { collection, onSnapshot, deleteDoc, doc, getDoc } from 'firebase/firestore';
@@ -274,7 +274,7 @@ const RollingThunderScreen = () => {
       style={styles.background}
       onError={(e) => console.error('Background image load error:', e.nativeEvent.error)}
     >
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
         <View style={styles.headerWrapper}>
           <TouchableOpacity
             style={styles.backButton}

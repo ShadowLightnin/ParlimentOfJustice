@@ -322,7 +322,7 @@ export const ForgeScreen = () => {
       style={styles.background}
       resizeMode="cover"
     >
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container}  edges={['bottom', 'left', 'right']}>
         <Animated.View style={{ flex: 1, transform: [{ translateX: shakeAnim }] }}>
           {/* HEADER */}
           <View style={styles.headerWrapper}>
@@ -351,7 +351,7 @@ export const ForgeScreen = () => {
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.chatButton}
               onPress={async () => {
                 await stopForgeTheme();
@@ -359,7 +359,7 @@ export const ForgeScreen = () => {
               }}
             >
               <Text style={styles.chatText}>🛡️</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
           {/* MUSIC CONTROLS */}

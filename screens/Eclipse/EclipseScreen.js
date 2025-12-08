@@ -160,7 +160,7 @@ const EclipseScreen = () => {
       style={styles.background}
       resizeMode="cover"
     >
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView style={styles.safeArea} edges={['bottom', 'left', 'right']}>
         <View style={styles.overlay}>
           {/* HEADER */}
           <View style={styles.headerWrapper}>
@@ -188,13 +188,13 @@ const EclipseScreen = () => {
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={goToChat}
               style={styles.chatButton}
               activeOpacity={0.85}
             >
               <Text style={styles.chatText}>💬</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
           {/* LORE OVERLAY (on top of everything) */}
