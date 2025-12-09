@@ -510,7 +510,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 13,
     textShadowColor: "#00e5ff",
-    textShadowRadius: 10,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+
   },
   musicButtonTextSecondary: {
     color: "#d6ecff",
@@ -560,7 +562,8 @@ const styles = StyleSheet.create({
     color: "#f5fcff",
     textAlign: "center",
     textShadowColor: "#00e5ff",
-    textShadowRadius: 22,
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 1,
   },
   subtitle: {
@@ -594,7 +597,8 @@ const styles = StyleSheet.create({
     color: "#e9fbff",
     textAlign: "center",
     textShadowColor: "#00b3ff",
-    textShadowRadius: 16,
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
   },
   sectionTitleGold: {
@@ -603,7 +607,9 @@ const styles = StyleSheet.create({
     color: "#ffe9a6",
     textAlign: "center",
     textShadowColor: "gold",
-    textShadowRadius: 18,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+
     letterSpacing: 0.8,
   },
   sectionDivider: {
@@ -670,7 +676,9 @@ const styles = StyleSheet.create({
     color: "#eaf8ff",
     fontWeight: "600",
     textShadowColor: "#000",
-    textShadowRadius: 10,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+
   },
   disabledText: {
     position: "absolute",
@@ -717,7 +725,9 @@ const styles = StyleSheet.create({
     color: "#ffe9b8",
     fontWeight: "700",
     textShadowColor: "#000",
-    textShadowRadius: 12,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+
   },
 
   // KIDS
@@ -728,7 +738,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 10,
     textShadowColor: "gold",
-    textShadowRadius: 25,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+
   },
   kidCard: (isDesktop, w) => ({
     width: isDesktop ? w * 0.16 : SCREEN_WIDTH * 0.46,
@@ -790,7 +802,9 @@ const styles = StyleSheet.create({
     color: "#e9fbff",
     textAlign: "center",
     textShadowColor: "#00b3ff",
-    textShadowRadius: 18,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+
     letterSpacing: 0.8,
     marginBottom: 6,
   },

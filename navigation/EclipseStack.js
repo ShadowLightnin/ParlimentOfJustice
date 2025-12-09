@@ -12,6 +12,7 @@ import Angels from '../screens/Eclipse/Angels.js';
 import BackWarpScreen from "../screens/Eclipse/BackWarpScreen";
 import Myran from '../screens/Eclipse/Myran';
 import Kelsie from '../screens/Eclipse/Kelsie';
+import SubjectTerminatedScreen from '../screens/Eclipse/SubjectTerminatedScreen.js';
 import James from '../screens/Eclipse/James';
 
 // import {  } from '../screens//';
@@ -32,6 +33,7 @@ export function EclipseStack() {
       <Stack.Screen name="BackWarpScreen" component={BackWarpScreen} />
       <Stack.Screen name="Myran" component={Myran} />
       <Stack.Screen name="Kelsie" component={Kelsie} />
+      <Stack.Screen name="SubjectTerminated" component={SubjectTerminatedScreen} />
       <Stack.Screen name="James" component={James} />
 
     </Stack.Navigator>

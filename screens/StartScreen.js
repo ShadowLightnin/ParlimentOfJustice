@@ -25,6 +25,7 @@ const factions = [
   'Advanced Spartan 3 Corp',
   'Thunder Born',
   'Legionaires',
+  'The Forge',
   'Constellation',
 ];
 

@@ -20,7 +20,7 @@ const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 const members = [
   { name: '', codename: 'TBA', screen: '', clickable: false, position: [0, 0], image: require('../../assets/Armor/PlaceHolder.jpg') },
   { name: 'James', codename: 'Guarduan', screen: 'James', clickable: true, position: [0, 2], image: require('../../assets/Armor/James.jpg') },
-  { name: '', codename: 'TBA', screen: '', clickable: false, position: [1, 0], image: require('../../assets/Armor/PlaceHolder.jpg') },
+  { name: '', codename: 'Eliptic Dancer', screen: 'SubjectTerminated', clickable: true, position: [1, 0], image: require('../../assets/Armor/PlaceHolder.jpg') },
   { name: 'Aileen', codename: 'Ariata', screen: 'Aileen', clickable: true, position: [1, 1], image: require('../../assets/Armor/AileenAriata.jpg') },
   { name: '', codename: 'TBA', screen: '', clickable: false, position: [1, 2], image: require('../../assets/Armor/PlaceHolder.jpg') },
   { name: 'Myran', codename: 'Cyber', screen: 'Myran', clickable: true, position: [2, 0], image: require('../../assets/Armor/Myran.jpg') },

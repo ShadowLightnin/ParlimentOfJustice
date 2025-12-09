@@ -61,6 +61,11 @@ const kids = [
     image: require("../../assets/Armor/Lucas2.jpg"),
     clickable: true,
   },
+    {
+    name: "Ruth",
+    image: require("../../assets/Armor/Ruth.jpg"),
+    clickable: true,
+  },
 ];
 
 const Jennifer = () => {
@@ -284,7 +289,7 @@ const Jennifer = () => {
 
         {/* KIDS SECTION */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitlePink}>First Born</Text>
+          <Text style={styles.sectionTitlePink}>First Gen</Text>
           <View style={styles.sectionDividerPink} />
           <ScrollView
             horizontal
