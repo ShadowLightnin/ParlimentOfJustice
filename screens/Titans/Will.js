@@ -235,7 +235,7 @@ const Will = () => {
           disabled={isPlaying}
         >
           <Text style={styles.musicButtonText}>
-            {isPlaying ? "Theme Playing" : "Play Theme"}
+            {isPlaying ? "Playing" : "Play"}
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
