@@ -29,6 +29,7 @@ const TRACKS = [
 ];
 
 const armors = [
+  { name: "Wolff", image: require("../../assets/Armor/TannerBb2.jpg"), clickable: true },
   { name: "Wolff", image: require("../../assets/Armor/TannerBb.jpg"), clickable: true },
 ];
 

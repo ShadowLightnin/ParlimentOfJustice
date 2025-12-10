@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { 
-  View, Text, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions 
+import {
+  View,
+  Text,
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
@@ -11,60 +17,99 @@ const BenP = () => {
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
 
   useEffect(() => {
-    const updateDimensions = () => {
+    const subscription = Dimensions.addEventListener("change", () => {
       setWindowWidth(Dimensions.get("window").width);
-    };
-    const subscription = Dimensions.addEventListener("change", updateDimensions);
+    });
     return () => subscription?.remove();
   }, []);
 
   const isDesktop = windowWidth >= 768;
 
   const armors = [
-    { name: "Chemoshock", copyright: "William Cummings", image: require("../../../assets/Armor/Benp3.jpg"), clickable: true },
-    { name: "Chemoshock", copyright: "William Cummings", image: require("../../../assets/Armor/Benp4.jpg"), clickable: true },
-    { name: "", image: require("../../../assets/Armor/Benp.jpg"), clickable: true },
-    { name: "Chemoshock", copyright: "William Cummings", image: require("../../../assets/Armor/Benp2.jpg"), clickable: true },
+    {
+      name: "Chemoshock",
+      copyright: "William Cummings",
+      image: require("../../../assets/Armor/Benp3.jpg"),
+      clickable: true,
+    },
+    {
+      name: "Chemoshock",
+      copyright: "William Cummings",
+      image: require("../../../assets/Armor/Benp4.jpg"),
+      clickable: true,
+    },
+    {
+      name: "",
+      image: require("../../../assets/Armor/Benp.jpg"),
+      clickable: true,
+    },
+    {
+      name: "Chemoshock",
+      copyright: "William Cummings",
+      image: require("../../../assets/Armor/Benp2.jpg"),
+      clickable: true,
+    },
   ];
+
   const renderArmorCard = (armor, index) => (
     <TouchableOpacity
-      key={`${armor.name}-${armor.copyright || index}`} // Unique key using name, copyright, or index
-      style={[styles.card(isDesktop, windowWidth), armor.clickable ? styles.clickable : styles.notClickable]}
-      onPress={() => armor.clickable && console.log(`${armor.name || 'Unnamed'} clicked`)}
+      key={`${armor.name || "Unnamed"}-${armor.copyright || index}`}
+      style={[
+        styles.card(isDesktop, windowWidth),
+        armor.clickable ? styles.clickable : styles.notClickable,
+      ]}
+      onPress={() => armor.clickable && console.log(`${armor.name || "Unnamed"} clicked`)}
       disabled={!armor.clickable}
+      activeOpacity={0.9}
     >
       <Image source={armor.image} style={styles.armorImage} />
-      <View style={styles.transparentOverlay} />
+      <View style={styles.cardOverlay} />
       <Text style={styles.cardName}>
-        {armor.copyright ? `© ${armor.name || 'Unknown'}; ${armor.copyright}` : (armor.name)}
+        {armor.copyright
+          ? `© ${armor.name || "Unknown"}; ${armor.copyright}`
+          : armor.name || ""}
       </Text>
-      {!armor.clickable && <Text style={styles.disabledText}>Not Clickable</Text>}
+      {!armor.clickable && (
+        <Text style={styles.disabledText}>Not Clickable</Text>
+      )}
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.headerContainer}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-            <Text style={styles.backButtonText}>←</Text>
-          </TouchableOpacity>
-          <Text style={styles.title}>Chemoshock</Text>
+        {/* HEADER */}
+        <View style={styles.headerOuter}>
+          <View style={styles.headerContainer}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => navigation.goBack()}
+            >
+              <Text style={styles.backButtonText}>←</Text>
+            </TouchableOpacity>
+
+            <View style={styles.headerGlass}>
+              <Text style={styles.title}>Chemoshock</Text>
+              <Text style={styles.subtitle}>Smart • Logical • Amazing</Text>
+            </View>
+          </View>
         </View>
 
-        <View style={styles.imageContainer}>
+        {/* SPARTAN ARMORY */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Spartan Armory</Text>
+          <View style={styles.sectionDivider} />
           <ScrollView
             horizontal
             contentContainerStyle={styles.imageScrollContainer}
             showsHorizontalScrollIndicator={false}
             snapToAlignment="center"
-            snapToInterval={SCREEN_WIDTH * 0.7 + 20}
+            snapToInterval={windowWidth * 0.7 + 20}
             decelerationRate="fast"
           >
-            {armors.map(renderArmorCard)}
+            {armors.map((armor, index) => renderArmorCard(armor, index))}
           </ScrollView>
         </View>
-
         {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
@@ -106,107 +151,197 @@ const BenP = () => {
 };
 
 const styles = StyleSheet.create({
+  // BASE
   container: {
     flex: 1,
-    backgroundColor: "#0a0a0a",
+    backgroundColor: "#020806", // deep green-black
   },
   scrollContainer: {
-    paddingBottom: 20,
+    paddingBottom: 30,
+  },
+
+  // HEADER
+  headerOuter: {
+    paddingHorizontal: 16,
+    paddingTop: 16,
   },
   headerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    backgroundColor: "#0a0a0a",
-    borderBottomWidth: 1,
-    borderBottomColor: "#333",
   },
   backButton: {
-    padding: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    backgroundColor: "rgba(3, 20, 8, 0.95)",
+    borderWidth: 1,
+    borderColor: "rgba(173, 255, 160, 0.9)",
+    marginRight: 10,
   },
   backButtonText: {
-    fontSize: 24,
-    color: "#fff",
+    fontSize: 22,
+    color: "#e4ffe0",
+  },
+  headerGlass: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    backgroundColor: "rgba(6, 30, 12, 0.96)",
+    borderWidth: 1,
+    borderColor: "rgba(124, 252, 0, 0.75)", // MC green glow
+    shadowColor: "#7CFC00",
+    shadowOpacity: 0.5,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 10,
   },
   title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#00b3ff",
+    fontSize: 26,
+    fontWeight: "900",
+    color: "#e8ffe4",
     textAlign: "center",
-    flex: 1,
+    textShadowColor: "#7CFC00",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+    letterSpacing: 1,
   },
-  imageContainer: {
-    width: "100%",
-    paddingVertical: 20,
-    backgroundColor: "#111",
-    paddingLeft: 15,
+  subtitle: {
+    marginTop: 4,
+    fontSize: 12,
+    color: "#a8ff9b",
+    textAlign: "center",
+    letterSpacing: 1,
+    textTransform: "uppercase",
   },
+
+  // SECTION
+  section: {
+    marginTop: 24,
+    marginHorizontal: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    backgroundColor: "rgba(4, 22, 10, 0.96)",
+    borderWidth: 1,
+    borderColor: "rgba(124, 252, 0, 0.45)",
+    shadowColor: "#7CFC00",
+    shadowOpacity: 0.3,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 10,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#e8ffe4",
+    textAlign: "center",
+    textShadowColor: "#7CFC00",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+    letterSpacing: 0.8,
+  },
+  sectionDivider: {
+    marginTop: 6,
+    marginBottom: 10,
+    alignSelf: "center",
+    width: "40%",
+    height: 2,
+    borderRadius: 999,
+    backgroundColor: "rgba(124, 252, 0, 0.9)",
+  },
+
   imageScrollContainer: {
     flexDirection: "row",
-    paddingHorizontal: 10,
+    paddingHorizontal: 6,
+    paddingTop: 4,
     alignItems: "center",
   },
-  card: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9,
-    height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7,
-    borderRadius: 15,
+
+  // ARMOR CARDS
+  card: (isDesktop, w) => ({
+    width: isDesktop ? w * 0.28 : SCREEN_WIDTH * 0.8,
+    height: isDesktop ? SCREEN_HEIGHT * 0.7 : SCREEN_HEIGHT * 0.65,
+    borderRadius: 22,
     overflow: "hidden",
-    elevation: 5,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-    marginRight: 20,
+    marginRight: 18,
+    backgroundColor: "rgba(3, 15, 7, 0.96)",
+    borderWidth: 1,
+    borderColor: "rgba(124, 252, 0, 0.95)",
+    shadowColor: "#7CFC00",
+    shadowOpacity: 0.7,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 12,
   }),
-  clickable: {
-    borderWidth: 2,
-  },
-  notClickable: {
-    opacity: 0.8,
-  },
   armorImage: {
     width: "100%",
     height: "100%",
     resizeMode: "cover",
   },
-  transparentOverlay: {
+  cardOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0)",
-    zIndex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.35)",
+  },
+  clickable: {},
+  notClickable: {
+    opacity: 0.75,
   },
   cardName: {
     position: "absolute",
     bottom: 10,
-    left: 10,
-    fontSize: 16,
-    color: "white",
-    fontWeight: "bold",
+    left: 12,
+    right: 12,
+    fontSize: 12,
+    color: "#e8ffe4",
+    fontWeight: "600",
+    textShadowColor: "#000",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
   disabledText: {
-    fontSize: 12,
-    color: "#ff4444",
     position: "absolute",
-    bottom: 30,
-    left: 10,
+    top: 10,
+    right: 12,
+    fontSize: 10,
+    color: "#c0ffb0",
+    fontWeight: "600",
   },
+
+  // ABOUT (green-tinted, in case you uncomment later)
   aboutSection: {
-    marginTop: 40,
-    padding: 20,
-    backgroundColor: "#222",
-    borderRadius: 15,
+    marginTop: 28,
+    marginHorizontal: 12,
+    marginBottom: 32,
+    paddingVertical: 18,
+    paddingHorizontal: 14,
+    borderRadius: 22,
+    backgroundColor: "rgba(3, 18, 8, 0.97)",
+    borderWidth: 1,
+    borderColor: "rgba(124, 252, 0, 0.5)",
+    shadowColor: "#7CFC00",
+    shadowOpacity: 0.25,
+    shadowRadius: 22,
+    shadowOffset: { width: 0, height: 12 },
+    elevation: 12,
   },
   aboutHeader: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#00b3ff",
+    fontSize: 20,
+    fontWeight: "800",
+    color: "#e8ffe4",
     textAlign: "center",
+    textShadowColor: "#7CFC00",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+    letterSpacing: 0.8,
+    marginBottom: 6,
   },
   aboutText: {
-    fontSize: 16,
-    color: "#fff",
-    textAlign: "center",
-    marginTop: 10,
+    fontSize: 14,
+    color: "#d9ffcf",
+    lineHeight: 20,
+    marginTop: 6,
+    textAlign: "left",
   },
 });
 

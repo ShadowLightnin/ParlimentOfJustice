@@ -54,7 +54,7 @@ const scrollableMembersBase = [
     ],
   },
   { id: 'james', name: 'James', codename: 'Shadowmind', screen: 'JamesBb', clickable: true, image: require('../../assets/Armor/JamesBb.jpg') },
-  { id: 'tanner', name: 'Tanner', codename: 'Wolff', screen: 'TannerBb', clickable: true, image: require('../../assets/Armor/TannerBb.jpg') },
+  { id: 'tanner', name: 'Tanner', codename: 'Wolff', screen: 'TannerBb', clickable: true, image: require('../../assets/Armor/TannerBb2.jpg') },
   {
     id: 'adin',
     name: 'Adin',
