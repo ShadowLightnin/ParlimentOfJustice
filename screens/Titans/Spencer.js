@@ -48,6 +48,7 @@ const Spencer = () => {
   const isDesktop = windowWidth >= 768;
 
   const armors = [
+    { name: "Annihilator", image: require("../../assets/Armor/Spencer8.jpg"), clickable: true },
     { name: "Annihilator", image: require("../../assets/Armor/Spencer6.jpg"), clickable: true },
     { name: "Annihilator", image: require("../../assets/Armor/Spencer7.jpg"), clickable: true },
     { name: "Legacy", image: require("../../assets/Armor/SpencerLegacy.jpg"), clickable: true },
@@ -210,7 +211,7 @@ const Spencer = () => {
 
             <View style={styles.headerGlass}>
               <Text style={styles.title}>Annihilator</Text>
-              <Text style={styles.subtitle}>Founding Titan • Fallen Leader</Text>
+              <Text style={styles.subtitle}>Guardian • Caring • The First</Text>
             </View>
           </View>
         </View>
@@ -419,7 +420,8 @@ const styles = StyleSheet.create({
     color: "#fff4ea",
     textAlign: "center",
     textShadowColor: "#ff6b35",
-    textShadowRadius: 22,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 1,
   },
   subtitle: {
@@ -453,7 +455,8 @@ const styles = StyleSheet.create({
     color: "#ffe9d3",
     textAlign: "center",
     textShadowColor: "#ffae42",
-    textShadowRadius: 16,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
   },
   sectionDivider: {
@@ -511,7 +514,8 @@ const styles = StyleSheet.create({
     color: "#ffe9d3",
     fontWeight: "600",
     textShadowColor: "#000",
-    textShadowRadius: 10,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
   disabledText: {
     position: "absolute",
@@ -545,7 +549,8 @@ const styles = StyleSheet.create({
     color: "#ffe9d3",
     textAlign: "center",
     textShadowColor: "#ffae42",
-    textShadowRadius: 18,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
     marginBottom: 6,
   },

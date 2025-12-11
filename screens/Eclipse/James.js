@@ -213,7 +213,7 @@ const James = () => {
 
             <View style={styles.headerGlass}>
               <Text style={styles.title}>Guardian</Text>
-              <Text style={styles.subtitle}>Heartland • Shield • Calm</Text>
+              <Text style={styles.subtitle}>Caring • Open • Calm</Text>
             </View>
           </View>
         </View>
@@ -408,7 +408,8 @@ const styles = StyleSheet.create({
     color: "#f5f7ff",
     textAlign: "center",
     textShadowColor: "#c8102e",
-    textShadowRadius: 22,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 1,
   },
   subtitle: {
@@ -442,7 +443,8 @@ const styles = StyleSheet.create({
     color: "#f5f7ff",
     textAlign: "center",
     textShadowColor: "#c8102e",
-    textShadowRadius: 16,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
   },
   sectionDivider: {
@@ -500,7 +502,8 @@ const styles = StyleSheet.create({
     color: "#f5f7ff",
     fontWeight: "600",
     textShadowColor: "#000",
-    textShadowRadius: 10,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
   disabledText: {
     position: "absolute",
@@ -534,7 +537,8 @@ const styles = StyleSheet.create({
     color: "#f5f7ff",
     textAlign: "center",
     textShadowColor: "#c8102e",
-    textShadowRadius: 18,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
     marginBottom: 6,
   },

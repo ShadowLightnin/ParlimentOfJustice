@@ -263,7 +263,7 @@ const Will = () => {
 
             <View style={styles.headerGlass}>
               <Text style={styles.title}>Night Hawk</Text>
-              <Text style={styles.subtitle}>Creation • Legacy • Honor</Text>
+              <Text style={styles.subtitle}>Creation • Listener • Justice</Text>
             </View>
           </View>
         </View>
@@ -776,7 +776,8 @@ const styles = StyleSheet.create({
     color: "#fff8e1",
     fontWeight: "600",
     textShadowColor: "#000",
-    textShadowRadius: 10,
+      textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
 
   // ABOUT ME

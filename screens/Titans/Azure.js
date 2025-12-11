@@ -247,7 +247,7 @@ const Azure = () => {
             <View style={styles.headerGlass}>
               <Text style={styles.title}>Mediateir</Text>
               <Text style={styles.subtitle}>
-                Shield of Order • Arbiter of Zion
+                Loving • Calm • Humor
               </Text>
             </View>
           </View>
@@ -446,7 +446,8 @@ const styles = StyleSheet.create({
     color: "#4fc3f7", // azure blue
     textAlign: "center",
     textShadowColor: "#b3e5ff",
-    textShadowRadius: 20,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 1,
   },
   subtitle: {
@@ -480,7 +481,8 @@ const styles = StyleSheet.create({
     color: "#e3f2fd",
     textAlign: "center",
     textShadowColor: "#81d4fa",
-    textShadowRadius: 18,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
   },
   sectionDivider: {
@@ -538,7 +540,8 @@ const styles = StyleSheet.create({
     color: "#e3f2fd",
     fontWeight: "bold",
     textShadowColor: "#000814",
-    textShadowRadius: 6,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
   disabledText: {
     fontSize: 12,
@@ -571,7 +574,8 @@ const styles = StyleSheet.create({
     color: "#e3f2fd",
     textAlign: "center",
     textShadowColor: "#81d4fa",
-    textShadowRadius: 18,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
     marginBottom: 6,
   },

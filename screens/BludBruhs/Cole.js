@@ -224,7 +224,7 @@ const Cole = () => {
 
             <View style={styles.headerGlass}>
               <Text style={styles.title}>Cruiser</Text>
-              <Text style={styles.subtitle}>Marine • Thunder • Steel</Text>
+              <Text style={styles.subtitle}>Friend • Kind • Courageous</Text>
             </View>
           </View>
         </View>
@@ -420,7 +420,8 @@ const styles = StyleSheet.create({
     color: "#e5f3ff",
     textAlign: "center",
     textShadowColor: "#00b3ff",
-    textShadowRadius: 22,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 1,
   },
   subtitle: {
@@ -454,7 +455,8 @@ const styles = StyleSheet.create({
     color: "#e5f3ff",
     textAlign: "center",
     textShadowColor: "#00b3ff",
-    textShadowRadius: 16,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
   },
   sectionDivider: {
@@ -512,7 +514,8 @@ const styles = StyleSheet.create({
     color: "#e5f3ff",
     fontWeight: "600",
     textShadowColor: "#000",
-    textShadowRadius: 10,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
 
   // ABOUT (kept in case you re-enable)
@@ -538,7 +541,8 @@ const styles = StyleSheet.create({
     color: "#e5f3ff",
     textAlign: "center",
     textShadowColor: "#00b3ff",
-    textShadowRadius: 18,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
     marginBottom: 6,
   },

@@ -24,7 +24,7 @@ const members = [
     screen: 'Spencer',
     clickable: true,
     position: [0, 0],
-    image: require('../../assets/Armor/Spencer5.jpg'),
+    image: require('../../assets/Armor/Spencer8.jpg'),
   },
   {
     name: 'Azure Briggs',

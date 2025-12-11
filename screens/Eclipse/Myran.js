@@ -234,7 +234,7 @@ const Myran = () => {
 
             <View style={styles.headerGlass}>
               <Text style={styles.title}>Techno Guard</Text>
-              <Text style={styles.subtitle}>Firewalls • Shields • Code</Text>
+              <Text style={styles.subtitle}>Knowledgeable • Friend • Caring</Text>
             </View>
           </View>
         </View>
@@ -457,7 +457,8 @@ const styles = StyleSheet.create({
     color: "#e3fbff",
     textAlign: "center",
     textShadowColor: "#00ffbf",
-    textShadowRadius: 22,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 1,
   },
   subtitle: {
@@ -491,7 +492,8 @@ const styles = StyleSheet.create({
     color: "#e3fbff",
     textAlign: "center",
     textShadowColor: "#00b3ff",
-    textShadowRadius: 16,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
   },
   sectionTitleGreen: {
@@ -500,7 +502,8 @@ const styles = StyleSheet.create({
     color: "#00ffbf",
     textAlign: "center",
     textShadowColor: "#00e676",
-    textShadowRadius: 16,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
   },
   sectionDivider: {
@@ -567,7 +570,8 @@ const styles = StyleSheet.create({
     color: "#e3fbff",
     fontWeight: "600",
     textShadowColor: "#000",
-    textShadowRadius: 10,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
 
   // KID CARDS
@@ -605,7 +609,8 @@ const styles = StyleSheet.create({
     color: "#e3fbff",
     fontWeight: "600",
     textShadowColor: "#000",
-    textShadowRadius: 10,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
 
   // ABOUT
@@ -631,7 +636,8 @@ const styles = StyleSheet.create({
     color: "#e3fbff",
     textAlign: "center",
     textShadowColor: "#00b3ff",
-    textShadowRadius: 18,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
     marginBottom: 6,
   },

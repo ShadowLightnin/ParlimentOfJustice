@@ -272,7 +272,7 @@ const Jared = () => {
             <View style={styles.headerGlass}>
               <Text style={styles.title}>Spector</Text>
               <Text style={styles.subtitle}>
-                Speed • Strategy • Ember Vanguard
+                Courage • Heart • Honesty
               </Text>
             </View>
           </View>
@@ -499,7 +499,8 @@ const styles = StyleSheet.create({
     color: "#fff4ec",
     textAlign: "center",
     textShadowColor: "#ff6b3d",
-    textShadowRadius: 22,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 1,
   },
   subtitle: {
@@ -533,7 +534,8 @@ const styles = StyleSheet.create({
     color: "#fff3e9",
     textAlign: "center",
     textShadowColor: "#ff8a3b",
-    textShadowRadius: 16,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
   },
   sectionTitleGold: {
@@ -542,7 +544,8 @@ const styles = StyleSheet.create({
     color: "#ffe2ab",
     textAlign: "center",
     textShadowColor: "#ffb347",
-    textShadowRadius: 18,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
   },
   sectionDivider: {
@@ -609,7 +612,8 @@ const styles = StyleSheet.create({
     color: "#fff3e8",
     fontWeight: "600",
     textShadowColor: "#000",
-    textShadowRadius: 10,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
   disabledText: {
     position: "absolute",
@@ -660,7 +664,8 @@ const styles = StyleSheet.create({
     color: "#fff2de",
     fontWeight: "600",
     textShadowColor: "#000",
-    textShadowRadius: 10,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
   kidDisabledText: {
     fontSize: 10,
@@ -693,7 +698,8 @@ const styles = StyleSheet.create({
     color: "#fff2e6",
     textAlign: "center",
     textShadowColor: "#ff8a3b",
-    textShadowRadius: 18,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
     marginBottom: 6,
   },

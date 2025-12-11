@@ -216,7 +216,7 @@ const Ben = () => {
 
             <View style={styles.headerGlass}>
               <Text style={styles.title}>Nuscis</Text>
-              <Text style={styles.subtitle}>Agile Crusader • Titan Guardian</Text>
+              <Text style={styles.subtitle}>Calm • Humor • Patient</Text>
             </View>
           </View>
         </View>
@@ -413,7 +413,8 @@ const styles = StyleSheet.create({
     color: "#f5fffd",
     textAlign: "center",
     textShadowColor: "#4af7c8",
-    textShadowRadius: 22,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 1,
   },
   subtitle: {
@@ -447,7 +448,8 @@ const styles = StyleSheet.create({
     color: "#e9fffb",
     textAlign: "center",
     textShadowColor: "#66ffe0",
-    textShadowRadius: 16,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
   },
   sectionDivider: {
@@ -505,7 +507,8 @@ const styles = StyleSheet.create({
     color: "#e9fffb",
     fontWeight: "600",
     textShadowColor: "#000",
-    textShadowRadius: 10,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
   disabledText: {
     position: "absolute",
@@ -539,7 +542,8 @@ const styles = StyleSheet.create({
     color: "#e9fffb",
     textAlign: "center",
     textShadowColor: "#66ffe0",
-    textShadowRadius: 18,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
     marginBottom: 6,
   },

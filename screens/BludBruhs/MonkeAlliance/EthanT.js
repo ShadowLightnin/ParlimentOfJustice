@@ -422,7 +422,8 @@ const styles = StyleSheet.create({
     color: "#e7f8ff",
     textAlign: "center",
     textShadowColor: "#00d4ff",
-    textShadowRadius: 20,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 1,
   },
   subtitle: {
@@ -486,7 +487,8 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     textShadowColor: "#000",
-    textShadowRadius: 10,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
   disabledText: {
     fontSize: 12,

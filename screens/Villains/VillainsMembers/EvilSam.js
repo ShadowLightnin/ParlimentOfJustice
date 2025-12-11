@@ -44,6 +44,15 @@ const TRACKS = [
 ];
 
 const characters = [
+    {
+    id: "evil-sam-3",
+    name: "Void Walker",
+    codename: "Void Walker",
+    copyright: "Samuel Woodwell",
+    image: require("../../../assets/Armor/SamDark.jpg"),
+    clickable: true,
+    hardcoded: true,
+  },
   {
     id: "evil-sam-1",
     name: "Void Walker",
@@ -519,7 +528,7 @@ const EvilSam = () => {
                     { textShadowColor: "#800080" },
                   ]}
                 >
-                  Void Walker (Evil Edition)
+                  Void Walker
                 </Text>
                 <Text style={styles.subtitle}>
                   Thunder • Maw-Twisted • Pre-Parliament
@@ -981,7 +990,8 @@ const styles = StyleSheet.create({
     fontWeight: "900",
     color: "#fdf7ff",
     textAlign: "center",
-    textShadowRadius: 22,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 1,
   },
   subtitle: {
@@ -1026,7 +1036,8 @@ const styles = StyleSheet.create({
     color: "#fdf7ff",
     textAlign: "center",
     textShadowColor: "#800080",
-    textShadowRadius: 16,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
   },
   sectionDivider: {
@@ -1085,7 +1096,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     textShadowColor: "#000",
-    textShadowRadius: 10,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
   disabledText: {
     fontSize: 12,
@@ -1147,7 +1159,8 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#fdf7ff",
     textAlign: "center",
-    textShadowRadius: 18,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
     marginBottom: 8,
   },

@@ -709,7 +709,7 @@ const Sam = () => {
                 Void Walker
               </Text>
               <Text style={styles.subtitle}>
-                Thunder • Maw-Touched • Redeeming
+                Determined • Maw-Touched • Protector
               </Text>
             </View>
 
@@ -1128,7 +1128,8 @@ const styles = StyleSheet.create({
     fontWeight: "900",
     color: "#f5fbff",
     textAlign: "center",
-    textShadowRadius: 22,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 1,
   },
   subtitle: {
@@ -1173,7 +1174,8 @@ const styles = StyleSheet.create({
     color: "#f5fbff",
     textAlign: "center",
     textShadowColor: "#00b3ff",
-    textShadowRadius: 16,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
   },
   sectionDivider: {
@@ -1232,7 +1234,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     textShadowColor: "#000",
-    textShadowRadius: 10,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
   disabledText: {
     fontSize: 12,
@@ -1294,7 +1297,8 @@ const styles = StyleSheet.create({
     fontWeight: "800",
     color: "#f5fbff",
     textAlign: "center",
-    textShadowRadius: 18,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
     marginBottom: 8,
   },

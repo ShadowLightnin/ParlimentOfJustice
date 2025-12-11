@@ -398,7 +398,7 @@ const Aileen = () => {
             <View style={styles.headerGlass}>
               <Text style={styles.title}>Ariata</Text>
               <Text style={styles.subtitle}>
-                Filipina Crusader • Source of Strength
+                Loving • Caring • Heart
               </Text>
             </View>
 
@@ -692,7 +692,8 @@ const styles = StyleSheet.create({
     color: "#ffd27f",
     textAlign: "center",
     textShadowColor: "#ffeaaf",
-    textShadowRadius: 20,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 1,
   },
   subtitle: {
@@ -734,7 +735,8 @@ const styles = StyleSheet.create({
     color: "#ffe8c2",
     textAlign: "center",
     textShadowColor: "#ffb84d",
-    textShadowRadius: 18,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
   },
   sectionDivider: {
@@ -816,7 +818,8 @@ const styles = StyleSheet.create({
     color: "#fffaf0",
     fontWeight: "bold",
     textShadowColor: "#000",
-    textShadowRadius: 6,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
   kidCardName: {
     position: "absolute",
@@ -848,7 +851,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 10,
     textShadowColor: "#ffb84d",
-    textShadowRadius: 18,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
   heavensGuardHeader: {
     fontSize: 20,
@@ -857,7 +861,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 10,
     textShadowColor: "#ffb84d",
-    textShadowRadius: 18,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
   partnerImageContainer: (isDesktop, w) => ({
     width: isDesktop ? w * 0.15 : SCREEN_WIDTH * 0.3,
@@ -886,7 +891,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 6,
     textShadowColor: "#ffb84d",
-    textShadowRadius: 18,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
 
   // ABOUT (when uncommented later)
@@ -912,7 +918,8 @@ const styles = StyleSheet.create({
     color: "#ffe8c2",
     textAlign: "center",
     textShadowColor: "#ffb84d",
-    textShadowRadius: 18,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
     marginBottom: 6,
   },

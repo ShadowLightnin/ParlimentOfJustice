@@ -212,7 +212,7 @@ const AmmonT = () => {
             </TouchableOpacity>
             <View style={styles.headerGlass}>
               <Text style={styles.title}>Quick Wit</Text>
-              <Text style={styles.subtitle}>Charm • Healing • Stealth</Text>
+              <Text style={styles.subtitle}>[Redacted]</Text>
             </View>
           </View>
         </View>
@@ -408,7 +408,8 @@ const styles = StyleSheet.create({
     color: "#fff9e8",
     textAlign: "center",
     textShadowColor: "#ffd978",
-    textShadowRadius: 20,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 1,
   },
   subtitle: {
@@ -472,7 +473,8 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     textShadowColor: "#000",
-    textShadowRadius: 10,
+        textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
   disabledText: {
     fontSize: 12,

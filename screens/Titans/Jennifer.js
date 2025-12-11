@@ -269,7 +269,7 @@ const Jennifer = () => {
 
             <View style={styles.headerGlass}>
               <Text style={styles.title}>Kintsugi</Text>
-              <Text style={styles.subtitle}>Fractured • Mended • Whole</Text>
+              <Text style={styles.subtitle}>Resilience • Caring • Champion</Text>
             </View>
           </View>
         </View>
@@ -492,7 +492,8 @@ const styles = StyleSheet.create({
     color: "#ffeaf4",
     textAlign: "center",
     textShadowColor: "#f3d38c",
-    textShadowRadius: 22,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 1,
   },
   subtitle: {
@@ -526,7 +527,8 @@ const styles = StyleSheet.create({
     color: "#ffeaf4",
     textAlign: "center",
     textShadowColor: "#f3d38c",
-    textShadowRadius: 16,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
   },
   sectionTitlePink: {
@@ -535,7 +537,8 @@ const styles = StyleSheet.create({
     color: "#ffb6c1",
     textAlign: "center",
     textShadowColor: "#ff8fb8",
-    textShadowRadius: 16,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
   },
   sectionDivider: {
@@ -602,7 +605,8 @@ const styles = StyleSheet.create({
     color: "#ffeaf4",
     fontWeight: "600",
     textShadowColor: "#000",
-    textShadowRadius: 10,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
   disabledText: {
     position: "absolute",
@@ -648,7 +652,8 @@ const styles = StyleSheet.create({
     color: "#ffeaf4",
     fontWeight: "600",
     textShadowColor: "#000",
-    textShadowRadius: 10,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
 
   // ABOUT
@@ -674,7 +679,8 @@ const styles = StyleSheet.create({
     color: "#ffeaf4",
     textAlign: "center",
     textShadowColor: "#ffb6c1",
-    textShadowRadius: 18,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
     marginBottom: 6,
   },

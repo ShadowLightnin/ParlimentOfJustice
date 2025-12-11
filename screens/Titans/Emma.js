@@ -230,7 +230,7 @@ const Emma = () => {
             <View style={styles.headerGlass}>
               <Text style={styles.title}>Kintsunera</Text>
               <Text style={styles.subtitle}>
-                Angel of Innovation • Flamingo Wing
+                Protector • Always there • Heart
               </Text>
             </View>
           </View>
@@ -424,7 +424,8 @@ const styles = StyleSheet.create({
     color: "#ff8fb8",
     textAlign: "center",
     textShadowColor: "#ffb6c1",
-    textShadowRadius: 20,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 1,
   },
   subtitle: {
@@ -458,7 +459,8 @@ const styles = StyleSheet.create({
     color: "#ffeaf2",
     textAlign: "center",
     textShadowColor: "#ff9abf",
-    textShadowRadius: 18,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
   },
   sectionDivider: {
@@ -511,7 +513,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textShadowColor: "#8b004b",
     textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 6,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
 
   // ABOUT (for when you uncomment)
@@ -537,7 +540,8 @@ const styles = StyleSheet.create({
     color: "#ffeaf2",
     textAlign: "center",
     textShadowColor: "#ff9abf",
-    textShadowRadius: 18,
+            textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
     letterSpacing: 0.8,
     marginBottom: 6,
   },
