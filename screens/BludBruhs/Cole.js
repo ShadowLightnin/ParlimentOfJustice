@@ -243,7 +243,7 @@ const Cole = () => {
         </View>
 
         {/* ABOUT SECTION – your existing lore stays commented like the others */}
-        <View style={styles.aboutSection}>
+        {/* <View style={styles.aboutSection}>
           <Text style={styles.aboutHeader}>About Me</Text>
           <Text style={styles.aboutText}>
           Cole Robinson, known as Cruiser, is a battle-hardened and steadfast warrior, a core member of the Thunder Born, reborn from the fractured Bludbruhs within Zion City’s volatile landscape. His presence is disciplined and reassuring, a mix of marine grit and unshakable resolve that makes him a rock for his team. Behind his futuristic tactical armor, Cole is pragmatic, loyal, and deeply committed to his girlfriend Kinnley (also called Harmony), whose presence keeps him grounded amidst chaos. He once stood alongside Sam “Striker,” Joseph “Techoman,” James “Shadowmind,” and Tanner - Wolff in the Bludbruhs, but now anchors the Thunder Born with a focus on survival and duty. Off the battlefield, he’s a protector and a planner, often training or strategizing with his squad, but his rigid loyalty can sometimes blind him to Sam’s darker struggles.          </Text>
@@ -279,7 +279,7 @@ const Cole = () => {
           In Zion City, Cole connects with the Titans’ fighters like Jared and Ben Briggs, sharing their combat focus, but his Thunder Born squad prioritizes survival over grand heroics. His ultimate goal is to safeguard Zion City and Kinnley/Harmony, proving that grit and teamwork can weather any storm, while keeping Sam on the path to good.          </Text>
           <Text style={styles.aboutText}>
           Cole stayed with Sam when the Bludbruhs dissolved, rejecting the Monkie Alliance’s split over Sam’s dark powers. The rebranding to Thunder Born came after Sam’s rift—Cole saw it as a chance to shed the blood-soaked “Bludbruhs” name, tied to Sam’s corrupted Melcornia past, and embrace a new identity of strength and renewal, reflecting their shared resilience and electrical synergy.          </Text>
-        </View>
+        </View> */}
       </ScrollView>
     </View>
   );
