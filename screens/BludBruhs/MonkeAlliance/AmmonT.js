@@ -161,7 +161,7 @@ const AmmonT = () => {
   return (
     <View style={styles.container}>
       {/* 🎧 MUSIC BAR – warm gold + teal for the charming healer */}
-      <View className="music-bar" style={styles.musicControls}>
+      {/* <View className="music-bar" style={styles.musicControls}>
         <TouchableOpacity
           style={styles.trackButton}
           onPress={() => cycleTrack(-1)}
@@ -201,7 +201,7 @@ const AmmonT = () => {
         >
           <Text style={styles.musicButtonTextSecondary}>Pause</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* HEADER – soft glass, charismatic vibe */}
@@ -212,7 +212,7 @@ const AmmonT = () => {
             </TouchableOpacity>
             <View style={styles.headerGlass}>
               <Text style={styles.title}>Quick Wit</Text>
-              <Text style={styles.subtitle}>[Redacted]</Text>
+              <Text style={styles.subtitle}>\\[Redacted]\\</Text>
             </View>
           </View>
         </View>

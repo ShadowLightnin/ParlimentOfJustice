@@ -1,96 +1,256 @@
-export const descriptions = {
-  // 'Angela': 'Celestial Angel, adorned in radiant, winged armor, channels divine energy to inspire and protect her allies with unwavering grace.',
-  // 'Todd': 'Stellar, clad in cosmic-infused armor, wields starlight to illuminate paths and bolster defenses with celestial strength.',
-  // 'Molly': 'Teddy Bear, with warm, comforting armor, uses her nurturing spirit to heal and uplift, a beacon of hope in battle.',
-  // 'Mary': 'Auric, draped in golden armor, commands an aura of leadership, weaving protective fields with her radiant presence.',
-  // 'Chance': 'Crimson Crown, in regal, red-hued armor, leads with courage, his strikes imbued with royal authority and precision.',
-  // 'Ava': 'Prismatic Pulse, wearing vibrant, multicolored armor, manipulates light to dazzle foes and enhance team synergy.',
-  // 'Charlie': 'Iron Olympian, encased in unyielding steel, embodies raw power and resilience, standing as a bulwark against any threat.',
-  // 'Lumi': 'Fade Shade, in shadowy, ethereal armor, moves unseen, striking with precision and disrupting enemy plans.',
-  // 'Heather S': 'Verdant, cloaked in nature-inspired armor, harnesses the power of the earth to heal allies and control the battlefield.',
-  // 'Bobby': 'Crown Medic, a military doctor in tactical armor, combines medical expertise with combat prowess to save lives under fire.',
-  // 'Liberty': 'Serenity, in tranquil, flowing armor, radiates calm and healing energy, soothing allies and dispelling chaos.',
-  // 'Ammon': 'Valoron, in shining, valorous armor, inspires courage, leading charges with unbreakable resolve and strategic brilliance.',
-  // 'Piper': 'Jetstrike, in sleek, aerodynamic armor, moves with lightning speed, delivering swift, devastating attacks.',
-  // 'Gemma': 'Slendowg, with agile, streamlined armor, uses her quick wit and reflexes to outmaneuver opponents with ease.',
-  // 'Savannah': 'Vivid Spark, in electrified armor, channels bursts of energy to stun foes and energize her team.',
-  // 'Lee': 'Codeforge, in tech-enhanced armor, manipulates digital systems to hack defenses and support allies with precision.',
-  // 'Emilee': 'Luminous Aria, in melodic, glowing armor, uses harmonic vibrations to soothe allies and disrupt enemies.',
-  // 'Samantha': 'Velocity Vibe, in dynamic, streamlined armor, moves at blinding speeds, striking with rhythmic precision.',
-  // 'Ella': 'Aerial Serenade, with winged, flowing armor, dances through the air, weaving enchantments to bolster her team.',
-  // 'Annie': 'Sage Mentor, a teacher in wise, ornate armor, imparts knowledge and strategy, guiding her team to victory.',
-  // 'Paul': 'Iron Law, a police officer in fortified armor, upholds justice with unyielding strength and tactical expertise.',
-  // 'McKinley': 'Rebuncious, in bold, rebellious armor, charges into battle with fearless energy and disruptive force.',
-  // 'Whitney': 'Veilweaver, in mystic, veiled armor, manipulates illusions to confuse foes and protect her allies.',
-  // 'Vinson': 'Ironchad, in heavy, fortified armor, stands as an immovable defender, absorbing and redirecting enemy attacks.',
-  // 'Wesley': 'Steelframe, a bodybuilder in massive, steel-clad armor, uses brute strength to dominate the battlefield.',
-  // 'Melissa': 'Auric Skyweaver, in golden, celestial armor, weaves protective skies, shielding allies with radiant energy.',
-  // 'Jackson': 'Rhythmic Flux, a dancer in fluid, dynamic armor, moves with grace, disorienting foes with rhythmic strikes.',
-  // 'Mason': 'Fortress King, in towering, regal armor, commands the battlefield with strategic might and unyielding defense.',
-  // 'Rylie': 'Star Gleam, in sparkling, starry armor, radiates light to inspire and guide her team through darkness.',
-  // 'Sammy': 'Swift Pack, in agile, pack-inspired armor, moves with coordinated speed, striking with relentless energy.',
-  // 'David': 'Ironforge, in rugged, forged armor, crafts unbreakable defenses and delivers powerful, hammering blows.',
-  // 'Isaydy': 'Mist Haven, in misty, elusive armor, creates safe havens with fog, shielding allies and ambushing foes.',
-  // 'Darron': 'Crag Rock, in stone-like, durable armor, stands as a mountain, grounding his team with steadfast resilience.',
-  // 'Isabel': 'Breezestrom, in airy, tempestuous armor, unleashes gusts of wind to control the battlefield and protect her allies.',
-  // 'Gary jr': 'Legacy Shield, in ancestral, fortified armor, carries his family’s honor, protecting with unyielding loyalty.',
-  // 'Sarah': 'Hope, in radiant, uplifting armor, inspires her team with boundless optimism and restorative energy.',
-  // 'Josh': 'Defention, in solid, defensive armor, holds the line with unbreakable resolve and tactical precision.',
-  // 'Garden': 'Pharoll, in nature-infused armor, channels ancient growth to heal and strengthen the battlefield.',
-  // 'Sophia': 'Chroma Sprint, in vibrant, agile armor, dashes with colorful energy, striking with unpredictable flair.',
-  // 'Paisley': 'Prism Weaver, in prismatic, intricate armor, crafts light-based defenses and dazzling attacks.',
-  // 'Ellie': 'Ethereal Flutter, in delicate, ethereal armor, moves with grace, healing allies with gentle, mystical touches.',
-  // 'Jennifer': 'Eternal Guardian, in ornate, timeless armor, stands as a protector, guiding her team with wisdom and strength.',
-  // 'Sean': 'Vanguard, in bold, frontline armor, leads charges with fearless determination and tactical prowess.',
-  // 'Heather C': 'Sylvara, in woodland-inspired armor, weaves nature’s magic to heal and control the environment.',
-  // 'Brett small': 'Aegis, in shielded, protective armor, stands as a guardian, deflecting attacks with unmatched resilience.',
-  // 'Jake': 'Nova Sentinel, in radiant, futuristic armor, guards with explosive energy and unwavering vigilance.',
-  // 'Ailey': 'Chromatic Blaze, in vibrant, fiery armor, unleashes colorful flames to overwhelm foes and inspire allies.',
-  // 'Aubrey': 'Seraphine Dawn, in angelic, dawn-lit armor, brings hope and healing with radiant, uplifting energy.',
-  // 'James': 'Dreadforge, in heavy, dark armor, forges fear into strength, dominating with relentless combat prowess.',
-  // 'Ryan': 'Managerial, in strategic, commanding armor, leads with calculated precision and unyielding authority.',
-  // 'Maren': 'Luminary Veil, in glowing, veiled armor, protects with radiant barriers and mystic insight.',
-  // 'Sasha': 'Codex, in scholarly, tech-infused armor, decodes enemy strategies and enhances team coordination.',
-  // 'Ian': 'Sparous, in fiery, agile armor, strikes with sparking intensity and relentless energy.',
-  // 'Riker': 'Ironstrike, in metallic, precise armor, delivers devastating blows with unerring accuracy.',
-  // 'Dakota': 'Shadow Cipher, in dark, cryptic armor, operates in secrecy, unraveling enemy plans with stealth.',
-  // 'Lora': 'Roseheart, in floral, compassionate armor, heals and inspires with a nurturing, loving presence.',
-  // 'Wayne': 'Sovereign, in regal, commanding armor, rules the battlefield with authority and strategic mastery.',
-  // 'Elizabeth': 'Harmony Warden, in balanced, serene armor, restores peace and strengthens allies with calm resolve.',
-  // 'Christopher': 'Steel, in unyielding, metallic armor, stands as a pillar of strength and endurance.',
-  // 'Tom': 'Stormforge, a Special Forces Marine in tactical armor, unleashes surging combat with unyielding protection.',
-  // 'Brett': 'Doctoral, in scholarly, fortified armor, combines intellect and resilience to support and defend.',
-  // 'Angie': 'Ethereal Guardian, in mystical, protective armor, shields allies with otherworldly grace and power.',
-  // 'Bryce': 'Moesek, in rugged, versatile armor, adapts to any challenge with relentless determination.',
-  // 'Lillie': 'Slick Blade, in sleek, sharp armor, strikes with precision and agility, cutting through opposition.',
-  // 'Addie': 'Prism Voyager, in vibrant, exploratory armor, navigates battles with colorful, adventurous energy.',
-  // 'Purdy': 'Old Faithful, in classic, dependable armor, provides steadfast support and unwavering loyalty.',
-  // 'Matt': '[redacted], in mysterious, obscured armor, operates in secrecy with unmatched strategic prowess.',
-  // 'Jessica': 'CareTechnial, in nurturing, tech-enhanced armor, heals and supports with precision and care.',
-  // 'Kyle': 'Shadowcore, in dark, fortified armor, controls the battlefield with stealth and unyielding strength.',
-  // 'Daisy': 'Floral, in vibrant, flower-inspired armor, blooms with healing energy and natural resilience.',
-  // 'Rose': 'Prism, in radiant, prismatic armor, refracts light to dazzle foes and protect allies.',
-  // 'Mikie': 'Steelth, in stealthy, metallic armor, combines strength and subtlety for covert strikes.',
-  // 'Prairie': 'Flowertwister, in swirling, floral armor, manipulates nature’s winds to control and defend.',
-  // 'Ryan kid': 'Ven-noir, in dark, venomous armor, strikes with youthful energy and shadowy precision.',
-  // 'Liam': 'Veteran, in battle-worn, resilient armor, brings experience and strength to every fight.',
-  // 'Chad': 'Codester, in tech-savvy, agile armor, hacks and disrupts with coded precision and speed.',
-  // 'Rochelle': 'White Veil, in pure, veiled armor, protects with radiant purity and mystic barriers.',
-  // 'Annabeth': 'Novanna, in celestial, innovative armor, pioneers new strategies with radiant energy.',
-  // 'Levi': 'StoneWreck, in massive, stone-like armor, crushes opposition with earth-shaking force.',
-  // 'Troy': 'Foreman, in rugged, commanding armor, leads with industrial strength and unyielding resolve.',
-  // 'Gary': 'Entrpatorial, in bold, entrepreneurial armor, drives innovation and leadership in battle.',
-  // 'Jeanine': 'Hearth Matron, in warm, protective armor, nurtures and shields with maternal strength.',
-  // 'Sharrel': 'Airrow, in swift, airy armor, strikes with precision and controls the battlefield with gusts.',
-  // 'Dorthy': 'Star Keeper, in celestial, protective armor, guards her team with starry wisdom and strength.',
-  // 'GMA Parker': 'Eternal Archon, in ornate, vintage armor, heals and guides with timeless wisdom and solace.',
-  // 'Marlyn': 'Sky Weaver, in airy, woven armor, manipulates the skies to protect and empower her allies.',
-  // 'Robert': 'Iron Sentinel, in fortified, vigilant armor, stands as a guardian with unyielding resolve.',
-  // 'Arlene Hendricks': 'Flame Guardian, in fiery, protective armor, shields allies with blazing strength.',
-  // 'Nate Hendricks': 'Wind Striker, in swift, windy armor, delivers rapid, cutting strikes with precision.',
-  // 'Kris': 'Techno Spirit, in futuristic, spirited armor, enhances allies with technological prowess.',
-  // 'Carlo': 'Goldenmind, in golden, intellectual armor, strategizes with brilliant insight and clarity.',
-  // 'Cham Cham Kaleigha': 'Star Vortex, in swirling, cosmic armor, channels stellar energy to overwhelm foes.',
+// OlympiansDescription.js
+// Each entry supports:
+// - about: string
+// - color: hex string (accent color used in the UI)
+// - points: [string, string, string] -> rendered as "word • word • word"
+
+const descriptions = {
+  default: {
+    about: "A legend in the making. Their story is still being forged.",
+    color: "#00b3ff",
+    points: ["Loyal", "Resilient", "Rising"],
+  },
+
+  // === Parents ===
+  Angela: {
+    about: "Celestial Angel — steadfast light, guiding calm, and protective grace when the world turns dark.",
+    color: "#ffd36b",
+    points: ["Grace", "Courage", "Light"],
+  },
+  Todd: {
+    about: "Stellar — disciplined strength with a steady hand, built to protect and endure.",
+    color: "#7acbff",
+    points: ["Steady", "Bold", "Guardian"],
+  },
+  Molly: {
+    about: "Teddy Bear — warmth and comfort with surprising toughness when it matters most.",
+    color: "#ff89c6",
+    points: ["Warm", "Brave", "Kind"],
+  },
+
+  // === Cummings branch (Lora / Wayne / kids) ===
+  Lora: {
+    about: "Roseheart — compassionate and fierce, blooming hope where others see only ruin.",
+    color: "#ff6bd9",
+    points: ["Heart", "Bloom", "Hope"],
+  },
+  Wayne: {
+    about: "Sovereign — commanding presence, protective instincts, and unwavering resolve.",
+    color: "#d4b6ff",
+    points: ["Command", "Honor", "Steel"],
+  },
+  Elizabeth: {
+    about: "Harmony Warden — balances the team, stabilizes chaos, and keeps everyone aligned.",
+    color: "#7cffc7",
+    points: ["Harmony", "Order", "Care"],
+  },
+  Christopher: {
+    about: "Steel — dependable, grounded, and built to hold the line when pressure hits.",
+    color: "#b7c2cc",
+    points: ["Solid", "Loyal", "Strong"],
+  },
+  Tom: {
+    about: "Stormforge — forges through conflict like thunder through mountains.",
+    color: "#5aa8ff",
+    points: ["Storm", "Forge", "Force"],
+  },
+
+  // === Cummings branch (Ryan) ===
+  Ryan: {
+    about: "Managerial — strategic organizer, keeps the machine running and the team moving.",
+    color: "#7aa6b8",
+    points: ["Lead", "Plan", "Execute"],
+  },
+  Maren: {
+    about: "Luminary Veil — radiant presence with subtle protection that turns fear into focus.",
+    color: "#ffe08a",
+    points: ["Radiant", "Shield", "Calm"],
+  },
+  Sasha: {
+    about: "Codex — keeper of knowledge, patterns, and the hard truths that win wars.",
+    color: "#9db7ff",
+    points: ["Logic", "Lore", "Truth"],
+  },
+  Ian: {
+    about: "Sparous — quick, sharp, and unpredictable, striking where it hurts most.",
+    color: "#a6ffef",
+    points: ["Swift", "Sharp", "Snap"],
+  },
+  Riker: {
+    about: "Ironstrike — heavy impact with disciplined precision, built for decisive hits.",
+    color: "#c7d0d9",
+    points: ["Impact", "Armor", "Drive"],
+  },
+  Dakota: {
+    about: "Shadow Cipher — silent operator, coded intent, and calculated execution.",
+    color: "#8a7dff",
+    points: ["Shadow", "Code", "Resolve"],
+  },
+
+  // === Cummings branch (Brett) ===
+  Brett: {
+    about: "Doctoral — calm intellect with decisive action, turns knowledge into advantage.",
+    color: "#78d7ff",
+    points: ["Mind", "Focus", "Edge"],
+  },
+  Angie: {
+    about: "Ethereal Guardian — protective, serene, and relentless when defending her own.",
+    color: "#caa8ff",
+    points: ["Guard", "Grace", "Faith"],
+  },
+  Bryce: {
+    about: "Moesek — bold energy and raw drive, built to push forward when others hesitate.",
+    color: "#7cff8b",
+    points: ["Drive", "Power", "Push"],
+  },
+  Lillie: {
+    about: "Slick Blade — agile and precise, a clean strike and gone before you blink.",
+    color: "#ff7aa6",
+    points: ["Agile", "Clean", "Quick"],
+  },
+  Addie: {
+    about: "Prism Voyager — bright adaptability, refracting pressure into momentum.",
+    color: "#7cf0ff",
+    points: ["Shift", "Shine", "Adapt"],
+  },
+  Purdy: {
+    about: "Old Faithful — dependable to the core, always showing up when it matters.",
+    color: "#ffcf7a",
+    points: ["Loyal", "Steady", "True"],
+  },
+
+  // === Cummings branch (Matt) ===
+  Jessica: {
+    about: "CareTechnial — nurturing, tech-enhanced support with precision and calm.",
+    color: "#7cf7ff",
+    points: ["Care", "Tech", "Precision"],
+  },
+  Kyle: {
+    about: "Shadowcore — fortified and quiet, controls the field with stealth and strength.",
+    color: "#8b6bff",
+    points: ["Stealth", "Core", "Control"],
+  },
+  Daisy: {
+    about: "Floral — vibrant resilience, blooming hope and healing energy in the worst storms.",
+    color: "#7cffc7",
+    points: ["Bloom", "Heal", "Rise"],
+  },
+  Rose: {
+    about: "Prism — dazzling defense, bends light into protection and pressure into power.",
+    color: "#ff6bd9",
+    points: ["Light", "Refraction", "Guard"],
+  },
+  Mikie: {
+    about: "Steelth — covert strength, silent movement, and decisive impact.",
+    color: "#a8b3bd",
+    points: ["Silent", "Steel", "Strike"],
+  },
+  Prairie: {
+    about: "Flowertwister — swirling nature-force, controls the space with wind and motion.",
+    color: "#b7ff7a",
+    points: ["Wind", "Flow", "Control"],
+  },
+  "Ryan kid": {
+    about: "Ven-noir — youthful intensity with venomous precision and shadow confidence.",
+    color: "#6b7aff",
+    points: ["Venom", "Youth", "Edge"],
+  },
+  Liam: {
+    about: "Veteran — battle-worn grit and calm leadership when everything’s falling apart.",
+    color: "#c9b18a",
+    points: ["Grit", "Experience", "Resolve"],
+  },
+
+  // === Cummings branch (Chad) ===
+  Chad: {
+    about: "Codester — fast-thinking disruption, turning code into combat advantage.",
+    color: "#7acbff",
+    points: ["Hack", "Speed", "Disrupt"],
+  },
+  Rochelle: {
+    about: "White Veil — pure defense and mystic barriers, protecting the team with calm power.",
+    color: "#e8f2ff",
+    points: ["Pure", "Shield", "Calm"],
+  },
+  Annabeth: {
+    about: "Novanna — radiant innovation, pioneers new paths when none exist.",
+    color: "#ffe08a",
+    points: ["New", "Bright", "Forward"],
+  },
+  Levi: {
+    about: "StoneWreck — unstoppable force, earth-heavy presence, breaks what stands in the way.",
+    color: "#b7c2cc",
+    points: ["Heavy", "Earth", "Crush"],
+  },
+  Troy: {
+    about: "Foreman — rugged leadership, industrial strength, and hard-earned discipline.",
+    color: "#ffb86b",
+    points: ["Build", "Lead", "Hold"],
+  },
+
+  // === Grandparents (Stillman / Cummings) ===
+  Gary: {
+    about: "Entrpatorial — bold leadership and momentum, pushes innovation into reality.",
+    color: "#7acbff",
+    points: ["Lead", "Create", "Drive"],
+  },
+  Jeanine: {
+    about: "Hearth Matron — warmth and protection, keeps the family steady through any storm.",
+    color: "#ff9a6b",
+    points: ["Warmth", "Home", "Strength"],
+  },
+  Sharrel: {
+    about: "Airrow — swift precision and control, strikes with windlike accuracy.",
+    color: "#7cf0ff",
+    points: ["Swift", "Aim", "Gust"],
+  },
+  Dorthy: {
+    about: "Star Keeper — wise protector, guarding what matters with calm certainty.",
+    color: "#ffd36b",
+    points: ["Wisdom", "Guard", "Stars"],
+  },
+  "GMA Parker": {
+    about: "Eternal Archon — timeless counsel, healing presence, and steady guidance.",
+    color: "#caa8ff",
+    points: ["Timeless", "Heal", "Guide"],
+  },
+
+  // === Eduria branch ===
+  Marlyn: {
+    about: "Sky Weaver — calm mastery of the air, uplifting allies and shaping the field.",
+    color: "#7acbff",
+    points: ["Sky", "Weave", "Guard"],
+  },
+  Robert: {
+    about: "Iron Sentinel — unbreakable defense, vigilant and steady under pressure.",
+    color: "#b7c2cc",
+    points: ["Iron", "Watch", "Stand"],
+  },
+  "Arlene Hendricks": {
+    about: "Flame Guardian — blazing protection, fierce strength with a protective heart.",
+    color: "#ff6b6b",
+    points: ["Flame", "Shield", "Fury"],
+  },
+  "Nate Hendricks": {
+    about: "Wind Striker — fast, cutting movement, hits hard and vanishes like air.",
+    color: "#7cffc7",
+    points: ["Wind", "Speed", "Slice"],
+  },
+  Kris: {
+    about: "Techno Spirit — futuristic support, boosting allies through tech and grit.",
+    color: "#7cf0ff",
+    points: ["Tech", "Boost", "Spirit"],
+  },
+  Carlo: {
+    about: "Goldenmind — strategic clarity and insight, seeing the winning line before it appears.",
+    color: "#ffd36b",
+    points: ["Mind", "Gold", "Plan"],
+  },
+  "Cham Cham Kaleigha": {
+    about: "Star Vortex — cosmic pressure and swirling force, overwhelming foes with stellar power.",
+    color: "#8b6bff",
+    points: ["Star", "Vortex", "Surge"],
+  },
 };
 
 export default descriptions;
