@@ -162,7 +162,7 @@ const Eli = () => {
   return (
     <View style={styles.container}>
       {/* 🎧 MUSIC BAR – Shadow Hunter: stealth / hunter vibe */}
-      <View style={styles.musicControls}>
+      {/* <View style={styles.musicControls}>
         <TouchableOpacity
           style={styles.trackButton}
           onPress={() => cycleTrack(-1)}
@@ -202,7 +202,7 @@ const Eli = () => {
         >
           <Text style={styles.musicButtonTextSecondary}>Pause</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* HEADER – glass panel with tagline */}

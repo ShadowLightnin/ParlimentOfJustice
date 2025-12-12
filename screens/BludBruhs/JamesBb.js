@@ -162,7 +162,7 @@ const JameBb = () => {
   return (
     <View style={styles.container}>
       {/* 🎧 MUSIC BAR – shadow / violet glass, like the others */}
-      <View style={styles.musicControls}>
+      {/* <View style={styles.musicControls}>
         <TouchableOpacity
           style={styles.trackButton}
           onPress={() => cycleTrack(-1)}
@@ -202,7 +202,7 @@ const JameBb = () => {
         >
           <Text style={styles.musicButtonTextSecondary}>Pause</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* HEADER – glassy, shadow-themed */}

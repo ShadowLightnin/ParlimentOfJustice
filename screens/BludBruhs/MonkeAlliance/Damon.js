@@ -167,7 +167,7 @@ const Damon = () => {
   return (
     <View style={styles.container}>
       {/* 🎧 MUSIC BAR – Pixel Maverick: glitch / neon vibe */}
-      <View style={styles.musicControls}>
+      {/* <View style={styles.musicControls}>
         <TouchableOpacity
           style={styles.trackButton}
           onPress={() => cycleTrack(-1)}
@@ -207,7 +207,7 @@ const Damon = () => {
         >
           <Text style={styles.musicButtonTextSecondary}>Pause</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* HEADER – glass panel with tag line */}

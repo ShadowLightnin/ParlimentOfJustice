@@ -164,7 +164,7 @@ const EthanT = () => {
   return (
     <View style={styles.container}>
       {/* 🎧 MUSIC BAR – electric blue / yellow bolt */}
-      <View style={styles.musicControls}>
+      {/* <View style={styles.musicControls}>
         <TouchableOpacity
           style={styles.trackButton}
           onPress={() => cycleTrack(-1)}
@@ -204,7 +204,7 @@ const EthanT = () => {
         >
           <Text style={styles.musicButtonTextSecondary}>Pause</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* HEADER – glassy bolt bar */}

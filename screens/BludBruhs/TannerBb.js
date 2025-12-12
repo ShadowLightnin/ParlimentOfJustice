@@ -158,7 +158,7 @@ const TannerBb = () => {
   return (
     <View style={styles.container}>
       {/* 🎧 MUSIC BAR – primal Thunder Born / Wolff vibe */}
-      <View style={styles.musicControls}>
+      {/* <View style={styles.musicControls}>
         <TouchableOpacity
           style={styles.trackButton}
           onPress={() => cycleTrack(-1)}
@@ -198,7 +198,7 @@ const TannerBb = () => {
         >
           <Text style={styles.musicButtonTextSecondary}>Pause</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.headerOuter}>

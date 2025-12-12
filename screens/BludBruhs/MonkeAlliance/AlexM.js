@@ -167,7 +167,7 @@ const AlexM = () => {
   return (
     <View style={styles.container}>
       {/* 🎧 MUSIC BAR – Swiftmind: speed + teal/blue glass */}
-      <View style={styles.musicControls}>
+      {/* <View style={styles.musicControls}>
         <TouchableOpacity
           style={styles.trackButton}
           onPress={() => cycleTrack(-1)}
@@ -207,7 +207,7 @@ const AlexM = () => {
         >
           <Text style={styles.musicButtonTextSecondary}>Pause</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* HEADER – glassy logic-bar */}

@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+// screens/Cobros/CobrosCharacterDetail.js
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -7,31 +8,75 @@ import {
   StyleSheet,
   Dimensions,
   Image,
-} from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { Video, Audio } from 'expo-av';
-import descriptions from './CobrosDescription';
+} from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { Video, Audio } from "expo-av";
+import descriptions from "./CobrosDescription";
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
+const PLACEHOLDER = require("../../assets/Armor/PlaceHolder.jpg");
+
+// ✅ Works with: require(...), "url", {uri}, {source}, {source:{uri}}
+const normalizeImageSource = (img) => {
+  if (!img) return PLACEHOLDER;
+  if (typeof img === "number") return img;
+
+  if (typeof img === "object" && img !== null) {
+    if (img.source) return normalizeImageSource(img.source);
+    if (img.uri != null) {
+      if (typeof img.uri === "number") return img.uri;
+      if (typeof img.uri === "string") return { uri: img.uri };
+    }
+  }
+
+  if (typeof img === "string") return { uri: img };
+  return PLACEHOLDER;
+};
+
+const getMeta = (member) => {
+  const name = member?.name;
+  const raw = (name && descriptions?.[name]) || descriptions?.default;
+
+  if (typeof raw === "string") {
+    return { about: raw.trim(), color: "#00b3ff", points: [] };
+  }
+
+  return {
+    about:
+      (raw?.about ?? raw?.text ?? member?.description ?? "No description available.")
+        .toString()
+        .trim(),
+    color: raw?.color || member?.color || "#00b3ff",
+    points: Array.isArray(raw?.points) ? raw.points : [],
+  };
+};
+
+const joinPoints = (points) =>
+  Array.isArray(points) && points.length ? points.filter(Boolean).join(" • ") : "";
 
 const CobrosCharacterDetail = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { member } = route.params || {};
+
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef(null);
   const audioRef = useRef(null);
+
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
   const isDesktop = windowWidth >= 768;
   const cardWidth = isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9;
 
   useEffect(() => {
-    const updateDimensions = () => {
-      setWindowWidth(Dimensions.get('window').width);
-    };
-    const subscription = Dimensions.addEventListener('change', updateDimensions);
+    const subscription = Dimensions.addEventListener("change", () => {
+      setWindowWidth(Dimensions.get("window").width);
+    });
     return () => subscription?.remove();
   }, []);
+
+  const meta = useMemo(() => getMeta(member), [member?.name]);
+  const accent = meta?.color || "#00b3ff";
+  const subtitle = joinPoints(meta?.points);
 
   useEffect(() => {
     Audio.setAudioModeAsync({
@@ -40,18 +85,15 @@ const CobrosCharacterDetail = () => {
       staysActiveInBackground: true,
       shouldDuckAndroid: true,
       playThroughEarpieceAndroid: false,
-    }).catch((e) => console.error('Audio mode setup error:', e));
+    }).catch(() => {});
 
     const loadAudio = async () => {
-      if (member?.mediaUri && member?.mediaType === 'audio' && !audioRef.current) {
+      if (member?.mediaUri && member?.mediaType === "audio" && !audioRef.current) {
         try {
           const sound = new Audio.Sound();
           await sound.loadAsync({ uri: member.mediaUri });
           audioRef.current = sound;
-          console.log('Audio loaded:', member.mediaUri);
-        } catch (e) {
-          console.error('Audio load error:', e.message);
-        }
+        } catch {}
       }
     };
 
@@ -59,83 +101,102 @@ const CobrosCharacterDetail = () => {
 
     return () => {
       if (audioRef.current) {
-        audioRef.current.unloadAsync().catch((e) => console.error('Audio unload error:', e));
+        audioRef.current.unloadAsync().catch(() => {});
         audioRef.current = null;
-        console.log('Audio unloaded on cleanup');
       }
     };
   }, [member?.mediaUri, member?.mediaType]);
 
-  const togglePlayPause = async () => {
-    if (member?.mediaType === 'video' && videoRef.current) {
-      try {
-        if (isPlaying) {
-          await videoRef.current.pauseAsync();
-        } else {
-          await videoRef.current.playAsync();
-        }
-        setIsPlaying(!isPlaying);
-        console.log(`Video ${isPlaying ? 'paused' : 'playing'}: ${member.mediaUri}`);
-      } catch (e) {
-        console.error('Video toggle error:', e.message);
+  const stopMediaAndGoBack = async () => {
+    try {
+      if (audioRef.current) {
+        await audioRef.current.pauseAsync();
+        await audioRef.current.unloadAsync();
+        audioRef.current = null;
       }
-    } else if (member?.mediaType === 'audio' && audioRef.current) {
+    } catch {}
+    try {
+      if (videoRef.current) await videoRef.current.pauseAsync();
+    } catch {}
+    setIsPlaying(false);
+    navigation.goBack();
+  };
+
+  const togglePlayPause = async () => {
+    if (member?.mediaType === "video" && videoRef.current) {
+      try {
+        if (isPlaying) await videoRef.current.pauseAsync();
+        else await videoRef.current.playAsync();
+        setIsPlaying(!isPlaying);
+      } catch {}
+    } else if (member?.mediaType === "audio" && audioRef.current) {
       try {
         const status = await audioRef.current.getStatusAsync();
-        if (!status.isLoaded) {
-          console.error('Audio not loaded:', member.mediaUri);
-          return;
-        }
-        if (isPlaying) {
-          await audioRef.current.pauseAsync();
-        } else {
-          await audioRef.current.playAsync();
-        }
+        if (!status?.isLoaded) return;
+        if (isPlaying) await audioRef.current.pauseAsync();
+        else await audioRef.current.playAsync();
         setIsPlaying(!isPlaying);
-        console.log(`Audio ${isPlaying ? 'paused' : 'playing'}: ${member.mediaUri}`);
-      } catch (e) {
-        console.error('Audio toggle error:', e.message);
-      }
+      } catch {}
     }
   };
 
-  const renderImageCard = (img, index) => {
-    const key = img.uri ? `${typeof img.uri === 'string' ? img.uri : index}-${index}` : `image-${index}`;
+  if (!member) {
     return (
-      <TouchableOpacity
-        key={key}
-        style={[styles.card(isDesktop, windowWidth), styles.clickable]}
-        onPress={() => console.log(`${img.name || 'Image'} clicked`)}
+      <View style={[styles.container, styles.center]}>
+        <Text style={styles.errorText}>No Cobro found.</Text>
+      </View>
+    );
+  }
+
+  const copyrightText = member?.codename
+    ? `© ${member.codename}; William Cummings`
+    : "© William Cummings";
+
+  // ✅ FIX: accept any images array shape
+  const images = useMemo(() => {
+    const raw = Array.isArray(member?.images) ? member.images : null;
+    if (raw && raw.length) {
+      return raw.map((img) => (typeof img === "object" && img !== null ? img : { source: img }));
+    }
+    return [{ source: member?.image || PLACEHOLDER }];
+  }, [member?.images, member?.image]);
+
+  const renderImageCard = (img, index) => {
+    const src = normalizeImageSource(img?.source ?? img?.uri ?? img);
+
+    return (
+      <View
+        key={`img-${index}`}
+        style={[
+          styles.card(isDesktop, windowWidth),
+          { borderColor: accent, shadowColor: accent },
+        ]}
       >
-        <Image
-          source={typeof img.uri === 'string' ? { uri: img.uri } : img.uri}
-          style={styles.armorImage}
-          resizeMode="cover"
-          onError={(e) => console.error('Image load error:', e.nativeEvent.error, 'URI:', img.uri)}
-        />
-        <View style={styles.transparentOverlay} />
-        {img.name && img.name.trim() && (
-          <Text style={styles.cardName}>
-            {img.name.trim()}
-          </Text>
-        )}
-      </TouchableOpacity>
+        <Image source={src} style={styles.armorImage} resizeMode="cover" />
+        <View style={styles.cardOverlay} />
+        <Text style={styles.cardName}>{copyrightText}</Text>
+      </View>
     );
   };
 
   const renderMediaPlayer = () => {
     if (!member?.mediaUri) return null;
+
     const mediaStyle = {
-      width: '100%',
-      height: member.mediaType === 'video' ? 200 : 50,
-      borderRadius: 10,
-      backgroundColor: '#333',
-      justifyContent: 'center',
-      alignItems: 'center',
+      width: "100%",
+      height: member.mediaType === "video" ? 200 : 70,
+      borderRadius: 16,
+      backgroundColor: "rgba(4,10,22,0.75)",
+      borderWidth: 1,
+      borderColor: "rgba(255,255,255,0.08)",
+      overflow: "hidden",
+      justifyContent: "center",
+      alignItems: "center",
     };
+
     return (
       <View style={styles.mediaContainer}>
-        {member.mediaType === 'video' ? (
+        {member.mediaType === "video" ? (
           <Video
             ref={videoRef}
             source={{ uri: member.mediaUri }}
@@ -143,83 +204,61 @@ const CobrosCharacterDetail = () => {
             resizeMode="cover"
             isLooping
             shouldPlay={isPlaying}
-            onPlaybackStatusUpdate={(status) => {
-              console.log('Video playback status:', status);
-              setIsPlaying(!!status.isPlaying);
-            }}
+            onPlaybackStatusUpdate={(status) => setIsPlaying(!!status.isPlaying)}
           />
-        ) : member.mediaType === 'audio' ? (
-          <View style={mediaStyle}>
-            <Text style={styles.mediaText}>Audio: {member.mediaUri.split('/').pop()}</Text>
-          </View>
         ) : (
           <View style={mediaStyle}>
-            <Text style={styles.mediaText}>File: {member.mediaUri.split('/').pop()}</Text>
+            <Text style={styles.mediaText}>
+              {member.mediaType === "audio" ? "Audio" : "File"}:{" "}
+              {member.mediaUri.split("/").pop()}
+            </Text>
           </View>
         )}
-        {(member.mediaType === 'video' || member.mediaType === 'audio') && (
-          <TouchableOpacity style={styles.playButton} onPress={togglePlayPause}>
-            <Text style={styles.buttonText}>{isPlaying ? 'Pause' : 'Play'}</Text>
+
+        {(member.mediaType === "video" || member.mediaType === "audio") && (
+          <TouchableOpacity
+            style={[styles.playButton, { backgroundColor: accent }]}
+            onPress={togglePlayPause}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.buttonText}>{isPlaying ? "Pause" : "Play"}</Text>
           </TouchableOpacity>
         )}
       </View>
     );
   };
 
-const copyrightText = member?.codename 
-  ? `© ${member.codename}; William Cummings`
-  : '© William Cummings';
-
-const images = member?.images?.length
-  ? member.images.map((img) => ({
-      uri: img.uri,
-      name: copyrightText,
-      clickable: img.clickable ?? true,
-    }))
-  : [{
-      uri: member?.image || require('../../assets/Armor/PlaceHolder.jpg'),
-      name: copyrightText,
-      clickable: true,
-    }];
-
-  console.log('Member:', member?.name, 'Images:', images);
-
-  const getDescription = (name, memberDesc) => {
-    const desc = memberDesc || descriptions[name] || 'No description available';
-    return typeof desc === 'string' ? desc.trim() : 'No description available';
-  };
-
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
+        {/* Header */}
         <View style={styles.headerContainer}>
-          <TouchableOpacity style={styles.backButton} onPress={async () => {
-            if (audioRef.current) {
-              try {
-                await audioRef.current.pauseAsync();
-                await audioRef.current.unloadAsync();
-                audioRef.current = null;
-                console.log('Audio paused and unloaded on back press');
-              } catch (e) {
-                console.error('Audio stop error on back press:', e.message);
-              }
-            }
-            if (videoRef.current) {
-              try {
-                await videoRef.current.pauseAsync();
-                console.log('Video paused on back press');
-              } catch (e) {
-                console.error('Video stop error on back press:', e.message);
-              }
-            }
-            setIsPlaying(false);
-            navigation.goBack();
-          }}>
+          <TouchableOpacity
+            style={[styles.backButton, { borderColor: accent }]}
+            onPress={stopMediaAndGoBack}
+            activeOpacity={0.85}
+          >
             <Text style={styles.backButtonText}>←</Text>
           </TouchableOpacity>
-          <Text style={styles.title}>{member?.codename || 'N/A'}</Text>
+
+          <View style={[styles.headerGlass, { borderColor: accent, shadowColor: accent }]}>
+            <Text style={[styles.title, { textShadowColor: accent }]}>
+              {member?.codename || "N/A"}
+            </Text>
+
+            {!!subtitle && (
+              <Text style={[styles.subtitle, { color: accent }]}>{subtitle}</Text>
+            )}
+          </View>
         </View>
-        <View style={styles.imageContainer}>
+
+        {/* Armory */}
+        <View style={[styles.section, { borderColor: `${accent}66`, shadowColor: accent }]}>
+          <Text style={[styles.sectionTitle, { textShadowColor: accent }]}>
+            {member?.codename || member?.name} Armory
+          </Text>
+          <View style={[styles.sectionDivider, { backgroundColor: accent }]} />
+
           <ScrollView
             horizontal
             contentContainerStyle={styles.imageScrollContainer}
@@ -232,12 +271,19 @@ const images = member?.images?.length
             {images.map(renderImageCard)}
           </ScrollView>
         </View>
-        <View style={styles.aboutSection}>
-          <Text style={styles.aboutHeader}>About {member?.name || 'Character'}</Text>
-          <Text style={styles.aboutText}>
-            {getDescription(member?.name, member?.description)}
+
+        {/* About */}
+        <View style={[styles.aboutSection, { borderColor: accent, shadowColor: accent }]}>
+          <Text style={[styles.aboutHeader, { textShadowColor: accent }]}>About Me</Text>
+          <Text style={[styles.aboutCodename, { textShadowColor: accent }]}>
+            {member?.codename || "Unknown"}
           </Text>
+          <Text style={styles.aboutName}>{member?.name || "The Nameless"}</Text>
+
+          <View style={[styles.aboutDivider, { backgroundColor: accent, shadowColor: accent }]} />
+          <Text style={styles.aboutText}>{meta?.about || "No description available."}</Text>
         </View>
+
         {renderMediaPlayer()}
       </ScrollView>
     </View>
@@ -245,125 +291,152 @@ const images = member?.images?.length
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#0a0a0a',
-  },
-  scrollContainer: {
-    paddingBottom: 20,
-  },
-  headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    backgroundColor: '#0a0a0a',
-    borderBottomWidth: 1,
-    borderBottomColor: '#333',
-  },
+  container: { flex: 1, backgroundColor: "#0a0a0a" },
+  center: { justifyContent: "center", alignItems: "center" },
+  errorText: { color: "white", fontSize: 18, fontWeight: "700" },
+
+  scrollContainer: { paddingBottom: 30 },
+
+  // Header (glassy)
+  headerContainer: { flexDirection: "row", alignItems: "center", paddingHorizontal: 16, paddingTop: 16 },
   backButton: {
-    padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    backgroundColor: "rgba(10,18,36,0.95)",
+    borderWidth: 1,
+    marginRight: 10,
   },
-  backButtonText: {
-    fontSize: 24,
-    color: '#fff',
+  backButtonText: { fontSize: 22, color: "#e5f3ff" },
+
+  headerGlass: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    backgroundColor: "rgba(8,16,40,0.95)",
+    borderWidth: 1,
+    shadowOpacity: 0.45,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 10,
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#00b3ff',
-    textAlign: 'center',
-    flex: 1,
+    fontSize: 26,
+    fontWeight: "900",
+    color: "#e5f3ff",
+    textAlign: "center",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+    letterSpacing: 1,
   },
-  imageContainer: {
-    width: '100%',
-    paddingVertical: 20,
-    backgroundColor: '#111',
-    paddingLeft: 15,
+  subtitle: {
+    marginTop: 4,
+    fontSize: 12,
+    textAlign: "center",
+    letterSpacing: 1,
+    textTransform: "uppercase",
+    fontWeight: "600",
   },
-  imageScrollContainer: {
-    flexDirection: 'row',
+
+  // Section wrapper (glassy)
+  section: {
+    marginTop: 24,
+    marginHorizontal: 12,
+    paddingVertical: 14,
     paddingHorizontal: 10,
-    alignItems: 'center',
+    borderRadius: 20,
+    backgroundColor: "rgba(6,12,26,0.96)",
+    borderWidth: 1,
+    shadowOpacity: 0.25,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 10,
   },
-  card: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9,
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#e5f3ff",
+    textAlign: "center",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+    letterSpacing: 0.8,
+  },
+  sectionDivider: {
+    marginTop: 6,
+    marginBottom: 10,
+    alignSelf: "center",
+    width: "40%",
+    height: 2,
+    borderRadius: 999,
+  },
+
+  imageScrollContainer: { flexDirection: "row", paddingHorizontal: 8, paddingTop: 4, alignItems: "center" },
+
+  // Card (glassy)
+  card: (isDesktop, w) => ({
+    width: isDesktop ? w * 0.3 : SCREEN_WIDTH * 0.9,
     height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7,
-    borderRadius: 15,
-    overflow: 'hidden',
-    elevation: 5,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    borderRadius: 22,
+    overflow: "hidden",
     marginRight: 20,
+    backgroundColor: "rgba(4,10,22,0.96)",
+    borderWidth: 1,
+    shadowOpacity: 0.75,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 12,
   }),
-  clickable: {
-    borderWidth: 2,
-    borderColor: '#00b3ff',
-  },
-  armorImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  transparentOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1,
-  },
+  armorImage: { width: "100%", height: "100%" },
+  cardOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.25)" },
   cardName: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 10,
-    left: 10,
-    fontSize: 16,
-    color: 'white',
-    fontWeight: 'bold',
+    left: 12,
+    right: 12,
+    fontSize: 12,
+    color: "#e5f3ff",
+    fontWeight: "600",
+    textShadowColor: "#000",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
+
+  // About (glassy)
   aboutSection: {
-    marginTop: 40,
-    padding: 20,
-    backgroundColor: '#222',
-    borderRadius: 15,
-    width: '90%',
-    alignSelf: 'center',
+    marginTop: 28,
+    marginHorizontal: 12,
+    marginBottom: 24,
+    paddingVertical: 18,
+    paddingHorizontal: 14,
+    borderRadius: 22,
+    backgroundColor: "rgba(6,12,26,0.97)",
+    borderWidth: 1,
+    shadowOpacity: 0.25,
+    shadowRadius: 22,
+    shadowOffset: { width: 0, height: 12 },
+    elevation: 12,
   },
   aboutHeader: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#00b3ff',
-    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: "800",
+    color: "#e5f3ff",
+    textAlign: "center",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+    letterSpacing: 0.8,
+    marginBottom: 10,
   },
-  aboutText: {
-    fontSize: 16,
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 10,
-  },
-  mediaContainer: {
-    marginBottom: 20,
-    marginTop: 40,
-    width: '90%',
-    alignSelf: 'center',
-    alignItems: 'center',
-  },
-  mediaText: {
-    color: '#fff',
-    fontSize: 16,
-    textAlign: 'center',
-  },
-  playButton: {
-    backgroundColor: '#00b3ff',
-    padding: 10,
-    borderRadius: 5,
-    alignSelf: 'center',
-    marginTop: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 12,
-  },
+  aboutCodename: { fontSize: 22, color: "#e5f3ff", textAlign: "center", fontWeight: "900", textShadowRadius: 10 },
+  aboutName: { fontSize: 16, color: "#ffffff", textAlign: "center", marginTop: 6, fontStyle: "italic", opacity: 0.95 },
+  aboutDivider: { height: 2, marginVertical: 14, borderRadius: 999, shadowOpacity: 1, shadowRadius: 10 },
+  aboutText: { fontSize: 14, color: "#dde8ff", lineHeight: 20, textAlign: "left" },
+
+  // Media
+  mediaContainer: { marginTop: 10, marginBottom: 30, width: "90%", alignSelf: "center", alignItems: "center" },
+  mediaText: { color: "#e5f3ff", fontSize: 13, textAlign: "center", opacity: 0.9 },
+  playButton: { paddingVertical: 10, paddingHorizontal: 16, borderRadius: 999, marginTop: 10 },
+  buttonText: { color: "#061a2a", fontWeight: "900", letterSpacing: 1, textTransform: "uppercase", fontSize: 12 },
 });
 
 export default CobrosCharacterDetail;

@@ -1,5 +1,5 @@
 // screens/Legionaires/LegionairesCharacterDetail.js
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -8,59 +8,91 @@ import {
   StyleSheet,
   Dimensions,
   Image,
-} from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { Video, Audio } from 'expo-av';
-import descriptions from './LegionDescription';
+  ImageBackground,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { Video, Audio } from "expo-av";
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const PLACEHOLDER = require('../../assets/Armor/PlaceHolder.jpg');
+import descriptions from "./LegionDescription";
 
-// 🔹 Normalize any “image-like” value into a valid RN Image `source`
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
+const PLACEHOLDER = require("../../assets/Armor/PlaceHolder.jpg");
+
+// ✅ Normalize ANY kind of image value into something <Image> understands
 const normalizeImageSource = (img) => {
   if (!img) return PLACEHOLDER;
 
-  // already a local require id
-  if (typeof img === 'number') return img;
+  // 1) Local require(...) → number
+  if (typeof img === "number") return img;
 
-  if (typeof img === 'object') {
-    // sometimes nested like { source: require(...) }
+  // 2) Object with uri / nested { source }
+  if (typeof img === "object" && img !== null) {
     if (img.source) return normalizeImageSource(img.source);
 
     if (img.uri != null) {
-      if (typeof img.uri === 'number') return img.uri;        // local require in uri
-      if (typeof img.uri === 'string') return { uri: img.uri }; // remote/local string uri
+      if (typeof img.uri === "number") return img.uri;
+      if (typeof img.uri === "string") return { uri: img.uri };
     }
   }
 
-  if (typeof img === 'string') {
-    return { uri: img };
-  }
+  // 3) Plain string → remote URL
+  if (typeof img === "string") return { uri: img };
 
   return PLACEHOLDER;
 };
 
-const LegionairesCharacterDetail = () => {
+// ✅ Safely read meta from descriptions:
+// - supports string OR { about, accent, words }
+const getMeta = (member) => {
+  const keyA = member?.name;
+  const keyB = member?.codename;
+
+  const raw =
+    (keyA && descriptions[keyA]) ||
+    (keyB && descriptions[keyB]) ||
+    descriptions.default;
+
+  // old style: string
+  if (typeof raw === "string") {
+    return {
+      about: raw.trim(),
+      accent: "#00b3ff",
+      words: "Legend • Active • Online",
+    };
+  }
+
+  // new style: object
+  const about =
+    (raw?.about || member?.description || "No description available.").toString().trim();
+
+  const accent = raw?.accent || "#00b3ff";
+  const words = raw?.words || "Legend • Active • Online";
+
+  return { about, accent, words };
+};
+
+export default function LegionairesCharacterDetail() {
   const navigation = useNavigation();
   const route = useRoute();
   const { member } = route.params || {};
+
+  const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
+  const isDesktop = windowWidth >= 768;
+  const cardWidth = isDesktop ? windowWidth * 0.28 : SCREEN_WIDTH * 0.8;
 
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef(null);
   const audioRef = useRef(null);
 
-  const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
-  const isDesktop = windowWidth >= 768;
-  const cardWidth = isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9;
-
   useEffect(() => {
-    const updateDimensions = () => {
-      setWindowWidth(Dimensions.get('window').width);
-    };
-    const subscription = Dimensions.addEventListener('change', updateDimensions);
-    return () => subscription?.remove();
+    const sub = Dimensions.addEventListener("change", () => {
+      setWindowWidth(Dimensions.get("window").width);
+    });
+    return () => sub?.remove();
   }, []);
 
+  // audio mode + preload audio
   useEffect(() => {
     Audio.setAudioModeAsync({
       allowsRecordingIOS: false,
@@ -68,17 +100,16 @@ const LegionairesCharacterDetail = () => {
       staysActiveInBackground: true,
       shouldDuckAndroid: true,
       playThroughEarpieceAndroid: false,
-    }).catch((e) => console.error('Audio mode setup error:', e));
+    }).catch(() => {});
 
     const loadAudio = async () => {
-      if (member?.mediaUri && member?.mediaType === 'audio' && !audioRef.current) {
+      if (member?.mediaUri && member?.mediaType === "audio" && !audioRef.current) {
         try {
           const sound = new Audio.Sound();
           await sound.loadAsync({ uri: member.mediaUri });
           audioRef.current = sound;
-          console.log('Audio loaded:', member.mediaUri);
         } catch (e) {
-          console.error('Audio load error:', e.message);
+          console.error("Audio load error:", e?.message || e);
         }
       }
     };
@@ -87,59 +118,60 @@ const LegionairesCharacterDetail = () => {
 
     return () => {
       if (audioRef.current) {
-        audioRef.current
-          .unloadAsync()
-          .catch((e) => console.error('Audio unload error:', e));
+        audioRef.current.unloadAsync().catch(() => {});
         audioRef.current = null;
-        console.log('Audio unloaded on cleanup');
       }
     };
   }, [member?.mediaUri, member?.mediaType]);
 
   const togglePlayPause = async () => {
-    if (member?.mediaType === 'video' && videoRef.current) {
+    if (member?.mediaType === "video" && videoRef.current) {
       try {
-        if (isPlaying) {
-          await videoRef.current.pauseAsync();
-        } else {
-          await videoRef.current.playAsync();
-        }
+        if (isPlaying) await videoRef.current.pauseAsync();
+        else await videoRef.current.playAsync();
         setIsPlaying(!isPlaying);
-        console.log(`Video ${isPlaying ? 'paused' : 'playing'}: ${member.mediaUri}`);
       } catch (e) {
-        console.error('Video toggle error:', e.message);
+        console.error("Video toggle error:", e?.message || e);
       }
-    } else if (member?.mediaType === 'audio' && audioRef.current) {
+      return;
+    }
+
+    if (member?.mediaType === "audio" && audioRef.current) {
       try {
         const status = await audioRef.current.getStatusAsync();
-        if (!status.isLoaded) {
-          console.error('Audio not loaded:', member.mediaUri);
-          return;
-        }
-        if (isPlaying) {
-          await audioRef.current.pauseAsync();
-        } else {
-          await audioRef.current.playAsync();
-        }
+        if (!status.isLoaded) return;
+
+        if (isPlaying) await audioRef.current.pauseAsync();
+        else await audioRef.current.playAsync();
+
         setIsPlaying(!isPlaying);
-        console.log(`Audio ${isPlaying ? 'paused' : 'playing'}: ${member.mediaUri}`);
       } catch (e) {
-        console.error('Audio toggle error:', e.message);
+        console.error("Audio toggle error:", e?.message || e);
       }
     }
   };
 
-  // 🔹 Copyright text per image
+  if (!member) {
+    return (
+      <View style={[styles.root, styles.center]}>
+        <Text style={styles.errorText}>No legend found.</Text>
+      </View>
+    );
+  }
+
+  const title = member.codename || member.name || "Unknown Legend";
+  const { about, accent, words } = getMeta(member);
+
+  // ✅ Copyright text per image (your original behavior)
   const copyrightText = member?.codename
     ? `© ${member.codename}; William Cummings`
-    : '© William Cummings';
+    : "© William Cummings";
 
-  // 🔹 Build a normalized images array
+  // ✅ Keep your original robust image parsing (doesn't break)
   let images;
   if (member?.images?.length) {
     images = member.images.map((img) => {
-      const base =
-        typeof img === 'object' && img !== null ? img : { uri: img };
+      const base = typeof img === "object" && img !== null ? img : { uri: img };
       return {
         source: normalizeImageSource(base.uri ?? base),
         name: copyrightText,
@@ -156,280 +188,358 @@ const LegionairesCharacterDetail = () => {
     ];
   }
 
-  console.log('Member:', member?.name, 'Images:', images);
-
   const renderImageCard = (img, index) => {
     const key = `image-${index}`;
     return (
-      <TouchableOpacity
+      <View
         key={key}
-        style={[styles.card(isDesktop, windowWidth), img.clickable !== false && styles.clickable]}
-        onPress={() => console.log(`${img.name || 'Image'} clicked`)}
-        activeOpacity={0.9}
+        style={[
+          styles.card(isDesktop, windowWidth),
+          { borderColor: accent, shadowColor: accent },
+        ]}
       >
         <Image
           source={normalizeImageSource(img.source)}
           style={styles.armorImage}
           resizeMode="cover"
-          onError={(e) =>
-            console.error(
-              'Image load error:',
-              e.nativeEvent.error,
-              'source:',
-              img.source
-            )
-          }
         />
-        <View className="transparentOverlay" style={styles.transparentOverlay} />
-        {img.name && img.name.trim() && (
+        <View style={styles.cardOverlay} />
+        {img?.name?.trim?.() ? (
           <Text style={styles.cardName}>{img.name.trim()}</Text>
-        )}
-      </TouchableOpacity>
+        ) : null}
+      </View>
     );
   };
 
   const renderMediaPlayer = () => {
     if (!member?.mediaUri) return null;
-    const mediaStyle = {
-      width: '100%',
-      height: member.mediaType === 'video' ? 200 : 50,
-      borderRadius: 10,
-      backgroundColor: '#333',
-      justifyContent: 'center',
-      alignItems: 'center',
+
+    const mediaBox = {
+      width: "100%",
+      height: member.mediaType === "video" ? 220 : 56,
+      borderRadius: 14,
+      backgroundColor: "rgba(4,10,22,0.9)",
+      borderWidth: 1,
+      borderColor: `${accent}66`,
+      justifyContent: "center",
+      alignItems: "center",
+      overflow: "hidden",
     };
+
     return (
-      <View style={styles.mediaContainer}>
-        {member.mediaType === 'video' ? (
+      <View style={[styles.mediaWrap, { borderColor: `${accent}66`, shadowColor: accent }]}>
+        <Text style={[styles.sectionTitle, { textShadowColor: accent }]}>Media</Text>
+        <View style={[styles.sectionDivider, { backgroundColor: accent }]} />
+
+        {member.mediaType === "video" ? (
           <Video
             ref={videoRef}
             source={{ uri: member.mediaUri }}
-            style={mediaStyle}
+            style={mediaBox}
             resizeMode="cover"
             isLooping
             shouldPlay={isPlaying}
-            onPlaybackStatusUpdate={(status) => {
-              console.log('Video playback status:', status);
-              setIsPlaying(!!status.isPlaying);
-            }}
+            onPlaybackStatusUpdate={(status) => setIsPlaying(!!status.isPlaying)}
           />
-        ) : member.mediaType === 'audio' ? (
-          <View style={mediaStyle}>
-            <Text style={styles.mediaText}>
-              Audio: {member.mediaUri.split('/').pop()}
-            </Text>
-          </View>
         ) : (
-          <View style={mediaStyle}>
+          <View style={mediaBox}>
             <Text style={styles.mediaText}>
-              File: {member.mediaUri.split('/').pop()}
+              {member.mediaType === "audio" ? "Audio" : "File"}:{" "}
+              {String(member.mediaUri).split("/").pop()}
             </Text>
           </View>
         )}
-        {(member.mediaType === 'video' || member.mediaType === 'audio') && (
-          <TouchableOpacity style={styles.playButton} onPress={togglePlayPause}>
-            <Text style={styles.buttonText}>{isPlaying ? 'Pause' : 'Play'}</Text>
+
+        {(member.mediaType === "video" || member.mediaType === "audio") && (
+          <TouchableOpacity
+            style={[styles.playButton, { backgroundColor: accent }]}
+            onPress={togglePlayPause}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.playButtonText}>{isPlaying ? "Pause" : "Play"}</Text>
           </TouchableOpacity>
         )}
       </View>
     );
   };
 
-  const getDescription = (name, memberDesc) => {
-    const desc = memberDesc || descriptions[name] || 'No description available';
-    return typeof desc === 'string' ? desc.trim() : 'No description available';
-  };
-
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {/* Header */}
-        <View style={styles.headerContainer}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={async () => {
-              if (audioRef.current) {
-                try {
-                  await audioRef.current.pauseAsync();
-                  await audioRef.current.unloadAsync();
-                  audioRef.current = null;
-                  console.log('Audio paused and unloaded on back press');
-                } catch (e) {
-                  console.error('Audio stop error on back press:', e.message);
-                }
-              }
-              if (videoRef.current) {
-                try {
-                  await videoRef.current.pauseAsync();
-                  console.log('Video paused on back press');
-                } catch (e) {
-                  console.error('Video stop error on back press:', e.message);
-                }
-              }
-              setIsPlaying(false);
-              navigation.goBack();
-            }}
-          >
-            <Text style={styles.backButtonText}>←</Text>
-          </TouchableOpacity>
-          <Text style={styles.title}>{member?.codename || 'N/A'}</Text>
-        </View>
+    <ImageBackground
+      source={require("../../assets/BackGround/Legionaires2.jpg")}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={styles.root} edges={["bottom", "left", "right"]}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          {/* ✅ HEADER — glassy system */}
+          <View style={styles.headerOuter}>
+            <View style={styles.headerRow}>
+              <TouchableOpacity
+                style={[styles.backButton, { borderColor: accent }]}
+                onPress={async () => {
+                  try {
+                    if (audioRef.current) {
+                      await audioRef.current.pauseAsync();
+                      await audioRef.current.unloadAsync();
+                      audioRef.current = null;
+                    }
+                    if (videoRef.current) await videoRef.current.pauseAsync();
+                  } catch {}
+                  setIsPlaying(false);
+                  navigation.goBack();
+                }}
+                activeOpacity={0.85}
+              >
+                <Text style={styles.backButtonText}>←</Text>
+              </TouchableOpacity>
 
-        {/* Image gallery */}
-        <View style={styles.imageContainer}>
-          <ScrollView
-            horizontal
-            contentContainerStyle={styles.imageScrollContainer}
-            showsHorizontalScrollIndicator={false}
-            snapToAlignment="center"
-            snapToInterval={cardWidth + 20}
-            decelerationRate="fast"
-            contentOffset={{
-              x: (SCREEN_WIDTH - cardWidth) / 2 - 10,
-              y: 0,
-            }}
-          >
-            {images.map(renderImageCard)}
-          </ScrollView>
-        </View>
+              <View style={[styles.headerGlass, { borderColor: accent, shadowColor: accent }]}>
+                <Text style={[styles.title, { textShadowColor: accent }]}>{title}</Text>
+                <Text style={[styles.subtitle, { color: accent }]}>{words}</Text>
+              </View>
+            </View>
+          </View>
 
-        {/* About */}
-        <View style={styles.aboutSection}>
-          <Text style={styles.aboutHeader}>
-            About {member?.name || 'Character'}
-          </Text>
-          <Text style={styles.aboutText}>
-            {getDescription(member?.name, member?.description)}
-          </Text>
-        </View>
+          {/* ✅ ARMORY */}
+          <View style={[styles.section, { borderColor: `${accent}66`, shadowColor: accent }]}>
+            <Text style={[styles.sectionTitle, { textShadowColor: accent }]}>{title} Armory</Text>
+            <View style={[styles.sectionDivider, { backgroundColor: accent }]} />
 
-        {/* Media */}
-        {renderMediaPlayer()}
-      </ScrollView>
-    </View>
+            <ScrollView
+              horizontal
+              contentContainerStyle={styles.imageScrollContainer}
+              showsHorizontalScrollIndicator={false}
+              snapToAlignment="center"
+              snapToInterval={cardWidth + 18}
+              decelerationRate="fast"
+              contentOffset={{
+                x: (SCREEN_WIDTH - cardWidth) / 2 - 10,
+                y: 0,
+              }}
+            >
+              {images.map(renderImageCard)}
+            </ScrollView>
+          </View>
+
+          {/* ✅ ABOUT ME */}
+          <View style={[styles.aboutSection, { borderColor: accent, shadowColor: accent }]}>
+            <Text style={[styles.aboutHeader, { textShadowColor: accent }]}>About Me</Text>
+
+            <Text style={[styles.aboutCodename, { textShadowColor: accent }]}>
+              {member.codename || "Unknown Legend"}
+            </Text>
+
+            <Text style={styles.aboutName}>{member.name || "The Nameless"}</Text>
+
+            <View style={[styles.aboutDivider, { backgroundColor: accent, shadowColor: accent }]} />
+
+            <Text style={styles.aboutText}>{about}</Text>
+          </View>
+
+          {/* ✅ MEDIA */}
+          {renderMediaPlayer()}
+        </ScrollView>
+      </SafeAreaView>
+    </ImageBackground>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#0a0a0a',
-  },
-  scrollContainer: {
-    paddingBottom: 20,
-  },
-  headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    backgroundColor: '#0a0a0a',
-    borderBottomWidth: 1,
-    borderBottomColor: '#333',
-  },
+  background: { width: "100%", height: "100%" },
+  root: { flex: 1, backgroundColor: "rgba(0,0,0,0.25)" },
+  center: { justifyContent: "center", alignItems: "center" },
+  errorText: { color: "white", fontSize: 18, fontWeight: "700" },
+
+  scrollContainer: { paddingBottom: 30 },
+
+  // HEADER
+  headerOuter: { paddingHorizontal: 16, paddingTop: 16 },
+  headerRow: { flexDirection: "row", alignItems: "center" },
+
   backButton: {
-    padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    backgroundColor: "rgba(10,18,36,0.95)",
+    borderWidth: 1,
+    marginRight: 10,
   },
-  backButtonText: {
-    fontSize: 24,
-    color: '#fff',
+  backButtonText: { fontSize: 22, color: "#e5f3ff" },
+
+  headerGlass: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    backgroundColor: "rgba(8,16,40,0.95)",
+    borderWidth: 1,
+    shadowOpacity: 0.45,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 10,
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#00b3ff',
-    textAlign: 'center',
-    flex: 1,
+    fontSize: 26,
+    fontWeight: "900",
+    color: "#e5f3ff",
+    textAlign: "center",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+    letterSpacing: 1,
   },
-  imageContainer: {
-    width: '100%',
-    paddingVertical: 20,
-    backgroundColor: '#111',
-    paddingLeft: 15,
+  subtitle: {
+    marginTop: 4,
+    fontSize: 12,
+    textAlign: "center",
+    letterSpacing: 1,
+    textTransform: "uppercase",
+    fontWeight: "600",
   },
-  imageScrollContainer: {
-    flexDirection: 'row',
+
+  // SECTION
+  section: {
+    marginTop: 24,
+    marginHorizontal: 12,
+    paddingVertical: 14,
     paddingHorizontal: 10,
-    alignItems: 'center',
+    borderRadius: 20,
+    backgroundColor: "rgba(6,12,26,0.96)",
+    borderWidth: 1,
+    shadowOpacity: 0.25,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 10,
   },
-  card: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.3 : SCREEN_WIDTH * 0.9,
-    height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7,
-    borderRadius: 15,
-    overflow: 'hidden',
-    elevation: 5,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    marginRight: 20,
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#e5f3ff",
+    textAlign: "center",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+    letterSpacing: 0.8,
+  },
+  sectionDivider: {
+    marginTop: 6,
+    marginBottom: 10,
+    alignSelf: "center",
+    width: "40%",
+    height: 2,
+    borderRadius: 999,
+  },
+
+  imageScrollContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 8,
+    paddingTop: 4,
+    alignItems: "center",
+  },
+
+  // CARD
+  card: (isDesktop, w) => ({
+    width: isDesktop ? w * 0.28 : SCREEN_WIDTH * 0.8,
+    height: isDesktop ? SCREEN_HEIGHT * 0.7 : SCREEN_HEIGHT * 0.65,
+    borderRadius: 22,
+    overflow: "hidden",
+    marginRight: 18,
+    backgroundColor: "rgba(4,10,22,0.96)",
+    borderWidth: 1,
+    shadowOpacity: 0.75,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 12,
   }),
-  clickable: {
-    borderWidth: 2,
-    borderColor: '#00b3ff',
-  },
-  armorImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  transparentOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0)',
-    zIndex: 1,
-  },
+  armorImage: { width: "100%", height: "100%" },
+  cardOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.25)" },
   cardName: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 10,
-    left: 10,
-    fontSize: 16,
-    color: 'white',
-    fontWeight: 'bold',
+    left: 12,
+    right: 12,
+    fontSize: 12,
+    color: "#e5f3ff",
+    fontWeight: "600",
+    textShadowColor: "#000",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
+
+  // ABOUT ME
   aboutSection: {
-    marginTop: 40,
-    padding: 20,
-    backgroundColor: '#222',
-    borderRadius: 15,
-    width: '90%',
-    alignSelf: 'center',
+    marginTop: 28,
+    marginHorizontal: 12,
+    marginBottom: 18,
+    paddingVertical: 18,
+    paddingHorizontal: 14,
+    borderRadius: 22,
+    backgroundColor: "rgba(6,12,26,0.97)",
+    borderWidth: 1,
+    shadowOpacity: 0.25,
+    shadowRadius: 22,
+    shadowOffset: { width: 0, height: 12 },
+    elevation: 12,
   },
   aboutHeader: {
+    fontSize: 20,
+    fontWeight: "800",
+    color: "#e5f3ff",
+    textAlign: "center",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+    letterSpacing: 0.8,
+    marginBottom: 10,
+  },
+  aboutCodename: {
     fontSize: 22,
-    fontWeight: 'bold',
-    color: '#00b3ff',
-    textAlign: 'center',
+    color: "#e5f3ff",
+    textAlign: "center",
+    fontWeight: "900",
+    textShadowRadius: 10,
+  },
+  aboutName: {
+    fontSize: 16,
+    color: "#ffffff",
+    textAlign: "center",
+    marginTop: 6,
+    fontStyle: "italic",
+    opacity: 0.95,
+  },
+  aboutDivider: {
+    height: 2,
+    marginVertical: 14,
+    borderRadius: 999,
+    shadowOpacity: 1,
+    shadowRadius: 10,
   },
   aboutText: {
-    fontSize: 16,
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 10,
+    fontSize: 14,
+    color: "#dde8ff",
+    lineHeight: 20,
+    textAlign: "left",
   },
-  mediaContainer: {
-    marginBottom: 20,
-    marginTop: 40,
-    width: '90%',
-    alignSelf: 'center',
-    alignItems: 'center',
-  },
-  mediaText: {
-    color: '#fff',
-    fontSize: 16,
-    textAlign: 'center',
-  },
-  playButton: {
-    backgroundColor: '#00b3ff',
-    padding: 10,
-    borderRadius: 5,
-    alignSelf: 'center',
-    marginTop: 10,
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 12,
-  },
-});
 
-export default LegionairesCharacterDetail;
+  // MEDIA
+  mediaWrap: {
+    marginTop: 18,
+    marginHorizontal: 12,
+    marginBottom: 32,
+    paddingVertical: 14,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    backgroundColor: "rgba(6,12,26,0.96)",
+    borderWidth: 1,
+    shadowOpacity: 0.25,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 10,
+    alignItems: "center",
+  },
+  mediaText: { color: "#e5f3ff", fontSize: 12, opacity: 0.9 },
+  playButton: {
+    marginTop: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    borderRadius: 999,
+  },
+  playButtonText: { color: "#06101a", fontWeight: "900", letterSpacing: 0.6 },
+});

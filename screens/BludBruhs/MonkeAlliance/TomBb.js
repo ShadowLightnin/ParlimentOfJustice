@@ -162,7 +162,7 @@ const TomBb = () => {
   return (
     <View style={styles.container}>
       {/* 🎧 MUSIC BAR – sonic / thunder glass */}
-      <View style={styles.musicControls}>
+      {/* <View style={styles.musicControls}>
         <TouchableOpacity
           style={styles.trackButton}
           onPress={() => cycleTrack(-1)}
@@ -202,7 +202,7 @@ const TomBb = () => {
         >
           <Text style={styles.musicButtonTextSecondary}>Pause</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.headerOuter}>
