@@ -1,5 +1,5 @@
 // screens/Forge/ForgeCharacterDetail.js
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -8,236 +8,423 @@ import {
   StyleSheet,
   Dimensions,
   Image,
-} from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+  ImageBackground,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const PLACEHOLDER = require('../../assets/Armor/PlaceHolder.jpg');
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
+const PLACEHOLDER = require("../../assets/Armor/PlaceHolder.jpg");
 
-// 🔹 Normalize any image value into a valid React Native Image `source`
+// ✅ Per-member words (word • word • word)
+const WORD_LINES = {
+  Glen: "Legacy • Discipline • Steel",
+  Ted: "Honor • Loyal • Steady",
+  Marisela: "Order • Heart • Power",
+  Beau: "Strength • Calm • Lift",
+  Taylor: "Spark • Speed • Fearless",
+  Angie: "Warmth • Joy • Family",
+  Brad: "Focus • Drive • Finish",
+  Camren: "Brotherhood • Grit • Rise",
+  Shailey: "Work • Grace • Resolve",
+  Kaitlyn: "Calm • Precision • Craft",
+  Emma: "Force • Will • Unbroken",
+  Mila: "Energy • Humor • Fire",
+  Karrie: "Reliable • Anchor • True",
+  Kazia: "Agile • Sharp • Steel",
+  Gary: "Energy • Bold • Go",
+  Trevor: "Molten • Master • Gold",
+  Kristin: "Fast • Efficient • Ahead",
+  Joe: "Pillar • Strong • Steady",
+  Jim: "Fire • Drive • Relentless",
+  Mike: "Tough • Dependable • Backbone",
+  default: "Forge • Endure • Build",
+};
+
+// ✅ Per-member accent colors
+const ACCENTS = {
+  Glen: "#FFAE42",
+  Ted: "#FFD24A",
+  Marisela: "#FF6BC1",
+  Beau: "#43E0A8",
+  Taylor: "#FFE86B",
+  Angie: "#FF7A7A",
+  Brad: "#62A7FF",
+  Camren: "#00E5FF",
+  Shailey: "#B38CFF",
+  Kaitlyn: "#7CFFB2",
+  Emma: "#FF4E6A",
+  Mila: "#FFB347",
+  Karrie: "#7A5CFF",
+  Kazia: "#C8FF5A",
+  Gary: "#FF8A4D",
+  Trevor: "#FF6B35",
+  Kristin: "#55D6FF",
+  Joe: "#C9D6FF",
+  Jim: "#FF4E4E",
+  Mike: "#62A7FF",
+  default: "#FF6B35",
+};
+
+// 🔹 Normalize any “image-like” value into a valid RN Image `source`
 const normalizeImageSource = (img) => {
   if (!img) return PLACEHOLDER;
 
-  // Already a local require
-  if (typeof img === 'number') return img;
+  // local require(...)
+  if (typeof img === "number") return img;
 
-  if (typeof img === 'object') {
-    // Sometimes structured as { source: require(...) }
+  if (typeof img === "object" && img !== null) {
     if (img.source) return normalizeImageSource(img.source);
 
     if (img.uri != null) {
-      if (typeof img.uri === 'number') return img.uri;          // local require stored in uri
-      if (typeof img.uri === 'string') return { uri: img.uri }; // remote/local string uri
+      if (typeof img.uri === "number") return img.uri; // require stored in uri
+      if (typeof img.uri === "string") return { uri: img.uri };
     }
   }
 
-  if (typeof img === 'string') {
-    return { uri: img };
-  }
+  if (typeof img === "string") return { uri: img };
 
   return PLACEHOLDER;
 };
 
-const ForgeCharacterDetail = () => {
+export default function ForgeCharacterDetail() {
   const navigation = useNavigation();
   const route = useRoute();
   const { member } = route.params || {};
 
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
   const isDesktop = windowWidth >= 768;
-  const cardWidth = isDesktop ? windowWidth * 0.32 : SCREEN_WIDTH * 0.88;
 
   useEffect(() => {
-    const update = () =>
-      setWindowWidth(Dimensions.get('window').width);
-    const sub = Dimensions.addEventListener('change', update);
+    const sub = Dimensions.addEventListener("change", () => {
+      setWindowWidth(Dimensions.get("window").width);
+    });
     return () => sub?.remove();
   }, []);
 
-  // ✅ Build a normalized images array
+  if (!member) {
+    return (
+      <View style={[styles.root, styles.center]}>
+        <Text style={styles.errorText}>No legend found.</Text>
+      </View>
+    );
+  }
+
+  const title = member.codename || member.name || "Forge Member";
+
+  const accent =
+    ACCENTS[member.name] || ACCENTS[member.codename] || ACCENTS.default;
+
+  const words =
+    WORD_LINES[member.name] || WORD_LINES[member.codename] || WORD_LINES.default;
+
+  // ✅ KEEP your ForgeMembers format:
+  // images: [{ uri: require(...), name: "...", clickable: true }]
+  const copyrightText = member?.codename
+    ? `© ${member.codename}; William Cummings`
+    : "© William Cummings";
+
   let images;
   if (member?.images?.length > 0) {
     images = member.images.map((img) => ({
-      source: normalizeImageSource(img.uri ?? img),
-      name:
-        img.name ||
-        member?.codename ||
-        member?.name ||
-        'Smith',
-      clickable: img.clickable ?? true,
+      source: normalizeImageSource(img?.uri ?? img),
+      name: img?.name || copyrightText,
+      clickable: img?.clickable ?? true,
     }));
   } else {
     images = [
       {
         source: normalizeImageSource(member?.image || PLACEHOLDER),
-        name: member?.codename || member?.name || 'Smith',
+        name: copyrightText,
         clickable: true,
       },
     ];
   }
 
   const description =
-    member?.description || 'A soul forged in fire and sweat.';
+    (member.description && String(member.description).trim()) ||
+    "A soul forged in fire, grit, and loyalty — a living piece of the Forge.";
 
-  const renderImageCard = (img, i) => (
-    <TouchableOpacity
-      key={i}
+  const renderArmorCard = (img, index) => (
+    <View
+      key={`${title}-${index}`}
       style={[
         styles.card(isDesktop, windowWidth),
-        img.clickable !== false && styles.clickable,
+        { borderColor: accent, shadowColor: accent },
       ]}
-      activeOpacity={0.9}
     >
       <Image
         source={normalizeImageSource(img.source)}
         style={styles.armorImage}
         resizeMode="cover"
       />
-      <View style={styles.overlay} />
-      {img.name && <Text style={styles.cardName}>{img.name}</Text>}
-    </TouchableOpacity>
+      <View style={styles.cardOverlay} />
+      {img?.name ? <Text style={styles.cardName}>{img.name}</Text> : null}
+    </View>
   );
 
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scroll}>
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backBtn}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.backText}>←</Text>
-          </TouchableOpacity>
-          <Text style={styles.title}>
-            {member?.codename || member?.name || 'Smith'}
-          </Text>
-        </View>
+    <ImageBackground
+      // ✅ Use the same background system as your other “glassy” screens
+      // If you want a Forge-specific background later, just change this one line.
+      source={require("../../assets/BackGround/Forge.jpg")}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={styles.root} edges={["bottom", "left", "right"]}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          {/* ✅ HEADER — glassy like Cole/Joseph/Constollation */}
+          <View style={styles.headerOuter}>
+            <View style={styles.headerRow}>
+              <TouchableOpacity
+                style={[styles.backButton, { borderColor: accent }]}
+                onPress={() => navigation.goBack()}
+                activeOpacity={0.85}
+              >
+                <Text style={styles.backButtonText}>←</Text>
+              </TouchableOpacity>
 
-        {/* Image Gallery */}
-        <View style={styles.imageContainer}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            snapToInterval={cardWidth + 20}
-            decelerationRate="fast"
-            contentContainerStyle={{ paddingHorizontal: 15 }}
-          >
-            {images.map(renderImageCard)}
-          </ScrollView>
-        </View>
+              <View
+                style={[
+                  styles.headerGlass,
+                  { borderColor: accent, shadowColor: accent },
+                ]}
+              >
+                <Text style={[styles.title, { textShadowColor: accent }]}>
+                  {title}
+                </Text>
+                <Text style={[styles.subtitle, { color: accent }]}>{words}</Text>
+              </View>
+            </View>
+          </View>
 
-        {/* About / Description */}
-        <View style={styles.about}>
-          <Text style={styles.codename}>
-            {member?.codename || 'Forgeborn'}
-          </Text>
-          <Text style={styles.name}>
-            {member?.name || 'Unknown'}
-          </Text>
-          <Text style={styles.text}>{description}</Text>
-        </View>
-      </ScrollView>
-    </View>
+          {/* ✅ ARMORY / GALLERY — glass section */}
+          <View
+            style={[
+              styles.section,
+              { borderColor: `${accent}66`, shadowColor: accent },
+            ]}
+          >
+            <Text style={[styles.sectionTitle, { textShadowColor: accent }]}>
+              {title} Archive
+            </Text>
+            <View style={[styles.sectionDivider, { backgroundColor: accent }]} />
+
+            <ScrollView
+              horizontal
+              contentContainerStyle={styles.imageScrollContainer}
+              showsHorizontalScrollIndicator={false}
+            >
+              {images.map(renderArmorCard)}
+            </ScrollView>
+          </View>
+
+          {/* ✅ ABOUT — preserved + glass */}
+          <View
+            style={[
+              styles.aboutSection,
+              { borderColor: accent, shadowColor: accent },
+            ]}
+          >
+            <Text style={[styles.aboutHeader, { textShadowColor: accent }]}>
+              About
+            </Text>
+
+            <Text style={[styles.aboutCodename, { textShadowColor: accent }]}>
+              {member.codename || "Forgeborn"}
+            </Text>
+
+            <Text style={styles.aboutName}>{member.name || "Unknown"}</Text>
+
+            <View
+              style={[
+                styles.aboutDivider,
+                { backgroundColor: accent, shadowColor: accent },
+              ]}
+            />
+
+            <Text style={styles.aboutText}>{description}</Text>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </ImageBackground>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0a0a0a' },
-  scroll: { paddingBottom: 60 },
+  background: { width: "100%", height: "100%" },
+  root: { flex: 1, backgroundColor: "rgba(0,0,0,0.25)" },
+  center: { justifyContent: "center", alignItems: "center" },
+  errorText: { color: "white", fontSize: 18, fontWeight: "700" },
 
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: '#0a0a0a',
-    borderBottomWidth: 3,
-    borderBottomColor: '#ff6b35',
-  },
-  backBtn: {
-    padding: 12,
-    backgroundColor: 'rgba(255,107,53,0.3)',
-    borderRadius: 8,
+  scrollContainer: { paddingBottom: 30 },
+
+  // HEADER
+  headerOuter: { paddingHorizontal: 16, paddingTop: 16 },
+  headerRow: { flexDirection: "row", alignItems: "center" },
+
+  backButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    backgroundColor: "rgba(10,18,36,0.95)",
     borderWidth: 1,
-    borderColor: '#ff6b35',
+    marginRight: 10,
   },
-  backText: { fontSize: 28, color: '#ffae42', fontWeight: 'bold' },
-  title: {
+  backButtonText: { fontSize: 22, color: "#e5f3ff" },
+
+  headerGlass: {
     flex: 1,
-    textAlign: 'center',
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#ffae42',
-    textShadowColor: '#ff6b35',
-    textShadowRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    backgroundColor: "rgba(8,16,40,0.95)",
+    borderWidth: 1,
+    shadowOpacity: 0.45,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 10,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: "900",
+    color: "#e5f3ff",
+    textAlign: "center",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+    letterSpacing: 1,
+  },
+  subtitle: {
+    marginTop: 4,
+    fontSize: 12,
+    textAlign: "center",
+    letterSpacing: 1,
+    textTransform: "uppercase",
+    fontWeight: "600",
   },
 
-  imageContainer: { paddingVertical: 20, backgroundColor: '#111' },
-
-  card: (isDesktop, w) => ({
-    width: isDesktop ? w * 0.32 : SCREEN_WIDTH * 0.88,
-    height: isDesktop ? SCREEN_HEIGHT * 0.78 : SCREEN_HEIGHT * 0.68,
+  // SECTION
+  section: {
+    marginTop: 24,
+    marginHorizontal: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 10,
     borderRadius: 20,
-    overflow: 'hidden',
-    marginRight: 20,
-    borderWidth: 3,
-    borderColor: '#ff6b35',
-    shadowColor: '#ff6b35',
-    shadowOpacity: 0.9,
+    backgroundColor: "rgba(6,12,26,0.96)",
+    borderWidth: 1,
+    shadowOpacity: 0.25,
     shadowRadius: 20,
-    elevation: 15,
-    backgroundColor: 'rgba(0,0,0,0.85)',
-  }),
-  clickable: { borderColor: '#ffae42' },
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 10,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#e5f3ff",
+    textAlign: "center",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+    letterSpacing: 0.8,
+  },
+  sectionDivider: {
+    marginTop: 6,
+    marginBottom: 10,
+    alignSelf: "center",
+    width: "40%",
+    height: 2,
+    borderRadius: 999,
+  },
 
-  armorImage: { width: '100%', height: '100%' },
-  overlay: {
+  imageScrollContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 8,
+    paddingTop: 4,
+    alignItems: "center",
+  },
+
+  // CARD
+  card: (isDesktop, w) => ({
+    width: isDesktop ? w * 0.28 : SCREEN_WIDTH * 0.8,
+    height: isDesktop ? SCREEN_HEIGHT * 0.7 : SCREEN_HEIGHT * 0.65,
+    borderRadius: 22,
+    overflow: "hidden",
+    marginRight: 18,
+    backgroundColor: "rgba(4,10,22,0.96)",
+    borderWidth: 1,
+    shadowOpacity: 0.75,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 12,
+  }),
+  armorImage: { width: "100%", height: "100%" },
+  cardOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    backgroundColor: "rgba(0,0,0,0.25)",
   },
   cardName: {
-    position: 'absolute',
-    bottom: 16,
-    left: 16,
-    fontSize: 18,
-    color: '#ffae42',
-    fontWeight: 'bold',
-    textShadowColor: '#000',
-    textShadowRadius: 8,
+    position: "absolute",
+    bottom: 10,
+    left: 12,
+    right: 12,
+    fontSize: 12,
+    color: "#e5f3ff",
+    fontWeight: "600",
+    textShadowColor: "#000",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
 
-  about: {
-    marginTop: 30,
-    padding: 25,
-    backgroundColor: '#111',
-    borderRadius: 20,
-    width: '90%',
-    alignSelf: 'center',
-    borderWidth: 2,
-    borderColor: '#ff6b35',
+  // ABOUT
+  aboutSection: {
+    marginTop: 28,
+    marginHorizontal: 12,
+    marginBottom: 32,
+    paddingVertical: 18,
+    paddingHorizontal: 14,
+    borderRadius: 22,
+    backgroundColor: "rgba(6,12,26,0.97)",
+    borderWidth: 1,
+    shadowOpacity: 0.25,
+    shadowRadius: 22,
+    shadowOffset: { width: 0, height: 12 },
+    elevation: 12,
   },
-  codename: {
-    fontSize: 28,
-    color: '#ffae42',
-    textAlign: 'center',
-    fontWeight: 'bold',
-    textShadowColor: '#ff6b35',
+  aboutHeader: {
+    fontSize: 20,
+    fontWeight: "800",
+    color: "#e5f3ff",
+    textAlign: "center",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+    letterSpacing: 0.8,
+    marginBottom: 10,
+  },
+  aboutCodename: {
+    fontSize: 22,
+    color: "#e5f3ff",
+    textAlign: "center",
+    fontWeight: "900",
     textShadowRadius: 10,
   },
-  name: {
-    fontSize: 22,
-    color: '#fff',
-    textAlign: 'center',
-    marginTop: 8,
-    fontStyle: 'italic',
+  aboutName: {
+    fontSize: 16,
+    color: "#ffffff",
+    textAlign: "center",
+    marginTop: 6,
+    fontStyle: "italic",
+    opacity: 0.95,
   },
-  text: {
-    fontSize: 17,
-    color: '#ddd',
-    textAlign: 'center',
-    marginTop: 20,
-    lineHeight: 26,
+  aboutDivider: {
+    height: 2,
+    marginVertical: 14,
+    borderRadius: 999,
+    shadowOpacity: 1,
+    shadowRadius: 10,
+  },
+  aboutText: {
+    fontSize: 14,
+    color: "#dde8ff",
+    lineHeight: 20,
+    textAlign: "left",
   },
 });
-
-export default ForgeCharacterDetail;

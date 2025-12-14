@@ -17,6 +17,10 @@ import { useNavigation, useIsFocused } from '@react-navigation/native';
 import {
   playBackgroundMusic,
   pauseBackgroundMusic,
+  cycleBackgroundTrack,
+  getBackgroundTrackMeta,
+  setBackgroundTrackIndex,
+  getIsBackgroundMusicLoaded,
 } from '../../ASTC/ASTCScreen';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -83,7 +87,9 @@ const SpartansScreen = () => {
   const cardSpacing = isDesktop ? 80 : 20;
   const vehicleWidth = SCREEN_WIDTH * (isDesktop ? 0.9 : 1);
 
+  // 🔊 music state + track label state
   const [isMusicPlaying, setIsMusicPlaying] = useState(true);
+  const [trackMeta, setTrackMeta] = useState(getBackgroundTrackMeta());
 
   // Lore panel
   const [infoOpen, setInfoOpen] = useState(false);
@@ -102,16 +108,34 @@ const SpartansScreen = () => {
   useEffect(() => {
     if (isFocused) {
       setBackgroundImage(backgroundImages[Math.floor(Math.random() * backgroundImages.length)]);
+      setTrackMeta(getBackgroundTrackMeta());
+
+      // If somehow the sound isn't loaded yet, keep UI consistent (Spartans expects ASTC started it)
+      // But we still avoid auto-starting random music here.
+      setIsMusicPlaying(true);
     }
   }, [isFocused]);
 
   const toggleMusic = async () => {
     if (isMusicPlaying) {
-      pauseBackgroundMusic();
+      await pauseBackgroundMusic();
       setIsMusicPlaying(false);
     } else {
-      playBackgroundMusic();
+      await playBackgroundMusic();
       setIsMusicPlaying(true);
+    }
+  };
+
+  const changeTrack = async (dir) => {
+    // If it's playing, hot-swap and keep playing.
+    // If paused, just swap selection (no auto-play).
+    const autoplay = isMusicPlaying;
+    await cycleBackgroundTrack(dir, { autoplay, hotSwap: true });
+    setTrackMeta(getBackgroundTrackMeta());
+
+    // If paused, ensure sound isn't randomly playing
+    if (!autoplay) {
+      await pauseBackgroundMusic();
     }
   };
 
@@ -164,8 +188,21 @@ const SpartansScreen = () => {
         <View style={{ flex: 1 }}>
           <ScrollView contentContainerStyle={styles.scrollContent}>
 
-            {/* 🔊 MUSIC BUTTON NOW ABOVE HEADER */}
+            {/* 🎵 MUSIC + TRACK BAR ABOVE HEADER */}
             <View style={styles.topMusicWrapper}>
+              <TouchableOpacity onPress={() => changeTrack(-1)} style={styles.trackButton} activeOpacity={0.85}>
+                <Text style={styles.trackButtonText}>⟵</Text>
+              </TouchableOpacity>
+
+              <View style={styles.trackInfoGlass}>
+                <Text style={styles.trackLabel}>Theme:</Text>
+                <Text style={styles.trackTitle} numberOfLines={1}>{trackMeta?.label || 'ASTC Theme'}</Text>
+              </View>
+
+              <TouchableOpacity onPress={() => changeTrack(1)} style={styles.trackButton} activeOpacity={0.85}>
+                <Text style={styles.trackButtonText}>⟶</Text>
+              </TouchableOpacity>
+
               <TouchableOpacity onPress={toggleMusic} style={styles.musicButton} activeOpacity={0.85}>
                 <Text style={styles.musicText}>{isMusicPlaying ? '⏸' : '▶️'}</Text>
               </TouchableOpacity>
@@ -288,13 +325,40 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: 'rgba(0,0,0,0.7)' },
   scrollContent: { flexGrow: 1, alignItems: 'center', paddingVertical: 20, paddingHorizontal: 6 },
 
-  /* MUSIC ABOVE HEADER */
+  /* MUSIC + TRACK BAR */
   topMusicWrapper: {
     width: '100%',
-    alignItems: 'flex-end',
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 10,
-    marginBottom: 4,
+    marginBottom: 6,
+    gap: 6,
   },
+
+  trackButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(0,240,255,0.9)',
+    backgroundColor: 'rgba(5,15,25,0.95)',
+  },
+  trackButtonText: { fontSize: 14, color: '#e8fcff', fontWeight: '900' },
+
+  trackInfoGlass: {
+    flex: 1,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 999,
+    backgroundColor: 'rgba(5,20,40,0.9)',
+    borderWidth: 1,
+    borderColor: 'rgba(0,240,255,0.9)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  trackLabel: { color: 'rgba(190,240,255,0.95)', fontSize: 10, marginRight: 8 },
+  trackTitle: { flex: 1, color: '#e6fbff', fontWeight: '900', fontSize: 12 },
 
   // HEADER
   headerWrapper: {
@@ -334,12 +398,11 @@ const styles = StyleSheet.create({
 
   musicButton: {
     paddingVertical: 6,
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
     borderRadius: 999,
     borderWidth: 1,
     borderColor: 'rgba(0,240,255,0.9)',
     backgroundColor: 'rgba(5,15,25,0.95)',
-    marginRight: 4,
   },
   musicText: { fontSize: 16, color: '#00e1ff', fontWeight: 'bold' },
 

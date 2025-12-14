@@ -1,5 +1,5 @@
 // screens/Constollation/ConstollationCharacterDetail.js
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -8,63 +8,86 @@ import {
   StyleSheet,
   Dimensions,
   Image,
-} from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { Video, Audio } from 'expo-av';
-import constollationImages from './ConstollationImages';
-import ConstollationDescription from './ConstollationDescription';
+  ImageBackground,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { Video, Audio } from "expo-av";
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const PLACEHOLDER = require('../../assets/Armor/PlaceHolder.jpg');
+import constollationImages from "./ConstollationImages";
+import descriptions from "./ConstollationDescription";
 
-// 🔹 Normalize anything into a valid Image source
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
+const PLACEHOLDER = require("../../assets/Armor/PlaceHolder.jpg");
+
+// 🔹 Normalize anything into a valid RN Image `source`
 const normalizeImageSource = (img) => {
   if (!img) return PLACEHOLDER;
 
-  // Already a local require
-  if (typeof img === 'number') return img;
+  if (typeof img === "number") return img;
 
-  // Object with uri or nested source
-  if (typeof img === 'object') {
-    // Sometimes people store { source: require(...) }
+  if (typeof img === "object" && img !== null) {
     if (img.source) return normalizeImageSource(img.source);
 
     if (img.uri != null) {
-      // local require accidentally put into uri
-      if (typeof img.uri === 'number') return img.uri;
-      if (typeof img.uri === 'string') return { uri: img.uri };
+      if (typeof img.uri === "number") return img.uri;
+      if (typeof img.uri === "string") return { uri: img.uri };
     }
   }
 
-  // Plain string → remote URL
-  if (typeof img === 'string') {
-    return { uri: img };
-  }
+  if (typeof img === "string") return { uri: img };
 
   return PLACEHOLDER;
 };
 
-const ConstollationCharacterDetail = () => {
+// ✅ Supports string OR { about, accent, words }
+const getMeta = (member) => {
+  const keyA = member?.name;
+  const keyB = member?.codename;
+
+  const raw =
+    (keyA && descriptions[keyA]) ||
+    (keyB && descriptions[keyB]) ||
+    descriptions.default;
+
+  // Old style: string
+  if (typeof raw === "string") {
+    return {
+      about: raw.trim(),
+      words: "Guide • Teach • Inspire",
+      accent: "#00b3ff",
+    };
+  }
+
+  // New style: object
+  return {
+    about:
+      (raw?.about ||
+        member?.description ||
+        descriptions?.default?.about ||
+        "No description available.").toString().trim(),
+    words: raw?.words || descriptions?.default?.words || "Guide • Teach • Inspire",
+    accent: raw?.accent || descriptions?.default?.accent || "#00b3ff",
+  };
+};
+
+export default function ConstollationCharacterDetail() {
   const navigation = useNavigation();
   const route = useRoute();
   const { member } = route.params || {};
 
+  const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
+  const isDesktop = windowWidth >= 768;
+
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef(null);
   const audioRef = useRef(null);
-  const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
-
-  const isDesktop = windowWidth >= 768;
-  const cardWidth = isDesktop ? windowWidth * 0.32 : SCREEN_WIDTH * 0.88;
 
   useEffect(() => {
-    const updateDimensions = () =>
-      setWindowWidth(Dimensions.get('window').width);
-    const subscription = Dimensions.addEventListener(
-      'change',
-      updateDimensions
-    );
-    return () => subscription?.remove();
+    const sub = Dimensions.addEventListener("change", () => {
+      setWindowWidth(Dimensions.get("window").width);
+    });
+    return () => sub?.remove();
   }, []);
 
   useEffect(() => {
@@ -82,24 +105,63 @@ const ConstollationCharacterDetail = () => {
     };
   }, []);
 
+  const togglePlayPause = async () => {
+    if (member?.mediaType === "video" && videoRef.current) {
+      try {
+        if (isPlaying) await videoRef.current.pauseAsync();
+        else await videoRef.current.playAsync();
+        setIsPlaying(!isPlaying);
+      } catch (e) {
+        console.error("Video toggle error:", e?.message || e);
+      }
+      return;
+    }
+
+    if (member?.mediaType === "audio" && audioRef.current) {
+      try {
+        const status = await audioRef.current.getStatusAsync();
+        if (!status.isLoaded) return;
+
+        if (isPlaying) await audioRef.current.pauseAsync();
+        else await audioRef.current.playAsync();
+
+        setIsPlaying(!isPlaying);
+      } catch (e) {
+        console.error("Audio toggle error:", e?.message || e);
+      }
+    }
+  };
+
+  if (!member) {
+    return (
+      <View style={[styles.root, styles.center]}>
+        <Text style={styles.errorText}>No legend found.</Text>
+      </View>
+    );
+  }
+
+  const title = member.codename || member.name || "Constollation Star";
+  const { about, words, accent } = getMeta(member);
+
   // ✅ Correct copyright text
   const copyrightText = member?.codename
     ? `© ${member.codename}; William Cummings`
-    : '© William Cummings';
+    : "© William Cummings";
 
-  // ✅ Build IMAGES ARRAY with normalized sources & copyright name
+  // ✅ Preserve your image precedence:
+  // member.images → constollationImages[member.name].images → member.image → placeholder
   let images;
   if (member?.images?.length > 0) {
     images = member.images.map((img) => ({
-      source: normalizeImageSource(img.uri ?? img),
+      source: normalizeImageSource(img?.uri ?? img),
       name: copyrightText,
-      clickable: img.clickable ?? true,
+      clickable: img?.clickable ?? true,
     }));
-  } else if (constollationImages[member?.name]?.images?.length > 0) {
+  } else if (constollationImages?.[member?.name]?.images?.length > 0) {
     images = constollationImages[member.name].images.map((img) => ({
-      source: normalizeImageSource(img.uri ?? img),
+      source: normalizeImageSource(img?.uri ?? img),
       name: copyrightText,
-      clickable: img.clickable ?? true,
+      clickable: img?.clickable ?? true,
     }));
   } else {
     images = [
@@ -111,236 +173,358 @@ const ConstollationCharacterDetail = () => {
     ];
   }
 
-  const memberDescription =
-    member?.description ||
-    ConstollationDescription[member?.name] ||
-    'A guiding star in the Constollation. Their light shapes the future of those they teach, mentor, and inspire. Eternal gratitude to all who illuminate the path.';
-
-  const renderImageCard = (img, index) => (
-    <TouchableOpacity
-      key={index}
+  const renderArmorCard = (img, index) => (
+    <View
+      key={`${title}-${index}`}
       style={[
         styles.card(isDesktop, windowWidth),
-        img.clickable !== false && styles.clickable,
+        { borderColor: accent, shadowColor: accent },
       ]}
-      onPress={() => console.log(`${copyrightText} clicked`)}
-      activeOpacity={0.9}
     >
       <Image
         source={normalizeImageSource(img.source)}
         style={styles.armorImage}
         resizeMode="cover"
       />
-      <View style={styles.transparentOverlay} />
-      {img.name && <Text style={styles.cardName}>{img.name}</Text>}
-    </TouchableOpacity>
+      <View style={styles.cardOverlay} />
+      {img?.name ? <Text style={styles.cardName}>{img.name}</Text> : null}
+    </View>
   );
 
   const renderMediaPlayer = () => {
     if (!member?.mediaUri) return null;
 
+    const mediaBox = {
+      width: "100%",
+      height: member.mediaType === "video" ? 220 : 56,
+      borderRadius: 14,
+      backgroundColor: "rgba(4,10,22,0.9)",
+      borderWidth: 1,
+      borderColor: `${accent}66`,
+      justifyContent: "center",
+      alignItems: "center",
+      overflow: "hidden",
+    };
+
     return (
-      <View style={styles.mediaContainer}>
-        {member.mediaType === 'video' ? (
+      <View style={[styles.mediaWrap, { borderColor: `${accent}66`, shadowColor: accent }]}>
+        <Text style={[styles.sectionTitle, { textShadowColor: accent }]}>Media</Text>
+        <View style={[styles.sectionDivider, { backgroundColor: accent }]} />
+
+        {member.mediaType === "video" ? (
           <Video
             ref={videoRef}
             source={{ uri: member.mediaUri }}
-            style={{ width: '100%', height: 220, borderRadius: 12 }}
-            resizeMode="contain"
+            style={mediaBox}
+            resizeMode="cover"
             isLooping
-            useNativeControls
+            shouldPlay={isPlaying}
+            onPlaybackStatusUpdate={(status) => setIsPlaying(!!status.isPlaying)}
           />
         ) : (
-          <View
-            style={{
-              width: '100%',
-              height: 60,
-              backgroundColor: '#111',
-              borderRadius: 12,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderWidth: 1,
-              borderColor: '#00b3ff',
-            }}
-          >
-            <Text style={styles.mediaText}>Audio Message</Text>
+          <View style={mediaBox}>
+            <Text style={styles.mediaText}>
+              {member.mediaType === "audio" ? "Audio" : "File"}:{" "}
+              {String(member.mediaUri).split("/").pop()}
+            </Text>
           </View>
+        )}
+
+        {(member.mediaType === "video" || member.mediaType === "audio") && (
+          <TouchableOpacity
+            style={[styles.playButton, { backgroundColor: accent }]}
+            onPress={togglePlayPause}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.playButtonText}>{isPlaying ? "Pause" : "Play"}</Text>
+          </TouchableOpacity>
         )}
       </View>
     );
   };
 
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {/* Header */}
-        <View style={styles.headerContainer}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.backButtonText}>Back</Text>
-          </TouchableOpacity>
-          <Text style={styles.title}>
-            {member?.codename || member?.name || 'Constollation Star'}
-          </Text>
-        </View>
+    <ImageBackground
+      source={require("../../assets/BackGround/Legionaires2.jpg")}
+      style={styles.background}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={styles.root} edges={["bottom", "left", "right"]}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          {/* ✅ HEADER — glassy like Cole/Joseph */}
+          <View style={styles.headerOuter}>
+            <View style={styles.headerRow}>
+              <TouchableOpacity
+                style={[styles.backButton, { borderColor: accent }]}
+                onPress={async () => {
+                  try {
+                    if (audioRef.current) {
+                      await audioRef.current.pauseAsync();
+                      await audioRef.current.unloadAsync();
+                      audioRef.current = null;
+                    }
+                    if (videoRef.current) await videoRef.current.pauseAsync();
+                  } catch {}
+                  setIsPlaying(false);
+                  navigation.goBack();
+                }}
+                activeOpacity={0.85}
+              >
+                <Text style={styles.backButtonText}>←</Text>
+              </TouchableOpacity>
 
-        {/* Horizontal Image Gallery */}
-        <View style={styles.imageContainer}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.imageScrollContainer}
-            snapToInterval={cardWidth + 20}
-            decelerationRate="fast"
-          >
-            {images.map(renderImageCard)}
-          </ScrollView>
-        </View>
+              <View style={[styles.headerGlass, { borderColor: accent, shadowColor: accent }]}>
+                <Text style={[styles.title, { textShadowColor: accent }]}>{title}</Text>
+                <Text style={[styles.subtitle, { color: accent }]}>{words}</Text>
+              </View>
+            </View>
+          </View>
 
-        {/* About Section */}
-        <View style={styles.aboutSection}>
-          <Text style={styles.aboutHeader}>
-            {member?.codename || 'Eternal Light'}
-          </Text>
-          <Text style={styles.aboutSubheader}>
-            {member?.name || 'A Soul of the Constollation'}
-          </Text>
-          {member?.category && (
-            <Text style={styles.aboutCategory}>{member.category}</Text>
-          )}
-          <Text style={styles.aboutText}>{memberDescription}</Text>
-        </View>
+          {/* ✅ ARMORY */}
+          <View style={[styles.section, { borderColor: `${accent}66`, shadowColor: accent }]}>
+            <Text style={[styles.sectionTitle, { textShadowColor: accent }]}>{title} Archive</Text>
+            <View style={[styles.sectionDivider, { backgroundColor: accent }]} />
 
-        {/* Optional Media */}
-        {renderMediaPlayer()}
-      </ScrollView>
-    </View>
+            <ScrollView
+              horizontal
+              contentContainerStyle={styles.imageScrollContainer}
+              showsHorizontalScrollIndicator={false}
+            >
+              {images.map(renderArmorCard)}
+            </ScrollView>
+          </View>
+
+          {/* ✅ ABOUT ME */}
+          <View style={[styles.aboutSection, { borderColor: accent, shadowColor: accent }]}>
+            <Text style={[styles.aboutHeader, { textShadowColor: accent }]}>About</Text>
+
+            <Text style={[styles.aboutCodename, { textShadowColor: accent }]}>
+              {member.codename || "Eternal Light"}
+            </Text>
+
+            <Text style={styles.aboutName}>{member.name || "A Soul of the Constollation"}</Text>
+
+            {member?.category ? (
+              <Text style={[styles.aboutCategory, { color: accent }]}>{member.category}</Text>
+            ) : null}
+
+            <View style={[styles.aboutDivider, { backgroundColor: accent, shadowColor: accent }]} />
+
+            <Text style={styles.aboutText}>{about}</Text>
+          </View>
+
+          {/* ✅ MEDIA */}
+          {renderMediaPlayer()}
+        </ScrollView>
+      </SafeAreaView>
+    </ImageBackground>
   );
-};
+}
 
-// Styles
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0a0a0a' },
-  scrollContainer: { paddingBottom: 60 },
+  background: { width: "100%", height: "100%" },
+  root: { flex: 1, backgroundColor: "rgba(0,0,0,0.25)" },
+  center: { justifyContent: "center", alignItems: "center" },
+  errorText: { color: "white", fontSize: 18, fontWeight: "700" },
 
-  headerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    backgroundColor: '#0a0a0a',
-    borderBottomWidth: 2,
-    borderBottomColor: '#00b3ff',
-  },
+  scrollContainer: { paddingBottom: 30 },
+
+  // HEADER
+  headerOuter: { paddingHorizontal: 16, paddingTop: 16 },
+  headerRow: { flexDirection: "row", alignItems: "center" },
+
   backButton: {
-    padding: 12,
-    backgroundColor: 'rgba(0,179,255,0.2)',
-    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    backgroundColor: "rgba(10,18,36,0.95)",
     borderWidth: 1,
-    borderColor: '#00b3ff',
+    marginRight: 10,
   },
-  backButtonText: { fontSize: 24, color: '#00b3ff', fontWeight: 'bold' },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#00b3ff',
-    textAlign: 'center',
+  backButtonText: { fontSize: 22, color: "#e5f3ff" },
+
+  headerGlass: {
     flex: 1,
-    textShadowColor: '#00b3ff',
-    textShadowRadius: 10,
-  },
-
-  imageContainer: {
-    width: '100%',
-    paddingVertical: 20,
-    backgroundColor: '#111',
-    paddingLeft: 15,
-  },
-  imageScrollContainer: { paddingHorizontal: 10, alignItems: 'center' },
-
-  card: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.32 : SCREEN_WIDTH * 0.88,
-    height: isDesktop ? SCREEN_HEIGHT * 0.78 : SCREEN_HEIGHT * 0.68,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
     borderRadius: 20,
-    overflow: 'hidden',
-    elevation: 12,
-    backgroundColor: 'rgba(0,0,0,0.8)',
-    marginRight: 20,
-    borderWidth: 2,
-    borderColor: '#00b3ff',
-    shadowColor: '#00b3ff',
-    shadowOpacity: 0.9,
-    shadowRadius: 15,
-  }),
-  clickable: { borderWidth: 3, borderColor: '#00ffff' },
-
-  armorImage: { width: '100%', height: '100%', resizeMode: 'cover' },
-  transparentOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    zIndex: 1,
-  },
-  cardName: {
-    position: 'absolute',
-    bottom: 16,
-    left: 16,
-    fontSize: 18,
-    color: '#00ffff',
-    fontWeight: 'bold',
-    textShadowColor: '#000',
-    textShadowRadius: 8,
-  },
-
-  aboutSection: {
-    marginTop: 30,
-    padding: 25,
-    backgroundColor: '#111',
-    borderRadius: 20,
-    width: '90%',
-    alignSelf: 'center',
+    backgroundColor: "rgba(8,16,40,0.95)",
     borderWidth: 1,
-    borderColor: '#00b3ff',
+    shadowOpacity: 0.45,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 10,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: "900",
+    color: "#e5f3ff",
+    textAlign: "center",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+    letterSpacing: 1,
+  },
+  subtitle: {
+    marginTop: 4,
+    fontSize: 12,
+    textAlign: "center",
+    letterSpacing: 1,
+    textTransform: "uppercase",
+    fontWeight: "600",
+  },
+
+  // SECTION
+  section: {
+    marginTop: 24,
+    marginHorizontal: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    backgroundColor: "rgba(6,12,26,0.96)",
+    borderWidth: 1,
+    shadowOpacity: 0.25,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 10,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#e5f3ff",
+    textAlign: "center",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+    letterSpacing: 0.8,
+  },
+  sectionDivider: {
+    marginTop: 6,
+    marginBottom: 10,
+    alignSelf: "center",
+    width: "40%",
+    height: 2,
+    borderRadius: 999,
+  },
+
+  imageScrollContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 8,
+    paddingTop: 4,
+    alignItems: "center",
+  },
+
+  // CARD
+  card: (isDesktop, w) => ({
+    width: isDesktop ? w * 0.28 : SCREEN_WIDTH * 0.8,
+    height: isDesktop ? SCREEN_HEIGHT * 0.7 : SCREEN_HEIGHT * 0.65,
+    borderRadius: 22,
+    overflow: "hidden",
+    marginRight: 18,
+    backgroundColor: "rgba(4,10,22,0.96)",
+    borderWidth: 1,
+    shadowOpacity: 0.75,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 12,
+  }),
+  armorImage: { width: "100%", height: "100%" },
+  cardOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.25)" },
+  cardName: {
+    position: "absolute",
+    bottom: 10,
+    left: 12,
+    right: 12,
+    fontSize: 12,
+    color: "#e5f3ff",
+    fontWeight: "600",
+    textShadowColor: "#000",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+  },
+
+  // ABOUT
+  aboutSection: {
+    marginTop: 28,
+    marginHorizontal: 12,
+    marginBottom: 18,
+    paddingVertical: 18,
+    paddingHorizontal: 14,
+    borderRadius: 22,
+    backgroundColor: "rgba(6,12,26,0.97)",
+    borderWidth: 1,
+    shadowOpacity: 0.25,
+    shadowRadius: 22,
+    shadowOffset: { width: 0, height: 12 },
+    elevation: 12,
   },
   aboutHeader: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    color: '#00b3ff',
-    textAlign: 'center',
-    textShadowColor: '#00b3ff',
-    textShadowRadius: 8,
-  },
-  aboutSubheader: {
     fontSize: 20,
-    color: '#aaa',
-    textAlign: 'center',
-    marginTop: 8,
-    fontStyle: 'italic',
+    fontWeight: "800",
+    color: "#e5f3ff",
+    textAlign: "center",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+    letterSpacing: 0.8,
+    marginBottom: 10,
+  },
+  aboutCodename: {
+    fontSize: 22,
+    color: "#e5f3ff",
+    textAlign: "center",
+    fontWeight: "900",
+    textShadowRadius: 10,
+  },
+  aboutName: {
+    fontSize: 16,
+    color: "#ffffff",
+    textAlign: "center",
+    marginTop: 6,
+    fontStyle: "italic",
+    opacity: 0.95,
   },
   aboutCategory: {
-    fontSize: 16,
-    color: '#00ffff',
-    textAlign: 'center',
-    marginTop: 12,
-    fontWeight: '600',
+    marginTop: 10,
+    textAlign: "center",
+    fontWeight: "800",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
+    fontSize: 12,
+  },
+  aboutDivider: {
+    height: 2,
+    marginVertical: 14,
+    borderRadius: 999,
+    shadowOpacity: 1,
+    shadowRadius: 10,
   },
   aboutText: {
-    fontSize: 16,
-    color: '#ccc',
-    textAlign: 'center',
-    marginTop: 16,
-    lineHeight: 24,
+    fontSize: 14,
+    color: "#dde8ff",
+    lineHeight: 20,
+    textAlign: "left",
   },
 
-  mediaContainer: {
-    marginTop: 40,
-    marginBottom: 20,
-    width: '90%',
-    alignSelf: 'center',
-    alignItems: 'center',
+  // MEDIA
+  mediaWrap: {
+    marginTop: 18,
+    marginHorizontal: 12,
+    marginBottom: 32,
+    paddingVertical: 14,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    backgroundColor: "rgba(6,12,26,0.96)",
+    borderWidth: 1,
+    shadowOpacity: 0.25,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 10,
+    alignItems: "center",
   },
-  mediaText: { color: '#00b3ff', fontSize: 16, fontWeight: 'bold' },
+  mediaText: { color: "#e5f3ff", fontSize: 12, opacity: 0.9 },
+  playButton: {
+    marginTop: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 18,
+    borderRadius: 999,
+  },
+  playButtonText: { color: "#06101a", fontWeight: "900", letterSpacing: 0.6 },
 });
-
-export default ConstollationCharacterDetail;

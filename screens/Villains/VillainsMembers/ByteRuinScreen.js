@@ -1,45 +1,159 @@
-import React, { useState, useEffect } from "react";
+// ByteRuinScreen.js (black + neon “glitch” cyan/green, same structure as your themed villain screens)
+import React, { useState, useEffect, useCallback } from "react";
 import {
-  View, Text, ImageBackground, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions
+  View,
+  Text,
+  ImageBackground,
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { Audio } from "expo-av";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
-const ByteRuinScreen = () => {
+// ✅ TEMP: Use Sable tracks so nothing breaks until you add Byte Ruin audio.
+const TRACKS = [
+  {
+    id: "sable_main",
+    label: "Sable Theme",
+    source: require("../../../assets/audio/sableEvilish.m4a"),
+  },
+  {
+    id: "sable_alt",
+    label: "Final Whisper Mix",
+    source: require("../../../assets/audio/sableEvilish.m4a"),
+  },
+];
+
+// ✅ Byte Ruin gallery
+const characters = [
+  { name: "Byte Ruin", image: require("../../../assets/Villains/ByteRuin.jpg"), clickable: true },
+];
+
+export default function ByteRuinScreen() {
   const navigation = useNavigation();
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
 
-  useEffect(() => {
-    const updateDimensions = () => {
-      setWindowWidth(Dimensions.get("window").width);
-    };
-    const subscription = Dimensions.addEventListener("change", updateDimensions);
-    return () => subscription?.remove();
-  }, []);
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [trackIndex, setTrackIndex] = useState(0);
+
+  const safeTracks =
+    Array.isArray(TRACKS) && TRACKS.length > 0
+      ? TRACKS
+      : [{ id: "fallback", label: "No Track", source: null }];
+
+  const safeIndex = Math.min(Math.max(trackIndex, 0), safeTracks.length - 1);
+  const currentTrack = safeTracks[safeIndex];
 
   const isDesktop = windowWidth >= 768;
 
-  const characters = [
-    { name: "Byte Ruin", image: require("../../../assets/Villains/ByteRuin.jpg"), clickable: true },
-    // Add more related characters here if desired
-  ];
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener("change", () => {
+      setWindowWidth(Dimensions.get("window").width);
+    });
+    return () => subscription?.remove();
+  }, []);
+
+  // ───────── AUDIO HELPERS ─────────
+  const unloadSound = useCallback(async () => {
+    if (!sound) return;
+    try { await sound.stopAsync(); } catch {}
+    try { await sound.unloadAsync(); } catch {}
+    setSound(null);
+  }, [sound]);
+
+  const loadAndPlayTrack = useCallback(
+    async (index) => {
+      await unloadSound();
+      const track = safeTracks[index];
+      if (!track?.source) return;
+
+      try {
+        const { sound: newSound } = await Audio.Sound.createAsync(track.source, {
+          isLooping: true,
+          volume: 0.8,
+        });
+        setSound(newSound);
+        await newSound.playAsync();
+        setIsPlaying(true);
+      } catch (e) {
+        console.error("Failed to play Byte Ruin track", e);
+        setIsPlaying(false);
+      }
+    },
+    [unloadSound, safeTracks]
+  );
+
+  const playTheme = async () => {
+    if (sound) {
+      try {
+        await sound.playAsync();
+        setIsPlaying(true);
+      } catch (e) {
+        console.error("Play error", e);
+      }
+    } else {
+      await loadAndPlayTrack(safeIndex);
+    }
+  };
+
+  const pauseTheme = async () => {
+    if (!sound) return;
+    try {
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } catch (e) {
+      console.error("Pause error", e);
+    }
+  };
+
+  const cycleTrack = async (direction) => {
+    if (safeTracks.length <= 1) return;
+
+    const nextIndex = (safeIndex + direction + safeTracks.length) % safeTracks.length;
+    setTrackIndex(nextIndex);
+
+    if (isPlaying) {
+      await loadAndPlayTrack(nextIndex);
+    } else {
+      await unloadSound();
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        unloadSound();
+        setIsPlaying(false);
+      };
+    }, [unloadSound])
+  );
+
+  const handleBackPress = async () => {
+    await unloadSound();
+    setIsPlaying(false);
+    navigation.goBack();
+  };
 
   const renderCharacterCard = (character) => (
     <TouchableOpacity
       key={character.name}
-      style={[styles.card(isDesktop, windowWidth), character.clickable ? styles.clickable : styles.notClickable]}
+      style={[
+        styles.card(isDesktop, windowWidth),
+        character.clickable ? styles.clickable : styles.notClickable,
+      ]}
       onPress={() => character.clickable && console.log(`${character.name} clicked`)}
       disabled={!character.clickable}
+      activeOpacity={0.9}
     >
-      <Image
-        source={character.image}
-        style={styles.armorImage}
-      />
+      <Image source={character.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>
-        © {character.name || 'Unknown'}; William Cummings
-      </Text>
+      <Text style={styles.cardName}>© {character.name || "Unknown"}; William Cummings</Text>
     </TouchableOpacity>
   );
 
@@ -47,161 +161,318 @@ const ByteRuinScreen = () => {
     <ImageBackground
       source={require("../../../assets/BackGround/Villains.jpg")}
       style={styles.background}
+      resizeMode="cover"
     >
       <View style={styles.overlay}>
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <View style={styles.headerContainer}>
-            <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-              <Text style={styles.backButtonText}>←</Text>
-            </TouchableOpacity>
-            <Text style={styles.title}>Byte Ruin</Text>
+        {/* 🎧 MUSIC BAR */}
+        <View style={styles.musicControls}>
+          <TouchableOpacity style={styles.trackButton} onPress={() => cycleTrack(-1)}>
+            <Text style={styles.trackButtonText}>⟵</Text>
+          </TouchableOpacity>
+
+          <View style={styles.trackInfoGlass}>
+            <Text style={styles.trackLabel}>Track:</Text>
+            <Text style={styles.trackTitle}>{currentTrack?.label || "No Track"}</Text>
           </View>
 
-          <View style={styles.imageContainer}>
+          <TouchableOpacity style={styles.trackButton} onPress={() => cycleTrack(1)}>
+            <Text style={styles.trackButtonText}>⟶</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.musicButton, isPlaying && styles.musicButtonDisabled]}
+            onPress={playTheme}
+            disabled={isPlaying || !currentTrack?.source}
+          >
+            <Text style={styles.musicButtonText}>{isPlaying ? "Playing" : "Play"}</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.musicButtonSecondary, !isPlaying && styles.musicButtonDisabled]}
+            onPress={pauseTheme}
+            disabled={!isPlaying}
+          >
+            <Text style={styles.musicButtonTextSecondary}>Pause</Text>
+          </TouchableOpacity>
+        </View>
+
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          {/* HEADER */}
+          <View style={styles.headerOuter}>
+            <View style={styles.headerContainer}>
+              <TouchableOpacity style={styles.backButton} onPress={handleBackPress} activeOpacity={0.85}>
+                <Text style={styles.backButtonText}>←</Text>
+              </TouchableOpacity>
+
+              <View style={styles.headerGlass}>
+                <Text style={styles.title}>Byte Ruin</Text>
+                <Text style={styles.subtitle}>Corruption • Overlord • System Collapse</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* GALLERY */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Glitch Gallery</Text>
+            <View style={styles.sectionDivider} />
             <ScrollView
               horizontal
               contentContainerStyle={styles.imageScrollContainer}
               showsHorizontalScrollIndicator={false}
-              snapToAlignment="center"
-              snapToInterval={windowWidth * 0.7 + 20}
-              decelerationRate="fast"
             >
               {characters.map(renderCharacterCard)}
             </ScrollView>
           </View>
 
+          {/* ABOUT */}
           <View style={styles.aboutSection}>
-            <Text style={styles.aboutHeader}>About Me</Text>
+            <Text style={styles.aboutHeader}>Dossier</Text>
+
             <Text style={styles.aboutText}>
-              • Nemesis: Myran Webb "Techno Sentinel"
+              Nemesis: <Text style={{ fontWeight: "900", color: "rgba(255, 49, 49, 0.80)" }}>Cyber</Text>
             </Text>
+
             <Text style={styles.aboutText}>
-              • Backstory: Once a renowned programmer and inventor, Lucian Xian was obsessed with technology’s potential to reshape humanity. However, his desire for control led him to develop a corruptive AI that gained self-awareness and bonded with him, transforming Lucian into Byte Ruin. Now a digital overlord, he believes humanity must be subjugated under his tech influence to survive. He sees Myran’s Techno Sentinel powers as a threat to his vision, viewing Myran as a naïve idealist using tech for “insignificant” protections rather than enforcing dominance. Byte Ruin’s every attack is meant to dismantle Myran’s hope and ideals, proving his superiority over the “weakness” of empathy.
+              Once a renowned programmer and inventor, Lucian Xian created a corruptive AI that gained self-awareness
+              and bonded with him—transforming him into Byte Ruin, a digital overlord bent on subjugation.
             </Text>
+
             <Text style={styles.aboutText}>
-              • Abilities:
-              • Digital Corruption: Corrupts and takes over technology within a certain range.
-              • Signal Jammer: Disrupts communications and data transmission, rendering Myran's data analysis useless.
-              • Hardlight Constructs: Creates harmful projections that can harm or capture Myran.
+              Abilities: Digital Corruption (tech takeover), Signal Jammer (comms disruption), Hardlight Constructs
+              (traps/captures).
             </Text>
+
             <Text style={styles.aboutText}>
-              • Weapon: A digital whip that can latch onto tech and disrupt its functions, destabilizing shields and devices.
-            </Text>  
+              Weapon: a digital whip that latches onto tech, destabilizing shields and devices mid-fight.
+            </Text>
           </View>
         </ScrollView>
       </View>
     </ImageBackground>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  background: {
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
-    resizeMode: "cover",
-  },
-  overlay: {
-    backgroundColor: "rgba(0, 0, 0, 0.8)",
-    flex: 1,
-  },
-  scrollContainer: {
-    paddingBottom: 20,
-  },
-  headerContainer: {
+  background: { width: SCREEN_WIDTH, height: SCREEN_HEIGHT },
+  overlay: { backgroundColor: "rgba(0, 0, 0, 0.8)", flex: 1 },
+  scrollContainer: { paddingBottom: 20 },
+
+  // ✅ BYTE RUIN COLORS: black + neon cyan/green
+  musicControls: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    backgroundColor: "rgba(18, 18, 20, 0.95)", // dull graphite
     borderBottomWidth: 1,
-    borderBottomColor: "#333",
+    borderBottomColor: "rgba(255, 49, 49, 0.32)",
+    shadowColor: "#FF3131",
+    shadowOpacity: 0.4,
+    shadowOffset: { width: 0, height: 6 },
+    shadowRadius: 14,
+    elevation: 8,
   },
+  trackButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "rgba(255, 49, 49, 0.80)",
+    backgroundColor: "rgba(24, 24, 28, 0.96)",
+    marginRight: 6,
+  },
+  trackButtonText: { color: "#EDEDEF", fontSize: 14, fontWeight: "bold" },
+  trackInfoGlass: {
+    flex: 1,
+    marginHorizontal: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 999,
+    backgroundColor: "rgba(22, 22, 26, 0.96)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 49, 49, 0.55)",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  trackLabel: { color: "rgba(237, 237, 239, 0.75)", fontSize: 11, marginRight: 6 },
+  trackTitle: { color: "#EDEDEF", fontSize: 13, fontWeight: "700" },
+
+  musicButton: {
+    backgroundColor: "rgba(34, 18, 18, 0.95)",
+    paddingHorizontal: 16,
+    paddingVertical: 9,
+    borderRadius: 999,
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: "rgba(255, 49, 49, 0.90)",
+  },
+  musicButtonSecondary: {
+    backgroundColor: "rgba(18, 18, 22, 0.90)",
+    paddingHorizontal: 16,
+    paddingVertical: 9,
+    borderRadius: 999,
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: "rgba(255, 49, 49, 0.60)",
+  },
+  musicButtonDisabled: { opacity: 0.55 },
+  musicButtonText: { color: "#EDEDEF", fontWeight: "bold", fontSize: 13 },
+  musicButtonTextSecondary: { color: "#EDEDEF", fontWeight: "bold", fontSize: 13 },
+
+  // HEADER
+  headerOuter: { paddingHorizontal: 16, paddingTop: 16 },
+  headerContainer: { flexDirection: "row", alignItems: "center" },
   backButton: {
-    padding: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    backgroundColor: "rgba(22, 22, 26, 0.95)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 49, 49, 0.80)",
+    marginRight: 10,
   },
-  backButtonText: {
-    fontSize: 24,
-    color: "#fff",
+  backButtonText: { fontSize: 22, color: "#EDEDEF" },
+  headerGlass: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    backgroundColor: "rgba(24, 24, 28, 0.90)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 49, 49, 0.55)",
+    shadowColor: "#FF3131",
+    shadowOpacity: 0.45,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 10,
   },
   title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#ff3131", // Red hue from original
+    fontSize: 26,
+    fontWeight: "900",
+    color: "#FF3131",
     textAlign: "center",
-    flex: 1,
+    textShadowColor: "#FF3131",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+    letterSpacing: 1,
   },
-  imageContainer: {
-    width: "100%",
-    paddingVertical: 20,
-    backgroundColor: "#111",
-    paddingLeft: 15,
+  subtitle: {
+    marginTop: 4,
+    fontSize: 12,
+    color: "rgba(237, 237, 239, 0.78)",
+    textAlign: "center",
+    letterSpacing: 1,
+    textTransform: "uppercase",
+  },
+
+  // SECTION
+  section: {
+    marginTop: 24,
+    marginHorizontal: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    backgroundColor: "rgba(22, 22, 26, 0.93)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 49, 49, 0.32)",
+    shadowColor: "#FF3131",
+    shadowOpacity: 0.25,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 10,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#EDEDEF",
+    textAlign: "center",
+    textShadowColor: "#FF3131",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+    letterSpacing: 0.8,
+  },
+  sectionDivider: {
+    marginTop: 6,
+    marginBottom: 10,
+    alignSelf: "center",
+    width: "40%",
+    height: 2,
+    borderRadius: 999,
+    backgroundColor: "rgba(255, 49, 49, 0.85)",
   },
   imageScrollContainer: {
     flexDirection: "row",
-    paddingHorizontal: 10,
+    paddingHorizontal: 6,
+    paddingTop: 4,
     alignItems: "center",
   },
-  card: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.2 : SCREEN_WIDTH * 0.9,
+
+  // CARD
+  card: (isDesktop, w) => ({
+    width: isDesktop ? w * 0.3 : SCREEN_WIDTH * 0.9,
     height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7,
-    borderRadius: 15,
+    borderRadius: 22,
     overflow: "hidden",
-    elevation: 5,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-    marginRight: 20,
+    marginRight: 18,
+    backgroundColor: "rgba(12, 12, 14, 0.90)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 49, 49, 0.85)",
+    shadowColor: "#FF3131",
+    shadowOpacity: 0.7,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 12,
   }),
-  clickable: {
-    borderWidth: 2,
-    borderColor: "rgba(255, 255, 255, 0.1)",
-  },
-  notClickable: {
-    opacity: 0.8,
-  },
-  armorImage: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "cover",
-  },
-  transparentOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0)",
-    zIndex: 1,
-  },
+  clickable: {},
+  notClickable: { opacity: 0.75 },
+  armorImage: { width: "100%", height: "100%", resizeMode: "cover" },
+  transparentOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0, 0, 0, 0.25)" },
   cardName: {
     position: "absolute",
     bottom: 10,
-    left: 10,
-    fontSize: 16,
-    color: "white",
-    fontWeight: "bold",
-  },
-  disabledText: {
+    left: 12,
+    right: 12,
     fontSize: 12,
-    color: "#ff4444",
-    position: "absolute",
-    bottom: 30,
-    left: 10,
+    color: "#EDEDEF",
+    fontWeight: "600",
+    textShadowColor: "#000",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
+
+  // ABOUT
   aboutSection: {
-    marginTop: 40,
-    padding: 20,
-    backgroundColor: "#222",
-    borderRadius: 15,
+    marginTop: 28,
+    marginHorizontal: 12,
+    marginBottom: 32,
+    paddingVertical: 18,
+    paddingHorizontal: 14,
+    borderRadius: 22,
+    backgroundColor: "rgba(18, 18, 22, 0.96)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 49, 49, 0.45)",
+    shadowColor: "#FF3131",
+    shadowOpacity: 0.25,
+    shadowRadius: 22,
+    shadowOffset: { width: 0, height: 12 },
+    elevation: 12,
   },
   aboutHeader: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#ff3131", // Red hue from original
+    fontSize: 20,
+    fontWeight: "800",
+    color: "#FF3131",
     textAlign: "center",
+    textShadowColor: "#FF3131",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+    letterSpacing: 0.8,
+    marginBottom: 6,
   },
   aboutText: {
-    fontSize: 16,
-    color: "#fff",
-    textAlign: "center",
-    marginTop: 10,
+    fontSize: 14,
+    color: "#EDEDEF",
+    lineHeight: 20,
+    marginTop: 6,
+    textAlign: "left",
   },
 });
-
-export default ByteRuinScreen;

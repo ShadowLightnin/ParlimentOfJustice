@@ -40,28 +40,109 @@ const buttonImages = [
   require('../../assets/Halo/31.jpg'),
 ];
 
+// 🎵 Multiple ASTC/Spartan themes (default = index 0)
+// ✅ IMPORTANT: keep index 0 as your current/default theme.
+export const TRACKS = [
+  { id: 'astc_default', label: 'Halo Theme', source: require('../../assets/audio/Halo2.wav') },
+  // Add more as you like:
+  { id: 'astc_variant_1', label: 'Revival', source: require('../../assets/audio/Revival.mp4') },
+  // { id: 'astc_variant_2', label: 'ASTC – Variant 2', source: require('../../assets/audio/YourOtherFile.wav') },
+];
+
 // 🔊 global sound instance for ASTC + Spartans
 let backgroundSound = null;
+// ✅ global selected track index (persists across ASTC + Spartans)
+let backgroundTrackIndex = 0;
+let loadedTrackId = null;
 
-// 🔊 start / resume music (Spartans can import this)
+// 🔧 internal: unload current sound
+const unloadBackgroundSound = async () => {
+  try {
+    if (backgroundSound) {
+      try { await backgroundSound.stopAsync(); } catch {}
+      try { await backgroundSound.unloadAsync(); } catch {}
+      backgroundSound = null;
+      loadedTrackId = null;
+    }
+  } catch (e) {
+    console.log('ASTC unload error:', e);
+  }
+};
+
+// 🔧 internal: load the selected track (and optionally play)
+const loadSelectedTrack = async (shouldPlay = true) => {
+  const track = TRACKS[backgroundTrackIndex] || TRACKS[0];
+  try {
+    await unloadBackgroundSound();
+
+    const { sound } = await Audio.Sound.createAsync(
+      track.source,
+      { shouldPlay: false, isLooping: true, volume: 1.0 }
+    );
+
+    backgroundSound = sound;
+    loadedTrackId = track.id;
+
+    if (shouldPlay) {
+      await sound.playAsync();
+    }
+  } catch (e) {
+    console.log('ASTC failed to load selected track:', e);
+  }
+};
+
+// ✅ Export: read selected track meta (for UI)
+export const getBackgroundTrackMeta = () => {
+  const t = TRACKS[backgroundTrackIndex] || TRACKS[0];
+  return { index: backgroundTrackIndex, id: t?.id, label: t?.label };
+};
+
+// ✅ Export: set track index (optionally autoplay and/or hot-swap if currently playing)
+export const setBackgroundTrackIndex = async (index, { autoplay = false, hotSwap = true } = {}) => {
+  const safe = ((index % TRACKS.length) + TRACKS.length) % TRACKS.length;
+  backgroundTrackIndex = safe;
+
+  // If we already have a sound loaded and hotSwap is true, reload immediately
+  if (hotSwap && backgroundSound) {
+    await loadSelectedTrack(autoplay);
+    return;
+  }
+
+  // If nothing loaded, only load if autoplay requested
+  if (!backgroundSound && autoplay) {
+    await loadSelectedTrack(true);
+  }
+};
+
+// ✅ Export: cycle helper
+export const cycleBackgroundTrack = async (direction = 1, opts = {}) => {
+  const next = (backgroundTrackIndex + direction + TRACKS.length) % TRACKS.length;
+  await setBackgroundTrackIndex(next, opts);
+};
+
+// 🔊 start / resume music (Spartans imports this)
 export const playBackgroundMusic = async () => {
   try {
+    const track = TRACKS[backgroundTrackIndex] || TRACKS[0];
+
     if (!backgroundSound) {
-      const { sound } = await Audio.Sound.createAsync(
-        require('../../assets/audio/Halo2.wav'),
-        { shouldPlay: true, isLooping: true, volume: 1.0 }
-      );
-      backgroundSound = sound;
-      await sound.playAsync();
-    } else {
-      await backgroundSound.playAsync();
+      await loadSelectedTrack(true);
+      return;
     }
+
+    // If something is loaded but wrong track, reload
+    if (loadedTrackId !== track.id) {
+      await loadSelectedTrack(true);
+      return;
+    }
+
+    await backgroundSound.playAsync();
   } catch (e) {
     console.log('ASTC music failed to load/play:', e);
   }
 };
 
-// 🔊 pause (but don’t unload) – used by Spartans play/pause
+// 🔊 pause (but don’t unload)
 export const pauseBackgroundMusic = async () => {
   try {
     if (backgroundSound) {
@@ -74,16 +155,11 @@ export const pauseBackgroundMusic = async () => {
 
 // 🔊 full stop + unload – for leaving the ASTC “flow” entirely
 export const stopBackgroundMusic = async () => {
-  try {
-    if (backgroundSound) {
-      await backgroundSound.stopAsync();
-      await backgroundSound.unloadAsync();
-      backgroundSound = null;
-    }
-  } catch (e) {
-    console.log('ASTC music stop/unload error:', e);
-  }
+  await unloadBackgroundSound();
 };
+
+// ✅ optional helper for Spartans/other screens: detect playing
+export const getIsBackgroundMusicLoaded = () => !!backgroundSound;
 
 const ASTCScreen = () => {
   const navigation = useNavigation();
@@ -97,6 +173,9 @@ const ASTCScreen = () => {
   const [buttonImage, setButtonImage] = useState(buttonImages[0]);
   const [isAnimating, setIsAnimating] = useState(false);
 
+  // 🎵 UI state for showing current track label
+  const [trackMeta, setTrackMeta] = useState(getBackgroundTrackMeta());
+
   const KEY_STOP_POSITION = SCREEN_HEIGHT * 0.35;
   const KEY_SIZE = isDesktop ? 260 : 220;
   const centeredLeft = SCREEN_WIDTH / 2 - KEY_SIZE / 2;
@@ -104,10 +183,8 @@ const ASTCScreen = () => {
 
   useEffect(() => {
     if (isFocused) {
-      const bg =
-        backgroundImages[Math.floor(Math.random() * backgroundImages.length)];
-      const btn =
-        buttonImages[Math.floor(Math.random() * buttonImages.length)];
+      const bg = backgroundImages[Math.floor(Math.random() * backgroundImages.length)];
+      const btn = buttonImages[Math.floor(Math.random() * buttonImages.length)];
       setBackgroundImage(bg);
       setButtonImage(btn);
 
@@ -116,9 +193,11 @@ const ASTCScreen = () => {
       buttonScale.setValue(1);
       buttonOpacity.setValue(1);
       setIsAnimating(false);
+
+      // refresh track label
+      setTrackMeta(getBackgroundTrackMeta());
     }
     // ✅ NO automatic music start/stop here
-    // Music starts on card press and is stopped when backing out.
   }, [isFocused, keyTop, buttonScale, buttonOpacity]);
 
   const handleBackPress = async () => {
@@ -130,7 +209,8 @@ const ASTCScreen = () => {
     if (isAnimating) return;
     setIsAnimating(true);
 
-    // 🔊 Halo theme starts here and will continue into Spartans
+    // ✅ IMPORTANT: No random music.
+    // Whatever you last selected is the one that plays.
     playBackgroundMusic();
 
     // Button: scale up → fade out
@@ -159,9 +239,35 @@ const ASTCScreen = () => {
     });
   };
 
+  const changeTrack = async (dir) => {
+    // Only change if not animating (optional safety)
+    if (isAnimating) return;
+
+    // If music is already loaded, hot swap but don't autoplay here (keeps behavior deterministic)
+    await cycleBackgroundTrack(dir, { autoplay: false, hotSwap: true });
+    setTrackMeta(getBackgroundTrackMeta());
+  };
+
   return (
     <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover">
       <SafeAreaView style={styles.container} edges={['bottom', 'left', 'right']}>
+
+        {/* 🎵 TRACK SELECT (glassy mini bar) */}
+        {/* <View style={styles.trackBar}>
+          <TouchableOpacity style={styles.trackBtn} onPress={() => changeTrack(-1)} activeOpacity={0.85}>
+            <Text style={styles.trackBtnText}>⟵</Text>
+          </TouchableOpacity>
+
+          <View style={styles.trackGlass}>
+            <Text style={styles.trackLabel}>Theme:</Text>
+            <Text style={styles.trackTitle} numberOfLines={1}>{trackMeta?.label || 'ASTC Theme'}</Text>
+          </View>
+
+          <TouchableOpacity style={styles.trackBtn} onPress={() => changeTrack(1)} activeOpacity={0.85}>
+            <Text style={styles.trackBtnText}>⟶</Text>
+          </TouchableOpacity>
+        </View> */}
+
         {/* FORERUNNER KEY */}
         <Animated.View
           style={{
@@ -256,6 +362,39 @@ const styles = StyleSheet.create({
   background: { flex: 1 },
   container: { flex: 1, backgroundColor: 'rgba(0,0,0,0.7)' },
 
+  // 🎵 TRACK BAR
+  trackBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingTop: 6,
+    paddingBottom: 6,
+  },
+  trackBtn: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(0,225,255,0.9)',
+    backgroundColor: 'rgba(5,15,25,0.95)',
+  },
+  trackBtnText: { color: '#eaffff', fontWeight: '900' },
+  trackGlass: {
+    flex: 1,
+    marginHorizontal: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    backgroundColor: 'rgba(5,20,40,0.92)',
+    borderWidth: 1,
+    borderColor: 'rgba(0,240,255,0.9)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  trackLabel: { fontSize: 11, color: 'rgba(190,240,255,0.95)', marginRight: 8 },
+  trackTitle: { flex: 1, fontSize: 12, color: '#e6fbff', fontWeight: '800' },
+
   headerWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -348,9 +487,7 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
   },
 
-  keyImage: {
-    resizeMode: 'contain',
-  },
+  keyImage: { resizeMode: 'contain' },
 
   instruction: {
     marginTop: 26,
