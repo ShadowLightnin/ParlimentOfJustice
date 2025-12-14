@@ -24,7 +24,7 @@ const TRACKS = [
   {
     id: "sable_alt",
     label: "Final Whisper Mix",
-    source: require("../../../assets/audio/sableEvilish.m4a"), // second variant; replace if you add another file
+    source: require("../../../assets/audio/sableGood.m4a"), // second variant; replace if you add another file
   },
 ];
 
