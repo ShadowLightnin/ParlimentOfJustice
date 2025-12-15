@@ -1,44 +1,151 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
-  View, Text, ImageBackground, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions
+  View,
+  Text,
+  ImageBackground,
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { Audio } from "expo-av";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
-const ObeliskScreen = () => {
+const TRACKS = [
+  {
+    id: "obelisk_main",
+    label: "Cinder Covenant",
+    source: require("../../../assets/audio/sableEvilish.m4a"),
+  },
+  {
+    id: "obelisk_alt",
+    label: "Ember Rite",
+    source: require("../../../assets/audio/sableEvilish.m4a"),
+  },
+];
+
+const characters = [
+  {
+    name: "Obelisk",
+    image: require("../../../assets/Villains/Obelisk.jpg"),
+    clickable: true,
+  },
+];
+
+export default function ObeliskScreen() {
   const navigation = useNavigation();
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
 
-  useEffect(() => {
-    const updateDimensions = () => {
-      setWindowWidth(Dimensions.get("window").width);
-    };
-    const subscription = Dimensions.addEventListener("change", updateDimensions);
-    return () => subscription?.remove();
-  }, []);
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [trackIndex, setTrackIndex] = useState(0);
 
   const isDesktop = windowWidth >= 768;
 
-  const characters = [
-    { name: "Obelisk", image: require("../../../assets/Villains/Obelisk.jpg"), clickable: true },
-  ];
+  const safeTracks =
+    Array.isArray(TRACKS) && TRACKS.length > 0
+      ? TRACKS
+      : [{ id: "fallback", label: "No Track", source: null }];
+
+  const safeIndex = Math.min(Math.max(trackIndex, 0), safeTracks.length - 1);
+  const currentTrack = safeTracks[safeIndex];
+
+  useEffect(() => {
+    const sub = Dimensions.addEventListener("change", () => {
+      setWindowWidth(Dimensions.get("window").width);
+    });
+    return () => sub?.remove();
+  }, []);
+
+  const unloadSound = useCallback(async () => {
+    if (!sound) return;
+    try {
+      await sound.stopAsync();
+    } catch {}
+    try {
+      await sound.unloadAsync();
+    } catch {}
+    setSound(null);
+  }, [sound]);
+
+  const loadAndPlayTrack = useCallback(
+    async (index) => {
+      await unloadSound();
+      const track = safeTracks[index];
+      if (!track?.source) return;
+
+      try {
+        const { sound: newSound } = await Audio.Sound.createAsync(track.source, {
+          isLooping: true,
+          volume: 0.85,
+        });
+        setSound(newSound);
+        await newSound.playAsync();
+        setIsPlaying(true);
+      } catch (e) {
+        console.error("Failed to play Obelisk track", e);
+        setIsPlaying(false);
+      }
+    },
+    [unloadSound, safeTracks]
+  );
+
+  const playTheme = async () => {
+    if (sound) {
+      try {
+        await sound.playAsync();
+        setIsPlaying(true);
+      } catch (e) {
+        console.error("Play error", e);
+      }
+    } else {
+      await loadAndPlayTrack(safeIndex);
+    }
+  };
+
+  const pauseTheme = async () => {
+    if (!sound) return;
+    try {
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } catch (e) {
+      console.error("Pause error", e);
+    }
+  };
+
+  const cycleTrack = async (direction) => {
+    if (safeTracks.length <= 1) return;
+
+    const nextIndex = (safeIndex + direction + safeTracks.length) % safeTracks.length;
+    setTrackIndex(nextIndex);
+
+    if (isPlaying) await loadAndPlayTrack(nextIndex);
+    else await unloadSound();
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        unloadSound();
+        setIsPlaying(false);
+      };
+    }, [unloadSound])
+  );
+
+  const handleBackPress = async () => {
+    await unloadSound();
+    setIsPlaying(false);
+    navigation.goBack();
+  };
 
   const renderCharacterCard = (character) => (
-    <TouchableOpacity
-      key={character.name}
-      style={[styles.card(isDesktop, windowWidth), character.clickable ? styles.clickable : styles.notClickable]}
-      onPress={() => character.clickable && console.log(`${character.name} clicked`)}
-      disabled={!character.clickable}
-    >
-      <Image
-        source={character.image}
-        style={styles.armorImage}
-      />
+    <TouchableOpacity key={character.name} style={[styles.card(isDesktop, windowWidth)]} activeOpacity={0.9}>
+      <Image source={character.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>
-        © {character.name || 'Unknown'}; William Cummings
-      </Text>
+      <Text style={styles.cardName}>© {character.name}; William Cummings</Text>
     </TouchableOpacity>
   );
 
@@ -46,169 +153,279 @@ const ObeliskScreen = () => {
     <ImageBackground
       source={require("../../../assets/BackGround/Enlightened.jpg")}
       style={styles.background}
+      resizeMode="cover"
     >
       <View style={styles.overlay}>
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <View style={styles.headerContainer}>
-            <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-              <Text style={styles.backButtonText}>←</Text>
-            </TouchableOpacity>
-            <Text style={styles.title}>Obelisk the Warlock</Text>
+        {/* 🎧 MUSIC BAR */}
+        <View style={styles.musicControls}>
+          <TouchableOpacity style={styles.trackButton} onPress={() => cycleTrack(-1)}>
+            <Text style={styles.trackButtonText}>⟵</Text>
+          </TouchableOpacity>
+
+          <View style={styles.trackInfoGlass}>
+            <Text style={styles.trackLabel}>Track:</Text>
+            <Text style={styles.trackTitle}>{currentTrack?.label || "No Track"}</Text>
           </View>
 
-          <View style={styles.imageContainer}>
-            <ScrollView
-              horizontal
-              contentContainerStyle={styles.imageScrollContainer}
-              showsHorizontalScrollIndicator={false}
-              snapToAlignment="center"
-              snapToInterval={windowWidth * 0.7 + 20}
-              decelerationRate="fast"
-            >
+          <TouchableOpacity style={styles.trackButton} onPress={() => cycleTrack(1)}>
+            <Text style={styles.trackButtonText}>⟶</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.musicButton, isPlaying && styles.disabled]}
+            onPress={playTheme}
+            disabled={isPlaying || !currentTrack?.source}
+          >
+            <Text style={styles.musicText}>{isPlaying ? "Playing" : "Play"}</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.musicButtonSecondary, !isPlaying && styles.disabled]}
+            onPress={pauseTheme}
+            disabled={!isPlaying}
+          >
+            <Text style={styles.musicTextAlt}>Pause</Text>
+          </TouchableOpacity>
+        </View>
+
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          {/* HEADER */}
+          <View style={styles.headerOuter}>
+            <View style={styles.headerContainer}>
+              <TouchableOpacity style={styles.backButton} onPress={handleBackPress} activeOpacity={0.85}>
+                <Text style={styles.backButtonText}>←</Text>
+              </TouchableOpacity>
+
+              <View style={styles.headerGlass}>
+                <Text style={styles.title}>Obelisk the Warlock</Text>
+                <Text style={styles.subtitle}>Arcane Dominion • Cosmic Rites • Unyielding Calculation</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* GALLERY */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Obelisk Gallery</Text>
+            <View style={styles.sectionDivider} />
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {characters.map(renderCharacterCard)}
             </ScrollView>
           </View>
 
+          {/* DOSSIER */}
           <View style={styles.aboutSection}>
-            <Text style={styles.aboutHeader}>About Me</Text>
+            <Text style={styles.aboutHeader}>Dossier</Text>
+
             <Text style={styles.aboutText}>
-              • <Text style={{ fontWeight: 'bold' }}>Obelisk</Text>: A cold and ancient sorcerer of cosmic age, an Arcane Lord of Chaos, Obelisk predates even the rise of modern civilization. He has walked among the ruins of empires and studied forces that predate mortal understanding.
+              Status: <Text style={{ fontWeight: "900" }}>Arcane Lord of Chaos</Text>
             </Text>
+
             <Text style={styles.aboutText}>
-              Obelisk views heroes as short-sighted meddlers who delay the inevitable unraveling of the world. In his eyes, their morals are dust—he believes only the dominion of the arcane can bring true stability.
+              Profile: Cold, ancient, and calculating — a sorcerer of cosmic age who studies forces beyond mortal
+              understanding and treats civilization as a temporary experiment.
             </Text>
+
             <Text style={styles.aboutText}>
-              Unlike the flamboyant chaos of mortal warlocks, Obelisk is solemn, slow-speaking, and calculating. He speaks in riddles and incantations that bend the seams of reality, drawing from magic sourced beyond the veil of time.
+              Doctrine: Sees heroes as short-sighted meddlers — believes morals are dust and only the dominion of the
+              arcane can bring stability.
             </Text>
+
             <Text style={styles.aboutText}>
-              His loyalty to Erevos is not born of worship but curiosity—Obelisk witnessed Erevos's rise millennia ago and aligned himself out of interest in what he calls “the one who walks unmarred by death.”
+              Role in The Enlightened: Oversees rituals, relic awakenings, forbidden summoning, and astral rites that keep
+              the cabal anchored across timelines and dimensions.
             </Text>
+
             <Text style={styles.aboutText}>
-              In truth, Erevos is aware that Obelisk may be a remnant of a Maw-touched being—something old and dangerous that doesn't realize its origin. He keeps Obelisk close, both as a tool and a potential threat.
-            </Text>
-            <Text style={styles.aboutText}>
-              As a member of The Enlightened, Obelisk is the cultic spiritualist. He oversees rituals, relic awakenings, forbidden summoning, and astral rites that keep the cabal anchored across timelines and dimensions.
-            </Text>
-            <Text style={styles.aboutText}>
-              His presence signals moments of great power-shifting; when Obelisk appears, it means reality itself is being tested, warped, or rewritten. Portals tremble in his wake, and his voice alone has been known to turn lesser minds into husks.
-            </Text>
-            <Text style={styles.aboutText}>
-              Obelisk is one of Erevos’s most relied-upon advisors—equal in trust to Noctura—and the keeper of knowledge long forbidden even in ancient libraries. Together, they form the ideological core of the Enlightened’s arcane arm.
+              Alignment: Loyal to Erevos out of curiosity, not worship — drawn to “the one who walks unmarred by death,”
+              yet kept close as both asset and potential threat.
             </Text>
           </View>
         </ScrollView>
       </View>
     </ImageBackground>
   );
-};
+}
+
+const ACCENT = "#FF6A2A"; // reddish-orange
 
 const styles = StyleSheet.create({
-  background: {
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
-    resizeMode: "cover",
-  },
-  overlay: {
-    backgroundColor: "rgba(0, 0, 0, 0.8)",
-    flex: 1,
-  },
-  scrollContainer: {
-    paddingBottom: 20,
-  },
-  headerContainer: {
+  background: { width: SCREEN_WIDTH, height: SCREEN_HEIGHT },
+  overlay: { backgroundColor: "rgba(0,0,0,0.86)", flex: 1 },
+  scrollContainer: { paddingBottom: 30 },
+
+  musicControls: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    backgroundColor: "rgba(10, 8, 8, 0.96)",
     borderBottomWidth: 1,
-    borderBottomColor: "#333",
+    borderBottomColor: "rgba(255, 106, 42, 0.28)",
+    shadowColor: "#000",
+    shadowOpacity: 0.25,
+    shadowOffset: { width: 0, height: 6 },
+    shadowRadius: 14,
+    elevation: 8,
   },
+  trackButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "rgba(255, 106, 42, 0.70)",
+    backgroundColor: "rgba(16, 12, 12, 0.96)",
+    marginRight: 6,
+  },
+  trackButtonText: { color: "#FFF2EC", fontSize: 14, fontWeight: "bold" },
+  trackInfoGlass: {
+    flex: 1,
+    marginHorizontal: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 999,
+    backgroundColor: "rgba(14, 10, 10, 0.96)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 106, 42, 0.40)",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  trackLabel: { color: "rgba(255, 242, 236, 0.70)", fontSize: 11, marginRight: 6 },
+  trackTitle: { color: "#FFF2EC", fontSize: 13, fontWeight: "700" },
+  musicButton: {
+    backgroundColor: "rgba(14, 10, 10, 0.95)",
+    paddingHorizontal: 16,
+    paddingVertical: 9,
+    borderRadius: 999,
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: "rgba(255, 106, 42, 0.70)",
+  },
+  musicButtonSecondary: {
+    backgroundColor: "rgba(10, 10, 10, 0.90)",
+    paddingHorizontal: 16,
+    paddingVertical: 9,
+    borderRadius: 999,
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.22)",
+  },
+  musicText: { color: "#FFF2EC", fontWeight: "bold", fontSize: 13 },
+  musicTextAlt: { color: "#fff", fontWeight: "bold", fontSize: 13 },
+  disabled: { opacity: 0.5 },
+
+  headerOuter: { paddingHorizontal: 16, paddingTop: 16 },
+  headerContainer: { flexDirection: "row", alignItems: "center" },
   backButton: {
-    padding: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    backgroundColor: "rgba(14, 10, 10, 0.95)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 106, 42, 0.55)",
+    marginRight: 10,
   },
-  backButtonText: {
-    fontSize: 24,
-    color: "#fff",
+  backButtonText: { fontSize: 22, color: "#FFF2EC" },
+  headerGlass: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    backgroundColor: "rgba(14, 10, 10, 0.92)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 106, 42, 0.22)",
+    shadowColor: "#000",
+    shadowOpacity: 0.35,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 10,
   },
   title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#D4AF37",
+    fontSize: 24,
+    fontWeight: "900",
+    color: ACCENT,
     textAlign: "center",
-    flex: 1,
+    textShadowColor: "#000",
+    textShadowRadius: 10,
+    letterSpacing: 1,
   },
-  imageContainer: {
-    width: "100%",
-    paddingVertical: 20,
-    paddingLeft: 15,
+  subtitle: {
+    marginTop: 4,
+    fontSize: 12,
+    color: "rgba(255, 242, 236, 0.82)",
+    textAlign: "center",
+    letterSpacing: 1,
+    textTransform: "uppercase",
   },
-  imageScrollContainer: {
-    flexDirection: "row",
+
+  section: {
+    marginTop: 24,
+    marginHorizontal: 12,
+    paddingVertical: 14,
     paddingHorizontal: 10,
-    alignItems: "center",
+    borderRadius: 20,
+    backgroundColor: "rgba(10, 8, 8, 0.95)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 106, 42, 0.16)",
   },
-  card: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.2 : SCREEN_WIDTH * 0.9,
-    height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7,
-    borderRadius: 15,
+  sectionTitle: { fontSize: 18, fontWeight: "800", color: "#FFF2EC", textAlign: "center" },
+  sectionDivider: {
+    marginTop: 8,
+    marginBottom: 10,
+    alignSelf: "center",
+    width: "40%",
+    height: 2,
+    borderRadius: 999,
+    backgroundColor: "rgba(255, 106, 42, 0.75)",
+  },
+
+  card: (isDesktop, w) => ({
+    width: isDesktop ? w * 0.3 : SCREEN_WIDTH * 0.9,
+    height: isDesktop ? SCREEN_HEIGHT * 0.75 : SCREEN_HEIGHT * 0.7,
+    borderRadius: 22,
     overflow: "hidden",
-    elevation: 5,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-    marginRight: 20,
+    marginRight: 16,
+    borderWidth: 1,
+    borderColor: "rgba(255, 106, 42, 0.28)",
+    backgroundColor: "rgba(0,0,0,0.55)",
   }),
-  clickable: {
-    borderWidth: 2,
-    borderColor: "rgba(255, 255, 255, 0.1)",
-  },
-  notClickable: {
-    opacity: 0.8,
-  },
-  armorImage: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "cover",
-  },
-  transparentOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0)",
-    zIndex: 1,
-  },
+  armorImage: { width: "100%", height: "100%", resizeMode: "cover" },
+  transparentOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0,0,0,0.25)" },
   cardName: {
     position: "absolute",
     bottom: 10,
-    left: 10,
-    fontSize: 16,
-    color: "white",
-    fontWeight: "bold",
-  },
-  disabledText: {
+    left: 12,
+    color: "#FFF2EC",
     fontSize: 12,
-    color: "#ff4444",
-    position: "absolute",
-    bottom: 30,
-    left: 10,
+    fontWeight: "700",
+    textShadowColor: "#000",
+    textShadowRadius: 10,
   },
+
   aboutSection: {
-    marginTop: 40,
-    padding: 20,
-    backgroundColor: "#222",
-    borderRadius: 15,
+    marginTop: 28,
+    marginHorizontal: 12,
+    marginBottom: 32,
+    paddingVertical: 18,
+    paddingHorizontal: 14,
+    borderRadius: 22,
+    backgroundColor: "rgba(8, 6, 6, 0.97)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 106, 42, 0.18)",
   },
   aboutHeader: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#D4AF37",
+    fontSize: 20,
+    fontWeight: "900",
+    color: ACCENT,
     textAlign: "center",
+    marginBottom: 6,
+    textShadowColor: "#000",
+    textShadowRadius: 10,
   },
   aboutText: {
-    fontSize: 16,
-    color: "#fff",
-    textAlign: "center",
-    marginTop: 10,
+    fontSize: 14,
+    color: "#FFF2EC",
+    lineHeight: 20,
+    marginTop: 6,
+    textAlign: "left",
   },
 });
-
-export default ObeliskScreen;

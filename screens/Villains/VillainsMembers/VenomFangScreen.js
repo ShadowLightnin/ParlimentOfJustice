@@ -229,7 +229,7 @@ export default function VenomFangScreen() {
             <Text style={styles.aboutHeader}>Dossier</Text>
 
             <Text style={styles.aboutText}>
-              Nemesis: <Text style={{ fontWeight: "900", color: "rgba(64, 255, 160, 0.95)" }}>Nuscis</Text>
+              Nemesis: <Text style={{ fontWeight: "900", color: "rgba(255, 49, 49, 0.95)" }}>Nuscis</Text>
             </Text>
 
             <Text style={styles.aboutText}>

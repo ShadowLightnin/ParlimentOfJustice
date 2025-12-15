@@ -228,8 +228,7 @@ export default function MallikhanScreen() {
             <Text style={styles.aboutHeader}>Dossier</Text>
 
             <Text style={styles.aboutText}>
-              Nemesis:{" "}
-              <Text style={{ fontWeight: "900", color: "rgba(255, 49, 49, 0.95)" }}>
+              Nemesis: <Text style={{ fontWeight: "900", color: "rgba(255, 49, 49, 0.95)" }}>
                 Ariata
               </Text>
             </Text>

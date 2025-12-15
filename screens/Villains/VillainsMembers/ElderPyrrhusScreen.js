@@ -226,7 +226,7 @@ export default function ElderPyrrhusScreen() {
             <Text style={styles.aboutHeader}>Dossier</Text>
 
             <Text style={styles.aboutText}>
-              Nemesis: <Text style={{ fontWeight: "900", color: "rgba(255, 120, 40, 0.98)" }}>Annihilator</Text>
+              Nemesis: <Text style={{ fontWeight: "900", color: "rgba(255, 49, 49, 0.95)" }}>Annihilator</Text>
             </Text>
 
             <Text style={styles.aboutText}>

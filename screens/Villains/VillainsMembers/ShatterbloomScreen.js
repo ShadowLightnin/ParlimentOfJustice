@@ -229,7 +229,7 @@ export default function ShatterbloomScreen() {
             <Text style={styles.aboutHeader}>Dossier</Text>
 
             <Text style={styles.aboutText}>
-              Nemesis: <Text style={{ fontWeight: "900", color: "rgba(255, 76, 140, 0.95)" }}>Kintsugi</Text>
+              Nemesis: <Text style={{ fontWeight: "900", color: "rgba(255, 49, 49, 0.95)" }}>Kintsugi</Text>
             </Text>
 
             <Text style={styles.aboutText}>

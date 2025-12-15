@@ -229,7 +229,7 @@ export default function ByteRuinScreen() {
             <Text style={styles.aboutHeader}>Dossier</Text>
 
             <Text style={styles.aboutText}>
-              Nemesis: <Text style={{ fontWeight: "900", color: "rgba(255, 49, 49, 0.80)" }}>Cyber</Text>
+              Nemesis: <Text style={{ fontWeight: "900", color: "rgba(255, 49, 49, 0.95)" }}>Cyber</Text>
             </Text>
 
             <Text style={styles.aboutText}>

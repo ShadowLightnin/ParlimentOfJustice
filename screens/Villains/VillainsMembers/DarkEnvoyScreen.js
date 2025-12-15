@@ -229,7 +229,7 @@ export default function DarkEnvoyScreen() {
             <Text style={styles.aboutHeader}>Dossier</Text>
 
             <Text style={styles.aboutText}>
-              Nemesis: <Text style={{ fontWeight: "900", color: "rgba(160, 120, 255, 0.98)" }}>Midigator</Text>
+              Nemesis: <Text style={{ fontWeight: "900", color: "rgba(255, 49, 49, 0.95)" }}>Midigator</Text>
             </Text>
 
             <Text style={styles.aboutText}>

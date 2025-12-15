@@ -1,205 +1,468 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
-  View, Text, ImageBackground, Image, ScrollView, StyleSheet, TouchableOpacity, Dimensions
+  View,
+  Text,
+  ImageBackground,
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { Audio } from "expo-av";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
-const HadesRavageScreen = () => {
+// ✅ TEMP TRACKS (placeholder). Swap to real Hades Ravage audio later.
+const TRACKS = [
+  { id: "hades_main", label: "Hades Ravage Theme", source: require("../../../assets/audio/sableEvilish.m4a") },
+  { id: "hades_alt", label: "Inferno March", source: require("../../../assets/audio/sableEvilish.m4a") },
+];
+
+const characters = [
+  { name: "Hades Ravage", image: require("../../../assets/Villains/HadesRavage.jpg"), clickable: true },
+];
+
+export default function HadesRavageScreen() {
   const navigation = useNavigation();
   const [windowWidth, setWindowWidth] = useState(SCREEN_WIDTH);
 
-  useEffect(() => {
-    const updateDimensions = () => {
-      setWindowWidth(Dimensions.get("window").width);
-    };
-    const subscription = Dimensions.addEventListener("change", updateDimensions);
-    return () => subscription?.remove();
-  }, []);
+  const [sound, setSound] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [trackIndex, setTrackIndex] = useState(0);
 
   const isDesktop = windowWidth >= 768;
 
-  const characters = [
-    { name: "Hades Ravage", image: require("../../../assets/Villains/HadesRavage.jpg"), clickable: true },
-    // Add more related characters here if desired
-  ];
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener("change", () => {
+      setWindowWidth(Dimensions.get("window").width);
+    });
+    return () => subscription?.remove();
+  }, []);
 
+  // ───────── AUDIO ─────────
+  const safeTracks =
+    Array.isArray(TRACKS) && TRACKS.length > 0
+      ? TRACKS
+      : [{ id: "fallback", label: "No Track", source: null }];
+
+  const safeIndex = Math.min(Math.max(trackIndex, 0), safeTracks.length - 1);
+  const currentTrack = safeTracks[safeIndex];
+
+  const unloadSound = useCallback(async () => {
+    if (!sound) return;
+    try { await sound.stopAsync(); } catch {}
+    try { await sound.unloadAsync(); } catch {}
+    setSound(null);
+  }, [sound]);
+
+  const loadAndPlayTrack = useCallback(
+    async (index) => {
+      await unloadSound();
+      const track = safeTracks[index];
+      if (!track?.source) return;
+
+      try {
+        const { sound: newSound } = await Audio.Sound.createAsync(track.source, {
+          isLooping: true,
+          volume: 0.85,
+        });
+        setSound(newSound);
+        await newSound.playAsync();
+        setIsPlaying(true);
+      } catch (e) {
+        console.error("Failed to play Hades Ravage track", e);
+        setIsPlaying(false);
+      }
+    },
+    [unloadSound, safeTracks]
+  );
+
+  const playTheme = async () => {
+    if (sound) {
+      try {
+        await sound.playAsync();
+        setIsPlaying(true);
+      } catch (e) {
+        console.error("Play error", e);
+      }
+    } else {
+      await loadAndPlayTrack(safeIndex);
+    }
+  };
+
+  const pauseTheme = async () => {
+    if (!sound) return;
+    try {
+      await sound.pauseAsync();
+      setIsPlaying(false);
+    } catch (e) {
+      console.error("Pause error", e);
+    }
+  };
+
+  const cycleTrack = async (direction) => {
+    if (safeTracks.length <= 1) return;
+    const nextIndex = (safeIndex + direction + safeTracks.length) % safeTracks.length;
+    setTrackIndex(nextIndex);
+
+    if (isPlaying) {
+      await loadAndPlayTrack(nextIndex);
+    } else {
+      await unloadSound();
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        unloadSound();
+        setIsPlaying(false);
+      };
+    }, [unloadSound])
+  );
+
+  const handleBackPress = async () => {
+    await unloadSound();
+    setIsPlaying(false);
+    navigation.goBack();
+  };
+
+  // ───────── UI ─────────
   const renderCharacterCard = (character) => (
     <TouchableOpacity
       key={character.name}
-      style={[styles.card(isDesktop, windowWidth), character.clickable ? styles.clickable : styles.notClickable]}
+      style={[
+        styles.card(isDesktop, windowWidth),
+        character.clickable ? styles.clickable : styles.notClickable,
+      ]}
       onPress={() => character.clickable && console.log(`${character.name} clicked`)}
       disabled={!character.clickable}
+      activeOpacity={0.9}
     >
-      <Image
-        source={character.image}
-        style={styles.armorImage}
-      />
+      <Image source={character.image} style={styles.armorImage} />
       <View style={styles.transparentOverlay} />
-      <Text style={styles.cardName}>
-        © {character.name || 'Unknown'}; William Cummings
-      </Text>
+      <Text style={styles.cardName}>© {character.name || "Unknown"}; William Cummings</Text>
     </TouchableOpacity>
   );
-
 
   return (
     <ImageBackground
       source={require("../../../assets/BackGround/Villains.jpg")}
       style={styles.background}
+      resizeMode="cover"
     >
       <View style={styles.overlay}>
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <View style={styles.headerContainer}>
-            <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-              <Text style={styles.backButtonText}>←</Text>
-            </TouchableOpacity>
-            <Text style={styles.title}>Hades Ravage</Text>
+        {/* 🎧 MUSIC BAR */}
+        <View style={styles.musicControls}>
+          <TouchableOpacity style={styles.trackButton} onPress={() => cycleTrack(-1)}>
+            <Text style={styles.trackButtonText}>⟵</Text>
+          </TouchableOpacity>
+
+          <View style={styles.trackInfoGlass}>
+            <Text style={styles.trackLabel}>Track:</Text>
+            <Text style={styles.trackTitle}>{currentTrack?.label || "No Track"}</Text>
           </View>
 
-          <View style={styles.imageContainer}>
+          <TouchableOpacity style={styles.trackButton} onPress={() => cycleTrack(1)}>
+            <Text style={styles.trackButtonText}>⟶</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.musicButton, isPlaying && styles.musicButtonDisabled]}
+            onPress={playTheme}
+            disabled={isPlaying || !currentTrack?.source}
+          >
+            <Text style={styles.musicButtonText}>{isPlaying ? "Playing" : "Play"}</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.musicButtonSecondary, !isPlaying && styles.musicButtonDisabled]}
+            onPress={pauseTheme}
+            disabled={!isPlaying}
+          >
+            <Text style={styles.musicButtonTextSecondary}>Pause</Text>
+          </TouchableOpacity>
+        </View>
+
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          {/* HEADER */}
+          <View style={styles.headerOuter}>
+            <View style={styles.headerContainer}>
+              <TouchableOpacity style={styles.backButton} onPress={handleBackPress} activeOpacity={0.85}>
+                <Text style={styles.backButtonText}>←</Text>
+              </TouchableOpacity>
+
+              <View style={styles.headerGlass}>
+                <Text style={styles.title}>Hades Ravage</Text>
+                <Text style={styles.subtitle}>Black • Ember • Infernal Axes</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* GALLERY */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Inferno Gallery</Text>
+            <View style={styles.sectionDivider} />
             <ScrollView
               horizontal
               contentContainerStyle={styles.imageScrollContainer}
               showsHorizontalScrollIndicator={false}
-              snapToAlignment="center"
-              snapToInterval={windowWidth * 0.7 + 20}
-              decelerationRate="fast"
             >
               {characters.map(renderCharacterCard)}
             </ScrollView>
           </View>
 
+          {/* DOSSIER */}
           <View style={styles.aboutSection}>
-            <Text style={styles.aboutHeader}>About Me</Text>
+            <Text style={styles.aboutHeader}>Dossier</Text>
+
             <Text style={styles.aboutText}>
-              • Nemesis: Cam Paul “Court Chief”
+              Nemesis: <Text style={{ fontWeight: "900", color: "rgba(255, 49, 49, 0.95)" }}>Court Chief</Text>
             </Text>
+
             <Text style={styles.aboutText}>
-              • Motivation: Sees leadership as weakness and believes only the strongest deserve power, aiming to prove that Cam’s leadership is misguided.
+              Motivation: Sees leadership as weakness and believes only the strongest deserve power. He lives to
+              prove that Cam’s leadership is misguided—and that command should belong to whoever can take it.
             </Text>
+
             <Text style={styles.aboutText}>
-              • Powers: Controls intense heat and flame, creating infernos around him to incinerate anything he touches.
+              Powers: Commands intense heat and flame, building pressure until the air itself “breaks” into
+              rolling infernos. The closer he gets, the hotter it becomes—like a moving furnace.
             </Text>
+
             <Text style={styles.aboutText}>
-              • Weapon: Twin battle axes that ignite on contact, designed to break through Cam’s defenses.
-            </Text>  
+              Weapon: Twin battle axes that ignite on contact, forged to fracture defenses and punish hesitation.
+            </Text>
           </View>
         </ScrollView>
       </View>
     </ImageBackground>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  background: {
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
-    resizeMode: "cover",
-  },
-  overlay: {
-    backgroundColor: "rgba(0, 0, 0, 0.8)",
-    flex: 1,
-  },
-  scrollContainer: {
-    paddingBottom: 20,
-  },
-  headerContainer: {
+  background: { width: SCREEN_WIDTH, height: SCREEN_HEIGHT },
+  overlay: { backgroundColor: "rgba(0, 0, 0, 0.84)", flex: 1 },
+  scrollContainer: { paddingBottom: 20 },
+
+  // ✅ THEME: ember / hellfire (no generic red title)
+  musicControls: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    backgroundColor: "rgba(10, 6, 6, 0.98)",
     borderBottomWidth: 1,
-    borderBottomColor: "#333",
+    borderBottomColor: "rgba(255, 74, 46, 0.38)",
+    shadowColor: "#FF4A2E",
+    shadowOpacity: 0.28,
+    shadowOffset: { width: 0, height: 6 },
+    shadowRadius: 14,
+    elevation: 8,
   },
+  trackButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: "rgba(255, 74, 46, 0.92)",
+    backgroundColor: "rgba(18, 10, 10, 0.96)",
+    marginRight: 6,
+  },
+  trackButtonText: { color: "#F2F2F2", fontSize: 14, fontWeight: "bold" },
+  trackInfoGlass: {
+    flex: 1,
+    marginHorizontal: 6,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 999,
+    backgroundColor: "rgba(12, 8, 8, 0.96)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.18)",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  trackLabel: { color: "rgba(255, 255, 255, 0.68)", fontSize: 11, marginRight: 6 },
+  trackTitle: { color: "#FFFFFF", fontSize: 13, fontWeight: "700" },
+
+  musicButton: {
+    backgroundColor: "rgba(24, 14, 14, 0.96)",
+    paddingHorizontal: 16,
+    paddingVertical: 9,
+    borderRadius: 999,
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: "rgba(255, 74, 46, 0.92)",
+  },
+  musicButtonSecondary: {
+    backgroundColor: "rgba(12, 10, 10, 0.92)",
+    paddingHorizontal: 16,
+    paddingVertical: 9,
+    borderRadius: 999,
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.16)",
+  },
+  musicButtonDisabled: { opacity: 0.55 },
+  musicButtonText: { color: "#FF4A2E", fontWeight: "900", fontSize: 13 },
+  musicButtonTextSecondary: { color: "#F2F2F2", fontWeight: "bold", fontSize: 13 },
+
+  // HEADER
+  headerOuter: { paddingHorizontal: 16, paddingTop: 16 },
+  headerContainer: { flexDirection: "row", alignItems: "center" },
   backButton: {
-    padding: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    backgroundColor: "rgba(18, 10, 10, 0.96)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 74, 46, 0.92)",
+    marginRight: 10,
   },
-  backButtonText: {
-    fontSize: 24,
-    color: "#fff",
+  backButtonText: { fontSize: 22, color: "#FFFFFF" },
+  headerGlass: {
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    backgroundColor: "rgba(12, 8, 8, 0.94)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.18)",
+    shadowColor: "#FF4A2E",
+    shadowOpacity: 0.26,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 10,
   },
   title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#ff3131", // Red hue from original
+    fontSize: 26,
+    fontWeight: "900",
+    color: "#FF4A2E",
     textAlign: "center",
-    flex: 1,
+    textShadowColor: "#FF4A2E",
+    textShadowRadius: 12,
+    textShadowOffset: { width: 0, height: 0 },
+    letterSpacing: 1,
   },
-  imageContainer: {
-    width: "100%",
-    paddingVertical: 20,
-    backgroundColor: "#111",
-    paddingLeft: 15,
+  subtitle: {
+    marginTop: 4,
+    fontSize: 12,
+    color: "rgba(255, 255, 255, 0.78)",
+    textAlign: "center",
+    letterSpacing: 1,
+    textTransform: "uppercase",
+  },
+
+  // SECTION
+  section: {
+    marginTop: 24,
+    marginHorizontal: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 10,
+    borderRadius: 20,
+    backgroundColor: "rgba(14, 10, 10, 0.95)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 74, 46, 0.30)",
+    shadowColor: "#FF4A2E",
+    shadowOpacity: 0.16,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 10,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "800",
+    color: "#FFFFFF",
+    textAlign: "center",
+    textShadowColor: "#FF4A2E",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+    letterSpacing: 0.8,
+  },
+  sectionDivider: {
+    marginTop: 6,
+    marginBottom: 10,
+    alignSelf: "center",
+    width: "40%",
+    height: 2,
+    borderRadius: 999,
+    backgroundColor: "rgba(255, 74, 46, 0.95)",
   },
   imageScrollContainer: {
     flexDirection: "row",
-    paddingHorizontal: 10,
+    paddingHorizontal: 6,
+    paddingTop: 4,
     alignItems: "center",
   },
-  card: (isDesktop, windowWidth) => ({
-    width: isDesktop ? windowWidth * 0.2 : SCREEN_WIDTH * 0.9,
+
+  // CARD
+  card: (isDesktop, w) => ({
+    width: isDesktop ? w * 0.3 : SCREEN_WIDTH * 0.9,
     height: isDesktop ? SCREEN_HEIGHT * 0.8 : SCREEN_HEIGHT * 0.7,
-    borderRadius: 15,
+    borderRadius: 22,
     overflow: "hidden",
-    elevation: 5,
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-    marginRight: 20,
+    marginRight: 18,
+    backgroundColor: "rgba(8, 6, 6, 0.92)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.20)",
+    shadowColor: "#FF4A2E",
+    shadowOpacity: 0.42,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 10 },
+    elevation: 12,
   }),
-  clickable: {
-    borderWidth: 2,
-    borderColor: "rgba(255, 255, 255, 0.1)",
-  },
-  notClickable: {
-    opacity: 0.8,
-  },
-  armorImage: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "cover",
-  },
-  transparentOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0)",
-    zIndex: 1,
-  },
+  clickable: {},
+  notClickable: { opacity: 0.75 },
+  armorImage: { width: "100%", height: "100%", resizeMode: "cover" },
+  transparentOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: "rgba(0, 0, 0, 0.22)" },
   cardName: {
     position: "absolute",
     bottom: 10,
-    left: 10,
-    fontSize: 16,
-    color: "white",
-    fontWeight: "bold",
-  },
-  disabledText: {
+    left: 12,
+    right: 12,
     fontSize: 12,
-    color: "#ff4444",
-    position: "absolute",
-    bottom: 30,
-    left: 10,
+    color: "#FFFFFF",
+    fontWeight: "700",
+    textShadowColor: "#000",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
   },
+
+  // ABOUT
   aboutSection: {
-    marginTop: 40,
-    padding: 20,
-    backgroundColor: "#222",
-    borderRadius: 15,
+    marginTop: 28,
+    marginHorizontal: 12,
+    marginBottom: 32,
+    paddingVertical: 18,
+    paddingHorizontal: 14,
+    borderRadius: 22,
+    backgroundColor: "rgba(10, 6, 6, 0.96)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 74, 46, 0.26)",
+    shadowColor: "#FF4A2E",
+    shadowOpacity: 0.16,
+    shadowRadius: 22,
+    shadowOffset: { width: 0, height: 12 },
+    elevation: 12,
   },
   aboutHeader: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#ff3131", // Red hue from original
+    fontSize: 20,
+    fontWeight: "900",
+    color: "#FF4A2E",
     textAlign: "center",
+    textShadowColor: "#FF4A2E",
+    textShadowRadius: 10,
+    textShadowOffset: { width: 0, height: 0 },
+    letterSpacing: 0.8,
+    marginBottom: 6,
   },
   aboutText: {
-    fontSize: 16,
-    color: "#fff",
-    textAlign: "center",
-    marginTop: 10,
+    fontSize: 14,
+    color: "#FFFFFF",
+    lineHeight: 20,
+    marginTop: 6,
+    textAlign: "left",
   },
 });
-
-export default HadesRavageScreen;

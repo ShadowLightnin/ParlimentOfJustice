@@ -229,7 +229,7 @@ export default function RageVortexScreen() {
             <Text style={styles.aboutHeader}>Dossier</Text>
 
             <Text style={styles.aboutText}>
-              Nemesis: <Text style={{ fontWeight: "900", color: "rgba(255, 70, 70, 0.95)" }}>Gentle Guardian</Text>
+              Nemesis: <Text style={{ fontWeight: "900", color: "rgba(255, 49, 49, 0.95)" }}>Guardian</Text>
             </Text>
 
             <Text style={styles.aboutText}>

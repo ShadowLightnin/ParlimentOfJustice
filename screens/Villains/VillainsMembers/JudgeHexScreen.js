@@ -261,7 +261,7 @@ export default function JudgeHexScreen() {
 
             <Text style={styles.aboutText}>
               Nemesis:{" "}
-              <Text style={{ fontWeight: "900", color: "#6CFF7A" }}>
+              <Text style={{ fontWeight: "900", color: "rgba(255, 49, 49, 0.95)" }}>
                 Midigator
               </Text>
             </Text>

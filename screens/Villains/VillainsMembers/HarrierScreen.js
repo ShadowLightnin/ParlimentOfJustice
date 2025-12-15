@@ -225,7 +225,7 @@ const HarrierScreen = () => {
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
             <Text style={styles.aboutText}>
-              Nemesis: <Text style={{ fontWeight: "900", color: "#FFFFFF" }}>Night Hawk</Text>
+              Nemesis: <Text style={{ fontWeight: "900", color: "rgba(255, 49, 49, 0.95)" }}>Night Hawk</Text>
             </Text>
             <Text style={styles.aboutText}>
               Once a government experiment to create the perfect stealth operative, Marcus Hailstone went rogue after

@@ -231,7 +231,7 @@ export default function HarbingerScreen() {
             <Text style={styles.aboutHeader}>Dossier</Text>
 
             <Text style={styles.aboutText}>
-              Nemesis: <Text style={{ fontWeight: "900", color: "rgba(180, 115, 255, 0.95)" }}>Night Hawk</Text>
+              Nemesis: <Text style={{ fontWeight: "900", color: "rgba(255, 49, 49, 0.95)" }}>Night Hawk</Text>
             </Text>
 
             <Text style={styles.aboutText}>

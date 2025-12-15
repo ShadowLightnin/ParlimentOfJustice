@@ -217,7 +217,7 @@ export default function GildedShardScreen() {
 
             <Text style={styles.aboutText}>
               Nemesis:{" "}
-              <Text style={{ fontWeight: "900", color: "rgba(217, 175, 72, 0.98)" }}>
+              <Text style={{ fontWeight: "900", color: "rgba(255, 49, 49, 0.95)" }}>
                 Jennifer McNeil — Kintsugi
               </Text>
             </Text>
