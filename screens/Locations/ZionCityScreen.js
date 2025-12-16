@@ -28,7 +28,7 @@ const ZionCityScreen = () => {
       <ScrollView contentContainerStyle={styles.content}>
         {/* Hero image placeholder – swap with your Zion render later */}
         <Image
-          source={require('../../assets/ParliamentTower.jpg')}
+          source={require('../../assets/BackGround/Zion.jpg')}
           style={styles.heroImage}
           resizeMode="cover"
         />

@@ -26,7 +26,7 @@ const OphirCityScreen = () => {
 
       <ScrollView contentContainerStyle={styles.content}>
         <Image
-          source={require('../../assets/BackGround/OGTitans.jpg')}
+          source={require('../../assets/BackGround/Enforcers.jpg')}
           style={styles.heroImage}
           resizeMode="cover"
         />

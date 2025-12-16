@@ -415,7 +415,7 @@ const VillainsFleetScreen = () => {
 
   return (
     <ImageBackground
-      source={require('../../assets/BackGround/VillainShipYard2.jpg')}
+      source={require('../../assets/BackGround/VillainShipYard.jpg')}
       style={styles.bg}
       resizeMode="cover"
     >

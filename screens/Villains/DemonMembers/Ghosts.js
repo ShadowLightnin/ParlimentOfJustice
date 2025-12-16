@@ -252,7 +252,7 @@ const GhostsScreen = () => {
       ghost.image ||
       (ghost.imageUrl && ghost.imageUrl !== 'placeholder'
         ? { uri: ghost.imageUrl }
-        : require('../../../assets/BackGround/Ghosts2.jpg'));
+        : require('../../../assets/BackGround/Ghosts.jpg'));
 
     console.log('Rendering ghost card:', {
       id: ghost.id,

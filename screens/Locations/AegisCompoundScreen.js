@@ -26,7 +26,7 @@ const AegisCompoundScreen = () => {
 
       <ScrollView contentContainerStyle={styles.content}>
         <Image
-          source={require('../../assets/BackGround/ShipYard.jpg')}
+          source={require('../../assets/BackGround/OGTitans.jpg')}
           style={styles.heroImage}
           resizeMode="cover"
         />

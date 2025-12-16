@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -25,7 +25,7 @@ const demonLords = [
   { name: 'Skinwalkers', screen: 'SkinwalkerScreen', image: require('../../assets/BackGround/NateEmblem.jpg'), clickable: true },
   { name: 'Weeping Angels', screen: 'StatuesScreen', image: require('../../assets/BackGround/Statue.jpg'), clickable: true },
   { name: 'Oni', screen: 'OniScreen', image: require('../../assets/BackGround/Oni.jpg'), clickable: true },
-  { name: 'Ghosts', screen: 'GhostsScreen', image: require('../../assets/BackGround/Ghosts2.jpg'), clickable: true },
+  { name: 'Ghosts', screen: 'GhostsScreen', image: require('../../assets/BackGround/Ghosts.jpg'), clickable: true },
   { name: 'Arcane Lords of Chaos', screen: '', image: require('../../assets/BackGround/ChaosLords.jpg'), clickable: true },
 ];
 
@@ -37,9 +37,9 @@ const otherEvilThreats = [
 ];
 
 const realityBreakers = [
-  { name: 'The Maw', screen: 'MawScreen', image: require('../../assets/TheMaw.jpg'), clickable: false },
-  { name: 'The Last Reality', screen: 'LastRealityScreen', image: require('../../assets/BackGround/TheLastReality.jpg'), clickable: false },
-  { name: 'The Nothing', screen: 'NothingScreen', image: require('../../assets/BackGround/TheNothing.jpg'), clickable: false },
+  { name: 'The Maw', screen: 'Maw', image: require('../../assets/TheMaw.jpg'), clickable: false },
+  { name: 'The Last Reality', screen: 'LastReality', image: require('../../assets/BackGround/TheLastReality.jpg'), clickable: false },
+  { name: 'The Nothing', screen: 'Nothing', image: require('../../assets/BackGround/TheNothing.jpg'), clickable: false },
   // { name: 'The Riftwalkers', screen: 'RiftwalkersScreen', image: require('../../assets/BackGround/Riftwalkers.jpg'), clickable: false },
   // { name: 'The Voidborn', screen: 'VoidbornScreen', image: require('../../assets/BackGround/Voidborn.jpg'), clickable: false },
 ];
@@ -48,6 +48,69 @@ const DemonsSectionScreen = () => {
   const navigation = useNavigation();
   const [currentSound, setCurrentSound] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
+
+  // =========================
+  // Reality Breakers Scramble
+  // =========================
+  const PHRASE_A = 'ℸ ̣⍑ᒷǁ ᔑ∷ᒷ ᓵ𝙹ᒲ¦リ˧';
+  const PHRASE_B = 'ℸ ̣⍑ᒷǁ ᔑ∷ᒷ ⍑ᒷ∷ᒷ';
+  const REDACTED = '\\\\REDACTED\\\\';
+
+  const [realitySubtitle, setRealitySubtitle] = useState(PHRASE_A);
+
+  // refs so intervals don't go stale
+  const targetRef = useRef(PHRASE_A);
+  const redactedUntilRef = useRef(0);
+
+  // pool of glyphs to scramble with (derived from phrases + extra alien-ish chars)
+  const glyphPoolRef = useRef(
+    Array.from(
+      new Set((PHRASE_A + PHRASE_B + '⍑⍴⟟⎅⟒⋏⟟⌇⏁⟒⋏⟟').split(''))
+    ).filter((c) => c !== ' ')
+  );
+
+  const scrambleLike = (target) => {
+    const pool = glyphPoolRef.current;
+    let out = '';
+    for (let i = 0; i < target.length; i++) {
+      const ch = target[i];
+      if (ch === ' ') out += ' ';
+      else out += pool[Math.floor(Math.random() * pool.length)];
+    }
+    return out;
+  };
+
+  useEffect(() => {
+    // switch between the two "lengths" regularly
+    const switchTimer = setInterval(() => {
+      if (Date.now() < redactedUntilRef.current) return;
+      targetRef.current = Math.random() < 0.5 ? PHRASE_A : PHRASE_B;
+    }, 900);
+
+    // scramble tick (fast)
+    const scrambleTimer = setInterval(() => {
+      const now = Date.now();
+
+      // occasionally flash \\REDACTED\\
+      // ~ every 12–20 seconds on average (tweak probability if you want)
+      const inRedacted = now < redactedUntilRef.current;
+      if (!inRedacted && Math.random() < 0.003) {
+        redactedUntilRef.current = now + 900; // show for ~0.9s
+      }
+
+      if (now < redactedUntilRef.current) {
+        setRealitySubtitle(REDACTED);
+      } else {
+        setRealitySubtitle(scrambleLike(targetRef.current));
+      }
+    }, 85); // 20fps scrambling
+
+    return () => {
+      clearInterval(switchTimer);
+      clearInterval(scrambleTimer);
+    };
+  }, []);
+  // =========================
 
   // Handle music playback
   const playTheme = async () => {
@@ -162,7 +225,7 @@ const DemonsSectionScreen = () => {
       <View style={styles.textContainer}>
         <Text style={styles.factionName}>{faction.name}</Text>
         {!faction.clickable && (
-          <Text style={styles.disabledText}>Comings Soon</Text>
+          <Text style={styles.disabledText}>They are Coming</Text>
         )}
       </View>
     </TouchableOpacity>
@@ -211,7 +274,7 @@ const DemonsSectionScreen = () => {
             <View style={styles.section}>
               <Text style={styles.sectionHeader}>⚡️ Demon Lords ⚡️</Text>
               <View style={styles.sectionLine} />
-                {/* 🔻 Maw Factions moved here, ABOVE the line */}
+              {/* 🔻 Maw Factions moved here, ABOVE the line */}
               <Text style={styles.mawSubtitle}>Maw Factions</Text>
               <View style={styles.scrollWrapper}>
                 <ScrollView
@@ -231,7 +294,7 @@ const DemonsSectionScreen = () => {
             <View style={styles.section}>
               <Text style={styles.sectionHeader}>Enemy Factions</Text>
               <View style={styles.sectionLine} />
-                <Text style={styles.mawSubtitle}>Other Worldly</Text>
+              <Text style={styles.mawSubtitle}>Other Worldly</Text>
               <View style={styles.scrollWrapper}>
                 <ScrollView
                   horizontal
@@ -246,11 +309,11 @@ const DemonsSectionScreen = () => {
               </View>
             </View>
 
-              {/* Reality Breakers Section */}
+            {/* Reality Breakers Section */}
             <View style={styles.section}>
               <Text style={styles.sectionHeader}>Reality Breakers</Text>
               <View style={styles.sectionLine} />
-                <Text style={styles.mawSubtitle}>They are coming</Text>
+              <Text style={styles.mawSubtitle}>{realitySubtitle}</Text>
               <View style={styles.scrollWrapper}>
                 <ScrollView
                   horizontal
@@ -375,7 +438,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 4,
   },
-    // New small subtitle under Demon Lords
+  // New small subtitle under Demon Lords
   mawSubtitle: {
     fontSize: 12,
     textAlign: 'center',
