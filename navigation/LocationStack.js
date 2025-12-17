@@ -6,6 +6,7 @@ import LocationMapScreen from '../screens/Locations/LocationMapScreen';
 import ZionCityScreen from '../screens/Locations/ZionCityScreen';
 import AegisCompoundScreen from '../screens/Locations/AegisCompoundScreen';
 import OphirCityScreen from '../screens/Locations/OphirCityScreen';
+import Labyrinth from '../screens/Locations/Labyrinth';
 
 const Stack = createNativeStackNavigator();
 
@@ -16,6 +17,7 @@ export function LocationStack() {
         <Stack.Screen name="ZionCity" component={ZionCityScreen} />
         <Stack.Screen name="AegisCompound" component={AegisCompoundScreen} />
         <Stack.Screen name="OphirCity" component={OphirCityScreen} />
+        <Stack.Screen name="Labyrinth" component={Labyrinth} />
     </Stack.Navigator>
   );
 }

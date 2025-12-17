@@ -1,6 +1,7 @@
 // screens/Locations/locationsConfig.js
 import EarthNASide from '../../assets/Space/NorthAmericanSide.jpg';
 import EarthPHSide from '../../assets/Space/PhilippinesSide.jpg';
+import EarthEASide from '../../assets/Space/Earth.jpg';
 import UtahTopDown from '../../assets/Space/Utah.jpg';
 import PhilippinesTopDown from '../../assets/Space/Philippines.jpg';
 
@@ -47,8 +48,8 @@ const LOCATIONS = [
     type: 'planet-side',
     background: EarthPHSide,
     toggle: {
-      targetLocationId: 'earth_orbit_na',
-      label: 'Switch to North America Side',
+      targetLocationId: 'earth_orbit_ea',
+      label: 'Switch to Europe Side',
     },
     pins: [
       {
@@ -57,6 +58,27 @@ const LOCATIONS = [
         // was top: '48%', left: '41%'
         position: { x: 0.42, y: 0.48 },
         targetLocationId: 'earth_philippines_region',
+      },
+    ],
+  },
+
+  {
+    id: 'earth_orbit_ea',
+    planetId: 'earth',
+    name: 'Earth – Europe Side',
+    type: 'planet-side',
+    background: EarthEASide,
+    toggle: {
+      targetLocationId: 'earth_orbit_na',
+      label: 'Switch to North America Side',
+    },
+    pins: [
+      {
+        id: 'labyrinth_pin',
+        label: 'The Labyrinth',
+        // was top: '31%', left: '22%'
+        position: { x: 0.57, y: 0.46 },
+        targetScreen: 'Labyrinth',
       },
     ],
   },
@@ -71,17 +93,17 @@ const LOCATIONS = [
     pins: [
       {
         id: 'zion_city_pin',
-        label: 'Zion City',
+        label: 'ZC',
         // was top: '44%', left: '35%'
-        position: { x: 0.31, y: 0.36 },
+        position: { x: 0.38, y: 0.37 },
         // 👉 goes straight to ZionCity screen, NOT another map
         targetScreen: 'ZionCity',
     },
     {
         id: 'aegis_compound_pin',
-        label: 'The Aegis',
+        label: 'A',
         // was top: '41%', left: '29%'
-        position: { x: 0.36, y: 0.40 },
+        position: { x: 0.32, y: 0.35 },
         targetScreen: 'AegisCompound',
       },
     ],
