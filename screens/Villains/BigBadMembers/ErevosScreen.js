@@ -156,6 +156,10 @@ const ErevosScreen = () => {
     navigation.goBack();
   };
 
+  const handleOpenFile = () => {
+  navigation.navigate("ErevosFile"); // route name you’ll register in your navigator
+};
+
   // ───────── RENDER CARD ─────────
   const renderCharacterCard = (character, index, isSecondary = false) => (
     <TouchableOpacity
@@ -258,102 +262,137 @@ const ErevosScreen = () => {
           {/* ABOUT — LORE KEPT INTACT (UNCHANGED TEXT) */}
           <View style={styles.aboutSection}>
             <Text style={styles.aboutHeader}>About Me</Text>
-            <Text style={styles.aboutText}>
-              The Parliament of Justice’s Big Bad
-            </Text>
+<Text style={styles.aboutText}>
+  The Parliament of Justice’s Big Bad
+</Text>
 
-            <Text style={styles.aboutText}>
-              Once a prehistoric warlord named Erevan, he was struck by a fragment from a cosmic meteor that crashed to Earth during his early conquests. Instead of dying, he rose reborn—immortal, empowered, and driven. Taking the name <Text style={{ fontStyle: "italic" }}>Erevos</Text>, he disappeared from history’s spotlight and began guiding it from the shadows. With millennia of warfare, manipulation, and conquest behind him, Erevos seeks to reshape the world into an eternal empire ruled by might, order, and evolutionary supremacy.
-            </Text>
+<Text style={styles.aboutText}>
+  Long before empires had names, he was a mortal warlord called <Text style={{ fontStyle: "italic" }}>Erevan</Text>—a brutal survivor in a world still close enough to the first covenant to feel its loss. During a night of falling fire, a fragment of alien star-metal struck the earth near his battlefield. Erevan died beside it… and woke again.
+</Text>
 
-            <Text style={styles.aboutText}>• Powers and Abilities:</Text>
-            <Text style={styles.aboutText}>
-              • Immortality: Unaging and nearly unkillable, Erevos regenerates from almost any wound, making death a temporary inconvenience.
-            </Text>
-            <Text style={styles.aboutText}>
-              • Enhanced Physique: Strength, speed, and endurance that exceed human limits; his ancient body has adapted beyond its original mortal frame.
-            </Text>
-            <Text style={styles.aboutText}>
-              • Master Strategist: Possessing thousands of years of military, political, and psychological experience, Erevos is an unmatched tactician.
-            </Text>
-            <Text style={styles.aboutText}>
-              • Cosmic Energy Manipulation: Residual meteorite power grants Erevos control over dark energy fields, force projection, and telekinesis.
-            </Text>
-            <Text style={styles.aboutText}>
-              • Meteor Staff: Erevos wields a staff forged from shards of the very meteor that changed him—capable of absorbing energy and unleashing cosmic force.
-            </Text>
-            <Text style={styles.aboutText}>
-              • Ancestral Sigil: As the original meta-human, Erevos can suppress or command meta-powers through an ancient artifact tied to his bloodline.
-            </Text>
+<Text style={styles.aboutText}>
+  That meteor was <Text style={{ fontStyle: "italic" }}>Vortanite</Text>. It didn’t “gift” him divinity—it <Text style={{ fontStyle: "italic" }}>activated</Text> something already inside his blood: a dormant anomaly later known as <Text style={{ fontStyle: "italic" }}>LUCTUS</Text>. Reborn with a body that refused extinction and a mind that learned patterns too quickly, he buried his birth name and took a new one: <Text style={{ fontStyle: "italic" }}>Erevos</Text>.
+</Text>
 
-            <Text style={styles.aboutText}>Erevos’s Timeline:</Text>
-            <Text style={styles.aboutText}>
-              1. <Text style={{ fontWeight: "bold" }}>Erevos Primeval</Text> – His origin form shortly after gaining immortality, clad in bronze-age armor, still discovering the limits of his new power.
-            </Text>
-            <Text style={styles.aboutText}>
-              2. <Text style={{ fontWeight: "bold" }}>Erevos the Conqueror</Text> – A medieval tyrant who led empires across continents, clad in obsidian-black armor streaked with star-metal.
-            </Text>
-            <Text style={styles.aboutText}>
-              3. <Text style={{ fontWeight: "bold" }}>Modern Erevos</Text> – A quiet kingmaker operating behind global conflicts, dressed in regal armor and trench-like coats woven with cosmic threads.
-            </Text>
-            <Text style={styles.aboutText}>
-              4. <Text style={{ fontWeight: "bold" }}>Erevos Ascendant</Text> – His future form after conquering half the galaxy, now nearly divine, infused with red cosmic fire and armored in god-forged blacksteel.
-            </Text>
+<Text style={styles.aboutText}>
+  He did not demand worship. He did not build a throne. He built systems—cities, orders, vaults of knowledge—and then stepped back to watch humanity repeat the same collapse in different clothes. Over millennia of war, politics, and hidden influence, Erevos stopped believing evil was an individual choice.
+</Text>
 
-            <Text style={styles.aboutText}>
-              Current Agenda: <Text style={{ fontStyle: "italic" }}>Project Ascendancy</Text>
-            </Text>
-            <Text style={styles.aboutText}>
-              Erevos’s final vision is the unification of Earth and its meta-humans under his immortal rule. He plans to harvest the powers of heroes using the Celestial Eye and activate the Ancestral Sigil, binding all meta-kind to him. He will then reshape Earth’s fabric using cosmic energy granted through a dangerous alliance with Torath—the Devourer.
-            </Text>
+<Text style={styles.aboutText}>
+  He believes it is a process.
+</Text>
 
-            <Text style={styles.aboutText}>The Enlightened:</Text>
-            <Text style={styles.aboutText}>
-              Erevos leads a secret cabal known as <Text style={{ fontWeight: "bold" }}>The Enlightened</Text>, mirroring the ancient Light. Each Lieutenant represents a domain of power and fulfills a vital role in Erevos’s grand strategy:
-            </Text>
+<Text style={styles.aboutText}>
+  • Powers and Abilities:
+</Text>
+<Text style={styles.aboutText}>
+  • Immortality (Luctus): Unaging and nearly unkillable, Erevos regenerates from catastrophic wounds. Death is not a fate to him—only an interruption.
+</Text>
+<Text style={styles.aboutText}>
+  • Enhanced Physique: Strength, speed, and endurance beyond human limits—an ancient body refined by survival and the metabolic rewrite of activation.
+</Text>
+<Text style={styles.aboutText}>
+  • Master Strategist: Thousands of years of military, political, and psychological warfare make him an unmatched tactician and long-game manipulator.
+</Text>
+<Text style={styles.aboutText}>
+  • Vortanite Resonance: The meteor’s residue left him able to shape dense “dark” fields—force projection, telekinetic pressure, and gravitational-like control (not magic—resonance).
+</Text>
+<Text style={styles.aboutText}>
+  • Meteor Staff: A focus forged from the same star-metal, used to absorb, stabilize, and amplify resonance into devastating output.
+</Text>
+<Text style={styles.aboutText}>
+  • Ancestral Sigil (Dormancy Authority): As the first awakened carrier, Erevos can suppress—or forcibly trigger—meta potential in bloodlines connected to him by Luctus inheritance.
+</Text>
 
-            <Text style={styles.aboutText}>
-              • <Text style={{ fontWeight: "bold" }}>Chrona</Text>: A time-bending manipulator of fate and contingency. She sees alternate timelines and subtly influences causality to ensure Erevos's future dominance.
-            </Text>
+<Text style={styles.aboutText}>
+  Erevos’s Timeline:
+</Text>
+<Text style={styles.aboutText}>
+  1. <Text style={{ fontWeight: "bold" }}>Erevos Primeval</Text> – Newly awakened after the Meteor Night, still learning what Luctus made him, clad in early-era armor and raw purpose.
+</Text>
+<Text style={styles.aboutText}>
+  2. <Text style={{ fontWeight: "bold" }}>Erevos the Conqueror</Text> – A medieval tyrant who weaponized history itself, marching beneath star-metal and doctrine.
+</Text>
+<Text style={styles.aboutText}>
+  3. <Text style={{ fontWeight: "bold" }}>Modern Erevos</Text> – A kingmaker in silence: corporate wars, proxy conflicts, and engineered crises—all steering the world toward his preferred “order.”
+</Text>
+<Text style={styles.aboutText}>
+  4. <Text style={{ fontWeight: "bold" }}>Erevos Ascendant</Text> – The future version of Erevos when restraint fails: half the galaxy bent, red cosmic fire unleashed, and control elevated into something nearly divine.
+</Text>
 
-            <Text style={styles.aboutText}>
-              • <Text style={{ fontWeight: "bold" }}>Noctura</Text>: A master illusionist and psychological manipulator. Noctura uses hallucinations and misinformation to cloud mass perception, control narratives, and disrupt social cohesion. Behind the veil of her illusions, she also commands a network of elite spies and seduction agents, subtly turning diplomats, influencers, and even heroes into pawns of The Enlightened.
-            </Text>
+<Text style={styles.aboutText}>
+  Current Agenda: <Text style={{ fontStyle: "italic" }}>Project Ascendancy</Text>
+</Text>
+<Text style={styles.aboutText}>
+  Ascendancy is not simply conquest—it is containment through control. Erevos intends to unify Earth’s metas under one rule, harvesting proven hero abilities through the Celestial Eye and using the Ancestral Sigil to decide who remains dormant, who awakens, and who is denied. In his mind, unregulated power is how civilizations end.
+</Text>
 
-            <Text style={styles.aboutText}>
-              • <Text style={{ fontWeight: "bold" }}>Sable</Text>: Erevos's most trusted and lethal assassin. A master of dimensional phasing, she can enter and exit reality to execute targets without leaving a trace. Known to always finish the mission.
-            </Text>
+<Text style={styles.aboutText}>
+  And he will not allow the world to become available.
+</Text>
 
-            <Text style={styles.aboutText}>
-              • <Text style={{ fontWeight: "bold" }}>Obelisk</Text>: A mystic warlock who commands dark rituals and ancient energy. He maintains Erevos’s arcane strongholds and opens portals to cosmic realms, allowing communication with entities beyond mortal comprehension.
-            </Text>
+<Text style={styles.aboutText}>
+  The Enlightened:
+</Text>
+<Text style={styles.aboutText}>
+  Erevos leads a secret cabal known as <Text style={{ fontWeight: "bold" }}>The Enlightened</Text>, an order built on one principle: power must be guided—or it will repeat the Fall. Each Lieutenant represents a domain of control within his grand design:
+</Text>
 
-            <Text style={styles.aboutText}>
-              • <Text style={{ fontWeight: "bold" }}>Titanus</Text>: A genetically and cybernetically enhanced juggernaut. As Erevos’s personal enforcer, Titanus crushes resistance movements and wipes out rebellious metahumans with brute force.
-            </Text>
+<Text style={styles.aboutText}>
+  • <Text style={{ fontWeight: "bold" }}>Chrona</Text>: A time-bending manipulator of fate and contingency. She reads branching outcomes and nudges causality toward Erevos’s preferred future.
+</Text>
 
-            <Text style={styles.aboutText}>
-              • <Text style={{ fontWeight: "bold" }}>Red Mercury</Text>: The political puppetmaster and financial juggernaut of The Enlightened. He commands vast empires of wealth, media, and industry, pulling the strings behind world leaders and global institutions. Every law passed, every crisis exploited, every conflict prolonged—his influence shapes it all. Red Mercury ensures the cabal’s shadow remains cast across every government on Earth.
-            </Text>
+<Text style={styles.aboutText}>
+  • <Text style={{ fontWeight: "bold" }}>Noctura</Text>: An illusionist and psychological operator who engineers perception, destabilizes truth, and turns populations into compliant narratives.
+</Text>
 
-            <Text style={styles.aboutText}>Pact with Torath – The Devourer:</Text>
-            <Text style={styles.aboutText}>
-              Erevos made a cosmic bargain with Torath, the Devourer—a being who consumes worlds. Erevos promised him Earth and its meta-humans in exchange for power. Their deal is simple: whoever claims Earth first keeps it. If Erevos fails, Torath devours everything.
-            </Text>
-            <Text style={styles.aboutText}>
-              The alliance is unstable—both plot to betray the other once Ascendancy is complete.
-            </Text>
+<Text style={styles.aboutText}>
+  • <Text style={{ fontWeight: "bold" }}>Sable</Text>: The silent blade. A dimensional assassin who phases between layers of reality—executions without witnesses, missions without residue.
+</Text>
 
-            <Text style={styles.aboutText}>Erevos’s Legacy:</Text>
-            <Text style={styles.aboutText}>
-              Erevos is not just a threat—he is the source. All meta-powers on Earth stem from his bloodline. Many unknowingly descend from him, and his influence spans generations. He believes their destiny is to return to his rule.
-            </Text>
-            <Text style={styles.aboutText}>
-              In the Parliament of Justice, Erevos sees only delay. In his mind, peace is weakness, and only through struggle can greatness be born.
-            </Text>
-            <Text style={styles.aboutText}>
-              To defeat Erevos is to overcome the very shadow of humanity’s darkest ambition.
-            </Text>
+<Text style={styles.aboutText}>
+  • <Text style={{ fontWeight: "bold" }}>Obelisk</Text>: A warlock-architect of forbidden ritual systems and cosmic gateways—maintaining the cabal’s hidden infrastructure and external communications.
+</Text>
+
+<Text style={styles.aboutText}>
+  • <Text style={{ fontWeight: "bold" }}>Titanus</Text>: A bio-cyber juggernaut deployed when persuasion ends—Erevos’s answer to rebellion and meta insurgency.
+</Text>
+
+<Text style={styles.aboutText}>
+  • <Text style={{ fontWeight: "bold" }}>Red Mercury</Text>: The worldly engine—wealth, media, industry, and legislation. He shapes nations the way others shape clay.
+</Text>
+
+<Text style={styles.aboutText}>
+  Pact with Torath – The Devourer:
+</Text>
+<Text style={styles.aboutText}>
+  Erevos made a cosmic bargain with Torath, the Devourer—a conqueror who consumes worlds. Publicly, it’s a simple wager: whoever claims Earth first keeps it. Privately, Erevos knows Torath is not just a monster… he is a herald.
+</Text>
+<Text style={styles.aboutText}>
+  The alliance is unstable—both expect betrayal. Erevos’s goal isn’t trust. It’s time.
+</Text>
+
+<Text style={styles.aboutText}>
+  Erevos’s Legacy:
+</Text>
+<Text style={styles.aboutText}>
+  Erevos is not just a threat—he is the source. Meta potential traces back to his awakened bloodline, carried through generations in silence. Most carriers will never activate. Some will. And Erevos intends to decide which future the world inherits.
+</Text>
+<Text style={styles.aboutText}>
+  In the Parliament of Justice, Erevos sees only delay. To him, peace is fragile. Struggle reveals the real hierarchy of beings. If humanity refuses to be guided, it will be sorted—by war, by collapse… or by him.
+</Text>
+<Text style={styles.aboutText}>
+  To defeat Erevos is to defeat the idea that control is salvation. And to ignore him is to risk learning what happens when salvation runs out.
+</Text>
+          </View>
+          
+          {/* 🔒 OMEGA–BLACK FILE BUTTON */}
+          <View style={styles.fileButtonWrap}>
+            <TouchableOpacity style={styles.fileButton} onPress={handleOpenFile} activeOpacity={0.9}>
+              <Text style={styles.fileButtonTop}>OMEGA–BLACK</Text>
+              <Text style={styles.fileButtonTitle}>OPEN ORIGIN FILE</Text>
+              <Text style={styles.fileButtonSub}>EREVOS PRIME • CLASSIFIED</Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </View>
@@ -594,6 +633,48 @@ const styles = StyleSheet.create({
     textShadowRadius: 10,
     textShadowOffset: { width: 0, height: 0 },
   },
+
+  // 🔒 FILE BUTTON
+fileButtonWrap: {
+  marginTop: 18,
+  marginHorizontal: 12,
+},
+fileButton: {
+  borderRadius: 20,
+  paddingVertical: 14,
+  paddingHorizontal: 14,
+  backgroundColor: COLORS.cosmicBlue,
+  borderWidth: 1,
+  borderColor: COLORS.royalPurpleEdge,
+  shadowColor: "#000",
+  shadowOpacity: 0.25,
+  shadowRadius: 18,
+  shadowOffset: { width: 0, height: 10 },
+  elevation: 10,
+},
+fileButtonTop: {
+  color: "rgba(245, 245, 245, 0.78)",
+  fontSize: 11,
+  letterSpacing: 2,
+  textTransform: "uppercase",
+  marginBottom: 4,
+  textAlign: "center",
+},
+fileButtonTitle: {
+  color: "#EFE6FF",
+  fontSize: 16,
+  fontWeight: "900",
+  letterSpacing: 1,
+  textAlign: "center",
+},
+fileButtonSub: {
+  marginTop: 4,
+  color: "rgba(255, 235, 235, 0.72)",
+  fontSize: 11,
+  letterSpacing: 1,
+  textTransform: "uppercase",
+  textAlign: "center",
+},
 
   // ABOUT
   aboutSection: {

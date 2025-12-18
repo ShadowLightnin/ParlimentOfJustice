@@ -91,6 +91,7 @@ import KaidanVyrosScreen from '../screens/Villains/BigBadMembers/KaidanVyrosScre
 import StormshadeScreen from '../screens/Villains/BigBadMembers/StormshadeScreen';
 import VoidConquerorScreen from '../screens/Villains/BigBadMembers/VoidConquerorScreen';
 import ErevosScreen from '../screens/Villains/BigBadMembers/ErevosScreen';
+  import ErevosFileScreen from '../screens/Villains/BigBadMembers/ErevosFileScreen';
 import AlmarraScreen from '../screens/Villains/BigBadMembers/AlmarraScreen';
 import VortigarScreen from '../screens/Villains/BigBadMembers/VortigarScreen';
 import Torath from '../screens/Villains/BigBadMembers/Torath';
@@ -187,6 +188,7 @@ const VillainsStack = () => {
       <Stack.Screen name="StormshadeScreen" component={StormshadeScreen} />
       <Stack.Screen name="VoidConquerorScreen" component={VoidConquerorScreen} />
       <Stack.Screen name="ErevosScreen" component={ErevosScreen} />
+        <Stack.Screen name="ErevosFile" component={ErevosFileScreen} />
       <Stack.Screen name="AlmarraScreen" component={AlmarraScreen} />
       <Stack.Screen name="VortigarScreen" component={VortigarScreen} />
       <Stack.Screen name="Torath" component={Torath} />
