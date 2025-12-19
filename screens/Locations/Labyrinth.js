@@ -33,7 +33,7 @@ const CLEARANCE_LABEL = {
 
 // 🔐 Replace these with your real codes
 const PASSCODES = {
-  RESTRICTED: "ECLIPSE",
+  RESTRICTED: "ELOHIM",
   OMEGA_BLACK: "OMEGABLACK",
 };
 
@@ -335,129 +335,277 @@ export default function LabyrinthScreen() {
       <View style={styles.container}>
         <View style={styles.cardRestricted}>
           {/* Top Bar */}
-          <View style={styles.topBar}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.fileHeader}>📁 PARLIAMENT OF JUSTICE</Text>
-              <Text style={styles.fileSubheader}>OMEGA–BLACK ARCHIVE — CLASSIFIED DOSSIER</Text>
-              <Text style={styles.metaLine}>CLEARANCE: {headerLabel}</Text>
-            </View>
+<View style={styles.topBar}>
+  <View style={{ flex: 1 }}>
+    <Text style={styles.fileHeader}>📁 PARLIAMENT OF JUSTICE</Text>
+    <Text style={styles.fileSubheader}>OMEGA–BLACK ARCHIVE — CLASSIFIED DOSSIER</Text>
+    <Text style={styles.metaLine}>CLEARANCE: {headerLabel}</Text>
 
-            <View style={styles.topButtons}>
-              <TouchableOpacity style={styles.smallBtn} activeOpacity={0.85} onPress={() => setUnlockOpen(true)}>
-                <Text style={styles.smallBtnText}>UNLOCK</Text>
-              </TouchableOpacity>
+    {/* Bigger identity lines */}
+    {/* <Text style={styles.metaLine}>SECTOR: TERRAN ARCHIVES / FIRST-TIME STUDIES</Text>
+    <Text style={styles.metaLine}>PROTOCOL: MYTH–SCIENCE SYNTHESIS ENABLED</Text> */}
+    <Text style={styles.metaLine}>PUBLIC READINESS: LOW • CONTAMINATION RISK: HIGH</Text>
+  </View>
 
-              <TouchableOpacity style={styles.smallBtn} activeOpacity={0.85} onPress={goPublic}>
-                <Text style={styles.smallBtnText}>PUBLIC</Text>
-              </TouchableOpacity>
+  <View style={styles.topButtons}>
+    <TouchableOpacity style={styles.smallBtn} activeOpacity={0.85} onPress={() => setUnlockOpen(true)}>
+      <Text style={styles.smallBtnText}>UNLOCK</Text>
+    </TouchableOpacity>
 
-              <TouchableOpacity style={[styles.smallBtn, styles.exitBtn]} activeOpacity={0.85} onPress={exitArchive}>
-                <Text style={[styles.smallBtnText, { color: "#fff" }]}>EXIT</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+    <TouchableOpacity style={styles.smallBtn} activeOpacity={0.85} onPress={goPublic}>
+      <Text style={styles.smallBtnText}>PUBLIC</Text>
+    </TouchableOpacity>
 
-          <View style={styles.divider} />
+    <TouchableOpacity style={[styles.smallBtn, styles.exitBtn]} activeOpacity={0.85} onPress={exitArchive}>
+      <Text style={[styles.smallBtnText, { color: "#fff" }]}>EXIT</Text>
+    </TouchableOpacity>
+  </View>
+</View>
 
-          <Animated.ScrollView
-            style={styles.scroll}
-            showsVerticalScrollIndicator={false}
-            scrollEventThrottle={16}
-            onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
-              useNativeDriver: true,
-            })}
-          >
-            <Text style={styles.metaLine}>FILE: LABYRINTH OF HAWARA</Text>
-            <Text style={styles.metaLine}>CLASSIFICATION: PRE-FLOOD MEGASTRUCTURE</Text>
-            <Text style={styles.metaLine}>STATUS: SEALED</Text>
+<View style={styles.divider} />
 
-            <View style={styles.divider} />
+<Animated.ScrollView
+  style={styles.scroll}
+  showsVerticalScrollIndicator={false}
+  scrollEventThrottle={16}
+  onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
+    useNativeDriver: true,
+  })}
+>
+  {/* Archive Note */}
+  <Text style={styles.metaLine}>ARCHIVAL NOTE — REAL / TRADITION / SYNTHESIS</Text>
+  <Text style={styles.metaLine}>This record integrates the following layers:</Text>
+  <Text style={styles.metaLine}>• Established archaeology and geology</Text>
+  <Text style={styles.metaLine}>• Scriptural tradition (covenant chronology + flood memory)</Text>
+  <Text style={styles.metaLine}>• Cultural mythology (compressed memory signals)</Text>
+  <Text style={styles.metaLine}>• Speculative reconstruction (continuity modeling)</Text>
+  <Text style={styles.metaLine}>Objective: continuity, not conversion.</Text>
+  <Text style={styles.metaLine}>Classification does not imply certainty — only relevance.</Text>
 
-            <CollapsibleDossier title="ORIGIN — ZEP TEPI" userClearance={clearance}>
-              <Text style={styles.body}>
-                Over 10,000 years ago, before the rise of Ancient Egypt, before the Great Flood, and
-                prior to the Younger Dryas Catalyst, humanity entered an era remembered as Zep Tepi —
-                The First Time.{"\n\n"}
-                Civilization existed globally with advanced mastery of astronomy, mathematics,
-                agriculture, navigation, and governance.
-              </Text>
-            </CollapsibleDossier>
+  <View style={styles.divider} />
 
-            <CollapsibleDossier title="ATLANTIS — PRIMARY METROPOLIS" userClearance={clearance}>
-              <Text style={styles.body}>
-                Atlantis was the most advanced and populous city of the First Time — a nexus of scholarship
-                and law. It represented humanity’s greatest achievement, and its greatest failure when power
-                outpaced morality.
-              </Text>
-            </CollapsibleDossier>
+  {/* File Header Meta */}
+    <CollapsibleDossier title="FILE: LABYRINTH OF HAWARA" userClearance={clearance}>
+    <Text style={styles.body}>
+  {/* <Text style={styles.metaLine}>FILE: LABYRINTH OF HAWARA{"\n\n"}</Text> */}
+  <Text style={styles.metaLine}>CLASSIFICATION: PRE-FLOOD MEGASTRUCTURE / VAULT OF RECORDS{"\n\n"}</Text>
+  <Text style={styles.metaLine}>STATUS: SEALED (CONDITIONAL ACCESS){"\n\n"}</Text>
+  <Text style={styles.metaLine}>CROSS-REF: ATLANTIS • SHEMSU HOR • OPHIR / OPHIRA{"\n"}</Text>
+    </Text>
+  </CollapsibleDossier>
 
-            <CollapsibleDossier title="THE LABYRINTH — VAULT OF RECORDS" userClearance={clearance}>
-              <Text style={styles.body}>
-                Constructed long before dynastic Egypt, the Labyrinth was built as a Vault of Records to preserve
-                the knowledge of the First World.{"\n\n"}
-                • ~3,000 chambers and corridors{"\n"}
-                • Four subterranean layers{"\n"}
-                • Spanning the size of ten football fields{"\n\n"}
-                At its core lies a massive metallic circular structure — the Rosetta Engine — designed to guide
-                future civilizations.
-              </Text>
-            </CollapsibleDossier>
+  {/* Timeline / Zep Tepi */}
+  <CollapsibleDossier title="CHRONOLOGY — ZEP TEPI TO DYNASTIC EGYPT (SYNTHESIS)" clearanceRequired={CLEARANCE.RESTRICTED}userClearance={clearance}>
+<Text style={styles.body}>
+  300,000 BP — Homo sapiens appear. This window is filed as Zep Tepi (“The First Time”).{"\n\n"}
 
-            <CollapsibleDossier title="ANCIENT TESTIMONY — CLASSICAL ACCOUNTS" userClearance={clearance}>
-              <Text style={styles.body}>
-                Herodotus described the Labyrinth as greater than the pyramids, overwhelming to the senses,
-                and beyond post-Flood human capability. Strabo, Diodorus Siculus, and Pliny the Elder confirmed
-                its immense scale, complexity, and sacred nature.
-              </Text>
-            </CollapsibleDossier>
+  Scriptural anchor: Adam and Eve depart Eden (tradition places Eden in what is now Missouri, United States).
+  They roam and spread with their children. Over generations, their offspring disperse widely across the earth,
+  including Africa. Covenant memory continues in some lines and collapses in others.{"\n\n"}
 
-            <CollapsibleDossier title="THE SPHINX — CELESTIAL MARKER" userClearance={clearance}>
-              <Text style={styles.body}>
-                The Great Sphinx was constructed above the Labyrinth with the head of a lion, facing the rising sun
-                and key constellations.{"\n\n"}
-                The primary entrance lies beneath its right paw.
-              </Text>
-            </CollapsibleDossier>
+  70,000 BP — Major global migration. Humanity expands across Africa, Europe, and Asia. Populations settle,
+  trade, and develop early regional identities.{"\n\n"}
 
-            <CollapsibleDossier
-              title="RESTRICTED — THE FIRST TIME TEACHERS"
-              clearanceRequired={CLEARANCE.RESTRICTED}
-              userClearance={clearance}
-            >
-              <Text style={styles.body}>
-                Ra — Astronomy and Timekeeping{"\n"}
-                Thoth — Writing and Systems{"\n"}
-                Osiris — Law and Judgment{"\n"}
-                Isis — Medicine and Preservation{"\n"}
-                Horus — Stewardship and Defense{"\n"}
-                Ptah — Engineering and Construction{"\n"}
-                Ma’at — Cosmic Law (Principle){"\n\n"}
-                These were not gods in life — they became gods in memory.
-              </Text>
-            </CollapsibleDossier>
+  40,000 BP — Neanderthals disappear. Homo sapiens become the only human species.
+  Civilizations exist across the world with structure comparable to later Egyptians, Greeks, and Romans —
+  advanced in astronomy, agriculture, governance, and navigation.{"\n\n"}
 
-            <CollapsibleDossier
-              title="OMEGA–BLACK — ROSETTA ENGINE NOTES"
-              clearanceRequired={CLEARANCE.OMEGA_BLACK}
-              userClearance={clearance}
-            >
-              <Text style={styles.body}>
-                The Rosetta Engine is not a “machine” in the modern sense. It is an interpretive framework:
-                a universal key that binds language, number, sky-cycles, and history into a single system.{"\n\n"}
-                Without correct calibration, the Engine yields nothing. This is intentional. Knowledge is conditional.
-              </Text>
+  In this era, the Shemsu Hor rise — the Followers of Horus — remembered later as a pre-dynastic rulership
+  epoch that lasted millennia. Horus is not yet a “god” in the later Egyptian sense, but a dominant figure,
+  ideology, or leadership line whose influence persists into memory.{"\n\n"}
 
-              <View style={styles.subDivider} />
+  Atlantis rises during the green Sahara age. The Sahara is forested and fertile before later desertification.
+  As generations pass, humanity becomes increasingly wicked — following philosophers and symbolic rulers instead
+  of prophets of God.{"\n\n"}
 
-              <Text style={styles.quote}>
-                “Let those who seek power be lost. Let those who seek understanding pass.”
-              </Text>
-            </CollapsibleDossier>
+  12,900 BP — The Younger Dryas begins. Noah warns the world and calls the people to repentance.
+  They do not listen. God sends judgment. A catastrophic impact event (recorded in memory as a comet in later
+  depictions) triggers the collapse: climate disruption, meltwater, and the Flood.{"\n\n"}
 
-            <View style={{ height: 16 }} />
-            <Text style={styles.statusLine}>ARCHIVE STATUS: ACTIVE</Text>
-            <View style={{ height: 18 }} />
-          </Animated.ScrollView>
+  During the final years before the Flood, the people of Egypt construct the Labyrinth as a Hall of Records —
+  a deliberate preservation of knowledge, law, and instruction for the post-Flood world. At its core is placed
+  a massive iron ring structure — the Engine — intended to endure when everything else fails.{"\n\n"}
+
+  Above the Labyrinth, the Sphinx is constructed as the marker: a lion guardian facing east toward the dawn,
+  aligned to lion symbolism in the sky (Leo), with the entrance locus under the right paw.{"\n\n"}
+
+  11,700 BP — Younger Dryas ends / Holocene begins. Noah’s Ark comes to rest (traditions place it in Turkey /
+  the Near East; some place it toward the mountains beyond). Humanity repopulates the earth. Atlantis is gone,
+  buried beneath sea or sand — along with forests and cities.{"\n\n"}
+
+  9,600 BCE — Göbekli Tepe era. Monumental building returns as survivors reorganize, carrying echoes of the
+  First Time but not its full continuity.{"\n\n"}
+
+  7,000 BCE — Nabta Playa era. Astronomical marking systems appear again in North Africa; seasonal measurement
+  is rebuilt.{"\n\n"}
+
+  6,000 BCE — Pre-dynastic Egypt. Teachers of First-Time knowledge arrive searching for what was preserved.
+  They find the Sphinx already buried by sand. They excavate the head. Egypt adopts the monument as its own and
+  resists deeper excavation. The Labyrinth is located and partially unburied, but access remains controlled.
+  Priestly guardianship begins.{"\n\n"}
+
+  3,100 BCE — Dynastic Egypt. The Teachers become legends; later memory turns them into gods.
+  The post-Flood civilization now wears the symbols of the pre-Flood world without fully understanding them.{"\n\n"}
+
+  2,500 BCE — Official chronology layer. Egypt claims major monuments under state narrative.
+  Greek writers later report the Labyrinth as beyond comprehension — not knowing it predates the comfortable story.
+</Text>
+  </CollapsibleDossier>
+
+  {/* Atlantis */}
+  <CollapsibleDossier title="ATLANTIS — PRIMARY METROPOLIS (CONTINUITY MODEL)" userClearance={clearance}>
+<Text style={styles.body}>
+  Atlantis is filed as the dominant metropolis of the First Time — the peak city of the green-Sahara age.{"\n\n"}
+
+  It is characterized by:{"\n"}
+  • centralized scholarship and law{"\n"}
+  • sea mastery and long-range trade{"\n"}
+  • engineering that outpaced later post-Flood capability{"\n\n"}
+
+  As righteousness collapsed, Atlantis became the symbol of civilization without God: power without repentance,
+  knowledge without covenant, order without prophets.{"\n\n"}
+
+  Atlantis falls in the same global judgment window preserved as flood memory across cultures.
+  Its disappearance is not only geographic — it is historical: the severing of continuity.
+</Text>
+  </CollapsibleDossier>
+
+  {/* Shemsu Hor */}
+  <CollapsibleDossier title="SHEMSU HOR — FOLLOWERS OF HORUS (PRE-DYNASTIC SIGNAL)" userClearance={clearance}>
+<Text style={styles.body}>
+  The Shemsu Hor (“Followers of Horus”) are recorded as a pre-dynastic rulership era — not merely myth,
+  but a compressed memory of an older leadership order before Egypt’s official dynastic history begins.{"\n\n"}
+
+  They are associated with:{"\n"}
+  • advanced stellar calendars and seasonal measurement{"\n"}
+  • sacred mathematics and monumental planning{"\n"}
+  • the guardian doctrine: order versus chaos{"\n\n"}
+
+  In this record, Horus represents a dominant figure, lineage, or philosophy from the First Time whose symbol
+  persists into later Egyptian religion. Egypt inherits the mask and calls it a god; the original was older.
+</Text>
+  </CollapsibleDossier>
+
+  {/* Labyrinth */}
+  <CollapsibleDossier title="THE LABYRINTH — VAULT OF RECORDS (HALL OF PRESERVATION)" userClearance={clearance}>
+<Text style={styles.body}>
+  The Labyrinth is the Hall of Records built at the end of the First Time to preserve knowledge through the Flood.{"\n\n"}
+
+  Ancient descriptions consistently report:{"\n"}
+  • thousands of rooms and corridors{"\n"}
+  • multiple levels above and below ground{"\n"}
+  • courts, halls, and roofed passages{"\n"}
+  • a scale that overwhelmed later observers{"\n\n"}
+
+  Classical authors described it in extraordinary detail:{"\n"}
+  • Herodotus (5th century BCE) claimed it surpassed the pyramids and was overwhelming in scale{"\n"}
+  • Strabo described multiple courts, halls, and roofed passages{"\n"}
+  • Diodorus Siculus emphasized its sacred and administrative nature{"\n"}
+  • Pliny the Elder confirmed its immense complexity{"\n\n"}
+
+  At the center lies the anomaly: a massive metallic iron ring structure placed as the enduring core.
+  It is not decorative. It is the preserved heart of the Records — built to outlast the world.
+</Text>
+  </CollapsibleDossier>
+
+  {/* Ancient testimony */}
+  <CollapsibleDossier title="ANCIENT TESTIMONY — CLASSICAL ACCOUNTS (EFFECT WITNESS)" userClearance={clearance}>
+<Text style={styles.body}>
+  The ancient witnesses matter because they describe the Labyrinth as something that did not fit the world they lived in.{"\n\n"}
+
+  Herodotus called it greater than the pyramids. Strabo and Diodorus described its courts and passages.
+  Pliny confirmed its complexity.{"\n\n"}
+
+  Their accounts preserve the same conclusion: the Labyrinth was already ancient when later civilizations found it,
+  and it was built for a purpose beyond ordinary monuments.
+</Text>
+  </CollapsibleDossier>
+
+  {/* Sphinx */}
+  <CollapsibleDossier title="THE SPHINX — CELESTIAL MARKER / SAND BURIAL CYCLE" userClearance={clearance}>
+<Text style={styles.body}>
+  The Great Sphinx is the celestial marker placed above the Labyrinth to identify the sealed locus without exposing it.{"\n\n"}
+
+  It is built as a lion guardian facing east — dawn-facing and lion-sky aligned — anchoring the “Leo” symbolism
+  that survives into later ages.{"\n\n"}
+
+  After the Flood and the long climate shifts that follow, sand advances and the marker becomes buried naturally.
+  This burial preserves the seal without armies, politics, or conquest.{"\n\n"}
+
+  Later Egyptians excavate only what they can claim and worship: the head. They resist deeper excavation.
+  The structure becomes a state icon — but it predates the state.{"\n\n"}
+
+  Entrance tradition: the primary access point lies beneath the right paw.
+</Text>
+  </CollapsibleDossier>
+
+  {/* Event cluster */}
+  <CollapsibleDossier title="EVENT CLUSTER — YOUNGER DRYAS / FLOOD MEMORY (OPERATIONAL SUMMARY)" userClearance={clearance}>
+<Text style={styles.body}>
+  This record treats the Younger Dryas catastrophe and the Flood as the same judgment window: a global reset that ends the First Time.{"\n\n"}
+
+  Noah warns the world and calls for repentance. The people refuse. Judgment follows.{"\n\n"}
+
+  Worldwide outcomes preserved in collective memory:{"\n"}
+  • abrupt climate disruption{"\n"}
+  • meltwater and sea-level rise{"\n"}
+  • civilizational collapse{"\n"}
+  • synchronized flood traditions across cultures{"\n\n"}
+
+  The operational conclusion is not negotiable inside this archive: the First World fell, and the Hall of Records
+  was built because righteous continuity had to survive the waters.
+</Text>
+  </CollapsibleDossier>
+
+  {/* Teachers */}
+  <CollapsibleDossier
+    title="RESTRICTED — THE FIRST TIME TEACHERS (LEGACY TRANSFER)"
+    userClearance={clearance}
+  >
+<Text style={styles.body}>
+  The “Teachers” were not gods in life. They were bearers of knowledge who helped rebuild
+  after collapse.{"\n\n"}
+
+  Ra — Astronomy and Timekeeping{"\n"}
+  Thoth — Writing and Systems{"\n"}
+  Osiris — Law and Judgment{"\n"}
+  Isis — Medicine and Preservation{"\n"}
+  Horus — Stewardship and Defense{"\n"}
+  Ptah — Engineering and Construction{"\n"}
+  Ma’at — Moral and Cosmic Law{"\n\n"}
+
+  Over time, memory compressed instruction into divinity. When the lesson survives but
+  the teacher does not, the teacher becomes a god in legend.
+</Text>
+  </CollapsibleDossier>
+
+  {/* Omega-Black Rosetta */}
+  <CollapsibleDossier
+    title="OMEGA–BLACK — ROSETTA ENGINE NOTES"
+    clearanceRequired={CLEARANCE.OMEGA_BLACK}
+    userClearance={clearance}
+  >
+    <Text style={styles.body}>
+      The Rosetta Engine is a conditional framework: a key binding language, number, sky-cycles, and record-lock alignment.{"\n\n"}
+      The Engine yields nothing to brute force. This is intentional. Knowledge is conditional.{"\n\n"}
+      Hypothesis tags:{"\n"}
+      • ring-core anomaly signature persists across eras{"\n"}
+      • calibration doctrine prevents conquest-extraction{"\n"}
+      • guided rediscovery produces mythology as camouflage{"\n"}
+    </Text>
+
+    <View style={styles.subDivider} />
+
+    <Text style={styles.quote}>
+      “Let those who seek power be lost.{"\n"}
+      Let those who seek understanding pass.”
+    </Text>
+  </CollapsibleDossier>
+
+  <View style={{ height: 16 }} />
+  <Text style={styles.statusLine}>ARCHIVE STATUS: ACTIVE</Text>
+  <View style={{ height: 18 }} />
+</Animated.ScrollView>
         </View>
       </View>
 
