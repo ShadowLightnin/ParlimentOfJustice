@@ -154,8 +154,9 @@ export default function ErevosFileScreen() {
 
             <Text style={styles.h}>VIII. OPHIR CONTACT EVENT</Text>
             <Text style={styles.p}>
+              Around 200 BCE Erevos finally tracks down and finds the lost 10 in the Philippines.
               Ophir was built atop a massive Vortanite deposit — the second Meteor Night impact site. Erevos integrated, revealed controlled application,
-              and ensured continued isolation until a future convergence point.
+              and ensured continued isolation until a future convergence point. He stayed with them and taught them for 900 years.
             </Text>
 
             <Text style={styles.h}>IX. TORATH — THE KNOWN HERALD</Text>
