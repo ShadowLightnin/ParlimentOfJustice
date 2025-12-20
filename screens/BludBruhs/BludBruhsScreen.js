@@ -53,6 +53,7 @@ const scrollableMembersBase = [
       require('../../assets/Armor/PlaceHolder.jpg'),
     ],
   },
+  { id: 'tom', name: 'Tom C', codename: 'Thunder Whisperer', screen: 'TomBb', clickable: true, image: require('../../assets/Armor/TomC4.jpg') },
   { id: 'james', name: 'James', codename: 'Shadowmind', screen: 'JamesBb', clickable: true, image: require('../../assets/Armor/JamesBb.jpg') },
   { id: 'tanner', name: 'Tanner', codename: 'Wolff', screen: 'TannerBb', clickable: true, image: require('../../assets/Armor/TannerBb2.jpg') },
   {

@@ -31,7 +31,7 @@ const constollationImages = {
 
   // OT Seminary 12th
   'Bro. Mason': { images: [{ uri: require('../../assets/Armor/BroMason.jpg') }] },
-  'Sister. __': { images: [{ uri: require('../../assets/Armor/Sister.jpg') }] },
+  'Sister. __': { images: [{ uri: require('../../assets/Armor/SecretarySister.jpg') }] },
   'Bro. Combs': { images: [{ uri: require('../../assets/Armor/Combs.jpg') }] },
 
   // High School 11th
@@ -61,6 +61,7 @@ const constollationImages = {
   // BoM Seminary 10th
   'Bro. Brodrick': { images: [{ uri: require('../../assets/Armor/Brodrick.jpg') }] },
   'Bro. Hedlund': { images: [{ uri: require('../../assets/Armor/Hedlund.jpg') }] },
+  'Secretary Sister': { images: [{ uri: require('../../assets/Armor/Sister.jpg') }] },
 
   // Jr. High 9th
   'Mrs. Elysia Butler': { images: [{ uri: require('../../assets/Armor/Butler.jpg') }] },

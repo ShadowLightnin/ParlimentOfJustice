@@ -19,19 +19,24 @@ const TRACKS = [
   {
     id: "thunder_whisperer_main",
     label: "Thunder Whisperer Theme",
-    source: require("../../../assets/audio/goodWalker.m4a"),
+    source: require("../../assets/audio/goodWalker.m4a"),
   },
   {
     id: "thunder_whisperer_alt",
     label: "Monkie Resonance Loop",
-    source: require("../../../assets/audio/goodWalker.m4a"),
+    source: require("../../assets/audio/goodWalker.m4a"),
   },
 ];
 
 const armors = [
   {
+    name: "Cryomancer",
+    image: require("../../assets/Armor/TomC4.jpg"),
+    clickable: true,
+  },
+  {
     name: "Thunder Whisperer",
-    image: require("../../../assets/Armor/TomC3.jpg"),
+    image: require("../../assets/Armor/TomC3.jpg"),
     clickable: true,
   },
 ];

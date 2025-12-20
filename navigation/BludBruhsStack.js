@@ -39,7 +39,7 @@ import LumielScreen from '../screens/BludBruhs/MonkeAlliance/LumielScreen';
 import Zeke from '../screens/BludBruhs/MonkeAlliance/Zeke';
 import Elijah from '../screens/BludBruhs/MonkeAlliance/Elijah';
 import AmmonT from '../screens/BludBruhs/MonkeAlliance/AmmonT';
-import TomBb from '../screens/BludBruhs/MonkeAlliance/TomBb';
+import TomBb from '../screens/BludBruhs/TomBb';
 import Eli from '../screens/BludBruhs/MonkeAlliance/Eli';
 import EthanT from '../screens/BludBruhs/MonkeAlliance/EthanT';
 import AlexM from '../screens/BludBruhs/MonkeAlliance/AlexM';

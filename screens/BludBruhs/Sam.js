@@ -55,6 +55,15 @@ const armors = [
     clickable: true,
     hardcoded: true,
   },
+    {
+    id: "sam-10",
+    name: "Void Walker",
+    codename: "Void Walker",
+    copyright: "William Cummings",
+    image: require("../../assets/Armor/SamVoidWalkerHolsted.jpg"),
+    clickable: true,
+    hardcoded: true,
+  },
   // {
   //   id: "sam-2",
   //   name: "Legacy",

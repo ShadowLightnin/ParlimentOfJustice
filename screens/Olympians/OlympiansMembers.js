@@ -177,6 +177,8 @@ export const olympiansCategories = [
     family: 'Stillman',
     members: [
       { name: 'Jennifer', codename: 'Eternal Guardian', screen: '', images: [
+        { uri: require('../../assets/Armor/AuntJennifer2.jpg'), name: '', clickable: true },
+        { uri: require('../../assets/Armor/AuntJennifer3.jpg'), name: '', clickable: true },
         { uri: require('../../assets/Armor/AuntJennifer.jpg'), name: '', clickable: true },
       ]},
     ],

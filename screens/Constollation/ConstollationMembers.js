@@ -89,6 +89,7 @@ export const memberCategories = [
     members: [
       { name: 'Bro. Brodrick', codename: 'The Witness', screen: '', hardcoded: true },
       { name: 'Bro. Hedlund', codename: 'Scriptorian Spark', screen: '', hardcoded: true },
+      { name: 'Secretary Sister', codename: 'Silent Scribe', screen: '', hardcoded: true },
     ],
   },
   {

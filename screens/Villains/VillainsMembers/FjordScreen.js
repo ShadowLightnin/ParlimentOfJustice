@@ -33,7 +33,7 @@ const TRACKS = [
 // ✅ Fjord gallery
 const characters = [
   { name: "Fjord", image: require("../../../assets/Villains/Fjord.jpg"), clickable: true },
-  // { name: "Fjord — Frostbound", image: require("../../../assets/Villains/Fjord2.jpg"), clickable: true },
+  { name: "Fjord — Frostbound", image: require("../../../assets/Villains/Fjord2.jpg"), clickable: true },
 ];
 
 export default function FjordScreen() {

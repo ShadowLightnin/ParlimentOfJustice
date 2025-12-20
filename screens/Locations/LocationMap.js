@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -6,8 +6,9 @@ import {
   TouchableOpacity,
   Image,
   useWindowDimensions,
+  BackHandler,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
 
 import { getLocationById } from './locationsConfig';
 
@@ -21,20 +22,85 @@ const LocationMapScreen = () => {
     [SCREEN_WIDTH, SCREEN_HEIGHT]
   );
 
-  // ✅ Keep the map “inside” this one screen (no navigation transitions)
+  // initial location id from route
   const initialLocationId = route.params?.locationId || 'earth_orbit_na';
+
+  // current location shown (internal state, no navigation transitions)
   const [locationId, setLocationId] = useState(initialLocationId);
 
-  // ✅ Simple internal back-stack for smooth “Back” behavior between location views
+  // internal back-stack for smooth back between location views
   const [history, setHistory] = useState([]);
 
-  // If something else navigates here with a different locationId, sync it
-  useEffect(() => {
-    if (route.params?.locationId && route.params.locationId !== locationId) {
-      setLocationId(route.params.locationId);
-      setHistory([]); // optional: reset history when coming from outside
+  /**
+   * Robust "go Home" that works even if Home is in a parent navigator.
+   * Tries navigation + parents until one succeeds.
+   */
+  const goHome = useCallback(() => {
+    // Clear internal history so we don't "resume" an old trail later
+    setHistory([]);
+
+    // Try current nav + climb parents
+    let nav = navigation;
+    while (nav) {
+      try {
+        nav.navigate('Home');
+        return;
+      } catch (e) {
+        // ignore and move up
+      }
+      nav = nav.getParent?.();
     }
+
+    // last resort (should rarely hit)
+    try {
+      navigation.navigate('Home');
+    } catch (e) {
+      // If even this fails, there's a route naming mismatch in your navigators.
+      console.warn('Could not navigate to Home from LocationMapScreen.', e);
+    }
+  }, [navigation]);
+
+  // Internal navigation: go to another location without pushing a new nav route
+  const goInternal = useCallback((nextId) => {
+    if (!nextId || nextId === locationId) return;
+    setHistory((h) => [...h, locationId]);
+    setLocationId(nextId);
+  }, [locationId]);
+
+  // Internal Back: pop internal history, otherwise go Home
+  const goBackInternalOrHome = useCallback(() => {
+    if (history.length > 0) {
+      const prev = history[history.length - 1];
+      setHistory((h) => h.slice(0, -1));
+      setLocationId(prev);
+      return true;
+    }
+    goHome();
+    return true;
+  }, [history, goHome]);
+
+  // Sync if something navigates here with a different locationId
+  useEffect(() => {
+    const incoming = route.params?.locationId;
+    if (incoming && incoming !== locationId) {
+      setLocationId(incoming);
+      setHistory([]); // reset internal trail when coming from outside
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [route.params?.locationId]);
+
+  // Android hardware back behavior
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        // back through internal locations first, then home
+        return goBackInternalOrHome();
+      };
+
+      const sub = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      return () => sub.remove();
+    }, [goBackInternalOrHome])
+  );
 
   const location = getLocationById(locationId);
 
@@ -42,36 +108,24 @@ const LocationMapScreen = () => {
     return (
       <View style={[styles.root, styles.center]}>
         <Text style={styles.errorText}>Location "{locationId}" not found.</Text>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.backText}>⬅ Back</Text>
+
+        <TouchableOpacity style={styles.homeButton} onPress={goHome} activeOpacity={0.85}>
+          <Text style={styles.homeText}>⬅ Home</Text>
         </TouchableOpacity>
       </View>
     );
   }
 
-  const goInternal = (nextId) => {
-    setHistory((h) => [...h, locationId]);
-    setLocationId(nextId);
-  };
-
-  const handleBack = () => {
-    if (history.length > 0) {
-      const prev = history[history.length - 1];
-      setHistory((h) => h.slice(0, -1));
-      setLocationId(prev);
-      return;
-    }
-    navigation.goBack();
-  };
-
   const handleToggleSide = () => {
     const target = location.toggle?.targetLocationId;
     if (!target) return;
-    goInternal(target); // ✅ NO slide transition
+    goInternal(target);
   };
 
   const handleViewPlanet = () => {
     if (!location.planetId) return;
+
+    // keep your existing navigation shape (since your app structure may rely on it)
     navigation.navigate('PlanetsScreen', {
       screen: 'PlanetsScreen',
       params: { initialPlanetId: location.planetId },
@@ -80,7 +134,7 @@ const LocationMapScreen = () => {
 
   const handlePinPress = (pin) => {
     if (pin.targetLocationId) {
-      goInternal(pin.targetLocationId); // ✅ NO slide transition
+      goInternal(pin.targetLocationId);
       return;
     }
     if (pin.targetScreen) {
@@ -91,12 +145,15 @@ const LocationMapScreen = () => {
     }
   };
 
+  const canGoBackInternal = history.length > 0;
+
   return (
     <View style={styles.root}>
       {/* HEADER */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={handleBack} activeOpacity={0.85}>
-          <Text style={styles.backText}>⬅ Back</Text>
+        {/* Home ALWAYS goes home immediately */}
+        <TouchableOpacity style={styles.homeButton} onPress={goHome} activeOpacity={0.85}>
+          <Text style={styles.homeText}>⬅ Home</Text>
         </TouchableOpacity>
 
         <View style={styles.headerCenter}>
@@ -122,12 +179,22 @@ const LocationMapScreen = () => {
           )}
         </View>
 
+        {/* Right side: Back (internal) OR Toggle placeholder */}
         {location.toggle?.targetLocationId ? (
           <TouchableOpacity style={styles.toggleButton} onPress={handleToggleSide} activeOpacity={0.85}>
             <Text style={styles.toggleText}>{location.toggle.label || 'Switch View'}</Text>
           </TouchableOpacity>
         ) : (
-          <View style={{ width: 90 }} />
+          <TouchableOpacity
+            style={[styles.backButton, !canGoBackInternal && styles.backButtonDisabled]}
+            onPress={goBackInternalOrHome}
+            disabled={!canGoBackInternal}
+            activeOpacity={0.85}
+          >
+            <Text style={[styles.backText, !canGoBackInternal && styles.backTextDisabled]}>
+              ⟵ Back
+            </Text>
+          </TouchableOpacity>
         )}
       </View>
 
@@ -136,7 +203,12 @@ const LocationMapScreen = () => {
         <View style={[styles.mapInner, { width: MAP_BASE_SIZE, height: MAP_BASE_SIZE }]}>
           <Image
             source={location.background}
-            style={{ position: 'absolute', width: MAP_BASE_SIZE, height: MAP_BASE_SIZE, resizeMode: 'contain' }}
+            style={{
+              position: 'absolute',
+              width: MAP_BASE_SIZE,
+              height: MAP_BASE_SIZE,
+              resizeMode: 'contain',
+            }}
           />
 
           {location.pins?.map((pin) => {
@@ -181,7 +253,9 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     justifyContent: 'space-between',
   },
-  backButton: {
+
+  // HOME button (always home)
+  homeButton: {
     paddingVertical: 8,
     paddingHorizontal: 12,
     backgroundColor: 'rgba(5, 20, 60, 0.9)',
@@ -189,7 +263,22 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(153, 215, 255, 0.8)',
   },
-  backText: { color: '#E6F7FF', fontSize: 14, fontWeight: 'bold' },
+  homeText: { color: '#E6F7FF', fontSize: 14, fontWeight: 'bold' },
+
+  // Back button (internal)
+  backButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: 'rgba(20, 40, 90, 0.9)',
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(160, 210, 255, 0.9)',
+    minWidth: 90,
+    alignItems: 'center',
+  },
+  backButtonDisabled: { opacity: 0.35 },
+  backText: { color: '#E6F2FF', fontSize: 12, fontWeight: '700' },
+  backTextDisabled: { color: 'rgba(210, 225, 245, 0.7)' },
 
   headerCenter: { flex: 1, alignItems: 'center', paddingHorizontal: 8 },
   title: {
@@ -200,7 +289,12 @@ const styles = StyleSheet.create({
     textShadowRadius: 14,
     textAlign: 'center',
   },
-  subtitle: { marginTop: 2, fontSize: 11, color: 'rgba(205, 225, 255, 0.9)', textAlign: 'center' },
+  subtitle: {
+    marginTop: 2,
+    fontSize: 11,
+    color: 'rgba(205, 225, 255, 0.9)',
+    textAlign: 'center',
+  },
 
   planetLinkButton: {
     marginTop: 6,
@@ -221,10 +315,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(160, 210, 255, 0.9)',
     maxWidth: 120,
+    minWidth: 90,
+    alignItems: 'center',
   },
   toggleText: { color: '#E6F2FF', fontSize: 10, fontWeight: '600', textAlign: 'center' },
 
-  mapContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 12, paddingBottom: 8 },
+  mapContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingBottom: 8,
+  },
   mapInner: {
     borderRadius: 16,
     overflow: 'hidden',
@@ -235,16 +337,23 @@ const styles = StyleSheet.create({
 
   pinWrapper: { position: 'absolute', alignItems: 'center' },
   pinOuterGlow: {
-    width: 22, height: 22, borderRadius: 11,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
     backgroundColor: 'rgba(130, 210, 255, 0.4)',
-    shadowColor: '#7ad7ff', shadowOpacity: 0.9, shadowRadius: 12,
+    shadowColor: '#7ad7ff',
+    shadowOpacity: 0.9,
+    shadowRadius: 12,
     shadowOffset: { width: 0, height: 0 },
   },
   pinInnerDot: {
     position: 'absolute',
-    width: 8, height: 8, borderRadius: 4,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
     backgroundColor: '#ffffff',
-    borderWidth: 1, borderColor: '#7ad7ff',
+    borderWidth: 1,
+    borderColor: '#7ad7ff',
   },
   pinLabel: {
     marginTop: 2,
