@@ -216,8 +216,8 @@ const TomBb = () => {
               <Text style={styles.backButtonText}>←</Text>
             </TouchableOpacity>
             <View style={styles.headerGlass}>
-              <Text style={styles.title}>Thunder Whisperer</Text>
-              <Text style={styles.subtitle}>Sound • Harmony • Shockwaves</Text>
+              <Text style={styles.title}>Cryomancer</Text>
+              <Text style={styles.subtitle}>Chill • Harmony • Smooth</Text>
             </View>
           </View>
         </View>
