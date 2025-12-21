@@ -88,7 +88,7 @@ const TRUE_SECONDARY = [
   { name: "Pact", image: require("../../../assets/Villains/ErevosPact.jpg"), clickable: true },
   { name: "Labyrinth", image: require("../../../assets/Villains/ErevosLabyrinth.jpg"), clickable: true },
   { name: "The Flood", image: require("../../../assets/Villains/ErevosTheFlood.jpg"), clickable: true },
-  { name: "Harness Luctus", image: require("../../../assets/Villains/ErevosHarness.jpg"), clickable: true },
+  { name: "Harness Lacose", image: require("../../../assets/Villains/ErevosHarness.jpg"), clickable: true },
   { name: "Teaching Ophir", image: require("../../../assets/Villains/ErevosOphir.jpg"), clickable: true },
   { name: "Mediavel", image: require("../../../assets/Villains/ErevosMediavel.jpg"), clickable: true },
 ];
@@ -232,7 +232,7 @@ const ErevosScreen = () => {
   const legacyTitle = truthMode ? "Erevos Over the Eras" : "Erevos’s Legacy";
   const headerTitle = truthMode ? "True Erevos" : "Erevos";
   const headerSubtitle = truthMode
-    ? "OMEGA–BLACK • Luctus Origin • Dormancy Authority"
+    ? "OMEGA–BLACK • Lacose Origin • Dormancy Authority"
     : "Immortal • Shadow Empire • Project Ascendancy";
 
   const toggleTruth = () => setTruthMode((v) => !v);
@@ -386,7 +386,7 @@ const ErevosScreen = () => {
                 <Text style={styles.aboutText}>
                   That meteor was <Text style={{ fontStyle: "italic" }}>Vortanite</Text>. It didn’t “gift” him divinity—it{" "}
                   <Text style={{ fontStyle: "italic" }}>activated</Text> something already inside his blood: a dormant anomaly
-                  later known as <Text style={{ fontStyle: "italic" }}>LUCTUS</Text>. Reborn with a body that refused
+                  later known as <Text style={{ fontStyle: "italic" }}>LACOSE</Text>. Reborn with a body that refused
                   extinction and a mind that learned patterns too quickly, he buried his birth name and took a new one:{" "}
                   <Text style={{ fontStyle: "italic" }}>Erevos</Text>.
                 </Text>
@@ -401,7 +401,7 @@ const ErevosScreen = () => {
 
                 <Text style={styles.aboutText}>• Powers and Abilities:</Text>
                 <Text style={styles.aboutText}>
-                  • Immortality (Luctus): Unaging and nearly unkillable, Erevos regenerates from catastrophic wounds. Death is
+                  • Immortality (LACOSE): Unaging and nearly unkillable, Erevos regenerates from catastrophic wounds. Death is
                   not a fate to him—only an interruption.
                 </Text>
                 <Text style={styles.aboutText}>
@@ -422,13 +422,13 @@ const ErevosScreen = () => {
                 </Text>
                 <Text style={styles.aboutText}>
                   • Ancestral Sigil (Dormancy Authority): As the first awakened carrier, Erevos can suppress—or forcibly
-                  trigger—meta potential in bloodlines connected to him by Luctus inheritance.
+                  trigger—meta potential in bloodlines connected to him by Lacose inheritance.
                 </Text>
 
                 <Text style={styles.aboutText}>Erevos’s Timeline:</Text>
                 <Text style={styles.aboutText}>
                   1. <Text style={{ fontWeight: "bold" }}>Erevos Primeval</Text> – Newly awakened after the Meteor Night, still
-                  learning what Luctus made him, clad in early-era armor and raw purpose.
+                  learning what Lacose made him, clad in early-era armor and raw purpose.
                 </Text>
                 <Text style={styles.aboutText}>
                   2. <Text style={{ fontWeight: "bold" }}>Erevos the Conqueror</Text> – A medieval tyrant who weaponized

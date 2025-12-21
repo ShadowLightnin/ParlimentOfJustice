@@ -109,17 +109,17 @@ export default function ErevosFileScreen() {
               to diverge from covenantal order.
             </Text>
             <Text style={styles.p}>
-              Erevos carried a rare hereditary anomaly later designated <Text style={styles.em}>LUCTUS</Text>. Luctus was not active. It conveyed no strength,
+              Erevos carried a rare hereditary anomaly later designated <Text style={styles.em}>LACOSE</Text>. Lacose was not active. It conveyed no strength,
               longevity, or awareness. At this stage, Erevos was fully mortal.
             </Text>
 
-            <Text style={styles.h}>II. THE METEOR NIGHT (LUCTUS ACTIVATION EVENT)</Text>
+            <Text style={styles.h}>II. THE METEOR NIGHT (LACOSE ACTIVATION EVENT)</Text>
             <Text style={styles.p}>
               A meteor shower impacted Earth during Erevos’ early adulthood. Analysis confirms the meteors contained
               <Text style={styles.em}> Vortanite</Text> (origin: Melcornia system) and trace energies consistent with pre-Maw resonance.
             </Text>
             <Text style={styles.p}>
-              Upon death adjacent to a Vortanite meteor, the meteor’s radiation activated Luctus. Erevos regenerated, resurrected,
+              Upon death adjacent to a Vortanite meteor, the meteor’s radiation activated Lacose. Erevos regenerated, resurrected,
               and emerged cognitively altered — the first recorded metasapian awakening in known history.
             </Text>
 
@@ -146,9 +146,9 @@ export default function ErevosFileScreen() {
               The First World ended in the Great Flood. Erevos survived. Rather than rule the next world, he withdrew, observed, documented, and waited.
             </Text>
 
-            <Text style={styles.h}>VII. LUCTUS DORMANCY DISCOVERY</Text>
+            <Text style={styles.h}>VII. Lacose DORMANCY DISCOVERY</Text>
             <Text style={styles.p}>
-              Erevos confirmed a critical limitation: Luctus can be inherited without activation. Activation requires exposure to Vortanite radiation
+              Erevos confirmed a critical limitation: Lacose can be inherited without activation. Activation requires exposure to Vortanite radiation
               or Maw-adjacent energies. Without exposure, carriers remain fully human. This is why metasapians remain rare.
             </Text>
 

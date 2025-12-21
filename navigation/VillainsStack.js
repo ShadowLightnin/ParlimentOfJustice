@@ -27,6 +27,8 @@ import GhostsScreen from '../screens/Villains/DemonMembers/Ghosts';
 import BugsScreen from '../screens/Villains/DemonMembers/Bugs';
 import PiratesScreen from '../screens/Villains/DemonMembers/Pirates';
 import NateScreen from '../screens/Villains/DemonMembers/NateScreen';
+import StalkerScreen from '../screens/Villains/DemonMembers/Stalker';
+import FrancisScreen from '../screens/Villains/DemonMembers/Francis';
 
 // import Screen from '../screens/Villains/DemonMembers/Screen';
 
@@ -128,6 +130,8 @@ const VillainsStack = () => {
       <Stack.Screen name="BugsScreen" component={BugsScreen} />
       <Stack.Screen name="PiratesScreen" component={PiratesScreen} />
       <Stack.Screen name="NateScreen" component={NateScreen} />
+      <Stack.Screen name="StalkerScreen" component={StalkerScreen} />
+      <Stack.Screen name="FrancisScreen" component={FrancisScreen} />
 
       {/* Villain Screens */}
       <Stack.Screen name="FjordScreen" component={FjordScreen} />

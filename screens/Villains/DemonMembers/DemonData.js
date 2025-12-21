@@ -10,7 +10,7 @@ export const demonLords = [
   },
   { 
     name: 'Francis', 
-    screen: 'Francis', 
+    screen: 'FrancisScreen', 
     image: require('../../../assets/Villains/Francis.jpg'), 
     audio: require('../../../assets/audio/Francis.mp4'),
     clickable: true,
@@ -18,7 +18,7 @@ export const demonLords = [
   },
   { 
     name: 'Skin Stalker', 
-    screen: 'Stalker', 
+    screen: 'StalkerScreen', 
     image: require('../../../assets/Villains/SkinStalker.jpg'), 
     audio: require('../../../assets/audio/SkinStalker.mp4'),
     clickable: true, 
