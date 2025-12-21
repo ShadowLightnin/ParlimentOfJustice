@@ -210,16 +210,16 @@ const BludBruhsScreen = ({ route }) => {
       return {
         id: 'joseph',
         name: 'Joseph',
-        codename: 'The Betrayer',
+        codename: 'The Useless',
         screen: 'JosephD',
-        clickable: false,
+        clickable: true,
         image: require('../../assets/Armor/JosephD4.jpg'),
       };
     if (r < 0.51)
       return {
         id: 'joseph',
         name: 'Joseph',
-        codename: 'The Betrayer',
+        codename: 'The Coward',
         screen: 'JosephD',
         clickable: false,
         image: require('../../assets/Armor/JosephD2.jpg'),
@@ -236,7 +236,7 @@ const BludBruhsScreen = ({ route }) => {
 
   const finalMembers = scrollableMembersBase
     .filter(m =>
-      isYourUniverse ? !['Justin Platt', 'Zack Dustin'].includes(m.name) : true
+      isYourUniverse ? !['Justin Platt', 'Zack Dustin', 'Joseph'].includes(m.name) : true
     )
     .map(m => (m.name === 'Joseph' ? getJoseph() : m));
 

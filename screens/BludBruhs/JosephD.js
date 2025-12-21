@@ -32,6 +32,9 @@ const armors = [
   {
     name: "Technoman",
     image: require("../../assets/Armor/JosephD.jpg"),
+    image: require("../../assets/Armor/JosephD2.jpg"),
+    image: require("../../assets/Armor/JosephD3.jpg"),
+    image: require("../../assets/Armor/JosephD4.jpg"),
     clickable: true,
   },
 ];
