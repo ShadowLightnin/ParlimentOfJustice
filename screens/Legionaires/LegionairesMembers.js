@@ -64,7 +64,6 @@ export const memberCategories = [
       { name: 'Josh Davis', codename: '', screen: '', hardcoded: true },
       { name: 'Teagan', codename: '', screen: '', hardcoded: true },
       { name: 'Carter', codename: '', screen: '', hardcoded: true },
-      { name: 'Nate Anderson', codename: '', screen: '', hardcoded: true },
     ],
   },
   {
@@ -165,6 +164,7 @@ export const memberCategories = [
     members: [
       { name: 'Jack Smith', codename: 'Sentinel', screen: '', hardcoded: true },
       { name: 'Dustin Edmonds', codename: 'Falcon', screen: '', hardcoded: true },
+      { name: 'Nate [REDACTED]', codename: '\\\\[REDACTED]\\\\', screen: '', hardcoded: true },
     ],
   },
 ];

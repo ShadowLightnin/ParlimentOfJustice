@@ -285,11 +285,11 @@ export const descriptions = {
     accent: "#7CFFC7",
     words: "Energy • Loyal • Go",
   },
-  "Nate Anderson": {
+  "Nate [REDACTED]": {
     about:
-      "A steady friend with a grounded mindset. He thinks things through and brings calm confidence when things get messy.",
+      "\\\\[REDACTED]\\\\",
     accent: "#5a0f0f",
-    words: "Grounded • Calm • Solid",
+    words: "\\\\[REDACTED]\\\\",
   },
 
   // =========================
