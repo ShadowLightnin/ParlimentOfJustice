@@ -401,6 +401,18 @@ export const descriptions = {
     accent: "#43E0A8",
     words: "Real • Early • Loyal",
   },
+  //   '<REDACTED>': {
+  //   about:
+  //     "<REDACTED>",
+  //   accent: "#5a0f0f",
+  //   words: "<REDACTED>",
+  // },
+  'Joseph Dresher': {
+    about:
+      "\\\\[REDACTED]\\\\",
+    accent: "#6bc4ff",
+    words: "\\\\[REDACTED]\\\\",
+  },
   Jorge: {
     about:
       "A name tied to childhood memory. Part of the early circle that shaped who you became.",

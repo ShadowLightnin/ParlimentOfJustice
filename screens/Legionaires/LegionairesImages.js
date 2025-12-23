@@ -318,6 +318,11 @@ const legionImages = {
       { uri: require('../../assets/Armor/NateGree.jpg'), name: '', clickable: true },
     ],
   },
+  'Joseph Dresher': {
+    images: [
+      { uri: require('../../assets/Armor/JosephD.jpg'), name: '', clickable: true },
+    ],  
+  },
   'Ivan Aparicio': {
     images: [
       { uri: require('../../assets/Armor/Ivan.jpg'), name: '', clickable: true },

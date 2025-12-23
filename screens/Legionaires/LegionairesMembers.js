@@ -131,6 +131,7 @@ export const memberCategories = [
       { name: 'Erica Teaford', codename: '', screen: '', hardcoded: true },
       { name: 'Nate Greene', codename: '', screen: '', hardcoded: true },
       { name: 'Ivan Aparicio', codename: '', screen: '', hardcoded: true },
+      { name: 'Joseph Dresher', codename: 'Pilot', screen: '', hardcoded: true },
       { name: 'Abby', codename: 'The Ghost', screen: '', hardcoded: true },
       { name: 'Lupa', codename: '', screen: '', hardcoded: true },
       { name: 'Shanna', codename: '', screen: '', hardcoded: true },
