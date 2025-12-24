@@ -188,7 +188,7 @@ const legionImages = {
       { uri: require('../../assets/Armor/JoshD.jpg'), name: '', clickable: true },
     ],
   },
-  'N\\\\[REDACTED]\\\\ \\\\[REDACTED]\\\\': {
+  'N████ █████████': {
     images: [
       { uri: require('../../assets/Armor/NateA.jpg'), name: '', clickable: true },
     ],

@@ -285,7 +285,7 @@ export const descriptions = {
     accent: "#7CFFC7",
     words: "Energy • Loyal • Go",
   },
-  "N\\\\[REDACTED]\\\\ \\\\[REDACTED]\\\\": {
+  "N████ █████████": {
     about:
       "\\\\[REDACTED]\\\\",
     accent: "#5a0f0f",

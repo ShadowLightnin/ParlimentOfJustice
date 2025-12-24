@@ -303,7 +303,7 @@ export const olympiansCategories = [
   {
     family: 'Cummings',
     members: [
-      { name: 'Matt', codename: '[redacted]', screen: '', images: [
+      { name: 'Matt', codename: 'Black Ops', screen: '', images: [
         { uri: require('../../assets/Armor/Matt.jpg'), name: '', clickable: true },
       ]},
       { name: 'Jessica', codename: 'CareTechnial', screen: '', images: [
