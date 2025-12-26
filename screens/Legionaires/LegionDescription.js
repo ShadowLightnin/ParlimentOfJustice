@@ -285,12 +285,6 @@ export const descriptions = {
     accent: "#7CFFC7",
     words: "Energy • Loyal • Go",
   },
-  "N████ █████████": {
-    about:
-      "\\\\[REDACTED]\\\\",
-    accent: "#5a0f0f",
-    words: "\\\\[REDACTED]\\\\",
-  },
 
   // =========================
   // Jr. High

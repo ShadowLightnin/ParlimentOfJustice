@@ -165,7 +165,6 @@ export const memberCategories = [
     members: [
       { name: 'Jack Smith', codename: 'Sentinel', screen: '', hardcoded: true },
       { name: 'Dustin Edmonds', codename: 'Falcon', screen: '', hardcoded: true },
-      { name: 'N████ █████████', codename: '\\\\[REDACTED]\\\\', screen: '', hardcoded: true },
     ],
   },
 ];
