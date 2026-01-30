@@ -8,15 +8,15 @@ const cobrosDescriptions = {
   },
 
   "Tanner Despain": {
-    about:"",
+    about:"//[Redacted]//",
       // "Titanium — steadfast leader of the Cobros, unbreakable resolve, strategic mind, and a heart that never folds.",
     color: "#A9B3BD",
-    points: ["//[Redacted]//"],
+    points: [""],
   },
 
   "Ethan Workman": {
     about:
-      "Schriker — quick reflexes, sharp wit, and electric momentum. Always moving, always thinking.",
+      "//[Redacted]//",
     color: "#43E0A8",
     points: ["Speed", "Spark", "Edge"],
   },
@@ -85,7 +85,7 @@ const cobrosDescriptions = {
   },
 
   "Nick Larsen": {
-    about:"",
+    about:"//[Redacted]//",
       // "Iron Guard — stalwart defender with unmatched endurance. The line doesn’t break with him on it.",
     color: "#B7C2CC",
     points: ["//[Redacted]//"],
@@ -107,9 +107,9 @@ const cobrosDescriptions = {
 
   "Alex Wood": {
     about:
-      "Vortex Flash — speed and energy control. He turns distance into nothing and pressure into wins.",
+      "//[Redacted]//",
     color: "#7CF0FF",
-    points: ["Speed", "Vortex", "Flash"],
+    points: ["//[Redacted]//"],
   },
 
   "Rick Holly": {
@@ -144,7 +144,7 @@ const cobrosDescriptions = {
     about:
       "Jugridge — brute strength with tactical awareness. Hits hard, thinks harder.",
     color: "#FF6B6B",
-    points: ["Power", "Tactics", "Crush"],
+    points: [""],
   },
 };
 

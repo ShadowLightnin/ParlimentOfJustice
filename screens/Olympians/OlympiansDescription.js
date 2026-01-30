@@ -11,21 +11,239 @@ const descriptions = {
     points: ["Loyal", "Resilient", "Rising"],
   },
 
-  // === Parents ===
+  // CUMMINGS / PARENTS
   Angela: {
     about: "Celestial Angel — steadfast light, guiding calm, and protective grace when the world turns dark.",
-    color: "#ffd36b",
+    color: "#FFD36B", // celestial gold
     points: ["Grace", "Courage", "Light"],
   },
   Todd: {
     about: "Stellar — disciplined strength with a steady hand, built to protect and endure.",
-    color: "#7acbff",
+    color: "#7ACBFF", // starlight blue
     points: ["Steady", "Bold", "Guardian"],
   },
   Molly: {
     about: "Teddy Bear — warmth and comfort with surprising toughness when it matters most.",
-    color: "#ff89c6",
+    color: "#FF89C6", // soft plush pink
     points: ["Warm", "Brave", "Kind"],
+  },
+
+  // MCNEIL
+  Mary: {
+    about: "Auric — golden resolve and calm leadership, carrying warmth like armor and strength like steel.",
+    color: "#D4AF37", // auric gold
+    points: ["Strong", "Steadfast", "True"],
+  },
+  Chance: {
+    about: "Crimson Crown — fearless heart with a royal edge, bold protector energy with main-character confidence.",
+    color: "#C1121F", // crimson red
+    points: ["Brave", "Bold", "Noble"],
+  },
+  Ava: {
+    about: "Prismatic Pulse — radiant personality with a shifting spectrum, bringing energy, color, and spark to every room.",
+    color: "#7C5CFF", // prism violet
+    points: ["Vibrant", "Creative", "Electric"],
+  },
+  Charlie: {
+    about: "Iron Olympian — relentless drive with champion grit, built for endurance and victory through effort.",
+    color: "#6B7280", // iron steel
+    points: ["Driven", "Resilient", "Competitive"],
+  },
+  Lumi: {
+    about: "Fade Shade — quiet cool confidence, slipping between calm and chaos with smooth control.",
+    color: "#2F3A4A", // deep shade
+    points: ["Cool", "Clever", "Elusive"],
+  },
+
+  // BRIGGS
+  "Heather S": {
+    about: "Verdant — grounded growth energy, steady support, deep roots, and quiet strength that keeps everyone standing.",
+    color: "#2E8B57", // verdant green
+    points: ["Nurturing", "Stable", "Enduring"],
+  },
+  Bobby: {
+    about: "Crown Medic — steady hands and loyal heart, keeping the team alive, patched up, and moving forward.",
+    color: "#00B3C6", // clean medic teal
+    points: ["Healer", "Reliable", "Selfless"],
+  },
+  Liberty: {
+    about: "Serenity — calming presence with unshakable balance, peacekeeper energy that quiets storms.",
+    color: "#86E7FF", // serene sky
+    points: ["Calm", "Gentle", "Centered"],
+  },
+  Ammon: {
+    about: "Valoron — brave-forward protector, built on honor, courage, and show-up-no-matter-what loyalty.",
+    color: "#FFB020", // valor amber
+    points: ["Valiant", "Honorable", "Protective"],
+  },
+  Piper: {
+    about: "Jetstrike — fast, sharp, and fearless, hitting goals like a streak across the sky.",
+    color: "#00A3FF", // jet blue
+    points: ["Fast", "Bold", "Focused"],
+  },
+  Gemma: {
+    about: "Slendowg — sleek and witty with a surprising bite, playful energy that can flip to fierce instantly.",
+    color: "#FF4FA3", // playful punch
+    points: ["Playful", "Sharp", "Fearless"],
+  },
+
+  // JENSEN
+  Savannah: {
+    about: "Vivid Spark — bright ignition energy, lighting up momentum and joy wherever she goes.",
+    color: "#FF6A00", // spark orange
+    points: ["Energetic", "Bright", "Fearless"],
+  },
+  Lee: {
+    about: "Codeforge — builder mind and problem-solver spirit, turning ideas into tools and chaos into systems.",
+    color: "#7CFFB2", // neon matrix
+    points: ["Inventive", "Logical", "Builder"],
+  },
+  Emilee: {
+    about: "Luminous Aria — expressive glow with heartfelt harmony, lifting people with warmth and voice-of-the-room energy.",
+    color: "#FFE2B6", // luminous soft gold
+    points: ["Warm", "Expressive", "Soulful"],
+  },
+  Samantha: {
+    about: "Velocity Vibe — driven motion and sharp instinct, always pushing forward with confident momentum.",
+    color: "#25C2FF", // velocity cyan
+    points: ["Driven", "Quick", "Focused"],
+  },
+  Ella: {
+    about: "Aerial Serenade — light-footed grace with a fearless lift, moving like wind and shining like song.",
+    color: "#B7A6FF", // airy lavender
+    points: ["Graceful", "Free", "Brave"],
+  },
+
+  // BOLANDER
+  Annie: {
+    about: "Sage Mentor — wisdom with a steady hand, guiding others with calm clarity and real-life strength.",
+    color: "#A8C9A1", // sage green
+    points: ["Wise", "Guiding", "Patient"],
+  },
+  Paul: {
+    about: "Iron Law — firm standards, fair judgment, and unshakable backbone when the moment demands it.",
+    color: "#4B5563", // law steel
+    points: ["Just", "Firm", "Steady"],
+  },
+  McKinley: {
+    about: "Rebuncious — chaos-with-a-heart, hilarious rebellion energy that still shows up when it matters.",
+    color: "#FF3D3D", // rebellious red
+    points: ["Bold", "Wildcard", "Loyal"],
+  },
+  Whitney: {
+    about: "Veilweaver — subtle power and sharp perception, weaving calm control through any situation.",
+    color: "#8B5CF6", // veil purple
+    points: ["Clever", "Composed", "Perceptive"],
+  },
+  Vinson: {
+    about: "Ironchad — tough, confident, dependable force, bringing strength and stability like a living shield.",
+    color: "#9CA3AF", // iron silver
+    points: ["Strong", "Confident", "Reliable"],
+  },
+
+  // STILLMAN (group 1)
+  Wesley: {
+    about: "Steelframe — dependable backbone energy: calm under pressure, built for hard days and steady wins.",
+    color: "#7B8794", // steel frame
+    points: ["Reliable", "Strong", "Grounded"],
+  },
+  Melissa: {
+    about: "Auric Skyweaver — golden light with uplifting vision, weaving hope and strength into the people around her.",
+    color: "#FFD36B", // auric gold
+    points: ["Radiant", "Uplifting", "Wise"],
+  },
+  Jackson: {
+    about: "Rhythmic Flux — creative motion and momentum, adapting fast and bringing the beat when the team needs it.",
+    color: "#FF2D8D", // rhythmic magenta
+    points: ["Dynamic", "Creative", "Bold"],
+  },
+  Mason: {
+    about: "Fortress King — protective leader spirit, steady presence with loyal strength and big-heart resolve.",
+    color: "#1F4FFF", // fortress blue
+    points: ["Protector", "Leader", "Resilient"],
+  },
+  Rylie: {
+    about: "Star Gleam — bright and magnetic joy, lighting up rooms with playful confidence and heart.",
+    color: "#9B7BFF", // star violet
+    points: ["Bright", "Brave", "Joyful"],
+  },
+  Sammy: {
+    about: "Swift Pack — fast friend energy, loyal to the core, always ready to roll with the team.",
+    color: "#18D6B5", // swift teal
+    points: ["Loyal", "Energetic", "Fearless"],
+  },
+
+  // STILLMAN (group 2)
+  David: {
+    about: "Ironforge — steady builder mindset: practical, skilled, and quietly unstoppable when it counts.",
+    color: "#3F4A56", // forged iron
+    points: ["Crafted", "Tough", "Focused"],
+  },
+  Isaydy: {
+    about: "Mist Haven — calm shelter energy, comforting presence with quiet strength like a safe harbor.",
+    color: "#8FE9FF", // mist blue
+    points: ["Calm", "Comforting", "Intuitive"],
+  },
+  Darron: {
+    about: "Crag Rock — rugged strength and unshakable loyalty, the kind of solid you can always lean on.",
+    color: "#6B4F3A", // crag brown
+    points: ["Solid", "Loyal", "Enduring"],
+  },
+  Isabel: {
+    about: "Breezestrom — light on her feet but fierce in spirit, bringing fresh air with a lightning edge.",
+    color: "#7CFFF0", // breeze mint
+    points: ["Free", "Brilliant", "Brave"],
+  },
+
+  // STILLMAN (group 3)
+  "Gary jr": {
+    about: "Legacy Shield — family-first defender, carrying tradition with courage and a steady protective heart.",
+    color: "#1E66FF", // shield blue
+    points: ["Guardian", "Honorable", "Steady"],
+  },
+  Sarah: {
+    about: "Hope — bright resilience and gentle strength, turning hard moments into forward steps.",
+    color: "#FFD1E8", // hopeful rose
+    points: ["Kind", "Optimistic", "Strong"],
+  },
+  Josh: {
+    about: "Defention — watchful and steadfast, always ready to step in and hold the line for his people.",
+    color: "#34495E", // defense slate
+    points: ["Alert", "Protective", "Committed"],
+  },
+  Garden: {
+    about: "Pharoll — guiding light energy, creative and curious, always finding a way through the dark.",
+    color: "#FFE66B", // lantern gold
+    points: ["Guiding", "Inventive", "Radiant"],
+  },
+  Sophia: {
+    about: "Chroma Sprint — vibrant burst of speed and color, fearless energy with a bright competitive spark.",
+    color: "#FF5CF0", // chroma neon
+    points: ["Vivid", "Quick", "Brave"],
+  },
+  Paisley: {
+    about: "Prism Weaver — artistic heart with layered depth, connecting people through warmth and imagination.",
+    color: "#9BFF7A", // prism green
+    points: ["Creative", "Gentle", "Bright"],
+  },
+  Ellie: {
+    about: "Ethereal Flutter — soft-glow magic energy: sweet, lively, and surprisingly strong in the clutch.",
+    color: "#D8C7FF", // ethereal lavender
+    points: ["Light", "Sweet", "Resilient"],
+  },
+
+  // STILLMAN (group 4)
+  Jennifer: {
+    about: "Eternal Guardian — constant protector spirit: nurturing, strong-willed, and always watching out for her people.",
+    color: "#FFB86B", // guardian amber
+    points: ["Protective", "Nurturing", "Steadfast"],
+  },
+
+  // SANTA
+  "St. Nick": {
+    about: "Santa Claus — timeless guardian of wonder and generosity, carrying joy like a power source.",
+    color: "#D62828", // santa red
+    points: ["Generous", "Joyful", "Everlasting"],
   },
 
   // === Cummings branch (Lora / Wayne / kids) ===
@@ -35,24 +253,24 @@ const descriptions = {
     points: ["Heart", "Bloom", "Hope"],
   },
   Wayne: {
-    about: "Sovereign — commanding presence, protective instincts, and unwavering resolve.",
-    color: "#d4b6ff",
-    points: ["Command", "Honor", "Steel"],
+    about: "//[Redacted]//",
+    color: "",
+    points: ["//[Redacted]//"],
   },
   Elizabeth: {
-    about: "Harmony Warden — balances the team, stabilizes chaos, and keeps everyone aligned.",
-    color: "#7cffc7",
-    points: ["Harmony", "Order", "Care"],
+    about: "//[Redacted]//",
+    color: "",
+    points: [""],
   },
   Christopher: {
-    about: "Steel — dependable, grounded, and built to hold the line when pressure hits.",
-    color: "#b7c2cc",
-    points: ["Solid", "Loyal", "Strong"],
+    about: "",
+    color: "",
+    points: ["//[Redacted]//"],
   },
   Tom: {
-    about: "Stormforge — forges through conflict like thunder through mountains.",
-    color: "#5aa8ff",
-    points: ["Storm", "Forge", "Force"],
+    about: "",
+    color: "",
+    points: [""],
   },
 
   // === Cummings branch (Ryan) ===
@@ -151,9 +369,9 @@ const descriptions = {
     points: ["Wind", "Flow", "Control"],
   },
   "Ryan kid": {
-    about: "Ven-noir — youthful intensity with venomous precision and shadow confidence.",
-    color: "#6b7aff",
-    points: ["Venom", "Youth", "Edge"],
+    about: "//[Redacted]//",
+    color: "#000000",
+    points: ["//[Redacted]//"],
   },
   Liam: {
     about: "Veteran — battle-worn grit and calm leadership when everything’s falling apart.",

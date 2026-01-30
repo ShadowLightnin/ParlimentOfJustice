@@ -70,25 +70,7 @@ export const forgeMembers = [
       { uri: require('../../assets/Armor/Camren.jpg'), name: 'The Apprentice', clickable: true },
       // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Camren', clickable: true },
     ],
-  },
-  {
-    name: 'Shailey',
-    codename: 'DPR',
-    // description: 'Works twice as hard as anyone, complains half as much. A rare soul who makes hard work look beautiful.',
-    images: [
-      { uri: require('../../assets/Armor/Shailey.jpg'), name: 'Fire & Grace', clickable: true },
-      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Shailey', clickable: true },
-    ],
-  },
-    {
-    name: 'Kaitlyn',
-    codename: 'Numearal',
-    // description: 'Calm under pressure, precise in her craft. She has a way with metal that’s almost magical.',
-    images: [
-      { uri: require('../../assets/Armor/Kaitlyn.jpg'), name: 'Steel Whisperer', clickable: true },
-      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Kaitlyn', clickable: true },
-    ],
-  },
+    },
     {
     name: 'Emma',
     codename: 'Count Slayer',
