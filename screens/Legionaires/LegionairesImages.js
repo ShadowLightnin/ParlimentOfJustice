@@ -390,11 +390,11 @@ const legionImages = {
       { uri: require('../../assets/Armor/Krystel.jpg'), name: '', clickable: true },
     ],
   },
-  'Deb': {
-    images: [
-      { uri: require('../../assets/Armor/Deb2.jpg'), name: '', clickable: true },
-    ],
-  },
+  // 'Deb': {
+  //   images: [
+  //     { uri: require('../../assets/Armor/Deb2.jpg'), name: '', clickable: true },
+  //   ],
+  // },
   'Emma BYU': {
     images: [
       { uri: require('../../assets/Armor/EmmaBYU.jpg'), name: '', clickable: true },

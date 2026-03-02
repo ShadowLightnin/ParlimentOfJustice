@@ -8,6 +8,7 @@ import AegisCompoundScreen from '../screens/Locations/AegisCompound';
 import OphirCityScreen from '../screens/Locations/OphirCity';
 import OphiraArchive from '../screens/Locations/OphiraArchive';
 import Labyrinth from '../screens/Locations/Labyrinth';
+import HoshimahalLocation from '../screens/Locations/HoshimahalLocation';
 import { JovianDock, SOSInterior } from '../screens/Locations/JovianDock';
 
 const Stack = createNativeStackNavigator();
@@ -23,6 +24,7 @@ export function LocationStack() {
         <Stack.Screen name="Labyrinth" component={Labyrinth} />
         <Stack.Screen name="JovianDock" component={JovianDock} />
         <Stack.Screen name="SOSInterior" component={SOSInterior} />
+        <Stack.Screen name="Hoshimahal" component={HoshimahalLocation} />
     </Stack.Navigator>
   );
 }

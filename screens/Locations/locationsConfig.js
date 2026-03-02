@@ -228,6 +228,28 @@ const LOCATIONS = [
       // },
     ],
   },
+
+//===== Ailehora Galaxy (location map) =====
+{
+  id: 'ailehora_galaxy',
+  planetId: 'Hoshimahal', // ✅ MUST match celestialBodies planet id exactly
+  name: 'Ailehora – Galaxy',
+  type: 'planet-side',
+  background: require('../../assets/Space/Ailehora.jpg'),
+  isDefault: true,
+
+  pins: [
+    {
+      id: 'hoshimahal_pin',
+      label: 'Hoshimahal',
+      position: { x: 0.50, y: 0.50 },
+
+      // ✅ Tap node -> go to planet
+      targetPlanetId: 'Hoshimahal',
+    },
+  ],
+},
+
 ];
 
 export const getLocationById = (id) =>

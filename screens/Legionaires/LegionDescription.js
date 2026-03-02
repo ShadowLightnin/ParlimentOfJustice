@@ -51,12 +51,12 @@ export const descriptions = {
     accent: "#7A5CFF",
     words: "Color • Courage • Shine",
   },
-  Deb: {
-    about:
-      "Oracle — the advisor with quiet conviction. She reads situations fast, sees consequences before they arrive, and guides people toward better outcomes.",
-    accent: "#78D7FF",
-    words: "Insight • Guidance • Truth",
-  },
+  // Deb: {
+  //   about:
+  //     "Oracle — the advisor with quiet conviction. She reads situations fast, sees consequences before they arrive, and guides people toward better outcomes.",
+  //   accent: "#78D7FF",
+  //   words: "Insight • Guidance • Truth",
+  // },
   "Emma BYU": {
     about:
       "Strive — relentless drive wrapped in a kind heart. She pushes forward through obstacles and pulls others with her without ever making them feel small.",

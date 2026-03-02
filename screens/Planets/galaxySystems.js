@@ -6,6 +6,25 @@ const TREK_ICON = require('../../assets/Space/Earth.jpg');
 const deltaY = -0.00045;
 
 export const SYSTEMS = [
+  // ===== YOUR JUSTICEVERSE GALAXIES =====
+{
+  id: 'Ailehora',
+  name: 'Ailehora',
+  type: 'galaxy',
+  mapId: 'ailehora',
+
+  // ✅ Clicking this galaxy in the Galaxy Map should take you to the gateway planet
+  planetId: 'Hoshimahal',
+
+  image: require('../../assets/Space/Ailehora.jpg'),
+  x: 0.96,
+  y: 0.90 + deltaY,
+  quadrant: 'beta',
+  faction: 'justiceverse',
+  universe: 'prime',
+},
+
+
   // ===== YOUR JUSTICEVERSE SYSTEMS =====
   {
     id: 'sol',

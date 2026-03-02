@@ -489,6 +489,28 @@ export const PLANETS = [
     description:
       'Torath’s throne world — once called Draegos, now reforged into an industrial, war-scarred dystopia. The Nihilborn march across its obsidian plains, and the Black Crucible rises here, housing the Omega Core that feeds Torath’s dominion.',
   },
+
+  // ===== END OF PLANETS =====
+  // ===== GALAXIES, NEBULAE, ETC. CAN GO HERE =====
+
+{
+  id: 'Hoshimahal',
+  name: 'Hoshimahal',
+  universe: 'prime', // Prime-only
+  systemId: 'hoshimahal',
+  order: 40,
+  background: require('../../assets/Space/Hoshimahal.jpg'),
+  thumbnail: require('../../assets/Space/Hoshimahal.jpg'),
+
+  // ✅ Locations
+  hasLocations: true,
+  defaultLocationId: 'ailehora_galaxy',
+
+  description:
+    'Hoshimahal — home to an ancient and enigmatic civilization known for advanced technology and deep connection to cosmic energies. The Parliament of Justice maintains a cautious alliance with the Hoshimahals, recognizing their potential as both allies and rivals in the unfolding cosmic conflict.',
+},
+
+
 ];
 
 

@@ -16,7 +16,7 @@ export const memberCategories = [
       { name: 'Kemerey', codename: 'Seraphine', screen: '', hardcoded: true },
       { name: 'Sheryl', codename: 'Sage', screen: '', hardcoded: true },
       { name: 'Krystel', codename: 'Prism', screen: '', hardcoded: true },
-      { name: 'Deb', codename: 'Oracle', screen: '', hardcoded: true },
+      // { name: 'Deb', codename: 'Oracle', screen: '', hardcoded: true },
       { name: 'Emma BYU', codename: 'Strive', screen: '', hardcoded: true },
       { name: 'Jessica BYU', codename: 'Hopestead', screen: '', hardcoded: true },
       { name: 'Victoria', codename: 'Sari Bloom', screen: '', hardcoded: true },

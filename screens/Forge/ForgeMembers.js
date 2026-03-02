@@ -81,24 +81,6 @@ export const forgeMembers = [
     ],
     },
     {
-    name: 'Mila',
-    codename: 'DPR',
-    // description: 'Her energy lights up the forge. Quick with a joke and quicker with her work.',
-    images: [
-      { uri: require('../../assets/Armor/Mila.jpg'), name: 'Blazing Star', clickable: true },
-      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Mila', clickable: true },
-    ],
-    },
-    {   
-    name: 'Karrie',
-    codename: 'Pay Roll',
-    // description: 'Steadfast and reliable. The rock of the forge, always there when you need her.',
-    images: [
-      { uri: require('../../assets/Armor/Karrie.jpg'), name: 'The Anvil', clickable: true },
-      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Karrie', clickable: true },
-    ],
-    },
-    {
     name: 'Kazia',
     codename: 'Dutchess',
     // description: 'Sleek, agile, and deadly with a welding torch. She moves through the forge like a dancer.',
@@ -123,15 +105,6 @@ export const forgeMembers = [
     images: [
       { uri: require('../../assets/Armor/Trevor.jpg'), name: 'Molten Core', clickable: true },
       // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Trevor', clickable: true },
-    ],
-    },
-    {
-    name: 'Kristin',
-    codename: 'General',
-    // description: 'Fast, efficient, and always ahead of the curve. She brings a fresh perspective to the forge.',
-    images: [
-      { uri: require('../../assets/Armor/Kristin.jpg'), name: 'Blaze Runner', clickable: true },
-      // { uri: require('../../assets/Armor/PlaceHolder.jpg'), name: 'Kristin', clickable: true },
     ],
     },
     {
